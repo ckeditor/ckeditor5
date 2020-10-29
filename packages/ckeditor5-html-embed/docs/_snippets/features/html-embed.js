@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console */
+/* globals window, document, location, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
@@ -60,9 +60,19 @@ const initialData =
 <p>Licensed under the terms of <a href="http://www.gnu.org/licenses/gpl.html" rel="nofollow">GNU General Public License Version 2 or later</a>. For full details about the license, please check the <code>LICENSE.md</code> file or <a href="https://ckeditor.com/legal/ckeditor-oss-license" rel="nofollow">https://ckeditor.com/legal/ckeditor-oss-license</a>.</p>
 
 <div class="raw-html-embed"><script>
-(() => {
-	console.log( '💎 This is some analytics script...' );
-})();
+	window.emojicsOpts = {
+		widget: '50c7737f072dfd100f3dad0411f02e',
+		position: 'inline'
+	};
+	( function( d, s, id ) {
+		var js, fjs = d.getElementsByTagName( s )[ 0 ];
+		js = d.createElement( s );
+		js.id = id;
+		js.src = '//connect.emojics.com/dist/sdk.js';
+		fjs.parentNode.insertBefore( js, fjs );
+	} )( document, 'script', 'emojics-js' );
+</script>
+<div id="emojics-root"></div>
 </script></div>
 `;
 
@@ -125,9 +135,12 @@ ClassicEditor
 
 			const iframeElement = document.querySelector( '#preview-data-container' );
 
-			iframeElement.srcdoc = '<!DOCTYPE html><html>' +
+			// We create the iframe in a careful way and set the base URL to make emojics widget work.
+			// NOTE: the emojics widget works only when hosted on ckeditor.com.
+			const html = '<!DOCTYPE html><html>' +
 				'<head>' +
 					'<meta charset="utf-8">' +
+					`<base href="${ location.href }">` +
 					`<title>${ document.title }</title>` +
 					`<link rel="stylesheet" href="${ mainCSSElement.href }" type="text/css">` +
 					`<link rel="stylesheet" href="${ snippetCSSElement.href }" type="text/css">` +
@@ -145,6 +158,10 @@ ClassicEditor
 					editor.getData() +
 				'</body>' +
 				'</html>';
+
+			iframeElement.contentWindow.document.open();
+			iframeElement.contentWindow.document.write( html );
+			iframeElement.contentWindow.document.close();
 		} );
 	} )
 	.catch( err => {
