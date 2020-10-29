@@ -27,6 +27,14 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	init() {
+		this.decorate( 'insertColumns' );
+		this.decorate( 'insertRows' );
+	}
+
+	/**
 	 * Returns the table cell location as an object with table row and table column indexes.
 	 *
 	 * For instance, in the table below:

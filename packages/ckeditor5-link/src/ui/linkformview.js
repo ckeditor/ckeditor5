@@ -24,6 +24,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/linkform.css';
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
  * The link form view controller class.
@@ -133,10 +134,10 @@ export default class LinkFormView extends View {
 			}
 		} );
 
-		const classList = [ 'ck', 'ck-link-form' ];
+		const classList = [ 'ck', 'ck-link-form', 'ck-responsive-form' ];
 
 		if ( linkCommand.manualDecorators.length ) {
-			classList.push( 'ck-link-form_layout-vertical' );
+			classList.push( 'ck-link-form_layout-vertical', 'ck-vertical-form' );
 		}
 
 		this.setTemplate( {

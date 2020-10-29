@@ -30,80 +30,80 @@ msgstr "Liste de tâches"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style."
 msgid "Bulleted list styles toolbar"
-msgstr ""
+msgstr "Barre d'outils des styles de liste à puce"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style."
 msgid "Numbered list styles toolbar"
-msgstr ""
+msgstr "Barre d'outils des styles de liste numérotée"
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"disque\""
 
 msgctxt "The ARIA label of the button that toggles the \"circle\" list style."
 msgid "Toggle the circle list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"cercle\""
 
 msgctxt "The ARIA label of the button that toggles the \"square\" list style."
 msgid "Toggle the square list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"carré\""
 
 msgctxt "The ARIA label of the button that toggles the \"decimal\" list style."
 msgid "Toggle the decimal list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"chiffres\""
 
 msgctxt "The ARIA label of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Toggle the decimal with leading zero list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"chiffres de mêmes longueurs\""
 
 msgctxt "The ARIA label of the button that toggles the \"lower–roman\" list style."
 msgid "Toggle the lower–roman list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"chiffres romains en minuscules\""
 
 msgctxt "The ARIA label of the button that toggles the \"upper–roman\" list style."
 msgid "Toggle the upper–roman list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"chiffres romains en majuscules\""
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"lettres minuscules\""
 
 msgctxt "The ARIA label of the button that toggles the \"upper–latin\" list style."
 msgid "Toggle the upper–latin list style"
-msgstr ""
+msgstr "Activer / désactiver le style de liste \"lettres majuscules\""
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"
-msgstr ""
+msgstr "Disque"
 
 msgctxt "The tooltip text of the button that toggles the \"circle\" list style."
 msgid "Circle"
-msgstr ""
+msgstr "Cercle"
 
 msgctxt "The tooltip text of the button that toggles the \"square\" list style."
 msgid "Square"
-msgstr ""
+msgstr "Carré"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal\" list style."
 msgid "Decimal"
-msgstr ""
+msgstr "Chiffres"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Decimal with leading zero"
-msgstr ""
+msgstr "Chiffres de mêmes longueurs"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–roman\" list style."
 msgid "Lower–roman"
-msgstr ""
+msgstr "Chiffres romains en minuscules"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–roman\" list style."
 msgid "Upper-roman"
-msgstr ""
+msgstr "Chiffres romains en majuscules"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–latin\" list style."
 msgid "Lower-latin"
-msgstr ""
+msgstr "Lettres minuscules"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–latin\" list style."
 msgid "Upper-latin"
-msgstr ""
+msgstr "Lettres majuscules"

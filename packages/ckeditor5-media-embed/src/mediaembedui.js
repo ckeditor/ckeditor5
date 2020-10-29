@@ -41,7 +41,6 @@ export default class MediaEmbedUI extends Plugin {
 		const command = editor.commands.get( 'mediaEmbed' );
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
-		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
 			const dropdown = createDropdown( locale );
 
@@ -104,7 +103,6 @@ export default class MediaEmbedUI extends Plugin {
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		form.urlInputView.bind( 'isReadOnly' ).to( command, 'isEnabled', value => !value );
-		form.saveButtonView.bind( 'isEnabled' ).to( command );
 	}
 }
 

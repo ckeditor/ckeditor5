@@ -23,6 +23,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/mediaform.css';
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
  * The media form view controller class.
@@ -58,6 +59,14 @@ export default class MediaFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
+		 * The value of the URL input.
+		 *
+		 * @member {String} #mediaURLInputValue
+		 * @observable
+		 */
+		this.set( 'mediaURLInputValue', '' );
+
+		/**
 		 * The URL input view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
@@ -71,6 +80,7 @@ export default class MediaFormView extends View {
 		 */
 		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
+		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
 
 		/**
 		 * The Cancel button view.
@@ -123,7 +133,8 @@ export default class MediaFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-media-form'
+					'ck-media-form',
+					'ck-responsive-form'
 				],
 
 				tabindex: '-1'
@@ -276,6 +287,7 @@ export default class MediaFormView extends View {
 		inputField.on( 'input', () => {
 			// Display the tip text only when there's some value. Otherwise fall back to the default info text.
 			labeledInput.infoText = inputField.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
+			this.mediaURLInputValue = inputField.element.value.trim();
 		} );
 
 		return labeledInput;

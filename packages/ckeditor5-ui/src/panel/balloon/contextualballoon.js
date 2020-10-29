@@ -444,6 +444,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
+	 * @private
 	 * @returns {module:ui/view~View}
 	 */
 	_createFakePanelsView() {
