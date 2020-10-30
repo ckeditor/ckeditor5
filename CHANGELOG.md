@@ -7,7 +7,7 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v23.1.0.
 
-This release introduces a new HTML embed feature.
+This release introduces a new HTML embed feature and adds the list style feature to the document editor build.
 
 It also comes with new API features:
 
@@ -38,6 +38,7 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### Features
 
+* **[build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)**: Added the list style feature to the document editor build. Closes [#7941](https://github.com/ckeditor/ckeditor5/issues/7941). ([commit](https://github.com/ckeditor/ckeditor5/commit/606a44b1575a5ba6c7be7b0e2c89907d151c2742))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Elements with the `data-cke-ignore-events` attribute will not propagate their events to the CKEditor 5 API. Closes [#4600](https://github.com/ckeditor/ckeditor5/issues/4600). ([commit](https://github.com/ckeditor/ckeditor5/commit/04207f93f00a668bbe031d70ae7230f892428115))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced an automatic model-to-view reconversion by defining the `triggerBy` option for the `elementToElement()` conversion helper. Closes [#7956](https://github.com/ckeditor/ckeditor5/issues/7956). ([commit](https://github.com/ckeditor/ckeditor5/commit/a7c99732fd63008ada4f13c187df552a989291e1))
 * **[html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed)**: Introduced the HTML embed feature. Closes [#8204](https://github.com/ckeditor/ckeditor5/issues/8204). ([commit](https://github.com/ckeditor/ckeditor5/commit/b529537086966ac908a163bf9373d67d43383586))
