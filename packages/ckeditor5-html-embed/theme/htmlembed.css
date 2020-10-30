@@ -8,7 +8,7 @@
 	/* Give the embed some air. */
 	margin: 1em auto;
 	position: relative;
-	clear: both;
+	display: flow-root;
 
 	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
 
