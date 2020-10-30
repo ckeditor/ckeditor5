@@ -183,7 +183,7 @@ for ( const i in icons ) {
 		tooltip: true
 	} );
 
-	button.iconView.fillColor = '#FFDA51';
+	button.iconView.fillColor = 'hsl(47deg 100% 66%)';
 
 	toolbar.items.add( button );
 }
@@ -191,4 +191,7 @@ for ( const i in icons ) {
 toolbar.class = 'ck-editor-toolbar ck-reset_all';
 toolbar.render();
 
-document.body.appendChild( toolbar.element );
+document.querySelector( '#standard' ).appendChild( toolbar.element );
+document.querySelector( '#color' ).appendChild( toolbar.element.cloneNode( true ) );
+document.querySelector( '#inverted' ).appendChild( toolbar.element.cloneNode( true ) );
+document.querySelector( '#zoom' ).appendChild( toolbar.element.cloneNode( true ) );
