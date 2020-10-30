@@ -34,7 +34,7 @@ An element reconversion comes handy for cases where you need to:
 An additional perk of using an element reconversion is that the parts of model tree that hasn't been changed, like paragraph and text inside
 your feature element, will not be reconverted. In other words, their view elements are memoized and re-used inside changed parent.
 
-### Enabling element reconversion
+## Enabling element reconversion
 
 Element reconversion is enabled by setting reconversion triggers in {@link module:engine/conversion/downcasthelpers~
 DowncastHelpers#elementToElement `elementToElement()`} downcast helper.
@@ -50,12 +50,55 @@ Note that, when using `children` configuration option the current implementation
 * will have a "flat" structure
 </info-box>
 
-# Example implementation
+In a simple example of element reconversion configuration demonstrated below:
+
+* The downcast converter for `myElement` creates a `<div>` with `data-owner-id` attribute and set of CSS classes.
+* The value of `data-owner-id` is set from `ownerId` model element's attribute.
+* The second CSS class is constructed off the `type` model element's attribute.
+* The `triggerBy.attributes` defines that element will be converted upon changes of `onwerId` or `type` attributes.
+
+```js
+editor.conversion.for( 'downcast' ).elementToElement( {
+	model: 'myElement',
+	view: ( modelElement, { writer } ) => {
+		return writer.createContainerElement( 'div', {
+			'data-owner-id': modelElement.getAttribute( 'ownerId' ),
+			class: `my-element my-element-${ modelElement.getAttribute( 'type' ) }`
+		} );
+	},
+	triggerBy: {
+		attributes: [ 'ownerId', 'type' ]
+	}
+} )
+```
+
+Before CKEditor version `23.1.0` you would have to define a set of atomic converters for the element and for each attribute:
+
+```js
+editor.conversion.for( 'downcast' )
+		.elementToElement( {
+			model: 'myElement',
+			view: 'div'
+		} )
+		.attributeToAttribute( {
+			model: 'owner-id',
+			view: 'data-owner-id'
+		} )
+		.attributeToAttribute( {
+			model: 'type',
+			view: modelAttributeValue => ( {
+				key: 'class',
+				value: `my-element my-element-${ modelAttributeValue }`
+			} )
+		} );
+```
+
+## Example implementation
 
 An example feature that benefits from using reconversion is one that requires representing a different view structure for various element
 states.
 
-## Demo
+### Demo
 
 Let's take a look at the below enhanced info box might behave:
 
@@ -72,7 +115,6 @@ The above demo assumes that each box:
 A simplified model markup for the info box looks as follows:
 
 ```html
-
 <complexInfoBox infoBoxType="info" infoBoxURL="http://cksource.com">
 	<infoBoxTitle>A title</infoBoxTitle>
 	<infoBoxContent>
@@ -84,7 +126,6 @@ A simplified model markup for the info box looks as follows:
 This will be converted to the below view structure:
 
 ```html
-
 <div class="info-box info-box-info">
 	<div class="info-box-title">A title</div>
 	<div class="info-box-content">
@@ -101,7 +142,7 @@ In the above example you can observe that model attribute `'infoBoxURL'` is conv
 the type attributes is translated to a CSS class. Additionally, UI controls are injected to the view after all other child views of the main
 container. Describing it using atomic converters would introduce convoluted complexity.
 
-## Schema
+### Schema
 
 The info box model structure is represented in the editor's {@link framework/guides/deep-dive/schema schema} as follows:
 
@@ -135,7 +176,7 @@ editor.model.schema.register( 'complexInfoBoxContent', {
 } );
 ```
 
-## Reconversion definition
+### Reconversion definition
 
 To enable element reconversion define for which attributes and children modification the main element will be converted:
 
@@ -156,7 +197,7 @@ The above definition will use `downcastInfoBox()` function to re-create view whe
 * One of `infoBoxType` or `infoBoxURL` has changed.
 * A child `complexInfoBoxContent` is added or removed from the parent `complexInfoBox`.
 
-## Downcast converter details
+### Downcast converter details
 
 The function that creates a complete view for the model element:
 
@@ -172,7 +213,7 @@ const downcastInfoBox = ( modelElement, { writer, consumable, mapper } ) => {
 	const actionsView = writer.createRawElement( 'div', {
 		class: 'info-box-actions',
 		contenteditable: 'false', 			// Prevent editing of the element:
-		'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
+		// 'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
 	}, renderActionsView( editor, modelElement ) ); // See the full code for details.
 
 	writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), actionsView );
@@ -200,74 +241,9 @@ const downcastInfoBox = ( modelElement, { writer, consumable, mapper } ) => {
 };
 ```
 
-As you can observe in the above code this converter takes model element and its direct children and return a complex view structure:
-
-```html
-<div class="info-box info-box-info">
-	<div class="info-box-actions" contenteditable="false" data-cke-ignore-events="true">
-		<!-- simple form elements -->
-	</div>
-	<div class="info-box-title"></div>
-	<div class="info-box-content"></div>
-</div>
-```
-
 By using `mapper.bindElements( child, childView )` for `<infoBoxTitle>` and `<infoBoxContent>` you define which view elements corresponds to which model elements. This allows the editor's conversion to re-use existing view elements for title and content children, so they will not be re-converted without a need.
 
-I think that an image here might be useful. To not loose the idea - it might be something like exchanging layers from current view to result view.
-
-	Example of changing a type:
-
-	From:
-
-	```html
-	<div class="info-box info-box-info">
-		<div class="info-box-actions" contenteditable="false" data-cke-ignore-events="true">
-			<!-- simple form elements -->
-		</div>
-		<div class="info-box-title">A title</div>
-		<div class="info-box-content">
-			<p>A content</p>
-		</div>
-	</div>
-	```
-	During rendering
-	```html
-	<!-- OLD VIEW -->
-	<div class="info-box info-box-info">
-		<div class="info-box-actions" contenteditable="false" data-cke-ignore-events="true">
-			<!-- simple form elements -->
-		</div>
-		<div class="info-box-title">A title</div>
-		<div class="info-box-content">
-			<p>A content</p>
-		</div>
-	</div>
-	<!-- RECONVERTED VIEW -->
-	<div class="info-box info-box-waring"> <!-- CHANGED -->
-		<div class="info-box-actions" contenteditable="false" data-cke-ignore-events="true">
-			<!-- simple form elements -->
-		</div>
-		<div class="info-box-title"></div>
-		<div class="info-box-content"></div>
-	</div>
-	```
-
-	Result:
-
-	```html
-	<div class="info-box info-box-warning">
-		<div class="info-box-actions" contenteditable="false" data-cke-ignore-events="true">
-			<!-- simple form elements -->
-		</div>
-		<div class="info-box-title">A title</div>
-		<div class="info-box-content">
-			<p>A content</p>
-		</div>
-	</div>
-	```
-
-## Upcast conversion
+### Upcast conversion
 
 The upcast conversion uses standard element-to-element converters for box & title and a custom converter for the info box to extract
 metadata from the data.

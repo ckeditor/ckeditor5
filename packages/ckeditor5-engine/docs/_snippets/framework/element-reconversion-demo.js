@@ -24,7 +24,9 @@ const upcastInfoBox = ( viewElement, { writer } ) => {
 	const type = getTypeFromViewElement( viewElement );
 	writer.setAttribute( 'infoBoxType', type, complexInfoBox );
 
-	const urlWrapper = [ ...viewElement.getChildren() ].find( child => child.hasClass( 'info-box-url' ) );
+	const urlWrapper = [ ...viewElement.getChildren() ].find( child => {
+		return child.is( 'element', 'div' ) && child.hasClass( 'info-box-url' );
+	} );
 
 	if ( urlWrapper ) {
 		writer.setAttribute( 'infoBoxURL', urlWrapper.getChild( 0 ).data, complexInfoBox );
