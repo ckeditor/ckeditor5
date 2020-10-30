@@ -3,6 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+.ck.ck-image-insert-form {
+	&:focus {
+		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
+		outline: none;
+	}
+}
+
 .ck.ck-form__row {
 	display: flex;
 	flex-direction: row;

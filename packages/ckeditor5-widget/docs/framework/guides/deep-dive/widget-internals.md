@@ -65,3 +65,16 @@ widgetTypeAroundPlugin.clearForceDisabled( 'MyApplication' );
 ```
 
 Refer to the {@link module:core/plugin~Plugin#clearForceDisabled API documentation} to learn more.
+
+## Exclude DOM events from default handlers
+
+Sometimes it can be useful to prevent processing of events by default handlers, for example using React component inside an `UIElement` in the widget where, by default, widget itself wants to control everything. To make it possible the only thing to do is to add a `data-cke-ignore-events` attribute to an element or to its ancestor and then all events triggered by any of children from that element will be ignored in default handlers.
+
+Let's see it in an short example:
+
+```html
+<div data-cke-ignore-events="true">
+	<button>Click!</button>
+</div>
+```
+In the above template events dispatched from the button, which is placed inside `<div>` containing `data-cke-ignore-events` attribute, will be ignored by default event handlers.

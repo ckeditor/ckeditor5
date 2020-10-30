@@ -294,5 +294,32 @@ describe( 'ImageUploadPanelView', () => {
 
 			expect( view.imageURLInputValue ).to.equal( 'xyz' );
 		} );
+
+		it( 'should trim input value', () => {
+			const form = view.getIntegration( 'insertImageViaUrl' );
+
+			form.fieldView.element.value = '   ';
+			form.fieldView.fire( 'input' );
+
+			expect( view.imageURLInputValue ).to.equal( '' );
+
+			form.fieldView.element.value = '   test   ';
+			form.fieldView.fire( 'input' );
+
+			expect( view.imageURLInputValue ).to.equal( 'test' );
+		} );
+
+		it( 'binds saveButtonView#isEnabled to URL input value', () => {
+			const form = view.getIntegration( 'insertImageViaUrl' );
+			const saveButtonView = view.template.children[ 1 ].children.first;
+
+			expect( saveButtonView.isEnabled ).to.be.false;
+
+			form.fieldView.element.value = 'test';
+			form.fieldView.fire( 'input' );
+
+			expect( view.imageURLInputValue ).to.equal( 'test' );
+			expect( !!saveButtonView.isEnabled ).to.be.true;
+		} );
 	} );
 } );

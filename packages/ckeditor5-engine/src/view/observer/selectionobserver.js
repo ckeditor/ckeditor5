@@ -100,8 +100,8 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		this.listenTo( domDocument, 'selectionchange', () => {
-			this._handleSelectionChange( domDocument );
+		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			this._handleSelectionChange( domEvent, domDocument );
 		} );
 
 		this._documents.add( domDocument );
@@ -123,10 +123,17 @@ export default class SelectionObserver extends Observer {
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when selection stop changing.
 	 *
 	 * @private
+	 * @param {Event} domEvent DOM event.
 	 * @param {Document} domDocument DOM document.
 	 */
-	_handleSelectionChange( domDocument ) {
+	_handleSelectionChange( domEvent, domDocument ) {
 		if ( !this.isEnabled ) {
+			return;
+		}
+
+		const domSelection = domDocument.defaultView.getSelection();
+
+		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
 		}
 
@@ -135,7 +142,6 @@ export default class SelectionObserver extends Observer {
 
 		// If there were mutations then the view will be re-rendered by the mutation observer and selection
 		// will be updated, so selections will equal and event will not be fired, as expected.
-		const domSelection = domDocument.defaultView.getSelection();
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.

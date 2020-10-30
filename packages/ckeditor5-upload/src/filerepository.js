@@ -7,12 +7,10 @@
  * @module upload/filerepository
  */
 
-/* globals console */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -172,7 +170,7 @@ export default class FileRepository extends Plugin {
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
-			console.warn( attachLinkToDocumentation( 'filerepository-no-upload-adapter' ) );
+			logWarning( 'filerepository-no-upload-adapter' );
 
 			return null;
 		}
