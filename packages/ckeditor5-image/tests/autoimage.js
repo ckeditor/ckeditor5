@@ -6,10 +6,9 @@
 /* global setTimeout */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
@@ -29,7 +28,7 @@ describe( 'AutoImage - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, AutoImage, Link, List, Bold, Typing, Image, ImageCaption ]
+				plugins: [ Typing, Paragraph, Link, Image, ImageCaption, AutoImage ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -67,25 +66,25 @@ describe( 'AutoImage - integration', () => {
 
 		it( 'replaces pasted text with image element after 100ms', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png[]</paragraph>'
+				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'can undo auto-embeding', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png[]</paragraph>'
+				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 
 			clock.tick( 100 );
@@ -93,247 +92,245 @@ describe( 'AutoImage - integration', () => {
 			editor.commands.execute( 'undo' );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png[]</paragraph>'
+				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 		} );
 
 		it( 'works for a full URL (https + "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://www.ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://www.example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://www.ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://www.example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for a full URL (https without "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for a full URL (http + "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://www.ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://www.example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://www.ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://www.example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
-		it( 'works for a full URL (http without "wwww" sub-domain)', () => {
+		it( 'works for a full URL (http without "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for a URL without protocol (with "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'www.ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'www.example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="www.ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="www.example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for a URL without protocol (without "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for URL that was pasted as a link', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, '<a href="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png">' +
-				'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png</a>' );
+			pasteHtml( editor, '<a href="http://example.com/image.png">' +
+				'http://example.com/image.png</a>' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for URL that contains some inline styles', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, '<b>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png</b>' );
+			pasteHtml( editor, '<b>http://example.com/image.png</b>' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for not collapsed selection inside single element', () => {
 			setData( editor.model, '<paragraph>[Foo]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]'
 			);
 		} );
 
 		it( 'works for not collapsed selection over a few elements', () => {
 			setData( editor.model, '<paragraph>Fo[o</paragraph><paragraph>Ba]r</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>Fo</paragraph>' +
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]' +
+				'[<image src="http://example.com/image.png"><caption></caption></image>]' +
 				'<paragraph>r</paragraph>'
 			);
 		} );
 
 		it( 'inserts image in-place (collapsed selection)', () => {
 			setData( editor.model, '<paragraph>Foo []Bar</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>Foo </paragraph>' +
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]' +
+				'[<image src="http://example.com/image.png"><caption></caption></image>]' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
 		it( 'inserts image in-place (non-collapsed selection)', () => {
 			setData( editor.model, '<paragraph>Foo [Bar] Baz</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>Foo </paragraph>' +
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]' +
+				'[<image src="http://example.com/image.png"><caption></caption></image>]' +
 				'<paragraph> Baz</paragraph>'
 			);
 		} );
 
 		it( 'does nothing if a URL is invalid', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com' );
+			pasteHtml( editor, 'https://example.com' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com[]</paragraph>'
+				'<paragraph>https://example.com[]</paragraph>'
 			);
 		} );
 
 		it( 'does nothing if pasted two links as text', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png ' +
-				'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png ' +
+				'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png ' +
-				'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png[]</paragraph>'
+				'<paragraph>http://example.com/image.png ' +
+				'http://example.com/image.png[]</paragraph>'
 			);
 		} );
 
 		it( 'does nothing if pasted text contains a valid URL', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'Foo bar https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png bar foo.' );
+			pasteHtml( editor, 'Foo bar http://example.com/image.png bar foo.' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>Foo bar https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png bar foo.[]</paragraph>'
+				'<paragraph>Foo bar http://example.com/image.png bar foo.[]</paragraph>'
 			);
 		} );
 
 		it( 'does nothing if pasted more than single node', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor,
-				'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png ' +
-				'<a href="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png">' +
-				'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png</a>'
+				'http://example.com/image.png ' +
+				'<a href="http://example.com/image.png">' +
+				'http://example.com/image.png</a>'
 			);
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png ' +
-				'<$text linkHref="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png">' +
-				'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png</$text>' +
+				'<paragraph>http://example.com/image.png ' +
+				'<$text linkHref="http://example.com/image.png">' +
+				'http://example.com/image.png</$text>' +
 				'</paragraph>'
 			);
 		} );
 
 		it( 'does nothing if pasted a paragraph with the url', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, '<p>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png</p>' );
+			pasteHtml( editor, '<p>http://example.com/image.png</p>' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png[]</paragraph>'
+				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 		} );
 
 		it( 'does nothing if pasted a block of content that looks like a URL', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, '<ul><li>https://</li><li>youtube.com/watch?</li></ul><p>v=H08tGjXNHO4</p>' );
+			pasteHtml( editor, '<p>https://</p><p>example.com/image</p><p>.png</p>' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">https://</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">youtube.com/watch?</listItem>' +
-				'<paragraph>v=H08tGjXNHO4[]</paragraph>'
+				'<paragraph>https://</paragraph><paragraph>example.com/image</paragraph><paragraph>.png[]</paragraph>'
 			);
 		} );
 
 		it( 'does nothing if a URL is invalid (space inside URL)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg&amp;param=foo bar' );
+			pasteHtml( editor, 'https://example.com/im age.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg&param=foo bar[]</paragraph>'
+				'<paragraph>https://example.com/im age.png[]</paragraph>'
 			);
 		} );
 
 		// #47
 		it( 'does not transform a valid URL into a image if the element cannot be placed in the current position', () => {
 			setData( editor.model, '<image src="/assets/sample.png"><caption>Foo.[]</caption></image>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<image src="/assets/sample.png"><caption>' +
-				'Foo.https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png[]' +
+				'Foo.http://example.com/image.png[]' +
 				'</caption></image>'
 			);
 		} );
@@ -341,15 +338,15 @@ describe( 'AutoImage - integration', () => {
 		it( 'replaces a URL in image if pasted a link when other image element was selected', () => {
 			setData(
 				editor.model,
-				'[<image src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg"><caption></caption></image>]'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]'
 			);
 
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image2.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com/image2.png"><caption></caption></image>]'
 			);
 		} );
 
@@ -357,29 +354,29 @@ describe( 'AutoImage - integration', () => {
 			setData(
 				editor.model,
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
-				'[<image src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg"><caption></caption></image>]' +
-				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
+				'[<image src="http://example.com/image.png"><caption></caption></image>]' +
+				'<paragraph><$text>Bar</$text>.</paragraph>'
 			);
 
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image2.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
-				'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]' +
-				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
+				'[<image src="http://example.com/image2.png"><caption></caption></image>]' +
+				'<paragraph>Bar.</paragraph>'
 			);
 		} );
 
 		it( 'works for URL with %-symbols', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header%20Fckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com%20Fimage.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="https://ckeditor.com/assets/images/header%20Fckeditor-5-d7348daebf.png"><caption></caption></image>]'
+				'[<image src="http://example.com%20Fimage.png"><caption></caption></image>]'
 			);
 		} );
 	} );
@@ -389,10 +386,10 @@ describe( 'AutoImage - integration', () => {
 
 		it( 'undo breaks the auto-image feature (undo was done before auto-image)', done => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png[]</paragraph>'
+				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 
 			setTimeout( () => {
@@ -419,7 +416,7 @@ describe( 'AutoImage - integration', () => {
 			};
 
 			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 			simulateTyping( 'Foo. Bar.' );
 
 			setTimeout( () => {
@@ -434,7 +431,7 @@ describe( 'AutoImage - integration', () => {
 		it( 'typing before pasted link during collaboration should not blow up', done => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			for ( let i = 0; i < 10; ++i ) {
 				const rootEl = editor.model.document.getRoot();
@@ -448,7 +445,7 @@ describe( 'AutoImage - integration', () => {
 
 			setTimeout( () => {
 				expect( getData( editor.model ) ).to.equal(
-					'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]' +
+					'[<image src="http://example.com/image.png"><caption></caption></image>]' +
 					'<paragraph>ABCDEFGHIJ</paragraph>'
 				);
 
@@ -459,7 +456,7 @@ describe( 'AutoImage - integration', () => {
 		it( 'typing after pasted link during collaboration should not blow up', done => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			for ( let i = 0; i < 10; ++i ) {
 				setTimeout( () => {
@@ -471,7 +468,7 @@ describe( 'AutoImage - integration', () => {
 
 			setTimeout( () => {
 				expect( getData( editor.model ) ).to.equal(
-					'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]' +
+					'[<image src="http://example.com/image.png"><caption></caption></image>]' +
 					'<paragraph>ABCDEFGHIJ</paragraph>'
 				);
 
@@ -482,7 +479,7 @@ describe( 'AutoImage - integration', () => {
 		it( 'should insert the image element even if parent element where the URL was pasted has been deleted', done => {
 			setData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
 
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			editor.model.enqueueChange( 'transparent', writer => {
 				writer.remove( writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ) );
@@ -491,7 +488,7 @@ describe( 'AutoImage - integration', () => {
 			setTimeout( () => {
 				expect( getData( editor.model ) ).to.equal(
 					'<paragraph>Foo.</paragraph>' +
-					'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+					'[<image src="http://example.com/image.png"><caption></caption></image>]'
 				);
 
 				done();
@@ -501,7 +498,7 @@ describe( 'AutoImage - integration', () => {
 		it( 'should insert the image element even if new element appeared above the pasted URL', done => {
 			setData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
 
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			editor.model.enqueueChange( 'transparent', writer => {
 				const paragraph = writer.createElement( 'paragraph' );
@@ -522,7 +519,7 @@ describe( 'AutoImage - integration', () => {
 					'<paragraph>Foo.</paragraph>' +
 					'<paragraph>ABCDEFGHIJ</paragraph>' +
 					'<paragraph>Bar.</paragraph>' +
-					'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]'
+					'[<image src="http://example.com/image.png"><caption></caption></image>]'
 				);
 
 				done();
@@ -532,7 +529,7 @@ describe( 'AutoImage - integration', () => {
 		it( 'should insert the image element even if new element appeared below the pasted URL', done => {
 			setData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
 
-			pasteHtml( editor, 'https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png' );
+			pasteHtml( editor, 'http://example.com/image.png' );
 
 			editor.model.enqueueChange( 'transparent', writer => {
 				const paragraph = writer.createElement( 'paragraph' );
@@ -552,7 +549,7 @@ describe( 'AutoImage - integration', () => {
 				expect( getData( editor.model ) ).to.equal(
 					'<paragraph>Foo.</paragraph>' +
 					'<paragraph>Bar.</paragraph>' +
-					'[<image src="https://ckeditor.com/assets/images/header/ckeditor-5-d7348daebf.png"><caption></caption></image>]' +
+					'[<image src="http://example.com/image.png"><caption></caption></image>]' +
 					'<paragraph>ABCDEFGHIJ</paragraph>'
 				);
 
@@ -563,7 +560,7 @@ describe( 'AutoImage - integration', () => {
 
 	it( 'should detach LiveRange', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Image, AutoImage, Link, List, Bold, Typing, Image, ImageCaption, Table ]
+			plugins: [ Typing, Paragraph, Link, Image, ImageCaption, Table, AutoImage ]
 		} );
 
 		setData(
