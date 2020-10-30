@@ -12,8 +12,7 @@ since: 24.0.0
 	The reconversion API is a preliminary feature and may not be production ready.
 </info-box>
 
-This guide introduces _reconversion_ concepts for downcast (model-to-view) {@link framework/guides/architecture/editing-engine#conversion
-conversion} for elements.
+This guide introduces _reconversion_ concepts for downcast (model-to-view) {@link framework/guides/architecture/editing-engine#conversion conversion} for elements.
 
 To better understand concepts used in this guide we advise that you are familiar with other conversion guides, especially:
 
@@ -22,22 +21,18 @@ To better understand concepts used in this guide we advise that you are familiar
 
 ## Atomic converters vs element reconversion
 
-Most editor features are written using atomic converters for every element or attribute. This approach allows great level of customization
-and separation of concerns. For example, table features can be added or removed without the need to change the main table converter.
-However, this approach in many cases is overly complicated, especially if the feature you work doesn't need to be extensible.
+Most editor features are written using atomic converters for every element or attribute. This approach allows great level of customization and separation of concerns. For example, table features can be added or removed without the need to change the main table converter. However, this approach in many cases is overly complicated, especially if the feature you work doesn't need to be extensible.
 
 An element reconversion comes handy for cases where you need to:
 
 * convert a relatively simple model to a complex view structure
 * writing a one, functional converter is easier to grasp in your project
 
-An additional perk of using an element reconversion is that the parts of model tree that hasn't been changed, like paragraph and text inside
-your feature element, will not be reconverted. In other words, their view elements are memoized and re-used inside changed parent.
+An additional perk of using an element reconversion is that the parts of model tree that hasn't been changed, like paragraph and text inside your feature element, will not be reconverted. In other words, their view elements are memoized and re-used inside changed parent.
 
 ## Enabling element reconversion
 
-Element reconversion is enabled by setting reconversion triggers in {@link module:engine/conversion/downcasthelpers~
-DowncastHelpers#elementToElement `elementToElement()`} downcast helper.
+Element reconversion is enabled by setting reconversion triggers in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} downcast helper.
 
 The model element can be reconverted when:
 
@@ -95,8 +90,7 @@ editor.conversion.for( 'downcast' )
 
 ## Example implementation
 
-An example feature that benefits from using reconversion is one that requires representing a different view structure for various element
-states.
+An example feature that benefits from using reconversion is one that requires representing a different view structure for various element states.
 
 ### Demo
 
@@ -138,9 +132,7 @@ This will be converted to the below view structure:
 </aside>
 ```
 
-In the above example you can observe that model attribute `'cardURL'` is converted as view element inside the main view container while
-the type attributes is translated to a CSS class. Additionally, UI controls are injected to the view after all other child views of the main
-container. Describing it using atomic converters would introduce convoluted complexity.
+In the above example you can observe that model attribute `'cardURL'` is converted as view element inside the main view container while the type attributes is translated to a CSS class. Additionally, UI controls are injected to the view after all other child views of the main container. Describing it using atomic converters would introduce convoluted complexity.
 
 ### Schema
 
@@ -260,8 +252,7 @@ By using `mapper.bindElements( child, childView )` for `<sideCardTitle>` and `<s
 
 ### Upcast conversion
 
-The upcast conversion uses standard element-to-element converters for box & title and a custom converter for the side card to extract
-metadata from the data.
+The upcast conversion uses standard element-to-element converters for box & title and a custom converter for the side card to extract metadata from the data.
 
 ```js
 editor.conversion.for( 'upcast' )
