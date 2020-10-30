@@ -333,6 +333,43 @@ describe( 'ListStyleEditing', () => {
 					'<paragraph>Paragraph.</paragraph>'
 				);
 			} );
+
+			// See: #8262.
+			describe( 'list conversion with surrounding text nodes', () => {
+				let editor;
+
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ ListStyleEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it( 'should convert a list if raw text is before the list', () => {
+					editor.setData( 'Foo<ul><li>Foo</li></ul>' );
+
+					expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul>' );
+				} );
+
+				it( 'should convert a list if raw text is after the list', () => {
+					editor.setData( '<ul><li>Foo</li></ul>Foo' );
+
+					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul><p>Foo</p>' );
+				} );
+
+				it( 'should convert a list if it is surrender by two text nodes', () => {
+					editor.setData( 'Foo<ul><li>Foo</li></ul>Foo' );
+
+					expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul><p>Foo</p>' );
+				} );
+			} );
 		} );
 	} );
 

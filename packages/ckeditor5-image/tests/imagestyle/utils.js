@@ -109,7 +109,8 @@ describe( 'ImageStyle utils', () => {
 				sinon.assert.calledOnce( console.warn );
 				sinon.assert.calledWithExactly( console.warn,
 					sinon.match( /^image-style-not-found/ ),
-					{ name: 'foo' }
+					{ name: 'foo' },
+					sinon.match.string // Link to the documentation
 				);
 			} );
 		} );

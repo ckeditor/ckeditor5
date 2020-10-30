@@ -178,7 +178,8 @@ describe( 'FileRepository', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly(
 				consoleWarnStub,
-				sinon.match( /^filerepository-no-upload-adapter/ )
+				sinon.match( /^filerepository-no-upload-adapter/ ),
+				sinon.match.string // Link to the documentation
 			);
 		} );
 

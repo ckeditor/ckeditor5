@@ -66,40 +66,40 @@ msgstr "Barre d'outils des images"
 
 msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"
-msgstr ""
+msgstr "Redimensionner l'image"
 
 msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
-msgstr ""
+msgstr "Redimensionner à %0"
 
 msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
-msgstr ""
+msgstr "Appliquer les dimensions d'origine"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr ""
+msgstr "Taille originale"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "Liste des tailles d'images"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "Insérer"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
-msgstr ""
+msgstr "Modifier"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr ""
+msgstr "Insérer une image à partir d'une URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Modifier l'URL de l'image"
 
 msgctxt "The content of the tip below the Insert image via URL form."
 msgid "Paste the image source URL."
-msgstr ""
+msgstr "Collez l'URL de l'image à insérer"

@@ -7,9 +7,7 @@
  * @module core/plugincollection
  */
 
-/* globals console */
-
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { logError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -207,7 +205,7 @@ export default class PluginCollection {
 			const errorId = 'plugincollection-plugin-not-found';
 
 			// Log the error, so it's more visible on the console. Hopefully, for better DX.
-			console.error( attachLinkToDocumentation( errorId ), { plugins: missingPlugins } );
+			logError( errorId, { plugins: missingPlugins } );
 
 			return Promise.reject( new CKEditorError( errorId, context, { plugins: missingPlugins } ) );
 		}
@@ -249,7 +247,7 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					console.error( attachLinkToDocumentation( 'plugincollection-load' ), { plugin: PluginConstructor } );
+					logError( 'plugincollection-load', { plugin: PluginConstructor } );
 
 					throw err;
 				} );

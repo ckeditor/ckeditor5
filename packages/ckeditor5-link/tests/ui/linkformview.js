@@ -39,6 +39,7 @@ describe( 'LinkFormView', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-link-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
