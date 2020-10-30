@@ -262,7 +262,7 @@ mix( WidgetResize, ObservableMixin );
  *	viewElement: widget,
  *
  *	onCommit( newValue ) {
- *		editor.execute( 'imageResize', { width: newValue } );
+ *		editor.execute( 'resizeImage', { width: newValue } );
  *	}
  * };
  * ```

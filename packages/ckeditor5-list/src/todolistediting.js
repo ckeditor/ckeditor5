@@ -9,7 +9,7 @@
 
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
-import TodoListCheckCommand from './todolistcheckcommand';
+import CheckTodoListCommand from './todolistcheckcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -30,7 +30,8 @@ import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src
  * it with the commands:
  *
  * - `'todoList'`,
- * - `'todoListCheck'`.
+ * - `'checkTodoList'`,
+ * - `'todoListCheck'` as an alias for `checkTodoList` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -70,9 +71,14 @@ export default class TodoListEditing extends Plugin {
 			}
 		} );
 
-		// Register commands.
+		// Register `todoList` command.
 		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
-		editor.commands.add( 'todoListCheck', new TodoListCheckCommand( editor ) );
+
+		const checkTodoListCommand = new CheckTodoListCommand( editor );
+
+		// Register `checkTodoList` command and add `todoListCheck` command as an alias for backward compatibility.
+		editor.commands.add( 'checkTodoList', checkTodoListCommand );
+		editor.commands.add( 'todoListCheck', checkTodoListCommand );
 
 		// Define converters.
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
@@ -108,7 +114,7 @@ export default class TodoListEditing extends Plugin {
 		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
-		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
+		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'checkTodoList' ) );
 
 		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
 		const listItemsToFix = new Set();
@@ -163,7 +169,7 @@ export default class TodoListEditing extends Plugin {
 
 		model.change( writer => {
 			writer.setSelection( listItem, 'end' );
-			editor.execute( 'todoListCheck' );
+			editor.execute( 'checkTodoList' );
 			writer.setSelection( previousSelectionRanges );
 		} );
 	}

@@ -164,7 +164,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Fixed incorrect `ImageUploadButton` and `ImageUploadCommand` binding. Closes [#77](https://github.com/ckeditor/ckeditor5-upload/issues/77). Closes https://github.com/ckeditor/ckeditor5-ui/issues/357. ([d231ea6](https://github.com/ckeditor/ckeditor5-upload/commit/d231ea6))
+* Fixed incorrect `UploadImageButton` and `UploadImageCommand` binding. Closes [#77](https://github.com/ckeditor/ckeditor5-upload/issues/77). Closes https://github.com/ckeditor/ckeditor5-ui/issues/357. ([d231ea6](https://github.com/ckeditor/ckeditor5-upload/commit/d231ea6))
 
 ### Other changes
 
@@ -178,7 +178,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed `ImageUpload` plugin. It can be no found in ckeditor5-image repository.
 * Removed `ImageUploadEngine` plugin. It can be no found in ckeditor5-image repository.
 * Removed `ImageUploadProgress` plugin. It can be no found in ckeditor5-image repository.
-* Removed `ImageUploadButton` plugin. It can be no found in ckeditor5-image repository.
+* Removed `UploadImageButton` plugin. It can be no found in ckeditor5-image repository.
 * Renamed `FileRepository#createAdapter()` to `FileRepository#createUploadAdapter()`.
 * Renamed `filerepository-no-adapter` error to `filerepository-no-upload-adapter`.
 
@@ -219,7 +219,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * [Safari, Edge] The image upload (button) feature will not throw an error anymore when trying to access picked files. The feature should not use `for...of` loop on native `FileList` because Safari and Edge do not support `Symbol.iterator` for it yet. Closes [#35](https://github.com/ckeditor/ckeditor5-upload/issues/35). ([f4efd9b](https://github.com/ckeditor/ckeditor5-upload/commit/f4efd9b))
 * An image dropped on another image will not redirect the browser to the file's path. Closes [#32](https://github.com/ckeditor/ckeditor5-upload/issues/32). ([4f533be](https://github.com/ckeditor/ckeditor5-upload/commit/4f533be))
-* Bound `ImageUploadButton#isEnabled` to `ImageUploadCommand#isEnabled`. Closes [#43](https://github.com/ckeditor/ckeditor5-upload/issues/43). ([ba6de66](https://github.com/ckeditor/ckeditor5-upload/commit/ba6de66))
+* Bound `UploadImageButton#isEnabled` to `UploadImageCommand#isEnabled`. Closes [#43](https://github.com/ckeditor/ckeditor5-upload/issues/43). ([ba6de66](https://github.com/ckeditor/ckeditor5-upload/commit/ba6de66))
 * Fixed two issues related to dropping images. First, when dropping a file into an empty paragraph, that paragraph should be replaced with that image. Second, drop position should be read correctly when the editor is focused upon drop. Closes [#42](https://github.com/ckeditor/ckeditor5-upload/issues/42). Closes [#29](https://github.com/ckeditor/ckeditor5-upload/issues/29). ([fec452d](https://github.com/ckeditor/ckeditor5-upload/commit/fec452d))
 * Image will be inserted after the block if the selection is placed at the block's end. Closes [#7](https://github.com/ckeditor/ckeditor5-upload/issues/7). ([70742f9](https://github.com/ckeditor/ckeditor5-upload/commit/70742f9))
 * When image upload is aborted, now the "image placeholder" element is permanently removed so it is not reinserted on undo. Closes [#38](https://github.com/ckeditor/ckeditor5-upload/issues/38). ([aff6382](https://github.com/ckeditor/ckeditor5-upload/commit/aff6382))
@@ -227,7 +227,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Features
 
 * Responsive images support in image upload. Closes [#34](https://github.com/ckeditor/ckeditor5-upload/issues/34). ([9a022a2](https://github.com/ckeditor/ckeditor5-upload/commit/9a022a2))
-* The `ImageUploadCommand` now accepts `insertAt` position which allows customizing where the image will be inserted. Closes [#45](https://github.com/ckeditor/ckeditor5-upload/issues/45). ([b90c8d7](https://github.com/ckeditor/ckeditor5-upload/commit/b90c8d7))
+* The `UploadImageCommand` now accepts `insertAt` position which allows customizing where the image will be inserted. Closes [#45](https://github.com/ckeditor/ckeditor5-upload/issues/45). ([b90c8d7](https://github.com/ckeditor/ckeditor5-upload/commit/b90c8d7))
 
 ### Other changes
 

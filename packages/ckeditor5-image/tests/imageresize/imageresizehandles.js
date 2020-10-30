@@ -77,7 +77,7 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		it( 'uses the command on commit', async () => {
-			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
+			const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
 
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -98,27 +98,27 @@ describe( 'ImageResizeHandles', () => {
 
 			let isEnabled = false;
 
-			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+			editor.commands.get( 'resizeImage' ).on( 'set:isEnabled', evt => {
 				evt.return = isEnabled;
 				evt.stop();
 			}, { priority: 'highest' } );
 
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 			expect( resizer.isEnabled ).to.be.false;
 
 			isEnabled = true;
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 			expect( resizer.isEnabled ).to.be.true;
 		} );
 
 		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
 			setData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+			editor.commands.get( 'resizeImage' ).on( 'set:isEnabled', evt => {
 				evt.return = false;
 				evt.stop();
 			}, { priority: 'highest' } );
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 
 			editor.model.change( writer => {
 				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );

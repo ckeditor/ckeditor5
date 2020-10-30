@@ -32,7 +32,7 @@ ClassicEditor
 				'horizontalLine',
 				'blockQuote',
 				'link',
-				'imageUpload',
+				'uploadImage',
 				'mediaEmbed',
 				'insertTable',
 				'|',

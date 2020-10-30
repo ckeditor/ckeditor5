@@ -401,7 +401,7 @@ MultirootEditor
 	}, {
 		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
 			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'imageUpload', 'blockQuote',
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',
 			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full',

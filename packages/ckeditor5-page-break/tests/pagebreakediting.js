@@ -46,7 +46,7 @@ describe( 'PageBreakEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'pageBreak' ) ).to.be.false;
 	} );
 
-	it( 'should register imageInsert command', () => {
+	it( 'should register pageBreak command', () => {
 		expect( editor.commands.get( 'pageBreak' ) ).to.be.instanceOf( PageBreakCommand );
 	} );
 

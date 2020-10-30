@@ -26,7 +26,7 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: In order to use the "insert image via URL" feature you now need to load the `ImageInsert` plugin and use the `imageInsert` button instead of the `imageUpload` button that implemented this functionality previously.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: In order to use the "insert image via URL" feature you now need to load the `ImageInsert` plugin and use the `insertImage` button instead of the `uploadImage` button that implemented this functionality previously.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -57,7 +57,7 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 ### Other changes
 
 * **[cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core)**: Change the token refreshing mechanism to depend on the token expiration time. ([commit](https://github.com/ckeditor/ckeditor5/commit/501490a5729c413ee00311fe3c9a965fab2bb2ad))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `config.image.upload.panel.items` option does not need to be set anymore in order to show the "insert image via URL form". It is enough to load the new `ImageInsert` plugin and use the new `imageInsert` button. See [#8034](https://github.com/ckeditor/ckeditor5/issues/8034). ([commit](https://github.com/ckeditor/ckeditor5/commit/48a9e943122e4cdd0e2647f03ebc7b17c402710e))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `config.image.upload.panel.items` option does not need to be set anymore in order to show the "insert image via URL form". It is enough to load the new `ImageInsert` plugin and use the new `insertImage` button. See [#8034](https://github.com/ckeditor/ckeditor5/issues/8034). ([commit](https://github.com/ckeditor/ckeditor5/commit/48a9e943122e4cdd0e2647f03ebc7b17c402710e))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced `ImageInsert` as a standalone plugin that contains the `ImageUpload` functionality. Closes [#7890](https://github.com/ckeditor/ckeditor5/issues/7890). ([commit](https://github.com/ckeditor/ckeditor5/commit/4671ed10a4af4c507abd594414771b714ff31cf7))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageUploadPanelView` form label should change depending on whether the image is selected or not. Closes [#7878](https://github.com/ckeditor/ckeditor5/issues/7878). ([commit](https://github.com/ckeditor/ckeditor5/commit/288fb97e00181a130dd2833d6e3aa74bdab5b7cc))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The link plugin now comes with the autolink feature enabled by default. Closes [#7682](https://github.com/ckeditor/ckeditor5/issues/7682). ([commit](https://github.com/ckeditor/ckeditor5/commit/c9533f1752057fd833998a356282f8a625f4e39c))

@@ -18,7 +18,8 @@ import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
  *
  * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature} documentation.
  *
- * Adds the `'imageUpload'` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ * Adds the `'uploadImage'` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}
+ * and also the `imageUpload` button as an alias for backward compatibility.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,11 +37,9 @@ export default class ImageUploadUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-
-		// Setup `imageUpload` button.
-		editor.ui.componentFactory.add( 'imageUpload', locale => {
+		const componentCreator = locale => {
 			const view = new FileDialogButtonView( locale );
-			const command = editor.commands.get( 'imageUpload' );
+			const command = editor.commands.get( 'uploadImage' );
 			const imageTypes = editor.config.get( 'image.upload.types' );
 			const imageTypesRegExp = createImageTypeRegExp( imageTypes );
 
@@ -61,11 +60,15 @@ export default class ImageUploadUI extends Plugin {
 				const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
 
 				if ( imagesToUpload.length ) {
-					editor.execute( 'imageUpload', { file: imagesToUpload } );
+					editor.execute( 'uploadImage', { file: imagesToUpload } );
 				}
 			} );
 
 			return view;
-		} );
+		};
+
+		// Setup `uploadImage` button and add `imageUpload` button as an alias for backward compatibility.
+		editor.ui.componentFactory.add( 'uploadImage', componentCreator );
+		editor.ui.componentFactory.add( 'imageUpload', componentCreator );
 	}
 }

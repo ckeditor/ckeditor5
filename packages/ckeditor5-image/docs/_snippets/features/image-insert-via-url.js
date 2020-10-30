@@ -9,7 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 const toolbarItems = [ ...ClassicEditor.defaultConfig.toolbar.items ];
 
-toolbarItems.splice( toolbarItems.indexOf( 'imageUpload' ), 1, 'imageInsert' );
+toolbarItems.splice( toolbarItems.indexOf( 'uploadImage' ), 1, 'insertImage' );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-insert-via-url' ), {

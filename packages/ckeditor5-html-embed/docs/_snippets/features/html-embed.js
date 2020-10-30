@@ -69,7 +69,7 @@ async function reloadEditor( config = {} ) {
 				'|',
 				'blockQuote',
 				'link',
-				'imageUpload',
+				'uploadImage',
 				'mediaEmbed',
 				'insertTable',
 				'htmlEmbed',

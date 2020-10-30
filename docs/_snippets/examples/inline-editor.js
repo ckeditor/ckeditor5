@@ -38,17 +38,17 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		config.image = {
 			resizeOptions: [
 				{
-					name: 'imageResize:original',
+					name: 'resizeImage:original',
 					label: 'Original',
 					value: null
 				},
 				{
-					name: 'imageResize:50',
+					name: 'resizeImage:50',
 					label: '50%',
 					value: '50'
 				},
 				{
-					name: 'imageResize:75',
+					name: 'resizeImage:75',
 					label: '75%',
 					value: '75'
 				}
@@ -59,7 +59,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'imageStyle:full',
 				'imageStyle:alignRight',
 				'|',
-				'imageResize',
+				'resizeImage',
 				'|',
 				'imageTextAlternative'
 			]

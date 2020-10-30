@@ -32,7 +32,7 @@ ClassicEditor
 				'pageBreak',
 				'blockQuote',
 				'link',
-				'imageUpload',
+				'uploadImage',
 				'mediaEmbed',
 				'insertTable',
 				'|',

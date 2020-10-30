@@ -46,7 +46,7 @@ describe( 'ImageInsertUI', () => {
 			return ClassicEditor
 				.create( editorElement, {
 					plugins: [ Paragraph, Image, ImageInsert, ImageInsertUI, FileRepository, UploadAdapterPluginMock, Clipboard ],
-					toolbar: [ 'imageInsert' ],
+					toolbar: [ 'insertImage' ],
 					image: {
 						insert: {
 							integrations: [
@@ -72,10 +72,17 @@ describe( 'ImageInsertUI', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should register the "imageInsert" dropdown', () => {
-			const button = editor.ui.componentFactory.create( 'imageInsert' );
+		it( 'should register the "insertImage" dropdown', () => {
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
-			expect( button ).to.be.instanceOf( DropdownView );
+			expect( dropdown ).to.be.instanceOf( DropdownView );
+		} );
+
+		it( 'should register "imageInsert" dropdown as an alias for the "insertImage" dropdown', () => {
+			const dropdownCreator = editor.ui.componentFactory._components.get( 'insertImage'.toLowerCase() );
+			const dropdownAliasCreator = editor.ui.componentFactory._components.get( 'imageInsert'.toLowerCase() );
+
+			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
 		} );
 
 		it( 'should not insert panel view children until dropdown is not open for the first time', () => {
@@ -89,7 +96,7 @@ describe( 'ImageInsertUI', () => {
 
 		describe( 'dropdown action button', () => {
 			it( 'should be an instance of FileDialogButtonView', () => {
-				const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
+				const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
 				expect( dropdown.buttonView.actionView ).to.be.instanceOf( FileDialogButtonView );
 			} );
@@ -209,7 +216,7 @@ describe( 'ImageInsertUI', () => {
 
 		it( 'should remove all attributes from model except "src" when updating the image source URL', () => {
 			const viewDocument = editor.editing.view.document;
-			const commandSpy = sinon.spy( editor.commands.get( 'imageInsert' ), 'execute' );
+			const commandSpy = sinon.spy( editor.commands.get( 'insertImage' ), 'execute' );
 			const submitSpy = sinon.spy();
 
 			dropdown.buttonView.fire( 'open' );
@@ -246,7 +253,7 @@ describe( 'ImageInsertUI', () => {
 
 		describe( 'events', () => {
 			it( 'should emit "submit" event when clicking on submit button', () => {
-				const commandSpy = sinon.spy( editor.commands.get( 'imageInsert' ), 'execute' );
+				const commandSpy = sinon.spy( editor.commands.get( 'insertImage' ), 'execute' );
 				const submitSpy = sinon.spy();
 
 				dropdown.buttonView.fire( 'open' );
@@ -263,7 +270,7 @@ describe( 'ImageInsertUI', () => {
 			} );
 
 			it( 'should emit "cancel" event when clicking on cancel button', () => {
-				const commandSpy = sinon.spy( editor.commands.get( 'imageInsert' ), 'execute' );
+				const commandSpy = sinon.spy( editor.commands.get( 'insertImage' ), 'execute' );
 				const cancelSpy = sinon.spy();
 
 				dropdown.buttonView.fire( 'open' );
@@ -317,7 +324,7 @@ describe( 'ImageInsertUI', () => {
 					}
 				} );
 
-			const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
 			dropdown.buttonView.fire( 'open' );
 

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imageresize/imageresizecommand
+ * @module image/imageresize/resizeimagecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -15,7 +15,7 @@ import { isImage } from '../image/utils';
  *
  * @extends module:core/command~Command
  */
-export default class ImageResizeCommand extends Command {
+export default class ResizeImageCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -38,10 +38,10 @@ export default class ImageResizeCommand extends Command {
 	 * Executes the command.
 	 *
 	 *		// Sets the width to 50%:
-	 *		editor.execute( 'imageResize', { width: '50%' } );
+	 *		editor.execute( 'resizeImage', { width: '50%' } );
 	 *
 	 *		// Removes the width attribute:
-	 *		editor.execute( 'imageResize', { width: null } );
+	 *		editor.execute( 'resizeImage', { width: null } );
 	 *
 	 * @param {Object} options
 	 * @param {String|null} options.width The new width of the image.

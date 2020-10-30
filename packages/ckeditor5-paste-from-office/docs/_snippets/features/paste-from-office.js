@@ -32,7 +32,7 @@ ClassicEditor
 				'outdent',
 				'|',
 				'link',
-				'imageUpload',
+				'uploadImage',
 				'insertTable',
 				'horizontalLine',
 				'|',

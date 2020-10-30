@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/todolistcheckedcommand
+ * @module list/checktodolistcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -12,14 +12,14 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 const attributeKey = 'todoListChecked';
 
 /**
- * The to-do check command.
+ * The check to-do command.
  *
  * The command is registered by the {@link module:list/todolistediting~TodoListEditing} as
- * the `'todoListCheck'` editor command.
+ * the `'checkTodoList'` editor command and it is also available via aliased `todoListCheck` name.
  *
  * @extends module:core/command~Command
  */
-export default class TodoListCheckCommand extends Command {
+export default class CheckTodoListCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

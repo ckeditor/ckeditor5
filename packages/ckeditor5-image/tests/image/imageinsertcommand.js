@@ -5,13 +5,13 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
-import ImageInsertCommand from '../../src/image/imageinsertcommand';
+import InsertImageCommand from '../../src/image/imageinsertcommand';
 import Image from '../../src/image/imageediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'ImageInsertCommand', () => {
+describe( 'InsertImageCommand', () => {
 	let editor, command, model;
 
 	beforeEach( () => {
@@ -23,7 +23,7 @@ describe( 'ImageInsertCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new ImageInsertCommand( editor );
+				command = new InsertImageCommand( editor );
 
 				const schema = model.schema;
 				schema.extend( 'image', { allowAttributes: 'uploadId' } );

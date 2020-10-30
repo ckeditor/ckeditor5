@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ImageResizeCommand from '../../src/imageresize/imageresizecommand';
+import ResizeImageCommand from '../../src/imageresize/imageresizecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageStyleCommand', () => {
@@ -14,7 +14,7 @@ describe( 'ImageStyleCommand', () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				model = newEditor.model;
-				command = new ImageResizeCommand( newEditor );
+				command = new ResizeImageCommand( newEditor );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 

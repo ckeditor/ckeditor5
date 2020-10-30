@@ -28,19 +28,19 @@ describe( 'ImageResizeButtons', () => {
 	let plugin, command, editor, editorElement;
 
 	const resizeOptions = [ {
-		name: 'imageResize:original',
+		name: 'resizeImage:original',
 		value: null
 	},
 	{
-		name: 'imageResize:25',
+		name: 'resizeImage:25',
 		value: '25'
 	},
 	{
-		name: 'imageResize:50',
+		name: 'resizeImage:50',
 		value: '50'
 	},
 	{
-		name: 'imageResize:75',
+		name: 'resizeImage:75',
 		value: '75'
 	} ];
 
@@ -58,7 +58,7 @@ describe( 'ImageResizeButtons', () => {
 				}
 			} );
 
-		command = editor.commands.get( 'imageResize' );
+		command = editor.commands.get( 'resizeImage' );
 		plugin = editor.plugins.get( 'ImageResizeButtons' );
 	} );
 
@@ -100,7 +100,7 @@ describe( 'ImageResizeButtons', () => {
 
 	describe( 'resize options dropdown', () => {
 		it( 'should be disabled when plugin is disabled', () => {
-			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 
 			plugin.isEnabled = true;
 
@@ -112,11 +112,18 @@ describe( 'ImageResizeButtons', () => {
 		} );
 
 		it( 'should be an instance of `DropdownView` if component is created without a value suffix', () => {
-			expect( editor.ui.componentFactory.create( 'imageResize' ) ).to.be.instanceof( DropdownView );
+			expect( editor.ui.componentFactory.create( 'resizeImage' ) ).to.be.instanceof( DropdownView );
 		} );
 
-		it( 'should have 4 resize options in the `imageResize` dropdown', () => {
-			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
+		it( 'should register `imageResize dropdown as an alias for the `resizeImage` dropdown', () => {
+			const dropdownCreator = editor.ui.componentFactory._components.get( 'resizeImage'.toLowerCase() );
+			const dropdownAliasCreator = editor.ui.componentFactory._components.get( 'imageResize'.toLowerCase() );
+
+			expect( dropdownCreator.callback ).to.equal( dropdownAliasCreator.callback );
+		} );
+
+		it( 'should have 4 resize options in the `resizeImage` dropdown', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 
 			expect( dropdownView.listView.items.length ).to.equal( 4 );
 			expect( dropdownView.listView.items.first.element.textContent ).to.equal( 'Original' );
@@ -125,13 +132,13 @@ describe( 'ImageResizeButtons', () => {
 		} );
 
 		it( 'should be created with a proper tooltip', () => {
-			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 
 			expect( dropdownView.buttonView.tooltip ).to.equal( 'Resize image' );
 		} );
 
 		it( 'should execute resize command with a proper value', () => {
-			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 			const commandSpy = sinon.spy( command, 'execute' );
 			const resizeBy50Percent = dropdownView.listView.items._items[ 1 ].children._items[ 0 ];
 
@@ -154,26 +161,26 @@ describe( 'ImageResizeButtons', () => {
 					image: {
 						resizeUnit: '%',
 						resizeOptions: [ {
-							name: 'imageResize:original',
+							name: 'resizeImage:original',
 							value: null,
 							icon: 'original'
 						},
 						{
-							name: 'imageResize:25',
+							name: 'resizeImage:25',
 							value: '25',
 							icon: 'small'
 						},
 						{
-							name: 'imageResize:50',
+							name: 'resizeImage:50',
 							value: '50',
 							icon: 'medium'
 						},
 						{
-							name: 'imageResize:75',
+							name: 'resizeImage:75',
 							value: '75',
 							icon: 'large'
 						} ],
-						toolbar: [ 'imageResize:original', 'imageResize:25', 'imageResize:50', 'imageResize:75' ]
+						toolbar: [ 'resizeImage:original', 'resizeImage:25', 'resizeImage:50', 'resizeImage:75' ]
 					}
 				} );
 
@@ -191,7 +198,7 @@ describe( 'ImageResizeButtons', () => {
 		} );
 
 		it( 'should be bound to `#isEnabled`', () => {
-			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
+			const buttonView = editor.ui.componentFactory.create( 'resizeImage:50' );
 
 			plugin.isEnabled = true;
 
@@ -203,7 +210,7 @@ describe( 'ImageResizeButtons', () => {
 		} );
 
 		it( 'should be an instance of `ButtonView` if component is created with a value suffix', () => {
-			expect( editor.ui.componentFactory.create( 'imageResize:50' ) ).to.be.instanceof( ButtonView );
+			expect( editor.ui.componentFactory.create( 'resizeImage:50' ) ).to.be.instanceof( ButtonView );
 		} );
 
 		it( 'should be created with invisible "Resize image: 30%" label when is provided', async () => {
@@ -213,16 +220,16 @@ describe( 'ImageResizeButtons', () => {
 					image: {
 						resizeUnit: '%',
 						resizeOptions: [ {
-							name: 'imageResize:30',
+							name: 'resizeImage:30',
 							value: '30',
 							label: 'Resize image: 30%',
 							icon: 'small'
 						} ],
-						toolbar: [ 'imageResize:30' ]
+						toolbar: [ 'resizeImage:30' ]
 					}
 				} );
 
-			const buttonView = editor.ui.componentFactory.create( 'imageResize:30' );
+			const buttonView = editor.ui.componentFactory.create( 'resizeImage:30' );
 			buttonView.render();
 
 			expect( buttonView.withText ).to.be.false;
@@ -233,7 +240,7 @@ describe( 'ImageResizeButtons', () => {
 		} );
 
 		it( 'should be created with invisible "Resize image to 50%" label when is not provided', async () => {
-			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
+			const buttonView = editor.ui.componentFactory.create( 'resizeImage:50' );
 			buttonView.render();
 
 			expect( buttonView.withText ).to.be.false;
@@ -244,8 +251,8 @@ describe( 'ImageResizeButtons', () => {
 		} );
 
 		it( 'should be created with a proper tooltip, depends on the set value', () => {
-			const buttonViewOriginal = editor.ui.componentFactory.create( 'imageResize:original' );
-			const buttonView50 = editor.ui.componentFactory.create( 'imageResize:50' );
+			const buttonViewOriginal = editor.ui.componentFactory.create( 'resizeImage:original' );
+			const buttonView50 = editor.ui.componentFactory.create( 'resizeImage:50' );
 
 			buttonViewOriginal.render();
 			buttonView50.render();
@@ -254,9 +261,9 @@ describe( 'ImageResizeButtons', () => {
 			expect( buttonView50.tooltip ).to.equal( 'Resize image to 50%' );
 		} );
 
-		it( 'should execute `imageResize` command with "50%" value', () => {
-			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
-			const command = editor.commands.get( 'imageResize' );
+		it( 'should execute `resizeImage` command with "50%" value', () => {
+			const buttonView = editor.ui.componentFactory.create( 'resizeImage:50' );
+			const command = editor.commands.get( 'resizeImage' );
 			const commandSpy = sinon.spy( command, 'execute' );
 
 			command.isEnabled = true;
@@ -268,10 +275,10 @@ describe( 'ImageResizeButtons', () => {
 		} );
 
 		it( 'should have set a proper icon', () => {
-			const buttonOriginal = editor.ui.componentFactory.create( 'imageResize:original' );
-			const button25 = editor.ui.componentFactory.create( 'imageResize:25' );
-			const button50 = editor.ui.componentFactory.create( 'imageResize:50' );
-			const button75 = editor.ui.componentFactory.create( 'imageResize:75' );
+			const buttonOriginal = editor.ui.componentFactory.create( 'resizeImage:original' );
+			const button25 = editor.ui.componentFactory.create( 'resizeImage:25' );
+			const button50 = editor.ui.componentFactory.create( 'resizeImage:50' );
+			const button75 = editor.ui.componentFactory.create( 'resizeImage:75' );
 
 			expect( buttonOriginal.icon ).to.deep.equal( iconFull );
 			expect( button25.icon ).to.deep.equal( iconSmall );
@@ -286,15 +293,15 @@ describe( 'ImageResizeButtons', () => {
 					image: {
 						resizeUnit: '%',
 						resizeOptions: [ {
-							name: 'imageResize:noicon',
+							name: 'resizeImage:noicon',
 							value: '100'
 						} ],
-						toolbar: [ 'imageResize:noicon' ]
+						toolbar: [ 'resizeImage:noicon' ]
 					}
 				} );
 
 			expectToThrowCKEditorError( () => {
-				editor.ui.componentFactory.create( 'imageResize:noicon' );
+				editor.ui.componentFactory.create( 'resizeImage:noicon' );
 			}, 'imageresizebuttons-missing-icon', editor );
 
 			editor.destroy();
