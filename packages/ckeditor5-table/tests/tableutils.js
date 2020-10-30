@@ -5,6 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -15,6 +16,8 @@ import TableUtils from '../src/tableutils';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor.create( {
@@ -51,6 +54,27 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'insertRows()', () => {
+		it( 'should be decorated', () => {
+			const spy = sinon.spy();
+
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableUtils.on( 'insertRows', spy );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '11[]', '12' ],
+				[ '', '' ],
+				[ '21', '22' ]
+			] ) );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		it( 'should insert row in given table at given index', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -335,6 +359,26 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'insertColumns()', () => {
+		it( 'should be decorated', () => {
+			const spy = sinon.spy();
+
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableUtils.on( 'insertColumns', spy );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '11[]', '', '12' ],
+				[ '21', '', '22' ]
+			] ) );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		it( 'should insert column in given table at given index', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],

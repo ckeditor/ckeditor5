@@ -84,31 +84,6 @@ export function skipEmptyTableRow() {
 	};
 }
 
-/**
- * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
- *
- * @returns {Function} Conversion helper.
- */
-export function ensureParagraphInTableCell( elementName ) {
-	return dispatcher => {
-		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
-			// The default converter will create a model range on converted table cell.
-			if ( !data.modelRange ) {
-				return;
-			}
-
-			const tableCell = data.modelRange.start.nodeAfter;
-
-			// Ensure a paragraph in the model for empty table cells for converted table cells.
-			if ( !tableCell.childCount ) {
-				const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
-
-				conversionApi.writer.insertElement( 'paragraph', modelCursor );
-			}
-		}, { priority: 'low' } );
-	};
-}
-
 // Scans table rows and extracts required metadata from the table:
 //
 // headingRows    - The number of rows that go as table headers.

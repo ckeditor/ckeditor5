@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* The feature container. */
+.ck-widget.raw-html-embed {
+	/* Give the embed some air. */
+	margin: 1em auto;
+	position: relative;
+	clear: both;
+
+	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
+
+	&::before {
+		position: absolute;
+
+		/* Make sure the content does not cover the label. */
+		z-index: 1;
+	}
+
+	/* ----- Emebed internals --------------------------------------------------------------------- */
+
+	/* The switch mode button wrapper. */
+	& .raw-html-embed__buttons-wrapper {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+.ck-content .raw-html-embed {
+	/* Give the embed some air. */
+	margin: 1em auto;
+
+	/* Give the html embed some minimal width in the content to prevent them
+	from being "squashed" in tight spaces, e.g. in table cells (https://github.com/ckeditor/ckeditor5/issues/8331) */
+	min-width: 15em;
+}

@@ -44,6 +44,7 @@ function tableHeadingRowsRefreshPostFixer( model ) {
 		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing heading rows (${ tablesToRefresh.size }).` );
 
 		for ( const table of tablesToRefresh.values() ) {
+			// Should be handled by a `triggerBy` configuration. See: https://github.com/ckeditor/ckeditor5/issues/8138.
 			differ.refreshItem( table );
 		}
 
