@@ -1,62 +1,66 @@
 <style>
-	.ck-content .info-box {
+	.ck-content .side-card {
 		background: hsl(0, 0%, 45%);
 		border: 1px solid hsl(0, 0%, 80%);
-		padding: 1em;
+		padding: 0.5em;
 		border-radius: 8px;
+		width: 300px;
+		margin: 1em auto 1em 1.5em;
+		font-size: 0.9em;
+		float: right;
 	}
 
-	.ck-content .info-box-title {
+	.ck-content .side-card-title {
 		margin-bottom: 0.5em;
-		font-size: 1.4em;
+		font-size: 1.2em;
 		color: inherit;
 		border-bottom-color: inherit;
 		border-bottom-style: solid;
 		border-bottom-width: 1px;
 	}
 
-	.ck-content .info-box-warning {
+	.ck-content .side-card-warning {
 		background: hsl(48, 100%, 87%);
 		border: 1px solid hsl(47, 100%, 62%);
 	}
 
-	.ck-content .info-box-warning .info-box-title {
+	.ck-content .side-card-warning .side-card-title {
 		color: hsl(47, 100%, 32%)
 	}
 
-	.ck-content .info-box-info {
+	.ck-content .side-card-info {
 		background: hsl(205, 100%, 95%);
 		border: 1px solid hsl(205, 91%, 82%);
 	}
 
-	.ck-content .info-box-info .info-box-title {
+	.ck-content .side-card-info .side-card-title {
 		color: hsl(204, 79%, 41%)
 	}
 
-	.ck-content .info-box-content {
-		padding: 8px 10px;
+	.ck-content .side-card-section {
+		padding: 4px;
 		background: hsl(0, 0%, 100%);
 		border-radius: 6px;
 		margin-top: 0.5em;
 	}
 
-	.ck-content .info-box-content p:only-child,
-	.ck-content .info-box-content p:last-child {
+	.ck-content .side-card-section p:only-child,
+	.ck-content .side-card-section p:last-child {
 		margin-bottom: 0;
 	}
 
-	.ck-content .info-box-url {
+	.ck-content .side-card-url {
 		margin: 0.5em 0;
 		font-style: italic;
 		font-size: 0.8em;
 		color: hsl(0, 0%, 20%);
 	}
 
-	.ck-content .info-box-actions {
+	.ck-content .side-card-actions {
 		margin: 0.5em 0;
 	}
 
-	.ck-content .info-box-actions button {
+	.ck-content .side-card-actions button {
 		font-size: 0.8em;
 		border: 1px solid hsl(0, 0%, 80%);
 		padding: 2px 4px;
@@ -65,25 +69,27 @@
 </style>
 
 <div id="editor-element-reconversion">
-	<p>Info box with two content fields:</p>
+	<p>Cupcake ipsum dolor sit amet soufflé gummi bears. Cotton candy pie biscuit chocolate cake. Sugar plum sugar plum gingerbread soufflé.</p>
 
-	<div class="info-box info-box-info">
-		<div class="info-box-title">Hey! Did you know?</div>
-		<div class="info-box-content">
-			<p>Editable content of the <strong>info box</strong>.</p>
+	<aside class="side-card side-card-info">
+		<div class="side-card-title">Hey! Did you know?</div>
+		<div class="side-card-section">
+			<p>Editable content of the <strong>side card section</strong>.</p>
 		</div>
-		<div class="info-box-content">
+		<div class="side-card-section">
 			<p>Another content box.</p>
 		</div>
-	</div>
+	</aside>
 
-	<p>Warning box with URL attribute:</p>
+	<p>Pastry cheesecake cheesecake donut toffee. Marzipan apple pie sugar plum. Donut cotton candy topping donut tootsie roll pudding tootsie roll gingerbread. Macaroon gummies powder sesame snaps danish tart. Dessert topping liquorice marshmallow dessert lollipop marshmallow dragée pudding. Oat cake donut chocolate bar fruitcake jujubes. Liquorice pastry biscuit tart macaroon. Jelly cotton candy sweet roll brownie. Ice cream pudding tiramisu jelly. Sweet roll brownie dragée gummies chocolate cake sesame snaps cupcake brownie. Bonbon icing cake. Chupa chups pudding danish. Lemon drops danish pastry muffin. Ice cream oat cake macaroon macaroon fruitcake.</p>
 
-	<div class="info-box info-box-warning">
-		<div class="info-box-title">Watch out for <strong>this</strong>!</div>
-		<div class="info-box-content">
-			<p>Editable content of the <strong>info box</strong>.</p>
+	<aside class="side-card side-card-warning">
+		<div class="side-card-title">Watch out for <strong>this</strong>!</div>
+		<div class="side-card-section">
+			<p>Editable content of the <strong>side card section</strong>.</p>
 		</div>
-		<div class="info-box-url">http://cksource.com</div>
-	</div>
+		<div class="side-card-url">http://cksource.com</div>
+	</aside>
+
+	<p>Biscuit tootsie roll apple pie. Cheesecake apple pie muffin tootsie roll soufflé chupa chups. Soufflé sweet roll cheesecake. Biscuit apple pie muffin soufflé dessert sugar plum jelly-o danish. Jelly tootsie roll jelly beans bear claw. Liquorice apple pie tootsie roll croissant chupa chups. Lollipop ice cream fruitcake gingerbread sugar plum toffee cookie danish. Soufflé pastry apple pie powder cupcake cookie tart. Gummies donut jelly-o sugar plum dessert gummies danish. Jelly beans macaroon danish soufflé cupcake marshmallow fruitcake topping cotton candy. Cupcake cotton candy pastry sesame snaps. Cookie toffee jelly-o brownie ice cream dragée tart cotton candy.</p>
 </div>

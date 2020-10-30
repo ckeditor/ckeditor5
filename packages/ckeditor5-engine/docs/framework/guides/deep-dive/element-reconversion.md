@@ -100,78 +100,78 @@ states.
 
 ### Demo
 
-Let's take a look at the below enhanced info box might behave:
-
 {@snippet framework/element-reconversion-demo}
 
-The above demo assumes that each box:
+The above demo creates a side box that:
 
 * Always have a title (text attributes are disallowed).
-* Have 1 to 4 content-boxes that holds any {@link framework/guides/deep-dive/conversion-introduction#inline-and-block-content block
+* Have 1 to 4 sections which can hold any {@link framework/guides/deep-dive/conversion-introduction#inline-and-block-content block
   content}.
 * Is an "info" or "warning" type.
 * Have an optional URL field.
 
-A simplified model markup for the info box looks as follows:
+A simplified model markup for the side card looks as follows:
 
 ```html
-<complexInfoBox infoBoxType="info" infoBoxURL="http://cksource.com">
-	<infoBoxTitle>A title</infoBoxTitle>
-	<infoBoxContent>
+<sideCardSection cardType="info" cardURL="http://cksource.com">
+	<sideCardTitle>A title</sideCardTitle>
+	<sideCardSection>
 		<paragrahp>A content</paragrahp>
-	</infoBoxContent>
-</complexInfoBox>
+	</sideCardSection>
+</sideCard>
 ```
 
 This will be converted to the below view structure:
 
 ```html
-<div class="info-box info-box-info">
-	<div class="info-box-title">A title</div>
-	<div class="info-box-content">
-		<p>A content</p>
+<aside class="side-card side-card-info">
+	<div class="side-card-title">Hey! Did you know?</div>
+	<div class="side-card-section">
+		<p>Editable content of the <strong>side card</strong>.</p>
 	</div>
-	<div class="info-box-url">http://example.com</div>
-	<div class="info-box-actions">
+	<div class="side-card-section">
+		<p>Another content box.</p>
+	</div>
+	<div class="side-card-actions">
 		<!-- simple form elements for the editing view -->
 	</div>
-</div>
+</aside>
 ```
 
-In the above example you can observe that model attribute `'infoBoxURL'` is converted as view element inside the main view container while
+In the above example you can observe that model attribute `'cardURL'` is converted as view element inside the main view container while
 the type attributes is translated to a CSS class. Additionally, UI controls are injected to the view after all other child views of the main
 container. Describing it using atomic converters would introduce convoluted complexity.
 
 ### Schema
 
-The info box model structure is represented in the editor's {@link framework/guides/deep-dive/schema schema} as follows:
+The side card model structure is represented in the editor's {@link framework/guides/deep-dive/schema schema} as follows:
 
 ```js
 // The main element with attributes for type and URL:
-editor.model.schema.register( 'complexInfoBox', {
+editor.model.schema.register( 'sideCard', {
 	allowWhere: '$block',
 	isObject: true,
-	allowAttributes: [ 'infoBoxType', 'infoBoxURL' ]
+	allowAttributes: [ 'cardType', 'cardURL' ]
 } );
 
 // A text-only title.
-editor.model.schema.register( 'complexInfoBoxTitle', {
+editor.model.schema.register( 'sideCardTitle', {
 	isLimit: true,
-	allowIn: 'complexInfoBox'
+	allowIn: 'sideCard'
 } );
 // Allow text in title...
-editor.model.schema.extend( '$text', { allowIn: 'complexInfoBoxTitle' } );
+editor.model.schema.extend( '$text', { allowIn: 'sideCardTitle' } );
 // ...but disallow any text attribute inside.
 editor.model.schema.addAttributeCheck( context => {
-	if ( context.endsWith( 'complexInfoBoxTitle $text' ) ) {
+	if ( context.endsWith( 'sideCardTitle $text' ) ) {
 		return false;
 	}
 } );
 
 // A content block which can have any content allowed in $root.
-editor.model.schema.register( 'complexInfoBoxContent', {
+editor.model.schema.register( 'sideCardSection', {
 	isLimit: true,
-	allowIn: 'complexInfoBox',
+	allowIn: 'sideCard',
 	allowContentOf: '$root'
 } );
 ```
@@ -182,85 +182,100 @@ To enable element reconversion define for which attributes and children modifica
 
 ```js
 editor.conversion.for( 'downcast' ).elementToElement( {
-	model: 'complexInfoBox',
-	view: ( modelElement, conversionApi ) => downcastInfoBox( modelElement, conversionApi ),
+	model: 'sideCard',
+	view: ( modelElement, conversionApi ) => downcastSideCard( modelElement, conversionApi ),
 	triggerBy: {
-		attributes: [ 'infoBoxType', 'infoBoxURL' ],
-		children: [ 'complexInfoBoxContent' ]
+		attributes: [ 'cardType', 'cardURL' ],
+		children: [ 'sideCardSection' ]
 	}
 } );
 ```
 
-The above definition will use `downcastInfoBox()` function to re-create view when:
+The above definition will use `downcastSideCard()` function to re-create view when:
 
 * The `complexInfoBOx` element is inserted into the model.
-* One of `infoBoxType` or `infoBoxURL` has changed.
-* A child `complexInfoBoxContent` is added or removed from the parent `complexInfoBox`.
+* One of `cardType` or `cardURL` has changed.
+* A child `sideCardSection` is added or removed from the parent `sideCard`.
 
 ### Downcast converter details
 
 The function that creates a complete view for the model element:
 
 ```js
-const downcastInfoBox = ( modelElement, { writer, consumable, mapper } ) => {
-	const type = modelElement.getAttribute( 'infoBoxType' ) || 'info';
+const downcastSideCard = ( modelElement, { writer, consumable, mapper } ) => {
+	const type = modelElement.getAttribute( 'cardType' ) || 'info';
 
-	const complexInfoBoxView = writer.createContainerElement( 'div', {
-		class: `info-box info-box-${ type }`
+	const sideCardView = writer.createContainerElement( 'aside', {
+		class: `side-card side-card-${ type }`
 	} );
 
-	// Inner element used to render simple UI that allows to change info box's attributes.
-	const actionsView = writer.createRawElement( 'div', {
-		class: 'info-box-actions',
-		contenteditable: 'false', 			// Prevent editing of the element:
-		// 'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
-	}, renderActionsView( editor, modelElement ) ); // See the full code for details.
-
-	writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), actionsView );
-
-	// Create inner views from info box children.
+	// Create inner views from side card children.
 	for ( const child of modelElement.getChildren() ) {
-		const childView = writer.createContainerElement( 'div' );
+		const childView = writer.createEditableElement( 'div' );
 
-		// Child is either a "title" or "content".
-		if ( child.is( 'element', 'complexInfoBoxTitle' ) ) {
-			writer.addClass( 'info-box-title', childView );
+		// Child is either a "title" or "section".
+		if ( child.is( 'element', 'sideCardTitle' ) ) {
+			writer.addClass( 'side-card-title', childView );
 		} else {
-			writer.addClass( 'info-box-content', childView );
+			writer.addClass( 'side-card-section', childView );
 		}
 
 		// It is important to consume & bind converted elements.
 		consumable.consume( child, 'insert' );
 		mapper.bindElements( child, childView );
 
-		// Append converted view to parent.
-		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), childView );
+		// Make it an editable part of the widget.
+		toWidgetEditable( childView, writer );
+
+		writer.insert( writer.createPositionAt( sideCardView, 'end' ), childView );
 	}
 
-	return complexInfoBoxView;
+	const urlAttribute = modelElement.getAttribute( 'cardURL' );
+
+	// Do not render empty URL field
+	if ( urlAttribute ) {
+		const urlBox = writer.createRawElement( 'div', {
+			class: 'side-card-url'
+		}, function( domElement ) {
+			domElement.innerText = `URL: "${ urlAttribute }"`;
+		} );
+
+		writer.insert( writer.createPositionAt( sideCardView, 'end' ), urlBox );
+	}
+
+	// Inner element used to render simple UI that allows to change side card's attributes.
+	const actionsView = writer.createRawElement( 'div', {
+		class: 'side-card-actions',
+		contenteditable: 'false', 			// Prevent editing of the element:
+		'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
+	}, renderActionsView( editor, modelElement ) ); // See the full code for details.
+
+	writer.insert( writer.createPositionAt( sideCardView, 'end' ), actionsView );
+
+	return toWidget( sideCardView, writer, { widgetLabel: 'Side card' } );
 };
 ```
 
-By using `mapper.bindElements( child, childView )` for `<infoBoxTitle>` and `<infoBoxContent>` you define which view elements corresponds to which model elements. This allows the editor's conversion to re-use existing view elements for title and content children, so they will not be re-converted without a need.
+By using `mapper.bindElements( child, childView )` for `<sideCardTitle>` and `<sideCardSection>` you define which view elements corresponds to which model elements. This allows the editor's conversion to re-use existing view elements for title and section children, so they will not be re-converted without a need.
 
 ### Upcast conversion
 
-The upcast conversion uses standard element-to-element converters for box & title and a custom converter for the info box to extract
+The upcast conversion uses standard element-to-element converters for box & title and a custom converter for the side card to extract
 metadata from the data.
 
 ```js
 editor.conversion.for( 'upcast' )
 	.elementToElement( {
-		view: { name: 'div', classes: [ 'info-box' ] },
+		view: { name: 'aside', classes: [ 'side-card' ] },
 		model: upcastInfoBox
 	} )
 	.elementToElement( {
-		view: { name: 'div', classes: [ 'info-box-title' ] },
-		model: 'complexInfoBoxTitle'
+		view: { name: 'div', classes: [ 'side-card-title' ] },
+		model: 'sideCardTitle'
 	} )
 	.elementToElement( {
-		view: { name: 'div', classes: [ 'info-box-content' ] },
-		model: 'complexInfoBoxContent'
+		view: { name: 'div', classes: [ 'side-card-section' ] },
+		model: 'sideCardSection'
 	} );
 ```
 
