@@ -98,7 +98,7 @@ msgstr "Bild von URL einfügen"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Bild-URL aktualisieren"
 
 msgctxt "The content of the tip below the Insert image via URL form."
 msgid "Paste the image source URL."

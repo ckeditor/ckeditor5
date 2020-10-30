@@ -1677,7 +1677,7 @@ describe( 'Differ', () => {
 	} );
 
 	describe( 'other cases', () => {
-		// #1309.
+		// See https://github.com/ckeditor/ckeditor5/issues/4284.
 		it( 'multiple inserts and removes in one element', () => {
 			model.change( () => {
 				insert( new Text( 'x' ), new Position( root, [ 0, 2 ] ) );
@@ -1691,7 +1691,7 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		// ckeditor5#733.
+		// See https://github.com/ckeditor/ckeditor5/issues/733.
 		it( 'proper filtering of changes in removed elements', () => {
 			// Before fix there was a buggy scenario described in ckeditor5#733.
 			// There was this structure: `<paragraph>foo[</paragraph><image /><blockQuote><p>te]xt</p></blockQuote>`

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-markdown-gfm",
-  "version": "23.0.0",
+  "version": "23.1.0",
   "description": "GitHub Flavored Markdown data processor for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,14 +10,14 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^23.0.0",
-    "@ckeditor/ckeditor5-code-block": "^23.0.0",
-    "@ckeditor/ckeditor5-core": "^23.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^23.0.0",
-    "@ckeditor/ckeditor5-engine": "^23.0.0",
-    "@ckeditor/ckeditor5-list": "^23.0.0",
-    "@ckeditor/ckeditor5-table": "^23.0.0",
-    "marked": "^1.1.1",
+    "@ckeditor/ckeditor5-basic-styles": "^23.1.0",
+    "@ckeditor/ckeditor5-code-block": "^23.1.0",
+    "@ckeditor/ckeditor5-core": "^23.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-engine": "^23.1.0",
+    "@ckeditor/ckeditor5-list": "^23.1.0",
+    "@ckeditor/ckeditor5-table": "^23.1.0",
+    "marked": "1.1.1",
     "turndown": "^6.0.0",
     "turndown-plugin-gfm": "^1.0.2"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-font",
-  "version": "23.0.0",
+  "version": "23.1.0",
   "description": "Font feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,15 +10,15 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^23.0.0",
-    "@ckeditor/ckeditor5-ui": "^23.0.0",
-    "@ckeditor/ckeditor5-utils": "^23.0.0"
+    "@ckeditor/ckeditor5-core": "^23.1.0",
+    "@ckeditor/ckeditor5-ui": "^23.1.0",
+    "@ckeditor/ckeditor5-utils": "^23.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^23.0.0",
-    "@ckeditor/ckeditor5-engine": "^23.0.0",
-    "@ckeditor/ckeditor5-highlight": "^23.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^23.0.0"
+    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-engine": "^23.1.0",
+    "@ckeditor/ckeditor5-highlight": "^23.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^23.1.0"
   },
   "engines": {
     "node": ">=12.0.0",

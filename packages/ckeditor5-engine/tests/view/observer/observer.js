@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals document */
+
 import Observer from '../../../src/view/observer/observer';
 import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -42,6 +44,48 @@ describe( 'Observer', () => {
 			observer.disable();
 
 			expect( observer.isEnabled ).to.be.false;
+		} );
+	} );
+
+	describe( 'checkShouldIgnoreEventFromTarget()', () => {
+		it( 'should not ignore on targets which are non-element node types', () => {
+			const observer = new Observer( {} );
+
+			expect( observer.checkShouldIgnoreEventFromTarget( {} ) ).to.be.false;
+			expect( observer.checkShouldIgnoreEventFromTarget( { nodeType: 2 } ) ).to.be.false;
+			expect( observer.checkShouldIgnoreEventFromTarget( { nodeType: 3 } ) ).to.be.false;
+			expect( observer.checkShouldIgnoreEventFromTarget( { nodeType: 3, parentNode: null } ) ).to.be.false;
+		} );
+
+		it( 'should not ignore on targets without the `data-cke-ignore-events` attribute neither on itself nor in any ancestor', () => {
+			const documentFragment = document.createDocumentFragment();
+			const section = document.createElement( 'section' );
+			const div = document.createElement( 'div' );
+			const button = document.createElement( 'button' );
+
+			documentFragment.appendChild( section ).appendChild( div ).appendChild( button );
+
+			const observer = new Observer( {} );
+
+			expect( observer.checkShouldIgnoreEventFromTarget( section ) ).to.be.false;
+			expect( observer.checkShouldIgnoreEventFromTarget( div ) ).to.be.false;
+			expect( observer.checkShouldIgnoreEventFromTarget( button ) ).to.be.false;
+		} );
+
+		it( 'should ignore on targets with the `data-cke-ignore-events` attribute set on itself or on any ancestor', () => {
+			const documentFragment = document.createDocumentFragment();
+			const section = document.createElement( 'section' );
+			const div = document.createElement( 'div' );
+			const button = document.createElement( 'button' );
+
+			section.setAttribute( 'data-cke-ignore-events', 'true' );
+			documentFragment.appendChild( section ).appendChild( div ).appendChild( button );
+
+			const observer = new Observer( {} );
+
+			expect( observer.checkShouldIgnoreEventFromTarget( section ) ).to.be.true;
+			expect( observer.checkShouldIgnoreEventFromTarget( div ) ).to.be.true;
+			expect( observer.checkShouldIgnoreEventFromTarget( button ) ).to.be.true;
 		} );
 	} );
 } );

@@ -7,8 +7,6 @@
  * @module ui/toolbar/toolbarview
  */
 
-/* globals console */
-
 import View from '../view';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
@@ -19,7 +17,7 @@ import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
@@ -299,7 +297,7 @@ export default class ToolbarView extends View {
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
 				 */
-				console.warn( attachLinkToDocumentation( 'toolbarview-item-unavailable' ), { name } );
+				logWarning( 'toolbarview-item-unavailable', { name } );
 			}
 		} ).filter( item => item !== undefined ) );
 	}
