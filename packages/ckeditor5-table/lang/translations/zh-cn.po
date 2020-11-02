@@ -38,7 +38,7 @@ msgstr "删除本列"
 
 msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "选择列"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -62,7 +62,7 @@ msgstr "删除本行"
 
 msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "选择行"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -246,4 +246,4 @@ msgstr "无效值。尝试使用“10px”、“2ex”或者只写“2”。"
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "颜色选择器"

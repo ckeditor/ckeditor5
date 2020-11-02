@@ -122,7 +122,7 @@ describe( 'DomEventObserver', () => {
 		expect( evtSpy.called ).to.be.false;
 	} );
 
-	it( 'should not fire event if target is ignored', () => {
+	it( 'should not fire event if the target is ignored', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
@@ -138,10 +138,10 @@ describe( 'DomEventObserver', () => {
 
 		domElement.dispatchEvent( domEvent );
 
+		ignoreEventFromTargetStub.restore();
+
 		expect( ignoreEventFromTargetStub.called ).to.be.true;
 		expect( evtSpy.called ).to.be.false;
-
-		ignoreEventFromTargetStub.restore();
 	} );
 
 	it( 'should fire event if observer is disabled and re-enabled', () => {

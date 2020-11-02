@@ -11,7 +11,7 @@
 
 import CKEditorError from './ckeditorerror';
 
-const version = '23.0.0';
+const version = '23.1.0';
 
 /* istanbul ignore next */
 const windowOrGlobal = typeof window === 'object' ? window : global;
@@ -108,7 +108,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * different versions of the core package.
 	 *
 	 * The solution to this issue is to update all packages to their latest version. We recommend
-	 * using tools like [`node-check-updates`](https://www.npmjs.com/package/npm-check-updates) which simplify this process.
+	 * using tools like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates) which simplify this process.
 	 *
 	 * # Conflicting version of dependencies
 	 *
