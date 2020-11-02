@@ -8,7 +8,7 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-paste-plaintext' ), {
+	.create( document.querySelector( '#snippet-paste-plain-text' ), {
 		toolbar: {
 			items: [
 				'heading',

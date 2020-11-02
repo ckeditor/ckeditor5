@@ -8,31 +8,31 @@ order: 30
 
 # Pasting plain text
 
-The plain text pasting feature is provided through the {@link module:clipboard/clipboard~Clipboard} plugin, which is responsible for the integration with the native clipboard and intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to unexpected results in handling the content.
+The plain text pasting feature is implemented by the {@link module:clipboard/clipboard~PastePlainText} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} plugin.
+
+It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &mdash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
 
 Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
 
-## Keyboard shortcut
-
-The plain text pasting itself is further aided by the {@link module:clipboard/clipboard~PastePlainText} plugin. It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> keystroke during the paste and causes the pasted plain text to inherit the styles of the content it was pasted into.
-
 ## Demo
 
-Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> to test the style inheritance. Paste without modifier to retain unstyled text. You can copy this very paragraph or one from the demo for convenience.
+Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> to test the style inheritance. Paste without the <kbd>Shift</kbd> modifier to retain unstyled text. You can copy this very paragraph or one from the demo for convenience.
 
-{@snippet features/paste-plaintext}
+{@snippet features/paste-plain-text}
 
 ## Related features
 
 CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting.
-* {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Allows you to paste content from Google Docs maintaining the original formatting and structure.
+* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+* {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all official builds. <!-- The installation instructions are for developers interested in building their own custom rich-text editor. -->
+	This feature is enabled by default in all official builds. The installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
+
+<!-- TODO Installation instructions -->
 
 ## Support for other applications
 
