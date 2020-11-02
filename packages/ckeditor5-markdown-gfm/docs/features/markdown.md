@@ -12,7 +12,7 @@ editor.setData( 'This is **bold**.' );
 ```
 
 <info-box info>
-	"GFM" stands for "GitHub Flavored Markdown" &mdash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification and has many dialects, often incompatible with each other. When converting the output produced by this data processor make sure to use a compatible Markdown to HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
+	"GFM" stands for "GitHub Flavored Markdown" &mdash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification (although the [CommonMark](https://commonmark.org/) initiative aims to close this gap) and has many dialects, often incompatible with each other. When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
 </info-box>
 
 <info-box info>
@@ -20,10 +20,12 @@ editor.setData( 'This is **bold**.' );
 
 	While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
 
-	And please do remember – using Markdown [does not automatically make your application/website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
+	And please do remember &mdash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>
 
 ## Demo
+
+The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. Use the editor to create your content and see the Markdown output displayed as you type below the editor.
 
 {@snippet features/markdown}
 
@@ -33,17 +35,17 @@ Some other ways to output the edited content include:
 
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
-* {@link features/autoformat Autoformatting} &ndash; Use markdown-like markers as you type and CKEditor 5 will automatically format your content!
+* {@link features/autoformat Autoformatting} &ndash; Use Markdown-like markers to automatically format your content as you type!
 
 ## Installation
 
-To enable this data processor in your editor install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
+To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
 
 ```
 npm install --save @ckeditor/ckeditor5-markdown-gfm
 ```
 
-Then, you can enable this data processor by using {@link module:markdown-gfm/markdown~Markdown} plugin which will change default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} with {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
+Then, you can enable this data processor by using the {@link module:markdown-gfm/markdown~Markdown} plugin which will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
