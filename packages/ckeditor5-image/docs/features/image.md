@@ -116,6 +116,12 @@ The {@link module:image/autoimage~AutoImage} plugin recognizes image links in th
 
 If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> keystrokes).
 
+You can paste the image URL directly into the editor content, and it will be automatically embedded.
+
+<input class="example-input" type="text" value="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg">
+
+{@snippet features/image-insert-via-pasting-url-into-editor}
+
 ## Responsive images
 
 Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
