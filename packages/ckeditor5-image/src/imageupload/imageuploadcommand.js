@@ -86,5 +86,5 @@ function uploadImage( writer, model, fileRepository, file ) {
 		return;
 	}
 
-	insertImage( writer, model, { uploadId: loader.id } );
+	insertImage( model, { uploadId: loader.id } );
 }

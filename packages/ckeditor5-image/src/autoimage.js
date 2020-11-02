@@ -117,18 +117,18 @@ export default class AutoImage extends Plugin {
 		const urlRange = new LiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 
-		let url = '';
+		let src = '';
 
 		for ( const node of walker ) {
 			if ( node.item.is( '$textProxy' ) ) {
-				url += node.item.data;
+				src += node.item.data;
 			}
 		}
 
-		url = url.trim();
+		src = src.trim();
 
 		// If the URL does not match to image URL regexp, let's skip that.
-		if ( !url.match( IMAGE_URL_REGEXP ) ) {
+		if ( !src.match( IMAGE_URL_REGEXP ) ) {
 			urlRange.detach();
 
 			return;
@@ -160,10 +160,10 @@ export default class AutoImage extends Plugin {
 				// Check if position where the element should be inserted is still valid.
 				// Otherwise leave it as undefined to use the logic of insertImage().
 				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
-					insertionPosition = this._positionToInsert;
+					insertionPosition = this._positionToInsert.toPosition();
 				}
 
-				insertImage( writer, editor.model, { src: url }, insertionPosition );
+				insertImage( editor.model, { src }, insertionPosition );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;

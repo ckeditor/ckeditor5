@@ -54,7 +54,7 @@ export default class ImageInsertCommand extends Command {
 			const sources = Array.isArray( options.source ) ? options.source : [ options.source ];
 
 			for ( const src of sources ) {
-				insertImage( writer, model, { src } );
+				insertImage( model, { src } );
 			}
 		} );
 	}
