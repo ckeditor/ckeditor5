@@ -15,8 +15,8 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting to changes
- * in the model and firing a set of events. Callbacks listening to these events are called converters. The
+ * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
+ * to changes in the model and firing a set of events. Callbacks listening to these events are called converters. The
  * converters' role is to convert the model changes to changes in view (for example, adding view nodes or
  * changing attributes on view elements).
  *
@@ -52,7 +52,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} &ndash; If a marker was added.
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} &ndash; If a marker was removed.
  *
- * Note that changing a marker is done through removing the marker from the old range and adding it on the new range,
+ * Note that changing a marker is done through removing the marker from the old range and adding it to the new range,
  * so both events are fired.
  *
  * Finally, downcast dispatcher also handles firing events for the {@link module:engine/model/selection model selection}
@@ -65,9 +65,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}
  * &ndash; Fired for every marker that contains a selection.
  *
- * Unlike model tree and markers, events for selection are not fired for changes but for selection state.
+ * Unlike the model tree and the markers, the events for selection are not fired for changes but for a selection state.
  *
- * When providing custom listeners for downcast dispatcher, remember to check whether a given change has not been
+ * When providing custom listeners for a downcast dispatcher, remember to check whether a given change has not been
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} yet.
  *
  * When providing custom listeners for downcast dispatcher, keep in mind that any callback that has
@@ -125,7 +125,7 @@ export default class DowncastDispatcher {
 		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
 
 		/**
-		 * Maps conversion event names that will trigger element reconversion for given element name.
+		 * Maps conversion event names that will trigger element reconversion for a given element name.
 		 *
 		 * @type {Map<String, String>}
 		 * @private
@@ -217,7 +217,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts conversion of attribute change on given `range`.
+	 * Starts a conversion of an attribute change on a given `range`.
 	 *
 	 * For each node in the given `range`, {@link #event:attribute attribute event} is fired with the passed data.
 	 *
@@ -760,7 +760,7 @@ export default class DowncastDispatcher {
 	 */
 
 	/**
-	 * Fired when a new marker is added to the model. Also fired when collapsed model selection that is inside a marker is converted.
+	 * Fired when a new marker is added to the model. Also fired when a collapsed model selection that is inside a marker is converted.
 	 *
 	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `addMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -770,17 +770,17 @@ export default class DowncastDispatcher {
 	 * If the marker range is not collapsed:
 	 *
 	 * * the event is fired for each item in the marker range one by one,
-	 * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as event name.
+	 * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as the event name.
 	 *
 	 * If the marker range is collapsed:
 	 *
 	 * * there is only one event,
-	 * * `conversionApi.consumable` includes marker range with event name.
+	 * * `conversionApi.consumable` includes marker range with the event name.
 	 *
-	 * If selection inside a marker is converted:
+	 * If the selection inside a marker is converted:
 	 *
 	 * * there is only one event,
-	 * * `conversionApi.consumable` includes selection instance with event name.
+	 * * `conversionApi.consumable` includes the selection instance with the event name.
 	 *
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
@@ -795,7 +795,7 @@ export default class DowncastDispatcher {
 	 */
 
 	/**
-	 * Fired when marker is removed from the model.
+	 * Fired when a marker is removed from the model.
 	 *
 	 * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `removeMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -879,8 +879,8 @@ function elementOrTextProxyToView( item, mapper ) {
  */
 
 /**
- * Stores information about what parts of processed model item are still waiting to be handled. After a piece of model item
- * was converted, appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
+ * Stores the information about what parts of a processed model item are still waiting to be handled. After a piece of a model item was
+ * converted, an appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
  *
  * @member {module:engine/conversion/modelconsumable~ModelConsumable} #consumable
  */
@@ -898,13 +898,13 @@ function elementOrTextProxyToView( item, mapper ) {
  */
 
 /**
- * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate data during conversion.
+ * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate the data during conversion.
  *
  * @member {module:engine/view/downcastwriter~DowncastWriter} #writer
  */
 
 /**
- * An object with an additional configuration which can be used during conversion process. Available only for data downcast conversion.
+ * An object with an additional configuration which can be used during the conversion process. Available only for data downcast conversion.
  *
  * @member {Object} #options
  */
