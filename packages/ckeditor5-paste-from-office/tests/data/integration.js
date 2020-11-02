@@ -13,6 +13,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
@@ -71,7 +72,7 @@ describe( 'PasteFromOffice - integration', () => {
 		type: 'integration',
 		browsers,
 		editorConfig: {
-			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, PasteFromOffice ]
+			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, ListStyle, PasteFromOffice ]
 		},
 		skip: {
 			safari: [ 'heading3Styled' ] // Skip due to spacing issue (#13).

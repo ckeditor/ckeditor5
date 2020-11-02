@@ -15,27 +15,27 @@ const editorConfig = {
 	plugins: [ Clipboard, PasteFromOffice, Paragraph ]
 };
 
-describe.only( 'PasteFromOffice - normalization', () => {
-	// generateTests( {
-	// 	input: 'basic-styles',
-	// 	type: 'normalization',
-	// 	browsers,
-	// 	editorConfig
-	// } );
-	//
-	// generateTests( {
-	// 	input: 'image',
-	// 	type: 'normalization',
-	// 	browsers,
-	// 	editorConfig
-	// } );
-	//
-	// generateTests( {
-	// 	input: 'link',
-	// 	type: 'normalization',
-	// 	browsers,
-	// 	editorConfig
-	// } );
+describe( 'PasteFromOffice - normalization', () => {
+	generateTests( {
+		input: 'basic-styles',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
+
+	generateTests( {
+		input: 'image',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
+
+	generateTests( {
+		input: 'link',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 
 	generateTests( {
 		input: 'list',
@@ -44,24 +44,24 @@ describe.only( 'PasteFromOffice - normalization', () => {
 		editorConfig
 	} );
 
-	// generateTests( {
-	// 	input: 'spacing',
-	// 	type: 'normalization',
-	// 	browsers,
-	// 	editorConfig
-	// } );
-	//
-	// generateTests( {
-	// 	input: 'google-docs-bold-wrapper',
-	// 	type: 'normalization',
-	// 	browsers,
-	// 	editorConfig
-	// } );
-	//
-	// generateTests( {
-	// 	input: 'generic-list-in-table',
-	// 	type: 'normalization',
-	// 	browsers,
-	// 	editorConfig
-	// } );
+	generateTests( {
+		input: 'spacing',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
+
+	generateTests( {
+		input: 'google-docs-bold-wrapper',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
+
+	generateTests( {
+		input: 'generic-list-in-table',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 } );

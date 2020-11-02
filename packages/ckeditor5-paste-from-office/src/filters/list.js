@@ -166,19 +166,19 @@ function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
 	let listStyleType = 'decimal'; // Decimal is default one.
-	let type;
+	let type = 'ol'; // <ol> is default list.
 
 	if ( listStyleMatch && listStyleMatch[ 1 ] ) {
 		const listStyleTypeMatch = listStyleTypeRegex.exec( listStyleMatch[ 1 ] );
 
 		if ( listStyleTypeMatch && listStyleTypeMatch[ 1 ] ) {
 			listStyleType = listStyleTypeMatch[ 1 ].trim();
+			type = listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul';
 		}
 
-		type = listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul';
-
-		// Styles for the numbered lists are defined in Word CSS stylesheet.
-		// Bulleted lists are not described and we need to predict the list style value based on
+		// Styles for the numbered lists are always defined in Word CSS stylesheet.
+		// Unordered lists MAY contain a value for the Word CSS definition `mso-level-text` but sometimes
+		// the tag is missing. And because of that, we cannot depend on that. We need to predict the list style value based on
 		// the list style marker element.
 		if ( listStyleType === 'bullet' ) {
 			const bulletedStyle = findBulletedListStyle( listLikeItem.element );
@@ -225,19 +225,18 @@ function findBulletedListStyle( element ) {
 // @param {module:engine/view/element~Element} element
 // @returns {module:engine/view/text~Text|null}
 function findListMarkerNode( element ) {
-	let textNodeOrElement = element.getChild( 0 ).getChild( 0 );
+	// If the first child is a text node, it is a value for the element.
+	if ( element.getChild( 0 ).is( '$text' ) ) {
+		return null;
+	}
+
+	const textNodeOrElement = element.getChild( 0 ).getChild( 0 );
 
 	if ( textNodeOrElement.is( '$text' ) ) {
 		return textNodeOrElement;
 	}
 
-	textNodeOrElement = textNodeOrElement.getChild( 0 );
-
-	if ( textNodeOrElement.is( '$text' ) ) {
-		return textNodeOrElement;
-	}
-
-	return null;
+	return textNodeOrElement.getChild( 0 );
 }
 
 // Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.
