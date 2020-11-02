@@ -10,11 +10,11 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * The update raw HTML value command.
+ * The update HTML embed value command.
  *
  * The command is registered by {@link module:html-embed/htmlembedediting~HtmlEmbedEditing} as `'updateHtmlEmbed'`.
  *
- * To update the value of the raw HTML element at the current selection, execute the command:
+ * To update the value of the HTML embed element at the current selection, execute the command:
  *
  *		editor.execute( 'updateHtmlEmbed', '<b>HTML.</b>' );
  *
@@ -49,7 +49,7 @@ export default class UpdateHtmlEmbedCommand extends Command {
 	}
 }
 
-// Returns a selected raw html element in the model, if any.
+// Returns the selected HTML embed element in the model, if any.
 //
 // @param {module:engine/model/selection~Selection} selection
 // @returns {module:engine/model/element~Element|null}
