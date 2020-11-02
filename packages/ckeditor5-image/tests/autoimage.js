@@ -96,70 +96,64 @@ describe( 'AutoImage - integration', () => {
 			);
 		} );
 
-		it( 'works for a full URL (https + "www" sub-domain)', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://www.example.com/image.png' );
+		describe( 'supported URL', () => {
+			const supportedURLs = [
+				'example.com/image.png',
+				'www.example.com/image.png',
+				'https://www.example.com/image.png',
+				'https://example.com/image.png',
+				'http://www.example.com/image.png',
+				'http://example.com/image.png',
+				'http://example.com/image.jpg',
+				'http://example.com/image.jpeg',
+				'http://example.com/image.gif',
+				'http://example.com/image.ico',
+				'http://example.com/image.JPG',
+				'http://example.com%20Fimage.png',
+				'http://example.com/image.png?foo=bar',
+				'http://example.com/image.png#foo'
+			];
 
-			clock.tick( 100 );
+			for ( const supportedURL of supportedURLs ) {
+				it( `should detect "${ supportedURL }" as a valid URL`, () => {
+					setData( editor.model, '<paragraph>[]</paragraph>' );
+					pasteHtml( editor, supportedURL );
 
-			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://www.example.com/image.png"><caption></caption></image>]'
-			);
+					clock.tick( 100 );
+
+					expect( getData( editor.model ) ).to.equal(
+						`[<image src="${ supportedURL }"><caption></caption></image>]`
+					);
+				} );
+			}
 		} );
 
-		it( 'works for a full URL (https without "www" sub-domain)', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://example.com/image.png' );
+		describe( 'unsupported URL', () => {
+			const unsupportedOrInvalid = [
+				'http://www.example.com',
+				'https://example.com',
+				'http://www.example.com/image.svg',
+				'http://www.example.com/image.webp',
+				'http://www.example.com/image.mp3',
+				'http://www.example.com/image.exe',
+				'http://www.example.com/image.txt',
+				'http://example.com/image.png http://example.com/image.png',
+				'Foo bar http://example.com/image.png bar foo.',
+				'https://example.com/im age.png'
+			];
 
-			clock.tick( 100 );
+			for ( const unsupportedURL of unsupportedOrInvalid ) {
+				it( `should not detect "${ unsupportedURL }" as a valid URL`, () => {
+					setData( editor.model, '<paragraph>[]</paragraph>' );
+					pasteHtml( editor, unsupportedURL );
 
-			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com/image.png"><caption></caption></image>]'
-			);
-		} );
+					clock.tick( 100 );
 
-		it( 'works for a full URL (http + "www" sub-domain)', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://www.example.com/image.png' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://www.example.com/image.png"><caption></caption></image>]'
-			);
-		} );
-
-		it( 'works for a full URL (http without "www" sub-domain)', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://example.com/image.png' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com/image.png"><caption></caption></image>]'
-			);
-		} );
-
-		it( 'works for a URL without protocol (with "www" sub-domain)', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'www.example.com/image.png' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'[<image src="www.example.com/image.png"><caption></caption></image>]'
-			);
-		} );
-
-		it( 'works for a URL without protocol (without "www" sub-domain)', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'example.com/image.png' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'[<image src="example.com/image.png"><caption></caption></image>]'
-			);
+					expect( getData( editor.model ) ).to.equal(
+						`<paragraph>${ unsupportedURL }[]</paragraph>`
+					);
+				} );
+			}
 		} );
 
 		it( 'works for URL that was pasted as a link', () => {
@@ -235,41 +229,6 @@ describe( 'AutoImage - integration', () => {
 			);
 		} );
 
-		it( 'does nothing if a URL is invalid', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://example.com' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://example.com[]</paragraph>'
-			);
-		} );
-
-		it( 'does nothing if pasted two links as text', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://example.com/image.png ' +
-				'http://example.com/image.png' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>http://example.com/image.png ' +
-				'http://example.com/image.png[]</paragraph>'
-			);
-		} );
-
-		it( 'does nothing if pasted text contains a valid URL', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'Foo bar http://example.com/image.png bar foo.' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>Foo bar http://example.com/image.png bar foo.[]</paragraph>'
-			);
-		} );
-
 		it( 'does nothing if pasted more than single node', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor,
@@ -307,17 +266,6 @@ describe( 'AutoImage - integration', () => {
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>https://</paragraph><paragraph>example.com/image</paragraph><paragraph>.png[]</paragraph>'
-			);
-		} );
-
-		it( 'does nothing if a URL is invalid (space inside URL)', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'https://example.com/im age.png' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>https://example.com/im age.png[]</paragraph>'
 			);
 		} );
 
@@ -366,17 +314,6 @@ describe( 'AutoImage - integration', () => {
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
 				'[<image src="http://example.com/image2.png"><caption></caption></image>]' +
 				'<paragraph>Bar.</paragraph>'
-			);
-		} );
-
-		it( 'works for URL with %-symbols', () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
-			pasteHtml( editor, 'http://example.com%20Fimage.png' );
-
-			clock.tick( 100 );
-
-			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com%20Fimage.png"><caption></caption></image>]'
 			);
 		} );
 	} );
