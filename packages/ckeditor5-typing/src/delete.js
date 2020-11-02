@@ -32,7 +32,12 @@ export default class Delete extends Plugin {
 
 		view.addObserver( DeleteObserver );
 
-		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
+		const deleteForwardCommand = new DeleteCommand( editor, 'forward' );
+
+		// Register `deleteForward` command and add `forwardDelete` command as an alias for backward compatibility.
+		editor.commands.add( 'deleteForward', deleteForwardCommand );
+		editor.commands.add( 'forwardDelete', deleteForwardCommand );
+
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
@@ -52,7 +57,7 @@ export default class Delete extends Plugin {
 				deleteCommandParams.selection = modelSelection;
 			}
 
-			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', deleteCommandParams );
+			editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
 
 			data.preventDefault();
 

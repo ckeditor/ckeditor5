@@ -13,7 +13,7 @@ import { insertImage, isImageAllowed } from './utils';
 /**
  * Insert image command.
  *
- * The command is registered by the {@link module:image/image/imageediting~ImageEditing} plugin as `'insertImage'`
+ * The command is registered by the {@link module:image/image/imageediting~ImageEditing} plugin as `insertImage`
  * and it is also available via aliased `imageInsert` name.
  *
  * In order to insert an image at the current selection position

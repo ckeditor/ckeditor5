@@ -18,7 +18,7 @@ import {
 
 import { toImageWidget } from './utils';
 
-import InsertImageCommand from './imageinsertcommand';
+import InsertImageCommand from './insertimagecommand';
 
 /**
  * The image engine plugin.

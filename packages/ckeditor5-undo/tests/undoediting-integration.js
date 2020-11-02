@@ -888,7 +888,7 @@ describe( 'UndoEditing integration', () => {
 				'<paragraph>Bar</paragraph>'
 			);
 
-			editor.execute( 'forwardDelete' );
+			editor.execute( 'deleteForward' );
 			output( '<paragraph>Foo</paragraph><paragraph>[]Bar</paragraph>' );
 
 			editor.execute( 'undo' );

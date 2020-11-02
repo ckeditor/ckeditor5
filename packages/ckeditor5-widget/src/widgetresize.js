@@ -252,7 +252,7 @@ mix( WidgetResize, ObservableMixin );
  *
  * It receives a `Number` (`newValue`) as a parameter.
  *
- * For example, {@link module:image/imageresize~ImageResize} uses it to execute the image resize command
+ * For example, {@link module:image/imageresize~ImageResize} uses it to execute the resize image command
  * which puts the new value into the model.
  *
  * ```js

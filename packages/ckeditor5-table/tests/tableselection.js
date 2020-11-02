@@ -360,7 +360,7 @@ describe( 'TableSelection', () => {
 			] ) );
 		} );
 
-		it( 'should put selection in the last selected cell after removing content (forward delete)', () => {
+		it( 'should put selection in the last selected cell after removing content (delete forward)', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ),
 				modelRoot.getChild( 0 ).getChild( 1 ).getChild( 1 )
@@ -381,7 +381,7 @@ describe( 'TableSelection', () => {
 				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 )
 			);
 
-			editor.execute( 'forwardDelete' );
+			editor.execute( 'deleteForward' );
 
 			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]', '12', '13' ],

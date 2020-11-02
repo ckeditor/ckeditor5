@@ -12,9 +12,9 @@ import { insertImage, isImageAllowed } from '../image/utils';
  */
 
 /**
- * The image upload command.
+ * The upload image command.
  *
- * The command is registered by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin as `'uploadImage'`
+ * The command is registered by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin as `uploadImage`
  * and it is also available via aliased `imageUpload` name.
  *
  * In order to upload an image at the current selection position

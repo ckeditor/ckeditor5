@@ -4,10 +4,10 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ResizeImageCommand from '../../src/imageresize/imageresizecommand';
+import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'ImageStyleCommand', () => {
+describe( 'ResizeImageCommand', () => {
 	let model, command;
 
 	beforeEach( () => {

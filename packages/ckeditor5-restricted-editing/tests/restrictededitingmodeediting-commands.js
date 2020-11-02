@@ -346,9 +346,9 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				} );
 			} );
 
-			describe( 'forwardDelete', () => {
+			describe( 'deleteForward', () => {
 				beforeEach( () => {
-					editor.commands.add( 'forwardDelete', buildFakeCommand( editor ) );
+					editor.commands.add( 'deleteForward', buildFakeCommand( editor ) );
 
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 'end' );
@@ -360,7 +360,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -368,7 +368,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
@@ -376,7 +376,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 4 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
@@ -384,7 +384,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be disabled when caret moves to end boundary and it was enabled previously', () => {
@@ -392,13 +392,13 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -409,7 +409,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -420,7 +420,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -431,7 +431,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -442,7 +442,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
@@ -453,7 +453,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'deleteForward' ).isEnabled ).to.be.true;
 				} );
 			} );
 		} );

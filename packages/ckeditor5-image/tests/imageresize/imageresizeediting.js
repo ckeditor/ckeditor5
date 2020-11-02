@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import Image from '../../src/image';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ResizeImageCommand from '../../src/imageresize/imageresizecommand';
+import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
 import ImageStyle from '../../src/imagestyle';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';

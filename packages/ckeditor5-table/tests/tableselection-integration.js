@@ -61,7 +61,7 @@ describe( 'TableSelection - integration', () => {
 			] ) );
 		} );
 
-		it( 'should clear contents of the selected table cells and put selection in last cell on forward delete', () => {
+		it( 'should clear contents of the selected table cells and put selection in last cell on delete forward', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )

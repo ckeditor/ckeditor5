@@ -9,7 +9,7 @@
 
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
-import CheckTodoListCommand from './todolistcheckcommand';
+import CheckTodoListCommand from './checktodolistcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 

@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { isImage } from '../image/utils';
 
 /**
- * The image resize command. Currently, it only supports the width attribute.
+ * The resize image command. Currently, it only supports the width attribute.
  *
  * @extends module:core/command~Command
  */

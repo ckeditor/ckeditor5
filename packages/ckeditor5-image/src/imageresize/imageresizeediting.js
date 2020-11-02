@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ResizeImageCommand from './imageresizecommand';
+import ResizeImageCommand from './resizeimagecommand';
 
 /**
  * The image resize editing feature.

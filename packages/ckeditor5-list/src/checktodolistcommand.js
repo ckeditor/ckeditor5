@@ -15,7 +15,7 @@ const attributeKey = 'todoListChecked';
  * The check to-do command.
  *
  * The command is registered by the {@link module:list/todolistediting~TodoListEditing} as
- * the `'checkTodoList'` editor command and it is also available via aliased `todoListCheck` name.
+ * the `checkTodoList` editor command and it is also available via aliased `todoListCheck` name.
  *
  * @extends module:core/command~Command
  */
