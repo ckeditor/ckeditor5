@@ -12,27 +12,29 @@ since: 24.0.0
 	The reconversion API is a preliminary feature and may not be production ready.
 </info-box>
 
-This guide introduces _reconversion_ concepts for downcast (model-to-view) {@link framework/guides/architecture/editing-engine#conversion conversion} for elements.
+This guide introduces _reconversion_ concept of the downcast (model-to-view) {@link framework/guides/architecture/editing-engine#conversion conversion} for model elements.
 
-To better understand concepts used in this guide we advise that you are familiar with other conversion guides, especially:
+To better understand concepts used in this guide we advise that you familiarize with other conversion guides:
 
 - {@link framework/guides/deep-dive/custom-element-conversion custom element conversion}
 - {@link framework/guides/tutorials/implementing-a-block-widget implementing a block widget}
 
 ## Atomic converters vs element reconversion
 
-Most editor features are written using atomic converters for every element or attribute. This approach allows great level of customization and separation of concerns. For example, table features can be added or removed without the need to change the main table converter. However, this approach in many cases is overly complicated, especially if the feature you work doesn't need to be extensible.
+Most editor features are written using separate converters for elements and attributes. This approach enables flexibility of customization and provides separation of concerns. For example, additional image features, like image styles or caption, can be added or removed without the need to change the main image converter. To allow this, we implemented main element-to-element converter for the image, and many granular converters for image's attributes. The other benefit is that change of a model attribute requires minimal changes in the view.
 
-An element reconversion comes handy for cases where you need to:
-
-* convert a relatively simple model to a complex view structure
-* writing a one, functional converter is easier to grasp in your project
+However, this approach in many cases is may be overly complicated. Consider a case in which you need to create a multi-layer view structure for one model element, or a case in which view structure depends on model attribute value. For those cases you can use one converter that produces full view structure from model element, direct children and its attributes. This converter will be used to reconvert model-to-view on every attribute or children change.
 
 An additional perk of using an element reconversion is that the parts of model tree that hasn't been changed, like paragraph and text inside your feature element, will not be reconverted. In other words, their view elements are memoized and re-used inside changed parent.
 
+To sum up, an element reconversion comes handy for cases where you need to:
+
+* Convert a relatively simple model to a complex view structure.
+* Writing a one, functional converter is easier to grasp in your project.
+
 ## Enabling element reconversion
 
-Element reconversion is enabled by setting reconversion triggers in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} downcast helper.
+Element reconversion is enabled by setting reconversion trigger configuration (`triggerBy`) for the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} downcast helper.
 
 The model element can be reconverted when:
 
@@ -45,12 +47,7 @@ Note that, when using `children` configuration option the current implementation
 * will have a "flat" structure
 </info-box>
 
-In a simple example of element reconversion configuration demonstrated below:
-
-* The downcast converter for `myElement` creates a `<div>` with `data-owner-id` attribute and set of CSS classes.
-* The value of `data-owner-id` is set from `ownerId` model element's attribute.
-* The second CSS class is constructed off the `type` model element's attribute.
-* The `triggerBy.attributes` defines that element will be converted upon changes of `onwerId` or `type` attributes.
+A simple example of element reconversion configuration demonstrated below:
 
 ```js
 editor.conversion.for( 'downcast' ).elementToElement( {
@@ -66,6 +63,11 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 	}
 } )
 ```
+
+* The downcast converter for `myElement` creates a `<div>` with `data-owner-id` attribute and set of CSS classes.
+* The value of `data-owner-id` is set from `ownerId` model element's attribute.
+* The second CSS class is constructed off the `type` model element's attribute.
+* The `triggerBy.attributes` defines that element will be converted upon changes of `onwerId` or `type` attributes.
 
 Before CKEditor version `23.1.0` you would have to define a set of atomic converters for the element and for each attribute:
 
@@ -90,19 +92,13 @@ editor.conversion.for( 'downcast' )
 
 ## Example implementation
 
-An example feature that benefits from using reconversion is one that requires representing a different view structure for various element states.
+In the example implementation we will implement a "card" box which is displayed aside to the main article content. A card will contain a text-only title, one to four content sections and an optional URL. Additionally, user can choose a type of the card.
 
 ### Demo
 
 {@snippet framework/element-reconversion-demo}
 
-The above demo creates a side box that:
-
-* Always have a title (text attributes are disallowed).
-* Have 1 to 4 sections which can hold any {@link framework/guides/deep-dive/conversion-introduction#inline-and-block-content block
-  content}.
-* Is an "info" or "warning" type.
-* Have an optional URL field.
+### Model and view structure
 
 A simplified model markup for the side card looks as follows:
 
@@ -252,7 +248,7 @@ By using `mapper.bindElements( child, childView )` for `<sideCardTitle>` and `<s
 
 ### Upcast conversion
 
-The upcast conversion uses standard element-to-element converters for box & title and a custom converter for the side card to extract metadata from the data.
+The upcast conversion uses standard element-to-element converters for box & title, and a custom converter for the side card to extract metadata from the data.
 
 ```js
 editor.conversion.for( 'upcast' )
@@ -271,3 +267,7 @@ editor.conversion.for( 'upcast' )
 ```
 
 You can see the details of the upcast converter function (`upcastInfoBox()`) in the full source code at the end of this guide.
+
+### Full source code
+
+TODO
