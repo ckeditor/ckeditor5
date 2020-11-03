@@ -23,38 +23,10 @@ ClassicEditor
 				'underline',
 				'strikethrough',
 				'|',
-				'alignment',
-				'|',
-				'indent',
-				'outdent',
-				'|',
 				'undo',
 				'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
-		},
-		image: {
-			styles: [
-				'full',
-				'alignLeft',
-				'alignRight'
-			],
-			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:full',
-				'imageStyle:alignRight',
-				'|',
-				'imageTextAlternative'
-			]
-		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells',
-				'tableProperties',
-				'tableCellProperties'
-			]
 		},
 		fontFamily: {
 			supportAllValues: true
@@ -69,7 +41,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 		// Prevent showing a warning notification when user is pasting a content from MS Word or Google Docs.
-		window.preventPasteFromOfficeNotification = true;
+		window.preventPasteFromOfficeNotification = false;
 	} )
 	.catch( err => {
 		console.error( err.stack );
