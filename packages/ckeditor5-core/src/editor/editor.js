@@ -297,7 +297,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Puts the focus in the editor's editing view.
+	 * Focuses the editor.
 	 */
 	focus() {
 		this.editing.view.focus();
