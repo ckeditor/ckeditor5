@@ -39,9 +39,7 @@ This means that if you did not enable, for instance, {@link features/font font f
 ## Related features
 
 CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-plaintext Paste plain text} &ndash; Detects when a plain text is pasted and acts accordingly.
 * {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting.
-* {@link features/html-embed Raw HTML embedding} &ndash; Allows you to embed an HTML snippet in the editor. **For advanced users**
 
 ## Installation
 

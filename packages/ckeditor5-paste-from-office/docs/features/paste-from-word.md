@@ -40,8 +40,6 @@ This means that if you did not enable, for instance, {@link features/font font f
 
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Allows you to paste content from Google Docs maintaining the original formatting and structure.
-* {@link features/paste-plaintext Paste plain text} &ndash; Detects when a plain text is pasted and acts accordingly.
-* {@link features/html-embed Raw HTML embedding} &ndash; Allows you to embed an HTML snippet in the editor. **For advanced users**
 
 ## Installation
 
