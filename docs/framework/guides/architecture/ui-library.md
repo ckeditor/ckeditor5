@@ -443,7 +443,7 @@ dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled',
 
 ### Best practices
 
-It is advised that for the best user experience the editing view gets {@link module:core/editor/editor~Editor#focus focused} upon any user action (e.g. executing a command) to make sure the editor retains focus:
+It is advised that for the best user experience the editor gets {@link module:core/editor/editor~Editor#focus focused} upon any user action (e.g. executing a command):
 
 ```js
 // Execute some action on dropdown#execute event.
