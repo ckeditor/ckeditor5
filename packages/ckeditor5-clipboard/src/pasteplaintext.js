@@ -14,7 +14,7 @@ import ClipboardObserver from './clipboardobserver';
 /**
  * The plugin detects user intentions for pasting plain text.
  *
- * For example, it detects <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> + <kbd>ctrl/v</kbd> keystroke.
+ * For example, it detects <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke.
  *
  * @extends module:core/plugin~Plugin
  */
