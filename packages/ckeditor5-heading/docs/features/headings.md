@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/heading-source}
 
-The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information.
+The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information. Headings can easily be added with toolbar dropdown, buttons or with {@link features/autoformat Markdown code} as you type. They can also be cleared with the {@link features/remove-format remove format} feature.
 
 <info-box info>
 	This feature is enabled by default in all builds.
@@ -44,6 +44,7 @@ There are more CKEditor 5 features that can help you format your content:
 * {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
 * {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered list you can style.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+* {@link features/autoformat Autoformatting} &ndash; Add formatting elements as you type with Markdown code.
 
 ## Configuration
 
