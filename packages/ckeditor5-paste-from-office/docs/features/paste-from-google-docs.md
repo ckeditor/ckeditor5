@@ -30,17 +30,17 @@ To test how Paste from Office works, open the [sample Google Docs document](http
 
 {@snippet features/paste-from-office}
 
+## Related features
+ 
+CKEditor 5 supports a wider range of paste features, including:
+* {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
+* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+
 ## Automatic content filtering
 
 With CKEditor 5 you do not need to worry about pasting messy content from Google Docs (or any other possible sources). Thanks to the CKEditor 5 {@link framework/guides/overview custom data model}, only content which is specifically handled by the loaded rich-text editor features will be preserved.
 
 This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Google Docs and other sources (e.g. other websites).
-
-## Related features
- 
-CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-plaintext Paste plain text} &ndash; Detects when a plain text is pasted and acts accordingly.
-* {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting.
 
 ## Installation
 
@@ -50,7 +50,7 @@ CKEditor 5 supports a wider range of paste features, including:
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-paste-from-office`](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-paste-from-office
 ```
 
