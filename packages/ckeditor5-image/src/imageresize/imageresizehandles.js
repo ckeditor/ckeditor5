@@ -41,15 +41,15 @@ export default class ImageResizeHandles extends Plugin {
 		const command = this.editor.commands.get( 'imageResize' );
 		this.bind( 'isEnabled' ).to( command );
 
-		this._addResizerCreationListener();
+		this._setupResizerCreator();
 	}
 
 	/**
-	 * Attaches the listeners responsible for creating a resizer for each editor image.
+	 * Attaches the listeners responsible for creating a resizer for each image.
 	 *
 	 * @private
 	 */
-	_addResizerCreationListener() {
+	_setupResizerCreator() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -64,6 +64,7 @@ export default class ImageResizeHandles extends Plugin {
 				// There are rare cases when image will be triggered multiple times for the same widget, e.g. when
 				// image's src was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
 				resizer.redraw();
+
 				return;
 			}
 
