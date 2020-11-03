@@ -30,10 +30,29 @@ CKEditor 5 supports a wider range of paste features, including:
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all official builds. The installation instructions are for developers interested in building their own custom rich-text editor.
+	This feature is required by the Clipboard plugin and is enabled by default in all official builds. The installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
 
-<!-- TODO Installation instructions -->
+To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-clipboard
+```
+
+Then add the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin to your plugin list:
+
+```js
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Clipboard, Bold, ... ]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+{@link module:clipboard/clipboard~PastePlainText `PastePlainText`} plugin will activate along with the Clipboard plugin. 
 
 ## Support for other applications
 
