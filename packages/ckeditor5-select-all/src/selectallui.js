@@ -52,7 +52,7 @@ export default class SelectAllUI extends Plugin {
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'selectAll' );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return view;

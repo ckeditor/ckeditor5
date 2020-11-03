@@ -297,6 +297,13 @@ export default class Editor {
 	}
 
 	/**
+	 * Puts the focus in the editor's editing view.
+	 */
+	focus() {
+		this.editing.view.focus();
+	}
+
+	/**
 	 * Creates and initializes a new editor instance.
 	 *
 	 * This is an abstract method. Every editor type needs to implement its own initialization logic.

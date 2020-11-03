@@ -314,6 +314,9 @@ export default class DowncastDispatcher {
 			}
 		}
 
+		// After reconversion is done we can unbind the old view.
+		mapper.unbindViewElement( currentView );
+
 		this._clearConversionApi();
 	}
 

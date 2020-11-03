@@ -17,8 +17,9 @@ Use the editor below to see the block quote plugin in action.
 
 Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
 
-* The {@link features/indent block indentation feature} allows you to set indentation for text blocks such as paragraphs or lists.
-* The {@link features/code-blocks code block feature} allows for insertion of various code listings.
+* {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/code-blocks Code block}  &ndash; Insert longer, multiline code listings.
+* {@link features/text-alignment Text alignment} &ndash; Align your content left, right, center it or justify.
 
 ## Installation
 

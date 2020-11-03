@@ -45,7 +45,7 @@ export default class ItalicUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( ITALIC );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return view;
