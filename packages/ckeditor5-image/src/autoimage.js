@@ -139,7 +139,8 @@ export default class AutoImage extends Plugin {
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = global.window.setTimeout( () => {
-			// Don't do anything if image element cannot be inserted at the current position (#47).
+			// Don't do anything if image element cannot be inserted at the current position.
+			// See https://github.com/ckeditor/ckeditor5/issues/2763.
 			// Condition must be checked after timeout - pasting may take place on an element, replacing it. The final position matters.
 			const imageCommand = editor.commands.get( 'imageInsert' );
 
