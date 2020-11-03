@@ -437,7 +437,7 @@ _setupBootstrapHeadingDropdown() {
 			const commandValue = isParagraph ? undefined : { value: option.model };
 
 			editor.execute( commandName, commandValue );
-			editor.focus();
+			editor.editing.view.focus();
 		} );
 
 		dropdownMenu.append( menuItem );

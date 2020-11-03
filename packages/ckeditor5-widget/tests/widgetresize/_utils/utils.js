@@ -152,6 +152,6 @@ export function getHandleCenterPoint( domWrapper, handlePosition ) {
 }
 
 export function focusEditor( editor ) {
-	editor.focus();
+	editor.editing.view.focus();
 	editor.ui.focusTracker.isFocused = true;
 }

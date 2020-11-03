@@ -37,7 +37,7 @@ export default class PageBreakUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'pageBreak' );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

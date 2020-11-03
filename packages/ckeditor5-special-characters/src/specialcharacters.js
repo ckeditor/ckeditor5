@@ -90,7 +90,7 @@ export default class SpecialCharacters extends Plugin {
 			// Insert a special character when a tile was clicked.
 			dropdownView.on( 'execute', ( evt, data ) => {
 				editor.execute( 'input', { text: data.character } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			dropdownView.on( 'change:isOpen', () => {

@@ -319,7 +319,7 @@ export default class TablePropertiesUI extends Plugin {
 
 		// Make sure the focus is not lost in the process by putting it directly
 		// into the editing view.
-		this.editor.focus();
+		this.editor.editing.view.focus();
 	}
 
 	/**

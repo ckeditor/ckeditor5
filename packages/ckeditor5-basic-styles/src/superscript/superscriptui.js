@@ -44,7 +44,7 @@ export default class SuperscriptUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( SUPERSCRIPT );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

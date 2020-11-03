@@ -37,7 +37,7 @@ export default class HorizontalLineUI extends Plugin {
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'horizontalLine' );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

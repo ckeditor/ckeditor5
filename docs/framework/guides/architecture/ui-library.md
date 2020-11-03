@@ -449,7 +449,7 @@ It is advised that for the best user experience the editor gets {@link module:co
 // Execute some action on dropdown#execute event.
 dropdownView.buttonView.on( 'execute', () => {
 	editor.execute( 'command', { value: ... } );
-	editor.focus();
+	editor.editing.view.focus();
 } );
 ```
 

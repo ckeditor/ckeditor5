@@ -48,7 +48,7 @@ export default class CKFinderUI extends Plugin {
 
 			button.on( 'execute', () => {
 				editor.execute( 'ckfinder' );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return button;
