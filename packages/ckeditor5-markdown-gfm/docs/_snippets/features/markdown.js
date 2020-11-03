@@ -33,7 +33,9 @@ ClassicEditor
 			'outdent',
 			'indent',
 			'|',
+			'imageUpload',
 			'blockQuote',
+			'|',
 			'undo',
 			'redo'
 		],
