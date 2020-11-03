@@ -93,7 +93,7 @@ export function unwrapParagraphInListItem( documentFragment, writer ) {
 			// Google Docs allows on single paragraph inside LI.
 			const firstChild = element.getChild( 0 );
 
-			if ( firstChild.is( 'element', 'p' ) ) {
+			if ( firstChild && firstChild.is( 'element', 'p' ) ) {
 				writer.unwrapElement( firstChild );
 			}
 		}

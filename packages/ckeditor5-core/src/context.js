@@ -125,7 +125,7 @@ export default class Context {
 				 * @error context-initplugins-constructor-only
 				 */
 				throw new CKEditorError(
-					'context-initplugins-constructor-only: Only a constructor function is allowed as a context plugin.',
+					'context-initplugins-constructor-only',
 					null,
 					{ Plugin }
 				);
@@ -139,7 +139,7 @@ export default class Context {
 				 * @error context-initplugins-invalid-plugin
 				 */
 				throw new CKEditorError(
-					'context-initplugins-invalid-plugin: Only a plugin marked as a context plugin is allowed to be used with a context.',
+					'context-initplugins-invalid-plugin',
 					null,
 					{ Plugin }
 				);
@@ -177,11 +177,9 @@ export default class Context {
 			/**
 			 * Cannot add multiple editors to the context which is created by the editor.
 			 *
-			 * @error context-addEditor-private-context
+			 * @error context-addeditor-private-context
 			 */
-			throw new CKEditorError(
-				'context-addEditor-private-context: Cannot add multiple editors to the context which is created by the editor.'
-			);
+			throw new CKEditorError( 'context-addeditor-private-context' );
 		}
 
 		this.editors.add( editor );

@@ -215,7 +215,7 @@ export default class ListCommand extends Command {
 			/**
 			 * Event fired by the {@link #execute} method.
 			 *
-			 * It allows to execute an action after executing the {@link ~ListCommand#execute} method, e.g. adjusting
+			 * It allows to execute an action after executing the {@link ~ListCommand#execute} method, for example adjusting
 			 * attributes of changed blocks.
 			 *
 			 * @protected

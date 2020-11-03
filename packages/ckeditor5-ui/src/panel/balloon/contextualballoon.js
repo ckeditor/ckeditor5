@@ -200,7 +200,7 @@ export default class ContextualBalloon extends Plugin {
 			 * @error contextualballoon-add-view-exist
 			 */
 			throw new CKEditorError(
-				'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.',
+				'contextualballoon-add-view-exist',
 				[ this, data ]
 			);
 		}
@@ -252,7 +252,7 @@ export default class ContextualBalloon extends Plugin {
 			 * @error contextualballoon-remove-view-not-exist
 			 */
 			throw new CKEditorError(
-				'contextualballoon-remove-view-not-exist: Cannot remove the configuration of a non-existent view.',
+				'contextualballoon-remove-view-not-exist',
 				[ this, view ]
 			);
 		}
@@ -320,7 +320,7 @@ export default class ContextualBalloon extends Plugin {
 			 * @error contextualballoon-showstack-stack-not-exist
 			 */
 			throw new CKEditorError(
-				'contextualballoon-showstack-stack-not-exist: Cannot show a stack that does not exist.',
+				'contextualballoon-showstack-stack-not-exist',
 				this
 			);
 		}
@@ -424,7 +424,7 @@ export default class ContextualBalloon extends Plugin {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
-				this.editor.editing.view.focus();
+				this.editor.focus();
 			}
 
 			this._showNextStack();
@@ -434,7 +434,7 @@ export default class ContextualBalloon extends Plugin {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
-				this.editor.editing.view.focus();
+				this.editor.focus();
 			}
 
 			this._showPrevStack();
@@ -444,6 +444,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
+	 * @private
 	 * @returns {module:ui/view~View}
 	 */
 	_createFakePanelsView() {

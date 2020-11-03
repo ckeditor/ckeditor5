@@ -54,7 +54,7 @@ ClassicEditor
 					writer.setSelection( element, 'on' );
 				} );
 
-				editor.editing.view.focus();
+				editor.focus();
 			}
 		} );
 

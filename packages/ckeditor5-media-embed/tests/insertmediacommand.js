@@ -50,6 +50,28 @@ describe( 'MediaEmbedCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
+		it( 'should be true if a media is selected in a table cell', () => {
+			model.schema.register( 'table', { allowIn: '$root', isLimit: true, isObject: true, isBlock: true } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
+			model.schema.extend( 'media', { allowIn: 'tableCell' } );
+
+			setData( model, '<table><tableRow><tableCell>[<media></media>]</tableCell></tableRow></table>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true if in a table cell', () => {
+			model.schema.register( 'table', { allowIn: '$root', isLimit: true, isObject: true, isBlock: true } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
+			model.schema.extend( '$block', { allowIn: 'tableCell' } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo[]</p></tableCell></tableRow></table>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be true when the selection directly in a block', () => {
 			model.schema.register( 'block', { inheritAllFrom: '$block' } );
 			model.schema.extend( '$text', { allowIn: 'block' } );

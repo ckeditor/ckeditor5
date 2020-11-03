@@ -47,7 +47,7 @@ export default class InlineEditableUIView extends EditableUIView {
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name );
 
-			writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), viewRoot );
+			writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', this.name ), viewRoot );
 		} );
 	}
 }

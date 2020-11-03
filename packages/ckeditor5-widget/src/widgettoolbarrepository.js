@@ -7,8 +7,6 @@
  * @module widget/widgettoolbarrepository
  */
 
-/* global console */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -17,7 +15,7 @@ import {
 	isWidget,
 	centeredBalloonPositionForLongWidgets
 } from './utils';
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole
@@ -134,9 +132,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 *
 			 * @error widget-toolbar-no-items
 			 */
-			console.warn(
-				attachLinkToDocumentation( 'widget-toolbar-no-items: Trying to register a toolbar without items.' ), { toolbarId }
-			);
+			logWarning( 'widget-toolbar-no-items', { toolbarId } );
 
 			return;
 		}
@@ -154,7 +150,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * @error widget-toolbar-duplicated
 			 * @param toolbarId Toolbar id.
 			 */
-			throw new CKEditorError( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', this, { toolbarId } );
+			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
 		toolbarView.fillFromConfig( items, editor.ui.componentFactory );

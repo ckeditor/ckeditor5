@@ -64,7 +64,7 @@ describe( 'ToolbarView', () => {
 				expect( view.options ).to.deep.equal( {} );
 			} );
 
-			it( 'should be an empty object if none were passed', () => {
+			it( 'should be an empty object if other options were passed', () => {
 				const options = {
 					foo: 'bar'
 				};
@@ -421,7 +421,8 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
-				{ name: 'baz' }
+				sinon.match( { name: 'baz' } ),
+				sinon.match.string // Link to the documentation.
 			);
 		} );
 	} );

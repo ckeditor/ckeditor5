@@ -114,9 +114,7 @@ export default class ImageResizeButtons extends Plugin {
 				 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} option Invalid image resize option.
 				*/
 				throw new CKEditorError(
-					'imageresizebuttons-missing-icon: ' +
-					'The resize option "' + name + '" misses the "icon" property ' +
-					'or the property value doesn\'t match any of the available icons.',
+					'imageresizebuttons-missing-icon',
 					editor,
 					option
 				);
@@ -187,7 +185,7 @@ export default class ImageResizeButtons extends Plugin {
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, { width: evt.source.commandValue } );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return dropdownView;

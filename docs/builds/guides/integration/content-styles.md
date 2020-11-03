@@ -48,8 +48,8 @@ Below there is a full list of content styles used by the editor features. You ca
 
 ```css
 /*
- * CKEditor 5 (v21.0.0) content styles.
- * Generated on Wed, 29 Jul 2020 12:14:43 GMT.
+ * CKEditor 5 (v23.1.0) content styles.
+ * Generated on Thu, 29 Oct 2020 12:17:48 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -66,6 +66,27 @@ Below there is a full list of content styles used by the editor features. You ca
 	--ck-todo-list-checkmark-size: 16px;
 }
 
+/* ckeditor5-image/theme/imagestyle.css */
+.ck-content .image-style-side {
+	float: right;
+	margin-left: var(--ck-image-style-spacing);
+	max-width: 50%;
+}
+/* ckeditor5-image/theme/imagestyle.css */
+.ck-content .image-style-align-left {
+	float: left;
+	margin-right: var(--ck-image-style-spacing);
+}
+/* ckeditor5-image/theme/imagestyle.css */
+.ck-content .image-style-align-center {
+	margin-left: auto;
+	margin-right: auto;
+}
+/* ckeditor5-image/theme/imagestyle.css */
+.ck-content .image-style-align-right {
+	float: right;
+	margin-left: var(--ck-image-style-spacing);
+}
 /* ckeditor5-image/theme/image.css */
 .ck-content .image {
 	display: table;
@@ -104,116 +125,6 @@ Below there is a full list of content styles used by the editor features. You ca
 /* ckeditor5-image/theme/imageresize.css */
 .ck-content .image.image_resized > figcaption {
 	display: block;
-}
-/* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side {
-	float: right;
-	margin-left: var(--ck-image-style-spacing);
-	max-width: 50%;
-}
-/* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-align-left {
-	float: left;
-	margin-right: var(--ck-image-style-spacing);
-}
-/* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-align-center {
-	margin-left: auto;
-	margin-right: auto;
-}
-/* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-align-right {
-	float: right;
-	margin-left: var(--ck-image-style-spacing);
-}
-/* ckeditor5-block-quote/theme/blockquote.css */
-.ck-content blockquote {
-	overflow: hidden;
-	padding-right: 1.5em;
-	padding-left: 1.5em;
-	margin-left: 0;
-	margin-right: 0;
-	font-style: italic;
-	border-left: solid 5px hsl(0, 0%, 80%);
-}
-/* ckeditor5-block-quote/theme/blockquote.css */
-.ck-content[dir="rtl"] blockquote {
-	border-left: 0;
-	border-right: solid 5px hsl(0, 0%, 80%);
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list {
-	list-style: none;
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list li {
-	margin-bottom: 5px;
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list li .todo-list {
-	margin-top: 5px;
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list .todo-list__label > input {
-	-webkit-appearance: none;
-	display: inline-block;
-	position: relative;
-	width: var(--ck-todo-list-checkmark-size);
-	height: var(--ck-todo-list-checkmark-size);
-	vertical-align: middle;
-	border: 0;
-	left: -25px;
-	margin-right: -15px;
-	right: 0;
-	margin-left: 0;
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list .todo-list__label > input::before {
-	display: block;
-	position: absolute;
-	box-sizing: border-box;
-	content: '';
-	width: 100%;
-	height: 100%;
-	border: 1px solid hsl(0, 0%, 20%);
-	border-radius: 2px;
-	transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background, 250ms ease-in-out border;
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list .todo-list__label > input::after {
-	display: block;
-	position: absolute;
-	box-sizing: content-box;
-	pointer-events: none;
-	content: '';
-	left: calc( var(--ck-todo-list-checkmark-size) / 3 );
-	top: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
-	width: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
-	height: calc( var(--ck-todo-list-checkmark-size) / 2.6 );
-	border-style: solid;
-	border-color: transparent;
-	border-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;
-	transform: rotate(45deg);
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list .todo-list__label > input[checked]::before {
-	background: hsl(126, 64%, 41%);
-	border-color: hsl(126, 64%, 41%);
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list .todo-list__label > input[checked]::after {
-	border-color: hsl(0, 0%, 100%);
-}
-/* ckeditor5-list/theme/todolist.css */
-.ck-content .todo-list .todo-list__label .todo-list__label__description {
-	vertical-align: middle;
-}
-/* ckeditor5-horizontal-line/theme/horizontalline.css */
-.ck-content hr {
-	margin: 15px 0;
-	height: 4px;
-	background: hsl(0, 0%, 87%);
-	border: 0;
 }
 /* ckeditor5-highlight/theme/highlight.css */
 .ck-content .marker-yellow {
@@ -256,6 +167,21 @@ Below there is a full list of content styles used by the editor features. You ca
 /* ckeditor5-font/theme/fontsize.css */
 .ck-content .text-huge {
 	font-size: 1.8em;
+}
+/* ckeditor5-block-quote/theme/blockquote.css */
+.ck-content blockquote {
+	overflow: hidden;
+	padding-right: 1.5em;
+	padding-left: 1.5em;
+	margin-left: 0;
+	margin-right: 0;
+	font-style: italic;
+	border-left: solid 5px hsl(0, 0%, 80%);
+}
+/* ckeditor5-block-quote/theme/blockquote.css */
+.ck-content[dir="rtl"] blockquote {
+	border-left: 0;
+	border-right: solid 5px hsl(0, 0%, 80%);
 }
 /* ckeditor5-basic-styles/theme/code.css */
 .ck-content code {
@@ -332,12 +258,91 @@ Below there is a full list of content styles used by the editor features. You ca
 	-ms-user-select: none;
 	user-select: none;
 }
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list {
+	list-style: none;
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list li {
+	margin-bottom: 5px;
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list li .todo-list {
+	margin-top: 5px;
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input {
+	-webkit-appearance: none;
+	display: inline-block;
+	position: relative;
+	width: var(--ck-todo-list-checkmark-size);
+	height: var(--ck-todo-list-checkmark-size);
+	vertical-align: middle;
+	border: 0;
+	left: -25px;
+	margin-right: -15px;
+	right: 0;
+	margin-left: 0;
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input::before {
+	display: block;
+	position: absolute;
+	box-sizing: border-box;
+	content: '';
+	width: 100%;
+	height: 100%;
+	border: 1px solid hsl(0, 0%, 20%);
+	border-radius: 2px;
+	transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background, 250ms ease-in-out border;
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input::after {
+	display: block;
+	position: absolute;
+	box-sizing: content-box;
+	pointer-events: none;
+	content: '';
+	left: calc( var(--ck-todo-list-checkmark-size) / 3 );
+	top: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+	width: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+	height: calc( var(--ck-todo-list-checkmark-size) / 2.6 );
+	border-style: solid;
+	border-color: transparent;
+	border-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;
+	transform: rotate(45deg);
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input[checked]::before {
+	background: hsl(126, 64%, 41%);
+	border-color: hsl(126, 64%, 41%);
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input[checked]::after {
+	border-color: hsl(0, 0%, 100%);
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label .todo-list__label__description {
+	vertical-align: middle;
+}
 /* ckeditor5-media-embed/theme/mediaembed.css */
 .ck-content .media {
 	clear: both;
 	margin: 1em 0;
 	display: block;
 	min-width: 15em;
+}
+/* ckeditor5-html-embed/theme/htmlembed.css */
+.ck-content .raw-html-embed {
+	margin: 1em auto;
+	min-width: 15em;
+}
+/* ckeditor5-horizontal-line/theme/horizontalline.css */
+.ck-content hr {
+	margin: 15px 0;
+	height: 4px;
+	background: hsl(0, 0%, 87%);
+	border: 0;
 }
 /* ckeditor5-code-block/theme/codeblock.css */
 .ck-content pre {

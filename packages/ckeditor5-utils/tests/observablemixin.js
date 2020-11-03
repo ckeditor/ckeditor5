@@ -1053,7 +1053,7 @@ describe( 'Observable', () => {
 
 			expectToThrowCKEditorError( () => {
 				foo.decorate( 'method' );
-			}, /^observablemixin-cannot-decorate-undefined:/ );
+			}, 'observablemixin-cannot-decorate-undefined' );
 		} );
 	} );
 } );

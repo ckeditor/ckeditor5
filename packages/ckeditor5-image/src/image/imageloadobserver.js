@@ -27,6 +27,10 @@ export default class ImageLoadObserver extends Observer {
 		this.listenTo( domRoot, 'load', ( event, domEvent ) => {
 			const domElement = domEvent.target;
 
+			if ( this.checkShouldIgnoreEventFromTarget( domElement ) ) {
+				return;
+			}
+
 			if ( domElement.tagName == 'IMG' ) {
 				this._fireEvents( domEvent );
 			}

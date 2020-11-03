@@ -8,10 +8,10 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
+import { getSiblingNodes } from './utils';
 
 /**
- * The list style command. It is used by the {@link module:list/liststyle~ListStyle list styles feature}.
+ * The list style command. It is used by the {@link module:list/liststyle~ListStyle list style feature}.
  *
  * @extends module:core/command~Command
  */
@@ -47,7 +47,7 @@ export default class ListStyleCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param {Object} options
-	 * @param {String|null} options.type The type of the list styles, e.g. 'disc' or 'square'. If `null` specified, the default
+	 * @param {String|null} options.type The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
 	 * style will be applied.
 	 * @protected
 	 */
@@ -114,84 +114,4 @@ export default class ListStyleCommand extends Command {
 
 		return numberedList.isEnabled || bulletedList.isEnabled;
 	}
-}
-
-// Returns an array with all `listItem` elements that represents the same list.
-//
-// It means that values for `listIndent`, `listType`, and `listStyle` for all items
-// are equal.
-//
-// @param {module:engine/model/position~Position} position Starting position.
-// @param {'forward'|'backward'} direction Walking direction.
-// @returns {Array.<module:engine/model/element~Element>
-function getSiblingNodes( position, direction ) {
-	const items = [];
-	const listItem = position.parent;
-	const walkerOptions = {
-		ignoreElementEnd: true,
-		startPosition: position,
-		shallow: true,
-		direction
-	};
-	const limitIndent = listItem.getAttribute( 'listIndent' );
-	const nodes = [ ...new TreeWalker( walkerOptions ) ]
-		.filter( value => value.item.is( 'element' ) )
-		.map( value => value.item );
-
-	for ( const element of nodes ) {
-		// If found something else than `listItem`, we're out of the list scope.
-		if ( !element.is( 'element', 'listItem' ) ) {
-			break;
-		}
-
-		// If current parsed item has lower indent that element that the element that was a starting point,
-		// it means we left a nested list. Abort searching items.
-		//
-		// ■ List item 1.       [listIndent=0]
-		//     ○ List item 2.[] [listIndent=1], limitIndent = 1,
-		//     ○ List item 3.   [listIndent=1]
-		// ■ List item 4.       [listIndent=0]
-		//
-		// Abort searching when leave nested list.
-		if ( element.getAttribute( 'listIndent' ) < limitIndent ) {
-			break;
-		}
-
-		// ■ List item 1.[]     [listIndent=0] limitIndent = 0,
-		//     ○ List item 2.   [listIndent=1]
-		//     ○ List item 3.   [listIndent=1]
-		// ■ List item 4.       [listIndent=0]
-		//
-		// Ignore nested lists.
-		if ( element.getAttribute( 'listIndent' ) > limitIndent ) {
-			continue;
-		}
-
-		// ■ List item 1.[]  [listType=bulleted]
-		// 1. List item 2.   [listType=numbered]
-		// 2.List item 3.    [listType=numbered]
-		//
-		// Abort searching when found a different kind of a list.
-		if ( element.getAttribute( 'listType' ) !== listItem.getAttribute( 'listType' ) ) {
-			break;
-		}
-
-		// ■ List item 1.[]  [listType=bulleted]
-		// ■ List item 2.    [listType=bulleted]
-		// ○ List item 3.    [listType=bulleted]
-		// ○ List item 4.    [listType=bulleted]
-		//
-		// Abort searching when found a different list style.
-		if ( element.getAttribute( 'listStyle' ) !== listItem.getAttribute( 'listStyle' ) ) {
-			break;
-		}
-
-		if ( direction === 'backward' ) {
-			items.unshift( element );
-		} else {
-			items.push( element );
-		}
-	}
-
-	return items;
 }

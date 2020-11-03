@@ -198,6 +198,17 @@ button.bind( 'isOn' ).to( command, 'value' );
 
 The property has been "renamed" in the binding and from now on, whenever `command.value` changes, the value of `button.isOn` will reflect it.
 
+#### Processing a property value
+
+Another use case is processing the bound property value, for instance, when a button should be disabled only if certain conditions are met. Passing a callback as the third parameter allows implementing a custom logic.
+
+In the example below, the `isEnabled` property will be set to `true` only when `command.value` equals `'heading1`.
+
+```js
+const command = editor.commands.get( 'heading' );
+button.bind( 'isOn' ).to( command, 'value', value => value === 'heading1' );
+```
+
 ### Binding multiple properties
 
 It is possible to bind more that one property at a time to simplify the code:

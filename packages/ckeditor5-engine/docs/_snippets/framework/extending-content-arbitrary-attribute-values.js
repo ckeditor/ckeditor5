@@ -39,7 +39,7 @@ function HandleFontSizeValue( editor ) {
 		model: {
 			key: 'fontSize'
 		},
-		view: ( modelValue, viewWriter ) => {
+		view: ( modelValue, { writer: viewWriter } ) => {
 			return viewWriter.createAttributeElement( 'span', {
 				style: `font-size:${ modelValue }px`
 			} );

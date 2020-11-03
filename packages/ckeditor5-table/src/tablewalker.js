@@ -532,7 +532,7 @@ class TableSlot {
  */
 
 // @if CK_DEBUG // function throwMissingGetterError( getterName ) {
-// @if CK_DEBUG //		throw new CKEditorError( 'tableslot-getter-removed: This TableSlot getter does not exist any more.', this, {
+// @if CK_DEBUG //		throw new CKEditorError( 'tableslot-getter-removed', this, {
 // @if CK_DEBUG //			getterName
 // @if CK_DEBUG //		} );
 // @if CK_DEBUG // }

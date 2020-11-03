@@ -99,7 +99,7 @@ export default class MarkerCollection {
 			 *
 			 * @error markercollection-incorrect-marker-name
 			 */
-			throw new CKEditorError( 'markercollection-incorrect-marker-name: Marker name cannot contain the "," character.', this );
+			throw new CKEditorError( 'markercollection-incorrect-marker-name', this );
 		}
 
 		const oldMarker = this._markers.get( markerName );
@@ -177,7 +177,12 @@ export default class MarkerCollection {
 		const marker = this._markers.get( markerName );
 
 		if ( !marker ) {
-			throw new CKEditorError( 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.', this );
+			/**
+			 * Marker with provided name does not exists.
+			 *
+			 * @error markercollection-refresh-marker-not-exists
+			 */
+			throw new CKEditorError( 'markercollection-refresh-marker-not-exists', this );
 		}
 
 		const range = marker.getRange();
@@ -393,7 +398,7 @@ class Marker {
 	 */
 	get managedUsingOperations() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
+			throw new CKEditorError( 'marker-destroyed', this );
 		}
 
 		return this._managedUsingOperations;
@@ -406,7 +411,7 @@ class Marker {
 	 */
 	get affectsData() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
+			throw new CKEditorError( 'marker-destroyed', this );
 		}
 
 		return this._affectsData;
@@ -419,7 +424,7 @@ class Marker {
 	 */
 	getStart() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
+			throw new CKEditorError( 'marker-destroyed', this );
 		}
 
 		return this._liveRange.start.clone();
@@ -432,7 +437,7 @@ class Marker {
 	 */
 	getEnd() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
+			throw new CKEditorError( 'marker-destroyed', this );
 		}
 
 		return this._liveRange.end.clone();
@@ -452,7 +457,7 @@ class Marker {
 	 */
 	getRange() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
+			throw new CKEditorError( 'marker-destroyed', this );
 		}
 
 		return this._liveRange.toRange();

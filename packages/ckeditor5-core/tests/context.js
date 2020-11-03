@@ -113,7 +113,7 @@ describe( 'Context', () => {
 
 			expect( caughtError ).to.instanceof( CKEditorError );
 			expect( caughtError.message )
-				.match( /^context-initplugins-invalid-plugin:/ );
+				.match( /^context-initplugins-invalid-plugin/ );
 		} );
 
 		it( 'should throw when plugin added to the context is not marked as a ContextPlugin (Function)', async () => {
@@ -129,7 +129,7 @@ describe( 'Context', () => {
 
 			expect( caughtError ).to.instanceof( CKEditorError );
 			expect( caughtError.message )
-				.match( /^context-initplugins-invalid-plugin:/ );
+				.match( /^context-initplugins-invalid-plugin/ );
 		} );
 
 		it( 'should throw when plugin is added to the context by name', async () => {
@@ -143,7 +143,7 @@ describe( 'Context', () => {
 
 			expect( caughtError ).to.instanceof( CKEditorError );
 			expect( caughtError.message )
-				.match( /^context-initplugins-constructor-only:/ );
+				.match( /^context-initplugins-constructor-only/ );
 		} );
 
 		it( 'should not throw when plugin as a function, marked as a ContextPlugin is added to the context', async () => {

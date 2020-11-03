@@ -94,7 +94,7 @@ export default class ImageStyleUI extends Plugin {
 
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'imageStyle', { value: style.name } );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return view;

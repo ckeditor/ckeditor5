@@ -497,13 +497,9 @@ export default class Selection {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.
 				 *
-				 * @error view-selection-setTo-required-second-parameter
+				 * @error view-selection-setto-required-second-parameter
 				 */
-				throw new CKEditorError(
-					'view-selection-setTo-required-second-parameter: ' +
-					'selection.setTo requires the second parameter when the first parameter is a node.',
-					this
-				);
+				throw new CKEditorError( 'view-selection-setto-required-second-parameter', this );
 			} else if ( placeOrOffset == 'in' ) {
 				range = Range._createIn( selectable );
 			} else if ( placeOrOffset == 'on' ) {
@@ -523,9 +519,9 @@ export default class Selection {
 			/**
 			 * Cannot set selection to given place.
 			 *
-			 * @error view-selection-setTo-not-selectable
+			 * @error view-selection-setto-not-selectable
 			 */
-			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.', this );
+			throw new CKEditorError( 'view-selection-setto-not-selectable', this );
 		}
 
 		this.fire( 'change' );
@@ -547,12 +543,9 @@ export default class Selection {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error view-selection-setFocus-no-ranges
+			 * @error view-selection-setfocus-no-ranges
 			 */
-			throw new CKEditorError(
-				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.',
-				this
-			);
+			throw new CKEditorError( 'view-selection-setfocus-no-ranges', this );
 		}
 
 		const newFocus = Position._createAt( itemOrPosition, offset );
@@ -660,8 +653,7 @@ export default class Selection {
 			 * @error view-selection-add-range-not-range
 			 */
 			throw new CKEditorError(
-				'view-selection-add-range-not-range: ' +
-				'Selection range set to an object that is not an instance of view.Range',
+				'view-selection-add-range-not-range',
 				this
 			);
 		}
@@ -690,7 +682,7 @@ export default class Selection {
 				 * @param {module:engine/view/range~Range} intersectingRange Range from selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
-					'view-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					'view-selection-range-intersects',
 					this,
 					{ addedRange: range, intersectingRange: storedRange }
 				);

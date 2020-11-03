@@ -38,4 +38,4 @@ msgstr "تراز متن"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr "نوارابزار تراز متن"
+msgstr "نوار ابزار ترازبندی متن"

@@ -6,7 +6,7 @@
 .ck.ck-list-styles-dropdown > .ck-dropdown__panel > .ck-toolbar > .ck-toolbar__items {
 	/*
 	 * Use the benefits of the toolbar (e.g. out-of-the-box keyboard navigation) but make it look
-	 * like panel with thumbnails (previews).
+	 * like a panel with thumbnails (previews).
 	 */
 	display: grid;
 }

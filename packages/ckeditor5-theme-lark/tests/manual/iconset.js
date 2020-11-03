@@ -64,6 +64,8 @@ import outdent from '@ckeditor/ckeditor5-indent/theme/icons/outdent.svg';
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
 
+import html from '@ckeditor/ckeditor5-html-embed/theme/icons/html.svg';
+
 import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
 import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
@@ -126,6 +128,9 @@ const icons = {
 	// highlight
 	marker, pen,
 
+	// html-embed,
+	html,
+
 	// indent
 	indent, outdent,
 
@@ -178,7 +183,7 @@ for ( const i in icons ) {
 		tooltip: true
 	} );
 
-	button.iconView.fillColor = '#FFDA51';
+	button.iconView.fillColor = 'hsl(47deg 100% 66%)';
 
 	toolbar.items.add( button );
 }
@@ -186,4 +191,7 @@ for ( const i in icons ) {
 toolbar.class = 'ck-editor-toolbar ck-reset_all';
 toolbar.render();
 
-document.body.appendChild( toolbar.element );
+document.querySelector( '#standard' ).appendChild( toolbar.element );
+document.querySelector( '#color' ).appendChild( toolbar.element.cloneNode( true ) );
+document.querySelector( '#inverted' ).appendChild( toolbar.element.cloneNode( true ) );
+document.querySelector( '#zoom' ).appendChild( toolbar.element.cloneNode( true ) );

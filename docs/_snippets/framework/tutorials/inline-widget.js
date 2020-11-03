@@ -82,7 +82,7 @@ class PlaceholderUI extends Plugin {
 			// Execute the command when the dropdown item is clicked (executed).
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( 'placeholder', { value: evt.source.commandParam } );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return dropdownView;
@@ -158,7 +158,7 @@ class PlaceholderEditing extends Plugin {
 				name: 'span',
 				classes: [ 'placeholder' ]
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Extract the "name" from "{name}".
 				const name = viewElement.getChild( 0 ).data.slice( 1, -1 );
 
@@ -168,7 +168,7 @@ class PlaceholderEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
+			view: ( modelItem, { writer: viewWriter } ) => {
 				const widgetElement = createPlaceholderView( modelItem, viewWriter );
 
 				// Enable widget handling on a placeholder element inside the editing view.
@@ -178,7 +178,7 @@ class PlaceholderEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: createPlaceholderView
+			view: ( modelItem, { writer: viewWriter } ) => createPlaceholderView( modelItem, viewWriter )
 		} );
 
 		// Helper method for both downcast converters.

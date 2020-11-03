@@ -16,7 +16,7 @@ const boundObservablesSymbol = Symbol( 'boundObservables' );
 const boundPropertiesSymbol = Symbol( 'boundProperties' );
 
 /**
- * Mixin that injects the "observable properties" and data binding functionality described in the
+ * A mixin that injects the "observable properties" and data binding functionality described in the
  * {@link ~Observable} interface.
  *
  * Read more about the concept of observables in the:
@@ -50,7 +50,7 @@ const ObservableMixin = {
 			/**
 			 * Cannot override an existing property.
 			 *
-			 * This error is thrown when trying to {@link ~Observable#set set} an property with
+			 * This error is thrown when trying to {@link ~Observable#set set} a property with
 			 * a name of an already existing property. For example:
 			 *
 			 *		let observable = new Model();
@@ -62,7 +62,7 @@ const ObservableMixin = {
 			 *
 			 * @error observable-set-cannot-override
 			 */
-			throw new CKEditorError( 'observable-set-cannot-override: Cannot override an existing property.', this );
+			throw new CKEditorError( 'observable-set-cannot-override', this );
 		}
 
 		Object.defineProperty( this, name, {
@@ -107,7 +107,7 @@ const ObservableMixin = {
 			 *
 			 * @error observable-bind-wrong-properties
 			 */
-			throw new CKEditorError( 'observable-bind-wrong-properties: All properties must be strings.', this );
+			throw new CKEditorError( 'observable-bind-wrong-properties', this );
 		}
 
 		if ( ( new Set( bindProperties ) ).size !== bindProperties.length ) {
@@ -116,7 +116,7 @@ const ObservableMixin = {
 			 *
 			 * @error observable-bind-duplicate-properties
 			 */
-			throw new CKEditorError( 'observable-bind-duplicate-properties: Properties must be unique.', this );
+			throw new CKEditorError( 'observable-bind-duplicate-properties', this );
 		}
 
 		initObservable( this );
@@ -130,7 +130,7 @@ const ObservableMixin = {
 				 *
 				 * @error observable-bind-rebind
 				 */
-				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same property more than once.', this );
+				throw new CKEditorError( 'observable-bind-rebind', this );
 			}
 		} );
 
@@ -186,7 +186,7 @@ const ObservableMixin = {
 				 *
 				 * @error observable-unbind-wrong-properties
 				 */
-				throw new CKEditorError( 'observable-unbind-wrong-properties: Properties must be strings.', this );
+				throw new CKEditorError( 'observable-unbind-wrong-properties', this );
 			}
 
 			unbindProperties.forEach( propertyName => {
@@ -245,7 +245,7 @@ const ObservableMixin = {
 			 * @param {String} methodName Name of the method which does not exist.
 			 */
 			throw new CKEditorError(
-				'observablemixin-cannot-decorate-undefined: Cannot decorate an undefined method.',
+				'observablemixin-cannot-decorate-undefined',
 				this,
 				{ object: this, methodName }
 			);
@@ -265,7 +265,7 @@ extend( ObservableMixin, EmitterMixin );
 
 export default ObservableMixin;
 
-// Init symbol properties needed to for the observable mechanism to work.
+// Init symbol properties needed for the observable mechanism to work.
 //
 // @private
 // @param {module:utils/observablemixin~ObservableMixin} observable
@@ -380,12 +380,9 @@ function bindTo( ...args ) {
 		/**
 		 * Binding multiple observables only possible with callback.
 		 *
-		 * @error observable-bind-no-callback
+		 * @error observable-bind-to-no-callback
 		 */
-		throw new CKEditorError(
-			'observable-bind-to-no-callback: Binding multiple observables only possible with callback.',
-			this
-		);
+		throw new CKEditorError( 'observable-bind-to-no-callback', this );
 	}
 
 	// Eliminate A.bind( 'x', 'y' ).to( B, callback )
@@ -396,7 +393,7 @@ function bindTo( ...args ) {
 		 * @error observable-bind-to-extra-callback
 		 */
 		throw new CKEditorError(
-			'observable-bind-to-extra-callback: Cannot bind multiple properties and use a callback in one binding.',
+			'observable-bind-to-extra-callback',
 			this
 		);
 	}
@@ -409,7 +406,7 @@ function bindTo( ...args ) {
 			 *
 			 * @error observable-bind-to-properties-length
 			 */
-			throw new CKEditorError( 'observable-bind-to-properties-length: The number of properties must match.', this );
+			throw new CKEditorError( 'observable-bind-to-properties-length', this );
 		}
 
 		// When no to.properties specified, observing source properties instead i.e.
@@ -450,7 +447,7 @@ function bindToMany( observables, attribute, callback ) {
 		 *
 		 * @error observable-bind-to-many-not-one-binding
 		 */
-		throw new CKEditorError( 'observable-bind-to-many-not-one-binding: Cannot bind multiple properties with toMany().', this );
+		throw new CKEditorError( 'observable-bind-to-many-not-one-binding', this );
 	}
 
 	this.to(
@@ -509,7 +506,7 @@ function parseBindToArgs( ...args ) {
 		 *
 		 * @error observable-bind-to-parse-error
 		 */
-		throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', null );
+		throw new CKEditorError( 'observable-bind-to-parse-error', null );
 	}
 
 	const parsed = { to: [] };
@@ -526,7 +523,7 @@ function parseBindToArgs( ...args ) {
 			lastObservable = { observable: a, properties: [] };
 			parsed.to.push( lastObservable );
 		} else {
-			throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', null );
+			throw new CKEditorError( 'observable-bind-to-parse-error', null );
 		}
 	} );
 
@@ -670,7 +667,7 @@ function attachBindToListeners( observable, toBindings ) {
 }
 
 /**
- * Interface which adds "observable properties" and data binding functionality.
+ * An interface which adds "observable properties" and data binding functionality.
  *
  * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
  *
@@ -724,7 +721,7 @@ function attachBindToListeners( observable, toBindings ) {
  *		                     // -> 'Current property value is 1'
  *		                     // -> 'Value has changed from 1 to 3'
  *
- * **Note:** Event is fired even when the new value is the same as the old value.
+ * **Note:** The event is fired even when the new value is the same as the old value.
  *
  * @event set:{property}
  * @param {String} name The property name.
@@ -733,13 +730,13 @@ function attachBindToListeners( observable, toBindings ) {
  */
 
 /**
- * Creates and sets the value of an observable property of this object. Such an property becomes a part
- * of the state and is be observable.
+ * Creates and sets the value of an observable property of this object. Such a property becomes a part
+ * of the state and is observable.
  *
  * It accepts also a single object literal containing key/value pairs with properties to be set.
  *
  * This method throws the `observable-set-cannot-override` error if the observable instance already
- * have a property with the given property name. This prevents from mistakenly overriding existing
+ * has a property with the given property name. This prevents from mistakenly overriding existing
  * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
  *
  * @method #set
@@ -788,6 +785,10 @@ function attachBindToListeners( observable, toBindings ) {
  *
  *		button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
  *			( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
+ *
+ * Using a custom callback allows processing the value before passing it to the target property:
+ *
+ *		button.bind( 'isEnabled' ).to( command, 'value', value => value === 'heading1' );
  *
  * It is also possible to bind to the same property in an array of observables.
  * To bind a `button` to multiple commands (also `Observables`) so that each and every one of them
