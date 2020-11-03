@@ -11,21 +11,24 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePluginSet, EasyImage, Markdown, Code, CodeBlock ],
+		plugins: [ ArticlePluginSet, EasyImage, Markdown, Code, CodeBlock, TodoList ],
 		toolbar: [
 			'heading',
 			'|',
 			'bold',
 			'italic',
 			'link',
+			'|',
 			'bulletedList',
 			'numberedList',
+			'todoList',
 			'|',
 			'code',
 			'codeBlock',
@@ -45,7 +48,9 @@ ClassicEditor
 		codeBlock: {
 			languages: [
 				{ language: 'css', label: 'CSS' },
-				{ language: 'html', label: 'HTML' }
+				{ language: 'html', label: 'HTML' },
+				{ language: 'javascript', label: 'JavaScript' },
+				{ language: 'php', label: 'PHP' }
 			]
 		},
 		cloudServices: CS_CONFIG
@@ -59,7 +64,7 @@ ClassicEditor
 			outputElement.innerText = editor.getData();
 		} );
 
-		// Set the initial data with delay so hightlight.js doesn't catch them.
+		// Set the initial data with delay so hightlight.js doesn't catch it.
 		setTimeout( () => {
 			outputElement.innerText = editor.getData();
 		}, 500 );
