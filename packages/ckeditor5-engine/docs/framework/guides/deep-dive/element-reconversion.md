@@ -9,23 +9,36 @@ since: 24.0.0
 {@snippet framework/build-element-reconversion-source}
 
 <info-box warning>
-	The reconversion API is a preliminary feature and may not be production ready.
+	The element reconversion is in a beta version. The API will be extended to support more cases and will be changing with time.
 </info-box>
 
-This guide introduces _reconversion_ concept of the downcast (model-to-view) {@link framework/guides/architecture/editing-engine#conversion conversion} for model elements.
+This guide introduces the concept of _reconversion of model elements_ during the downcast (model to view) {@link framework/guides/architecture/editing-engine#conversion conversion}.
 
-To better understand concepts used in this guide we advise that you familiarize with other conversion guides:
+The reconversion allows simplifying downcast converters for model elements by merging multiple separate converters into a single converter that reacts to more types of model changes.
 
-- {@link framework/guides/deep-dive/custom-element-conversion custom element conversion}
-- {@link framework/guides/tutorials/implementing-a-block-widget implementing a block widget}
+## Prerequisites
+
+To better understand concepts used in this guide we advise that you familiarize yourself with other conversion guides:
+
+* {@link framework/guides/tutorials/implementing-a-block-widget implementing a block widget}
+* {@link framework/guides/deep-dive/custom-element-conversion custom element conversion}
 
 ## Atomic converters vs element reconversion
 
-Most editor features are written using separate converters for elements and attributes. This approach enables flexibility of customization and provides separation of concerns. For example, additional image features, like image styles or caption, can be added or removed without the need to change the main image converter. To allow this, we implemented main element-to-element converter for the image, and many granular converters for image's attributes. The other benefit is that change of a model attribute requires minimal changes in the view.
+In order to convert a model element to its view representation you often write the following converters:
 
-However, this approach in many cases is may be overly complicated. Consider a case in which you need to create a multi-layer view structure for one model element, or a case in which view structure depends on model attribute value. For those cases you can use one converter that produces full view structure from model element, direct children and its attributes. This converter will be used to reconvert model-to-view on every attribute or children change.
+* One `elementToElement()` converter. This converter reacts to the insertion of a model element specified in the `model` field.
+* If the model element has attributes and these attributes may change with time, you need to add `attributeToAttribute()` converters for each attribute. These converters react to changes in the model element attributes and update the view accordingly.
 
-An additional perk of using an element reconversion is that the parts of model tree that hasn't been changed, like paragraph and text inside your feature element, will not be reconverted. In other words, their view elements are memoized and re-used inside changed parent.
+This granular approach to conversion is used by many editor features as it ensures extensibility of the base features and provides a separation of concerns. E.g. the base image feature provides conversion for a simple `<image src="...">` model element, while the image resize feature adds support for `width` and `height` attributes, image caption for the `<figcaption>` HTML element, and so on.
+
+Apart from the extensibility aspect, the above approach ensures that a change of a model attribute or structure, requires minimal changes in the view.
+
+However, in some cases where granularity is not necessary this approach may be an overkill. Consider a case in which you need to create a multi-layer view structure for one model element, or a case in which the view structure depends on a value of a model attribute. In such cases, writing a separate converter for a model element and separate converters for each attribute becomes cumbersome.
+
+Thankfully, element reconversion allows merging these converters into one converter that reacts to multiple type of model changes (element insertion, its attribute changes and changes in its direct children). This approach can be considered more "functional" as the `view` callback executed on any of these changes should produce the entire view structure (down to a certain level) without taking into account what state changes just happened.
+
+An additional perk of using element reconversion is that the parts of the model tree that has not been changed, like paragraphs and text insides your feature element, will not be reconverted. In other words, their view elements are memoized and re-used inside changed parent.
 
 To sum up, an element reconversion comes handy for cases where you need to:
 
