@@ -54,7 +54,7 @@ export default class CodeBlockUI extends Plugin {
 					language: defaultLanguageDefinition.language
 				} );
 
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			dropdownView.on( 'execute', evt => {
@@ -63,7 +63,7 @@ export default class CodeBlockUI extends Plugin {
 					forceValue: true
 				} );
 
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			dropdownView.class = 'ck-code-block-dropdown';

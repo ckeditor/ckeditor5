@@ -149,7 +149,7 @@ export default class HighlightUI extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				editor.execute( 'highlight', { value } );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			// Add additional behavior for buttonView.
@@ -228,7 +228,7 @@ export default class HighlightUI extends Plugin {
 			// Execute current action from dropdown's split button action button.
 			splitButtonView.on( 'execute', () => {
 				editor.execute( 'highlight', { value: splitButtonView.commandValue } );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			// Returns active highlighter option depending on current command value.

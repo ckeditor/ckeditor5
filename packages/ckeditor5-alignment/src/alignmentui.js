@@ -152,7 +152,7 @@ export default class AlignmentUI extends Plugin {
 			// Execute command.
 			this.listenTo( buttonView, 'execute', () => {
 				editor.execute( 'alignment', { value: option } );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return buttonView;
