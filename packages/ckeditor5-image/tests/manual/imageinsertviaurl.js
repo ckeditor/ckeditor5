@@ -7,9 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

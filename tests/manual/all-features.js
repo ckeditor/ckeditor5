@@ -42,13 +42,14 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			ArticlePluginSet, CodeBlock, Alignment,
-			TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
-			Code, Underline, Strikethrough, Superscript, Subscript,
-			Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
-			IndentBlock, WordCount,
-			EasyImage, ImageResize, LinkImage, AutoImage, AutoLink,
-			TodoList, PageBreak, HorizontalLine, Mention, RemoveFormat, TextTransformation
+			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
+			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
+			CodeBlock, TodoList, TableProperties, TableCellProperties,
+			EasyImage, ImageResize, LinkImage, AutoImage,
+			AutoLink, Mention, TextTransformation,
+			Alignment, IndentBlock,
+			PageBreak, HorizontalLine,
+			SpecialCharacters, SpecialCharactersEssentials, WordCount
 		],
 		toolbar: [
 			'heading',
