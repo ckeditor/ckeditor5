@@ -9,55 +9,55 @@ since: 24.0.0
 {@snippet framework/build-element-reconversion-source}
 
 <info-box warning>
-	The element reconversion is currently in beta version. The API will be extended to support more cases and will be changing with time.
+	Element reconversion is currently in beta version. The API will be extended to support more cases and will be changing with time.
 </info-box>
 
-This guide introduces the concept of _the reconversion of model elements_ during the downcast (model to view) {@link framework/guides/architecture/editing-engine#conversion conversion}.
+This guide introduces the concept of the _reconversion of model elements_ during the downcast (model-to-view) {@link framework/guides/architecture/editing-engine#conversion conversion}.
 
-The reconversion allows simplifying downcast converters for model elements by merging multiple separate converters into a single converter that reacts to more types of model changes.
+Reconversion allows simplifying downcast converters for model elements by merging multiple separate converters into a single converter that reacts to more types of model changes.
 
 ## Prerequisites
 
-To better understand the concepts used in this guide we advise that you familiarize yourself with these other conversion guides, too:
+To better understand the concepts used in this guide, it is recommended to familiarize yourself with other conversion guides, too:
 
-* {@link framework/guides/tutorials/implementing-a-block-widget implementing a block widget}
-* {@link framework/guides/deep-dive/custom-element-conversion custom element conversion}
+* {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget}
+* {@link framework/guides/deep-dive/custom-element-conversion Custom element conversion}
 
 ## Atomic converters vs element reconversion
 
-In order to convert a model element to its view representation you often write the following converters:
+In order to convert a model element to its view representation, you often write the following converters:
 
 * An `elementToElement()` converter. This converter reacts to the insertion of a model element specified in the `model` field.
 * If the model element has attributes and these attributes may change with time, you need to add the `attributeToAttribute()` converters for each attribute. These converters react to changes in the model element attributes and update the view accordingly.
 
-This granular approach to conversion is used by many editor features as it ensures extensibility of the base features and provides a separation of concerns. E.g. the base image feature provides conversion for a simple `<image src="...">` model element, while the image resize feature adds support for the `width` and `height` attributes, the image caption feature for the `<figcaption>` HTML element, and so on.
+This granular approach to conversion is used by many editor features as it ensures extensibility of the base features and provides a separation of concerns. For example, the {@link features/image#base-image-support base image feature} provides conversion for a simple `<image src="...">` model element, while the {@link features/image#resizing-images image resize feature} adds support for the `width` and `height` attributes, the {@link features/image#image-captions image caption feature} for the `<figcaption>` HTML element, and so on.
 
-Apart from the extensibility aspect, the above approach ensures that a change of a model attribute or structure, requires minimal changes in the view.
+Apart from the extensibility aspect, the above approach ensures that a change of a model attribute or structure requires minimal changes in the view.
 
 However, in some cases where granularity is not necessary this approach may be an overkill. Consider a case in which you need to create a multi-layer view structure for one model element, or a case in which the view structure depends on a value of a model attribute. In such cases, writing a separate converter for a model element and separate converters for each attribute becomes cumbersome.
 
-Thankfully, element reconversion allows merging these converters into into a single converter that reacts to multiple types of model changes (element insertion, its attribute changes and changes in its direct children). This approach can be considered more "functional" as the `view` callback executed on any of these changes should produce the entire view structure (down to a certain level) without taking into account what state changes just happened.
+Thankfully, element reconversion allows merging these converters into a single converter that reacts to multiple types of model changes (element insertion, its attribute changes and changes in its direct children). This approach can be considered more "functional" as the `view` callback executed on any of these changes should produce the entire view structure (down to a certain level) without taking into account what state changes have just happened.
 
-An additional perk of using element reconversion is that the parts of the model tree that has not been changed, like paragraphs and text inside your feature element, will not be reconverted. In other words, their view elements are kept in memory and re-used inside the changed parent.
+An additional perk of using element reconversion is that the parts of the model tree that have not been changed, like paragraphs and text inside your feature element, will not be reconverted. In other words, their view elements are kept in memory and re-used inside the changed parent.
 
-To sum up, an element reconversion comes handy for cases where you need to convert a relatively simple model to a complex view structure. And writing a single functional converter is easier to grasp in your project.
+To sum up, element reconversion comes in handy for cases where you need to convert a relatively simple model to a complex view structure. And also, writing a single functional converter is easier to grasp in your project.
 
 ## Enabling element reconversion
 
-Element reconversion is enabled by setting a reconversion trigger configuration (`triggerBy`) for the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} downcast helper.
+Element reconversion is enabled by setting the reconversion trigger configuration (`triggerBy`) for the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} downcast helper.
 
 The model element can be reconverted when:
 
-* one or many attributes changes (using `triggerBy.attributes`) or
+* one or many attributes change (using `triggerBy.attributes`) or
 * a child is inserted or removed (using `triggerBy.children`)
 
 <info-box>
-Note that, when using `children` configuration option the current implementation assumes that downcast converter will either:
-* handle an element and its children conversion at once,
-* will have a "flat" structure.
+	Note that when using the `children` configuration option, the current implementation assumes that the downcast converter will either:
+	* handle an element and its children conversion at once,
+	* have a "flat" structure.
 </info-box>
 
-A simple example of an element reconversion configuration demonstrated below:
+A simple example of an element reconversion configuration is demonstrated below:
 
 ```js
 editor.conversion.for( 'downcast' ).elementToElement( {
@@ -74,10 +74,12 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 } )
 ```
 
+In this example:
+
 * The downcast converter for `myElement` creates a `<div>` with a `data-owner-id` attribute and a set of CSS classes.
 * The value of `data-owner-id` is set from the `ownerId` model element's attribute.
 * The second CSS class is constructed off the `type` model element's attribute.
-* The `triggerBy.attributes` defines that element will be converted upon changes of the `onwerId` or `type` attributes.
+* The `triggerBy.attributes` configuration defines that the element will be converted upon changes of the `onwerId` or `type` attributes.
 
 Before CKEditor version `23.1.0` you would have to define a set of atomic converters for the element and for each attribute:
 
@@ -102,7 +104,7 @@ editor.conversion.for( 'downcast' )
 
 ## Example implementation
 
-In this example implementation we will implement a "card" box which is displayed aside to the main article content. A card will contain a text-only title, one to four content sections and an optional URL. Additionally, the user can choose the type of the card.
+In this example implementation you will implement a "card" box which is displayed beside the main article content. The card will contain a text-only title, one to four content sections and an optional URL. Additionally, the user can choose the type of the card.
 
 ### Demo
 
@@ -113,10 +115,10 @@ In this example implementation we will implement a "card" box which is displayed
 A simplified model markup for the side card looks as follows:
 
 ```html
-<sideCardSection cardType="info" cardURL="http://cksource.com">
-	<sideCardTitle>A title</sideCardTitle>
+<sideCardSection cardType="info" cardURL="https://ckeditor.com/">
+	<sideCardTitle>The title</sideCardTitle>
 	<sideCardSection>
-		<paragrahp>A content</paragrahp>
+		<paragraph>The content</paragraph>
 	</sideCardSection>
 </sideCard>
 ```
@@ -133,12 +135,12 @@ This will be converted to the below view structure:
 		<p>Another content box.</p>
 	</div>
 	<div class="side-card-actions">
-		<!-- simple form elements for the editing view -->
+		<!-- Simple form elements for the editing view. -->
 	</div>
 </aside>
 ```
 
-In the above example you can observe that the `'cardURL'` model attribute is converted as a view element inside the main view container while the type attributes are translated to a CSS class. Additionally, the UI controls are injected to the view after all other child views of the main container. Describing it using atomic converters would introduce a convoluted complexity.
+In the above example you can observe that the `'cardURL'` model attribute is converted as a view element inside the main view container while the type attribute is translated to a CSS class. Additionally, the UI controls are injected to the view after all other child views of the main container. Describing it using atomic converters would introduce a convoluted complexity.
 
 ### Schema
 
@@ -182,7 +184,7 @@ schema.register( 'sideCardSection', {
 
 ### Reconversion definition
 
-To enable an element reconversion define which attributes and children modification the main element will be converted for:
+To enable element reconversion, define for which attribute and children modifications the main element will be converted:
 
 ```js
 conversion.for( 'editingDowncast' ).elementToElement( {
@@ -197,7 +199,7 @@ conversion.for( 'editingDowncast' ).elementToElement( {
 
 The above definition will use the `downcastSideCard()` function to re-create the view when:
 
-* The `complexInfoBOx` element is inserted into the model.
+* The `sideCard` element is inserted into the model.
 * One of `cardType` or `cardURL` has changed.
 * A child `sideCardSection` is added or removed from the parent `sideCard`.
 
@@ -210,12 +212,12 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 	return ( modelElement, { writer, consumable, mapper } ) => {
 		const type = modelElement.getAttribute( 'cardType' ) || 'info';
 
-		// Main view element for the side card.
+		// The main view element for the side card.
 		const sideCardView = writer.createContainerElement( 'aside', {
 			class: `side-card side-card-${ type }`
 		} );
 
-		// Create inner views from side card children.
+		// Create inner views from the side card children.
 		for ( const child of modelElement.getChildren() ) {
 			const childView = writer.createEditableElement( 'div' );
 
@@ -226,7 +228,7 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 				writer.addClass( 'side-card-section', childView );
 			}
 
-			// It is important to consume & bind converted elements.
+			// It is important to consume and bind converted elements.
 			consumable.consume( child, 'insert' );
 			mapper.bindElements( child, childView );
 
@@ -240,7 +242,7 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 
 		const urlAttribute = modelElement.getAttribute( 'cardURL' );
 
-		// Do not render empty URL field
+		// Do not render an empty URL field
 		if ( urlAttribute ) {
 			const urlBox = writer.createRawElement( 'div', {
 				class: 'side-card-url'
@@ -251,14 +253,14 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 			writer.insert( writer.createPositionAt( sideCardView, 'end' ), urlBox );
 		}
 
-		// Inner element used to render a simple UI that allows to change side card's attributes.
-		// It will only be needed in the editing view inside a widgetized element.
+		// Inner element used to render a simple UI that allows to change the side card's attributes.
+		// It will only be needed in the editing view inside the widgetized element.
 		// The data output should not contain this section.
 		if ( asWidget ) {
 			const actionsView = writer.createRawElement( 'div', {
 				class: 'side-card-actions',
-				contenteditable: 'false', 			// Prevent editing of the element:
-				'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
+				contenteditable: 'false', 			// Prevents editing of the element.
+				'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside the editing view.
 			}, createActionsView( editor, modelElement ) ); // See the full code for details.
 
 			writer.insert( writer.createPositionAt( sideCardView, 'end' ), actionsView );
@@ -271,17 +273,17 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 };
 ```
 
-By using `mapper.bindElements( child, childView )` for `<sideCardTitle>` and `<sideCardSection>` you define which view elements correspond to which model elements. This allows the editor's conversion to re-use existing view elements for the title and section children, so they will not be re-converted without a need.
+By using `mapper.bindElements( child, childView )` for `<sideCardTitle>` and `<sideCardSection>` you define which view elements correspond to which model elements. This allows the editor's conversion to re-use the existing view elements for the title and section children, so they will not be re-converted without a need.
 
 ### Upcast conversion
 
-The upcast conversion uses standard element-to-element converters for box & title, and a custom converter for the side card to extract metadata from the data.
+The upcast conversion uses standard element-to-element converters for the box and title, and a custom converter for the side card to extract metadata from the data.
 
 ```js
 editor.conversion.for( 'upcast' )
 	.elementToElement( {
 		view: { name: 'aside', classes: [ 'side-card' ] },
-		model: upcastCard // Details in the full source-code.
+		model: upcastCard // Details in the full source code.
 	} )
 	.elementToElement( {
 		view: { name: 'div', classes: [ 'side-card-title' ] },
@@ -305,7 +307,7 @@ import { toWidget, toWidgetEditable, findOptimalInsertionPosition } from '@ckedi
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
- * Helper for extracting side card type from a view element based on its CSS class.
+ * Helper for extracting the side card type from a view element based on its CSS class.
  */
 const getTypeFromViewElement = viewElement => {
 	for ( const type of [ 'info', 'warning' ] ) {
@@ -318,7 +320,7 @@ const getTypeFromViewElement = viewElement => {
 };
 
 /**
- * Single upcast converter to <sideCard/> element with all its attributes.
+ * Single upcast converter to the <sideCard/> element with all its attributes.
  */
 const upcastCard = ( viewElement, { writer } ) => {
 	const sideCard = writer.createElement( 'sideCard' );
@@ -338,7 +340,7 @@ const upcastCard = ( viewElement, { writer } ) => {
 };
 
 /**
- * Helper for creating DOM button with an editor callback.
+ * Helper for creating a DOM button with an editor callback.
  */
 const addActionButton = ( text, callback, domElement, editor ) => {
 	const domDocument = domElement.ownerDocument;
@@ -355,11 +357,11 @@ const addActionButton = ( text, callback, domElement, editor ) => {
 };
 
 /**
- * Helper function that creates card editing UI inside the card.
+ * Helper function that creates the card editing UI inside the card.
  */
 const createActionsView = ( editor, modelElement ) => function( domElement ) {
 	//
-	// Set URL action button.
+	// Set the URL action button.
 	//
 	addActionButton( 'Set URL', writer => {
 		// eslint-disable-next-line no-alert
@@ -372,7 +374,7 @@ const createActionsView = ( editor, modelElement ) => function( domElement ) {
 	const newType = currentType === 'info' ? 'warning' : 'info';
 
 	//
-	// Change card action button.
+	// Change the card action button.
 	//
 	addActionButton( 'Change type', writer => {
 		writer.setAttribute( 'cardType', newType, modelElement );
@@ -381,45 +383,45 @@ const createActionsView = ( editor, modelElement ) => function( domElement ) {
 	const childCount = modelElement.childCount;
 
 	//
-	// Add content section to a card action button.
+	// Add the content section to the card action button.
 	//
 	const addButton = addActionButton( 'Add section', writer => {
 		writer.insertElement( 'sideCardSection', modelElement, 'end' );
 	}, domElement, editor );
 
-	// Disable the button so only 1-3 content boxes are in the card (there always will be a title).
+	// Disable the button so only 1-3 content boxes are in the card (there will always be a title).
 	if ( childCount > 4 ) {
 		addButton.setAttribute( 'disabled', 'disabled' );
 	}
 
 	//
-	// Remove content section from a card action button.
+	// Remove the content section from the card action button.
 	//
 	const removeButton = addActionButton( 'Remove section', writer => {
 		writer.remove( modelElement.getChild( childCount - 1 ) );
 	}, domElement, editor );
 
-	// Disable the button so only 1-3 content boxes are in the card (there always will be a title).
+	// Disable the button so only 1-3 content boxes are in the card (there will always be a title).
 	if ( childCount < 3 ) {
 		removeButton.setAttribute( 'disabled', 'disabled' );
 	}
 };
 
 /**
- * The downcast converter for <sideCard/> element.
+ * The downcast converter for the <sideCard/> element.
  *
- * It returns a full view structure based on the current state of the model element.
+ * It returns the full view structure based on the current state of the model element.
  */
 const downcastSideCard = ( editor, { asWidget } ) => {
 	return ( modelElement, { writer, consumable, mapper } ) => {
 		const type = modelElement.getAttribute( 'cardType' ) || 'info';
 
-		// Main view element for the side card.
+		// The main view element for the side card.
 		const sideCardView = writer.createContainerElement( 'aside', {
 			class: `side-card side-card-${ type }`
 		} );
 
-		// Create inner views from side card children.
+		// Create inner views from the side card children.
 		for ( const child of modelElement.getChildren() ) {
 			const childView = writer.createEditableElement( 'div' );
 
@@ -430,7 +432,7 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 				writer.addClass( 'side-card-section', childView );
 			}
 
-			// It is important to consume & bind converted elements.
+			// It is important to consume and bind converted elements.
 			consumable.consume( child, 'insert' );
 			mapper.bindElements( child, childView );
 
@@ -444,7 +446,7 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 
 		const urlAttribute = modelElement.getAttribute( 'cardURL' );
 
-		// Do not render empty URL field
+		// Do not render an empty URL field.
 		if ( urlAttribute ) {
 			const urlBox = writer.createRawElement( 'div', {
 				class: 'side-card-url'
@@ -455,14 +457,14 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 			writer.insert( writer.createPositionAt( sideCardView, 'end' ), urlBox );
 		}
 
-		// Inner element used to render a simple UI that allows to change side card's attributes.
-		// It will only be needed in the editing view inside a widgetized element.
+		// Inner element used to render a simple UI that allows to change the side card's attributes.
+		// It will only be needed in the editing view inside the widgetized element.
 		// The data output should not contain this section.
 		if ( asWidget ) {
 			const actionsView = writer.createRawElement( 'div', {
 				class: 'side-card-actions',
-				contenteditable: 'false', 			// Prevent editing of the element:
-				'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
+				contenteditable: 'false', 			// Prevents editing of the element.
+				'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside the editing view.
 			}, createActionsView( editor, modelElement ) ); // See the full code for details.
 
 			writer.insert( writer.createPositionAt( sideCardView, 'end' ), actionsView );
@@ -476,7 +478,7 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 
 class InsertCardCommand extends Command {
 	/**
-	 * Refresh uses schema definition to checks if a sideCard can be inserted in the current selection.
+	 * Refresh used schema definition to check if a side card can be inserted in the current selection.
 	 */
 	refresh() {
 		const model = this.editor.model;
@@ -486,7 +488,7 @@ class InsertCardCommand extends Command {
 	}
 
 	/**
-	 * Creates full side card element with all required children and attributes.
+	 * Creates a full side card element with all required children and attributes.
 	 */
 	execute() {
 		const model = this.editor.model;
@@ -550,7 +552,7 @@ class ComplexBox extends Plugin {
 				children: [ 'sideCardSection' ]
 			}
 		} );
-		// The data downcast is always executed from the current model stat, so the `triggerBy` will take no effect.
+		// The data downcast is always executed from the current model stat, so `triggerBy` will take no effect.
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'sideCard',
 			view: downcastSideCard( editor, { asWidget: false } )
