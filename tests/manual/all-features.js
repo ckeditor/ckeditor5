@@ -6,47 +6,50 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			ArticlePluginSet, CodeBlock, Alignment,
-			TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
-			Code, Underline, Strikethrough, Superscript, Subscript,
-			Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
-			IndentBlock, WordCount, EasyImage,
-			TodoList, PageBreak, HorizontalLine, Mention, RemoveFormat, TextTransformation,
-			ImageResize, LinkImage
+			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
+			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
+			CodeBlock, TodoList, TableProperties, TableCellProperties,
+			EasyImage, ImageResize, LinkImage, AutoImage,
+			AutoLink, Mention, TextTransformation,
+			Alignment, IndentBlock,
+			PageBreak, HorizontalLine,
+			SpecialCharacters, SpecialCharactersEssentials, WordCount
 		],
 		toolbar: [
 			'heading',
