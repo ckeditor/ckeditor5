@@ -33,8 +33,8 @@ The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. 
 
 Some other ways to output the edited content include:
 
-* {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
-* {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
+* [Export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) &ndash; Generate editable `.docx` files out of your editor-created content.
+* [Export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown-like markers to automatically format your content as you type!
 
 ## Installation
