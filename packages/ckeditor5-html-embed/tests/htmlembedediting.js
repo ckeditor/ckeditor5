@@ -352,6 +352,21 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
 			} );
 
+			it( 'does not lose editor focus after saving changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( 'textarea' ).value = 'Foo Bar.';
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				sinon.assert.calledOnce( spy );
+			} );
+
 			it( 'does not update the model state after saving the same changes', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
@@ -390,6 +405,20 @@ describe( 'HtmlEmbedEditing', () => {
 
 				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'foo' );
 				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+			} );
+
+			it( 'does not lose editor focus after canceling editing', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
+
+				sinon.assert.calledOnce( spy );
 			} );
 
 			describe( 'rawHtmlApi.makeEditable()', () => {
