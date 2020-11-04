@@ -3,11 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals ClassicEditor, toWidget, toWidgetEditable, console, window, prompt, document */
+/* globals
+	ClassicEditor, Plugin, ButtonView, Command, toWidget, toWidgetEditable, createElement, findOptimalInsertionPosition,
+	console, window, prompt, document
+*/
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
+/**
+ * Helper for extracting side card type from a view element based on its CSS class.
+ */
 const getTypeFromViewElement = viewElement => {
 	for ( const type of [ 'info', 'warning' ] ) {
 		if ( viewElement.hasClass( `side-card-${ type }` ) ) {
@@ -18,6 +23,9 @@ const getTypeFromViewElement = viewElement => {
 	return 'info';
 };
 
+/**
+ * Single upcast converter to <sideCard/> element with all its attributes.
+ */
 const upcastCard = ( viewElement, { writer } ) => {
 	const sideCard = writer.createElement( 'sideCard' );
 
@@ -35,7 +43,10 @@ const upcastCard = ( viewElement, { writer } ) => {
 	return sideCard;
 };
 
-function addActionButton( text, callback, domElement, editor ) {
+/**
+ * Helper for creating DOM button with an editor callback.
+ */
+const addActionButton = ( text, callback, domElement, editor ) => {
 	const domDocument = domElement.ownerDocument;
 
 	const button = createElement( domDocument, 'button', {}, [ text ] );
@@ -47,9 +58,15 @@ function addActionButton( text, callback, domElement, editor ) {
 	domElement.appendChild( button );
 
 	return button;
-}
+};
 
-const renderActionsView = ( editor, modelElement ) => function( domElement ) {
+/**
+ * Helper function that creates card editing UI inside the card.
+ */
+const createActionsView = ( editor, modelElement ) => function( domElement ) {
+	//
+	// Set URL action button.
+	//
 	addActionButton( 'Set URL', writer => {
 		// eslint-disable-next-line no-alert
 		const newURL = prompt( 'Set URL', modelElement.getAttribute( 'cardURL' ) || '' );
@@ -60,33 +77,50 @@ const renderActionsView = ( editor, modelElement ) => function( domElement ) {
 	const currentType = modelElement.getAttribute( 'cardType' );
 	const newType = currentType === 'info' ? 'warning' : 'info';
 
+	//
+	// Change card action button.
+	//
 	addActionButton( 'Change type', writer => {
 		writer.setAttribute( 'cardType', newType, modelElement );
 	}, domElement, editor );
 
 	const childCount = modelElement.childCount;
 
+	//
+	// Add content section to a card action button.
+	//
 	const addButton = addActionButton( 'Add section', writer => {
 		writer.insertElement( 'sideCardSection', modelElement, 'end' );
 	}, domElement, editor );
 
+	// Disable the button so only 1-3 content boxes are in the card (there always will be a title).
 	if ( childCount > 4 ) {
 		addButton.setAttribute( 'disabled', 'disabled' );
 	}
 
+	//
+	// Remove content section from a card action button.
+	//
 	const removeButton = addActionButton( 'Remove section', writer => {
 		writer.remove( modelElement.getChild( childCount - 1 ) );
 	}, domElement, editor );
 
+	// Disable the button so only 1-3 content boxes are in the card (there always will be a title).
 	if ( childCount < 3 ) {
 		removeButton.setAttribute( 'disabled', 'disabled' );
 	}
 };
 
-const downcastSideCard = editor => {
+/**
+ * The downcast converter for <sideCard/> element.
+ *
+ * It returns a full view structure based on the current state of the model element.
+ */
+const downcastSideCard = ( editor, { asWidget } ) => {
 	return ( modelElement, { writer, consumable, mapper } ) => {
 		const type = modelElement.getAttribute( 'cardType' ) || 'info';
 
+		// Main view element for the side card.
 		const sideCardView = writer.createContainerElement( 'aside', {
 			class: `side-card side-card-${ type }`
 		} );
@@ -107,7 +141,9 @@ const downcastSideCard = editor => {
 			mapper.bindElements( child, childView );
 
 			// Make it an editable part of the widget.
-			toWidgetEditable( childView, writer );
+			if ( asWidget ) {
+				toWidgetEditable( childView, writer );
+			}
 
 			writer.insert( writer.createPositionAt( sideCardView, 'end' ), childView );
 		}
@@ -125,26 +161,76 @@ const downcastSideCard = editor => {
 			writer.insert( writer.createPositionAt( sideCardView, 'end' ), urlBox );
 		}
 
-		// Inner element used to render simple UI that allows to change side card's attributes.
-		const actionsView = writer.createRawElement( 'div', {
-			class: 'side-card-actions',
-			contenteditable: 'false', 			// Prevent editing of the element:
-			'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
-		}, renderActionsView( editor, modelElement ) ); // See the full code for details.
+		// Inner element used to render a simple UI that allows to change side card's attributes.
+		// It will only be needed in the editing view inside a widgetized element.
+		// The data output should not contain this section.
+		if ( asWidget ) {
+			const actionsView = writer.createRawElement( 'div', {
+				class: 'side-card-actions',
+				contenteditable: 'false', 			// Prevent editing of the element:
+				'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
+			}, createActionsView( editor, modelElement ) ); // See the full code for details.
 
-		writer.insert( writer.createPositionAt( sideCardView, 'end' ), actionsView );
+			writer.insert( writer.createPositionAt( sideCardView, 'end' ), actionsView );
 
-		return toWidget( sideCardView, writer, { widgetLabel: 'Side card' } );
+			toWidget( sideCardView, writer, { widgetLabel: 'Side card' } );
+		}
+
+		return sideCardView;
 	};
 };
 
-class ComplexBox {
-	constructor( editor ) {
-		this._defineSchema( editor );
-		this._defineConversion( editor );
+class InsertCardCommand extends Command {
+	/**
+	 * Refresh uses schema definition to checks if a sideCard can be inserted in the current selection.
+	 */
+	refresh() {
+		const model = this.editor.model;
+		const validParent = findOptimalInsertionPosition( model.document.selection, model );
+
+		this.isEnabled = model.schema.checkChild( validParent, 'sideCard' );
 	}
 
-	_defineConversion( editor ) {
+	/**
+	 * Creates full side card element with all required children and attributes.
+	 */
+	execute() {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+
+		const insertPosition = findOptimalInsertionPosition( selection, model );
+
+		model.change( writer => {
+			const sideCard = writer.createElement( 'sideCard', { cardType: 'info' } );
+			const title = writer.createElement( 'sideCardTitle' );
+			const section = writer.createElement( 'sideCardSection' );
+			const paragraph = writer.createElement( 'paragraph' );
+
+			writer.insert( title, sideCard, 0 );
+			writer.insert( section, sideCard, 1 );
+			writer.insert( paragraph, section, 0 );
+
+			model.insertContent( sideCard, insertPosition );
+
+			writer.setSelection( writer.createPositionAt( title, 0 ) );
+		} );
+	}
+}
+
+class ComplexBox extends Plugin {
+	constructor( editor ) {
+		super( editor );
+
+		this._defineSchema();
+		this._defineConversion();
+
+		editor.commands.add( 'insertCard', new InsertCardCommand( editor ) );
+
+		this._defineUI();
+	}
+
+	_defineConversion() {
+		const editor = this.editor;
 		const conversion = editor.conversion;
 
 		conversion.for( 'upcast' )
@@ -162,24 +248,35 @@ class ComplexBox {
 			} );
 
 		// The downcast conversion must be split as you need a widget in the editing pipeline.
-		conversion.for( 'downcast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'sideCard',
-			view: downcastSideCard( editor ),
+			view: downcastSideCard( editor, { asWidget: true } ),
 			triggerBy: {
 				attributes: [ 'cardType', 'cardURL' ],
 				children: [ 'sideCardSection' ]
 			}
 		} );
+		// The data downcast is always executed from the current model stat, so the `triggerBy` will take no effect.
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'sideCard',
+			view: downcastSideCard( editor, { asWidget: false } )
+		} );
 	}
 
-	_defineSchema( editor ) {
-		const schema = editor.model.schema;
+	_defineSchema() {
+		const schema = this.editor.model.schema;
 
 		// The main element with attributes for type and URL:
 		schema.register( 'sideCard', {
 			allowWhere: '$block',
 			isObject: true,
 			allowAttributes: [ 'cardType', 'cardURL' ]
+		} );
+		// Disallow side card nesting.
+		schema.addChildCheck( ( context, childDefinition ) => {
+			if ( [ ...context.getNames() ].includes( 'sideCard' ) && childDefinition.name === 'sideCard' ) {
+				return false;
+			}
 		} );
 
 		// A text-only title.
@@ -203,6 +300,32 @@ class ComplexBox {
 			allowContentOf: '$root'
 		} );
 	}
+
+	_defineUI() {
+		const editor = this.editor;
+
+		// Defines a simple text button.
+		editor.ui.componentFactory.add( 'insertCard', locale => {
+			const button = new ButtonView( locale );
+
+			const command = editor.commands.get( 'insertCard' );
+
+			button.set( {
+				withText: true,
+				icon: false,
+				label: 'Insert card'
+			} );
+
+			button.bind( 'isEnabled' ).to( command );
+
+			button.on( 'execute', () => {
+				editor.execute( 'insertCard' );
+				editor.editing.view.focus();
+			} );
+
+			return button;
+		} );
+	}
 }
 
 ClassicEditor
@@ -220,7 +343,7 @@ ClassicEditor
 			]
 		},
 		toolbar: {
-			items: [ 'heading', '|', 'bold', 'italic' ],
+			items: [ 'heading', '|', 'bold', 'italic', '|', 'insertCard' ],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
