@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "../../../mixins/_rounded.css";
 
 :root {
@@ -18,7 +19,14 @@
 
 		& > .ck.ck-label {
 			top: 0px;
-			left: 0px;
+
+			@mixin ck-dir ltr {
+				left: 0px;
+			}
+
+			@mixin ck-dir rtl {
+				right: 0px;
+			}
 
 			pointer-events: none;
 			transform-origin: 0 0;
@@ -77,7 +85,13 @@
 	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-		transform: translate(var(--ck-spacing-medium), calc(0.6 * var(--ck-font-size-base))) scale(1);
+		@mixin ck-dir ltr {
+			transform: translate(var(--ck-spacing-medium), calc(0.6 * var(--ck-font-size-base))) scale(1);
+		}
+
+		@mixin ck-dir rtl {
+			transform: translate(calc(-1 * var(--ck-spacing-medium)), calc(0.6 * var(--ck-font-size-base))) scale(1);
+		}
 
 		/* Compensate for the default translate position. */
 		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width));
