@@ -417,7 +417,7 @@ export default class BlockToolbar extends Plugin {
 		this.panelView.isVisible = false;
 
 		if ( focusEditable ) {
-			this.editor.editing.view.focus();
+			this.editor.focus();
 		}
 	}
 

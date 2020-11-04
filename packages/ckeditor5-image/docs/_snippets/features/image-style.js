@@ -9,7 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-style' ), {
-		removePlugins: [ 'ImageResize', 'LinkImage' ],
+		removePlugins: [ 'ImageResize', 'LinkImage', 'AutoImage' ],
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},

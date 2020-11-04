@@ -8,18 +8,12 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-image-toolbar' ), {
-		removePlugins: [ 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage', 'AutoImage' ],
-		image: {
-			toolbar: [ 'imageTextAlternative' ]
-		},
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
-		},
+	.create( document.querySelector( '#snippet-image-insert-via-pasting-url-into-editor' ), {
+		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage' ],
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.editorToolbar = editor;
+		window.editorInsertImageViaPastingUrlIntoEditor = editor;
 	} )
 	.catch( err => {
 		console.error( err );

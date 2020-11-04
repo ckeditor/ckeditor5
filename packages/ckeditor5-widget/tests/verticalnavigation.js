@@ -37,7 +37,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 		// The editing view must be focused because otherwise in Chrome the DOM selection will not contain
 		// any ranges and jumpOverUiElement will crash (for the right arrow when shift is pressed).
-		editor.editing.view.focus();
+		editor.focus();
 
 		leftArrowDomEvtDataStub = {
 			keyCode: getCode( 'ArrowLeft' ),

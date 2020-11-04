@@ -490,43 +490,100 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 				} else {
 					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
 				}
-
 				wasFixed = true;
+			} else {
+				// Adjust the `listStyle` attribute for inserted (pasted) items. See #8160.
+				//
+				// ■ List item 1. // [listStyle="square", listType="bulleted"]
+				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+				//     ○ [] (selection is here)
+				//
+				// Then, pasting a list with different attributes (listStyle, listType):
+				//
+				// 1. First. // [listStyle="decimal", listType="numbered"]
+				// 2. Second // [listStyle="decimal", listType="numbered"]
+				//
+				// The `listType` attribute will be corrected by the `ListEditing` converters.
+				// We need to adjust the `listStyle` attribute. Expected structure:
+				//
+				// ■ List item 1. // [listStyle="square", listType="bulleted"]
+				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+				//     ○ First. // [listStyle="circle", listType="bulleted"]
+				//     ○ Second // [listStyle="circle", listType="bulleted"]
+				const previousSibling = item.previousSibling;
+
+				if ( shouldInheritListTypeFromPreviousItem( previousSibling, item ) ) {
+					writer.setAttribute( 'listStyle', previousSibling.getAttribute( 'listStyle' ), item );
+
+					wasFixed = true;
+				}
 			}
 		}
 
 		return wasFixed;
 	};
+}
 
-	// Checks whether the `listStyle` attribute should be copied from the `baseItem` element.
-	//
-	// The attribute should be copied if the inserted element does not have defined it and
-	// the value for the element is other than default in the base element.
-	//
-	// @param {module:engine/model/element~Element|null} baseItem
-	// @param {module:engine/model/element~Element} itemToChange
-	// @returns {Boolean}
-	function shouldInheritListType( baseItem, itemToChange ) {
-		if ( !baseItem ) {
-			return false;
-		}
-
-		const baseListStyle = baseItem.getAttribute( 'listStyle' );
-
-		if ( !baseListStyle ) {
-			return false;
-		}
-
-		if ( baseListStyle === DEFAULT_LIST_TYPE ) {
-			return false;
-		}
-
-		if ( baseItem.getAttribute( 'listType' ) !== itemToChange.getAttribute( 'listType' ) ) {
-			return false;
-		}
-
-		return true;
+// Checks whether the `listStyle` attribute should be copied from the `baseItem` element.
+//
+// The attribute should be copied if the inserted element does not have defined it and
+// the value for the element is other than default in the base element.
+//
+// @param {module:engine/model/element~Element|null} baseItem
+// @param {module:engine/model/element~Element} itemToChange
+// @returns {Boolean}
+function shouldInheritListType( baseItem, itemToChange ) {
+	if ( !baseItem ) {
+		return false;
 	}
+
+	const baseListStyle = baseItem.getAttribute( 'listStyle' );
+
+	if ( !baseListStyle ) {
+		return false;
+	}
+
+	if ( baseListStyle === DEFAULT_LIST_TYPE ) {
+		return false;
+	}
+
+	if ( baseItem.getAttribute( 'listType' ) !== itemToChange.getAttribute( 'listType' ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+// Checks whether the `listStyle` attribute should be copied from previous list item.
+//
+// The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
+// Top-level lists are not normalized as we allow side-by-side list of different types.
+//
+// @param {module:engine/model/element~Element|null} previousItem
+// @param {module:engine/model/element~Element} itemToChange
+// @returns {Boolean}
+function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange ) {
+	if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
+		return false;
+	}
+
+	if ( itemToChange.getAttribute( 'listType' ) !== previousItem.getAttribute( 'listType' ) ) {
+		return false;
+	}
+
+	const previousItemIndent = previousItem.getAttribute( 'listIndent' );
+
+	if ( previousItemIndent < 1 || previousItemIndent !== itemToChange.getAttribute( 'listIndent' ) ) {
+		return false;
+	}
+
+	const previousItemListStyle = previousItem.getAttribute( 'listStyle' );
+
+	if ( !previousItemListStyle || previousItemListStyle === itemToChange.getAttribute( 'listStyle' ) ) {
+		return false;
+	}
+
+	return true;
 }
 
 // Removes the `listStyle` attribute from "todo" list items.

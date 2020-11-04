@@ -424,7 +424,7 @@ export default class ContextualBalloon extends Plugin {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
-				this.editor.editing.view.focus();
+				this.editor.focus();
 			}
 
 			this._showNextStack();
@@ -434,7 +434,7 @@ export default class ContextualBalloon extends Plugin {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
-				this.editor.editing.view.focus();
+				this.editor.focus();
 			}
 
 			this._showPrevStack();

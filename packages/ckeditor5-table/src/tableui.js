@@ -76,7 +76,7 @@ export default class TableUI extends Plugin {
 
 				dropdownView.on( 'execute', () => {
 					editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
-					editor.editing.view.focus();
+					editor.focus();
 				} );
 			} );
 
@@ -251,7 +251,7 @@ export default class TableUI extends Plugin {
 
 		this.listenTo( dropdownView, 'execute', evt => {
 			editor.execute( evt.source.commandName );
-			editor.editing.view.focus();
+			editor.focus();
 		} );
 
 		return dropdownView;
@@ -285,13 +285,13 @@ export default class TableUI extends Plugin {
 		// Merge selected table cells when the main part of the split button is clicked.
 		this.listenTo( dropdownView.buttonView, 'execute', () => {
 			editor.execute( mergeCommandName );
-			editor.editing.view.focus();
+			editor.focus();
 		} );
 
 		// Execute commands for events coming from the list in the dropdown panel.
 		this.listenTo( dropdownView, 'execute', evt => {
 			editor.execute( evt.source.commandName );
-			editor.editing.view.focus();
+			editor.focus();
 		} );
 
 		return dropdownView;

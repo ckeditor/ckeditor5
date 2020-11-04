@@ -468,20 +468,43 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'attachTo()', () => {
-		it( 'works without WidgetToolbarRepository plugin', async () => {
-			const localEditorElement = createEditorElement();
-			const localEditor = await ClassicEditor.create( localEditorElement, {
+		let localEditorElement, localEditor;
+
+		beforeEach( async () => {
+			localEditorElement = createEditorElement();
+			localEditor = await ClassicEditor.create( localEditorElement, {
 				plugins: [
 					WidgetResize, simpleWidgetPlugin
 				]
 			} );
+		} );
 
+		afterEach( () => {
+			localEditorElement.remove();
+			return localEditor.destroy();
+		} );
+
+		it( 'works without WidgetToolbarRepository plugin', async () => {
 			setModelData( localEditor.model, '[<widget></widget>]' );
 
-			const resizerOptions = {
-				modelElement: localEditor.model.document.getRoot().getChild( 0 ),
-				viewElement: localEditor.editing.view.document.getRoot().getChild( 0 ),
-				editor: localEditor,
+			localEditor.plugins.get( WidgetResize ).attachTo( gerResizerOptions( localEditor ) );
+			// Nothing should be thrown.
+		} );
+
+		it( 'sets the visible resizer if associated widget is already focused', async () => {
+			setModelData( localEditor.model, '[<widget></widget>]' );
+
+			const widgetResizePlugin = localEditor.plugins.get( WidgetResize );
+			const resizer = widgetResizePlugin.attachTo( gerResizerOptions( localEditor ) );
+
+			expect( widgetResizePlugin.visibleResizer ).to.eql( resizer );
+		} );
+
+		function gerResizerOptions( editor ) {
+			return {
+				modelElement: editor.model.document.getRoot().getChild( 0 ),
+				viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
+				editor,
 
 				isCentered: () => false,
 				getHandleHost( domWidgetElement ) {
@@ -493,13 +516,7 @@ describe( 'WidgetResize', () => {
 
 				onCommit: commitStub
 			};
-
-			localEditor.plugins.get( WidgetResize ).attachTo( resizerOptions );
-			// Nothing should be thrown.
-			// And clean up.
-			localEditorElement.remove();
-			return localEditor.destroy();
-		} );
+		}
 	} );
 
 	describe( 'init()', () => {

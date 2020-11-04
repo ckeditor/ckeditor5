@@ -145,7 +145,7 @@ export default class ImageInsertUI extends Plugin {
 		}
 
 		function closePanel() {
-			editor.editing.view.focus();
+			editor.focus();
 			dropdownView.isOpen = false;
 		}
 
