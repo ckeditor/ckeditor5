@@ -6,6 +6,7 @@
 /* eslint-env node */
 
 const path = require( 'path' );
+const upath = require( 'upath' );
 const fs = require( 'fs' );
 const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
@@ -513,7 +514,8 @@ function readSnippetConfig( snippetSourcePath ) {
 }
 
 /**
- * Removes duplicated entries specified in `files` array and map those entires using `mapFunction`.
+ * Removes duplicated entries specified in `files` array, unifies path separators to always be `/`
+ * and then maps those entries using `mapFunction`.
  *
  * @param {Array.<String>} files Paths collection.
  * @param {Function} mapFunction Function that should return a string.
@@ -521,6 +523,7 @@ function readSnippetConfig( snippetSourcePath ) {
  */
 function getHTMLImports( files, mapFunction ) {
 	return [ ...new Set( files ) ]
+		.map( path => upath.normalize( path ) )
 		.map( mapFunction )
 		.join( '\n' )
 		.replace( /^\s+/, '' );
