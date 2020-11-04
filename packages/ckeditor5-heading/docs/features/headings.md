@@ -36,7 +36,7 @@ Use toolbar dropdown to style a heading, or type # or more (depending on the hea
 
 ## Heading buttons
 
-The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from above demo with the heading buttons below to check the functionality and usability of this variation.
+The heading feature lets you also use a set of heading buttons instead of the dropdown list. The toolbar buttons are configurable and it is possible to include a paragraph button, too. Compare the heading toolbar dropdown from the demo above with the heading buttons below to check the functionality and usability of this variation.
 
 {@snippet features/heading-buttons}
 
@@ -46,15 +46,15 @@ There are more CKEditor 5 features that can help you format your content:
 * {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
 * {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
-* {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered list you can style.
+* {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered lists you can style.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-* {@link features/autoformat Autoformatting} &ndash; Add formatting elements as you type with Markdown code.
+* {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as headings) as you type with Markdown code.
 
 ## Configuration
 
 ### Configuring heading levels
 
-It is, of course, possible to configure which heading levels the editor should support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option to do so.
+You can configure which heading levels the editor will support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option to do so.
 
 For example, the following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
@@ -137,11 +137,11 @@ ClassicEditor
 
 ### Configuring toolbar buttons
 
-In order to use toolbar buttons instead of heading dropdown, you need to properly configure the feature. You also need to import proper UI elements; see the [installation section](#installation-with-toolbar-heading-buttons) for instructions on how to do it.
+In order to use individual toolbar buttons instead of the heading dropdown, you need to properly configure the feature. You also need to import proper UI elements; see the [installation section](#installation-with-toolbar-heading-buttons) for instructions on how to do it.
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#snippet-heading-buttons' ), {
+	.create( document.querySelector( '#editor' ), {
 		toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', '|', 'undo', 'redo' ],
 		heading: {
 			options: [
@@ -155,12 +155,8 @@ ClassicEditor
 			]
 		}
 	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+	.then( ... )
+    .catch( ... );
 ```
 {@snippet features/custom-heading-buttons}
 
