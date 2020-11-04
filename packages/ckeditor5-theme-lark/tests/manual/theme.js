@@ -515,7 +515,7 @@ function renderInput() {
 	ui.inputLabeled.add( input() );
 	ui.inputReadOnly.add( input( {
 		label: 'A read–only input',
-		isReadOnly: true,
+		isEnabled: false,
 		value: 'Read–only input value'
 	} ) );
 }
@@ -634,14 +634,14 @@ function toolbarNewLine() {
 
 function input( {
 	label = 'Labeled input',
-	isReadOnly = false,
+	isEnabled = true,
 	value = 'The value of the input'
 } = {} ) {
-	const labeledInput = new LabeledFieldView( {}, createLabeledInputText );
+	const labeledField = new LabeledFieldView( {}, createLabeledInputText );
 
-	labeledInput.fieldView.set( { isReadOnly, label, value } );
+	labeledField.set( { isEnabled, label, value } );
 
-	return labeledInput;
+	return labeledField;
 }
 
 function setManualTestDirection( direction ) {
