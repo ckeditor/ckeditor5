@@ -212,8 +212,9 @@ function findBulletedListStyle( element ) {
 		return 'circle';
 	} else if ( listMarker === '·' ) {
 		return 'disc';
+	}
 	// Word returns '§' instead of '■' for the square list style.
-	} else if ( listMarker === '§' ) {
+	else if ( listMarker === '§' ) {
 		return 'square';
 	}
 
