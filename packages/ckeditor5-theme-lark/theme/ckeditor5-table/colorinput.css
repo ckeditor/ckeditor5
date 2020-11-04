@@ -22,14 +22,15 @@
 	& > .ck.ck-dropdown {
 		& > .ck.ck-button.ck-input-color__button {
 			padding: 0;
-			border-left-width: 0;
 
 			@mixin ck-dir ltr {
+				border-left-width: 0;
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
 			}
 
 			@mixin ck-dir rtl {
+				border-right-width: 0;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 			}
