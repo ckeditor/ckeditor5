@@ -255,8 +255,7 @@ class BootstrapEditorUI extends EditorUI {
 
 		// References to the toolbar buttons for further usage. See #_setupBootstrapToolbarButtons.
 		view.toolbarButtons = {};
-		// Render the view to the body.
-		this._view.render();
+
 		[ 'bold', 'italic', 'underline', 'undo', 'redo' ].forEach( name => {
 			// Retrieve the jQuery object corresponding with the button in the DOM.
 			view.toolbarButtons[ name ] = view.element.find( `#${ name }` );
@@ -273,6 +272,10 @@ class BootstrapEditorUI extends EditorUI {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
+
+		// Make sure the EditorUIView is rendered. This will, for instance, create a place for UI elements
+		// like floating panels detached from the main editor UI in DOM.
+		this._view.render();
 
 		// Create an editing root in the editing layer. It will correspond with the
 		// document root created in the constructor().
