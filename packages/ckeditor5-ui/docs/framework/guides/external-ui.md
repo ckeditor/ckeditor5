@@ -273,6 +273,10 @@ class BootstrapEditorUI extends EditorUI {
 		const view = this.view;
 		const editingView = editor.editing.view;
 
+		// Make sure the EditorUIView is rendered. This will, for instance, create a place for UI elements
+		// like floating panels detached from the main editor UI in DOM.
+		this._view.render();
+
 		// Create an editing root in the editing layer. It will correspond with the
 		// document root created in the constructor().
 		const editingRoot = editingView.document.getRoot();
