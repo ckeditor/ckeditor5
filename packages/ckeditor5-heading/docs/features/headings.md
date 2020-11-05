@@ -30,7 +30,7 @@ By default, when your editor build does not include the title plugin, a `<h1>` e
 
 ## Demo
 
-Use toolbar dropdown to style a heading, or type # or more (depending on the heading level), followed by a space, to start a new heading with the {@link features/autoformat autoformatting feature}.
+Use the toolbar dropdown to style a heading, or type one or more `#` characters (depending on the heading level), followed by a space, to start a new heading with the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/default-headings}
 
@@ -205,7 +205,7 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 The {@link module:heading/heading~Heading} plugin registers:
 
 * The `'heading'` dropdown.
-* The `'heading'` command that accepts value based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
+* The `'heading'` command that accepts a value based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
 
 	You can turn the currently selected block(s) to headings by executing one of these commands:
 
@@ -213,14 +213,14 @@ The {@link module:heading/heading~Heading} plugin registers:
 	editor.execute( 'heading', { value: 'heading2' } );
 	```
  
-The {@link module:heading/headingbuttonsui~HeadingButtonsUI} plugin registers 6 UI button components that will execute the `'heading'` command with the proper value of the `value` attribute:
+The {@link module:heading/headingbuttonsui~HeadingButtonsUI} plugin registers six UI button components that will execute the `'heading'` command with the proper value of the `value` attribute:
 
-1. `'heading1'`
-2. `'heading2'`
-3. `'heading3'`
-4. `'heading4'`
-5. `'heading5'`
-6. `'heading6'`
+* `'heading1'`
+* `'heading2'`
+* `'heading3'`
+* `'heading4'`
+* `'heading5'`
+* `'heading6'`
     
 The {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin registers the UI button component: `'paragraph'`.
 
