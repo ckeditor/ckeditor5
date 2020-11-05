@@ -265,7 +265,7 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 
 			writer.insert( writer.createPositionAt( sideCardView, 'end' ), actionsView );
 
-			toWidget( sideCardView, writer, { widgetLabel: 'Side card' } );
+			toWidget( sideCardView, writer, { widgetLabel: 'Side card', hasSelectionHandle: true  } );
 		}
 
 		return sideCardView;
