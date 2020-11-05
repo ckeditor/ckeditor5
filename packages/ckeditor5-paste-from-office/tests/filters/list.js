@@ -181,6 +181,35 @@ describe( 'PasteFromOffice - filters', () => {
 							'</li>' +
 						'</ol>' );
 				} );
+
+				it( 'handles indentation for nested lists with different the `mso-list-id` value', () => {
+					const html = '<p style="mso-list:l0 level1 lfo0">Foo 1</p><p style="mso-list:l1 level2 lfo0">Bar 1.1</p>';
+					const view = htmlDataProcessor.toView( html );
+
+					const styles = '@list l0\n' +
+						'{ mso-list-id: 111; }\n' +
+						'@list l0:level1\n' +
+						'{ mso-level-number-format: alpha-upper; }\n' +
+						'@list l1' +
+						'{ mso-list-id:222; }' +
+						'@list l1:level1\n' +
+						'{ mso-level-number-format: bullet; }' +
+						'@list l1:level2\n' +
+						'{ mso-level-number-format: bullet; }';
+
+					transformListItemLikeElementsIntoLists( view, styles );
+
+					expect( view.childCount ).to.equal( 1 );
+					expect( stringify( view ) ).to.equal(
+						'<ol style="list-style-type:upper-alpha">' +
+							'<li style="mso-list:l0 level1 lfo0">Foo 1' +
+								'<ul>' +
+									'<li style="mso-list:l1 level2 lfo0">Bar 1.1</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
 			} );
 
 			describe( 'list styles', () => {
