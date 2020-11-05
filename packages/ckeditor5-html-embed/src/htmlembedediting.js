@@ -166,7 +166,7 @@ export default class HtmlEmbedEditing extends Plugin {
 						// it's enough to update the model – the entire widget will be reconverted.
 						if ( newValue !== state.getRawHtmlValue() ) {
 							editor.execute( 'updateHtmlEmbed', newValue );
-							editor.focus();
+							editor.editing.view.focus();
 						} else {
 							this.cancel();
 						}
@@ -177,7 +177,7 @@ export default class HtmlEmbedEditing extends Plugin {
 						} );
 
 						renderContent( { domElement: domContentWrapper, editor, state, props } );
-						editor.focus();
+						editor.editing.view.focus();
 
 						view.change( writer => {
 							writer.removeAttribute( 'data-cke-ignore-events', viewContentWrapper );

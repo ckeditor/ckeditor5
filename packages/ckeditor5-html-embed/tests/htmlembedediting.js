@@ -357,7 +357,7 @@ describe( 'HtmlEmbedEditing', () => {
 				const widget = viewDocument.getRoot().getChild( 0 );
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
-				const spy = sinon.spy( editor, 'focus' );
+				const spy = sinon.spy( editor.editing.view, 'focus' );
 
 				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
@@ -412,7 +412,7 @@ describe( 'HtmlEmbedEditing', () => {
 				const widget = viewDocument.getRoot().getChild( 0 );
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
-				const spy = sinon.spy( editor, 'focus' );
+				const spy = sinon.spy( editor.editing.view, 'focus' );
 
 				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
