@@ -264,9 +264,9 @@ export default class HtmlEmbedEditing extends Plugin {
 				class: 'raw-html-embed__buttons-wrapper'
 			} );
 			// TODO these should be cached and we should only clone here these cached nodes!
-			const domEditButton = createDomButton( editor.locale, 'edit' );
-			const domSaveButton = createDomButton( editor.locale, 'save' );
-			const domCancelButton = createDomButton( editor.locale, 'cancel' );
+			const domEditButton = createDomButton( editor, 'edit' );
+			const domSaveButton = createDomButton( editor, 'save' );
+			const domCancelButton = createDomButton( editor, 'cancel' );
 
 			if ( state.isEditable ) {
 				const clonedDomSaveButton = domSaveButton.cloneNode( true );
@@ -328,9 +328,10 @@ export default class HtmlEmbedEditing extends Plugin {
 //  @param {module:utils/locale~Locale} locale Editor locale.
 //  @param {'edit'|'save'|'cancel'} type Type of button to create.
 //  @returns {HTMLElement}
-function createDomButton( locale, type ) {
-	const t = locale.t;
-	const buttonView = new ButtonView( locale );
+function createDomButton( editor, type ) {
+	const t = editor.locale.t;
+	const buttonView = new ButtonView( editor.locale );
+	const command = editor.commands.get( 'updateHtmlEmbed' );
 
 	buttonView.set( {
 		tooltipPosition: 'sw',
@@ -352,6 +353,7 @@ function createDomButton( locale, type ) {
 			label: t( 'Save changes' ),
 			class: 'raw-html-embed__save-button'
 		} );
+		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 	} else {
 		buttonView.set( {
 			icon: cancelIcon,
