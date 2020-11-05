@@ -361,6 +361,11 @@ function removeBulletElement( element, writer ) {
 // Whether previous and current item belongs to the same list. It is determined based on `item.id`
 // (extracted from `mso-list` style, see #getListItemData) and previous sibling of the current item.
 //
+// However, it's quite easy to change the `id` attribute for nested lists and it will break the list feature while pasting.
+// Let's check also the `indent` attribute. If between those two elements, the difference is equal to 1, we can assume that
+// the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always starts with the `indent=0` attribute.
+// See: #7805.
+//
 // @param {Object} previousItem
 // @param {Object} currentItem
 // @returns {Boolean}
@@ -370,6 +375,14 @@ function isNewListNeeded( previousItem, currentItem ) {
 	}
 
 	if ( previousItem.id !== currentItem.id ) {
+		// See: #7805.
+		//
+		// * List item 1.
+		//     - Nested list item 1.
+		if ( currentItem.indent - previousItem.indent === 1 ) {
+			return false;
+		}
+
 		return true;
 	}
 
