@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "./_hidden.css";
-@import "./_reset.css";
-@import "./_zindex.css";
-@import "./_transition.css";
+/**
+ * A class that disables all transitions of the element and its children.
+ */
+.ck-transitions-disabled,
+.ck-transitions-disabled * {
+	transition: none !important;
+}
