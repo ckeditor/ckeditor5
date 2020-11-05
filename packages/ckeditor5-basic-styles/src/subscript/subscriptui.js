@@ -44,7 +44,7 @@ export default class SubscriptUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( SUBSCRIPT );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

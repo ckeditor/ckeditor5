@@ -70,7 +70,7 @@ export default class IndentUI extends Plugin {
 
 			this.listenTo( view, 'execute', () => {
 				editor.execute( commandName );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

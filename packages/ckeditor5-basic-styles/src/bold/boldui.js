@@ -45,7 +45,7 @@ export default class BoldUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( BOLD );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

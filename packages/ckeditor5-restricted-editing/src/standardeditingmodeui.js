@@ -44,7 +44,7 @@ export default class StandardEditingModeUI extends Plugin {
 
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'restrictedEditingException' );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

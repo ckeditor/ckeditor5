@@ -375,7 +375,7 @@ export default class LinkUI extends Plugin {
 
 			// Because the form has an input which has focus, the focus must be brought back
 			// to the editor. Otherwise, it would be lost.
-			this.editor.focus();
+			this.editor.editing.view.focus();
 
 			this._hideFakeVisualSelection();
 		}
@@ -443,7 +443,7 @@ export default class LinkUI extends Plugin {
 
 		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
-		editor.focus();
+		editor.editing.view.focus();
 
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();

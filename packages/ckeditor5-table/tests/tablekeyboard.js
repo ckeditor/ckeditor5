@@ -2221,7 +2221,7 @@ describe( 'TableKeyboard', () => {
 
 					// The editing view must be focused because otherwise in Chrome the DOM selection will not contain
 					// any ranges and jumpOverUiElement will crash (for the right arrow when shift is pressed).
-					editor.focus();
+					editor.editing.view.focus();
 				} );
 
 				afterEach( async () => {

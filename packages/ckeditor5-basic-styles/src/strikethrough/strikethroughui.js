@@ -45,7 +45,7 @@ export default class StrikethroughUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( STRIKETHROUGH );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;
