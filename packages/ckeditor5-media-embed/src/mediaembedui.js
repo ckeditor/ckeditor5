@@ -77,7 +77,7 @@ export default class MediaEmbedUI extends Plugin {
 		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
 		// invisible form/input cannot be focused/selected.
 		button.on( 'open', () => {
-			form.disableCSSTransitions();
+			form.disableCssTransitions();
 
 			// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 			// the command. If the user typed in the input, then canceled (`urlInputView#fieldView#value` stays
@@ -87,7 +87,7 @@ export default class MediaEmbedUI extends Plugin {
 			form.url = command.value || '';
 			form.urlInputView.fieldView.select();
 			form.focus();
-			form.enableCSSTransitions();
+			form.enableCssTransitions();
 		}, { priority: 'low' } );
 
 		dropdown.on( 'submit', () => {

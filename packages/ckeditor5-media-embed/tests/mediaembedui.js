@@ -129,13 +129,13 @@ describe( 'MediaEmbedUI', () => {
 				} );
 
 				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
-					const disableCSSTransitionsSpy = sinon.spy( form, 'disableCSSTransitions' );
-					const enableCSSTransitionsSpy = sinon.spy( form, 'enableCSSTransitions' );
+					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
 					const selectSpy = sinon.spy( form.urlInputView.fieldView, 'select' );
 
 					button.fire( 'open' );
 
-					sinon.assert.callOrder( disableCSSTransitionsSpy, selectSpy, enableCSSTransitionsSpy );
+					sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
 				} );
 			} );
 		} );

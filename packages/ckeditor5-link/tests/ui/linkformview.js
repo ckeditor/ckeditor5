@@ -94,7 +94,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'should implement the CSS transition disabling feature', () => {
-			expect( view.disableCSSTransitions ).to.be.a( 'function' );
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
 		} );
 	} );
 

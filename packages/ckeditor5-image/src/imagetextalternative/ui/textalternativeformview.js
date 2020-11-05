@@ -14,7 +14,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
-import injectCSSTransitionDisabling from '@ckeditor/ckeditor5-ui/src/bindings/injecttransitiondisabling';
+import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -128,7 +128,7 @@ export default class TextAlternativeFormView extends View {
 			]
 		} );
 
-		injectCSSTransitionDisabling( this );
+		injectCssTransitionDisabler( this );
 	}
 
 	/**

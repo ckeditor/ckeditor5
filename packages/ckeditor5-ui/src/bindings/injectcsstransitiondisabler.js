@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/bindings/injecttransitiondisabling
+ * @module ui/bindings/injectcsstransitiondisabler
  */
 
 /**
@@ -13,15 +13,15 @@
  * when the view is first displayed but they should work normally in other cases.
  *
  * The methods to control the CSS transitions are:
- * * `disableCSSTransitions()` – adds the `.ck-transitions-disabled` class to the
+ * * `disableCssTransitions()` – adds the `.ck-transitions-disabled` class to the
  * {@link module:ui/view~View#element view element},
- * * `enableCSSTransitions()` – removes the `.ck-transitions-disabled` class from the
+ * * `enableCssTransitions()` – removes the `.ck-transitions-disabled` class from the
  * {@link module:ui/view~View#element view element}.
  *
  * **Note**: This helper extends the {@link module:ui/view~View#template template} and must be used **after**
  * {@link module:ui/view~View#setTemplate} is called:
  *
- *		import injectCSSTransitionDisabling from '@ckeditor/ckeditor5-ui/src/bindings/injecttransitiondisabling';
+ *		import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
  *
  *		class MyView extends View {
  *			constructor() {
@@ -33,7 +33,7 @@
  *
  *				// ...
  *
- *				injectCSSTransitionDisabling( this );
+ *				injectCssTransitionDisabler( this );
  *
  *				// ...
  *			}
@@ -45,27 +45,27 @@
  *
  *		// ...
  *
- *		view.disableCSSTransitions();
+ *		view.disableCssTransitions();
  *		view.show();
- *		view.enableCSSTransitions();
+ *		view.enableCssTransitions();
  *
  * @param {module:ui/view~View} view View instance that should get this functionality.
  */
-export default function injectCSSTransitionDisabling( view ) {
-	view.set( '_isCSSTransitionsDisabled', false );
+export default function injectCssTransitionDisabler( view ) {
+	view.set( '_isCssTransitionsDisabled', false );
 
-	view.disableCSSTransitions = () => {
-		view._isCSSTransitionsDisabled = true;
+	view.disableCssTransitions = () => {
+		view._isCssTransitionsDisabled = true;
 	};
 
-	view.enableCSSTransitions = () => {
-		view._isCSSTransitionsDisabled = false;
+	view.enableCssTransitions = () => {
+		view._isCssTransitionsDisabled = false;
 	};
 
 	view.extendTemplate( {
 		attributes: {
 			class: [
-				view.bindTemplate.if( '_isCSSTransitionsDisabled', 'ck-transitions-disabled' )
+				view.bindTemplate.if( '_isCssTransitionsDisabled', 'ck-transitions-disabled' )
 			]
 		}
 	} );

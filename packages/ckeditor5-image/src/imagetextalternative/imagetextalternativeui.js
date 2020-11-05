@@ -165,7 +165,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const command = editor.commands.get( 'imageTextAlternative' );
 		const labeledInput = this._form.labeledInput;
 
-		this._form.disableCSSTransitions();
+		this._form.disableCssTransitions();
 
 		if ( !this._isInBalloon ) {
 			this._balloon.add( {
@@ -183,7 +183,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		this._form.labeledInput.fieldView.select();
 
-		this._form.enableCSSTransitions();
+		this._form.enableCssTransitions();
 	}
 
 	/**

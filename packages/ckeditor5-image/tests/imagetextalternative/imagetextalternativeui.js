@@ -99,15 +99,15 @@ describe( 'ImageTextAlternativeUI', () => {
 
 		it( 'should disable CSS transitions before showing the form to avoid unnecessary animations (and then enable them again)', () => {
 			const addSpy = sinon.spy( balloon, 'add' );
-			const disableCSSTransitionsSpy = sinon.spy( form, 'disableCSSTransitions' );
-			const enableCSSTransitionsSpy = sinon.spy( form, 'enableCSSTransitions' );
+			const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+			const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
 			const selectSpy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
 			setData( model, '[<image src="" alt="foo bar"></image>]' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.callOrder( disableCSSTransitionsSpy, addSpy, selectSpy, enableCSSTransitionsSpy );
+			sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, selectSpy, enableCssTransitionsSpy );
 		} );
 	} );
 
