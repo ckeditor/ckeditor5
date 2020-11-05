@@ -5,7 +5,7 @@ CKEditor 5 HTML embed feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-html-embed/status.svg)](https://david-dm.org/ckeditor/ckeditor5-html-embed)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-html-embed/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-html-embed?type=dev)
 
-This package implements the HTML embed feature for CKEditor 5.
+This package implements the HTML embed feature for CKEditor 5. It allows embedding an arbitrary HTML snippet in the rich-text editor.
 
 ## Demo
 

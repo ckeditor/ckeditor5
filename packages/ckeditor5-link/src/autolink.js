@@ -14,7 +14,7 @@ import { addLinkProtocolIfApplicable } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
-// This was tweak from https://gist.github.com/dperini/729294.
+// This was a tweak from https://gist.github.com/dperini/729294.
 const URL_REG_EXP = new RegExp(
 	// Group 1: Line start or after a space.
 	'(^|\\s)' +
@@ -95,12 +95,12 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
-			// 1. Detect "Space" after a text with a potential link.
+			// 1. Detect <kbd>Space</kbd> after a text with a potential link.
 			if ( !isSingleSpaceAtTheEnd( text ) ) {
 				return;
 			}
 
-			// 2. Check text before last typed "Space".
+			// 2. Check text before last typed <kbd>Space</kbd>.
 			const url = getUrlAtTextEnd( text.substr( 0, text.length - 1 ) );
 
 			if ( url ) {
