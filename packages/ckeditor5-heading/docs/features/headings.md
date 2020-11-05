@@ -212,6 +212,17 @@ The {@link module:heading/heading~Heading} plugin registers:
 	```js
 	editor.execute( 'heading', { value: 'heading2' } );
 	```
+ 
+The {@link module:heading/headingbuttonsui~HeadingButtonsUI} plugin registers 6 UI button components that will execute the `'heading'` command with the proper value of the `value` attribute:
+
+1. `'heading1'`
+2. `'heading2'`
+3. `'heading3'`
+4. `'heading4'`
+5. `'heading5'`
+6. `'heading6'`
+    
+The {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin registers the UI button component: `'paragraph'`.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
