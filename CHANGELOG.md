@@ -7,7 +7,7 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v23.1.0.
 
-This release introduces a new HTML embed feature and adds the list style feature to the document editor build.
+This release introduces a new [HTML embed feature](https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html) and adds the list style feature to the document editor build.
 
 It also comes with new API features:
 

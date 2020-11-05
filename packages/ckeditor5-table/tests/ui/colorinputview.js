@@ -71,6 +71,30 @@ describe( 'ColorInputView', () => {
 			expect( view.hasError ).to.be.false;
 		} );
 
+		it( 'should set #isFocused', () => {
+			expect( view.isFocused ).to.be.false;
+		} );
+
+		it( 'should set #isEmpty', () => {
+			expect( view.isEmpty ).to.be.true;
+		} );
+
+		it( 'should have #isEmpty bound to the text input', () => {
+			inputView.isEmpty = true;
+			expect( view.isEmpty ).to.be.true;
+
+			inputView.isEmpty = false;
+			expect( view.isEmpty ).to.be.false;
+		} );
+
+		it( 'should have #isFocused bound to the text input', () => {
+			inputView.isFocused = true;
+			expect( view.isFocused ).to.be.true;
+
+			inputView.isFocused = false;
+			expect( view.isFocused ).to.be.false;
+		} );
+
 		describe( 'dropdown', () => {
 			it( 'should be created', () => {
 				expect( view._dropdownView ).to.be.instanceOf( DropdownView );
@@ -352,8 +376,8 @@ describe( 'ColorInputView', () => {
 		it( 'should set the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input-color' ) ).to.be.true;
-			expect( view.element.firstChild ).to.equal( inputView.element );
-			expect( view.element.lastChild ).to.equal( view._dropdownView.element );
+			expect( view.element.firstChild ).to.equal( view._dropdownView.element );
+			expect( view.element.lastChild ).to.equal( inputView.element );
 		} );
 
 		describe( 'options', () => {

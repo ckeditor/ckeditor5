@@ -18,12 +18,9 @@ import ImageStyle from '../../src/imagestyle';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
+import { IMAGE_SRC_FIXTURE } from './_utils/utils';
 
 describe( 'ImageResizeEditing', () => {
-	// 100x50 black png image
-	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
-		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
-
 	let editor, editorElement;
 
 	beforeEach( () => {
