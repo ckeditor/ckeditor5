@@ -114,9 +114,9 @@ export default class ListStyleEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		// First the most-outer `listItem` in the first list reference.
-		// If found, lists should be merged and this `listItem` provides the `listStyle` attribute
-		// and it' also a starting point when searching for items in the second list.
+		// First the outer-most`listItem` in the first list reference.
+		// If found, the lists should be merged and this `listItem` provides the `listStyle` attribute
+		// and it is also a starting point when searching for items in the second list.
 		let firstMostOuterItem;
 
 		// Check whether the removed content is between two lists.
@@ -249,8 +249,8 @@ function downcastListStyleAttribute() {
 
 	// Checks whether specified list items belong to the same list.
 	//
-	// @param {module:engine/model/element~Element} listItem1 The first list item to check.
-	// @param {module:engine/model/element~Element|null} listItem2 The second list item to check.
+	// @param {module:engine/model/element~Element} `listItem1` The first list item to check.
+	// @param {module:engine/model/element~Element|null} `listItem2` The second list item to check.
 	// @returns {Boolean}
 	function areRepresentingSameList( listItem1, listItem2 ) {
 		return listItem2 &&
@@ -295,7 +295,7 @@ function fixListAfterIndentListCommand( editor ) {
 
 		const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === rootIndent );
 
-		// A case where a few list items are intended must be checked separately
+		// A case where a few list items are indented must be checked separately
 		// since `getSiblingListItem()` returns the first changed element.
 		// ■ List item 1.
 		//     ○ [List item 2.
@@ -627,7 +627,7 @@ function restoreDefaultListStyle( editor ) {
 	};
 }
 
-// Returns `listItem` that were inserted or changed.
+// Returns the `listItem` that was inserted or changed.
 //
 // @param {Array.<Object>} changes The changes list returned by the differ.
 // @returns {Array.<module:engine/model/element~Element>}
