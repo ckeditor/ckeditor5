@@ -206,7 +206,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		this._balloon.remove( this._form );
 
 		if ( focusEditable ) {
-			this.editor.editing.view.focus();
+			this.editor.focus();
 		}
 	}
 

@@ -329,7 +329,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		// Make sure the focus is not lost in the process by putting it directly
 		// into the editing view.
-		this.editor.editing.view.focus();
+		this.editor.focus();
 	}
 
 	/**

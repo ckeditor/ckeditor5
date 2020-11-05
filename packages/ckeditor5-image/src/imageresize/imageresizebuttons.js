@@ -185,7 +185,7 @@ export default class ImageResizeButtons extends Plugin {
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, { width: evt.source.commandValue } );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return dropdownView;
