@@ -126,7 +126,7 @@ A simplified model markup for the side card looks as follows:
 This will be converted to the below view structure:
 
 ```html
-<aside class="side-card side-card-info">
+<aside class="side-card side-card-default">
 	<div class="side-card-title">Hey! Did you know?</div>
 	<div class="side-card-section">
 		<p>Editable content of the <strong>side card</strong>.</p>
@@ -210,7 +210,7 @@ The function that creates a complete view for the model element:
 ```js
 const downcastSideCard = ( editor, { asWidget } ) => {
 	return ( modelElement, { writer, consumable, mapper } ) => {
-		const type = modelElement.getAttribute( 'cardType' ) || 'info';
+		const type = modelElement.getAttribute( 'cardType' ) || 'default';
 
 		// The main view element for the side card.
 		const sideCardView = writer.createContainerElement( 'aside', {
@@ -295,7 +295,7 @@ editor.conversion.for( 'upcast' )
 	} );
 ```
 
-You can see the details of the upcast converter function (`upcastInfoBox()`) in the full source code at the end of this guide.
+You can see the details of the upcast converter function (`upcastCard()`) in the full source code at the end of this guide.
 
 ### Full source code
 
@@ -310,13 +310,13 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  * Helper for extracting the side card type from a view element based on its CSS class.
  */
 const getTypeFromViewElement = viewElement => {
-	for ( const type of [ 'info', 'warning' ] ) {
+	for ( const type of [ 'default', 'alternate' ] ) {
 		if ( viewElement.hasClass( `side-card-${ type }` ) ) {
 			return type;
 		}
 	}
 
-	return 'info';
+	return 'default';
 };
 
 /**
@@ -371,7 +371,7 @@ const createActionsView = ( editor, modelElement ) => function( domElement ) {
 	}, domElement, editor );
 
 	const currentType = modelElement.getAttribute( 'cardType' );
-	const newType = currentType === 'info' ? 'warning' : 'info';
+	const newType = currentType === 'default' ? 'alternate' : 'default';
 
 	//
 	// Change the card action button.
@@ -414,7 +414,7 @@ const createActionsView = ( editor, modelElement ) => function( domElement ) {
  */
 const downcastSideCard = ( editor, { asWidget } ) => {
 	return ( modelElement, { writer, consumable, mapper } ) => {
-		const type = modelElement.getAttribute( 'cardType' ) || 'info';
+		const type = modelElement.getAttribute( 'cardType' ) || 'default';
 
 		// The main view element for the side card.
 		const sideCardView = writer.createContainerElement( 'aside', {
@@ -497,7 +497,7 @@ class InsertCardCommand extends Command {
 		const insertPosition = findOptimalInsertionPosition( selection, model );
 
 		model.change( writer => {
-			const sideCard = writer.createElement( 'sideCard', { cardType: 'info' } );
+			const sideCard = writer.createElement( 'sideCard', { cardType: 'default' } );
 			const title = writer.createElement( 'sideCardTitle' );
 			const section = writer.createElement( 'sideCardSection' );
 			const paragraph = writer.createElement( 'paragraph' );

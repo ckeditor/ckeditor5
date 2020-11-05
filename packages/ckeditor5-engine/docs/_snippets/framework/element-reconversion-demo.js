@@ -14,13 +14,13 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
  * Helper for extracting the side card type from a view element based on its CSS class.
  */
 const getTypeFromViewElement = viewElement => {
-	for ( const type of [ 'info', 'warning' ] ) {
+	for ( const type of [ 'default', 'alternate' ] ) {
 		if ( viewElement.hasClass( `side-card-${ type }` ) ) {
 			return type;
 		}
 	}
 
-	return 'info';
+	return 'default';
 };
 
 /**
@@ -75,7 +75,7 @@ const createActionsView = ( editor, modelElement ) => function( domElement ) {
 	}, domElement, editor );
 
 	const currentType = modelElement.getAttribute( 'cardType' );
-	const newType = currentType === 'info' ? 'warning' : 'info';
+	const newType = currentType === 'default' ? 'alternate' : 'default';
 
 	//
 	// Change the card action button.
@@ -118,7 +118,7 @@ const createActionsView = ( editor, modelElement ) => function( domElement ) {
  */
 const downcastSideCard = ( editor, { asWidget } ) => {
 	return ( modelElement, { writer, consumable, mapper } ) => {
-		const type = modelElement.getAttribute( 'cardType' ) || 'info';
+		const type = modelElement.getAttribute( 'cardType' ) || 'default';
 
 		// The main view element for the side card.
 		const sideCardView = writer.createContainerElement( 'aside', {
@@ -201,7 +201,7 @@ class InsertCardCommand extends Command {
 		const insertPosition = findOptimalInsertionPosition( selection, model );
 
 		model.change( writer => {
-			const sideCard = writer.createElement( 'sideCard', { cardType: 'info' } );
+			const sideCard = writer.createElement( 'sideCard', { cardType: 'default' } );
 			const title = writer.createElement( 'sideCardTitle' );
 			const section = writer.createElement( 'sideCardSection' );
 			const paragraph = writer.createElement( 'paragraph' );
