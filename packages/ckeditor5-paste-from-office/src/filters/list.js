@@ -361,7 +361,7 @@ function removeBulletElement( element, writer ) {
 // Whether previous and current item belongs to the same list. It is determined based on `item.id`
 // (extracted from `mso-list` style, see #getListItemData) and previous sibling of the current item.
 //
-// However, it's quite easy to change the `id` attribute for nested lists and it will break the list feature while pasting.
+// However, it's quite easy to change the `id` attribute for nested lists in Word. It will break the list feature while pasting.
 // Let's check also the `indent` attribute. If between those two elements, the difference is equal to 1, we can assume that
 // the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always starts with the `indent=0` attribute.
 // See: https://github.com/ckeditor/ckeditor5/issues/7805.
