@@ -59,9 +59,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
-	 * The element-to-element conversion supports a reconversion mechanism. This is helpful in conversion to complex view structures where
-	 * multiple atomic element-to-element and attribute-to-attribute or attribute-to-element could be used. By specifying `triggerBy`
-	 * events you can trigger reconverting model to a full view tree structures at once.
+	 * The element-to-element conversion supports the reconversion mechanism. This is helpful in the conversion to complex view structures
+	 * where multiple atomic element-to-element and attribute-to-attribute or attribute-to-element could be used. By specifying
+	 * `triggerBy()` events you can trigger reconverting the model to full view tree structures at once.
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: 'complex',
@@ -84,9 +84,11 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
-	 * @param {Object} [config.triggerBy] Re-conversion triggers. At least one trigger must be defined.
-	 * @param {Array.<String>} config.triggerBy.attributes Name of element's attributes which change will trigger element reconversion.
-	 * @param {Array.<String>} config.triggerBy.children Name of direct children that adding or removing will trigger element reconversion.
+	 * @param {Object} [config.triggerBy] Reconversion triggers. At least one trigger must be defined.
+	 * @param {Array.<String>} config.triggerBy.attributes The name of the element's attributes whose change will trigger element
+	 * reconversion.
+	 * @param {Array.<String>} config.triggerBy.children The name of direct children whose adding or removing will trigger element
+	 * reconversion.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {

@@ -35,7 +35,7 @@ export function isLinkElement( node ) {
 }
 
 /**
- * Creates link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
  *
  * @param {String} href
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
@@ -154,11 +154,11 @@ export function isEmail( value ) {
 }
 
 /**
- * Adds protocol prefix to the specified `link` when:
+ * Adds the protocol prefix to the specified `link` when:
  *
- * * it doesn't contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
- * config value provided
- * * or the link is an email address
+ * * it does not contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
+ * configuration value provided,
+ * * or the link is an email address.
  *
  *
  * @params {String} link
