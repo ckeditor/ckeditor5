@@ -25,7 +25,7 @@ Other than that, this release brings several bug fixes, to name a few:
 
 Please note that there are some **minor breaking changes**. Be sure to review them before upgrading.
 
-<!-- TODO: Add a link to the blog post. -->
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v23.1.0-with-raw-HTML-embedding-and-reconversion-API/
 
 ### Collaboration features
 
