@@ -333,10 +333,6 @@ Now you can eject the configuration (you can find more information about ejectin
 
 ```bash
 yarn eject
-
-# For some strange reasons this is needed, too
-# (https://github.com/facebook/create-react-app/issues/6099).
-yarn add @babel/plugin-transform-react-jsx @babel/plugin-transform-react-jsx-self
 ```
 
 #### Installing missing dependencies
