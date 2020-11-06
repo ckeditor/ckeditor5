@@ -10,7 +10,7 @@ order: 30
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-built-from-source) into your application.
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-built-from-source) into your application. The customized editor built by using [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) can be also used in the React application.
 
 ## Quick start
 
@@ -60,7 +60,80 @@ class App extends Component {
 export default App;
 ```
 
-### Component properties
+### Integrating a build from Online Builder
+
+The guide assumes that you have created a zip archive with the editor built using [Online Builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+The directory with the editor's build cannot be placed inside the `src/` directory because Node could end with an error: 
+
+```
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+```
+
+Since above, we recommend placing the directory next to `src/` and `node_modules/` folders:
+
+```bash
+├── ckeditor5
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
+├── node_modules
+├── public
+├── src
+├── ...
+└── package.json
+```
+
+Then, add the package located in the `ckeditor5` directory as a dependency of your project:
+
+```
+yarn add file:./ckeditor5
+```
+
+Now, import the build in your application:
+
+```jsx
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+
+const editorConfiguration = {
+	toolbar: [ 'bold', 'italic' ]
+};
+
+class App extends Component {
+	render() {
+		return (
+			<div className="App">
+				<h2>Using CKEditor 5 from source in React</h2>
+				<CKEditor
+					editor={ Editor }
+					config={ editorConfiguration }
+					data="<p>Hello from CKEditor 5!</p>"
+					onReady={ editor => {
+						// You can store the "editor" and use when it is needed.
+						console.log( 'Editor is ready to use!', editor );
+					} }
+					onChange={ ( event, editor ) => {
+						const data = editor.getData();
+						console.log( { event, editor, data } );
+					} }
+					onBlur={ ( event, editor ) => {
+						console.log( 'Blur.', editor );
+					} }
+					onFocus={ ( event, editor ) => {
+						console.log( 'Focus.', editor );
+					} }
+				/>
+			</div>
+		);
+	}
+}
+```
+
+## Component properties
 
 The `<CKEditor>` component supports the following properties:
 
@@ -68,8 +141,8 @@ The `<CKEditor>` component supports the following properties:
 * `data` &ndash; The initial data for the created editor. See the {@link builds/guides/integration/basic-api#interacting-with-the-editor Basic API} guide.
 * `config` &ndash; The editor configuration. See the {@link builds/guides/integration/configuration Configuration} guide.
 * `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
-* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback is also called after the reinitialization of the component if an error occurred.
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
+* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback is also called after the reinitialization of the component if an error occurred.
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
@@ -83,7 +156,7 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 
-### Context feature
+## Context feature
 
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the [context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is useful when used together with some [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
 
@@ -137,6 +210,8 @@ class App extends Component {
 }
 ```
 
+### Context feature properties
+
 The `CKEditorContext` component supports the following properties:
 
 * `context` (required) &ndash; {@link module:core/context~Context The CKEditor 5 context class}.
@@ -150,14 +225,14 @@ The `CKEditorContext` component supports the following properties:
      * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
 <info-box>
-	A build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/comments-outside-of-editor).
+	An example build that exposes both context and classic editor components can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/comments-outside-of-editor).
 </info-box>
 
-### Customizing the builds
+## Customizing the builds
 
 {@link builds/guides/overview CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link builds/guides/integration/configuration#toolbar-setup toolbar} or {@link builds/guides/integration/configuration#removing-features remove some plugins}, in order to add plugins you need to rebuild the editor.
 
-There are two main ways to do that.
+There are three main ways to do that.
 
 * {@link builds/guides/development/custom-builds Customize one of the existing builds}.
 
@@ -167,22 +242,13 @@ There are two main ways to do that.
 	In this approach you will include CKEditor 5 built from source &mdash; so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
 
 	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source).
+* [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/)
+
+    Create your own CKEditor 5 build with customized plugins, toolbar and language in 5 simple steps.
 
 <info-box>
 	If you want to use the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), make sure that the watchdog feature is not selected. The React integration comes with the watchdog feature already integrated into the core.
 </info-box>
-
-### Building for production
-
-If you still work with `create-react-app@1` or use a custom configuration for you application that still uses `webpack@3`, you will need to adjust the `UglifyJsPlugin` option to make CKEditor 5 compatible with this setup. CKEditor 5 builds use ES6 so the default JavaScript minifier of `webpack@3` and `create-react-app@1` is not able to digest them.
-
-To do that, you need to first [eject the configuration](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject) from the setup created via `create-react-app` (assuming that you use it):
-
-```bash
-npm run eject
-```
-
-Then, you can customize `UglifyJsPlugin` options in the webpack configuration. Read how to do this [here](#changes-required-in-webpacks-production-configuration).
 
 ### Using the Document editor build
 
@@ -211,6 +277,9 @@ class App extends Component {
 						this.editor = editor;
 					} }
 					onError={ ( { willEditorRestart } ) => {
+						// If the editor will be restarted, the toolbar element will be created once again.
+						// The `onReady` callback will be called again and the new toolbar will be added.
+						// That's why need to remove the older toolbar.
 						if ( willEditorRestart ) {
 							this.editor.ui.view.toolbar.element.remove();
 						}
@@ -234,7 +303,6 @@ The easiest way to integrate [collaboration plugins](https://ckeditor.com/docs/c
 For such scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
 
 - [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
-
 - [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
 
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
@@ -247,7 +315,7 @@ Integrating the rich text editor from source allows you to use the full power of
 
 This guide assumes that you are using [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor 5 needs. If you use your custom webpack setup, please read more about {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source including CKEditor 5 built from source}.
 
-### Using `create-react-app@2+`
+### Using `create-react-app@3+`
 
 The configuration needs to be ejected to make it possible to customize the webpack configuration. In order to be able to build CKEditor 5 from source, you need to tell webpack how to handle CKEditor 5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor 5 source from existing loaders.
 
@@ -255,7 +323,7 @@ The configuration needs to be ejected to make it possible to customize the webpa
   You can see all the changes described below in this example project: https://github.com/ckeditor/ckeditor5-react-example/commits/master.
 </info-box>
 
-Create a sample application using `create-react-app@2+` first:
+Create a sample application using `create-react-app@3+` first:
 
 ```bash
 npx create-react-app ckeditor5-react-example && cd ckeditor5-react-example
@@ -275,10 +343,6 @@ yarn add @babel/plugin-transform-react-jsx @babel/plugin-transform-react-jsx-sel
 
 Before you start modifying the webpack configuration, first install some CKEditor 5 dependencies that you will need:
 
-<info-box>
-  Create React App uses `style-loader` in version `0.23.1` which might cause issues during a building process. To avoid it, it is recommended to bump the version manually to `1.0.0` which is used in CKEditor 5 packages.
-</info-box>
-
 ```bash
 yarn add \
 	raw-loader@3 \
@@ -295,7 +359,7 @@ yarn add \
 
 Once you ejected the configuration and installed dependencies, you can now edit the webpack configuration (`config/webpack.config.js`).
 
-First, import an object that creates the configuration for PostCSS:
+First, import an object that provides a util for creating the configuration for PostCSS:
 
 ```js
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
@@ -389,7 +453,7 @@ Once your configuration is updated, you can now use CKEditor 5 directly from sou
 ```jsx
 import React, { Component } from 'react';
 
-import CKEditor from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // NOTE: Use the editor from source (not a build)!
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -444,240 +508,15 @@ yarn start
 
 You can read more about using CKEditor 5 from source in the {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source Advanced setup guide}.
 
-### Using `create-react-app@1`
-
-Install React CLI:
-
-```bash
-npm install -g create-react-app@^1.0.0
-```
-
-Create your project using the CLI and go to the project's directory:
-
-```bash
-create-react-app ckeditor5-react-example && cd ckeditor5-react-example
-```
-
-Now you can eject the configuration:
-
-```bash
-npm run eject
-```
-
-The configuration needs to be ejected to make it possible to customize the webpack configuration. To be able to build CKEditor 5 from source you must load inline SVG images and handle CKEditor 5's CSS as well as correctly minify the ES6 source.
-
-<info-box>
-	You can find more information about ejecting [here](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject).
-</info-box>
-
-#### Changes required in webpack's production configuration
-
-At this stage, if you tried to build your application with CKEditor 5 source included, you would get the following error:
-
-```bash
-Failed to minify the code from this file:                                              [31/75]
-        <project_root>/node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js:5:2077
-```
-
-UglifyJS exported by `webpack@3` cannot parse code written in ES6. You need to manually replace it with `uglifyjs-webpack-plugin`. **These changes touch the `webpack.config.prod.js` file only.**
-
-After ejecting, this file is placed in `<project_root>/config/webpack.config.prod.js`. You need to make the following changes:
-
-1. Install `uglifyjs-webpack-plugin`:
-
-	```bash
-	npm install --save-dev uglifyjs-webpack-plugin
-	```
-
-2. Load the installed package (at the top of the `webpack.config.prod.js` file):
-
-	```js
-	const UglifyJsWebpackPlugin = require( 'uglifyjs-webpack-plugin' );
-	```
-
-3. Replace the `webpack.optimize.UglifyJsPlugin` with `UglifyJsWebpackPlugin`:
-
-	```diff
-	- new webpack.optimize.UglifyJsPlugin
-	+ new UglifyJsWebpackPlugin
-	```
-
-4. Options: `compress`, `mangle` and `output` cannot be passed directly to `UglifyJsWebpackPlugin`. You need to wrap these options in `uglifyOptions: { ... }`.
-
-In the end, the entire plugin definition should look as follows:
-
-```js
-// Minify the code.
-new UglifyJsWebpackPlugin( {
-	uglifyOptions: {
-		compress: {
-			warnings: false,
-			// Disabled because of an issue with Uglify breaking seemingly valid code:
-			// https://github.com/facebookincubator/create-react-app/issues/2376
-			// Pending further investigation:
-			// https://github.com/mishoo/UglifyJS2/issues/2011
-			comparisons: false,
-		},
-		mangle: {
-			safari10: true,
-		},
-		output: {
-			comments: false,
-			// Turned on because emoji and regex is not minified properly using default
-			// https://github.com/facebookincubator/create-react-app/issues/2488
-			ascii_only: true,
-		},
-	},
-	sourceMap: shouldUseSourceMap,
-} )
-```
-
-#### Changes required in both webpack configurations
-
-In order to build your application properly, you need to modify your webpack configuration files. After ejecting they are located at:
-
-```bash
-<project_root>/config/webpack.config.dev.js
-<project_root>/config/webpack.config.prod.js
-```
-
-You need to modify the webpack configuration to load CKEditor 5 SVG icons properly.
-
-First, import an object that creates the configuration for PostCSS:
-
-```js
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-```
-
-Then add two new elements to the exported object under the `module.rules` array (as new items for the `oneOf` array). These are SVG and CSS loaders only for CKEditor 5 code:
-
-```js
-{
-	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-	use: [ 'raw-loader' ]
-},
-{
-	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-	use: [
-		{
-			loader: 'style-loader',
-			options: {
-				injectType: 'singletonStyleTag',
-				attributes: {
-					'data-cke': true
-				}
-			}
-		},
-		{
-			loader: 'postcss-loader',
-			options: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
-				minify: true
-			} )
-		}
-	]
-},
-```
-
-Exclude CSS files used by CKEditor 5 from project's CSS loader:
-
-```js
-{
-	test: /\.css$/,
-	exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-	// (...)
-}
-```
-
-And exclude CKEditor 5 SVG and CSS files from `file-loader` because these files will be handled by the loaders added previously (usually the last item in the `module.rules` array is the `file-loader`) so it looks like this:
-
-```js
-{
-	loader: require.resolve( 'file-loader' ),
-	// Exclude `js` files to keep the "css" loader working as it injects
-	// its runtime that would otherwise be processed through the "file" loader.
-	// Also exclude `html` and `json` extensions so they get processed
-	// by webpack's internal loaders.
-	exclude: [
-		/\.(js|jsx|mjs)$/,
-		/\.html$/,
-		/\.json$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
-	],
-	options: {
-		name: 'static/media/[name].[hash:8].[ext]'
-	}
-}
-```
-
-**Remember that the changes above should be done in both configuration files.**
-
-Next, install `raw-loader`, the theme for CKEditor 5, and CKEditor 5 development utilities:
-
-```bash
-npm install --save-dev raw-loader @ckeditor/ckeditor5-theme-lark @ckeditor/ckeditor5-dev-utils
-```
-
-Finally, install the component, the specific editor and plugins you want to use:
-
-```bash
-npm install --save \
-	@ckeditor/ckeditor5-react \
-	@ckeditor/ckeditor5-editor-classic \
-	@ckeditor/ckeditor5-essentials \
-	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-heading \
-	@ckeditor/ckeditor5-paragraph
-```
-
-#### Using CKEditor 5 source
-
-Now you can use the `<CKEditor>` component together with {@link framework/guides/overview CKEditor 5 Framework}:
-
-```jsx
-import React, { Component } from 'react';
-import CKEditor from '@ckeditor/ckeditor5-react';
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<h2>Using CKEditor 5 Framework in React</h2>
-				<CKEditor
-					onReady={ editor => console.log( 'Editor is ready to use!', editor ) }
-					onChange={ ( event, editor ) => console.log( { event, editor } ) }
-					config={ {
-						plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
-						toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', ]
-					} }
-					editor={ ClassicEditor }
-					data="<p>Hello from CKEditor 5!</p>"
-				/>
-			</div>
-		);
-	}
-}
-
-export default App;
-```
-
 ## Localization
 
 CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor 5 in your React application.
 
 ### Ready-to-use builds
 
-When using one of the {@link builds/guides/overview#available-builds official editor builds}, you need to import the translations first:
+When using one of the {@link builds/guides/overview#available-builds official editor builds} or the editor built by [Online Builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
+
+**Official editor builds:**
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -686,6 +525,15 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '@ckeditor/ckeditor5-build-classic/build/translations/de';
 
 // ...
+```
+
+**The editor from Online Builder:**
+
+```js
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+
+// Import translations for the German language.
+import 'ckeditor5-custom-build/build/translations/de';
 ```
 
 Then, {@link builds/guides/integration/configuration configure} the language of the editor in the component:
@@ -710,14 +558,10 @@ For more information, please refer to the {@link features/ui-language Setting th
 Using the editor [built from source](#integrating-ckeditor-5-built-from-source) requires you to modify the webpack configuration. First, install the [official webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows localizing editor builds:
 
 ```bash
-npm install @ckeditor/ckeditor5-dev-webpack-plugin --save-dev
+yarn add @ckeditor/ckeditor5-dev-webpack-plugin --dev
 ```
 
 Then, add the installed plugin to the webpack configuration:
-
-<info-box>
-	We assume that you use `create-react-app@2`. For earlier versions, make sure to modify [both webpack configuration files](#changes-required-in-webpacks-production-configuration).
-</info-box>
 
 ```js
 // webpack.config.js
@@ -734,7 +578,8 @@ module.exports = {
 
 		new CKEditorWebpackPlugin( {
 			// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-			language: 'de'
+			language: 'de',
+			addMainLanguageTranslationsToAllAssets: true
 		} ),
 
 		// ....
