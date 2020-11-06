@@ -103,7 +103,7 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 
 	buttonView.on( 'execute', () => {
 		editor.execute( 'insertSmilingFaceEmoji' );
-		editor.focus();
+		editor.editing.view.focus();
 	} );
 } );
 // ...

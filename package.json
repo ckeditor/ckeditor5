@@ -85,7 +85,7 @@
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^23.2.0",
     "@ckeditor/ckeditor5-export-pdf": ">=1.0.0",
     "@ckeditor/ckeditor5-export-word": ">=1.0.0",
-    "@ckeditor/ckeditor5-inspector": "^2.2.0",
+    "@ckeditor/ckeditor5-inspector": "^2.2.1",
     "@ckeditor/ckeditor5-pagination": ">=1.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "^23.0.0",

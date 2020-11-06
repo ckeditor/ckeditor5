@@ -60,7 +60,7 @@ export default class FontSizeUI extends Plugin {
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return dropdownView;

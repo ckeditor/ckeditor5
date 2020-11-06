@@ -121,7 +121,7 @@ function initEditor() {
 				document.getElementById( 'read-only' ).textContent =
 					editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
 
-				editor.focus();
+				editor.editing.view.focus();
 			}
 
 			function printData() {

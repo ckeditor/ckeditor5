@@ -591,7 +591,7 @@ export default class PlaceholderUI extends Plugin {
 			// Execute the command when the dropdown item is clicked (executed).
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( 'placeholder', { value: evt.source.commandParam } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return dropdownView;
@@ -819,7 +819,7 @@ class PlaceholderUI extends Plugin {
 			// Execute the command when the dropdown item is clicked (executed).
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( 'placeholder', { value: evt.source.commandParam } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return dropdownView;

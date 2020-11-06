@@ -63,7 +63,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source._commandName );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return dropdownView;

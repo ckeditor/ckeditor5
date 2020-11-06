@@ -101,7 +101,7 @@ export default class MediaEmbedUI extends Plugin {
 		dropdown.on( 'cancel', () => closeUI() );
 
 		function closeUI() {
-			editor.focus();
+			editor.editing.view.focus();
 			dropdown.isOpen = false;
 		}
 	}

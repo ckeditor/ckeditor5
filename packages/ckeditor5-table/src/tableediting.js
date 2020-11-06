@@ -81,10 +81,10 @@ export default class TableEditing extends Plugin {
 			isSelectable: true
 		} );
 
-		// Allow all $block content inside table cell.
+		// Allow all $block content inside a table cell.
 		schema.extend( '$block', { allowIn: 'tableCell' } );
 
-		// Disallow table in table.
+		// Disallow a table in a table.
 		schema.addChildCheck( ( context, childDefinition ) => {
 			if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
 				return false;
@@ -110,7 +110,7 @@ export default class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
-		// Duplicates code - needed to properly refresh paragraph inside table cell.
+		// Duplicates code - needed to properly refresh paragraph inside a table cell.
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'paragraph',
 			view: convertParagraphInTableCell,
@@ -121,7 +121,7 @@ export default class TableEditing extends Plugin {
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
-		// Table heading columns conversion (change of heading rows requires reconversion of the whole table).
+		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
 		// Define all the commands.
