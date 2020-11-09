@@ -15,15 +15,15 @@ Employ Markdown-like inline codes as you type, for a faster and more efficient e
 
 The following block formatting options are available:
 
-* Bulleted list &ndash; Start a line with `*` or `-` followed by a space.
-* Numbered list &ndash; Start a line with `1.` or `1)` followed by a space.
-* Headings &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
-* Block quote &ndash; Start a line with `>` followed by a space.
-* Code block &ndash; Start a line with `` ``` ``.
+* {@link features/lists Bulleted list} &ndash; Start a line with `*` or `-` followed by a space.
+* {@link features/lists Numbered list} &ndash; Start a line with `1.` or `1)` followed by a space.
+* {@link features/headings Headings} &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
+* {@link features/block-quote Block quote} &ndash; Start a line with `>` followed by a space.
+* {@link features/code-blocks Code block} &ndash; Start a line with `` ``` ``.
 
 ## Inline formatting
 
-The following inline formatting options are available:
+The following {@link features/basic-styles basic styles} inline formatting options are available:
 
 * Bold &ndash; Type `**text**` or `__text__`,
 * Italic &ndash; Type `*text*` or `_text_`,
