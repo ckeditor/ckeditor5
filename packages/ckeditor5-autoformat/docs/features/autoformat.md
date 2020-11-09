@@ -5,7 +5,7 @@ category: features
 
 The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing with the use of shortcodes.
 
-Employ Markdown-like inline codes as you type, for a faster and more efficient editing. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting style with these easy to memorize options listed below.
+Employ Markdown-like inline codes as you type, for a faster and more efficient editing. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting styles with these easy to memorize options listed below.
 
 <info-box info>
 	This feature is enabled by default in all builds.
