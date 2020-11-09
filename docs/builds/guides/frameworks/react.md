@@ -96,6 +96,7 @@ yarn add file:./ckeditor5
 Now, import the build in your application:
 
 ```jsx
+import React, { Component } from 'react';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 
@@ -131,6 +132,8 @@ class App extends Component {
 		);
 	}
 }
+
+export default App;
 ```
 
 ## Component properties
