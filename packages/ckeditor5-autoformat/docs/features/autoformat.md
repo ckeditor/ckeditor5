@@ -3,7 +3,7 @@ title: Autoformatting
 category: features
 ---
 
-The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing.
+The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing with the utilization of shortcodes. Use Markdown-type inline codes as you type, for a faster and more efficient editing.
 
 <info-box info>
 	This feature is enabled by default in all builds.
@@ -45,6 +45,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 * {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
+* {@link features/markdown Markdown output} &ndash; Output your content as Markdown formatted text.
 
 ## Installation
 
