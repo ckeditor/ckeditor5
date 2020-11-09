@@ -70,5 +70,12 @@
   "scripts": {
     "build": "webpack --mode production",
     "preversion": "npm run build"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-alignment": "^23.1.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^23.1.0",
+    "@ckeditor/ckeditor5-html-embed": "^23.1.0",
+    "@ckeditor/ckeditor5-remove-format": "^23.1.0",
+    "@ckeditor/ckeditor5-special-characters": "^23.1.0"
   }
 }
