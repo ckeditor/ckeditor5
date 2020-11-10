@@ -5,7 +5,11 @@ classes: keyboard-shortcuts
 
 # Keyboard support
 
+CKEditor 5 offers plenty of features that aid editing process and help streamline and speed up writing. Using keyboard shortcuts is one of the simplest yet most efficient and popular ways to improve interaction with the software.
+
 Below is a list of the most important keystrokes supported by CKEditor 5 and its features:
+
+## Content editing
 
 <table>
 	<thead>
@@ -156,3 +160,13 @@ Use the following keystrokes for more efficient navigation in the CKEditor 5 use
 	width: 30%;
 }
 </style>
+
+
+## Related productivity features
+
+There are more features that aid the efficiency and improve productivity:
+
+* {@link features/autoformat Autoformatting} &ndash; Allows for using Markdown-like code to format text on the go.
+* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
+* {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
