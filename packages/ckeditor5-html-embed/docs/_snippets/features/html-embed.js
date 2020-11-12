@@ -172,18 +172,19 @@ ClassicEditor
 		const button = document.querySelector( '.ck-toolbar__items > button:nth-of-type(9)' );
 		const annotation = annotate( button, {
 			type: 'highlight',
-			color: '#1EBC61',
-			animationDuration: 1500
+			color: '#ddd',
+			animationDuration: 1000
 		} );
 		const tooltip = tippy( button, {
-			content: 'Check out this new feature!',
+			content: 'Click this button to create a raw html widget.',
 			theme: 'light-border',
 			inertia: true,
-			duration: 1500,
-			animation: 'shift-away'
+			duration: 1000,
+			animation: 'shift-away',
+			trigger: 'manual'
 		} );
 
-		setTimeout(() => {
+		window.setTimeout( () => {
 			tooltip.show();
 			annotation.show();
 		}, 1000 );
@@ -193,6 +194,7 @@ ClassicEditor
 		} );
 
 		document.querySelector( '#show-me-action' ).addEventListener( 'click', () => {
+			tooltip.show();
 			annotation.hide();
 			annotation.show();
 		} );
