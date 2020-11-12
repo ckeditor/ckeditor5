@@ -744,7 +744,9 @@ export default class Element extends Node {
 	_removeClass( className ) {
 		this._fireChange( 'attributes', this );
 
-		toArray( className ).forEach( name => this._classes.delete( name ) );
+		for ( const name of toArray( className ) ) {
+			this._classes.delete( name );
+		}
 	}
 
 	/**
@@ -790,7 +792,9 @@ export default class Element extends Node {
 	_removeStyle( property ) {
 		this._fireChange( 'attributes', this );
 
-		toArray( property ).forEach( name => this._styles.remove( name ) );
+		for ( const name of toArray( property ) ) {
+			this._styles.remove( name );
+		}
 	}
 
 	/**
