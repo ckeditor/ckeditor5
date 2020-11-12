@@ -41,6 +41,11 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td><kbd>⌘</kbd> + <kbd>Y</kbd> <br> <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
 		</tr>
 		<tr>
+			<td>Select all</td>
+			<td><kbd>Ctrl</kbd> + <kbd>A</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>A</kbd></td>
+		</tr>
+		<tr>
 			<td>Bold</td>
 			<td><kbd>Ctrl</kbd> + <kbd>B</kbd></td>
 			<td><kbd>⌘</kbd> + <kbd>B</kbd></td>
