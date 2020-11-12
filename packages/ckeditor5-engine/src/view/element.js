@@ -725,7 +725,9 @@ export default class Element extends Node {
 	_addClass( className ) {
 		this._fireChange( 'attributes', this );
 
-		toArray( className ).forEach( name => this._classes.add( name ) );
+		for ( const name of toArray( className ) ) {
+			this._classes.add( name );
+		}
 	}
 
 	/**
