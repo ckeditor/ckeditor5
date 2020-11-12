@@ -10,6 +10,10 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import { annotate } from 'rough-notation';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/themes/light-border.css';
+import 'tippy.js/animations/shift-away.css';
 
 ClassicEditor.builtinPlugins.push( HtmlEmbed );
 ClassicEditor.builtinPlugins.push( CodeBlock );
@@ -165,11 +169,26 @@ ClassicEditor
 			iframeElement.contentWindow.document.close();
 		} );
 
-		const button = document.querySelector(".ck-toolbar__items > button:nth-of-type(9)");
-		const annotation = annotate( button, { type: 'circle', color: '#1EBC61', animationDuration: 3000 } );
-		setTimeout(() => annotation.show(), 1000 );
+		const button = document.querySelector( '.ck-toolbar__items > button:nth-of-type(9)' );
+		const annotation = annotate( button, {
+			type: 'highlight',
+			color: '#1EBC61',
+			animationDuration: 1500
+		} );
+		const tooltip = tippy( button, {
+			content: 'Check out this new feature!',
+			theme: 'light-border',
+			inertia: true,
+			duration: 1500,
+			animation: 'shift-away'
+		} );
 
-		button.addEventListener('click', () => {
+		setTimeout(() => {
+			tooltip.show();
+			annotation.show();
+		}, 1000 );
+
+		button.addEventListener( 'click', () => {
 			annotation.hide();
 		} );
 
