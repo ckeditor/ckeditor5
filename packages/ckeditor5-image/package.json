@@ -27,6 +27,7 @@
     "@ckeditor/ckeditor5-enter": "^23.1.0",
     "@ckeditor/ckeditor5-easy-image": "^23.1.0",
     "@ckeditor/ckeditor5-heading": "^23.1.0",
+    "@ckeditor/ckeditor5-html-embed": "^23.1.0",
     "@ckeditor/ckeditor5-indent": "^23.1.0",
     "@ckeditor/ckeditor5-link": "^23.1.0",
     "@ckeditor/ckeditor5-list": "^23.1.0",
