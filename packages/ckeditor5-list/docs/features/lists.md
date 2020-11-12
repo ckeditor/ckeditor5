@@ -21,7 +21,7 @@ An ordered (numbered) list can be used if the order of the items matters, for ex
 Use the editor below to see the list feature plugin in action. Lists can be introduced using toolbar buttons, or with Markdown code provided by the {@link features/autoformat autoformatting feature}:
 
 * Start a line with `*` or `-` followed by a space for a bulleted list.
-* start a line with `1.` or `1)` followed by a space for a numbered list
+* Start a line with `1.` or `1)` followed by a space for a numbered list.
 
 ### Demo
 
