@@ -5,13 +5,18 @@ menu-title: Horizontal line
 
 # Horizontal line
 
-The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin provides the possibility to insert a horizontal line into the rich-text editor.
+The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin provides the possibility to insert a horizontal line into the rich-text editor. Often known as the horizontal rule, this provides a visual way to separate the content. It may indicate and thematic shift (like change of topic) between paragraphs or parts of the story or just be a simple graphic separator to help organize the content.
 
 ## Demo
 
 Use the editor below to see the {@link module:horizontal-line/horizontalline~HorizontalLine} plugin in action.
 
 {@snippet features/horizontal-line}
+
+## Related features
+
+There are more CKEditor 5 features that can help you organize your document content better:
+* {@link features/headings Headings} &ndash; Divide your content into thematic sections.
 
 ## Installation
 
