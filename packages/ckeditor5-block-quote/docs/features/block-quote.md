@@ -9,7 +9,7 @@ The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easil
 
 ## Demo
 
-Use the editor below to see the block quote plugin in action.
+Use the editor below to see the block quote plugin in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
 
@@ -20,6 +20,7 @@ Here are some other CKEditor 5 features that you can use similarly to the block 
 * {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
 * {@link features/code-blocks Code block}  &ndash; Insert longer, multiline code listings.
 * {@link features/text-alignment Text alignment} &ndash; Align your content left, right, center it or justify.
+* {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as block quotes) as you type with Markdown code.
 
 ## Installation
 
