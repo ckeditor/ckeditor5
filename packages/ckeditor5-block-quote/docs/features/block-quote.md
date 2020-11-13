@@ -9,7 +9,7 @@ The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easil
 
 ## Demo
 
-Use the editor below to see the block quote plugin in action. You can also precede the quotation with the `>` inline code (followed by a space), to format it on the go, thanks to the {@link features/autoformat autoformatting} feature.
+Use the editor below to see the block quote plugin in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
 
