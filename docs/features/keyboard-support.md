@@ -169,7 +169,7 @@ Use the following keystrokes for more efficient navigation in the CKEditor 5 use
 
 ## Related productivity features
 
-There are more features that aid the efficiency and improve productivity:
+In addition to using keyboard shortcuts, you may want to check the following productivity features:
 
 * {@link features/autoformat Autoformatting} &ndash; Allows for using Markdown-like code to format text on the go.
 * {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
