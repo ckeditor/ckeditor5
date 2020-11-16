@@ -31,6 +31,11 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td><kbd>⌘</kbd> + <kbd>V</kbd></td>
 		</tr>
 		<tr>
+			<td>Paste plain text with style inheritance</td>
+			<td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
+		</tr>
+		<tr>
 			<td>Undo</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td>
 			<td><kbd>⌘</kbd> + <kbd>Z</kbd></td>
@@ -71,6 +76,10 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 		<tr>
 			<td>Nest the current list item (when in a list)</td>
 			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Move out of link or formatting area</td>
+			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
 		</tr>
 		<tr>
 			<th colspan="3">When a widget is selected (for example: image, table, horizontal line, etc.)</th>
