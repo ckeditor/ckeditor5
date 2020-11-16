@@ -365,6 +365,13 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Refreshes selection markers according to the current position in the model.
+	 */
+	refreshAttributes() {
+		this._selection._updateAttributes( false );
+	}
+
+	/**
 	 * Checks whether this object is of the given type.
 	 *
 	 *		selection.is( 'selection' ); // -> true
@@ -662,7 +669,9 @@ class LiveSelection extends Selection {
 		} );
 
 		// Update markers data stored by the selection after each marker change.
-		this.listenTo( this._model.markers, 'update', () => this._updateMarkers() );
+		this.listenTo( this._model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
+			this._updateMarker( marker, oldRange, newRange );
+		} );
 
 		// Ensure selection is up to date after each change block.
 		this.listenTo( this._document, 'change', ( evt, batch ) => {
@@ -872,6 +881,44 @@ class LiveSelection extends Selection {
 		for ( const marker of Array.from( this.markers ) ) {
 			if ( !markers.includes( marker ) ) {
 				this.markers.remove( marker );
+
+				changed = true;
+			}
+		}
+
+		if ( changed ) {
+			this.fire( 'change:marker', { oldMarkers, directChange: false } );
+		}
+	}
+
+	_updateMarker( marker, oldRange, newRange ) {
+		if ( oldRange && newRange && oldRange.isEqual( newRange ) ) {
+			return;
+		}
+
+		let changed = false;
+
+		const oldMarkers = Array.from( this.markers );
+		const markerRange = marker.getRange();
+
+		if ( oldRange && !newRange && this.markers.has( marker ) ) {
+			this.markers.remove( marker );
+			changed = true;
+		}
+
+		if ( !changed ) {
+			let contained = false;
+
+			for ( const selectionRange of this.getRanges() ) {
+				if ( markerRange.containsRange( selectionRange, !selectionRange.isCollapsed ) ) {
+					contained = true;
+
+					break;
+				}
+			}
+
+			if ( contained && !this.markers.has( marker ) ) {
+				this.markers.add( marker );
 
 				changed = true;
 			}
