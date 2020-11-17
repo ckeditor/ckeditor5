@@ -9,6 +9,10 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
 import HtmlEmbedUI from '@ckeditor/ckeditor5-html-embed/src/htmlembedui';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import Command from '@ckeditor/ckeditor5-core/src/command';
+import { findOptimalInsertionPosition, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
 export {
 	uid,
@@ -16,5 +20,11 @@ export {
 	Plugin,
 	ClassicEditor,
 	HtmlEmbedEditing,
-	HtmlEmbedUI
+	HtmlEmbedUI,
+	ButtonView,
+	createElement,
+	toWidgetEditable,
+	toWidget,
+	findOptimalInsertionPosition,
+	Command
 };
