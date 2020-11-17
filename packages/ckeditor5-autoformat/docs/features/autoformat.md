@@ -5,7 +5,7 @@ category: features
 
 The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing with the use of shortcodes.
 
-Employ Markdown-like inline codes as you type, for a faster and more efficient editing. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting styles with these easy to memorize options listed below.
+Employ Markdown-like inline codes as you type for a faster and more efficient editing workflow. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting features with these easy to memorize options listed below.
 
 <info-box info>
 	This feature is enabled by default in all builds.
@@ -47,7 +47,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 * {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
-* {@link features/markdown Markdown output} &ndash; Output your content as Markdown formatted text.
+* {@link features/markdown Markdown output} &ndash; Output your content as Markdown instead of HTML and use CKEditor 5 as a WYSIWYG Markdown editor.
 
 ## Installation
 
