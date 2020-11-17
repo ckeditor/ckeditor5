@@ -268,7 +268,10 @@ function mergeIntersectingRanges( ranges ) {
 	for ( const range of ranges ) {
 		const previousRange = nonIntersectingRanges.pop();
 
-		if ( range.isIntersecting( previousRange ) ) {
+		if ( range.isEqual( previousRange ) ) {
+			// Use only one of two identical ranges.
+			nonIntersectingRanges.push( previousRange );
+		} else if ( range.isIntersecting( previousRange ) ) {
 			// Get the sum of two ranges.
 			const start = previousRange.start.isAfter( range.start ) ? range.start : previousRange.start;
 			const end = previousRange.end.isAfter( range.end ) ? previousRange.end : range.end;
