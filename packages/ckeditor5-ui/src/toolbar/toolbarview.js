@@ -12,6 +12,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
+import ToolbarLineBreakView from './toolbarlinebreakview';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
@@ -277,6 +278,8 @@ export default class ToolbarView extends View {
 		this.items.addMany( config.map( name => {
 			if ( name == '|' ) {
 				return new ToolbarSeparatorView();
+			} else if ( name == '/' ) {
+				return new ToolbarLineBreakView();
 			} else if ( factory.has( name ) ) {
 				return factory.create( name );
 			} else {
