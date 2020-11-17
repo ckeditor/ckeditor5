@@ -31,7 +31,7 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td><kbd>⌘</kbd> + <kbd>V</kbd></td>
 		</tr>
 		<tr>
-			<td>Paste plain text with style inheritance</td>
+			<td>Paste plain text and inherit target formatting</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
 			<td><kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
 		</tr>
@@ -78,7 +78,7 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 		<tr>
-			<td>Move out of link or formatting area</td>
+			<td>Move out of link or inline style</td>
 			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
 		</tr>
 		<tr>
