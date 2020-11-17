@@ -6,11 +6,15 @@
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
+import HtmlEmbedUI from '@ckeditor/ckeditor5-html-embed/src/htmlembedui';
 
 export {
 	uid,
 	first,
 	Plugin,
-	ClassicEditor
+	ClassicEditor,
+	HtmlEmbedEditing,
+	HtmlEmbedUI
 };
