@@ -87,7 +87,7 @@
     "@ckeditor/ckeditor5-export-word": ">=1.0.0",
     "@ckeditor/ckeditor5-inspector": "^2.2.0",
     "@ckeditor/ckeditor5-pagination": ">=1.0.0",
-    "@ckeditor/ckeditor5-react": "^2.1.0",
+    "@ckeditor/ckeditor5-react": "^3.0.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "^23.0.0",
     "@ckeditor/ckeditor5-track-changes": "^23.0.0",
     "@webspellchecker/wproofreader-ckeditor5": "^1.0.5",
