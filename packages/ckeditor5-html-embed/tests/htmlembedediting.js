@@ -446,6 +446,21 @@ describe( 'HtmlEmbedEditing', () => {
 					expect( getModelData( model ) ).to.equal( '[<rawHtml value="bar"></rawHtml>]' );
 				} );
 
+				it( 'saves the new value to the model if given `rawHtml` element is not selected', () => {
+					setModelData( model, '<rawHtml value="foo"></rawHtml><rawHtml value="bar"></rawHtml>' );
+
+					const widgetFoo = viewDocument.getRoot().getChild( 0 );
+					const widgetBar = viewDocument.getRoot().getChild( 1 );
+
+					widgetFoo.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+					widgetBar.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+					widgetFoo.getCustomProperty( 'rawHtmlApi' ).save( 'FOO' );
+					widgetBar.getCustomProperty( 'rawHtmlApi' ).save( 'BAR' );
+
+					expect( getModelData( model ) ).to.equal( '<rawHtml value="FOO"></rawHtml>[<rawHtml value="BAR"></rawHtml>]' );
+				} );
+
 				it( 'turns back to the non-editable mode and updates the textarea value', () => {
 					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 					const widget = viewDocument.getRoot().getChild( 0 );
