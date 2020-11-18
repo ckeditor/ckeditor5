@@ -9,9 +9,9 @@ order: 50
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue)
 
 
-CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of the {@link builds/guides/overview ready-to-use editor builds} and the {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The [easiest way](#quick-start) to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
+The easiest way to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section of this guide.
 
 Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
@@ -30,7 +30,7 @@ You now need to enable the CKEditor component in your application. There are 2 w
 * [via a direct script include](#direct-script-include),
 * [by using ES6 module imports](#using-es6-modules).
 
-Optionally, you can [use the component locally](#using-component-locally).
+Optionally, you can [use the component locally](#using-the-component-locally).
 
 ### Direct script include
 
@@ -48,7 +48,7 @@ Vue.createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
 ```
 
 <info-box>
-	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-component-locally).
+	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 Use the `<ckeditor>` component in your template:
@@ -95,7 +95,7 @@ createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
 ```
 
 <info-box>
-	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-component-locally).
+	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 The following example showcases a single–file component of the application. Use the `<ckeditor>` component in your template:
@@ -130,10 +130,10 @@ The following example showcases a single–file component of the application. Us
 ```
 
 <info-box>
-	See the list of supported [directives](#component-directives) and [events](#component-events) that will help you configure the component.
+	See the list of the supported [directives](#component-directives) and [events](#component-events) that will help you configure the component.
 </info-box>
 
-## Using component locally
+## Using the component locally
 
 If you do not want the CKEditor component to be enabled globally, you can skip the `use()` part entirely. Instead, configure it in the `components` property of your view.
 
@@ -168,7 +168,7 @@ If you do not want the CKEditor component to be enabled globally, you can skip t
 
 ## Using CKEditor from source
 
-Integrating the rich text editor from source allows you to use the full power of {@link framework/guides/overview CKEditor 5 Framework}.
+Integrating the rich text editor from source allows you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
 
 This guide assumes that you are using [Vue CLI 4.5.0+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
 
@@ -223,7 +223,7 @@ module.exports = {
 	//	1. The icons used by CKEditor must be loaded using raw-loader,
 	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
 	chainWebpack: config => {
-		// (1.) To handle editor icons, get the default rule for *.svg files first:
+		// (1.) To handle the editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
 
 		// Then you can either:
@@ -268,7 +268,7 @@ module.exports = {
 ```
 
 <info-box>
-    By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create different webpack loader rules for your project SVG files and CKEditor's ones.
+    By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach than CKEditor's UI library you must create different webpack loader rules for your project's SVG files and the CKEditor's ones.
 </info-box>
 
 ### Using the editor from source
@@ -294,7 +294,7 @@ Vue.createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
 ```
 
 <info-box>
-	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-component-locally).
+	Instead of calling the `use()` method to install CKEditor component globally, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 Now all you need to do is specify the list of rich text editor options (**including plugins**) in the `editorConfig` data property:
@@ -549,7 +549,7 @@ A [standard directive](https://v3.vuejs.org/guide/component-basics.html#using-v-
 </script>
 ```
 
-In the above example, the `editorData` property will be updated automatically as the user types and changes the content. It can also be used to change (as in `emptyEditor()`) or set the initial content of the editor.
+In the above example, the `editorData` property will be updated automatically as the user types and the content changes. It can also be used to change (as in `emptyEditor()`) or set the initial content of the editor.
 
 If you only want to execute an action when the editor data changes, use the [`input`](#input) event.
 

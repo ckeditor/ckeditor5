@@ -9,9 +9,9 @@ order: 40
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue)
 
 
-CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of the {@link builds/guides/overview ready-to-use editor builds} and the {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The [easiest way](#quick-start) to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
+The easiest way to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
 
 Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
@@ -30,7 +30,7 @@ You now need to enable the CKEditor component in your application. There are 2 w
 * [via a direct script include](#direct-script-include),
 * [by using ES6 module imports](#using-es6-modules).
 
-Optionally, you can [use the component locally](#using-component-locally).
+Optionally, you can [use the component locally](#using-the-component-locally).
 
 ### Direct script include
 
@@ -48,7 +48,7 @@ Vue.use( CKEditor );
 ```
 
 <info-box>
-	Instead of calling `Vue.use()`, you can always [use the component locally](#using-component-locally).
+	Instead of calling `Vue.use()`, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 Use the `<ckeditor>` component in your template:
@@ -96,7 +96,7 @@ Vue.use( CKEditor );
 ```
 
 <info-box>
-	Instead of calling `Vue.use()`, you can always [use the component locally](#using-component-locally).
+	Instead of calling `Vue.use()`, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 The following example showcases a single–file component of the application. Use the `<ckeditor>` component in your template:
@@ -134,7 +134,7 @@ The following example showcases a single–file component of the application. Us
 	See the list of supported [directives](#component-directives) and [events](#component-events) that will help you configure the component.
 </info-box>
 
-## Using component locally
+## Using the component locally
 
 If you do not want the CKEditor component to be enabled globally, you can skip the `Vue.use( CKEditor )` part entirely. Instead, configure it in the `components` property of your view.
 
@@ -295,7 +295,7 @@ Vue.use( CKEditor );
 ```
 
 <info-box>
-	Instead of calling `Vue.use()`, you can always [use the component locally](#using-component-locally).
+	Instead of calling `Vue.use()`, you can always [use the component locally](#using-the-component-locally).
 </info-box>
 
 Now all you need to do is specify the list of rich text editor options (**including plugins**) in the `editorConfig` data property:
