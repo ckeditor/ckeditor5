@@ -11,14 +11,17 @@ Often known as the horizontal rule, it provides a visual way to separate the con
 
 ## Demo
 
-Use the editor below to see the {@link module:horizontal-line/horizontalline~HorizontalLine} plugin in action.
+Use the editor below to see the horizontal line feature in action.
 
 {@snippet features/horizontal-line}
 
 ## Related features
 
 There are more CKEditor 5 features that can help you organize your document content better:
-* {@link features/headings Headings} &ndash; Divide your content into thematic sections.
+* {@link features/headings Headings} &ndash; Organize your content into thematic sections.
+* {@link features/page-break Page break} &ndash; Divide your document into pages.
+* {@link features/title Document title} &ndash; Clearly separate the title from the body.
+* {@link features/lists Lists} &ndash;  Create ordered (numbered) and unordered (bulleted) lists.
 
 ## Installation
 
