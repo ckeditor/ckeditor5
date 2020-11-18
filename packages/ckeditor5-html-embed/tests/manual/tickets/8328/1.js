@@ -17,10 +17,6 @@ ClassicEditor
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'undo', 'redo', '|', 'htmlEmbed'
 		]
-		// htmlEmbed: {
-		// 	showPreviews: true,
-		// 	sanitizeHtml: input => ( { html: input, hasChanged: false } )
-		// }
 	} )
 	.then( editor => {
 		window.editor = editor;
