@@ -367,14 +367,14 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Registers marker group prefix to be collected in {@link ~DocumentSelection#markers selection markers collection}.
+	 * Registers marker group prefix or marker name to be collected in {@link ~DocumentSelection#markers selection markers collection}.
 	 *
 	 * See also {@link module:engine/model/markercollection~MarkerCollection#getMarkersGroup `MarkerCollection#getMarkersGroup()`}.
 	 *
-	 * @param {String} prefix Marker group prefix.
+	 * @param {String} prefixOrName Marker group prefix or marker name.
 	 */
-	observeMarkersGroup( prefix ) {
-		this._selection.observeMarkersGroup( prefix );
+	observeMarkers( prefixOrName ) {
+		this._selection.observeMarkers( prefixOrName );
 	}
 
 	/**
@@ -635,7 +635,7 @@ class LiveSelection extends Selection {
 		// Prefixes of marker names that should affect `LiveSelection#markers` collection.
 		// @private
 		// @type {Set}
-		this._observedMarkerGroups = new Set();
+		this._observedMarkers = new Set();
 
 		// Ensure selection is correct after each operation.
 		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
@@ -819,8 +819,8 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	observeMarkersGroup( prefix ) {
-		this._observedMarkerGroups.add( prefix );
+	observeMarkers( prefixOrName ) {
+		this._observedMarkers.add( prefixOrName );
 		this._updateMarkers();
 	}
 
@@ -872,7 +872,7 @@ class LiveSelection extends Selection {
 	}
 
 	_updateMarkers() {
-		if ( !this._observedMarkerGroups.size ) {
+		if ( !this._observedMarkers.size ) {
 			return;
 		}
 
@@ -882,7 +882,7 @@ class LiveSelection extends Selection {
 		for ( const marker of this._model.markers ) {
 			const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
-			if ( !this._observedMarkerGroups.has( markerGroup ) ) {
+			if ( !this._observedMarkers.has( markerGroup ) ) {
 				continue;
 			}
 
@@ -921,7 +921,7 @@ class LiveSelection extends Selection {
 	_updateMarker( marker, markerRange ) {
 		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
-		if ( !this._observedMarkerGroups.has( markerGroup ) ) {
+		if ( !this._observedMarkers.has( markerGroup ) ) {
 			return;
 		}
 

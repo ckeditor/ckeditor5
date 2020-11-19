@@ -205,7 +205,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should add markers to the collection when selection is inside the marker range', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -250,7 +250,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should update markers after selection change', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -296,7 +296,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should update markers after markers change', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -355,7 +355,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should not add marker when collapsed selection is on the marker left bound', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -375,7 +375,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should not add marker when collapsed selection is on the marker right bound', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -395,7 +395,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should add marker when non-collapsed selection is inside a marker and touches the left bound', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -416,7 +416,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should add marker when non-collapsed selection is inside a marker and touches the right bound', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -437,7 +437,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should add marker of selected widget', () => {
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			root._insertChild( 0, new Element( 'widget' ) );
 
@@ -502,8 +502,8 @@ describe( 'DocumentSelection', () => {
 			expect( selection.markers ).to.length( 0 );
 		} );
 
-		it( 'should add markers to the collection when markers only for observed marker groups', () => {
-			selection.observeMarkersGroup( 'marker' );
+		it( 'should add markers to the collection only for observed marker groups', () => {
+			selection.observeMarkers( 'marker' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -547,6 +547,51 @@ describe( 'DocumentSelection', () => {
 			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:2' ] );
 		} );
 
+		it( 'should add marker to the collection only for observed marker name', () => {
+			selection.observeMarkers( 'testMarker' );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 2 ] ),
+					writer.createPositionFromPath( root, [ 2, 4 ] )
+				) );
+
+				writer.addMarker( 'marker:1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'testMarker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 2 ] ),
+						writer.createPositionFromPath( root, [ 2, 4 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'otherMarker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'otherGroup:1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'testMarker' ] );
+		} );
+
 		describe( 'should fire change:marker event when', () => {
 			// Set marker to range 0-4.
 			beforeEach( () => {
@@ -564,7 +609,7 @@ describe( 'DocumentSelection', () => {
 			it( 'selection ranges change (marker added to the selection)', () => {
 				const spy = sinon.spy();
 
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					// The selection has no markers before the change.
@@ -586,7 +631,7 @@ describe( 'DocumentSelection', () => {
 			it( 'selection ranges change (marker removed from the selection)', () => {
 				const spy = sinon.spy();
 
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createRange(
@@ -610,7 +655,7 @@ describe( 'DocumentSelection', () => {
 			it( 'selection focus changes (marker removed from the selection)', () => {
 				const spy = sinon.spy();
 
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
@@ -631,7 +676,7 @@ describe( 'DocumentSelection', () => {
 			it( 'a new marker contains the selection', () => {
 				const spy = sinon.spy();
 
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
@@ -656,7 +701,7 @@ describe( 'DocumentSelection', () => {
 			it( 'a marker stops contains the selection', () => {
 				const spy = sinon.spy();
 
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 3 ] ) );
@@ -696,7 +741,7 @@ describe( 'DocumentSelection', () => {
 			it( 'selection ranges change does not change selection markers (no markers)', () => {
 				const spy = sinon.spy();
 
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.document.selection.on( 'change:marker', spy );
 
@@ -708,7 +753,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'selection ranges change does not change selection markers (same markers)', () => {
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
@@ -726,7 +771,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'selection focus change does not change selection markers', () => {
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
@@ -744,7 +789,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'changed marker still contains the selection', () => {
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
@@ -767,7 +812,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'removed marker did not contain the selection', () => {
-				selection.observeMarkersGroup( 'marker' );
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
@@ -1509,7 +1554,7 @@ describe( 'DocumentSelection', () => {
 
 			const p = doc.getRoot().getChild( 0 );
 
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			doc.registerPostFixer( () => {
 				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
@@ -1536,7 +1581,7 @@ describe( 'DocumentSelection', () => {
 
 			const p = doc.getRoot().getChild( 0 );
 
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			doc.registerPostFixer( writer => {
 				writer.setAttribute( 'foo', 'biz', p.getChild( 0 ) );
@@ -1575,7 +1620,7 @@ describe( 'DocumentSelection', () => {
 
 			const p = doc.getRoot().getChild( 0 );
 
-			selection.observeMarkersGroup( 'marker' );
+			selection.observeMarkers( 'marker' );
 
 			doc.on( 'change', () => {
 				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
