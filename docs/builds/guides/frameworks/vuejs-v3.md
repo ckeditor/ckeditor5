@@ -1,13 +1,16 @@
 ---
-menu-title: Vue.js 3.x component
+menu-title: Vue.js 3+ component
 category: builds-integration-frameworks
 order: 50
 ---
 
-# Rich text editor component for Vue.js 3.x
+# Rich text editor component for Vue.js 3+
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue)
 
+<info-box>
+	**Important**: This guide is about the CKEditor 5 integration with Vue.js 3+. To learn more about the integration with Vue.js 2.x, check out the {@link builds/guides/frameworks/vuejs-v2 "Rich text editor component for Vue.js 2.x"} guide.
+</info-box>
 
 CKEditor 5 consists of the {@link builds/guides/overview ready-to-use editor builds} and the {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
