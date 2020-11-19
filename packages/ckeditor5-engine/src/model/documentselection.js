@@ -919,10 +919,6 @@ class LiveSelection extends Selection {
 	}
 
 	_updateMarker( marker, markerRange ) {
-		if ( !this._observedMarkerGroups.size ) {
-			return;
-		}
-
 		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
 		if ( !this._observedMarkerGroups.has( markerGroup ) ) {
