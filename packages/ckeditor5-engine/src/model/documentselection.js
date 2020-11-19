@@ -680,6 +680,7 @@ class LiveSelection extends Selection {
 		} );
 
 		// Update markers data stored by the selection after each marker change.
+		// This handles only marker changes done through marker operations (not model tree changes).
 		this.listenTo( this._model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
 			this._updateMarker( marker, newRange );
 		} );
