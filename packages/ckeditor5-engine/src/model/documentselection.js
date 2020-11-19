@@ -632,7 +632,7 @@ class LiveSelection extends Selection {
 		// @type {Set}
 		this._overriddenGravityRegister = new Set();
 
-		// Prefixes of marker names that should affect this `LiveSelection#markers` collection.
+		// Prefixes of marker names that should affect `LiveSelection#markers` collection.
 		// @private
 		// @type {Array.<String>}
 		this._observedMarkerGroups = [];
@@ -933,12 +933,10 @@ class LiveSelection extends Selection {
 		const oldMarkers = Array.from( this.markers );
 		const markerRange = marker.getRange();
 
-		if ( oldRange && !newRange && this.markers.has( marker ) ) {
+		if ( !newRange && this.markers.has( marker ) ) {
 			this.markers.remove( marker );
 			changed = true;
-		}
-
-		if ( !changed ) {
+		} else {
 			let contained = false;
 
 			for ( const selectionRange of this.getRanges() ) {
@@ -951,6 +949,10 @@ class LiveSelection extends Selection {
 
 			if ( contained && !this.markers.has( marker ) ) {
 				this.markers.add( marker );
+
+				changed = true;
+			} else if ( !contained && this.markers.has( marker ) ) {
+				this.markers.remove( marker );
 
 				changed = true;
 			}
