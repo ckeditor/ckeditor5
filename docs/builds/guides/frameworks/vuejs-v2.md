@@ -6,7 +6,7 @@ order: 40
 
 # Rich text editor component for Vue.js 2.x
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue)
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue2.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2)
 
 
 CKEditor 5 consists of the {@link builds/guides/overview ready-to-use editor builds} and the {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
@@ -17,12 +17,12 @@ Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-so
 
 ## Quick start
 
-Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds editor build of your choice}.
+Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2) and the {@link builds/guides/overview#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
-npm install --save @ckeditor/ckeditor5-vue @ckeditor/ckeditor5-build-classic
+npm install --save @ckeditor/ckeditor5-vue2 @ckeditor/ckeditor5-build-classic
 ```
 
 You now need to enable the CKEditor component in your application. There are 2 ways to do so:
@@ -38,7 +38,7 @@ This is the quickest way to start using CKEditor in your project. Assuming [Vue 
 
 ```html
 <script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-<script src="../node_modules/@ckeditor/ckeditor5-vue/dist/ckeditor.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-vue2/dist/ckeditor.js"></script>
 ```
 
 Enable the component in your application by using the [`Vue.use()`](https://vuejs.org/v2/api/#Vue-use) method:
@@ -90,7 +90,7 @@ To create an editor instance, you must first import the editor build and the com
 
 ```js
 import Vue from 'vue';
-import CKEditor from '@ckeditor/ckeditor5-vue';
+import CKEditor from '@ckeditor/ckeditor5-vue2';
 
 Vue.use( CKEditor );
 ```
@@ -185,7 +185,7 @@ First, install the necessary dependencies:
 
 ```bash
 npm install --save \
-    @ckeditor/ckeditor5-vue \
+    @ckeditor/ckeditor5-vue2 \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
     postcss-loader@3 \
@@ -289,7 +289,7 @@ npm install --save \
 You can use more packages, depending on which features are needed in your application.
 
 ```js
-import CKEditor from '@ckeditor/ckeditor5-vue';
+import CKEditor from '@ckeditor/ckeditor5-vue2';
 
 Vue.use( CKEditor );
 ```
@@ -400,7 +400,7 @@ When using one of the {@link builds/guides/overview#available-builds official ed
 	<!-- Import translations for the German language. -->
 	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js"></script>
 	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-	<script src="../node_modules/@ckeditor/ckeditor5-vue/dist/ckeditor.js"></script>
+	<script src="../node_modules/@ckeditor/ckeditor5-vue2/dist/ckeditor.js"></script>
 	```
 * When using [ES6 modules](#using-es6-modules):
 	```js
@@ -685,4 +685,4 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 ## Contributing and reporting issues
 
-The source code of this component is available on GitHub in https://github.com/ckeditor/ckeditor5-vue.
+The source code of this component is available on GitHub in https://github.com/ckeditor/ckeditor5-vue2.
