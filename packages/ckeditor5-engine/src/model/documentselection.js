@@ -681,7 +681,7 @@ class LiveSelection extends Selection {
 
 		// Update markers data stored by the selection after each marker change.
 		this.listenTo( this._model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
-			this._updateMarker( marker, oldRange, newRange );
+			this._updateMarker( marker, newRange );
 		} );
 
 		// Ensure selection is up to date after each change block.
@@ -917,7 +917,7 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	_updateMarker( marker, oldRange, newRange ) {
+	_updateMarker( marker, markerRange ) {
 		if ( !this._observedMarkerGroups.length ) {
 			return;
 		}
@@ -931,11 +931,13 @@ class LiveSelection extends Selection {
 		let changed = false;
 
 		const oldMarkers = Array.from( this.markers );
-		const markerRange = marker.getRange();
+		const hasMarker = this.markers.has( marker );
 
-		if ( !newRange && this.markers.has( marker ) ) {
-			this.markers.remove( marker );
-			changed = true;
+		if ( !markerRange ) {
+			if ( hasMarker ) {
+				this.markers.remove( marker );
+				changed = true;
+			}
 		} else {
 			let contained = false;
 
@@ -947,11 +949,11 @@ class LiveSelection extends Selection {
 				}
 			}
 
-			if ( contained && !this.markers.has( marker ) ) {
+			if ( contained && !hasMarker ) {
 				this.markers.add( marker );
 
 				changed = true;
-			} else if ( !contained && this.markers.has( marker ) ) {
+			} else if ( !contained && hasMarker ) {
 				this.markers.remove( marker );
 
 				changed = true;
