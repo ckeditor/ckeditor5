@@ -399,7 +399,7 @@ export default class Document {
 				// It might be good to refresh the selection after each operation but at the moment it leads
 				// to losing attributes for composition or and spell checking
 				// https://github.com/ckeditor/ckeditor5-typing/issues/188
-				this.selection.refreshAttributes();
+				this.selection.refresh();
 
 				wasFixed = callback( writer );
 

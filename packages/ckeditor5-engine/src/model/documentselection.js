@@ -151,11 +151,13 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * A collection of selection markers.
+	 * A collection of selection {@link module:engine/model/markercollection~Marker markers}.
 	 * Marker is a selection marker when selection range is inside the marker range.
 	 *
+	 * **Note**: Only markers from {@link ~DocumentSelection#observeMarkersGroup observed markers groups} are collected.
+	 *
 	 * @readonly
-	 * @type {module:utils/collection~Collection.<module:engine/model/markercollection~Marker>}
+	 * @type {module:utils/collection~Collection}
 	 */
 	get markers() {
 		return this._selection.markers;
@@ -365,10 +367,14 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Refreshes selection markers according to the current position in the model.
+	 * Registers marker group prefix to be collected in {@link ~DocumentSelection#markers selection markers collection}.
+	 *
+	 * See also {@link module:engine/model/markercollection~MarkerCollection#getMarkersGroup `MarkerCollection#getMarkersGroup()`}.
+	 *
+	 * @param {String} prefix Marker group prefix.
 	 */
-	refreshAttributes() {
-		this._selection._updateAttributes( false );
+	observeMarkersGroup( prefix ) {
+		this._selection.observeMarkersGroup( prefix );
 	}
 
 	/**
@@ -626,6 +632,11 @@ class LiveSelection extends Selection {
 		// @type {Set}
 		this._overriddenGravityRegister = new Set();
 
+		// Prefixes of marker names that should affect this `LiveSelection#markers` collection.
+		// @private
+		// @type {Array.<String>}
+		this._observedMarkerGroups = [];
+
 		// Ensure selection is correct after each operation.
 		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
@@ -807,6 +818,11 @@ class LiveSelection extends Selection {
 		}
 	}
 
+	observeMarkersGroup( prefix ) {
+		this._observedMarkerGroups.push( prefix );
+		this._updateMarkers();
+	}
+
 	_popRange() {
 		this._ranges.pop().detach();
 	}
@@ -855,10 +871,20 @@ class LiveSelection extends Selection {
 	}
 
 	_updateMarkers() {
+		if ( !this._observedMarkerGroups.length ) {
+			return;
+		}
+
 		const markers = [];
 		let changed = false;
 
 		for ( const marker of this._model.markers ) {
+			const markerGroup = marker.name.split( ':', 1 )[ 0 ];
+
+			if ( !this._observedMarkerGroups.includes( markerGroup ) ) {
+				continue;
+			}
+
 			const markerRange = marker.getRange();
 
 			for ( const selectionRange of this.getRanges() ) {
@@ -892,7 +918,13 @@ class LiveSelection extends Selection {
 	}
 
 	_updateMarker( marker, oldRange, newRange ) {
-		if ( oldRange && newRange && oldRange.isEqual( newRange ) ) {
+		if ( !this._observedMarkerGroups.length ) {
+			return;
+		}
+
+		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
+
+		if ( !this._observedMarkerGroups.includes( markerGroup ) ) {
 			return;
 		}
 
