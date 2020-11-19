@@ -8,9 +8,30 @@
 	transform: translateX(calc(-1 * var(--ck-spacing-large)));
 }
 
+/* Change background and size of block button */
+
+.ck.ck-button.ck-block-toolbar-button.ck-on,
+.ck.ck-button.ck-block-toolbar-button.ck-off,
+.ck.ck-button.ck-block-toolbar-button.ck-on:hover,
+.ck.ck-button.ck-block-toolbar-button.ck-off:hover,
+.ck.ck-button.ck-block-toolbar-button.ck-on:active,
+.ck.ck-button.ck-block-toolbar-button.ck-off:active {
+	outline: none;
+	border: none;
+	background: none;
+	box-shadow: none;
+}
+
+.ck.ck-button.ck-block-toolbar-button.ck-on,
+.ck.ck-button.ck-block-toolbar-button.ck-off:hover {
+	color: #696969;
+}
+
 /* Add an animation to the block toolbar button */
 .ck.ck-block-toolbar-button > .ck-icon {
 	transition: transform 0.3s ease-in-out;
+	width: 24px;
+	height: 24px;
 }
 
 .ck.ck-block-toolbar-button.ck-on > .ck-icon {
