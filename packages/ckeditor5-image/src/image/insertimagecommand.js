@@ -51,12 +51,10 @@ export default class InsertImageCommand extends Command {
 	execute( options ) {
 		const model = this.editor.model;
 
-		model.change( writer => {
-			const sources = Array.isArray( options.source ) ? options.source : [ options.source ];
+		const sources = Array.isArray( options.source ) ? options.source : [ options.source ];
 
-			for ( const src of sources ) {
-				insertImage( writer, model, { src } );
-			}
-		} );
+		for ( const src of sources ) {
+			insertImage( model, { src } );
+		}
 	}
 }

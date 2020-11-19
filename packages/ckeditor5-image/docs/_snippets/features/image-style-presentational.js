@@ -9,7 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-style-custom' ), {
-		removePlugins: [ 'LinkImage' ],
+		removePlugins: [ 'LinkImage', 'AutoImage' ],
 		image: {
 			styles: [
 				'alignLeft',

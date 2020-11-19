@@ -130,12 +130,7 @@ describe( 'Upload utils', () => {
 		describe( 'image URL input view', () => {
 			it( 'should have placeholder', () => {
 				const view = createLabeledInputView( { t: val => val } );
-				expect( view.fieldView.placeholder ).to.equal( 'https://example.com/src/image.png' );
-			} );
-
-			it( 'should have info text', () => {
-				const view = createLabeledInputView( { t: val => val } );
-				expect( view.infoText ).to.match( /^Paste the image source URL/ );
+				expect( view.fieldView.placeholder ).to.equal( 'https://example.com/image.png' );
 			} );
 		} );
 	} );

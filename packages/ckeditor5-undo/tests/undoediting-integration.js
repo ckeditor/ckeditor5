@@ -1100,6 +1100,87 @@ describe( 'UndoEditing integration', () => {
 				'</table>'
 			);
 		} );
+
+		it( 'undo table cells content wrapping', () => {
+			model.schema.register( 'tableCellContent', {
+				allowIn: 'tableCell',
+				allowContentOf: 'tableCell',
+				isLimit: true
+			} );
+
+			editor.conversion.elementToElement( { model: 'tableCellContent', view: 'td-content' } );
+
+			input(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'[<tableCell><paragraph>01</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>02</paragraph></tableCell>]' +
+						'<tableCell><paragraph>03</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'[<tableCell><paragraph>11</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>12</paragraph></tableCell>]' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			model.change( writer => {
+				const targetCell = root.getNodeByPath( [ 0, 0, 1 ] );
+				const insertionWrapper = writer.createElement( 'tableCellContent' );
+				const deletionWrapper = writer.createElement( 'tableCellContent' );
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.wrap( writer.createRangeIn( targetCell ), deletionWrapper );
+				writer.insert( insertionWrapper, targetCell, 0 );
+
+				writer.insert( writer.createText( 'foobar' ), paragraph, 0 );
+				writer.insert( paragraph, insertionWrapper, 'end' );
+
+				writer.setSelection( writer.createRangeOn( targetCell ) );
+			} );
+
+			output(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'[<tableCell>' +
+							'<tableCellContent><paragraph>foobar</paragraph></tableCellContent>' +
+							'<tableCellContent><paragraph>01</paragraph></tableCellContent>' +
+						'</tableCell>]' +
+						'<tableCell><paragraph>02</paragraph></tableCell>' +
+						'<tableCell><paragraph>03</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'<tableCell><paragraph>12</paragraph></tableCell>' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'undo' );
+
+			output(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'[<tableCell><paragraph>01</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>02</paragraph></tableCell>]' +
+						'<tableCell><paragraph>03</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'[<tableCell><paragraph>11</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>12</paragraph></tableCell>]' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
 	} );
 
 	it( 'postfixers should not add another undo step when fixing undo changes', () => {

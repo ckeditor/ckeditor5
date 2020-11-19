@@ -9,7 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-caption' ), {
-		removePlugins: [ 'ImageStyle', 'ImageResize', 'LinkImage' ],
+		removePlugins: [ 'ImageStyle', 'ImageResize', 'LinkImage', 'AutoImage' ],
 		image: {
 			toolbar: [ 'imageTextAlternative' ]
 		},

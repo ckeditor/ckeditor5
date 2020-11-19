@@ -64,6 +64,30 @@ describe( 'LabeledFieldView utils', () => {
 			expect( labeledInput.fieldView.hasError ).to.be.false;
 		} );
 
+		it( 'should bind labeledInput#isEmpty to input\'s #isEmpty', () => {
+			labeledInput.fieldView.isEmpty = true;
+			expect( labeledInput.isEmpty ).to.be.true;
+
+			labeledInput.fieldView.isEmpty = false;
+			expect( labeledInput.isEmpty ).to.be.false;
+		} );
+
+		it( 'should bind labeledInput#isFocused to input\'s #isFocused', () => {
+			labeledInput.fieldView.isFocused = true;
+			expect( labeledInput.isFocused ).to.be.true;
+
+			labeledInput.fieldView.isFocused = false;
+			expect( labeledInput.isFocused ).to.be.false;
+		} );
+
+		it( 'should bind labeledInput#placeholder to input\'s #placeholder', () => {
+			labeledInput.fieldView.placeholder = null;
+			expect( labeledInput.placeholder ).to.be.null;
+
+			labeledInput.fieldView.placeholder = 'foo';
+			expect( labeledInput.placeholder ).to.equal( 'foo' );
+		} );
+
 		it( 'should clean labeledInput#errorText upon input\'s DOM "update" event', () => {
 			labeledInput.errorText = 'some error';
 			labeledInput.fieldView.fire( 'input' );

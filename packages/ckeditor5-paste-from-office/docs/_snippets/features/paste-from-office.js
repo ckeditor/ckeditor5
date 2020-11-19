@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals ClassicEditor, console, window, document */
+/* globals ClassicEditor, console, window, document, ListStyle */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-paste-from-office' ), {
+		extraPlugins: [ ListStyle ],
 		toolbar: {
 			items: [
 				'heading',
