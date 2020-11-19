@@ -16,6 +16,7 @@ describe( 'utils', () => {
 			expect( toArray( true ) ).to.deep.equal( [ true ] );
 			expect( toArray( null ) ).to.deep.equal( [ null ] );
 			expect( toArray( {} ) ).to.deep.equal( [ {} ] );
+			expect( toArray() ).to.deep.equal( [ undefined ] );
 		} );
 
 		it( 'should return array values by reference and unchanged', () => {
@@ -23,11 +24,6 @@ describe( 'utils', () => {
 
 			expect( toArray( array ) ).to.equal( array );
 			expect( toArray( array ) ).to.deep.equal( [ 'foo' ] );
-		} );
-
-		it( 'should return an empty array when no argument is given or it is `undefined`', () => {
-			expect( toArray() ).to.deep.equal( [] );
-			expect( toArray( undefined ) ).to.deep.equal( [] );
 		} );
 	} );
 } );
