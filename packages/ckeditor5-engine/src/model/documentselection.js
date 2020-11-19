@@ -634,8 +634,8 @@ class LiveSelection extends Selection {
 
 		// Prefixes of marker names that should affect `LiveSelection#markers` collection.
 		// @private
-		// @type {Array.<String>}
-		this._observedMarkerGroups = [];
+		// @type {Set}
+		this._observedMarkerGroups = new Set();
 
 		// Ensure selection is correct after each operation.
 		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
@@ -819,7 +819,7 @@ class LiveSelection extends Selection {
 	}
 
 	observeMarkersGroup( prefix ) {
-		this._observedMarkerGroups.push( prefix );
+		this._observedMarkerGroups.add( prefix );
 		this._updateMarkers();
 	}
 
@@ -871,7 +871,7 @@ class LiveSelection extends Selection {
 	}
 
 	_updateMarkers() {
-		if ( !this._observedMarkerGroups.length ) {
+		if ( !this._observedMarkerGroups.size ) {
 			return;
 		}
 
@@ -881,7 +881,7 @@ class LiveSelection extends Selection {
 		for ( const marker of this._model.markers ) {
 			const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
-			if ( !this._observedMarkerGroups.includes( markerGroup ) ) {
+			if ( !this._observedMarkerGroups.has( markerGroup ) ) {
 				continue;
 			}
 
@@ -918,13 +918,13 @@ class LiveSelection extends Selection {
 	}
 
 	_updateMarker( marker, markerRange ) {
-		if ( !this._observedMarkerGroups.length ) {
+		if ( !this._observedMarkerGroups.size ) {
 			return;
 		}
 
 		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
-		if ( !this._observedMarkerGroups.includes( markerGroup ) ) {
+		if ( !this._observedMarkerGroups.has( markerGroup ) ) {
 			return;
 		}
 
