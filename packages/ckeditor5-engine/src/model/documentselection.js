@@ -154,7 +154,7 @@ export default class DocumentSelection {
 	 * A collection of selection {@link module:engine/model/markercollection~Marker markers}.
 	 * Marker is a selection marker when selection range is inside the marker range.
 	 *
-	 * **Note**: Only markers from {@link ~DocumentSelection#observeMarkersGroup observed markers groups} are collected.
+	 * **Note**: Only markers from {@link ~DocumentSelection#observeMarkers observed markers groups} are collected.
 	 *
 	 * @readonly
 	 * @type {module:utils/collection~Collection}
