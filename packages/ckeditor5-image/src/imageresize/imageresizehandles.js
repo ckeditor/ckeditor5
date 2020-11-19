@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import ImageLoadObserver from '../image/imageloadobserver';
 
 /**
  * The image resize by handles feature.
@@ -37,21 +38,46 @@ export default class ImageResizeHandles extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-		const command = editor.commands.get( 'imageResize' );
-
+		const command = this.editor.commands.get( 'imageResize' );
 		this.bind( 'isEnabled' ).to( command );
 
-		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
-			const widget = conversionApi.mapper.toViewElement( data.item );
+		this._setupResizerCreator();
+	}
 
-			const resizer = editor.plugins
+	/**
+	 * Attaches the listeners responsible for creating a resizer for each image.
+	 *
+	 * @private
+	 */
+	_setupResizerCreator() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		editingView.addObserver( ImageLoadObserver );
+
+		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
+			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
+			const widgetView = imageView.findAncestor( 'figure' );
+			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
+
+			if ( resizer ) {
+				// There are rare cases when image will be triggered multiple times for the same widget, e.g. when
+				// image's src was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
+				resizer.redraw();
+
+				return;
+			}
+
+			const mapper = editor.editing.mapper;
+			const imageModel = mapper.toModelElement( widgetView );
+
+			resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
 					unit: editor.config.get( 'image.resizeUnit' ),
 
-					modelElement: data.item,
-					viewElement: widget,
+					modelElement: imageModel,
+					viewElement: widgetView,
 					editor,
 
 					getHandleHost( domWidgetElement ) {
@@ -62,7 +88,7 @@ export default class ImageResizeHandles extends Plugin {
 					},
 					// TODO consider other positions.
 					isCentered() {
-						const imageStyle = data.item.getAttribute( 'imageStyle' );
+						const imageStyle = imageModel.getAttribute( 'imageStyle' );
 
 						return !imageStyle || imageStyle == 'full' || imageStyle == 'alignCenter';
 					},
@@ -73,14 +99,14 @@ export default class ImageResizeHandles extends Plugin {
 				} );
 
 			resizer.on( 'updateSize', () => {
-				if ( !widget.hasClass( 'image_resized' ) ) {
-					editor.editing.view.change( writer => {
-						writer.addClass( 'image_resized', widget );
+				if ( !widgetView.hasClass( 'image_resized' ) ) {
+					editingView.change( writer => {
+						writer.addClass( 'image_resized', widgetView );
 					} );
 				}
 			} );
 
 			resizer.bind( 'isEnabled' ).to( this );
-		}, { priority: 'low' } );
+		} );
 	}
 }

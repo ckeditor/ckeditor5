@@ -24,7 +24,7 @@ import DataTransfer from './datatransfer';
  * * {@link module:engine/view/document~Document#event:cut}
  *
  * Note that this observer is not available by default (it is not added by the engine).
- * To make it available it needs to be added to {@link module:engine/view/document~Document} by
+ * To make it available, it needs to be added to {@link module:engine/view/document~Document} by
  * the {@link module:engine/view/view~View#addObserver `View#addObserver()`} method. You can also load the
  * {@link module:clipboard/clipboard~Clipboard} plugin which adds this observer automatically (because it uses it).
  *
@@ -100,111 +100,111 @@ function getDropViewRange( view, domEvent ) {
 }
 
 /**
- * Fired as a continuation of {@link #event:paste} and {@link #event:drop} events.
+ * Fired as a continuation of the {@link #event:paste} and {@link #event:drop} events.
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
- * Fired with a `dataTransfer` which comes from the clipboard and which content should be processed
+ * Fired with a `dataTransfer` which comes from the clipboard and whose content should be processed
  * and inserted into the editor.
  *
- * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  * @event module:engine/view/document~Document#event:clipboardInput
  * @param {Object} data Event data.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
+ * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
  * (usually – into which the content should be inserted).
  * If clipboard input was triggered by a paste operation, then these are the selection ranges. If by a drop operation,
- * then it's the drop position (which can be different than the selection at the moment of drop).
+ * then it is the drop position (which can be different than the selection at the moment of drop).
  */
 
 /**
- * Fired when user drags content over one of the editables.
+ * Fired when the user drags the content over one of the editables.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:dragover
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
 
 /**
- * Fired when user dropped content into one of the editables.
+ * Fired when the user dropped the content into one of the editables.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:drop
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  * @param {module:engine/view/range~Range} dropRange The position into which the content is dropped.
  */
 
 /**
- * Fired when user pasted content into one of the editables.
+ * Fired when the user pasted the content into one of the editables.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:paste
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
 
 /**
- * Fired when user copied content from one of the editables.
+ * Fired when the user copied the content from one of the editables.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @event module:engine/view/document~Document#event:copy
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
 
 /**
- * Fired when user cut content from one of the editables.
+ * Fired when the user cut the content from one of the editables.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @event module:engine/view/document~Document#event:cut
- * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
 
 /**
  * The value of the {@link module:engine/view/document~Document#event:paste},
  * {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut} events.
  *
- * In order to access clipboard data use `dataTransfer` property.
+ * In order to access the clipboard data, use the `dataTransfer` property.
  *
  * @class module:clipboard/clipboardobserver~ClipboardEventData
  * @extends module:engine/view/observer/domeventdata~DomEventData
  */
 
 /**
- * Data transfer instance.
+ * The data transfer instance.
  *
  * @readonly
  * @member {module:clipboard/datatransfer~DataTransfer} module:clipboard/clipboardobserver~ClipboardEventData#dataTransfer

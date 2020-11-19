@@ -1,24 +1,17 @@
-<p>
-	<b>Value of the <code>"htmlEmbed.showPreviews"</code></b>:
-	<input type="radio" id="raw-html-previews-enabled" name="mode" value="enabled" checked><label for="raw-html-previews-enabled"><code>true</code></label>
-	<input type="radio" id="raw-html-previews-disabled" name="mode" value="disabled"><label for="raw-html-previews-disabled"><code>false</code></label>
-</p>
+<div id="snippet-html-embed"></div>
 
-<textarea id="snippet-html-embed">
-	&lt;h2>CKEditor 5 on socials&lt;/h2>
-	&lt;div class="raw-html-embed">&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">Keeping CKEditor 5 integrations tidy and free of bugs 🐛 The new release for the official &lt;a href="https://twitter.com/hashtag/Angular?src=hash&amp;ref_src=twsrc%5Etfw">#Angular&lt;/a> WYSIWYG editor component works with Angular 9.1 and above. &lt;a href="https://t.co/Umag7F9dq0">https://t.co/Umag7F9dq0&lt;/a> &lt;a href="https://t.co/cIPy5fFSDn">pic.twitter.com/cIPy5fFSDn&lt;/a>&lt;/p>&mdash; CKEditor Ecosystem (@ckeditor) &lt;a href="https://twitter.com/ckeditor/status/1318575258153160707?ref_src=twsrc%5Etfw">October 20, 2020&lt;/a>&lt;/blockquote> &lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8">&lt;/script>&lt;/div>
-	&lt;div class="raw-html-embed">&lt;iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/DgM5DfAPQTI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>&lt;/iframe>&lt;/div>
+<button type="button" id="preview-data-action">Preview editor data</button>
+<iframe id="preview-data-container" aria-hidden="true" tabindex="-1"></iframe>
 
-	&lt;p>Psst, we're tracking ya!&lt;/p>
-	&lt;div class="raw-html-embed">&lt;!-- Google Analytics -->
-&lt;script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+<style>
+	#preview-data-container {
+		width: 100%;
+		height: 500px;
+		border: solid 2px #333;
+	}
 
-ga('create', 'UA-XXXXX-Y', 'auto');
-ga('send', 'pageview');
-&lt;/script>
-&lt;!-- End Google Analytics -->&lt;/div>
-</textarea>
+	.ck-editor__editable_inline {
+		max-height: 500px;
+		overflow: auto;
+	}
+</style>

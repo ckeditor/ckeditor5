@@ -6,15 +6,11 @@
 .ck.ck-input-color {
 	width: 100%;
 	display: flex;
+	flex-direction: row-reverse;
 
 	& > input.ck.ck-input-text {
 		min-width: auto;
 		flex-grow: 1;
-
-		&:active,
-		&:focus {
-			z-index: var(--ck-z-default);
-		}
 	}
 
 	& > div.ck.ck-dropdown {

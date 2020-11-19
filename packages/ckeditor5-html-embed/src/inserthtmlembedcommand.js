@@ -11,11 +11,11 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
- * The insert raw HTML element command.
+ * The insert HTML embed element command.
  *
  * The command is registered by {@link module:html-embed/htmlembedediting~HtmlEmbedEditing} as `'insertHtmlEmbed'`.
  *
- * To insert the raw HTML element at the current selection, execute the command:
+ * To insert the HTML embed element at the current selection, execute the command:
  *
  *		editor.execute( 'insertHtmlEmbed' );
  *
@@ -30,7 +30,7 @@ export default class InsertHtmlEmbedCommand extends Command {
 	}
 
 	/**
-	 * Executes the command, which creates and inserts a new html element.
+	 * Executes the command, which creates and inserts a new HTML embed element.
 	 *
 	 * @fires execute
 	 */
@@ -58,7 +58,7 @@ function isHtmlEmbedAllowed( model ) {
 		!checkSelectionOnObject( selection, schema );
 }
 
-// Checks if a html embed is allowed by the schema in the optimal insertion parent.
+// Checks if an HTML embed is allowed by the schema in the optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema

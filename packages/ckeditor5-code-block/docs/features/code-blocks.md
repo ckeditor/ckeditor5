@@ -6,13 +6,15 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS") and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
+The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 <info-box>
 	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
 </info-box>
 
 ## Demo
+
+Use the code block toolbar button and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/code-block}
 
@@ -22,6 +24,7 @@ Here are some CKEditor 5 features that you may find helpfully similar:
 * {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
 
 ## Configuring code block languages
 
