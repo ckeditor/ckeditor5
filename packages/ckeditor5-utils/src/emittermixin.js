@@ -156,6 +156,15 @@ const EmitterMixin = {
 		// All params provided. off() that single callback.
 		if ( callback ) {
 			removeCallback( emitter, event, callback );
+
+			const index = emitterInfo.callbacks[ event ].indexOf( callback );
+			if ( index !== -1 ) {
+				if ( emitterInfo.callbacks[ event ].length === 1 ) {
+					delete emitterInfo.callbacks[ event ];
+				} else {
+					emitterInfo.callbacks[ event ].splice( index, 1 );
+				}
+			}
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {
