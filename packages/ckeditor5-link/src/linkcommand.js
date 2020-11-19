@@ -198,12 +198,11 @@ export default class LinkCommand extends Command {
 						attributes.set( item, true );
 					} );
 
-					const node = writer.createText( href, attributes );
-
-					model.insertContent( node, position );
+					const { end: positionAfter } = model.insertContent( writer.createText( href, attributes ), position );
 
 					// Put the selection at the end of the inserted link.
-					writer.setSelection( writer.createPositionAfter( node ) );
+					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
+					writer.setSelection( positionAfter );
 				}
 
 				// Remove the `linkHref` attribute and all link decorators from the selection.
