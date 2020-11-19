@@ -217,6 +217,16 @@ export default class ToolbarView extends View {
 		 * @member {module:ui/toolbar/toolbarview~ToolbarBehavior}
 		 */
 		this._behavior = this.options.shouldGroupWhenFull ? new DynamicGrouping( this ) : new StaticLayout( this );
+
+		if ( this.options.shouldGroupWhenFull && this.options.isFloating ) {
+			this.extendTemplate( {
+				attributes: {
+					class: [
+						'ck-toolbar_floating'
+					]
+				}
+			} );
+		}
 	}
 
 	/**
@@ -279,6 +289,20 @@ export default class ToolbarView extends View {
 			if ( name == '|' ) {
 				return new ToolbarSeparatorView();
 			} else if ( name == '/' ) {
+				if ( this.options.shouldGroupWhenFull ) {
+					/**
+					 * Toolbar line break will work only when button grouping is disabled in the toolbar config:
+					 *
+					 * 		Editor.defaultConfig = {
+					 * 			toolbar: {
+					 * 				shouldNotGroupWhenFull: true
+					 * 			}
+					 * 		}
+					 *
+					 * @error line-separator-used-when-button-grouping-enabled
+					 */
+					logWarning( 'line-separator-used-when-button-grouping-enabled' );
+				}
 				return new ToolbarLineBreakView();
 			} else if ( factory.has( name ) ) {
 				return factory.create( name );
@@ -885,6 +909,13 @@ class DynamicGrouping {
  * Also see: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull
+ */
+
+/**
+ * When set to `true` together with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull},
+ * then button wrapping will be disabled. Used by floating toolbars.
+ *
+ * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#isFloating
  */
 
 /**
