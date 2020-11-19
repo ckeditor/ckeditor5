@@ -159,7 +159,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Features
 
 * Improved responsiveness of the text alternative view in narrow viewports (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([ff5394a](https://github.com/ckeditor/ckeditor5-image/commit/ff5394a))
-* Introduced the `'insertImage'` command. Closes [#245](https://github.com/ckeditor/ckeditor5-image/issues/245). Closes [#251](https://github.com/ckeditor/ckeditor5-image/issues/251). ([cc1e7a3](https://github.com/ckeditor/ckeditor5-image/commit/cc1e7a3))
+* Introduced the `'imageInsert'` command. Closes [#245](https://github.com/ckeditor/ckeditor5-image/issues/245). Closes [#251](https://github.com/ckeditor/ckeditor5-image/issues/251). ([cc1e7a3](https://github.com/ckeditor/ckeditor5-image/commit/cc1e7a3))
 * Support for uploading images pasted with a base64 source. Closes [#246](https://github.com/ckeditor/ckeditor5-image/issues/246). Closes [ckeditor/ckeditor5-paste-from-office#24](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/24). ([89ab27e](https://github.com/ckeditor/ckeditor5-image/commit/89ab27e))
 
 ### Bug fixes
@@ -176,7 +176,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The `UploadImageCommand#execute()`'s `files` parameter was renamed to `file`. It can still accept an array of files.
+* The `ImageUploadCommand#execute()`'s `files` parameter was renamed to `file`. It can still accept an array of files.
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.2.0...v11.0.0) (2018-10-08)
@@ -185,13 +185,13 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * Aligned `ImageToolbar` to use the new widget toolbar repository. ([980681d](https://github.com/ckeditor/ckeditor5-image/commit/980681d))
 * Image feature should insert image the same way as other widget features do. ([26638f5](https://github.com/ckeditor/ckeditor5-image/commit/26638f5))
-* The `UploadImageCommand` should check whether it can be executed in the context of the current document selection. Closes [#225](https://github.com/ckeditor/ckeditor5-image/issues/225). Closes [#227](https://github.com/ckeditor/ckeditor5-image/issues/227). Closes [#235](https://github.com/ckeditor/ckeditor5-image/issues/235). ([4c1f27f](https://github.com/ckeditor/ckeditor5-image/commit/4c1f27f))
+* The `ImageUploadCommand` should check whether it can be executed in the context of the current document selection. Closes [#225](https://github.com/ckeditor/ckeditor5-image/issues/225). Closes [#227](https://github.com/ckeditor/ckeditor5-image/issues/227). Closes [#235](https://github.com/ckeditor/ckeditor5-image/issues/235). ([4c1f27f](https://github.com/ckeditor/ckeditor5-image/commit/4c1f27f))
 * Updated translations. ([59f3604](https://github.com/ckeditor/ckeditor5-image/commit/59f3604))
 
 ### BREAKING CHANGES
 
-* The `options.file` property was renamed to `options.files`  in `UploadImageCommand#execute()`.
-* The `options.insertAt` property of `UploadImageCommand#execute()` was removed. The command will now use model's selection.
+* The `options.file` property was renamed to `options.files`  in `ImageUploadCommand#execute()`.
+* The `options.insertAt` property of `ImageUploadCommand#execute()` was removed. The command will now use model's selection.
 * Removed `findOptimalInsertionPosition()` from utils. This method can now be found in the `@ckeditor/ckeditor5-widget/src/utils` module.
 
 
@@ -222,7 +222,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Made image upload by drag&drop work when the `UploadImageCommand` is disabled. Closes [#208](https://github.com/ckeditor/ckeditor5-image/issues/208). ([6908ec6](https://github.com/ckeditor/ckeditor5-image/commit/6908ec6))
+* Made image upload by drag&drop work when the `ImageUploadCommand` is disabled. Closes [#208](https://github.com/ckeditor/ckeditor5-image/issues/208). ([6908ec6](https://github.com/ckeditor/ckeditor5-image/commit/6908ec6))
 
 ### Other changes
 

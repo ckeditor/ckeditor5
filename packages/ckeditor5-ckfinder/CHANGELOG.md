@@ -33,7 +33,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* CKFinderCommand should work when either `'link'` or `'insertImage'` command is enabled. Closes [#48](https://github.com/ckeditor/ckeditor5-ckfinder/issues/48). ([d82a762](https://github.com/ckeditor/ckeditor5-ckfinder/commit/d82a762))
+* CKFinderCommand should work when either `'link'` or `'imageInsert'` command is enabled. Closes [#48](https://github.com/ckeditor/ckeditor5-ckfinder/issues/48). ([d82a762](https://github.com/ckeditor/ckeditor5-ckfinder/commit/d82a762))
 
 ### Other changes
 
