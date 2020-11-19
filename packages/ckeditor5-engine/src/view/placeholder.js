@@ -152,18 +152,8 @@ export function needsPlaceholder( element ) {
 	const isEmptyish = !Array.from( element.getChildren() )
 		.some( element => !element.is( 'uiElement' ) );
 
-	const doc = element.document;
-
-	// If the element is empty and the document is blurred.
-	if ( !doc.isFocused && isEmptyish ) {
-		return true;
-	}
-
-	const viewSelection = doc.selection;
-	const selectionAnchor = viewSelection.anchor;
-
-	// If document is focused and the element is empty but the selection is not anchored inside it.
-	if ( isEmptyish && selectionAnchor && selectionAnchor.parent !== element ) {
+	// If the element, keep placeholder
+	if ( isEmptyish ) {
 		return true;
 	}
 
