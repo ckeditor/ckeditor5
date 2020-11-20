@@ -316,6 +316,22 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__cancel-button' ) ).to.have.lengthOf( 1 );
 			} );
 
+			it( 'disable save button when update command is disabled', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const updateHtmlEmbedCommand = editor.commands.get( 'updateHtmlEmbed' );
+				updateHtmlEmbedCommand.isEnabled = false;
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				const button = domContentWrapper.querySelector( '.raw-html-embed__save-button' );
+
+				expect( button.classList.contains( 'ck-disabled' ) ).to.be.true;
+			} );
+
 			it( 'updates the model state after clicking the "save changes" button', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
