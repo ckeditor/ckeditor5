@@ -119,7 +119,7 @@ describe( 'ToolbarView', () => {
 			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).to.true;
 		} );
 
-		it( 'add ck-toolbar_floating class if there are shouldGroupWhenFull and isFloating options set to true', () => {
+		it( 'should include ck-toolbar_floating class if there are shouldGroupWhenFull and isFloating options set to true', () => {
 			const viewWithOptions = new ToolbarView( locale, {
 				shouldGroupWhenFull: true,
 				isFloating: true
