@@ -157,12 +157,15 @@ const EmitterMixin = {
 		if ( callback ) {
 			removeCallback( emitter, event, callback );
 
-			const index = emitterInfo.callbacks[ event ].indexOf( callback );
+			// We must remove callbacks as well in order to prevent memory leaks.
+			// See https://github.com/ckeditor/ckeditor5/pull/8480
+			const index = eventCallbacks.indexOf( callback );
+
 			if ( index !== -1 ) {
-				if ( emitterInfo.callbacks[ event ].length === 1 ) {
+				if ( eventCallbacks.length === 1 ) {
 					delete emitterInfo.callbacks[ event ];
 				} else {
-					emitterInfo.callbacks[ event ].splice( index, 1 );
+					removeCallback( emitter, event, callback );
 				}
 			}
 		}
