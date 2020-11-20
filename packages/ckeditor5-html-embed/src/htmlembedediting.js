@@ -167,11 +167,10 @@ export default class HtmlEmbedEditing extends Plugin {
 						// it's enough to update the model – the entire widget will be reconverted.
 						if ( newValue !== state.getRawHtmlValue() ) {
 							const selectedElement = model.document.selection.getSelectedElement();
-							const modelContainer = editor.editing.mapper.toModelElement( viewContainer );
 
 							// The HTML embed widget must be selected to be able to save new value.
-							if ( selectedElement !== modelContainer ) {
-								model.change( writer => writer.setSelection( modelContainer, 'on' ) );
+							if ( selectedElement !== modelElement ) {
+								model.change( writer => writer.setSelection( modelElement, 'on' ) );
 							}
 
 							editor.execute( 'updateHtmlEmbed', newValue );
