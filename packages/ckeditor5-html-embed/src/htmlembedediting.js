@@ -92,7 +92,6 @@ export default class HtmlEmbedEditing extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const view = editor.editing.view;
-		const model = editor.model;
 
 		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
 		const upcastWriter = new UpcastWriter( view.document );
@@ -144,6 +143,21 @@ export default class HtmlEmbedEditing extends Plugin {
 					domContentWrapper = domElement;
 
 					renderContent( { domElement, editor, state, props } );
+
+					// Since there is a `data-cke-ignore-events` attribute set on the wrapper element in the editable mode,
+					// the explicit `click` handler on the `capture` phase is needed to move the selection onto the whole
+					// HTML embed widget.
+					domContentWrapper.addEventListener( 'click', () => {
+						if ( state.isEditable ) {
+							const model = editor.model;
+							const selectedElement = model.document.selection.getSelectedElement();
+
+							// Move the selection onto the whole HTML embed widget if it's currently not selected.
+							if ( selectedElement !== modelElement ) {
+								model.change( writer => writer.setSelection( modelElement, 'on' ) );
+							}
+						}
+					}, true );
 				} );
 
 				// API exposed on each raw HTML embed widget so other features can control a particular widget.
@@ -166,13 +180,6 @@ export default class HtmlEmbedEditing extends Plugin {
 						// If the value didn't change, we just cancel. If it changed,
 						// it's enough to update the model – the entire widget will be reconverted.
 						if ( newValue !== state.getRawHtmlValue() ) {
-							const selectedElement = model.document.selection.getSelectedElement();
-
-							// The HTML embed widget must be selected to be able to save new value.
-							if ( selectedElement !== modelElement ) {
-								model.change( writer => writer.setSelection( modelElement, 'on' ) );
-							}
-
 							editor.execute( 'updateHtmlEmbed', newValue );
 							editor.editing.view.focus();
 						} else {

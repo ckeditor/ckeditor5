@@ -421,6 +421,30 @@ describe( 'HtmlEmbedEditing', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
+			it( 'selects the unselected `rawHtml` element in editable mode after clicking on its textarea', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml><rawHtml value="bar"></rawHtml>' );
+
+				const widgetFoo = viewDocument.getRoot().getChild( 0 );
+				const widgetBar = viewDocument.getRoot().getChild( 1 );
+
+				const contentWrapperFoo = widgetFoo.getChild( 1 );
+				const contentWrapperBar = widgetBar.getChild( 1 );
+
+				const domContentWrapperFoo = editor.editing.view.domConverter.mapViewToDom( contentWrapperFoo );
+				const domContentWrapperBar = editor.editing.view.domConverter.mapViewToDom( contentWrapperBar );
+
+				widgetFoo.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+				widgetBar.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapperFoo.querySelector( 'textarea' ).click();
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+
+				domContentWrapperBar.querySelector( 'textarea' ).click();
+
+				expect( getModelData( model ) ).to.equal( '<rawHtml value="foo"></rawHtml>[<rawHtml value="bar"></rawHtml>]' );
+			} );
+
 			describe( 'rawHtmlApi.makeEditable()', () => {
 				it( 'makes the textarea editable', () => {
 					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
@@ -452,11 +476,20 @@ describe( 'HtmlEmbedEditing', () => {
 					const widgetFoo = viewDocument.getRoot().getChild( 0 );
 					const widgetBar = viewDocument.getRoot().getChild( 1 );
 
+					const contentWrapperFoo = widgetFoo.getChild( 1 );
+					const contentWrapperBar = widgetBar.getChild( 1 );
+
+					const domContentWrapperFoo = editor.editing.view.domConverter.mapViewToDom( contentWrapperFoo );
+					const domContentWrapperBar = editor.editing.view.domConverter.mapViewToDom( contentWrapperBar );
+
 					widgetFoo.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 					widgetBar.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
-					widgetFoo.getCustomProperty( 'rawHtmlApi' ).save( 'FOO' );
-					widgetBar.getCustomProperty( 'rawHtmlApi' ).save( 'BAR' );
+					domContentWrapperFoo.querySelector( 'textarea' ).value = 'FOO';
+					domContentWrapperFoo.querySelector( '.raw-html-embed__save-button' ).click();
+
+					domContentWrapperBar.querySelector( 'textarea' ).value = 'BAR';
+					domContentWrapperBar.querySelector( '.raw-html-embed__save-button' ).click();
 
 					expect( getModelData( model ) ).to.equal( '<rawHtml value="FOO"></rawHtml>[<rawHtml value="BAR"></rawHtml>]' );
 				} );
