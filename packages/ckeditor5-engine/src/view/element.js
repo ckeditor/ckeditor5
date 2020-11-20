@@ -11,6 +11,7 @@ import Node from './node';
 import Text from './text';
 import TextProxy from './textproxy';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import StylesMap from './stylesmap';
@@ -724,8 +725,9 @@ export default class Element extends Node {
 	_addClass( className ) {
 		this._fireChange( 'attributes', this );
 
-		className = Array.isArray( className ) ? className : [ className ];
-		className.forEach( name => this._classes.add( name ) );
+		for ( const name of toArray( className ) ) {
+			this._classes.add( name );
+		}
 	}
 
 	/**
@@ -742,8 +744,9 @@ export default class Element extends Node {
 	_removeClass( className ) {
 		this._fireChange( 'attributes', this );
 
-		className = Array.isArray( className ) ? className : [ className ];
-		className.forEach( name => this._classes.delete( name ) );
+		for ( const name of toArray( className ) ) {
+			this._classes.delete( name );
+		}
 	}
 
 	/**
@@ -789,8 +792,9 @@ export default class Element extends Node {
 	_removeStyle( property ) {
 		this._fireChange( 'attributes', this );
 
-		property = Array.isArray( property ) ? property : [ property ];
-		property.forEach( name => this._styles.remove( name ) );
+		for ( const name of toArray( property ) ) {
+			this._styles.remove( name );
+		}
 	}
 
 	/**

@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoCommand from '../src/undocommand';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 describe( 'UndoCommand', () => {
 	let editor, model, doc, root, undo;
@@ -27,7 +28,7 @@ describe( 'UndoCommand', () => {
 	} );
 
 	describe( 'UndoCommand', () => {
-		const p = pos => model.createPositionFromPath( root, [].concat( pos ) );
+		const p = pos => model.createPositionFromPath( root, toArray( pos ) );
 		const r = ( a, b ) => model.createRange( p( a ), p( b ) );
 
 		describe( 'execute()', () => {
