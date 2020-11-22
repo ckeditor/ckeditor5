@@ -912,8 +912,8 @@ class DynamicGrouping {
  */
 
 /**
- * When set to `true` together with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull},
- * then button wrapping will be disabled. Used by floating toolbars.
+ * To allow declarative toolbar breaks for floating toolbars it should be set to `true`.
+ * Works when {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} is also set to `true`.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#isFloating
  */

@@ -22,7 +22,6 @@ ClassicEditor
 				'bold',
 				'italic',
 				'underline',
-				'strikethrough',
 				'|',
 				'alignment',
 				'|',
@@ -35,11 +34,11 @@ ClassicEditor
 				'link',
 				'imageUpload',
 				'insertTable',
-				'horizontalLine',
 				'|',
 				'undo',
 				'redo'
 			],
+			shouldNotGroupWhenFull: true,
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
