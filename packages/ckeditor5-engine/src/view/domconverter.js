@@ -16,6 +16,7 @@ import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
+import Matcher from './matcher';
 import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -118,6 +119,14 @@ export default class DomConverter {
 		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_fakeSelectionMapping
 		 */
 		this._fakeSelectionMapping = new WeakMap();
+
+		/**
+		 * TODO
+		 *
+		 * @private
+		 * @type {module:engine/view/matcher~Matcher}
+		 */
+		this._cdataElementMatcher = new Matcher();
 	}
 
 	/**
@@ -253,7 +262,7 @@ export default class DomConverter {
 				}
 			}
 
-			if ( options.withChildren || options.withChildren === undefined ) {
+			if ( options.withChildren !== false ) {
 				for ( const child of this.viewChildrenToDom( viewNode, domDocument, options ) ) {
 					domElement.appendChild( child );
 				}
@@ -400,7 +409,7 @@ export default class DomConverter {
 		}
 
 		// When node is inside a UIElement or a RawElement return that parent as it's view representation.
-		const hostElement = this.getHostViewElement( domNode, this._domToViewMapping );
+		const hostElement = this.getHostViewElement( domNode );
 
 		if ( hostElement ) {
 			return hostElement;
@@ -445,9 +454,16 @@ export default class DomConverter {
 				for ( let i = attrs.length - 1; i >= 0; i-- ) {
 					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
 				}
+
+				// Treat this element's content as CDATA if it was registered as such.
+				if ( options.withChildren !== false && this._cdataElementMatcher.match( viewElement ) ) {
+					viewElement._appendChild( new ViewText( this.document, domNode.innerHTML ) );
+
+					return viewElement;
+				}
 			}
 
-			if ( options.withChildren || options.withChildren === undefined ) {
+			if ( options.withChildren !== false ) {
 				for ( const child of this.domChildrenToView( domNode, options ) ) {
 					viewElement._appendChild( child );
 				}

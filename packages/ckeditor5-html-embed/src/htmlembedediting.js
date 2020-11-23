@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
@@ -94,8 +92,12 @@ export default class HtmlEmbedEditing extends Plugin {
 		const view = editor.editing.view;
 
 		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
-		const upcastWriter = new UpcastWriter( view.document );
-		const htmlProcessor = new HtmlDataProcessor( view.document );
+
+		// TODO find best place for this (probably HtmlDataProcessor method).
+		editor.data.processor._domConverter._cdataElementMatcher.add( {
+			name: 'div',
+			classes: 'raw-html-embed'
+		} );
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: {
@@ -103,13 +105,9 @@ export default class HtmlEmbedEditing extends Plugin {
 				classes: 'raw-html-embed'
 			},
 			model: ( viewElement, { writer } ) => {
-				// Note: The below line has a side-effect – the children are *moved* to the DF so
-				// viewElement becomes empty. It's fine here.
-				const fragment = upcastWriter.createDocumentFragment( viewElement.getChildren() );
-				const innerHtml = htmlProcessor.toData( fragment );
-
+				// TODO comment
 				return writer.createElement( 'rawHtml', {
-					value: innerHtml
+					value: viewElement.getChild( 0 ).data
 				} );
 			}
 		} );
