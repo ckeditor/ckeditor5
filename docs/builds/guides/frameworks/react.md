@@ -60,82 +60,6 @@ class App extends Component {
 export default App;
 ```
 
-### Integrating a build from the online builder
-
-This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
-
-The directory with the editor's build cannot be placed inside the `src/` directory because Node could return an error:
-
-```
-FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
-```
-
-Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
-
-```
-├── ckeditor5
-│   ├── build
-│   ├── sample
-│   ├── src
-│   ├── ...
-│   ├── package.json
-│   └── webpack.config.js
-├── node_modules
-├── public
-├── src
-├── ...
-└── package.json
-```
-
-Then, add the package located in the `ckeditor5` directory as a dependency of your project:
-
-```
-yarn add file:./ckeditor5
-```
-
-Now, import the build in your application:
-
-```jsx
-import React, { Component } from 'react';
-import Editor from 'ckeditor5-custom-build/build/ckeditor';
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-
-const editorConfiguration = {
-	toolbar: [ 'bold', 'italic' ]
-};
-
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<h2>Using CKEditor 5 from online builder in React</h2>
-				<CKEditor
-					editor={ Editor }
-					config={ editorConfiguration }
-					data="<p>Hello from CKEditor 5!</p>"
-					onReady={ editor => {
-						// You can store the "editor" and use when it is needed.
-						console.log( 'Editor is ready to use!', editor );
-					} }
-					onChange={ ( event, editor ) => {
-						const data = editor.getData();
-						console.log( { event, editor, data } );
-					} }
-					onBlur={ ( event, editor ) => {
-						console.log( 'Blur.', editor );
-					} }
-					onFocus={ ( event, editor ) => {
-						console.log( 'Focus.', editor );
-					} }
-				/>
-			</div>
-		);
-	}
-}
-
-export default App;
-```
-
 ## Component properties
 
 The `<CKEditor>` component supports the following properties:
@@ -510,6 +434,82 @@ yarn start
 ```
 
 You can read more about using CKEditor 5 from source in the {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source Advanced setup guide}.
+
+## Integrating a build from the online builder
+
+This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+The directory with the editor's build cannot be placed inside the `src/` directory because Node could return an error:
+
+```
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+```
+
+Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+
+```
+├── ckeditor5
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
+├── node_modules
+├── public
+├── src
+├── ...
+└── package.json
+```
+
+Then, add the package located in the `ckeditor5` directory as a dependency of your project:
+
+```
+yarn add file:./ckeditor5
+```
+
+Now, import the build in your application:
+
+```jsx
+import React, { Component } from 'react';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+
+const editorConfiguration = {
+	toolbar: [ 'bold', 'italic' ]
+};
+
+class App extends Component {
+	render() {
+		return (
+			<div className="App">
+				<h2>Using CKEditor 5 from online builder in React</h2>
+				<CKEditor
+					editor={ Editor }
+					config={ editorConfiguration }
+					data="<p>Hello from CKEditor 5!</p>"
+					onReady={ editor => {
+						// You can store the "editor" and use when it is needed.
+						console.log( 'Editor is ready to use!', editor );
+					} }
+					onChange={ ( event, editor ) => {
+						const data = editor.getData();
+						console.log( { event, editor, data } );
+					} }
+					onBlur={ ( event, editor ) => {
+						console.log( 'Blur.', editor );
+					} }
+					onFocus={ ( event, editor ) => {
+						console.log( 'Focus.', editor );
+					} }
+				/>
+			</div>
+		);
+	}
+}
+
+export default App;
+```
 
 ## Localization
 
