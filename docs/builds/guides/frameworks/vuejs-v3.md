@@ -291,9 +291,10 @@ npm install --save \
 You can use more packages, depending on which features are needed in your application.
 
 ```js
+import { createApp } from 'vue';
 import CKEditor from '@ckeditor/ckeditor5-vue';
 
-Vue.createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
+createApp( { /* options */ } ).use( CKEditor ).mount( /* DOM element */ );
 ```
 
 <info-box>
