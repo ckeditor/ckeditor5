@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, document */
+/* global console, document, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import HtmlEmbedEditing from '../src/htmlembedediting';
@@ -436,11 +436,11 @@ describe( 'HtmlEmbedEditing', () => {
 				widgetFoo.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 				widgetBar.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
-				domContentWrapperFoo.querySelector( 'textarea' ).click();
+				domContentWrapperFoo.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
 
 				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
 
-				domContentWrapperBar.querySelector( 'textarea' ).click();
+				domContentWrapperBar.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
 
 				expect( getModelData( model ) ).to.equal( '<rawHtml value="foo"></rawHtml>[<rawHtml value="bar"></rawHtml>]' );
 			} );
@@ -486,10 +486,22 @@ describe( 'HtmlEmbedEditing', () => {
 					widgetBar.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 
 					domContentWrapperFoo.querySelector( 'textarea' ).value = 'FOO';
-					domContentWrapperFoo.querySelector( '.raw-html-embed__save-button' ).click();
+
+					const domSaveButtonFoo = domContentWrapperFoo.querySelector( '.raw-html-embed__save-button' );
+
+					// Simulate the click event on the Save button from the first widget.
+					domSaveButtonFoo.dispatchEvent( new Event( 'mousedown' ) );
+					domSaveButtonFoo.dispatchEvent( new Event( 'mouseup' ) );
+					domSaveButtonFoo.dispatchEvent( new Event( 'click' ) );
 
 					domContentWrapperBar.querySelector( 'textarea' ).value = 'BAR';
-					domContentWrapperBar.querySelector( '.raw-html-embed__save-button' ).click();
+
+					const domSaveButtonBar = domContentWrapperBar.querySelector( '.raw-html-embed__save-button' );
+
+					// Simulate the click event on the Save button from the second widget.
+					domSaveButtonBar.dispatchEvent( new Event( 'mousedown' ) );
+					domSaveButtonBar.dispatchEvent( new Event( 'mouseup' ) );
+					domSaveButtonBar.dispatchEvent( new Event( 'click' ) );
 
 					expect( getModelData( model ) ).to.equal( '<rawHtml value="FOO"></rawHtml>[<rawHtml value="BAR"></rawHtml>]' );
 				} );
