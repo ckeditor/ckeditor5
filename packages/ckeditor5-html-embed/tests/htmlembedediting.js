@@ -421,6 +421,37 @@ describe( 'HtmlEmbedEditing', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
+			it( 'does not select the unselected `rawHtml` element, if it is not in the editable mode', () => {
+				setModelData( model, '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+
+				// Get the second widget.
+				const widget = viewDocument.getRoot().getChild( 1 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				domContentWrapper.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+			} );
+
+			it( 'does not unnecessarily select an already selected `rawHtml` element in the editable mode', () => {
+				setModelData( model, '[<rawHtml value="foo"></rawHtml>]' );
+
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change:range', spy );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
+
+				expect( spy.notCalled ).to.be.true;
+			} );
+
 			it( 'selects the unselected `rawHtml` element in editable mode after clicking on its textarea', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml><rawHtml value="bar"></rawHtml>' );
 
