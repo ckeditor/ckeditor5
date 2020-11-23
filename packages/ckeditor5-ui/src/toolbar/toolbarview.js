@@ -288,7 +288,7 @@ export default class ToolbarView extends View {
 		this.items.addMany( config.map( name => {
 			if ( name == '|' ) {
 				return new ToolbarSeparatorView();
-			} else if ( name == '/' ) {
+			} else if ( name == '-' ) {
 				if ( this.options.shouldGroupWhenFull ) {
 					/**
 					 * Toolbar line break will work only when button grouping is disabled in the toolbar config:

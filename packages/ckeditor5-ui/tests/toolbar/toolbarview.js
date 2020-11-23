@@ -409,7 +409,7 @@ describe( 'ToolbarView', () => {
 		} );
 
 		it( 'expands the config into collection', () => {
-			view.fillFromConfig( [ 'foo', '/', 'bar', '|', 'foo' ], factory );
+			view.fillFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
 
 			const items = view.items;
 
@@ -443,7 +443,7 @@ describe( 'ToolbarView', () => {
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 			view.options.shouldGroupWhenFull = true;
 
-			view.fillFromConfig( [ 'foo', '/', 'bar' ], factory );
+			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
 
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,

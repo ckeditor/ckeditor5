@@ -135,14 +135,14 @@
  * Simple format (specifies only toolbar items):
  *
  *		const config = {
- *			toolbar: [ 'bold', 'italic', '|', 'undo', 'redo', '/', 'numberedList', 'bulletedList' ]
+ *			toolbar: [ 'bold', 'italic', '|', 'undo', 'redo', '-', 'numberedList', 'bulletedList' ]
  *		};
  *
  * Extended format:
  *
  *		const config = {
  *			toolbar: {
- *				items: [ 'bold', 'italic', '|', 'undo', 'redo', '/', 'numberedList', 'bulletedList' ],
+ *				items: [ 'bold', 'italic', '|', 'undo', 'redo', '-', 'numberedList', 'bulletedList' ],
  *
  *				viewportTopOffset: 30,
  *
@@ -161,9 +161,9 @@
  *
  *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *
- *	or `'/'` to make a line break, so toolbar will become multiline:
+ *	or `'-'` to make a line break, so toolbar will become multi-line:
  *
- *		toolbar: [ 'bold', 'italic', '/	', 'undo', 'redo' ]
+ *		toolbar: [ 'bold', 'italic', '-', 'undo', 'redo' ]
  *
  * * **`toolbar.viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements

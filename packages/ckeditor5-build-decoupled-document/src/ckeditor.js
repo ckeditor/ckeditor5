@@ -108,7 +108,7 @@ DecoupledEditor.defaultConfig = {
 			'|',
 			'undo',
 			'redo',
-			'/',
+			'-',
 			'alignment:left',
 			'alignment:right',
 			'alignment:center',
