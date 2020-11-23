@@ -11,18 +11,20 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	mode: 'development',
-	entry: {
-		CKEditor: [ './src/index' ]
+	entry: [ './src' ],
+	optimization: {
+		minimize: false,
+		moduleIds: 'named'
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'ckeditor.dll.js',
-		library: 'CKEditor',
+		library: 'CKEditor5DLL',
 		libraryTarget: 'umd'
 	},
 	plugins: [
 		new webpack.DllPlugin( {
-			name: 'CKEditor',
+			name: 'CKEditor5DLL',
 			context: 'src',
 			path: path.resolve( __dirname, 'build/ckeditor-manifest.json' ),
 			format: true,

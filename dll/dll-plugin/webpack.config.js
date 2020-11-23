@@ -11,12 +11,15 @@ const webpack = require( 'webpack' );
 module.exports = {
 	mode: 'development',
 	optimization: {
+		minimize: false,
 		moduleIds: 'named'
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'app.js',
-		libraryTarget: 'umd'
+		library: 'ComplexBox',
+		libraryTarget: 'umd',
+		libraryExport: 'default'
 	},
 	plugins: [
 		new webpack.DllReferencePlugin( {
