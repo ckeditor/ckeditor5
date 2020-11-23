@@ -12,11 +12,7 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 module.exports = {
 	mode: 'development',
 	entry: {
-		CKEditor: [
-			'./src/foo',
-			'./src/index',
-			'./src/utils'
-		]
+		CKEditor: [ './src/index' ]
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),

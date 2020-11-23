@@ -7,8 +7,6 @@
 
 import sanitizeHtml from 'sanitize-html';
 import { clone } from 'lodash-es';
-import { foo } from '@ckeditor/ckeditor5-dll/foo';
-import { bar } from '@ckeditor/ckeditor5-dll/bar';
 import {
 	Plugin,
 	ClassicEditor,
@@ -20,10 +18,7 @@ import {
 	toWidget,
 	findOptimalInsertionPosition,
 	Command
-} from '@ckeditor/ckeditor5-dll/utils';
-
-foo();
-bar();
+} from '@ckeditor/ckeditor5-dll/index';
 
 /**
  * Helper for extracting the side card type from a view element based on its CSS class.
