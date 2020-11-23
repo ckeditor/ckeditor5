@@ -143,6 +143,21 @@ export default class HtmlEmbedEditing extends Plugin {
 					domContentWrapper = domElement;
 
 					renderContent( { domElement, editor, state, props } );
+
+					// Since there is a `data-cke-ignore-events` attribute set on the wrapper element in the editable mode,
+					// the explicit `mousedown` handler on the `capture` phase is needed to move the selection onto the whole
+					// HTML embed widget.
+					domContentWrapper.addEventListener( 'mousedown', () => {
+						if ( state.isEditable ) {
+							const model = editor.model;
+							const selectedElement = model.document.selection.getSelectedElement();
+
+							// Move the selection onto the whole HTML embed widget if it's currently not selected.
+							if ( selectedElement !== modelElement ) {
+								model.change( writer => writer.setSelection( modelElement, 'on' ) );
+							}
+						}
+					}, true );
 				} );
 
 				// API exposed on each raw HTML embed widget so other features can control a particular widget.
