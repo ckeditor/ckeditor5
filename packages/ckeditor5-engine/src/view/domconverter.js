@@ -121,12 +121,13 @@ export default class DomConverter {
 		this._fakeSelectionMapping = new WeakMap();
 
 		/**
-		 * TODO
+		 * Matcher for view elements whose content should be treated as a plain text
+		 * and not processed during conversion from DOM nodes to view elements.
 		 *
 		 * @private
 		 * @type {module:engine/view/matcher~Matcher}
 		 */
-		this._cdataElementMatcher = new Matcher();
+		this._plainContentElementMatcher = new Matcher();
 	}
 
 	/**
@@ -456,7 +457,7 @@ export default class DomConverter {
 				}
 
 				// Treat this element's content as CDATA if it was registered as such.
-				if ( options.withChildren !== false && this._cdataElementMatcher.match( viewElement ) ) {
+				if ( options.withChildren !== false && this._plainContentElementMatcher.match( viewElement ) ) {
 					viewElement._appendChild( new ViewText( this.document, domNode.innerHTML ) );
 
 					return viewElement;
@@ -925,6 +926,20 @@ export default class DomConverter {
 	isDomSelectionCorrect( domSelection ) {
 		return this._isDomSelectionPositionCorrect( domSelection.anchorNode, domSelection.anchorOffset ) &&
 			this._isDomSelectionPositionCorrect( domSelection.focusNode, domSelection.focusOffset );
+	}
+
+	/**
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a plain text
+	 * and not processed during conversion from DOM nodes to view elements.
+	 *
+	 * This is affecting how {@link module:engine/view/domconverter~DomConverter#domToView} and
+	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} processes DOM nodes.
+	 *
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
+	 * be treated as plain text.
+	 */
+	registerPlainContentElementMatcher( pattern ) {
+		this._plainContentElementMatcher.add( pattern );
 	}
 
 	/**

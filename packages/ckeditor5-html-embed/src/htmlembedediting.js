@@ -93,8 +93,8 @@ export default class HtmlEmbedEditing extends Plugin {
 
 		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
 
-		// TODO find best place for this (probably HtmlDataProcessor method).
-		editor.data.processor._domConverter._cdataElementMatcher.add( {
+		// Register div.raw-html-embed as a plain content element so all it's content will be provided as Text node while data upcasting.
+		editor.data.processor.registerPlainContentElementMatcher( {
 			name: 'div',
 			classes: 'raw-html-embed'
 		} );
@@ -105,7 +105,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				classes: 'raw-html-embed'
 			},
 			model: ( viewElement, { writer } ) => {
-				// TODO comment
+				// The div.raw-html-embed is registered as a plain content element, so all it's content is available as a single Text node.
 				return writer.createElement( 'rawHtml', {
 					value: viewElement.getChild( 0 ).data
 				} );

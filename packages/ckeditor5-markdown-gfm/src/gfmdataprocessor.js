@@ -69,4 +69,15 @@ export default class GFMDataProcessor {
 		const html = this._htmlDP.toData( viewFragment );
 		return html2markdown( html );
 	}
+
+	/**
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a plain text
+	 * and not processed during conversion from Markdown to view elements.
+	 *
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
+	 * be treated as plain text.
+	 */
+	registerPlainContentElementMatcher( pattern ) {
+		this._htmlDP.registerPlainContentElementMatcher( pattern );
+	}
 }

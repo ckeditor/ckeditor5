@@ -38,3 +38,12 @@
  * @param {*} data The data to be processed.
  * @returns {module:engine/view/documentfragment~DocumentFragment}
  */
+
+/**
+ * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a plain text
+ * and processed as a single {@link module:engine/view/text~Text} node while converting {@link #toView}.
+ *
+ * @method #registerPlainContentElementMatcher
+ * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
+ * be treated as plain text.
+ */

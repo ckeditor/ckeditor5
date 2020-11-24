@@ -97,6 +97,17 @@ export default class XmlDataProcessor {
 	}
 
 	/**
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a plain text
+	 * and not processed during conversion from XML to view elements.
+	 *
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
+	 * be treated as plain text.
+	 */
+	registerPlainContentElementMatcher( pattern ) {
+		this._domConverter.registerPlainContentElementMatcher( pattern );
+	}
+
+	/**
 	 * Converts an XML string to its DOM representation. Returns a document fragment containing nodes parsed from
 	 * the provided data.
 	 *
