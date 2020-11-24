@@ -163,13 +163,9 @@ There are three main ways to do that.
 
 * {@link builds/guides/development/custom-builds Customize one of the existing builds}.
 
-	This option does not require any changes in your project's configuration. You will create a new build somewhere next to your project and include it like you included one of the existing builds. Therefore, it is the easiest way to add missing features. Read more about this method in the {@link builds/guides/integration/installing-plugins Installing plugins} guide.
+	This option does not require any changes in your project's configuration. You will create a new build somewhere next to your project and include it like you included one of the existing builds. Therefore, it is the easiest way to add missing features.
 
-* {@link builds/guides/integration/advanced-setup Integrate the editor from source}.
-
-	In this approach you will include a CKEditor 5 built from source &mdash; so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
-
-	Read more about this option in the [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source) section.
+	Read more about this method in the {@link builds/guides/integration/installing-plugins Installing plugins} guide.
 
 * [Use the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
@@ -180,6 +176,12 @@ There are three main ways to do that.
 	</info-box>
 
 	Read more about this option in the [Integrating a build from the online builder](#integrating-a-build-from-the-online-builder) section.
+
+* {@link builds/guides/integration/advanced-setup Integrate the editor from source}.
+
+	In this approach you will include a CKEditor 5 built from source &mdash; so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
+
+	Read more about this option in the [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source) section.
 
 ### Using the document editor build
 
@@ -239,6 +241,82 @@ For such a scenario we provide a few ready-to-use integrations featuring collabo
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
 Note: These integrations are meant to be as simple as possible, so they do not use the Create React App CLI. However, you should have no problem starting from `CRA` after reading the sections below.
+
+## Integrating a build from the online builder
+
+This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+The directory with the editor's build cannot be placed inside the `src/` directory because Node could return an error:
+
+```
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+```
+
+Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+
+```
+├── ckeditor5
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
+├── node_modules
+├── public
+├── src
+├── ...
+└── package.json
+```
+
+Then, add the package located in the `ckeditor5` directory as a dependency of your project:
+
+```
+yarn add file:./ckeditor5
+```
+
+Now, import the build in your application:
+
+```jsx
+import React, { Component } from 'react';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+
+const editorConfiguration = {
+	toolbar: [ 'bold', 'italic' ]
+};
+
+class App extends Component {
+	render() {
+		return (
+			<div className="App">
+				<h2>Using CKEditor 5 from online builder in React</h2>
+				<CKEditor
+					editor={ Editor }
+					config={ editorConfiguration }
+					data="<p>Hello from CKEditor 5!</p>"
+					onReady={ editor => {
+						// You can store the "editor" and use when it is needed.
+						console.log( 'Editor is ready to use!', editor );
+					} }
+					onChange={ ( event, editor ) => {
+						const data = editor.getData();
+						console.log( { event, editor, data } );
+					} }
+					onBlur={ ( event, editor ) => {
+						console.log( 'Blur.', editor );
+					} }
+					onFocus={ ( event, editor ) => {
+						console.log( 'Focus.', editor );
+					} }
+				/>
+			</div>
+		);
+	}
+}
+
+export default App;
+```
 
 ## Integrating CKEditor 5 built from source
 
@@ -434,82 +512,6 @@ yarn start
 ```
 
 You can read more about using CKEditor 5 from source in the {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source Advanced setup guide}.
-
-## Integrating a build from the online builder
-
-This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
-
-The directory with the editor's build cannot be placed inside the `src/` directory because Node could return an error:
-
-```
-FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
-```
-
-Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
-
-```
-├── ckeditor5
-│   ├── build
-│   ├── sample
-│   ├── src
-│   ├── ...
-│   ├── package.json
-│   └── webpack.config.js
-├── node_modules
-├── public
-├── src
-├── ...
-└── package.json
-```
-
-Then, add the package located in the `ckeditor5` directory as a dependency of your project:
-
-```
-yarn add file:./ckeditor5
-```
-
-Now, import the build in your application:
-
-```jsx
-import React, { Component } from 'react';
-import Editor from 'ckeditor5-custom-build/build/ckeditor';
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-
-const editorConfiguration = {
-	toolbar: [ 'bold', 'italic' ]
-};
-
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<h2>Using CKEditor 5 from online builder in React</h2>
-				<CKEditor
-					editor={ Editor }
-					config={ editorConfiguration }
-					data="<p>Hello from CKEditor 5!</p>"
-					onReady={ editor => {
-						// You can store the "editor" and use when it is needed.
-						console.log( 'Editor is ready to use!', editor );
-					} }
-					onChange={ ( event, editor ) => {
-						const data = editor.getData();
-						console.log( { event, editor, data } );
-					} }
-					onBlur={ ( event, editor ) => {
-						console.log( 'Blur.', editor );
-					} }
-					onFocus={ ( event, editor ) => {
-						console.log( 'Focus.', editor );
-					} }
-				/>
-			</div>
-		);
-	}
-}
-
-export default App;
-```
 
 ## Localization
 
