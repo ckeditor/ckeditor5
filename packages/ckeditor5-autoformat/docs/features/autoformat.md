@@ -89,6 +89,11 @@ The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link modu
 
 You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.js) as an example.
 
+## Known issues
+* Using underscore inline (eg. variable names like this_variable) may result in italics. GitHub issue: [#2388](https://github.com/ckeditor/ckeditor5/issues/2388).
+* Pasting Markdown-formatted content will not automatically convert the pasted syntax markers into properly formatted content currently. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+* The feature does not support adding horizontal rules currently. See this GitHub issue for possible future development: [#5720](https://github.com/ckeditor/ckeditor5/issues/5720).
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autoformat.

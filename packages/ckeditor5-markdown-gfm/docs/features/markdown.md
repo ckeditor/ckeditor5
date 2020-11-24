@@ -73,8 +73,7 @@ ClassicEditor
 ```
 
 ## Known issues
-* The Markdown output strips any page break markers. These are not supported by Markdown and cannot be reproduced.
-* Pasting Markdown-formatted content will not automatically convert the pasted syntax markers into properly formatted content; instead it will act as if plain text was pasted. See these GitHub issues for development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+* The Markdown output strips any page break markers. These are not supported by Markdown and therefore cannot be reproduced.
 
 ## Contribute
 
