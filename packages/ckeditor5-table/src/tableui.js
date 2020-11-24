@@ -52,7 +52,8 @@ export default class TableUI extends Plugin {
 			dropdownView.buttonView.set( {
 				icon: tableIcon,
 				label: t( 'Insert table' ),
-				tooltip: true
+				tooltip: true,
+				class: "hidden__arrow"
 			} );
 
 			let insertTableView;

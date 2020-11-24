@@ -89,7 +89,8 @@ export default class AlignmentUI extends Plugin {
 			// Configure dropdown properties an behavior.
 			dropdownView.buttonView.set( {
 				label: t( 'Text alignment' ),
-				tooltip: true
+				tooltip: true,
+				class: "hidden__arrow"
 			} );
 
 			dropdownView.toolbarView.isVertical = true;

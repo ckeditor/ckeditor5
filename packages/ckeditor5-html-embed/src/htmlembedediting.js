@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-undef */
 /**
  * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
@@ -19,8 +21,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+// import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+// import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import cancelIcon from '@ckeditor/ckeditor5-html-embed/theme/icons/cancel.svg';
+import checkIcon from '@ckeditor/ckeditor5-html-embed/theme/icons/save.svg';
 
 import '../theme/htmlembed.css';
 
@@ -47,8 +51,8 @@ export default class HtmlEmbedEditing extends Plugin {
 			showPreviews: false,
 			sanitizeHtml: rawHtml => {
 				/**
-				 * When using the HTML embed feature with `htmlEmbed.showPreviews=true` option, it is strongly recommended to
-				 * define a sanitize function that will clean up an input HTML in order to avoid XSS vulnerability.
+				 * When using the HTML embed feature with the `htmlEmbed.showPreviews=true` option, it is strongly recommended to
+				 * define a sanitize function that will clean up the input HTML in order to avoid XSS vulnerability.
 				 *
 				 * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
 				 *
@@ -132,7 +136,8 @@ export default class HtmlEmbedEditing extends Plugin {
 				let domContentWrapper, state, props;
 
 				const viewContainer = writer.createContainerElement( 'div', {
-					class: 'raw-html-embed'
+					class: 'raw-html-embed',
+					'data-html-embed-label': t( 'HTML snippet' )
 				} );
 				// Widget cannot be a raw element because the widget system would not be able
 				// to add its UI to it. Thus, we need this wrapper.
@@ -253,10 +258,10 @@ export default class HtmlEmbedEditing extends Plugin {
 				},
 				onCancelClick: props.onCancelClick
 			};
-			domElement.prepend( createDomButtonsWrapper( { editor, domDocument, state, props: buttonsWrapperProps } ) );
+			domElement.prepend( createDomButtonsWrapper( { editor, domDocument, state, props: buttonsWrapperProps, domElement } ) );
 		}
 
-		function createDomButtonsWrapper( { editor, domDocument, state, props } ) {
+		function createDomButtonsWrapper( { editor, domDocument, state, props, domElement } ) {
 			const domButtonsWrapper = createElement( domDocument, 'div', {
 				class: 'raw-html-embed__buttons-wrapper'
 			} );
@@ -289,6 +294,11 @@ export default class HtmlEmbedEditing extends Plugin {
 					props.onEditClick();
 				} );
 
+				domElement.addEventListener( 'dblclick', evt => {
+					evt.preventDefault();
+					props.onEditClick();
+				} );
+				domButtonsWrapper.classList.add( 'raw-html-embed__hidden' );
 				domButtonsWrapper.appendChild( clonedDomEditButton );
 			}
 
@@ -346,13 +356,15 @@ function createDomButton( locale, type ) {
 	} else if ( type === 'save' ) {
 		buttonView.set( {
 			icon: checkIcon,
-			label: t( 'Save changes' ),
+			label: t( 'Lưu lại' ),
+			withText: true,
 			class: 'raw-html-embed__save-button'
 		} );
 	} else {
 		buttonView.set( {
 			icon: cancelIcon,
-			label: t( 'Cancel' ),
+			label: t( 'Hủy bỏ' ),
+			withText: true,
 			class: 'raw-html-embed__cancel-button'
 		} );
 	}

@@ -41,7 +41,6 @@ export default class MediaEmbedUI extends Plugin {
 		const command = editor.commands.get( 'mediaEmbed' );
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
-		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
 			const dropdown = createDropdown( locale );
 
@@ -65,7 +64,8 @@ export default class MediaEmbedUI extends Plugin {
 		button.set( {
 			label: t( 'Insert media' ),
 			icon: mediaIcon,
-			tooltip: true
+			tooltip: true,
+			class: "hidden__arrow"
 		} );
 
 		// Note: Use the low priority to make sure the following listener starts working after the
