@@ -135,7 +135,7 @@
  * Simple format (specifies only toolbar items):
  *
  *		const config = {
- *			toolbar: [ 'bold', 'italic', '|', 'undo', 'redo', '-', 'numberedList', 'bulletedList' ]
+ *			toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *		};
  *
  * Extended format:
@@ -164,6 +164,8 @@
  *	or `'-'` to make a line break, so toolbar will become multi-line:
  *
  *		toolbar: [ 'bold', 'italic', '-', 'undo', 'redo' ]
+ *
+ *	Line break will work only in extended format when `shouldNotGroupWhenFull` option is set to `true`
  *
  * * **`toolbar.viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements

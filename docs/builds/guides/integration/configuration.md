@@ -133,6 +133,50 @@ ClassicEditor
 	} );
 ```
 
+### Extended format
+
+You can use the extended toolbar configuration format to access additional options:
+
+```js
+    toolbar: {
+        items: [ 'bold', 'italic', '|', 'undo', 'redo', '-', 'numberedList', 'bulletedList' ],
+        viewportTopOffset: 30,
+        shouldNotGroupWhenFull: true
+    }
+```
+
+ * **`items`** &ndash; An array of toolbar item names. The components (buttons, dropdowns, etc.) which can be used as toolbar items are defined in `editor.ui.componentFactory` and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`
+
+ * **`viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
+ Useful when a page with which the editor is being integrated has some other sticky or fixed elements
+ (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
+
+ * **`shouldNotGroupWhenFull`** &ndash; When set `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row.
+
+#### Separating buttons
+
+You can use `'|'` to create a separator between groups of items. Works in both config formats:
+
+```js
+    toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
+```
+
+```js
+    toolbar: {
+        items: [ 'bold', 'italic', '|', 'undo', 'redo' ]
+    }
+```
+
+There are also two ways of arranging buttons in multiple lines. Both require the extended format.
+
+1. Set `shouldNotGroupWhenFull` to true, so items will wrap automatically.
+2. Follow 1st point and set the breaking point explicitly using `'-'` separator:
+```js
+    toolbar: {
+        items: [ 'bold', 'italic', '-', 'undo', 'redo' ]
+    }
+```
+
 <info-box hint>
 	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check [Removing features](#removing-features) above for more information.
 </info-box>
