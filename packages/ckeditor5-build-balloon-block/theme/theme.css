@@ -17,12 +17,18 @@
 .ck button.ck-block-toolbar-button {
 	cursor: pointer;
 }
+
 .ck .ck-toolbar button {
 	cursor: pointer;
 }
+
 .ck button.ck-block-toolbar-button:hover > svg > .st0 {
 	fill: #57656e;
 }
-.hidden__arrow > .ck-dropdown__arrow{
+button.ck-disabled,
+.hidden {
+	display: none !important;
+}
+.hidden__arrow > .ck-dropdown__arrow {
 	display: none;
 }

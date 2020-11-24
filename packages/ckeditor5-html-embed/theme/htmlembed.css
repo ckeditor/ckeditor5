@@ -23,9 +23,11 @@
 
 	/* The switch mode button wrapper. */
 	& .raw-html-embed__buttons-wrapper {
-		position: absolute;
+		position: relative;
+		/* position: absolute; */
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
+		/* flex-direction: column; */
 	}
 }
 

@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable max-statements-per-line */
+/* eslint-disable max-len */
 /**
  * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
@@ -401,7 +404,29 @@ export default class BlockToolbar extends Plugin {
 			target: this.buttonView.element,
 			limiter: this.editor.ui.getEditableElement()
 		} );
-
+		// ThoArrow --- 03/11/2020 --- Hidden icon disabled
+		const doc = document.querySelector( '.ck-toolbar__items' );
+		if ( doc && doc.childElementCount ) { for ( let i = 0; i < doc.childElementCount; i++ ) {
+			const element = doc.children[ i ];
+			if ( element.className.includes( 'ck-toolbar__separator' ) ) {
+				let b = false;
+				let allButtonDisabled = true;
+				let j = i;
+				while ( !b ) {
+					j++;
+					const elementNext = doc.children[ j ];
+					if ( j < doc.childElementCount || elementNext.className.includes( 'ck-toolbar__separator' ) ) {
+						b = true;
+					}
+					if ( elementNext && !elementNext.className.includes( 'ck-toolbar__separator' ) && !elementNext.className.includes( 'ck-disabled' ) ) {
+						allButtonDisabled = false;
+					}
+				}
+				if ( allButtonDisabled ) { element.classList.add( 'hidden' ); }
+			}
+		}
+		}
+		// ThoArrow --- End Here
 		if ( !wasVisible ) {
 			this.toolbarView.items.get( 0 ).focus();
 		}

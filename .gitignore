@@ -2,7 +2,7 @@ node_modules/
 build/
 coverage/
 packages/*/node_modules/
-packages/ckeditor5-build-balloon-block/build/
+packages/ckeditor5-build-balloon-block/build/*
 docs/api/output.json
 external/
 lerna-debug.log

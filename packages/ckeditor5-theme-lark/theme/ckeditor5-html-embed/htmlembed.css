@@ -14,10 +14,17 @@
 .ck-widget.raw-html-embed {
 	font-size: var(--ck-font-size-base);
 	background-color: var(--ck-color-base-foreground);
+	border: 1px solid #E5E5E5;
+	outline: none !important;
 
-	&:not(.ck-widget_selected):not(:hover) {
-		outline: var(--ck-html-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border);
+	& .raw-html-embed__hidden {
+		display: none;
 	}
+
+	/* &:not(.ck-widget_selected):not(:hover) { */
+		/* outline: var(--ck-html-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border); */
+		/* border: 1px solid #E5E5E5; */
+	/* } */
 
 	& .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
 		margin-left: 50px;
@@ -57,41 +64,75 @@
 	/* ----- Emebed internals --------------------------------------------------------------------- */
 
 	& .raw-html-embed__content-wrapper {
-		padding: var(--ck-spacing-standard);
+		/* padding: var(--ck-spacing-standard); */
+		display: flex;
+		flex-direction: column-reverse;
 	}
 
 	/* The switch mode button wrapper. */
 	& .raw-html-embed__buttons-wrapper {
-		top: var(--ck-spacing-standard);
-		right: var(--ck-spacing-standard);
+		/* top: var(--ck-spacing-standard); */
+		/* right: var(--ck-spacing-standard); */
+		flex-direction: row;
+		padding: 10px 15px;
+		background-color: #fff;
 
 		& .ck-button.raw-html-embed__save-button {
-			color: var(--ck-color-button-save);
+			/* color: var(--ck-color-button-save); */
+			color: white;
+			background-color: #797979;
+			padding: 10px 20px;
+			font-size: 16px;
+			margin-right: 15px;
+			& svg {
+				width: 15px;
+				height: 15px;
+				margin-right: 10px;
+			}
 		}
 
 		& .ck-button.raw-html-embed__cancel-button {
-			color: var(--ck-color-button-cancel);
+			/* color: var(--ck-color-button-cancel); */
+			color: #818181;
+			background-color: #E5E5E5;
+			padding: 10px 20px;
+			font-size: 16px;
+			margin-right: 15px;
+			& svg {
+				width: 15px;
+				height: 15px;
+				margin-right: 10px;
+			}
 		}
 
-		& .ck-button:not(:first-child) {
+		/* & .ck-button:not(:first-child) {
 			margin-top: var(--ck-spacing-small);
-		}
+		} */
 	}
 
 	/* The edit source element. */
 	& .raw-html-embed__source {
 		box-sizing: border-box;
 		height: var(--ck-html-embed-source-height);
-		width: var(--ck-html-embed-content-width);
+		/* width: var(--ck-html-embed-content-width); */
+		width: 100%;
 		resize: none;
 		min-width: 0;
-		padding: var(--ck-spacing-standard);
-
+		/* padding: var(--ck-spacing-standard); */
+		padding: 15px 10px;
 		font-family: monospace;
 		tab-size: 4;
 		white-space: pre-wrap;
 		font-size: var(--ck-font-size-base); /* Safari needs this. */
-
+		box-shadow: none;
+		border-bottom: 1px solid #E5E5E5;
+		border-top: 0;
+		border-left: 0;
+		border-right: 0;
+		&:focus {
+			box-shadow: none;
+			outline: none;
+		}
 		&[disabled] {
 			background: hsl(0deg 0% 97%);
 			color: hsl(0deg 0% 56%);
