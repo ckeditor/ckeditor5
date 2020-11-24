@@ -866,6 +866,35 @@ describe( 'Selection post-fixer', () => {
 
 				expect( model.document.selection.hasAttribute( 'foo' ) ).to.be.true;
 			} );
+
+			it( 'should include a selectable object at the end of the selection', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				setModelData( model,
+					'[<blockQuote>' +
+						'<paragraph>foo</paragraph>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell><paragraph>bar</paragraph></tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+					'</blockQuote>]'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<blockQuote>' +
+						'<paragraph>[foo</paragraph>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell><paragraph>bar</paragraph></tableCell>' +
+							'</tableRow>' +
+						'</table>]' +
+					'</blockQuote>'
+				);
+			} );
 		} );
 
 		describe( 'non-collapsed selection - image scenarios', () => {
