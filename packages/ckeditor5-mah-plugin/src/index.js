@@ -3,8 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-class MahPlugin {
+import { Plugin } from '@ckeditor/ckeditor5-dll/core';
+import { logWarning } from '@ckeditor/ckeditor5-dll/utils';
 
+class MahPlugin extends Plugin {
+	afterInit() {
+		logWarning( 'foo-bar' );
+	}
 }
 
 export default MahPlugin;

@@ -11,26 +11,22 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	mode: 'development',
-	entry: [ './' ],
+	entry: [ './src/core.js', './src/classiceditor.js', './src/engine.js', './src/utils.js' ],
 	optimization: {
 		minimize: false,
 		moduleIds: 'named'
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
-		filename: 'ckeditor5-engine.dll.js',
-		library: 'CKEditor5_engine',
+		filename: 'ckeditor5-dll.js',
+		library: 'CKEditor5_DLL',
 		libraryTarget: 'umd'
 	},
 	plugins: [
-		// new webpack.DllReferencePlugin( {
-		// 	manifest: require( '../ckeditor5-utils/build/ckeditor5-utils.manifest.json' ),
-		// 	scope: '@ckeditor/ckeditor5-utils'
-		// } ),
 		new webpack.DllPlugin( {
-			name: 'CKEditor5_engine',
+			name: 'CKEditor5_DLL',
 			context: 'src',
-			path: path.resolve( __dirname, 'build/ckeditor5-engine.manifest.json' ),
+			path: path.resolve( __dirname, 'build/ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: false
 		} )
