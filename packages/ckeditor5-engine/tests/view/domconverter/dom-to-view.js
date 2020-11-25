@@ -158,6 +158,42 @@ describe( 'DomConverter', () => {
 			expect( viewFragment2 ).to.equal( viewFragment );
 		} );
 
+		it( 'should assign $rawContent custom property for view elements registered as raw content elements', () => {
+			converter.registerRawContentElementMatcher( {
+				name: 'div',
+				classes: 'raw-content-container'
+			} );
+
+			const domDiv = createElement( document, 'div', {}, [
+				createElement( document, 'img' ),
+				createElement( document, 'div', { 'class': 'raw-content-container' }, [
+					document.createComment( ' foo ' ),
+					createElement( document, 'img' ),
+					document.createTextNode( 'bar\n123' )
+				] ),
+				createElement( document, 'div', {}, [
+					document.createComment( 'foo' ),
+					createElement( document, 'img' ),
+					document.createTextNode( 'bar\n123' )
+				] ),
+				document.createTextNode( 'abc' )
+			] );
+
+			const viewDiv = converter.domToView( domDiv );
+
+			expect( viewDiv ).to.be.an.instanceof( ViewElement );
+			expect( viewDiv.name ).to.equal( 'div' );
+
+			expect( viewDiv.childCount ).to.equal( 4 );
+			expect( viewDiv.getChild( 0 ).name ).to.equal( 'img' );
+			expect( viewDiv.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- foo --><img>bar\n123' );
+			expect( viewDiv.getChild( 2 ).getCustomProperty( '$rawContent' ) ).to.be.undefined;
+			expect( viewDiv.getChild( 2 ).childCount ).to.equal( 2 );
+			expect( viewDiv.getChild( 2 ).getChild( 0 ).name ).to.equal( 'img' );
+			expect( viewDiv.getChild( 2 ).getChild( 1 ).data ).to.equal( 'bar 123' );
+			expect( viewDiv.getChild( 3 ).data ).to.equal( 'abc' );
+		} );
+
 		it( 'should return null for block filler', () => {
 			// eslint-disable-next-line new-cap
 			const domFiller = BR_FILLER( document );
@@ -639,6 +675,26 @@ describe( 'DomConverter', () => {
 
 				expect( viewP.childCount ).to.equal( 2 );
 				expect( viewP.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo ' );
+			} );
+
+			it( 'not before or after raw content inline element', () => {
+				converter.registerRawContentElementMatcher( {
+					name: 'span'
+				} );
+
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( '  foo  ' ),
+					createElement( document, 'span', {}, [
+						document.createTextNode( '  abc  ' )
+					] ),
+					document.createTextNode( '  bar  ' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 3 );
+				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
+				expect( viewP.getChild( 2 ).data ).to.equal( ' bar' );
 			} );
 
 			//

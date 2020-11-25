@@ -97,14 +97,17 @@ export default class XmlDataProcessor {
 	}
 
 	/**
-	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a plain text
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
 	 * and not processed during conversion from XML to view elements.
 	 *
+	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+	 * `"$rawContent"`.
+	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as plain text.
+	 * be treated as a raw data.
 	 */
-	registerPlainContentElementMatcher( pattern ) {
-		this._domConverter.registerPlainContentElementMatcher( pattern );
+	registerRawContentElementMatcher( pattern ) {
+		this._domConverter.registerRawContentElementMatcher( pattern );
 	}
 
 	/**

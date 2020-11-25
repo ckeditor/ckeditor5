@@ -121,13 +121,21 @@ export default class DomConverter {
 		this._fakeSelectionMapping = new WeakMap();
 
 		/**
-		 * Matcher for view elements whose content should be treated as a plain text
+		 * Matcher for view elements whose content should be treated as a raw data
 		 * and not processed during conversion from DOM nodes to view elements.
 		 *
 		 * @private
 		 * @type {module:engine/view/matcher~Matcher}
 		 */
-		this._plainContentElementMatcher = new Matcher();
+		this._rawContentElementMatcher = new Matcher();
+
+		/**
+		 * Set of encountered raw content DOM nodes. It is used for preventing left trimming of the following text node.
+		 *
+		 * @private
+		 * @type {WeakSet<Node>}
+		 */
+		this._encounteredRawContentDomNodes = new WeakSet();
 	}
 
 	/**
@@ -456,9 +464,12 @@ export default class DomConverter {
 					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
 				}
 
-				// Treat this element's content as CDATA if it was registered as such.
-				if ( options.withChildren !== false && this._plainContentElementMatcher.match( viewElement ) ) {
-					viewElement._appendChild( new ViewText( this.document, domNode.innerHTML ) );
+				// Treat this element's content as a raw data if it was registered as such.
+				if ( options.withChildren !== false && this._rawContentElementMatcher.match( viewElement ) ) {
+					viewElement._setCustomProperty( '$rawContent', domNode.innerHTML );
+
+					// Store a DOM node to prevent left trimming of the following text node.
+					this._encounteredRawContentDomNodes.add( domNode );
 
 					return viewElement;
 				}
@@ -929,17 +940,20 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a plain text
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
 	 * and not processed during conversion from DOM nodes to view elements.
 	 *
 	 * This is affecting how {@link module:engine/view/domconverter~DomConverter#domToView} and
 	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} processes DOM nodes.
 	 *
+	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+	 * `"$rawContent"`.
+	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as plain text.
+	 * be treated as a raw data.
 	 */
-	registerPlainContentElementMatcher( pattern ) {
-		this._plainContentElementMatcher.add( pattern );
+	registerRawContentElementMatcher( pattern ) {
+		this._rawContentElementMatcher.add( pattern );
 	}
 
 	/**
@@ -1082,7 +1096,7 @@ export default class DomConverter {
 		const prevNode = this._getTouchingInlineDomNode( node, false );
 		const nextNode = this._getTouchingInlineDomNode( node, true );
 
-		const shouldLeftTrim = this._checkShouldLeftTrimDomText( prevNode );
+		const shouldLeftTrim = this._checkShouldLeftTrimDomText( node, prevNode );
 		const shouldRightTrim = this._checkShouldRightTrimDomText( node, nextNode );
 
 		// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the beginning
@@ -1131,15 +1145,22 @@ export default class DomConverter {
 	 * Helper function which checks if a DOM text node, preceded by the given `prevNode` should
 	 * be trimmed from the left side.
 	 *
+	 * @private
+	 * @param {Node} node
 	 * @param {Node} prevNode
 	 */
-	_checkShouldLeftTrimDomText( prevNode ) {
+	_checkShouldLeftTrimDomText( node, prevNode ) {
 		if ( !prevNode ) {
 			return true;
 		}
 
 		if ( isElement( prevNode ) ) {
 			return true;
+		}
+
+		// Shouldn't left trim if previous node is a node that was encountered as a raw content node.
+		if ( this._encounteredRawContentDomNodes.has( node.previousSibling ) ) {
+			return false;
 		}
 
 		return /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) );
@@ -1149,6 +1170,7 @@ export default class DomConverter {
 	 * Helper function which checks if a DOM text node, succeeded by the given `nextNode` should
 	 * be trimmed from the right side.
 	 *
+	 * @private
 	 * @param {Node} node
 	 * @param {Node} nextNode
 	 */
@@ -1164,6 +1186,7 @@ export default class DomConverter {
 	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling
 	 * that is contained in the same container element. If there is no such sibling, `null` is returned.
 	 *
+	 * @private
 	 * @param {module:engine/view/text~Text} node Reference node.
 	 * @param {Boolean} getNext
 	 * @returns {module:engine/view/text~Text|null} Touching text node or `null` if there is no next or previous touching text node.
