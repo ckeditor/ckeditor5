@@ -45,7 +45,7 @@ export default class ImageResizeHandles extends Plugin {
 	}
 
 	/**
-	 * Attaches the listeners responsible for creating a resizer for each image.
+	 * Attaches the listeners responsible for creating a resizer for each image, except for images inside the HTML embed preview.
 	 *
 	 * @private
 	 */
@@ -56,6 +56,11 @@ export default class ImageResizeHandles extends Plugin {
 		editingView.addObserver( ImageLoadObserver );
 
 		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
+			// The resizer must be attached only to images loaded by the `ImageInsert` or `ImageUpload` plugins.
+			if ( !domEvent.target.matches( 'figure.image.ck-widget > img' ) ) {
+				return;
+			}
+
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
 			const widgetView = imageView.findAncestor( 'figure' );
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );

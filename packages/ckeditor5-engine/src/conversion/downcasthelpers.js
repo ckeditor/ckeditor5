@@ -19,6 +19,7 @@ import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * Downcast conversion helper functions.
@@ -1136,7 +1137,7 @@ function changeAttribute( attributeCreator ) {
 		// First remove the old attribute if there was one.
 		if ( data.attributeOldValue !== null && oldAttribute ) {
 			if ( oldAttribute.key == 'class' ) {
-				const classes = Array.isArray( oldAttribute.value ) ? oldAttribute.value : [ oldAttribute.value ];
+				const classes = toArray( oldAttribute.value );
 
 				for ( const className of classes ) {
 					viewWriter.removeClass( className, viewElement );
@@ -1155,7 +1156,7 @@ function changeAttribute( attributeCreator ) {
 		// Then set the new attribute.
 		if ( data.attributeNewValue !== null && newAttribute ) {
 			if ( newAttribute.key == 'class' ) {
-				const classes = Array.isArray( newAttribute.value ) ? newAttribute.value : [ newAttribute.value ];
+				const classes = toArray( newAttribute.value );
 
 				for ( const className of classes ) {
 					viewWriter.addClass( className, viewElement );

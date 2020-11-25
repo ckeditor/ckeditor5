@@ -12,6 +12,7 @@ import TooltipView from '@ckeditor/ckeditor5-ui/src/tooltip/tooltipview';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 const mediaPlaceholderIconViewBox = '0 0 64 42';
 
@@ -113,11 +114,7 @@ export default class MediaRegistry {
 
 		for ( const definition of this.providerDefinitions ) {
 			const previewRenderer = definition.html;
-			let pattern = definition.url;
-
-			if ( !Array.isArray( pattern ) ) {
-				pattern = [ pattern ];
-			}
+			const pattern = toArray( definition.url );
 
 			for ( const subPattern of pattern ) {
 				const match = this._getUrlMatches( url, subPattern );
