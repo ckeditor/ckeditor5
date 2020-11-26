@@ -16,7 +16,7 @@ See the demo below:
 	See also the {@link features/restricted-editing restricted editing feature} that lets you define which parts of a document can be editable for a group of users with limited editing rights, leaving the rest of the content non-editable to them.
 </info-box>
 
-## Realeted features
+## Related features
 
 There are more features that control the way the users are accessing the content:
 
