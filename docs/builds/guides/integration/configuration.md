@@ -169,7 +169,7 @@ You can use `'|'` to create a separator between groups of items. Works in both c
 
 There are also two ways of arranging buttons in multiple lines. Both require the extended format.
 
-1. Set `shouldNotGroupWhenFull` to true, so items will wrap automatically.
+1. Set `shouldNotGroupWhenFull` to true, so items will not be grouped when the toolbar overflows but wrap to the new line instead.
 2. Follow 1st point and set the breaking point explicitly using `'-'` separator:
 ```js
     toolbar: {
