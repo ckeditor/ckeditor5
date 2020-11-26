@@ -949,7 +949,7 @@ export default class DomConverter {
 	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
 	 * `"$rawContent"`.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching view element which content should
 	 * be treated as a raw data.
 	 */
 	registerRawContentElementMatcher( pattern ) {
