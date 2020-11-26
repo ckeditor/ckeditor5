@@ -10,7 +10,7 @@ order: 30
 
 # Configuration
 
-When creating an editor in your page, it is possible to set up a {@link module:core/editor/editorconfig~EditorConfig configurations} that changes many of its aspects. For example:
+When creating an editor in your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:
 
 ```js
 ClassicEditor
