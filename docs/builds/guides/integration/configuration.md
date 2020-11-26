@@ -33,7 +33,7 @@ As you can see, configurations are set by a simple JavaScript object passed to t
 
 ## Removing features
 
-Builds come with all features included in the distribution package enabled by default. They are defined as plugins for CKEditor.
+The official builds come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor.
 
 In some cases, you may need to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
@@ -119,7 +119,7 @@ ClassicEditor
 
 ## Toolbar setup
 
-In builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
+In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
 
 Each editor may have a different toolbar configuration scheme, so it is recommended to check its documentation. In any case, the following example may give you a general idea:
 
@@ -149,13 +149,13 @@ You can use the extended toolbar configuration format to access additional optio
 
  * **`viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  Useful when a page with which the editor is being integrated has some other sticky or fixed elements
- (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
+ (e.g. the top menu). Thanks to setting the toolbar offset, the toolbar will not be positioned underneath or above the page's UI.
 
- * **`shouldNotGroupWhenFull`** &ndash; When set `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row.
+ * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row.
 
-#### Separating buttons
+#### Separating toolbar items
 
-You can use `'|'` to create a separator between groups of items. Works in both config formats:
+You can use `'|'` to create a separator between groups of toolbar items. Works in both config formats:
 
 ```js
     toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
@@ -167,10 +167,10 @@ You can use `'|'` to create a separator between groups of items. Works in both c
     }
 ```
 
-There are also two ways of arranging buttons in multiple lines. Both require the extended format.
+There are also two ways of arranging toolbar items into multiple lines. Both require the extended format.
 
-1. Set `shouldNotGroupWhenFull` to true, so items will wrap automatically.
-2. Follow 1st point and set the breaking point explicitly using `'-'` separator:
+1. Set `shouldNotGroupWhenFull` to true, so items will not be grouped when the toolbar overflows but will wrap to the new line instead.
+2. Follow 1st point and set the breaking point explicitly using a `'-'` divider:
 ```js
     toolbar: {
         items: [ 'bold', 'italic', '-', 'undo', 'redo' ]

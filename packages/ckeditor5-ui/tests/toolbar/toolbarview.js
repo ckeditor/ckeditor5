@@ -119,7 +119,7 @@ describe( 'ToolbarView', () => {
 			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).to.true;
 		} );
 
-		it( 'should include ck-toolbar_floating class if there are shouldGroupWhenFull and isFloating options set to true', () => {
+		it( 'should include the ck-toolbar_floating class if "shouldGroupWhenFull" and "isFloating" options are on', () => {
 			const viewWithOptions = new ToolbarView( locale, {
 				shouldGroupWhenFull: true,
 				isFloating: true
@@ -439,7 +439,7 @@ describe( 'ToolbarView', () => {
 			);
 		} );
 
-		it( 'warns if line separator is used when the button grouping option is enabled', () => {
+		it( 'warns if the line separator is used when the button grouping option is enabled', () => {
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 			view.options.shouldGroupWhenFull = true;
 

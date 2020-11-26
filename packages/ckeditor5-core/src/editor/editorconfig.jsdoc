@@ -161,11 +161,11 @@
  *
  *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *
- *	or `'-'` to make a line break, so toolbar will become multi-line:
+ *	or `'-'` to make a line break and render items in multiple lines:
  *
  *		toolbar: [ 'bold', 'italic', '-', 'undo', 'redo' ]
  *
- *	Line break will work only in extended format when `shouldNotGroupWhenFull` option is set to `true`
+ *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`
  *
  * * **`toolbar.viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
