@@ -161,7 +161,7 @@
  *
  *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *
- *	or `'-'` to make a line break, so toolbar will become multi-line:
+ *	or `'-'` to make a line break and render items in multiple lines:
  *
  *		toolbar: [ 'bold', 'italic', '-', 'undo', 'redo' ]
  *
