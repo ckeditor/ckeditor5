@@ -15,3 +15,10 @@ See the demo below:
 <info-box>
 	See also the {@link features/restricted-editing restricted editing feature} that lets you define which parts of a document can be editable for a group of users with limited editing rights, leaving the rest of the content non-editable to them.
 </info-box>
+
+## Realeted features
+
+There are more features that control the way the users are accessing the content:
+
+* [Track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) &ndash; User changes are marked and shown in the sidebar for acceptance or deletion.
+* [Comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) &ndash; Users can add comments to any part of the content.
