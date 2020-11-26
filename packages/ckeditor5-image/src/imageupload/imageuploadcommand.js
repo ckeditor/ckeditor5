@@ -6,6 +6,7 @@
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { insertImage, isImageAllowed } from '../image/utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * @module image/imageupload/imageuploadcommand
@@ -63,9 +64,7 @@ export default class ImageUploadCommand extends Command {
 
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		const filesToUpload = Array.isArray( options.file ) ? options.file : [ options.file ];
-
-		for ( const file of filesToUpload ) {
+		for ( const file of toArray( options.file ) ) {
 			uploadImage( model, fileRepository, file );
 		}
 	}

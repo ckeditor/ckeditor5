@@ -5,6 +5,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { insertImage, isImageAllowed } from './utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * @module image/image/imageinsertcommand
@@ -50,9 +51,7 @@ export default class ImageInsertCommand extends Command {
 	execute( options ) {
 		const model = this.editor.model;
 
-		const sources = Array.isArray( options.source ) ? options.source : [ options.source ];
-
-		for ( const src of sources ) {
+		for ( const src of toArray( options.source ) ) {
 			insertImage( model, { src } );
 		}
 	}
