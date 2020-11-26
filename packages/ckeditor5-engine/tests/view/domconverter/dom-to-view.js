@@ -159,7 +159,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should assign $rawContent custom property for view elements registered as raw content elements', () => {
-			converter.registerRawContentElementMatcher( {
+			converter.registerRawContentMatcher( {
 				name: 'div',
 				classes: 'raw-content-container'
 			} );
@@ -678,7 +678,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'not before or after raw content inline element', () => {
-				converter.registerRawContentElementMatcher( {
+				converter.registerRawContentMatcher( {
 					name: 'span'
 				} );
 

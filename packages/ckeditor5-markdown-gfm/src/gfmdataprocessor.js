@@ -80,7 +80,7 @@ export default class GFMDataProcessor {
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
 	 * be treated as a raw data.
 	 */
-	registerRawContentElementMatcher( pattern ) {
-		this._htmlDP.registerRawContentElementMatcher( pattern );
+	registerRawContentMatcher( pattern ) {
+		this._htmlDP.registerRawContentMatcher( pattern );
 	}
 }

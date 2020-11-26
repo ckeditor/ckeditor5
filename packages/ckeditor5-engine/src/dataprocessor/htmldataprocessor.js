@@ -89,8 +89,8 @@ export default class HtmlDataProcessor {
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
 	 * be treated as a raw data.
 	 */
-	registerRawContentElementMatcher( pattern ) {
-		this._domConverter.registerRawContentElementMatcher( pattern );
+	registerRawContentMatcher( pattern ) {
+		this._domConverter.registerRawContentMatcher( pattern );
 	}
 
 	/**

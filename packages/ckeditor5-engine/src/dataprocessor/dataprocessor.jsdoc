@@ -44,7 +44,7 @@
  * and it's content should be converted to {@link module:engine/view/element~Element#getCustomProperty view element custom property}
  * `"$rawContent"` while converting {@link #toView to view}.
  *
- * @method #registerRawContentElementMatcher
+ * @method #registerRawContentMatcher
  * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
  * be treated as plain text.
  */

@@ -115,9 +115,9 @@ describe( 'HtmlDataProcessor', () => {
 		} );
 	} );
 
-	describe( 'registerRawContentElementMatcher()', () => {
+	describe( 'registerRawContentMatcher()', () => {
 		it( 'should handle elements matching to MatcherPattern as elements with raw content', () => {
-			dataProcessor.registerRawContentElementMatcher( { name: 'div', classes: 'raw' } );
+			dataProcessor.registerRawContentMatcher( { name: 'div', classes: 'raw' } );
 
 			const fragment = dataProcessor.toView(
 				'<p>foo</p>' +

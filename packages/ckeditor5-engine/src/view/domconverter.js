@@ -952,7 +952,7 @@ export default class DomConverter {
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching view element which content should
 	 * be treated as a raw data.
 	 */
-	registerRawContentElementMatcher( pattern ) {
+	registerRawContentMatcher( pattern ) {
 		this._rawContentElementMatcher.add( pattern );
 	}
 

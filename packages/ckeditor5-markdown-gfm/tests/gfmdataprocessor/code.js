@@ -313,7 +313,7 @@ describe( 'GFMDataProcessor', () => {
 			);
 		} );
 
-		it( 'should support #registerRawContentElementMatcher()', () => {
+		it( 'should support #registerRawContentMatcher()', () => {
 			const viewFragment = testDataProcessor(
 				[
 					'```raw',
@@ -328,7 +328,7 @@ describe( 'GFMDataProcessor', () => {
 
 				{
 					setup( processor ) {
-						processor.registerRawContentElementMatcher( {
+						processor.registerRawContentMatcher( {
 							name: 'code',
 							classes: 'language-raw'
 						} );
