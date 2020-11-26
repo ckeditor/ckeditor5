@@ -133,7 +133,7 @@ export default class DomConverter {
 		 * Set of encountered raw content DOM nodes. It is used for preventing left trimming of the following text node.
 		 *
 		 * @private
-		 * @type {WeakSet<Node>}
+		 * @type {WeakSet.<Node>}
 		 */
 		this._encounteredRawContentDomNodes = new WeakSet();
 	}
