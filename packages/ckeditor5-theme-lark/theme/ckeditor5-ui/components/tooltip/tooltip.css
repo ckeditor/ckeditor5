@@ -117,3 +117,21 @@
 		}
 	}
 }
+
+.ck[dir="rtl"] .ck.ck-tooltip {
+	&.ck-tooltip_sw {
+		left: 50%;
+		right: auto;
+
+		& .ck-tooltip__text {
+			right: auto;
+			left: calc( -2 * var(--ck-tooltip-arrow-size));
+		}
+
+		& .ck-tooltip__text::after {
+			left: 0;
+			right: auto;
+			transform: translateX( 50% );
+		}
+	}
+}

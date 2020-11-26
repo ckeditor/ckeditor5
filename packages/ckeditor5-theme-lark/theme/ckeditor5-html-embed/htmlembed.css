@@ -92,6 +92,10 @@
 		white-space: pre-wrap;
 		font-size: var(--ck-font-size-base); /* Safari needs this. */
 
+		/* HTML code is direction–agnostic. */
+		text-align: left;
+		direction: ltr;
+
 		&[disabled] {
 			background: hsl(0deg 0% 97%);
 			color: hsl(0deg 0% 56%);
@@ -118,3 +122,17 @@
 	}
 }
 
+.ck-content[dir="rtl"] .ck-widget.raw-html-embed {
+
+	/* The switch mode button wrapper. */
+	& .raw-html-embed__buttons-wrapper {
+		left: var(--ck-spacing-standard);
+		right: auto;
+	}
+
+	/* Label in the upper right corner  */
+	&::before {
+		right: var(--ck-spacing-standard);
+		left: auto;
+	}
+}
