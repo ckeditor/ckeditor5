@@ -9,11 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import { annotate } from 'rough-notation';
-import tippy from 'tippy.js';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/light-border.css';
-import 'tippy.js/animations/shift-away.css';
+import { addButtonIndicator } from '@ckeditor/../../docs/assets/button-indicator.js';
 
 ClassicEditor.builtinPlugins.push( HtmlEmbed );
 ClassicEditor.builtinPlugins.push( CodeBlock );
@@ -169,35 +165,7 @@ ClassicEditor
 			iframeElement.contentWindow.document.close();
 		} );
 
-		const button = document.querySelector( '.ck-toolbar__items > button:nth-of-type(9)' );
-		const annotation = annotate( button, {
-			type: 'highlight',
-			color: '#ddd',
-			animationDuration: 1000
-		} );
-		const tooltip = tippy( button, {
-			content: 'Click this button to create a raw html widget.',
-			theme: 'light-border',
-			inertia: true,
-			duration: 1000,
-			animation: 'shift-away',
-			trigger: 'manual'
-		} );
-
-		window.setTimeout( () => {
-			tooltip.show();
-			annotation.show();
-		}, 1000 );
-
-		button.addEventListener( 'click', () => {
-			annotation.hide();
-		} );
-
-		document.querySelector( '#show-me-action' ).addEventListener( 'click', () => {
-			tooltip.show();
-			annotation.hide();
-			annotation.show();
-		} );
+		addButtonIndicator( 9, 'Click this button to create a raw html widget.', document );
 	} )
 	.catch( err => {
 		console.error( err.stack );

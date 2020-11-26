@@ -22,7 +22,6 @@
     "@ckeditor/ckeditor5-paragraph": "^23.1.0",
     "lodash-es": "^4.17.15",
     "sanitize-html": "^2.1.0",
-    "rough-notation": "^0.5.1",
     "tippy.js": "^6.2.7"
   },
   "engines": {
