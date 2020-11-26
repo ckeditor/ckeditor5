@@ -7,7 +7,7 @@ menu-title: Word and character count
 
 # Word count and character count
 
-The {@link module:word-count/wordcount~WordCount} feature provides a possibility to track the number of words and characters written in the rich-text editor.
+The {@link module:word-count/wordcount~WordCount} feature provides a possibility to track the number of words and characters written in the rich-text editor. It is a feature crucial for writing professionals but also for students and marketers. Keeping track of the document's word count or number of characters helps planning the overall content volume, meeting assignment requirement or keeping within the preset text length goal. The word/character count aids quick assessment of work that was done and needs yet to be done as well as supports the writing process planning and management.
 
 ## Demo
 
@@ -37,6 +37,15 @@ ClassicEditor
 	} )
 	.catch( ... );
 ```
+
+## Related features
+
+There are other productivity-boosting features that you may find helpful:
+
+* {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
+* {@link builds/guides/integration/saving-data#autosave-feature Autosave} &ndash; Never loose you content by accident, stay safe and save.
+* {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
+* {@link features/text-transformation Automatic text transformation} &ndash; The autocorrect feature automatically turns predefined snippets into their improved forms.
 
 ## Configuration
 
