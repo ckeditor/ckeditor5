@@ -190,6 +190,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					jsFiles.push( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.js' ) );
 
 					cssFiles.push( path.join( snippetData.basePath, 'assets', 'snippet-styles.css' ) );
+					cssFiles.push( path.join( snippetData.basePath, 'assets', 'button-indicator.css' ) );
 
 					if ( wasCSSGenerated ) {
 						cssFiles.unshift( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.css' ) );

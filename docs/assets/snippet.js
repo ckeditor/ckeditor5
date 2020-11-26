@@ -122,3 +122,7 @@ window.getViewportTopOffsetConfig = function() {
 
 	return parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
 };
+
+window.selectToolbarButton = function( buttonPosition ) {
+	return document.querySelector( `.ck-editor__top .ck-toolbar .ck-button:nth-of-type( ${ buttonPosition } )` );
+};
