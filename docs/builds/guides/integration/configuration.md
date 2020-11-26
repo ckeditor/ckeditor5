@@ -153,9 +153,9 @@ You can use the extended toolbar configuration format to access additional optio
 
  * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row.
 
-#### Separating buttons
+#### Separating toolbar items
 
-You can use `'|'` to create a separator between groups of items. Works in both config formats:
+You can use `'|'` to create a separator between groups of toolbar items. Works in both config formats:
 
 ```js
     toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
@@ -167,7 +167,7 @@ You can use `'|'` to create a separator between groups of items. Works in both c
     }
 ```
 
-There are also two ways of arranging buttons in multiple lines. Both require the extended format.
+There are also two ways of arranging toolbar items into multiple lines. Both require the extended format.
 
 1. Set `shouldNotGroupWhenFull` to true, so items will not be grouped when the toolbar overflows but will wrap to the new line instead.
 2. Follow 1st point and set the breaking point explicitly using a `'-'` divider:
