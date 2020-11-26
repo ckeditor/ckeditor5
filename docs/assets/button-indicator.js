@@ -8,10 +8,6 @@ export function pinTourBalloon( editor, target, message ) {
 	const balloon = new BalloonPanelView();
 	const messageView = new View();
 	const closeButtonView = new ButtonView();
-	const sonarView = new View();
-	const positions = [
-		'southArrowNorthWest'
-	];
 
 	balloon.listenTo( target, 'mousedown', () => {
 		balloon.unpin();
@@ -44,19 +40,8 @@ export function pinTourBalloon( editor, target, message ) {
 		]
 	} );
 
-	sonarView.setTemplate( {
-		tag: 'div',
-		attributes: {
-			class: [
-				'live-snippet__tour-balloon__sonar'
-			]
-		}
-	} );
-
 	balloon.content.add( messageView );
 	balloon.content.add( closeButtonView );
-	balloon.content.add( sonarView );
-
 	editor.ui.view.body.add( balloon );
 
 	balloon.show();
@@ -73,6 +58,6 @@ export function pinTourBalloon( editor, target, message ) {
 			return rect;
 		},
 		fitInViewport: true,
-		positions: positions.map( position => BalloonPanelView.defaultPositions[ position ] )
+		positions: [ BalloonPanelView.defaultPositions.southArrowNorth ]
 	} );
 }
