@@ -160,28 +160,6 @@ describe( 'CloudServices', () => {
 			await context.destroy();
 		} );
 
-		it( 'should not allow overriding the default token', async () => {
-			CloudServices.Token.initialToken = 'initial-token';
-
-			const context = await Context.create( {
-				plugins: [ CloudServices ],
-				cloudServices: {
-					tokenUrl: 'http://token-endpoint'
-				}
-			} );
-
-			const cloudServicesPlugin = context.plugins.get( CloudServices );
-
-			expect( () => {
-				cloudServicesPlugin.registerTokenUrl( 'http://another-token-endpoint', true );
-			} ).to.throw(
-				CKEditorError,
-				'cloudservices-default-token-override'
-			);
-
-			await context.destroy();
-		} );
-
 		it( 'should return already registered token', async () => {
 			const context = await Context.create( {
 				plugins: [ CloudServices ],

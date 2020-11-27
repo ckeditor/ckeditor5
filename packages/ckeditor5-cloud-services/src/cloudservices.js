@@ -76,7 +76,11 @@ export default class CloudServices extends ContextPlugin {
 			return;
 		}
 
-		return this.registerTokenUrl( this.tokenUrl, true );
+		this.token = new CloudServices.Token( this.tokenUrl );
+
+		this._tokens.set( this.tokenUrl, this.token );
+
+		return this.token.init();
 	}
 
 	/**
@@ -84,10 +88,10 @@ export default class CloudServices extends ContextPlugin {
 	 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
 	 *
 	 * @param {String|Function} tokenUrl The authentication token URL for CKEditor Cloud Services or a callback to the token value promise.
-	 * @param {Boolean} [isDefault=false] Whether this should be a default authentication token provider.
 	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */
-	registerTokenUrl( tokenUrl, isDefault = false ) {
+	registerTokenUrl( tokenUrl ) {
+		// Reuse Token instance in case of multiple features using the same tokenUrl.
 		if ( this._tokens.has( tokenUrl ) ) {
 			return Promise.resolve( this.getTokenFor( tokenUrl ) );
 		}
@@ -95,19 +99,6 @@ export default class CloudServices extends ContextPlugin {
 		const token = new CloudServices.Token( tokenUrl );
 
 		this._tokens.set( tokenUrl, token );
-
-		if ( isDefault ) {
-			if ( this.token ) {
-				/**
-				 * Default token provider can't be replaced.
-				 *
-				 * @error cloudservices-default-token-override
-				 */
-				throw new CKEditorError( 'cloudservices-default-token-override', this );
-			}
-
-			this.token = token;
-		}
 
 		return token.init();
 	}
