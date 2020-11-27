@@ -3,7 +3,7 @@ title: Markdown output
 category: features
 ---
 
-The Markdown plugin allows switching the default CKEditor 5 output from HTML to Markdown formatted text. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} feature it allows for the full Markdown editing experience.
+The {@link module:markdown-gfm/markdown~Markdown} plugin allows switching the default CKEditor 5 output from HTML to Markdown. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} feature, it allows for the full-fledged Markdown WYSIWYG editing experience.
 
 <info-box info>
 	You can learn more about the possible practical applications of Markdown editing with CKEditor 5 in [this dedicated blog post depicting the idea, solutions and a case study](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
@@ -24,7 +24,7 @@ Some other ways to output the edited content include:
 * [Export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
 
-## The output processor
+## The Markdown data processor
 
 The Markdown plugins uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/utils/dataapimixin~DataApi#setData set} or {@link module:core/editor/utils/dataapimixin~DataApi#getData get} data from the editor in the Markdown format:
 
@@ -34,12 +34,14 @@ editor.getData(); // -> 'This is [CKEditor 5](https://ckeditor.com).'
 editor.setData( 'This is **bold**.' );
 ```
 
-The {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} outputs a GFM Markdown syntax. "GFM" stands for "GitHub Flavored Markdown" &mdash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification (although the [CommonMark](https://commonmark.org/) initiative aims to close this gap) and has many dialects, often incompatible with one another.
+The data processor outputs the GFM Markdown syntax. "GFM" stands for "GitHub Flavored Markdown" &mdash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification (although the [CommonMark](https://commonmark.org/) initiative aims to close this gap) and has many dialects, often incompatible with one another.
 
 When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
 
 <info-box info>
-	This feature is experimental. While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552). And please do remember &mdash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
+	This feature is experimental. While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
+
+	And please do remember &mdash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>
 
 ## Installation
