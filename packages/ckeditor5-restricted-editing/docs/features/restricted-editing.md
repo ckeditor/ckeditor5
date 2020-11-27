@@ -31,6 +31,18 @@ Then you can switch to the restricted editing mode to see how the editable and n
 
 {@snippet features/restricted-editing}
 
+## Related features
+
+There are more features that control the way the users are accessing the content:
+
+* {@link features/restricted-editing Restricted editing} &ndash; Define editable areas of the document for users with restricted editing rights.
+* [Track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) &ndash; User changes are marked and shown in the sidebar for acceptance or deletion.
+* [Comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) &ndash; Users can add comments to any part of the content.
+
+<info-box>
+	Read this [CKEditor Ecosystem Blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.
+</info-box>
+
 ## Configuration
 
 It is possible to configure which features should be available in the restricted mode. For instance, the following configuration will not only allow typing and deleting but also bolding text.
