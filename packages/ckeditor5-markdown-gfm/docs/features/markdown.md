@@ -3,7 +3,7 @@ title: Markdown output
 category: features
 ---
 
-The Markdown plugin allows switching the default CKEditor 5 output from HTML to Markdown formatted text. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} features it allows for the full Markdown editing experience.
+The Markdown plugin allows switching the default CKEditor 5 output from HTML to Markdown formatted text. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} feature it allows for the full Markdown editing experience.
 
 <info-box info>
 	You can learn more about the possible practical applications of Markdown editing with CKEditor 5 in [this dedicated blog post depicting the idea, solutions and a case study](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
