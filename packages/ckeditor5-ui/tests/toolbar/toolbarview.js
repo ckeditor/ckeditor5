@@ -119,14 +119,40 @@ describe( 'ToolbarView', () => {
 			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).to.true;
 		} );
 
-		it( 'should include the ck-toolbar_floating class if "shouldGroupWhenFull" and "isFloating" options are on', () => {
-			const viewWithOptions = new ToolbarView( locale, {
+		it( 'should include the ck-toolbar_floating class if "shouldGroupWhenFull" and "isFloating" options are on,' +
+			'but not if any of them is off', () => {
+			let viewWithOptions = new ToolbarView( locale, {
 				shouldGroupWhenFull: true,
 				isFloating: true
 			} );
 			viewWithOptions.render();
 
 			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: false,
+				isFloating: true
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: true,
+				isFloating: false
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: false,
+				isFloating: false
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
 			viewWithOptions.destroy();
 		} );
 

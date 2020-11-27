@@ -183,15 +183,21 @@ export default class ToolbarView extends View {
 			}
 		} );
 
+		const classes = [
+			'ck',
+			'ck-toolbar',
+			bind.to( 'class' ),
+			bind.if( 'isCompact', 'ck-toolbar_compact' )
+		];
+
+		if ( this.options.shouldGroupWhenFull && this.options.isFloating ) {
+			classes.push( 'ck-toolbar_floating' );
+		}
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [
-					'ck',
-					'ck-toolbar',
-					bind.to( 'class' ),
-					bind.if( 'isCompact', 'ck-toolbar_compact' )
-				],
+				class: classes,
 				role: 'toolbar',
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
@@ -217,16 +223,6 @@ export default class ToolbarView extends View {
 		 * @member {module:ui/toolbar/toolbarview~ToolbarBehavior}
 		 */
 		this._behavior = this.options.shouldGroupWhenFull ? new DynamicGrouping( this ) : new StaticLayout( this );
-
-		if ( this.options.shouldGroupWhenFull && this.options.isFloating ) {
-			this.extendTemplate( {
-				attributes: {
-					class: [
-						'ck-toolbar_floating'
-					]
-				}
-			} );
-		}
 	}
 
 	/**
@@ -291,18 +287,22 @@ export default class ToolbarView extends View {
 			} else if ( name == '-' ) {
 				if ( this.options.shouldGroupWhenFull ) {
 					/**
-					 * Toolbar line break will work only when button grouping is disabled in the toolbar config:
+					 * Toolbar line break will work only when button grouping is disabled in the toolbar config.
+					 * To make it happen, set shouldNotGroupWhenFull option to 'true'.
 					 *
-					 * 		Editor.defaultConfig = {
+					 * 		const config = {
 					 * 			toolbar: {
 					 * 				shouldNotGroupWhenFull: true
 					 * 			}
 					 * 		}
 					 *
+					 * 	See {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.
+					 *
 					 * @error line-separator-used-when-button-grouping-enabled
 					 */
-					logWarning( 'line-separator-used-when-button-grouping-enabled' );
+					logWarning( 'line-separator-used-when-button-grouping-enabled', config );
 				}
+
 				return new ToolbarLineBreakView();
 			} else if ( factory.has( name ) ) {
 				return factory.create( name );
@@ -904,7 +904,8 @@ class DynamicGrouping {
 /**
  * When set to `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
  * would normally wrap to the next line when there is not enough space to display them in a single row, for
- * instance, if the parent container of the toolbar is narrow.
+ * instance, if the parent container of the toolbar is narrow. For toolbars in absolutely positioned containers
+ * without width restrictions also {@link module:ui/toolbar/toolbarview~ToolbarOptions#isFloating} option is required to be 'true'.
  *
  * Also see: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
@@ -912,8 +913,11 @@ class DynamicGrouping {
  */
 
 /**
- * To allow declarative toolbar breaks for floating toolbars it should be set to `true`.
- * Works when {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} is also set to `true`.
+ * This option should be enabled for toolbars in absolutely positioned containers without width restrictions
+ * to enable automatic {@link module:ui/toolbar/toolbarview~ToolbarView#items} grouping.
+ * When this option is set to `true`, items will stop wrapping to the next line
+ * and together with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}
+ * this will allow grouping them when there is not enough space in a single row.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#isFloating
  */
