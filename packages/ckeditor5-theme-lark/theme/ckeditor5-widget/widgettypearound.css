@@ -193,6 +193,13 @@
 	}
 }
 
+/* In a RTL environment, the selection handler is aligned to the right side of the widget */
+.ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handle .ck-widget__type-around > .ck-widget__type-around__button_before {
+	margin-left: 0;
+	margin-right: 20px;
+}
+
+
 /*
  * Hide type around buttons when the widget is selected as a child of a selected
  * nested editable (e.g. mulit-cell table selection).

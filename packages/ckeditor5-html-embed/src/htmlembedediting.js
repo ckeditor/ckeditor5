@@ -133,7 +133,8 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				const viewContainer = writer.createContainerElement( 'div', {
 					class: 'raw-html-embed',
-					'data-html-embed-label': t( 'HTML snippet' )
+					'data-html-embed-label': t( 'HTML snippet' ),
+					dir: editor.locale.uiLanguageDirection
 				} );
 				// Widget cannot be a raw element because the widget system would not be able
 				// to add its UI to it. Thus, we need this wrapper.
@@ -252,7 +253,7 @@ export default class HtmlEmbedEditing extends Plugin {
 					sanitizeHtml: props.sanitizeHtml
 				};
 
-				domElement.append( createPreviewContainer( { domDocument, state, props: previewContainerProps } ) );
+				domElement.append( createPreviewContainer( { domDocument, state, props: previewContainerProps, editor } ) );
 			} else {
 				const textareaProps = {
 					isDisabled: true,
@@ -323,9 +324,10 @@ export default class HtmlEmbedEditing extends Plugin {
 			return domTextarea;
 		}
 
-		function createPreviewContainer( { domDocument, state, props } ) {
+		function createPreviewContainer( { domDocument, state, props, editor } ) {
 			const domPreviewContainer = createElement( domDocument, 'div', {
-				class: 'raw-html-embed__preview'
+				class: 'raw-html-embed__preview',
+				dir: editor.locale.contentLanguageDirection
 			} );
 
 			const sanitizeOutput = props.sanitizeHtml( state.getRawHtmlValue() );
@@ -347,7 +349,7 @@ function createDomButton( editor, type ) {
 	const command = editor.commands.get( 'updateHtmlEmbed' );
 
 	buttonView.set( {
-		tooltipPosition: 'sw',
+		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
 		icon: pencilIcon,
 		tooltip: true
 	} );

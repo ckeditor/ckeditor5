@@ -19,11 +19,16 @@
 		outline: var(--ck-html-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border);
 	}
 
-	& .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
-		margin-left: 50px;
+	/* HTML embed widget itself should respect UI language direction */
+	&[dir="ltr"] {
+		text-align: left;
 	}
 
-	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
+	&[dir="rtl"] {
+		text-align: right;
+	}
+
+	/* ----- Embed label in the upper left corner ----------------------------------------------- */
 
 	&::before {
 		content: attr(data-html-embed-label);
@@ -36,6 +41,16 @@
 		color: var(--ck-color-base-background);
 		font-size: var(--ck-font-size-tiny);
 		font-family: var(--ck-font-face);
+	}
+
+	&[dir="rtl"]::before {
+		left: auto;
+		right: var(--ck-spacing-standard);
+	}
+
+	/* Make space for label but it only collides in LTR languages */
+	&[dir="ltr"] .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
+		margin-left: 50px;
 	}
 
 	@nest .ck.ck-editor__editable.ck-blurred &.ck-widget_selected::before {
@@ -76,6 +91,11 @@
 		& .ck-button:not(:first-child) {
 			margin-top: var(--ck-spacing-small);
 		}
+	}
+
+	&[dir="rtl"] .raw-html-embed__buttons-wrapper {
+		left: var(--ck-spacing-standard);
+		right: auto;
 	}
 
 	/* The edit source element. */
@@ -119,20 +139,5 @@
 		@nest .ck-editor__editable:not(.ck-read-only) & {
 			pointer-events: none;
 		}
-	}
-}
-
-.ck-content[dir="rtl"] .ck-widget.raw-html-embed {
-
-	/* The switch mode button wrapper. */
-	& .raw-html-embed__buttons-wrapper {
-		left: var(--ck-spacing-standard);
-		right: auto;
-	}
-
-	/* Label in the upper right corner  */
-	&::before {
-		right: var(--ck-spacing-standard);
-		left: auto;
 	}
 }
