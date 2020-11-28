@@ -225,6 +225,28 @@ describe( 'HtmlEmbedEditing', () => {
 					'</div>'
 				);
 			} );
+
+			it( 'should convert innerHTML (and preserve comments and raw data formatting) of div.raw-html-embed', () => {
+				const rawContent = [
+					'	<!-- foo -->',
+					'	<p>',
+					'		<b>Foo B.</b>',
+					'		<!-- abc -->',
+					'		<i>Foo I.</i>',
+					'	</p>',
+					'	<!-- bar -->'
+				].join( '\n' );
+
+				editor.setData(
+					'<div class="raw-html-embed">' +
+						rawContent +
+					'</div>'
+				);
+
+				const rawHtml = model.document.getRoot().getChild( 0 );
+
+				expect( rawHtml.getAttribute( 'value' ) ).to.equal( rawContent );
+			} );
 		} );
 	} );
 
