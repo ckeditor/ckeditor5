@@ -11,7 +11,18 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	mode: 'development',
-	entry: [ './src/core.js', './src/classiceditor.js', './src/engine.js', './src/utils.js' ],
+	entry: [
+		'./src/core.js',
+		'./src/classiceditor.js',
+		'./src/clipboard.js',
+		'./src/engine.js',
+		'./src/enter.js',
+		'./src/paragraph.js',
+		'./src/typing.js',
+		'./src/ui.js',
+		'./src/undo.js',
+		'./src/utils.js'
+	],
 	optimization: {
 		minimize: false,
 		moduleIds: 'named'

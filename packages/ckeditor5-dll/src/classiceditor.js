@@ -1,1 +1,1 @@
-export { default as ClassicEditor } from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+export { default as ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';

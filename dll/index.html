@@ -138,21 +138,24 @@
 		a superior gunslinger. Nobody spoke as the trooper rode out of town, taking the fallen gunman with him.</p>
 </div>
 <script src="../packages/ckeditor5-dll/build/ckeditor5-dll.js"></script>
+<script src="../packages/ckeditor5-dll-classic/build/dll-classic.js"></script>
 <script src="../packages/ckeditor5-mah-plugin/build/mahplugin.js"></script>
 
 <script></script>
 
 <script>
 	// Sudo import.
-	const {
-		ClassicEditor
-	} = window.CKEditor5_DLL( './src/classiceditor.js' );
+	// const {
+	// 	Bold
+	// } = window.CKEditor5_DLL( './src/bold.js' );
 
 	const config = Object.assign( {}, ClassicEditor.defaultConfig, {
 		extraPlugins: [
 			MahPlugin // exposed by the app.js
 		]
 	} );
+
+	// From UMD - DLL backed build.
 	ClassicEditor.create( document.querySelector( '#editor' ), config )
 		.then( editor => {
 			window.editor = editor;

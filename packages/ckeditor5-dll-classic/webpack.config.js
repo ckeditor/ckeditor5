@@ -10,14 +10,15 @@ const webpack = require( 'webpack' );
 
 module.exports = {
 	mode: 'development',
+	entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
 	optimization: {
 		minimize: false,
 		moduleIds: 'named'
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
-		filename: 'mahplugin.js',
-		library: 'MahPlugin',
+		filename: 'dll-classic.js',
+		library: 'ClassicEditor',
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},
@@ -29,10 +30,6 @@ module.exports = {
 		}
 	},
 	plugins: [
-		// new webpack.NormalModuleReplacementPlugin(
-		// 	/^core$/,
-		// 	'@ckeditor/ckeditor5-core/core/index'
-		// ),
 		new webpack.DllReferencePlugin( {
 			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
 			scope: '@ckeditor/ckeditor5-core'
@@ -40,6 +37,10 @@ module.exports = {
 		new webpack.DllReferencePlugin( {
 			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
 			scope: '@ckeditor/ckeditor5-utils'
+		} ),
+		new webpack.DllReferencePlugin( {
+			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
+			scope: '@ckeditor/ckeditor5-dll'
 		} )
 	]
 };

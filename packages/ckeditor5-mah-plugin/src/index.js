@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-dll/core';
-import { logWarning } from '@ckeditor/ckeditor5-dll/utils';
+import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { logWarning } from '@ckeditor/ckeditor5-utils/utils';
 
 class MahPlugin extends Plugin {
 	afterInit() {
+		// eslint-disable-next-line no-undef
+		console.log( 'MahPlugin works!' );
 		logWarning( 'foo-bar' );
 	}
 }
