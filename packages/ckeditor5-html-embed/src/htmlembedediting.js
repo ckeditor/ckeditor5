@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
@@ -94,8 +92,13 @@ export default class HtmlEmbedEditing extends Plugin {
 		const view = editor.editing.view;
 
 		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
-		const upcastWriter = new UpcastWriter( view.document );
-		const htmlProcessor = new HtmlDataProcessor( view.document );
+
+		// Register div.raw-html-embed as a raw content element so all of it's content will be provided
+		// as a view element's custom property while data upcasting.
+		editor.data.processor.registerRawContentMatcher( {
+			name: 'div',
+			classes: 'raw-html-embed'
+		} );
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: {
@@ -103,13 +106,10 @@ export default class HtmlEmbedEditing extends Plugin {
 				classes: 'raw-html-embed'
 			},
 			model: ( viewElement, { writer } ) => {
-				// Note: The below line has a side-effect – the children are *moved* to the DF so
-				// viewElement becomes empty. It's fine here.
-				const fragment = upcastWriter.createDocumentFragment( viewElement.getChildren() );
-				const innerHtml = htmlProcessor.toData( fragment );
-
+				// The div.raw-html-embed is registered as a raw content element,
+				// so all it's content is available in a custom property.
 				return writer.createElement( 'rawHtml', {
-					value: innerHtml
+					value: viewElement.getCustomProperty( '$rawContent' )
 				} );
 			}
 		} );
@@ -133,7 +133,8 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				const viewContainer = writer.createContainerElement( 'div', {
 					class: 'raw-html-embed',
-					'data-html-embed-label': t( 'HTML snippet' )
+					'data-html-embed-label': t( 'HTML snippet' ),
+					dir: editor.locale.uiLanguageDirection
 				} );
 				// Widget cannot be a raw element because the widget system would not be able
 				// to add its UI to it. Thus, we need this wrapper.
@@ -252,7 +253,7 @@ export default class HtmlEmbedEditing extends Plugin {
 					sanitizeHtml: props.sanitizeHtml
 				};
 
-				domElement.append( createPreviewContainer( { domDocument, state, props: previewContainerProps } ) );
+				domElement.append( createPreviewContainer( { domDocument, state, props: previewContainerProps, editor } ) );
 			} else {
 				const textareaProps = {
 					isDisabled: true,
@@ -323,9 +324,10 @@ export default class HtmlEmbedEditing extends Plugin {
 			return domTextarea;
 		}
 
-		function createPreviewContainer( { domDocument, state, props } ) {
+		function createPreviewContainer( { domDocument, state, props, editor } ) {
 			const domPreviewContainer = createElement( domDocument, 'div', {
-				class: 'raw-html-embed__preview'
+				class: 'raw-html-embed__preview',
+				dir: editor.locale.contentLanguageDirection
 			} );
 
 			const sanitizeOutput = props.sanitizeHtml( state.getRawHtmlValue() );
@@ -347,7 +349,7 @@ function createDomButton( editor, type ) {
 	const command = editor.commands.get( 'updateHtmlEmbed' );
 
 	buttonView.set( {
-		tooltipPosition: 'sw',
+		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
 		icon: pencilIcon,
 		tooltip: true
 	} );
