@@ -1,1 +1,1 @@
-!function(n){const i=n.oc=n.oc||{};i.dictionary=Object.assign(i.dictionary||{},{Bold:"Gras",Cancel:"Anullar",Italic:"Italica",Save:"Enregistrar",Underline:""}),i.getPluralForm=function(n){return n>1}}(window.CKEDITOR_TRANSLATIONS||(window.CKEDITOR_TRANSLATIONS={}));
+!function(n){const o=n.oc=n.oc||{};o.dictionary=Object.assign(o.dictionary||{},{Bold:"Gras",Cancel:"Anullar",Italic:"Italica","Remove color":"",Save:"Enregistrar",Underline:""}),o.getPluralForm=function(n){return n>1}}(window.CKEDITOR_TRANSLATIONS||(window.CKEDITOR_TRANSLATIONS={}));

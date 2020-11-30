@@ -24,8 +24,15 @@ import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specia
 import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
 export default class ClassicEditor extends ClassicEditorBase {}
@@ -50,8 +57,14 @@ ClassicEditor.builtinPlugins = [
 	SpecialCharactersCurrency,
 	Table,
 	TableToolbar,
+	TableProperties,
+	TableCellProperties,
 	Image,
 	ImageInsert,
+	ImageToolbar,
+	ImageStyle,
+	ImageResize,
+	LinkImage,
 	SimpleUploadAdapter
 ];
 
@@ -84,7 +97,7 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	table: {
-        contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells']
+        contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
     },
     simpleUpload: {
         uploadUrl: '/ckeditor/upload',
@@ -92,5 +105,41 @@ ClassicEditor.defaultConfig = {
             'X-CSRF-TOKEN': 'CSRF-Token'
         }
     },
+    image: {
+    	styles: [
+            'alignLeft', 'alignCenter', 'alignRight'
+        ],
+        resizeOptions: [
+            {
+                name: 'imageResize:original',
+                label: 'Original',
+                value: null
+            },
+            {
+                name: 'imageResize:25',
+                label: '25%',
+                value: '25'
+            },
+            {
+                name: 'imageResize:50',
+                label: '50%',
+                value: '50'
+            },
+            {
+                name: 'imageResize:75',
+                label: '75%',
+                value: '75'
+            }
+        ],
+        toolbar: [
+            'imageStyle:alignLeft',
+            'imageStyle:alignCenter',
+            'imageStyle:alignRight',
+            '|',
+            'imageResize',
+            '|',
+            'linkImage'
+        ]
+	},
 	language: 'en'
 };
