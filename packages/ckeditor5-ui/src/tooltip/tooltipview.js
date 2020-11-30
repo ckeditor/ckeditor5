@@ -32,7 +32,7 @@ export default class TooltipView extends View {
 		this.set( 'text', '' );
 
 		/**
-		 * The position of the tooltip (south, south-west, or north).
+		 * The position of the tooltip (south, south-west, south-east, or north).
 		 *
 		 *		+-----------+
 		 *		|   north   |
@@ -52,9 +52,15 @@ export default class TooltipView extends View {
 		 *		|  south west  |
 		 *		+--------------+
 		 *
+		 *	  [element]
+		 *		  ^
+		 *		+--------------+
+		 *		|  south east  |
+		 *		+--------------+
+		 *
 		 * @observable
 		 * @default 's'
-		 * @member {'s'|'sw'|'n'} #position
+		 * @member {'s'|'sw'|'se'|'n'} #position
 		 */
 		this.set( 'position', 's' );
 

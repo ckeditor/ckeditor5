@@ -58,7 +58,8 @@
 	 *     +-----------+
 	 */
 	&.ck-tooltip_s,
-	&.ck-tooltip_sw {
+	&.ck-tooltip_sw,
+	&.ck-tooltip_se {
 		bottom: calc(-1 * var(--ck-tooltip-arrow-size));
 		transform: translateY( 100% );
 
@@ -93,6 +94,31 @@
 		& .ck-tooltip__text::after {
 			left: auto;
 			right: 0;
+		}
+	}
+
+	/**
+	 * A class that displays the tooltip south-east of the element.
+	 *
+	 *  [element]
+	 *      ^
+	 *    +-----------+
+	 *    |  Tooltip  |
+	 *    +-----------+
+	 */
+	&.ck-tooltip_se {
+		left: 50%;
+		right: auto;
+
+		& .ck-tooltip__text {
+			right: auto;
+			left: calc( -2 * var(--ck-tooltip-arrow-size));
+		}
+
+		& .ck-tooltip__text::after {
+			right: auto;
+			left: 0;
+			transform: translateX( 50% );
 		}
 	}
 

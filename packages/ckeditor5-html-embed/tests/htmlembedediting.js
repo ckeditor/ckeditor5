@@ -514,6 +514,26 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( getModelData( model ) ).to.equal( '<rawHtml value="foo"></rawHtml>[<rawHtml value="bar"></rawHtml>]' );
 			} );
 
+			describe( 'different setting of ui language', () => {
+				it( 'the widget should have the dir attribute for LTR language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				} );
+
+				it( 'the widget should have the dir attribute for RTL language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+				} );
+			} );
+
 			describe( 'rawHtmlApi.makeEditable()', () => {
 				it( 'makes the textarea editable', () => {
 					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
@@ -645,6 +665,63 @@ describe( 'HtmlEmbedEditing', () => {
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
 				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'bar' );
+			} );
+
+			describe( 'different setting of ui and content language', () => {
+				it( 'the widget and preview should have the dir attribute for LTR language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'ltr' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				} );
+
+				it( 'the widget and preview should have the dir attribute for RTL language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'rtl' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+				} );
+
+				it( 'the widget should have the dir attribute for LTR language, but preview for RTL', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'rtl' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+				} );
+
+				it( 'the widget should have the dir attribute for RTL language, butPreview for LTR', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'ltr' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				} );
+
+				function getDomPreview( widget ) {
+					const contentWrapper = widget.getChild( 1 );
+					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+					return domContentWrapper.querySelector( 'div.raw-html-embed__preview' );
+				}
 			} );
 		} );
 	} );
