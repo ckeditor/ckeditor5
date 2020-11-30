@@ -349,7 +349,7 @@ function createDomButton( editor, type ) {
 	const command = editor.commands.get( 'updateHtmlEmbed' );
 
 	buttonView.set( {
-		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
+		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w',
 		icon: pencilIcon,
 		tooltip: true
 	} );
