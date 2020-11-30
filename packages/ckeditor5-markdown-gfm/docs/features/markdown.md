@@ -84,8 +84,8 @@ ClassicEditor
 ```
 
 ## Known issues
-* The feature does not support adding horizontal rules currently, therefore any horizontal line swill be stripped in the output. See this GitHub issue for possible future development: [#5720](https://github.com/ckeditor/ckeditor5/issues/5720).
 * Pasting Markdown-formatted content will not automatically convert the pasted syntax markers into properly formatted content currently. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+* The horizontal rule is not supported by the {@link features/autoformat autoformatting} but it does get output if inserted via WYSIWYG interface.
 
 <info-box info>
 	Please bear in mind that the Markdown output processor will not produce any rich-text content. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting.
