@@ -9,6 +9,7 @@
 :root {
 	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
 	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-spacing-medium);
+	--ck-color-labeled-field-label-background: var(--ck-color-base-background);
 }
 
 .ck.ck-labeled-field-view {
@@ -34,7 +35,7 @@
 			/* By default, display the label scaled down above the field. */
 			transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
 
-			background: var(--ck-color-base-background);
+			background: var(--ck-color-labeled-field-label-background);
 			padding: 0 calc(.5 * var(--ck-font-size-tiny));
 			line-height: initial;
 			font-weight: normal;
