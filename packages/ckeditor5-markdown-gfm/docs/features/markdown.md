@@ -5,6 +5,8 @@ category: features
 
 The {@link module:markdown-gfm/markdown~Markdown} plugin allows switching the default CKEditor 5 output from HTML to Markdown. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} feature, it allows for the full-fledged Markdown WYSIWYG editing experience.
 
+Please remember that Markdown syntax is very simple and therefore this plugin does not support rich-text output, even if the formatting maybe applied to the content.
+
 <info-box info>
 	You can learn more about the possible practical applications of Markdown editing with CKEditor 5 in [this dedicated blog post depicting the idea, solutions and a case study](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
 </info-box>
@@ -82,8 +84,15 @@ ClassicEditor
 ```
 
 ## Known issues
-* The Markdown output strips any page break markers. These are not supported by Markdown and therefore cannot be reproduced.
+* The feature does not support adding horizontal rules currently, therefore any horizontal line swill be stripped in the output. See this GitHub issue for possible future development: [#5720](https://github.com/ckeditor/ckeditor5/issues/5720).
 * Pasting Markdown-formatted content will not automatically convert the pasted syntax markers into properly formatted content currently. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+
+<info-box info>
+	Please bear in mind that the Markdown output processor will not produce any rich-text content. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting.
+
+	This means than advanced formatting, like list styles, tables or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be reproduced. This is not a bug.
+</info-box>
+
 
 ## Contribute
 
