@@ -132,6 +132,9 @@ The file containing custom variables will be named `custom.css` and it will look
 	--ck-color-input-disabled-background: hsl(255, 4%, 21%);
 	--ck-color-input-disabled-border: hsl(250, 3%, 38%);
 	--ck-color-input-disabled-text: hsl(0, 0%, 78%);
+
+	/* -- Overrides the default .ck-labeled-field-view class colors. ---------------------------- */
+
 	--ck-color-labeled-field-label-background: var(--ck-custom-background);
 
 	/* -- Overrides the default .ck-list class colors. ------------------------------------------ */
