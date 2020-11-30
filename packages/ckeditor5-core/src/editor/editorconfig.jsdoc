@@ -171,7 +171,7 @@
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
  * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set `true`, the toolbar will stop grouping items
- * and let them wrap to the next line when there is not enough space to display them in a single row.
+ * and let them wrap to the next line if there is not enough space to display them in a single row.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
  */
