@@ -15,6 +15,8 @@
     "directory": "packages/ckeditor5-dll"
   },
   "scripts": {
-    "build:dll": "webpack --config=webpack.config.dll.js"
+    "build:dll": "webpack --config=webpack.config.dll.js",
+    "build:dll-sample": "webpack --config=sample/plugin/webpack.config.js",
+    "build": "yarn run build:dll && yarn run build:dll-sample"
   }
 }

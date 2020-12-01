@@ -137,25 +137,29 @@
 	<p>Folks gathered around the body, as it was lying lifelessly in the dust. Kansas Ted made his one final mistake when he tried to match
 		a superior gunslinger. Nobody spoke as the trooper rode out of town, taking the fallen gunman with him.</p>
 </div>
+
+<!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
 <script src="../build/ckeditor5-dll.js"></script>
+
+<!-- This is a stripped-down ClassicEditor with Essentials plugins loaded from a DLL, exposed as ClassicEditor -->
 <script src="../../ckeditor5-dll-classic/build/dll-classic.js"></script>
+
+<!-- Finally, this is a end-user plugin that uses DLL -->
 <script src="../build/dll-consumer-plugin.js"></script>
 
-<script></script>
-
 <script>
-	// Sudo import.
-	// const {
-	// 	Bold
-	// } = window.CKEditor5_DLL( './src/bold.js' );
-
 	const config = Object.assign( {}, ClassicEditor.defaultConfig, {
 		extraPlugins: [
 			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
+		],
+		toolbar: [
+			'a-button',
+			'undo',
+			'redo'
 		]
 	} );
 
-	// From UMD - DLL backed build.
+	// Exposed by the ckeditor5-dll-classic:
 	ClassicEditor.create( document.querySelector( '#editor' ), config )
 		.then( editor => {
 			window.editor = editor;
