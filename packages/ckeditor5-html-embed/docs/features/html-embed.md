@@ -43,7 +43,7 @@ CKEditor 5 supports a wider range of embed and code features, including:
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-html-embed
 ```
 

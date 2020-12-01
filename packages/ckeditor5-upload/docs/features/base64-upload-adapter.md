@@ -24,7 +24,7 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-upload
 ```
 

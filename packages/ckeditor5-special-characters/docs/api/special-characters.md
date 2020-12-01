@@ -18,7 +18,7 @@ See the {@link features/special-characters Special characters feature} guide and
 
 ## Installation
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-special-characters
 ```
 

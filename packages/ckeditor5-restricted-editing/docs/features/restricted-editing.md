@@ -71,7 +71,7 @@ class MyPlugin extends Plugin {
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-restricted-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-restricted-editing
 ```
 
