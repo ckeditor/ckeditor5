@@ -3,10 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+:root {
+	--ck-toolbar-dropdown-max-width: 60vw;
+}
+
 .ck.ck-toolbar-dropdown {
 	& .ck-dropdown__panel {
 		width: max-content;
-		max-width: 60vw;
+		max-width: var(--ck-toolbar-dropdown-max-width);
 
 		& .ck-button {
 			&:focus {
