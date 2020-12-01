@@ -175,11 +175,12 @@
 	 *    +----------+
 	 */
 	&.ck-tooltip_w {
-		left: calc(-1 * var(--ck-tooltip-arrow-size));
+		right: calc(100% + var(--ck-tooltip-arrow-size));
+		left: auto;
 		top: 50%;
 
 		& .ck-tooltip__text {
-			left: -100%;
+			left: 0;
 			transform: translateY( -50% );
 
 			&::after {
