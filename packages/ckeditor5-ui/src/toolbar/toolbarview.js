@@ -287,20 +287,20 @@ export default class ToolbarView extends View {
 			} else if ( name == '-' ) {
 				if ( this.options.shouldGroupWhenFull ) {
 					/**
-					 * Toolbar line break will work only when button grouping is disabled in the toolbar config.
-					 * To make it happen, set shouldNotGroupWhenFull option to 'true'.
+					 * Toolbar line breaks can only work the when the automatic button grouping is disabled in the toolbar configuration.
+					 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
 					 *
-					 * 		const config = {
-					 * 			toolbar: {
-					 * 				shouldNotGroupWhenFull: true
-					 * 			}
-					 * 		}
+					 *		const config = {
+					 *			toolbar: {
+					 *				shouldNotGroupWhenFull: true
+					 *			}
+					 *		}
 					 *
-					 * 	See {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.
+					 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
 					 *
-					 * @error line-separator-used-when-button-grouping-enabled
+					 * @error toolbarview-line-break-ignored-when-grouping-items
 					 */
-					logWarning( 'line-separator-used-when-button-grouping-enabled', config );
+					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', config );
 				}
 
 				return new ToolbarLineBreakView();

@@ -473,7 +473,7 @@ describe( 'ToolbarView', () => {
 
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
-				sinon.match( /^line-separator-used-when-button-grouping-enabled/ ),
+				sinon.match( /^toolbarview-line-break-ignored-when-grouping-items/ ),
 				sinon.match.string
 			);
 		} );
