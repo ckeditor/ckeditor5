@@ -22,7 +22,6 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
@@ -34,12 +33,8 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
@@ -74,14 +69,9 @@ DecoupledEditor.builtinPlugins = [
 	Link,
 	List,
 	ListStyle,
-	HorizontalLine,
 	MediaEmbed,
 	Paragraph,
-	PageBreak,
 	PasteFromOffice,
-	RemoveFormat,
-	SpecialCharacters,
-	SpecialCharactersEssentials,
 	Table,
 	TableToolbar,
 	TextTransformation
@@ -103,34 +93,23 @@ DecoupledEditor.defaultConfig = {
 			'underline',
 			'strikethrough',
 			'|',
-			'link',
-			'blockquote',
-			'|',
-			'undo',
-			'redo',
-			'-',
-			'alignment:left',
-			'alignment:right',
-			'alignment:center',
-			'alignment:justify',
+			'alignment',
 			'|',
 			'numberedList',
 			'bulletedList',
+			'|',
 			'indent',
 			'outdent',
 			'|',
+			'link',
+			'blockquote',
 			'imageUpload',
 			'insertTable',
 			'mediaEmbed',
-			'specialCharacters',
 			'|',
-			'pageBreak',
-			'horizontalLine',
-			'|',
-			'removeformat'
-		],
-
-		shouldNotGroupWhenFull: true
+			'undo',
+			'redo'
+		]
 	},
 	image: {
 		styles: [
