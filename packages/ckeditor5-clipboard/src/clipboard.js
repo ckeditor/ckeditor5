@@ -123,7 +123,7 @@ export default class Clipboard extends Plugin {
 					if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
 						// Formatting attributes should be preserved.
 						const textAttributes = Array.from( selection.getAttributes() )
-							.filter( ( [ key ] ) => editor.model.schema.getAttributeProperties( key ).isFormatting );
+							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
 
 						if ( !selection.isCollapsed ) {
 							model.deleteContent( selection, { doNotAutoparagraph: true } );
