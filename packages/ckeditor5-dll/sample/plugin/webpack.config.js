@@ -14,16 +14,19 @@ module.exports = {
 		minimize: false,
 		moduleIds: 'named'
 	},
+	entry: {
+		path: path.resolve( __dirname, 'src/dllconsumerplugin.js' )
+	},
 	output: {
-		path: path.resolve( __dirname, 'build' ),
-		filename: 'mahplugin.js',
-		library: 'MahPlugin',
+		path: path.resolve( __dirname, '../../build' ),
+		filename: 'dll-consumer-plugin.js',
+		library: 'DLLConsumerPlugin',
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},
 	plugins: [
 		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
+			manifest: require( '../../build/ckeditor5-dll.manifest.json' ),
 			scope: '@ckeditor/ckeditor5-dll'
 		} )
 	]

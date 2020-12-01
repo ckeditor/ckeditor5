@@ -137,9 +137,9 @@
 	<p>Folks gathered around the body, as it was lying lifelessly in the dust. Kansas Ted made his one final mistake when he tried to match
 		a superior gunslinger. Nobody spoke as the trooper rode out of town, taking the fallen gunman with him.</p>
 </div>
-<script src="../packages/ckeditor5-dll/build/ckeditor5-dll.js"></script>
-<script src="../packages/ckeditor5-dll-classic/build/dll-classic.js"></script>
-<script src="../packages/ckeditor5-mah-plugin/build/mahplugin.js"></script>
+<script src="../build/ckeditor5-dll.js"></script>
+<script src="../../ckeditor5-dll-classic/build/dll-classic.js"></script>
+<script src="../build/dll-consumer-plugin.js"></script>
 
 <script></script>
 
@@ -151,7 +151,7 @@
 
 	const config = Object.assign( {}, ClassicEditor.defaultConfig, {
 		extraPlugins: [
-			MahPlugin // exposed by the app.js
+			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
 		]
 	} );
 
