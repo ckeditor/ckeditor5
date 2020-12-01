@@ -61,7 +61,7 @@ export default class UndoUI extends Plugin {
 
 			this.listenTo( view, 'execute', () => {
 				editor.execute( name );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

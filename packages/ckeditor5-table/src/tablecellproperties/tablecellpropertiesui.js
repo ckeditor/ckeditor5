@@ -292,6 +292,9 @@ export default class TableCellPropertiesUI extends Plugin {
 	_showView() {
 		const editor = this.editor;
 
+		// Update the view with the model values.
+		this._fillViewFormFromCommandValues();
+
 		this._balloon.add( {
 			view: this.view,
 			position: getBalloonCellPositionData( editor )
@@ -299,9 +302,6 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		// Create a new batch. Clicking "Cancel" will undo this batch.
 		this._undoStepBatch = editor.model.createBatch();
-
-		// Update the view with the model values.
-		this._fillViewFormFromCommandValues();
 
 		// Basic a11y.
 		this.view.focus();
@@ -329,7 +329,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		// Make sure the focus is not lost in the process by putting it directly
 		// into the editing view.
-		this.editor.focus();
+		this.editor.editing.view.focus();
 	}
 
 	/**

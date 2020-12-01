@@ -58,7 +58,7 @@
  *
  * @observable
  * @default 's'
- * @member {'s'|'n'} #tooltipPosition
+ * @member {'s'|'n'|'e'|'w'|'sw'|'se'} #tooltipPosition
  */
 
 /**

@@ -45,7 +45,7 @@ export default class BlockQuoteUI extends Plugin {
 			// Execute command.
 			this.listenTo( buttonView, 'execute', () => {
 				editor.execute( 'blockQuote' );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return buttonView;

@@ -149,6 +149,14 @@ describe( 'table properties', () => {
 							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Dashed' );
 						} );
 
+						it( 'should bind #isEmpty to #borderStyle property', () => {
+							view.borderStyle = 'dotted';
+							expect( labeledDropdown.isEmpty ).to.be.false;
+
+							view.borderStyle = null;
+							expect( labeledDropdown.isEmpty ).to.be.true;
+						} );
+
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( '' );
@@ -285,7 +293,11 @@ describe( 'table properties', () => {
 						const row = view.element.childNodes[ 2 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( view.backgroundInput.element );
+						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Background' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.backgroundInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -297,7 +309,7 @@ describe( 'table properties', () => {
 
 						it( 'should be created', () => {
 							expect( labeledInput.fieldView ).to.be.instanceOf( ColorInputView );
-							expect( labeledInput.label ).to.equal( 'Background' );
+							expect( labeledInput.label ).to.equal( 'Color' );
 							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__background' );
 						} );
 

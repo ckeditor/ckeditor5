@@ -18,6 +18,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageStyle from '../../src/imagestyle';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -443,6 +444,32 @@ describe( 'ImageResizeHandles', () => {
 			resizerMouseSimulator.up( editor, domResizeHandle );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+	} );
+
+	describe( 'HTML embed integration', () => {
+		it( 'does not attach the resizer to the image inside the HTML embed preview', async () => {
+			editor = await createEditor( {
+				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, HtmlEmbedEditing ],
+				htmlEmbed: {
+					showPreviews: true,
+					sanitizeHtml: input => ( { html: input, hasChanged: false } )
+				}
+			} );
+
+			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+
+			setData( editor.model, '[<rawHtml></rawHtml>]' );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'value', `<img src="${ IMAGE_SRC_FIXTURE }">`, editor.model.document.getRoot().getChild( 0 ) );
+			} );
+
+			await waitForAllImagesLoaded( editor );
+
+			expect( attachToSpy ).not.called;
+
+			attachToSpy.restore();
 		} );
 	} );
 

@@ -141,6 +141,7 @@ export default class TablePropertiesView extends View {
 		this.options = options;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
+		const { backgroundRowLabel, backgroundInput } = this._createBackgroundFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { alignmentToolbar, alignmentLabel } = this._createAlignmentFields();
 
@@ -198,7 +199,7 @@ export default class TablePropertiesView extends View {
 		 * @readonly
 		 * @member {module:table/ui/colorinputview~ColorInputView}
 		 */
-		this.backgroundInput = this._createBackgroundField();
+		this.backgroundInput = backgroundInput;
 
 		/**
 		 * An input that allows specifying the table width.
@@ -218,7 +219,6 @@ export default class TablePropertiesView extends View {
 
 		/**
 		 * A toolbar with buttons that allow changing the alignment of an entire table.
-		 *
 		 * @readonly
 		 * @member {module:ui/toolbar/toolbar~ToolbarView}
 		 */
@@ -291,9 +291,12 @@ export default class TablePropertiesView extends View {
 
 		// Background row.
 		this.children.add( new FormRowView( locale, {
+			labelView: backgroundRowLabel,
 			children: [
-				this.backgroundInput
-			]
+				backgroundRowLabel,
+				backgroundInput
+			],
+			class: 'ck-table-form__background-row'
 		} ) );
 
 		this.children.add( new FormRowView( locale, {
@@ -433,6 +436,8 @@ export default class TablePropertiesView extends View {
 			this.borderStyle = evt.source._borderStyleValue;
 		} );
 
+		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
+
 		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
 
 		// -- Width ---------------------------------------------------
@@ -489,20 +494,28 @@ export default class TablePropertiesView extends View {
 	 * * {@link #backgroundInput}.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+	 * @returns {Object.<String,module:ui/view~View>}
 	 */
-	_createBackgroundField() {
+	_createBackgroundFields() {
+		const locale = this.locale;
+		const t = this.t;
+
+		// -- Group label ---------------------------------------------
+
+		const backgroundRowLabel = new LabelView( locale );
+		backgroundRowLabel.text = t( 'Background' );
+
+		// -- Background color input -----------------------------------
+
 		const backgroundInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
 			columns: 5
 		} );
-		const locale = this.locale;
-		const t = this.t;
 
 		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );
 
 		backgroundInput.set( {
-			label: t( 'Background' ),
+			label: t( 'Color' ),
 			class: 'ck-table-properties-form__background'
 		} );
 
@@ -511,7 +524,10 @@ export default class TablePropertiesView extends View {
 			this.backgroundColor = backgroundInput.fieldView.value;
 		} );
 
-		return backgroundInput;
+		return {
+			backgroundRowLabel,
+			backgroundInput
+		};
 	}
 
 	/**

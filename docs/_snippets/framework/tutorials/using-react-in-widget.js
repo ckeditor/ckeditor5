@@ -12,7 +12,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // The official <CKEditor> component for React.
-import CKEditor from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // The base editor class and features required to run the editor.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';

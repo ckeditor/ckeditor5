@@ -141,7 +141,7 @@ Below, you can see a demo based on the example shown above. After clicking the s
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-special-characters`](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-special-characters
 ```
 

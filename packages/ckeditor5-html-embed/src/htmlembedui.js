@@ -38,7 +38,7 @@ export default class HtmlEmbedUI extends Plugin {
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'insertHtmlEmbed' );
-				editor.focus();
+				editor.editing.view.focus();
 
 				const widgetWrapper = editor.editing.view.document.selection.getSelectedElement();
 

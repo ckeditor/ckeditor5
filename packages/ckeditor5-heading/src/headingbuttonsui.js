@@ -94,7 +94,7 @@ export default class HeadingButtonsUI extends Plugin {
 
 			view.on( 'execute', () => {
 				editor.execute( 'heading', { value: option.model } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			return view;

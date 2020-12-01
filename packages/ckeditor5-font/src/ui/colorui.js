@@ -126,7 +126,7 @@ export default class ColorUI extends Plugin {
 
 			dropdownView.on( 'execute', ( evt, data ) => {
 				editor.execute( this.commandName, data );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {

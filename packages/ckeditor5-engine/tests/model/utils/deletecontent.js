@@ -293,6 +293,18 @@ describe( 'DataController utils', () => {
 				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
 			);
 
+			test(
+				'should not merge if the end position of the selection is directly in a common ancestor',
+				'<paragraph><pchild>[foo</pchild>]<widget></widget></paragraph>',
+				'<paragraph><pchild>[]</pchild><widget></widget></paragraph>'
+			);
+
+			test(
+				'should not merge if the start position of the selection is directly in a common ancestor',
+				'<paragraph><widget></widget>[<pchild>foo]</pchild></paragraph>',
+				'<paragraph><widget></widget>[]<pchild></pchild></paragraph>'
+			);
+
 			// Note: in all these cases we ignore the direction of merge.
 			// If https://github.com/ckeditor/ckeditor5-engine/issues/470 was fixed we could differently treat
 			// forward and backward delete.

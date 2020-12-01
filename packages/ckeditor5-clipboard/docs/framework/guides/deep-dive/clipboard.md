@@ -68,7 +68,7 @@ The default action is to {@link module:engine/model/model~Model#insertContent in
 At this stage the pasted content can be processed by the features. For example, a feature that wants to transform the pasted text into a link can be implemented in this way:
 
 ```js
-const writer = new UpcastWriter();
+const writer = new UpcastWriter( editor.editing.view.document );
 
 editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
 	if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
