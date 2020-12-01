@@ -474,7 +474,8 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-line-break-ignored-when-grouping-items/ ),
-				sinon.match.string
+				sinon.match.array,
+				sinon.match.string // Link to the documentation.
 			);
 		} );
 	} );
