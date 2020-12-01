@@ -547,7 +547,7 @@ The image linking feature is not enabled by default in any of the editor builds.
 
 To add image features to your rich-text editor, install the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-image @ckeditor/ckeditor5-link
 ```
 

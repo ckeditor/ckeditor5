@@ -27,7 +27,7 @@ Here are some useful CKEditor 5 features that you can use together with the page
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-page-break`](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-page-break
 ```
 

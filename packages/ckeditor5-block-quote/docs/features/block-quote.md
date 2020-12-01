@@ -26,7 +26,7 @@ Here are some other CKEditor 5 features that you can use similarly to the block 
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-block-quote`](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-block-quote
 ```
 

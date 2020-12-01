@@ -30,7 +30,7 @@ Besides the above mentioned core functionalities, this package implements the fo
 
 ## Installation
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-widget
 ```
 
