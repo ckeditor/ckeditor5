@@ -233,16 +233,44 @@ function renderButton() {
 
 	ui.buttonTooltip.add( toolbar( [
 		button( {
-			label: 'This button has a tooltip (south)',
+			label: 'This button has a tooltip when hovered (south)',
 			withText: true,
 			tooltip: 'The content of the tooltip'
 		} ),
 		button( {
-			label: 'This one too – north',
+			label: 'North',
 			withText: true,
 			keystroke: 'Ctrl+N',
 			tooltip: true,
 			tooltipPosition: 'n'
+		} ),
+		button( {
+			label: 'West',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'w'
+		} ),
+		button( {
+			label: 'East',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'e'
+		} ),
+		button( {
+			label: 'South East',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'se'
+		} ),
+		button( {
+			label: 'South West',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'sw'
 		} )
 	] ) );
 }
