@@ -20,9 +20,6 @@ import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattribu
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
 
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/view/treewalker';
-import Position from '@ckeditor/ckeditor5-engine/src/view/position';
-
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
@@ -120,9 +117,6 @@ export default class LinkEditing extends Plugin {
 
 		// Handle typing over the link.
 		this._enableTypingOverLink();
-
-		// Handle special cases for pasting as plain text.
-		this._enablePastePlainTextFixer();
 
 		// Handle removing the content after the link element.
 		this._handleDeleteContentAfterLink();
@@ -440,43 +434,6 @@ export default class LinkEditing extends Plugin {
 
 			selectionAttributes = null;
 		}, { priority: 'high' } );
-	}
-
-	/**
-	 * @private
-	 */
-	_enablePastePlainTextFixer() {
-		const editor = this.editor;
-
-		// Handles case #8158.
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
-			const model = editor.model;
-			const previousItem = model.document.selection.getFirstPosition().nodeBefore;
-
-			if ( !previousItem || !data.asPlainText ) {
-				return;
-			}
-
-			const pastedText = Array.from( getTextFromDocumentFragment( data.content ) ).join( '' );
-
-			if ( previousItem.is( '$text' ) && previousItem.hasAttribute( 'linkHref' ) && previousItem.data == pastedText ) {
-				model.change( writer => {
-					writer.removeAttribute( 'linkHref', previousItem );
-				} );
-			}
-			// Priority between low and lowest, since model is changed in low priority listener
-			// and inputTransformation is cancelled in lowest priority listener.
-		}, { priority: -10000 } );
-
-		function* getTextFromDocumentFragment( fragment ) {
-			const fragmentStartPosition = new Position( fragment, 0 );
-
-			for ( const step of new TreeWalker( { startPosition: fragmentStartPosition } ) ) {
-				if ( step.type == 'text' ) {
-					yield step.item.data;
-				}
-			}
-		}
 	}
 
 	/**

@@ -504,6 +504,36 @@ describe( 'Clipboard feature', () => {
 					'<$text bold="true">text.</$text></paragraph>' );
 			} );
 
+			it( 'should preserve non formatting attribute if it wasn\'t fully selected', () => {
+				setModelData( model, '<paragraph><$text test="true">Linked [text].</$text></paragraph>' );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: createDataTransfer( {
+						'text/html': 'foo',
+						'text/plain': 'foo'
+					} ),
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text test="true">Linked foo[].</$text></paragraph>' );
+			} );
+
+			it( 'should not preserve non formatting attribute if it was fully selected', () => {
+				setModelData( model, '<paragraph><$text test="true">[Linked text.]</$text></paragraph>' );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: createDataTransfer( {
+						'text/html': 'foo',
+						'text/plain': 'foo'
+					} ),
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+			} );
+
 			it( 'should work if the insertContent event is cancelled', () => {
 				// (#7887).
 				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );

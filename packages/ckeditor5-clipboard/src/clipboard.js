@@ -115,31 +115,40 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
-				// preserve selection attributes on pasted items.
-				if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
-					data.asPlainText = true;
-					model.change( writer => {
+				model.change( writer => {
+					const selection = model.document.selection;
+
+					// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
+					// preserve selection attributes on pasted items.
+					if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
+						// Formatting attributes should be preserved.
+						const textAttributes = Array.from( selection.getAttributes() )
+							.filter( ( [ key ] ) => editor.model.schema.getAttributeProperties( key ).isFormatting );
+
+						if ( !selection.isCollapsed ) {
+							model.deleteContent( selection, { doNotAutoparagraph: true } );
+						}
+
+						// But also preserve other attributes if they survived the content deletion (because they were not fully selected).
+						// For example linkHref is not a formatting attribute but it should be preserved if pasted text was in the middle
+						// of a link.
+						textAttributes.push( ...selection.getAttributes() );
+
 						const range = writer.createRangeIn( modelFragment );
 
 						for ( const item of range.getItems() ) {
 							if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
-								writer.setAttributes( modelDocument.selection.getAttributes(), item );
+								writer.setAttributes( textAttributes, item );
 							}
 						}
-					} );
-				}
+					}
 
-				model.insertContent( modelFragment );
-			}
-		}, { priority: 'low' } );
+					model.insertContent( modelFragment );
+				} );
 
-		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
-			if ( !data.content.isEmpty ) {
-				// See: https://github.com/ckeditor/ckeditor5-upload/issues/92
 				evt.stop();
 			}
-		}, { priority: 'lowest' } );
+		}, { priority: 'low' } );
 
 		// The clipboard copy/cut pipeline.
 

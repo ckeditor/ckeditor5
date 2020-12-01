@@ -51,6 +51,9 @@ describe( 'LinkEditing', () => {
 		} );
 
 		editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+		editor.model.schema.setAttributeProperties( 'bold', {
+			isFormatting: true
+		} );
 
 		editor.conversion.attributeToElement( {
 			model: 'bold',
