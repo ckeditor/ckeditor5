@@ -165,7 +165,7 @@ You can use `'|'` to create a separator between groups of toolbar items. Works i
     }
 ```
 
-It is also possible to arrange toolbar items into multiple lines. In the extended format set `shouldNotGroupWhenFull` option to true, so items will not be grouped when the toolbar overflows but will wrap to the new line instead. Additionally, a `'-'` could be used inside items list to set the breaking point explicitly.
+It is also possible to arrange toolbar items into multiple lines. In the extended format set `shouldNotGroupWhenFull` option to `true`, so items will not be grouped when the toolbar overflows but will wrap to the new line instead. Additionally, a `'-'` could be used inside items list to set the breaking point explicitly.
 
 ```js
     toolbar: {

@@ -905,7 +905,7 @@ class DynamicGrouping {
  * When set to `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
  * would normally wrap to the next line when there is not enough space to display them in a single row, for
  * instance, if the parent container of the toolbar is narrow. For toolbars in absolutely positioned containers
- * without width restrictions also the {@link module:ui/toolbar/toolbarview~ToolbarOptions#isFloating} option is required to be 'true'.
+ * without width restrictions also the {@link module:ui/toolbar/toolbarview~ToolbarOptions#isFloating} option is required to be `true`.
  *
  * See also: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
