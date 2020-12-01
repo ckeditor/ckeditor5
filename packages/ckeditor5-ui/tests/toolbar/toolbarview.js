@@ -20,6 +20,7 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -116,6 +117,43 @@ describe( 'ToolbarView', () => {
 			expect( view.element.firstChild ).to.equal( view.itemsView.element );
 			expect( view.itemsView.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).to.true;
+		} );
+
+		it( 'should include the ck-toolbar_floating class if "shouldGroupWhenFull" and "isFloating" options are on,' +
+			'but not if any of them is off', () => {
+			let viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: true,
+				isFloating: true
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: false,
+				isFloating: true
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: true,
+				isFloating: false
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: false,
+				isFloating: false
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions.destroy();
 		} );
 
 		describe( 'attributes', () => {
@@ -397,15 +435,16 @@ describe( 'ToolbarView', () => {
 		} );
 
 		it( 'expands the config into collection', () => {
-			view.fillFromConfig( [ 'foo', 'bar', '|', 'foo' ], factory );
+			view.fillFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
 
 			const items = view.items;
 
-			expect( items ).to.have.length( 4 );
+			expect( items ).to.have.length( 5 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
-			expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 3 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
+			expect( items.get( 3 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 4 ).name ).to.equal( 'foo' );
 		} );
 
 		it( 'warns if there is no such component in the factory', () => {
@@ -422,6 +461,20 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
 				sinon.match( { name: 'baz' } ),
+				sinon.match.string // Link to the documentation.
+			);
+		} );
+
+		it( 'warns if the line separator is used when the button grouping option is enabled', () => {
+			const consoleWarnStub = sinon.stub( console, 'warn' );
+			view.options.shouldGroupWhenFull = true;
+
+			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
+
+			sinon.assert.calledOnce( consoleWarnStub );
+			sinon.assert.calledWithExactly( consoleWarnStub,
+				sinon.match( /^toolbarview-line-break-ignored-when-grouping-items/ ),
+				sinon.match.array,
 				sinon.match.string // Link to the documentation.
 			);
 		} );
