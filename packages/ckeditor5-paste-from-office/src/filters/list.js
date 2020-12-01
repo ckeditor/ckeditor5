@@ -56,13 +56,11 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 				const lastListItemChild = lastListItem.getChild( lastListItem.childCount - 1 );
 
 				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer );
-
 				currentIndentation += 1;
 			} else if ( itemLikeElement.indent < currentIndentation ) {
 				const differentIndentation = currentIndentation - itemLikeElement.indent;
 
 				currentList = findParentListAtLevel( currentList, differentIndentation );
-
 				currentIndentation = parseInt( itemLikeElement.indent );
 			}
 
@@ -158,9 +156,9 @@ function findAllItemLikeElements( documentFragment, writer ) {
 // @param {String} stylesString CSS stylesheet.
 // @returns {Object} result
 // @returns {String} result.type List type, could be `ul` or `ol`.
-// @returns {String} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
-// directly from Word stylesheet without further processing and may be not compatible
-// with CSS `list-style-type` property accepted values.
+// @returns {String|null} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
+// directly from Word stylesheet and adjusted to represent proper values for the CSS `list-style-type` property.
+// If it cannot be adjusted, the `null` value is returned.
 function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]*);/gi;
@@ -168,18 +166,103 @@ function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
 	let listStyleType = 'decimal'; // Decimal is default one.
+	let type = 'ol'; // <ol> is default list.
+
 	if ( listStyleMatch && listStyleMatch[ 1 ] ) {
 		const listStyleTypeMatch = listStyleTypeRegex.exec( listStyleMatch[ 1 ] );
 
 		if ( listStyleTypeMatch && listStyleTypeMatch[ 1 ] ) {
 			listStyleType = listStyleTypeMatch[ 1 ].trim();
+			type = listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul';
+		}
+
+		// Styles for the numbered lists are always defined in Word CSS stylesheet.
+		// Unordered lists MAY contain a value for the Word CSS definition `mso-level-text` but sometimes
+		// the tag is missing. And because of that, we cannot depend on that. We need to predict the list style value based on
+		// the list style marker element.
+		if ( listStyleType === 'bullet' ) {
+			const bulletedStyle = findBulletedListStyle( listLikeItem.element );
+
+			if ( bulletedStyle ) {
+				listStyleType = bulletedStyle;
+			}
 		}
 	}
 
 	return {
-		type: listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul',
-		style: listStyleType
+		type,
+		style: mapListStyleDefinition( listStyleType )
 	};
+}
+
+// Tries extract the `list-style-type` value based on the marker element for bulleted list.
+//
+// @param {module:engine/view/element~Element} element
+// @returns {module:engine/view/element~Element|null}
+function findBulletedListStyle( element ) {
+	const listMarkerElement = findListMarkerNode( element );
+
+	if ( !listMarkerElement ) {
+		return null;
+	}
+
+	const listMarker = listMarkerElement._data;
+
+	if ( listMarker === 'o' ) {
+		return 'circle';
+	} else if ( listMarker === '·' ) {
+		return 'disc';
+	}
+	// Word returns '§' instead of '■' for the square list style.
+	else if ( listMarker === '§' ) {
+		return 'square';
+	}
+
+	return null;
+}
+
+// Tries to find a text node that represents the marker element (list-style-type).
+//
+// @param {module:engine/view/element~Element} element
+// @returns {module:engine/view/text~Text|null}
+function findListMarkerNode( element ) {
+	// If the first child is a text node, it is a value for the element.
+	if ( element.getChild( 0 ).is( '$text' ) ) {
+		return null;
+	}
+
+	const textNodeOrElement = element.getChild( 0 ).getChild( 0 );
+
+	if ( textNodeOrElement.is( '$text' ) ) {
+		return textNodeOrElement;
+	}
+
+	return textNodeOrElement.getChild( 0 );
+}
+
+// Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.
+//
+// @param {String|null} value
+// @returns {String|null}
+function mapListStyleDefinition( value ) {
+	switch ( value ) {
+		case 'arabic-leading-zero':
+			return 'decimal-leading-zero';
+		case 'alpha-upper':
+			return 'upper-alpha';
+		case 'alpha-lower':
+			return 'lower-alpha';
+		case 'roman-upper':
+			return 'upper-roman';
+		case 'roman-lower':
+			return 'lower-roman';
+		case 'circle':
+		case 'disc':
+		case 'square':
+			return value;
+		default:
+			return null;
+	}
 }
 
 // Creates empty list of a given type and inserts it after a specified element.
@@ -196,6 +279,12 @@ function insertNewEmptyList( listStyle, element, writer ) {
 	const position = parent.getChildIndex( element ) + 1;
 
 	writer.insertChild( position, list, parent );
+
+	// We do not support modifying the marker for particular list item.
+	// Set the value for the `list-style-type` property directly to the list container.
+	if ( listStyle.style ) {
+		writer.setStyle( 'list-style-type', listStyle.style, list );
+	}
 
 	return list;
 }
@@ -272,6 +361,11 @@ function removeBulletElement( element, writer ) {
 // Whether previous and current item belongs to the same list. It is determined based on `item.id`
 // (extracted from `mso-list` style, see #getListItemData) and previous sibling of the current item.
 //
+// However, it's quite easy to change the `id` attribute for nested lists in Word. It will break the list feature while pasting.
+// Let's check also the `indent` attribute. If between those two elements, the difference is equal to 1, we can assume that
+// the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always starts with the `indent=0` attribute.
+// See: https://github.com/ckeditor/ckeditor5/issues/7805.
+//
 // @param {Object} previousItem
 // @param {Object} currentItem
 // @returns {Boolean}
@@ -281,6 +375,14 @@ function isNewListNeeded( previousItem, currentItem ) {
 	}
 
 	if ( previousItem.id !== currentItem.id ) {
+		// See: https://github.com/ckeditor/ckeditor5/issues/7805.
+		//
+		// * List item 1.
+		//     - Nested list item 1.
+		if ( currentItem.indent - previousItem.indent === 1 ) {
+			return false;
+		}
+
 		return true;
 	}
 

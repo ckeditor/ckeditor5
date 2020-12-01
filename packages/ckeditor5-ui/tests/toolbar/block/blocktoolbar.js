@@ -120,6 +120,10 @@ describe( 'BlockToolbar', () => {
 		} );
 	} );
 
+	it( 'should have the isFloating option set to true', () => {
+		expect( blockToolbar.toolbarView.options.isFloating ).to.be.true;
+	} );
+
 	describe( 'child views', () => {
 		describe( 'panelView', () => {
 			it( 'should create a view instance', () => {

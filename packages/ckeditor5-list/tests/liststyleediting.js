@@ -3,10 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -332,6 +336,43 @@ describe( 'ListStyleEditing', () => {
 					'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>' +
 					'<paragraph>Paragraph.</paragraph>'
 				);
+			} );
+
+			// See: #8262.
+			describe( 'list conversion with surrounding text nodes', () => {
+				let editor;
+
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ ListStyleEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it( 'should convert a list if raw text is before the list', () => {
+					editor.setData( 'Foo<ul><li>Foo</li></ul>' );
+
+					expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul>' );
+				} );
+
+				it( 'should convert a list if raw text is after the list', () => {
+					editor.setData( '<ul><li>Foo</li></ul>Foo' );
+
+					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul><p>Foo</p>' );
+				} );
+
+				it( 'should convert a list if it is surrender by two text nodes', () => {
+					editor.setData( 'Foo<ul><li>Foo</li></ul>Foo' );
+
+					expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul><p>Foo</p>' );
+				} );
 			} );
 		} );
 	} );
@@ -1420,6 +1461,165 @@ describe( 'ListStyleEditing', () => {
 						text: character
 					} );
 				} );
+			}
+		} );
+
+		// #8160
+		describe( 'pasting a list into another list', () => {
+			let element;
+
+			beforeEach( () => {
+				element = document.createElement( 'div' );
+				document.body.append( element );
+
+				return ClassicTestEditor
+					.create( element, {
+						plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy()
+					.then( () => {
+						element.remove();
+					} );
+			} );
+
+			it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should inherit attributes from the previous sibling element (non-collapsed selection)', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should inherit attributes from the previous sibling element (non-collapsed selection over a few elements)', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo 1.</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2.</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 3.]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should do nothing when pasting the similar list', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ol style="list-style-type: decimal">' +
+						'<li>Foo</li>' +
+					'</ol>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should replace the entire list if selected', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo Bar]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="square" listType="bulleted">Foo[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			function pasteHtml( editor, html ) {
+				editor.editing.view.document.fire( 'paste', {
+					dataTransfer: createDataTransfer( { 'text/html': html } ),
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+			}
+
+			function createDataTransfer( data ) {
+				return {
+					getData( type ) {
+						return data[ type ];
+					},
+					setData() {}
+				};
 			}
 		} );
 	} );

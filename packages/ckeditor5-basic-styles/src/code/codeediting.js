@@ -48,7 +48,7 @@ export default class CodeEditing extends Plugin {
 		editor.model.schema.extend( '$text', { allowAttributes: CODE } );
 		editor.model.schema.setAttributeProperties( CODE, {
 			isFormatting: true,
-			copyOnEnter: true
+			copyOnEnter: false
 		} );
 
 		editor.conversion.attributeToElement( {

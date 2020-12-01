@@ -54,7 +54,7 @@ describe( 'CodeEditing', () => {
 
 	it( 'its attribute is marked with a copOnEnter property', () => {
 		expect( model.schema.getAttributeProperties( 'code' ) ).to.include( {
-			copyOnEnter: true
+			copyOnEnter: false
 		} );
 	} );
 

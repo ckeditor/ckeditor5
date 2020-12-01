@@ -127,6 +127,16 @@ describe( 'MediaEmbedUI', () => {
 					button.fire( 'open' );
 					sinon.assert.calledOnce( spy );
 				} );
+
+				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
+					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
+					const selectSpy = sinon.spy( form.urlInputView.fieldView, 'select' );
+
+					button.fire( 'open' );
+
+					sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+				} );
 			} );
 		} );
 
@@ -209,13 +219,27 @@ describe( 'MediaEmbedUI', () => {
 			expect( form.urlInputView.isReadOnly ).to.be.true;
 		} );
 
-		it( 'binds saveButtonView#isEnabled to command#isEnabled', () => {
-			const command = editor.commands.get( 'mediaEmbed' );
+		it( 'should trim URL input value', () => {
+			form.urlInputView.fieldView.element.value = '   ';
+			form.urlInputView.fieldView.fire( 'input' );
+
+			expect( form.mediaURLInputValue ).to.equal( '' );
+
+			form.urlInputView.fieldView.element.value = '   test   ';
+			form.urlInputView.fieldView.fire( 'input' );
+
+			expect( form.mediaURLInputValue ).to.equal( 'test' );
+		} );
+
+		it( 'binds saveButtonView#isEnabled to trimmed URL input value', () => {
+			form.urlInputView.fieldView.fire( 'input' );
+
+			expect( form.saveButtonView.isEnabled ).to.be.false;
+
+			form.urlInputView.fieldView.element.value = 'test';
+			form.urlInputView.fieldView.fire( 'input' );
 
 			expect( form.saveButtonView.isEnabled ).to.be.true;
-
-			command.isEnabled = false;
-			expect( form.saveButtonView.isEnabled ).to.be.false;
 		} );
 
 		describe( 'validators', () => {

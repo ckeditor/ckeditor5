@@ -7,21 +7,20 @@
 
 'use strict';
 
-const path = require( 'path' );
-
 module.exports = function buildApiDocs() {
 	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
 
 	return ckeditor5Docs
 		.build( {
-			readmePath: path.join( process.cwd(), 'README.md' ),
+			// Patterns that do not start with '/' are mounted onto process.cwd() path by default.
+			readmePath: 'README.md',
 			sourceFiles: [
-				process.cwd() + '/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
-				'!' + process.cwd() + '/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
-				'!' + process.cwd() + '/packages/ckeditor5-build-*/src/**/*.js',
-				process.cwd() + '/external/*/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
-				'!' + process.cwd() + '/external/*/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
-				'!' + process.cwd() + '/external/*/packages/ckeditor5-build-*/src/**/*.js'
+				'packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
+				'!packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
+				'!packages/ckeditor5-build-*/src/**/*.js',
+				'external/*/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
+				'!external/*/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
+				'!external/*/packages/ckeditor5-build-*/src/**/*.js'
 			],
 			validateOnly: process.argv.includes( '--validate-only' ),
 			strict: process.argv.includes( '--strict' )

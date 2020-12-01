@@ -6,6 +6,7 @@
 /* eslint-env node */
 
 const path = require( 'path' );
+const upath = require( 'upath' );
 const fs = require( 'fs' );
 const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
@@ -282,7 +283,7 @@ function getConstantDefinitions( snippets ) {
 			knownPaths.add( directory );
 
 			const absolutePathToConstants = path.join( directory, 'docs', 'constants.js' );
-			const importPathToConstants = path.posix.relative( __dirname, absolutePathToConstants );
+			const importPathToConstants = path.relative( __dirname, absolutePathToConstants );
 
 			if ( fs.existsSync( absolutePathToConstants ) ) {
 				const packageConstantDefinitions = require( './' + importPathToConstants );
@@ -432,7 +433,7 @@ function getWebpackConfig( snippets, config ) {
 
 	for ( const snippetData of snippets ) {
 		if ( !webpackConfig.output.path ) {
-			webpackConfig.output.path = snippetData.outputPath;
+			webpackConfig.output.path = path.normalize( snippetData.outputPath );
 		}
 
 		if ( webpackConfig.entry[ snippetData.snippetName ] ) {
@@ -490,7 +491,8 @@ function getPackageDependenciesPaths() {
 	};
 
 	return glob.sync( 'packages/*/node_modules', globOptions )
-		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) );
+		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) )
+		.map( p => path.normalize( p ) );
 }
 
 /**
@@ -512,7 +514,8 @@ function readSnippetConfig( snippetSourcePath ) {
 }
 
 /**
- * Removes duplicated entries specified in `files` array and map those entires using `mapFunction`.
+ * Removes duplicated entries specified in `files` array, unifies path separators to always be `/`
+ * and then maps those entries using `mapFunction`.
  *
  * @param {Array.<String>} files Paths collection.
  * @param {Function} mapFunction Function that should return a string.
@@ -520,6 +523,7 @@ function readSnippetConfig( snippetSourcePath ) {
  */
 function getHTMLImports( files, mapFunction ) {
 	return [ ...new Set( files ) ]
+		.map( path => upath.normalize( path ) )
 		.map( mapFunction )
 		.join( '\n' )
 		.replace( /^\s+/, '' );

@@ -260,8 +260,8 @@ The view may need to be changed manually if the cause of such change is not repr
 For that, just like in the model, you should use the `change()` block (of the view) in which you will have access to the view downcast writer.
 
 ```js
-editor.data.view.change( writer => {
-	writer.insert( position1, writer.createText( 'foo' ) );
+editor.editing.view.change( writer => {
+	writer.insert( position, writer.createText( 'foo' ) );
 } );
 ```
 

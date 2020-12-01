@@ -19,10 +19,12 @@ import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/mediaform.css';
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
  * The media form view controller class.
@@ -42,7 +44,7 @@ export default class MediaFormView extends View {
 		const t = locale.t;
 
 		/**
-		 * Tracks information about DOM focus in the form.
+		 * Tracks information about the DOM focus in the form.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -58,6 +60,14 @@ export default class MediaFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
+		 * The value of the URL input.
+		 *
+		 * @member {String} #mediaURLInputValue
+		 * @observable
+		 */
+		this.set( 'mediaURLInputValue', '' );
+
+		/**
 		 * The URL input view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
@@ -71,6 +81,7 @@ export default class MediaFormView extends View {
 		 */
 		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
+		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
 
 		/**
 		 * The Cancel button view.
@@ -100,10 +111,10 @@ export default class MediaFormView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate form fields backwards using the Shift + Tab keystroke.
+				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
 				focusPrevious: 'shift + tab',
 
-				// Navigate form fields forwards using the Tab key.
+				// Navigate form fields forwards using the <kbd>Tab</kbd> key.
 				focusNext: 'tab'
 			}
 		} );
@@ -123,7 +134,8 @@ export default class MediaFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-media-form'
+					'ck-media-form',
+					'ck-responsive-form'
 				],
 
 				tabindex: '-1'
@@ -135,6 +147,8 @@ export default class MediaFormView extends View {
 				this.cancelButtonView
 			]
 		} );
+
+		injectCssTransitionDisabler( this );
 
 		/**
 		 * The default info text for the {@link #urlInputView}.
@@ -189,9 +203,9 @@ export default class MediaFormView extends View {
 		this.keystrokes.set( 'arrowup', stopPropagation );
 		this.keystrokes.set( 'arrowdown', stopPropagation );
 
-		// Intercept the "selectstart" event, which is blocked by default because of the default behavior
+		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
 		// of the DropdownView#panelView.
-		// TODO: blocking "selectstart" in the #panelView should be configurable per–drop–down instance.
+		// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
 		this.listenTo( this.urlInputView.element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
@@ -271,11 +285,11 @@ export default class MediaFormView extends View {
 
 		labeledInput.label = t( 'Media URL' );
 		labeledInput.infoText = this._urlInputViewInfoDefault;
-		inputField.placeholder = 'https://example.com';
 
 		inputField.on( 'input', () => {
-			// Display the tip text only when there's some value. Otherwise fall back to the default info text.
+			// Display the tip text only when there is some value. Otherwise fall back to the default info text.
 			labeledInput.infoText = inputField.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
+			this.mediaURLInputValue = inputField.element.value.trim();
 		} );
 
 		return labeledInput;
@@ -322,7 +336,7 @@ export default class MediaFormView extends View {
  */
 
 /**
- * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
+ * Fired when the form view is canceled, e.g. by a click on {@link #cancelButtonView}.
  *
  * @event cancel
  */

@@ -7,12 +7,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageInsert from '../../src/imageinsert';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import ImageInsert from '../../src/imageinsert';
+import AutoImage from '../../src/autoimage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ImageInsert, CKFinder ],
+		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, CKFinder ],
 		toolbar: [
 			'heading',
 			'|',

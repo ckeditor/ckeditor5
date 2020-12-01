@@ -11,7 +11,7 @@ This feature can be used to implement a rich-text editor with a clear division o
 
 ## Demo
 
-Use the editor below to create a document with clearly separated title and body sections.
+Use the editor to create a document with clearly separated title and body sections. You can check the content of the title and body elements in the console below.
 
 {@snippet features/title}
 
@@ -49,7 +49,7 @@ ClassicEditor
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-heading
 ```
 

@@ -786,6 +786,10 @@ function attachBindToListeners( observable, toBindings ) {
  *		button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
  *			( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
  *
+ * Using a custom callback allows processing the value before passing it to the target property:
+ *
+ *		button.bind( 'isEnabled' ).to( command, 'value', value => value === 'heading1' );
+ *
  * It is also possible to bind to the same property in an array of observables.
  * To bind a `button` to multiple commands (also `Observables`) so that each and every one of them
  * must be enabled for the button to become enabled, use the following code:

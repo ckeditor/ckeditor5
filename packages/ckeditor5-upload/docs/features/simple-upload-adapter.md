@@ -22,7 +22,7 @@ See the [Server–side configuration](#server-side-configuration) section to lea
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-upload
 ```
 

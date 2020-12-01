@@ -16,6 +16,7 @@ import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
+import Matcher from './matcher';
 import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -118,6 +119,23 @@ export default class DomConverter {
 		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_fakeSelectionMapping
 		 */
 		this._fakeSelectionMapping = new WeakMap();
+
+		/**
+		 * Matcher for view elements whose content should be treated as a raw data
+		 * and not processed during conversion from DOM nodes to view elements.
+		 *
+		 * @private
+		 * @type {module:engine/view/matcher~Matcher}
+		 */
+		this._rawContentElementMatcher = new Matcher();
+
+		/**
+		 * Set of encountered raw content DOM nodes. It is used for preventing left trimming of the following text node.
+		 *
+		 * @private
+		 * @type {WeakSet.<Node>}
+		 */
+		this._encounteredRawContentDomNodes = new WeakSet();
 	}
 
 	/**
@@ -253,7 +271,7 @@ export default class DomConverter {
 				}
 			}
 
-			if ( options.withChildren || options.withChildren === undefined ) {
+			if ( options.withChildren !== false ) {
 				for ( const child of this.viewChildrenToDom( viewNode, domDocument, options ) ) {
 					domElement.appendChild( child );
 				}
@@ -400,7 +418,7 @@ export default class DomConverter {
 		}
 
 		// When node is inside a UIElement or a RawElement return that parent as it's view representation.
-		const hostElement = this.getHostViewElement( domNode, this._domToViewMapping );
+		const hostElement = this.getHostViewElement( domNode );
 
 		if ( hostElement ) {
 			return hostElement;
@@ -445,9 +463,19 @@ export default class DomConverter {
 				for ( let i = attrs.length - 1; i >= 0; i-- ) {
 					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
 				}
+
+				// Treat this element's content as a raw data if it was registered as such.
+				if ( options.withChildren !== false && this._rawContentElementMatcher.match( viewElement ) ) {
+					viewElement._setCustomProperty( '$rawContent', domNode.innerHTML );
+
+					// Store a DOM node to prevent left trimming of the following text node.
+					this._encounteredRawContentDomNodes.add( domNode );
+
+					return viewElement;
+				}
 			}
 
-			if ( options.withChildren || options.withChildren === undefined ) {
+			if ( options.withChildren !== false ) {
 				for ( const child of this.domChildrenToView( domNode, options ) ) {
 					viewElement._appendChild( child );
 				}
@@ -912,6 +940,23 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
+	 * and not processed during conversion from DOM nodes to view elements.
+	 *
+	 * This is affecting how {@link module:engine/view/domconverter~DomConverter#domToView} and
+	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} processes DOM nodes.
+	 *
+	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+	 * `"$rawContent"`.
+	 *
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching view element which content should
+	 * be treated as a raw data.
+	 */
+	registerRawContentMatcher( pattern ) {
+		this._rawContentElementMatcher.add( pattern );
+	}
+
+	/**
 	 * Checks if the given DOM position is a correct place for selection boundary. See {@link #isDomSelectionCorrect}.
 	 *
 	 * @private
@@ -1051,7 +1096,7 @@ export default class DomConverter {
 		const prevNode = this._getTouchingInlineDomNode( node, false );
 		const nextNode = this._getTouchingInlineDomNode( node, true );
 
-		const shouldLeftTrim = this._checkShouldLeftTrimDomText( prevNode );
+		const shouldLeftTrim = this._checkShouldLeftTrimDomText( node, prevNode );
 		const shouldRightTrim = this._checkShouldRightTrimDomText( node, nextNode );
 
 		// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the beginning
@@ -1100,15 +1145,22 @@ export default class DomConverter {
 	 * Helper function which checks if a DOM text node, preceded by the given `prevNode` should
 	 * be trimmed from the left side.
 	 *
+	 * @private
+	 * @param {Node} node
 	 * @param {Node} prevNode
 	 */
-	_checkShouldLeftTrimDomText( prevNode ) {
+	_checkShouldLeftTrimDomText( node, prevNode ) {
 		if ( !prevNode ) {
 			return true;
 		}
 
 		if ( isElement( prevNode ) ) {
 			return true;
+		}
+
+		// Shouldn't left trim if previous node is a node that was encountered as a raw content node.
+		if ( this._encounteredRawContentDomNodes.has( node.previousSibling ) ) {
+			return false;
 		}
 
 		return /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) );
@@ -1118,6 +1170,7 @@ export default class DomConverter {
 	 * Helper function which checks if a DOM text node, succeeded by the given `nextNode` should
 	 * be trimmed from the right side.
 	 *
+	 * @private
 	 * @param {Node} node
 	 * @param {Node} nextNode
 	 */
@@ -1133,6 +1186,7 @@ export default class DomConverter {
 	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling
 	 * that is contained in the same container element. If there is no such sibling, `null` is returned.
 	 *
+	 * @private
 	 * @param {module:engine/view/text~Text} node Reference node.
 	 * @param {Boolean} getNext
 	 * @returns {module:engine/view/text~Text|null} Touching text node or `null` if there is no next or previous touching text node.

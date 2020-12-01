@@ -10,10 +10,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
+import { addLinkProtocolIfApplicable } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
-// This was tweak from https://gist.github.com/dperini/729294.
+// This was a tweak from https://gist.github.com/dperini/729294.
 const URL_REG_EXP = new RegExp(
 	// Group 1: Line start or after a space.
 	'(^|\\s)' +
@@ -48,9 +49,6 @@ const URL_REG_EXP = new RegExp(
 	')$', 'i' );
 
 const URL_GROUP_IN_MATCH = 2;
-
-// Simplified email test - should be run over previously found URL.
-const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
 
 /**
  * The autolink plugin.
@@ -97,12 +95,12 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
-			// 1. Detect "Space" after a text with a potential link.
+			// 1. Detect <kbd>Space</kbd> after a text with a potential link.
 			if ( !isSingleSpaceAtTheEnd( text ) ) {
 				return;
 			}
 
-			// 2. Check text before last typed "Space".
+			// 2. Check text before last typed <kbd>Space</kbd>.
 			const url = getUrlAtTextEnd( text.substr( 0, text.length - 1 ) );
 
 			if ( url ) {
@@ -213,7 +211,7 @@ export default class AutoLink extends Plugin {
 	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
 	 * @private
 	 */
-	_applyAutoLink( url, range ) {
+	_applyAutoLink( link, range ) {
 		const model = this.editor.model;
 
 		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) ) {
@@ -222,9 +220,9 @@ export default class AutoLink extends Plugin {
 
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const linkHrefValue = isEmail( url ) ? `mailto:${ url }` : url;
-
-			writer.setAttribute( 'linkHref', linkHrefValue, range );
+			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+			const parsedUrl = addLinkProtocolIfApplicable( link, defaultProtocol );
+			writer.setAttribute( 'linkHref', parsedUrl, range );
 		} );
 	}
 }
@@ -238,10 +236,6 @@ function getUrlAtTextEnd( text ) {
 	const match = URL_REG_EXP.exec( text );
 
 	return match ? match[ URL_GROUP_IN_MATCH ] : null;
-}
-
-function isEmail( linkHref ) {
-	return EMAIL_REG_EXP.exec( linkHref );
 }
 
 function isLinkAllowedOnRange( range, model ) {

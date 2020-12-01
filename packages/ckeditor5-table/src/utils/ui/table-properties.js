@@ -362,13 +362,15 @@ export function getLabeledColorInputCreator( options ) {
 		} );
 
 		inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
-		inputView.bind( 'errorText' ).to( labeledFieldView );
+		inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
 
 		inputView.on( 'input', () => {
 			// UX: Make the error text disappear and disable the error indicator as the user
 			// starts fixing the errors.
 			labeledFieldView.errorText = null;
 		} );
+
+		labeledFieldView.bind( 'isEmpty', 'isFocused' ).to( inputView );
 
 		return inputView;
 	};
