@@ -27,7 +27,7 @@ There are more CKEditor 5 features that can help you organize your document cont
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-horizontal-line`](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line) package:
 
-```plaintext
+```nohighlight
 npm install --save @ckeditor/ckeditor5-horizontal-line
 ```
 
