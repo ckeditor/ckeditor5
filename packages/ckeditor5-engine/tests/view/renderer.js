@@ -2014,6 +2014,7 @@ describe( 'Renderer', () => {
 				expect( container.style.position ).to.equal( 'fixed' );
 				expect( container.style.top ).to.equal( '0px' );
 				expect( container.style.left ).to.equal( '-9999px' );
+				expect( container.className ).to.equal( 'ck-fake-selection-container' );
 			} );
 
 			it( 'should move fake selection container between editables', () => {
