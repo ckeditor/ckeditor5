@@ -179,6 +179,10 @@ describe( 'BalloonToolbar', () => {
 		sinon.assert.calledOnce( spy );
 	} );
 
+	it( 'should have the isFloating option set to true', () => {
+		expect( balloonToolbar.toolbarView.options.isFloating ).to.be.true;
+	} );
+
 	describe( 'pluginName', () => {
 		it( 'should return plugin by its name', () => {
 			expect( editor.plugins.get( 'BalloonToolbar' ) ).to.equal( balloonToolbar );
