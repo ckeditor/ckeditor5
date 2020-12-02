@@ -92,7 +92,7 @@ While the Markdown plugin is stable and ready to use, some issues were reported 
 <info-box info>
 	Please bear in mind that the Markdown data processor does not support all rich text features. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting options.
 
-	This means than advanced formatting, like list styles, tables or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be reproduced. This is not a bug.
+	This means that advanced formatting like list styles, table styles or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be converted from HTML to Markdown.
 </info-box>
 
 
