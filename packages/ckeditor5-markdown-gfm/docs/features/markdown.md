@@ -84,7 +84,9 @@ ClassicEditor
 ```
 
 ## Known issues
-* Pasting Markdown-formatted content will not automatically convert the pasted syntax markers into properly formatted content currently. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+While the Markdown plugin is stable and ready to use, some issues were reported for it. Feel free to upvote 👍 them on GitHub if they are important for you:
+
+* Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
 * The horizontal rule is not supported by the {@link features/autoformat autoformatting} but it does get output if inserted via WYSIWYG interface.
 
 <info-box info>
