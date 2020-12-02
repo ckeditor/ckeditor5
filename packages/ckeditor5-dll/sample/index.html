@@ -29,24 +29,28 @@
 
 <!-- Editor features as DLL consumer builds exposed as CKEditor5[FeatureName] -->
 <script src="../../ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="../../ckeditor5-html-embed/build/html-embed.js"></script>
 
 <!-- Finally, this is a end-user plugin that uses DLL -->
 <script src="../build/dll-consumer-plugin.js"></script>
 
 <script>
 	// Import Bold, Italic from the CKEditor 5 global.
-	const { Bold, Italic } = CKEditor5.BasicStyles;
-	const { ClassicEditor, InlineEditor } = CKEditor5;
+	const { ClassicEditor, InlineEditor, BasicStyles, HtmlEmbed } = CKEditor5;
+	const { Bold, Italic } = BasicStyles;
 
 	const config = {
 		extraPlugins: [
 			Bold,
 			Italic,
+			HtmlEmbed.HtmlEmbed,
 			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
 		],
 		toolbar: [
 			'bold',
 			'italic',
+			'|',
+			'htmlEmbed',
 			'|',
 			'a-button',
 			'|',

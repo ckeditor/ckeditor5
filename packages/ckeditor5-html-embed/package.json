@@ -40,5 +40,8 @@
     "lang",
     "src",
     "theme"
-  ]
+  ],
+  "scripts": {
+    "build": "webpack --config=webpack.config.js"
+  }
 }

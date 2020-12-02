@@ -7,14 +7,13 @@
  * @module html-embed/htmlembedediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/ui';
+import { toWidget } from '@ckeditor/ckeditor5-widget/widget';
+import { logWarning, createElement } from '@ckeditor/ckeditor5-utils/utils';
+
 import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
 import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
