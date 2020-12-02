@@ -12,17 +12,22 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 module.exports = {
 	mode: 'development',
 	entry: [
+		// The base of the CKEditor 5 framework, in order of appearance:
+		'./src/utils.js',
 		'./src/core.js',
-		'./src/classiceditor.js',
-		'./src/clipboard.js',
 		'./src/engine.js',
+		'./src/ui.js',
+
+		// The base editors:
+		'./src/classiceditor.js',
+
+		// The Essentials plugin contents:
+		'./src/clipboard.js',
 		'./src/enter.js',
 		'./src/paragraph.js',
 		'./src/selectall.js',
 		'./src/typing.js',
-		'./src/ui.js',
-		'./src/undo.js',
-		'./src/utils.js'
+		'./src/undo.js'
 	],
 	optimization: {
 		minimize: false,
