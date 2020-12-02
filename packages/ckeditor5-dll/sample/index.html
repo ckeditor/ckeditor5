@@ -9,6 +9,8 @@
 	<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
 </div>
 
+<script src="https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
+
 <!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
 <script src="../build/ckeditor5-dll.js"></script>
 
@@ -46,6 +48,8 @@
 	ClassicEditor.create( document.querySelector( '#editor' ), config )
 		.then( editor => {
 			window.editor = editor;
+
+			CKEditorInspector.attach( { 'dll-classic': editor } );
 		} );
 </script>
 </body>
