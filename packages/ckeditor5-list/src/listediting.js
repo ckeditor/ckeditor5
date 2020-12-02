@@ -12,6 +12,7 @@ import IndentCommand from './indentcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import {
 	cleanList,
@@ -168,7 +169,7 @@ export default class ListEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		}, { priority: 'high' } );
+		}, { priority: priorities.high + 10 } );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
