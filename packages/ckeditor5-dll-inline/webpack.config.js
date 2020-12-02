@@ -17,8 +17,8 @@ module.exports = {
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
-		filename: 'dll-classic.js',
-		library: 'ClassicEditor',
+		filename: 'dll-inline.js',
+		library: 'InlineEditor',
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},
