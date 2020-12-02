@@ -28,7 +28,10 @@ module.exports = {
 		'./src/paragraph.js',
 		'./src/selectall.js',
 		'./src/typing.js',
-		'./src/undo.js'
+		'./src/undo.js',
+
+		// Other, common packages:
+		'./src/widget.js'
 	],
 	optimization: {
 		minimize: false,
