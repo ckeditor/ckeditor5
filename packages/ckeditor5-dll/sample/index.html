@@ -143,17 +143,25 @@
 
 <!-- This is a stripped-down ClassicEditor with Essentials plugins loaded from a DLL, exposed as ClassicEditor -->
 <script src="../../ckeditor5-dll-classic/build/dll-classic.js"></script>
+<script src="../../ckeditor5-basic-styles/build/basic-styles.js"></script>
 
 <!-- Finally, this is a end-user plugin that uses DLL -->
 <script src="../build/dll-consumer-plugin.js"></script>
 
 <script>
+	console.log(window)
 	const config = Object.assign( {}, ClassicEditor.defaultConfig, {
 		extraPlugins: [
+			CKEditor5.BasicStyles.Bold,
+			CKEditor5.BasicStyles.Italic,
 			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
 		],
 		toolbar: [
+			'bold',
+			'italic',
+			'|',
 			'a-button',
+			'|',
 			'undo',
 			'redo'
 		]
