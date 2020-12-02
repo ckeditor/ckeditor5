@@ -90,7 +90,7 @@ While the Markdown plugin is stable and ready to use, some issues were reported 
 * The horizontal rule is not supported by the {@link features/autoformat autoformatting} feature but it gets output to Markdown if inserted using the toolbar button.
 
 <info-box info>
-	Please bear in mind that the Markdown output processor will not produce any rich-text content. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting.
+	Please bear in mind that the Markdown data processor does not support all rich text features. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting options.
 
 	This means than advanced formatting, like list styles, tables or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be reproduced. This is not a bug.
 </info-box>
