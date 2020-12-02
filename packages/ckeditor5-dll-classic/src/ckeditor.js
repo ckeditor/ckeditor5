@@ -23,28 +23,7 @@ ClassicEditor.builtinPlugins = [
 	ShiftEnter,
 	Typing,
 	Undo,
-	// UploadAdapter,
-	// Autoformat,
-	// Bold,
-	// Italic,
-	// BlockQuote,
-	// CKFinder,
-	// EasyImage,
-	// Heading,
-	// Image,
-	// ImageCaption,
-	// ImageStyle,
-	// ImageToolbar,
-	// ImageUpload,
-	// Indent,
-	// Link,
-	// List,
-	// MediaEmbed,
 	Paragraph
-	// PasteFromOffice,
-	// Table,
-	// TableToolbar,
-	// TextTransformation
 ];
 
 // Editor configuration.

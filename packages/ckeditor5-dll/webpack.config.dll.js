@@ -20,6 +20,7 @@ module.exports = {
 
 		// The base editors:
 		'./src/classiceditor.js',
+		'./src/inlineeditor.js',
 
 		// The Essentials plugin contents:
 		'./src/clipboard.js',

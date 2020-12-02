@@ -5,7 +5,16 @@
 	<title>DLL sample</title>
 </head>
 <body>
-<div id="editor">
+
+<h2>Classic Editor</h2>
+
+<div id="editor-classic">
+	<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
+</div>
+
+<h2>Inline Editor</h2>
+
+<div id="editor-inline">
 	<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
 </div>
 
@@ -16,6 +25,7 @@
 
 <!-- This is a stripped-down ClassicEditor with Essentials plugins loaded from a DLL, exposed as ClassicEditor -->
 <script src="../../ckeditor5-dll-classic/build/dll-classic.js"></script>
+<script src="../../ckeditor5-dll-inline/build/dll-inline.js"></script>
 
 <!-- Editor features as DLL consumer builds exposed as CKEditor5[FeatureName] -->
 <script src="../../ckeditor5-basic-styles/build/basic-styles.js"></script>
@@ -26,6 +36,7 @@
 <script>
 	// Import Bold, Italic from the CKEditor 5 global.
 	const { Bold, Italic } = CKEditor5.BasicStyles;
+	const { ClassicEditor, InlineEditor } = CKEditor5;
 
 	const config = {
 		extraPlugins: [
@@ -45,11 +56,19 @@
 	};
 
 	// ClassicEditor is exposed by the ckeditor5-dll-classic:
-	ClassicEditor.create( document.querySelector( '#editor' ), config )
+	ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
 		.then( editor => {
 			window.editor = editor;
 
 			CKEditorInspector.attach( { 'dll-classic': editor } );
+		} );
+
+	// InlineEditor is exposed by the ckeditor5-dll-inline:
+	InlineEditor.create( document.querySelector( '#editor-inline' ), config )
+		.then( editor => {
+			window.editor = editor;
+
+			CKEditorInspector.attach( { 'dll-inline': editor } );
 		} );
 </script>
 </body>

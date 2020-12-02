@@ -18,7 +18,7 @@ module.exports = {
 	output: {
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'dll-inline.js',
-		library: 'InlineEditor',
+		library: [ 'CKEditor5', 'InlineEditor' ],
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},

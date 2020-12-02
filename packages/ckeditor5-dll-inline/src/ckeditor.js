@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-dll/classiceditor';
+import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-dll/inlineeditor';
 
 import { Paragraph } from '@ckeditor/ckeditor5-dll/paragraph';
 import { Clipboard } from '@ckeditor/ckeditor5-dll/clipboard';
@@ -13,42 +13,21 @@ import { Typing } from '@ckeditor/ckeditor5-dll/typing';
 import { Undo } from '@ckeditor/ckeditor5-dll/undo';
 import { SelectAll } from '@ckeditor/ckeditor5-dll/selectall';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
-ClassicEditor.builtinPlugins = [
+InlineEditor.builtinPlugins = [
 	Clipboard,
 	Enter,
 	SelectAll,
 	ShiftEnter,
 	Typing,
 	Undo,
-	// UploadAdapter,
-	// Autoformat,
-	// Bold,
-	// Italic,
-	// BlockQuote,
-	// CKFinder,
-	// EasyImage,
-	// Heading,
-	// Image,
-	// ImageCaption,
-	// ImageStyle,
-	// ImageToolbar,
-	// ImageUpload,
-	// Indent,
-	// Link,
-	// List,
-	// MediaEmbed,
 	Paragraph
-	// PasteFromOffice,
-	// Table,
-	// TableToolbar,
-	// TextTransformation
 ];
 
 // Editor configuration.
-ClassicEditor.defaultConfig = {
+InlineEditor.defaultConfig = {
 	toolbar: {
 		items: [
 			'undo',
