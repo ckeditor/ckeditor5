@@ -556,6 +556,33 @@ describe( 'Clipboard feature', () => {
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 			} );
+
+			it( 'should not treat a pasted object as a plain text', () => {
+				model.schema.register( 'obj', {
+					allowWhere: '$block',
+					isObject: true,
+					isBlock: true
+				} );
+
+				editor.conversion.elementToElement( { model: 'obj', view: 'obj' } );
+
+				setModelData( model, '<paragraph><$text bold="true">Bolded [text].</$text></paragraph>' );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: createDataTransfer( {
+						'text/html': '<obj></obj>',
+						'text/plain': 'foo'
+					} ),
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph><$text bold="true">Bolded </$text></paragraph>' +
+					'[<obj></obj>]' +
+					'<paragraph><$text bold="true">.</$text></paragraph>'
+				);
+			} );
 		} );
 
 		function createDataTransfer( data ) {

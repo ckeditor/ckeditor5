@@ -120,7 +120,7 @@ export default class Clipboard extends Plugin {
 
 					// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
 					// preserve selection attributes on pasted items.
-					if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
+					if ( data.asPlainText || isPlainTextFragment( modelFragment, model.schema ) ) {
 						// Formatting attributes should be preserved.
 						const textAttributes = Array.from( selection.getAttributes() )
 							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
@@ -245,13 +245,18 @@ export default class Clipboard extends Plugin {
 // Returns true if specified `documentFragment` represents a plain text.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
+// @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function isPlainTextFragment( documentFragment ) {
+function isPlainTextFragment( documentFragment, schema ) {
 	if ( documentFragment.childCount > 1 ) {
 		return false;
 	}
 
 	const child = documentFragment.getChild( 0 );
+
+	if ( schema.isObject( child ) ) {
+		return false;
+	}
 
 	return [ ...child.getAttributeKeys() ].length == 0;
 }
