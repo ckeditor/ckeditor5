@@ -7,8 +7,8 @@
  * @module basic-styles/subscript/subscriptui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/ui';
 
 import subscriptIcon from '../../theme/icons/subscript.svg';
 
