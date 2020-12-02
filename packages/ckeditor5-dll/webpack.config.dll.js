@@ -18,6 +18,7 @@ module.exports = {
 		'./src/engine.js',
 		'./src/enter.js',
 		'./src/paragraph.js',
+		'./src/selectall.js',
 		'./src/typing.js',
 		'./src/ui.js',
 		'./src/undo.js',

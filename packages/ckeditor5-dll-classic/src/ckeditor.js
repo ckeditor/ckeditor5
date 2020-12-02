@@ -11,15 +11,18 @@ import { Clipboard } from '@ckeditor/ckeditor5-dll/clipboard';
 import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-dll/enter';
 import { Typing } from '@ckeditor/ckeditor5-dll/typing';
 import { Undo } from '@ckeditor/ckeditor5-dll/undo';
+import { SelectAll } from '@ckeditor/ckeditor5-dll/selectall';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
-	// Essentials, // :
-	Clipboard, Enter,
-	// SelectAll,
-	ShiftEnter, Typing, Undo,
+	Clipboard,
+	Enter,
+	SelectAll,
+	ShiftEnter,
+	Typing,
+	Undo,
 	// UploadAdapter,
 	// Autoformat,
 	// Bold,
