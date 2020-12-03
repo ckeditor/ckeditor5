@@ -3,4 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-export * from '@ckeditor/ckeditor5-engine/engine';
+/**
+ * @module upload
+ */
+
+export { default as FileRepository } from './src/filerepository';
+export { default as FileDialogButtonView } from './src/ui/filedialogbuttonview';

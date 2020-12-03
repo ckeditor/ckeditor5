@@ -7,11 +7,12 @@
  * @module image/imagestyle/utils
  */
 
+import { logWarning } from '@ckeditor/ckeditor5-utils/utils';
+
 import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
 import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Default image styles provided by the plugin that can be referred in the

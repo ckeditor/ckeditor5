@@ -10,12 +10,16 @@
 
 <div id="editor-classic">
 	<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
+
+	<img src="./sample.jpg" alt="Autumn fields">
 </div>
 
 <h2>Inline Editor</h2>
 
 <div id="editor-inline">
 	<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
+
+	<img src="./sample.jpg" alt="Autumn fields">
 </div>
 
 <script src="https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
@@ -30,19 +34,21 @@
 <!-- Editor features as DLL consumer builds exposed as CKEditor5[FeatureName] -->
 <script src="../../ckeditor5-basic-styles/build/basic-styles.js"></script>
 <script src="../../ckeditor5-html-embed/build/html-embed.js"></script>
+<script src="../../ckeditor5-image/build/image.js"></script>
 
 <!-- Finally, this is a end-user plugin that uses DLL -->
 <script src="../build/dll-consumer-plugin.js"></script>
 
 <script>
 	// Import Bold, Italic from the CKEditor 5 global.
-	const { ClassicEditor, InlineEditor, BasicStyles, HtmlEmbed } = CKEditor5;
+	const { ClassicEditor, InlineEditor, BasicStyles, HtmlEmbed, Image } = CKEditor5;
 	const { Bold, Italic } = BasicStyles;
 
 	const config = {
 		extraPlugins: [
 			Bold,
 			Italic,
+			Image.Image,
 			HtmlEmbed.HtmlEmbed,
 			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
 		],

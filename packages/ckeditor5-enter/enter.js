@@ -3,4 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-export * from '@ckeditor/ckeditor5-engine/engine';
+/**
+ * @module enter
+ */
+
+export { default as Enter } from './src/enter';
+export { default as ShiftEnter } from './src/shiftenter';

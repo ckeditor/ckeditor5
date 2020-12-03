@@ -7,19 +7,10 @@
  * @module image/imageinsert/ui/imageinsertpanelview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { ButtonView, View, SplitButtonView, ViewCollection, submitHandler, createDropdown, FocusCycler } from '@ckeditor/ckeditor5-ui/ui';
+import { Collection, FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils/utils';
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import ImageInsertFormRowView from './imageinsertformrowview';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';

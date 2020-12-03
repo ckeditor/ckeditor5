@@ -31,6 +31,7 @@ module.exports = {
 		'./src/undo.js',
 
 		// Other, common packages:
+		'./src/upload.js',
 		'./src/widget.js'
 	],
 	optimization: {

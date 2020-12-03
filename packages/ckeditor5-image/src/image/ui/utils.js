@@ -7,7 +7,7 @@
  * @module image/image/ui/utils
  */
 
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import { BalloonPanelView } from '@ckeditor/ckeditor5-ui/ui';
 import { getSelectedImageWidget } from '../utils';
 
 /**

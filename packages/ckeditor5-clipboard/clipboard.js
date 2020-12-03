@@ -3,4 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-export * from '@ckeditor/ckeditor5-engine/engine';
+/**
+ * @module clipboard
+ */
+
+export { default as Clipboard } from './src/clipboard';

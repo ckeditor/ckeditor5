@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { first } from '@ckeditor/ckeditor5-utils/utils';
 
 /**
  * @module image/imagestyle/converters

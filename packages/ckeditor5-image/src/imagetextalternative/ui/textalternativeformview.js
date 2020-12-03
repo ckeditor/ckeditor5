@@ -7,24 +7,23 @@
  * @module image/imagetextalternative/ui/textalternativeformview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import {
+	ButtonView,
+	FocusCycler,
+	LabeledFieldView,
+	View,
+	ViewCollection,
+	createLabeledInputText,
+	injectCssTransitionDisabler,
+	submitHandler
+} from '@ckeditor/ckeditor5-ui/ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils/utils';
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
-import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
-
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
+import '../../../theme/textalternativeform.css';
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import '../../../theme/textalternativeform.css';
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
  * The TextAlternativeFormView class.

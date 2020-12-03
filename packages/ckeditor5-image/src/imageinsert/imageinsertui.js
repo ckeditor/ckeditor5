@@ -7,7 +7,7 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core/core';
 import ImageInsertPanelView from './ui/imageinsertpanelview';
 import { prepareIntegrations } from './utils';
 
