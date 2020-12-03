@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DeleteCommand from '../src/deletecommand';
 import Delete from '../src/delete';
 import ChangeBuffer from '../src/utils/changebuffer';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand', () => {
 	let editor, model, doc;
@@ -25,6 +28,8 @@ describe( 'DeleteCommand', () => {
 
 				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.add( 'delete', command );
+
+				editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );

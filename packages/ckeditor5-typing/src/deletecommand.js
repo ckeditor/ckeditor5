@@ -101,7 +101,7 @@ export default class DeleteCommand extends Command {
 			// Check if deleting in the first empty block.
 			// See https://github.com/ckeditor/ckeditor5/issues/8137.
 			if ( this._shouldReplaceFirstBlockWithParagraph( selection, sequence ) ) {
-				this._replaceFirstBlockWithParagraph( selection, writer );
+				this.editor.execute( 'paragraph', { selection } );
 
 				return;
 			}
@@ -251,24 +251,5 @@ export default class DeleteCommand extends Command {
 		}
 
 		return true;
-	}
-
-	/**
-	 * The first child the limit element is replaced by a paragraph.
-	 *
-	 * @private
-	 * @param {module:engine/model/selection~Selection} selection The selection.
-	 * @param {module:engine/model/writer~Writer} writer The model writer.
-	 */
-	_replaceFirstBlockWithParagraph( selection, writer ) {
-		const model = this.editor.model;
-
-		const limitElement = model.schema.getLimitElement( selection );
-		const paragraph = writer.createElement( 'paragraph' );
-
-		writer.remove( limitElement.getChild( 0 ) );
-		writer.insert( paragraph, limitElement );
-
-		writer.setSelection( paragraph, 0 );
 	}
 }
