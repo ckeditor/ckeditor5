@@ -16,10 +16,22 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgctxt "A label of the button that allows inserting a new code block into the editor content."
-msgid "Insert code block"
-msgstr "Insérer un bloc de code"
+msgctxt "Toolbar button tooltip for the HTML embed feature."
+msgid "Insert HTML"
+msgstr "Insérer du code HTML"
 
-msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
-msgid "Plain text"
-msgstr "Texte brut"
+msgctxt "The HTML snippet."
+msgid "HTML snippet"
+msgstr "Code HTML"
+
+msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
+msgid "Paste raw HTML here..."
+msgstr "Collez le code HTML brut ici..."
+
+msgctxt "A label of a button that switches the HTML embed to the source editing mode."
+msgid "Edit source"
+msgstr "Modifier la source"
+
+msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
+msgid "Save changes"
+msgstr "Enregistrer les changements"

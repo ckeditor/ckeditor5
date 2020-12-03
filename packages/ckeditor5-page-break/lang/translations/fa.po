@@ -12,14 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
-"Language: fr\n"
+"Language-Team: Persian (https://www.transifex.com/ckeditor/teams/11143/fa/)\n"
+"Language: fa\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgctxt "A label of the button that allows inserting a new code block into the editor content."
-msgid "Insert code block"
-msgstr "Insérer un bloc de code"
-
-msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
-msgid "Plain text"
-msgstr "Texte brut"
+msgctxt "Page break"
+msgid "Page break"
+msgstr "برش صفحه"
