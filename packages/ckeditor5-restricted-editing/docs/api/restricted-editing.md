@@ -18,7 +18,7 @@ See the {@link features/restricted-editing restricted editing feature} guide as 
 
 ## Installation
 
-```nohighlight
+```plaintext
 npm install --save @ckeditor/ckeditor5-restricted-editing
 ```
 

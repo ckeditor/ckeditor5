@@ -51,6 +51,9 @@ describe( 'LinkEditing', () => {
 		} );
 
 		editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+		editor.model.schema.setAttributeProperties( 'bold', {
+			isFormatting: true
+		} );
 
 		editor.conversion.attributeToElement( {
 			model: 'bold',
@@ -143,7 +146,7 @@ describe( 'LinkEditing', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/6053
 	describe( 'selection attribute management on paste', () => {
-		it( 'should remove link atttributes when pasting a link', () => {
+		it( 'should remove link attributes when pasting a link', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			model.change( writer => {
@@ -155,7 +158,7 @@ describe( 'LinkEditing', () => {
 			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
 		} );
 
-		it( 'should remove all atttributes starting with "link" (e.g. decorator attributes) when pasting a link', () => {
+		it( 'should remove all attributes starting with "link" (e.g. decorator attributes) when pasting a link', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			model.change( writer => {
@@ -171,7 +174,7 @@ describe( 'LinkEditing', () => {
 			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
 		} );
 
-		it( 'should not remove link atttributes when pasting a non-link content', () => {
+		it( 'should not remove link attributes when pasting a non-link content', () => {
 			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">foo[]</$text></paragraph>' );
 
 			model.change( writer => {
@@ -188,7 +191,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'bold' );
 		} );
 
-		it( 'should not remove link atttributes when pasting in the middle of a link with the same URL', () => {
+		it( 'should not remove link attributes when pasting in the middle of a link with the same URL', () => {
 			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">fo[]o</$text></paragraph>' );
 
 			model.change( writer => {
@@ -199,7 +202,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
-		it( 'should not remove link atttributes from the selection when pasting before a link when the gravity is overridden', () => {
+		it( 'should not remove link attributes from the selection when pasting before a link when the gravity is overridden', () => {
 			setModelData( model, '<paragraph>foo[]<$text linkHref="ckeditor.com">bar</$text></paragraph>' );
 
 			view.document.fire( 'keydown', {
@@ -226,7 +229,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
-		it( 'should not remove link atttributes when pasting a link into another link (different URLs, no merge)', () => {
+		it( 'should not remove link attributes when pasting a link into another link (different URLs, no merge)', () => {
 			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">f[]oo</$text></paragraph>' );
 
 			model.change( writer => {
@@ -244,7 +247,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
-		it( 'should not remove link atttributes when pasting before another link (different URLs, no merge)', () => {
+		it( 'should not remove link attributes when pasting before another link (different URLs, no merge)', () => {
 			setModelData( model, '<paragraph>[]<$text linkHref="ckeditor.com">foo</$text></paragraph>' );
 
 			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
@@ -262,6 +265,43 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 			expect( model.document.selection ).to.have.attribute( 'linkHref', 'http://INSERTED' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/8158
+		it( 'should expand link text on pasting plain text', () => {
+			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">f[]oo</$text></paragraph>' );
+
+			view.document.fire( 'paste', {
+				dataTransfer: createDataTransfer( {
+					'text/html': '<p>bar</p>',
+					'text/plain': 'bar'
+				} ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="ckeditor.com">fbar[]oo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'doesn\'t affect attributes other than link', () => {
+			setModelData( model, '<paragraph><$text bold="true">[foo]</$text></paragraph>' );
+
+			view.document.fire( 'paste', {
+				dataTransfer: createDataTransfer( {
+					'text/html': '<p>bar</p>',
+					'text/plain': 'bar'
+				} ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true">bar[]</$text></paragraph>'
+			);
 		} );
 	} );
 
@@ -1397,15 +1437,6 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is Abcde[]from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 		} );
-
-		function createDataTransfer( data ) {
-			return {
-				getData( type ) {
-					return data[ type ];
-				},
-				setData() {}
-			};
-		}
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/7521
@@ -1586,4 +1617,13 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 		} );
 	} );
+
+	function createDataTransfer( data ) {
+		return {
+			getData( type ) {
+				return data[ type ];
+			},
+			setData() {}
+		};
+	}
 } );
