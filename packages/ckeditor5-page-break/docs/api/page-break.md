@@ -18,7 +18,7 @@ See the {@link features/page-break Page break feature} guide and the {@link modu
 
 ## Installation
 
-```nohighlight
+```plaintext
 npm install --save @ckeditor/ckeditor5-page-break
 ```
 

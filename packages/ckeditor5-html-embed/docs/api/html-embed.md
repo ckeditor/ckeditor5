@@ -18,7 +18,7 @@ See the {@link features/html-embed HTML embed feature} guide and the {@link modu
 
 ## Installation
 
-```nohighlight
+```plaintext
 npm install --save @ckeditor/ckeditor5-html-embed
 ```
 

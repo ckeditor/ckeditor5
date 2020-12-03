@@ -49,7 +49,7 @@ ClassicEditor
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
 
-```nohighlight
+```plaintext
 npm install --save @ckeditor/ckeditor5-heading
 ```
 
