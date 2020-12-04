@@ -84,10 +84,6 @@ ClassicEditor
 ```
 
 ## Known issues
-While the Markdown plugin is stable and ready to use, some issues were reported for it. Feel free to upvote 👍 them on GitHub if they are important for you:
-
-* Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
-* The horizontal rule is not supported by the {@link features/autoformat autoformatting} feature but it gets output to Markdown if inserted using the toolbar button.
 
 <info-box info>
 	Please bear in mind that the Markdown data processor does not support all rich text features. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting options.
@@ -95,6 +91,11 @@ While the Markdown plugin is stable and ready to use, some issues were reported 
 	This means that advanced formatting like list styles, table styles or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be converted from HTML to Markdown.
 </info-box>
 
+While the Markdown plugin is stable and ready to use, some issues were reported for it. Feel free to upvote 👍&nbsp; them on GitHub if they are important for you:
+
+* The horizontal rule is not yet supported by the {@link features/autoformat autoformatting} feature but it gets output to Markdown nevertheless if inserted using the toolbar button.
+* Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+* Tables would render as HTML output if there is no table head defined. See the current status of this issue on GitHub: [#8575](https://github.com/ckeditor/ckeditor5/issues/8572).
 
 ## Contribute
 
