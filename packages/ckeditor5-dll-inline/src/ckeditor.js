@@ -19,11 +19,11 @@ export default class InlineEditor extends InlineEditorBase {}
 InlineEditor.builtinPlugins = [
 	Clipboard,
 	Enter,
+	Paragraph,
 	SelectAll,
 	ShiftEnter,
 	Typing,
-	Undo,
-	Paragraph
+	Undo
 ];
 
 // Editor configuration.
