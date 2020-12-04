@@ -3,4 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ *  @module dll/widget
+ */
+
 export * from '@ckeditor/ckeditor5-widget/widget';

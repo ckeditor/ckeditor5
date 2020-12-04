@@ -3,4 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ *  @module dll/paragraph
+ */
+
 export * from '@ckeditor/ckeditor5-paragraph/paragraph';
