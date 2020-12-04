@@ -7,14 +7,14 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
+import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui/ui';
+
 import TextAlternativeFormView from './ui/textalternativeformview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
 import { getSelectedImageWidget } from '../image/utils';
+
+import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 
 /**
  * The image text alternative UI plugin.

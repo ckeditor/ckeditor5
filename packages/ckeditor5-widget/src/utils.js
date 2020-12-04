@@ -7,16 +7,18 @@
  * @module widget/utils
  */
 
-import HighlightStack from './highlightstack';
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
-import dragHandleIcon from '../theme/icons/drag-handle.svg';
+import HighlightStack from './highlightstack';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
+
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
 /**
  * CSS class added to each widget element.

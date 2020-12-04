@@ -7,8 +7,8 @@
  * @module html-embed/inserthtmlembedcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Command } from '@ckeditor/ckeditor5-core/core';
+import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/widget';
 
 /**
  * The insert HTML embed element command.

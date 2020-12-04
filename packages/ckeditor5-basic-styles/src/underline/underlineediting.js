@@ -7,7 +7,7 @@
  * @module basic-styles/underline/underlineediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core/core';
 import AttributeCommand from '../attributecommand';
 
 const UNDERLINE = 'underline';

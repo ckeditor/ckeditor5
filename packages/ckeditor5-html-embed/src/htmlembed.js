@@ -7,7 +7,8 @@
  * @module html-embed/htmlembed
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core/core';
+
 import HtmlEmbedEditing from './htmlembedediting';
 import HtmlEmbedUI from './htmlembedui';
 
