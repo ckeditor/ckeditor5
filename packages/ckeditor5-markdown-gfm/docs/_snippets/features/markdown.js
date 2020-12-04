@@ -19,29 +19,33 @@ import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [ ArticlePluginSet, EasyImage, Markdown, Code, CodeBlock, TodoList ],
-		toolbar: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'|',
-			'bulletedList',
-			'numberedList',
-			'todoList',
-			'|',
-			'code',
-			'codeBlock',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'imageUpload',
-			'blockQuote',
-			'|',
-			'undo',
-			'redo'
-		],
+		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'|',
+				'bulletedList',
+				'numberedList',
+				'todoList',
+				'|',
+				'code',
+				'codeBlock',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'imageUpload',
+				'blockQuote',
+				'|',
+				'undo',
+				'redo'
+			],
+			shouldNotGroupWhenFull: true,
+			viewportTopOffset: window.getViewportTopOffsetConfig()
+		},
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},

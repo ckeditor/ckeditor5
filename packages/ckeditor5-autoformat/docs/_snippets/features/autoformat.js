@@ -23,6 +23,7 @@ ClassicEditor
 				'strikethrough',
 				'code',
 				'link',
+				'|',
 				'bulletedList',
 				'numberedList',
 				'|',
