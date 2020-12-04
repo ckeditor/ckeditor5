@@ -20,12 +20,14 @@
     "build": "yarn run build:dll && yarn run build:dll-sample"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
     "@ckeditor/ckeditor5-clipboard": "^23.1.0",
     "@ckeditor/ckeditor5-core": "^23.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^23.1.0",
+    "@ckeditor/ckeditor5-editor-decoupled": "^23.1.0",
+    "@ckeditor/ckeditor5-editor-inline": "^23.1.0",
     "@ckeditor/ckeditor5-engine": "^23.1.0",
     "@ckeditor/ckeditor5-enter": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-inline": "^23.1.0",
     "@ckeditor/ckeditor5-paragraph": "^23.1.0",
     "@ckeditor/ckeditor5-select-all": "^23.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
