@@ -24,6 +24,7 @@ ClassicEditor
 				'undo',
 				'redo'
 			],
+			shouldNotGroupWhenFull: true,
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		fontFamily: {

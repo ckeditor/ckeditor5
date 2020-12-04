@@ -18,6 +18,7 @@ ClassicEditor
 			]
 		},
 		toolbar: {
+			shouldNotGroupWhenFull: true,
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
