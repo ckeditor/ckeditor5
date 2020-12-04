@@ -25,7 +25,6 @@ module.exports = {
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},
-	stats: 'verbose',
 	module: {
 		rules: [
 			{

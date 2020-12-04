@@ -18,5 +18,27 @@
     "build:dll": "webpack --config=webpack.config.dll.js",
     "build:dll-sample": "webpack --config=sample/plugin/webpack.config.js",
     "build": "yarn run build:dll && yarn run build:dll-sample"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-clipboard": "^23.1.0",
+    "@ckeditor/ckeditor5-core": "^23.1.0",
+    "@ckeditor/ckeditor5-engine": "^23.1.0",
+    "@ckeditor/ckeditor5-enter": "^23.1.0",
+    "@ckeditor/ckeditor5-editor-inline": "^23.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^23.1.0",
+    "@ckeditor/ckeditor5-select-all": "^23.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
+    "@ckeditor/ckeditor5-typing": "^23.1.0",
+    "@ckeditor/ckeditor5-ui": "^23.1.0",
+    "@ckeditor/ckeditor5-undo": "^23.1.0",
+    "@ckeditor/ckeditor5-upload": "^23.1.0",
+    "@ckeditor/ckeditor5-utils": "^23.1.0",
+    "@ckeditor/ckeditor5-widget": "^23.1.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   }
 }
