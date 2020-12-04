@@ -4,7 +4,20 @@ The sample requires building:
 
 1. Base DLL using `yarn run build:dll`.
 2. The DLL consumer plugin `yarn run build:dll-sample`.
-3. *External* classic editor DLL build from `packages/ckeditor5-dll-classic`.
+3. *External* classic editor DLL builds from `packages/ckeditor5`.
+4. All DLL enabled plugins.
+
+You can run whole project DLL build running in the top-level directory:
+
+```shell
+yarn run build:dll
+```
+
+and then only in this directory:
+
+```shell
+yarn run build:dll-sample
+```
 
 Notes:
 

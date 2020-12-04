@@ -64,8 +64,5 @@
     "lang",
     "src",
     "theme"
-  ],
-  "scripts": {
-    "build:dll": "webpack --config=webpack.config.dll.js"
-  }
+  ]
 }

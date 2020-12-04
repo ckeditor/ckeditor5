@@ -59,6 +59,6 @@
     "theme"
   ],
   "scripts": {
-    "build": "webpack --config=webpack.config.js"
+    "build:dll": "webpack --config=webpack.config.js"
   }
 }
