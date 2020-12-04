@@ -19,6 +19,7 @@ module.exports = {
 		'./src/ui.js',
 
 		// The base editors:
+		'./src/ballooneditor.js',
 		'./src/classiceditor.js',
 		'./src/inlineeditor.js',
 

@@ -22,6 +22,14 @@
 	<img src="./sample.jpg" alt="Autumn fields">
 </div>
 
+<h2>Balloon Editor</h2>
+
+<div id="editor-balloon">
+	<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
+
+	<img src="./sample.jpg" alt="Autumn fields">
+</div>
+
 <script src="https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
 
 <!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
@@ -30,6 +38,7 @@
 <!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
 <script src="../../ckeditor5-dll-classic/build/dll-classic.js"></script>
 <script src="../../ckeditor5-dll-inline/build/dll-inline.js"></script>
+<script src="../../ckeditor5-dll-balloon/build/dll-balloon.js"></script>
 
 <!-- Editor features as DLL consumer builds exposed as CKEditor5[FeatureName] -->
 <script src="../../ckeditor5-basic-styles/build/basic-styles.js"></script>
@@ -41,7 +50,7 @@
 
 <script>
 	// Import Bold, Italic from the CKEditor 5 global.
-	const { ClassicEditor, InlineEditor, BasicStyles, HtmlEmbed, Image } = CKEditor5;
+	const { BalloonEditor, ClassicEditor, InlineEditor, BasicStyles, HtmlEmbed, Image } = CKEditor5;
 	const { Bold, Italic } = BasicStyles;
 
 	const config = {
@@ -79,6 +88,14 @@
 			window.editor = editor;
 
 			CKEditorInspector.attach( { 'dll-inline': editor } );
+		} );
+
+	// BalloonEditor is exposed by the ckeditor5-dll-balloon:
+	BalloonEditor.create( document.querySelector( '#editor-balloon' ), config )
+		.then( editor => {
+			window.editor = editor;
+
+			CKEditorInspector.attach( { 'dll-balloon': editor } );
 		} );
 </script>
 </body>
