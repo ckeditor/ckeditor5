@@ -8,8 +8,9 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import AttributeCommand from '../attributecommand';
 import { TwoStepCaretMovement, inlineHighlight } from '@ckeditor/ckeditor5-typing/typing';
+
+import AttributeCommand from '../attributecommand';
 
 const CODE = 'code';
 const HIGHLIGHT_CLASS = 'ck-code_selected';
