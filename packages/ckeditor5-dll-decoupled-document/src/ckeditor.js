@@ -19,11 +19,11 @@ export default class DecoupledEditor extends DecoupledEditorBase {}
 DecoupledEditor.builtinPlugins = [
 	Clipboard,
 	Enter,
+	Paragraph,
 	SelectAll,
 	ShiftEnter,
 	Typing,
-	Undo,
-	Paragraph
+	Undo
 ];
 
 // Editor configuration.
