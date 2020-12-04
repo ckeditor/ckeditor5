@@ -18,11 +18,11 @@ export default class ClassicEditor extends ClassicEditorBase {}
 ClassicEditor.builtinPlugins = [
 	Clipboard,
 	Enter,
+	Paragraph,
 	SelectAll,
 	ShiftEnter,
 	Typing,
-	Undo,
-	Paragraph
+	Undo
 ];
 
 // Editor configuration.
