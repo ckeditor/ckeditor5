@@ -19,11 +19,11 @@ export default class BalloonEditor extends BalloonEditorBase {}
 BalloonEditor.builtinPlugins = [
 	Clipboard,
 	Enter,
+	Paragraph,
 	SelectAll,
 	ShiftEnter,
 	Typing,
-	Undo,
-	Paragraph
+	Undo
 ];
 
 // Editor configuration.
