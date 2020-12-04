@@ -4,14 +4,13 @@
  */
 
 // The editor creator to use.
-import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-dll/classiceditor';
-
-import { Paragraph } from '@ckeditor/ckeditor5-dll/paragraph';
-import { Clipboard } from '@ckeditor/ckeditor5-dll/clipboard';
-import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-dll/enter';
-import { Typing } from '@ckeditor/ckeditor5-dll/typing';
-import { Undo } from '@ckeditor/ckeditor5-dll/undo';
-import { SelectAll } from '@ckeditor/ckeditor5-dll/selectall';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic/classiceditor';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/paragraph';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/clipboard';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter/enter';
+import { Typing } from '@ckeditor/ckeditor5-typing/typing';
+import { Undo } from '@ckeditor/ckeditor5-undo/undo';
+import { SelectAll } from '@ckeditor/ckeditor5-select-all/selectall';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 

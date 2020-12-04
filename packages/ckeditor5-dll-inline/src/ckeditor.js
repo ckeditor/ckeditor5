@@ -4,14 +4,14 @@
  */
 
 // The editor creator to use.
-import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-dll/inlineeditor';
 
-import { Paragraph } from '@ckeditor/ckeditor5-dll/paragraph';
-import { Clipboard } from '@ckeditor/ckeditor5-dll/clipboard';
-import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-dll/enter';
-import { Typing } from '@ckeditor/ckeditor5-dll/typing';
-import { Undo } from '@ckeditor/ckeditor5-dll/undo';
-import { SelectAll } from '@ckeditor/ckeditor5-dll/selectall';
+import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline/inlineeditor';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/paragraph';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/clipboard';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter/enter';
+import { Typing } from '@ckeditor/ckeditor5-typing/typing';
+import { Undo } from '@ckeditor/ckeditor5-undo/undo';
+import { SelectAll } from '@ckeditor/ckeditor5-select-all/selectall';
 
 export default class InlineEditor extends InlineEditorBase {}
 

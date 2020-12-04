@@ -3,4 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-export * from '@ckeditor/ckeditor5-editor-inline/inlineeditor';
+/**
+ * @module paragraph
+ */
+
+export { default as Paragraph } from './src/paragraph';

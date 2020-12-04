@@ -3,4 +3,4 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-export { default as Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+export * from '@ckeditor/ckeditor5-paragraph/paragraph';

@@ -25,15 +25,35 @@ module.exports = {
 	plugins: [
 		new webpack.DllReferencePlugin( {
 			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
+			scope: '@ckeditor/ckeditor5-clipboard'
+		} ),
+		new webpack.DllReferencePlugin( {
+			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
 			scope: '@ckeditor/ckeditor5-core'
 		} ),
 		new webpack.DllReferencePlugin( {
 			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-utils'
+			scope: '@ckeditor/ckeditor5-editor-inline'
 		} ),
 		new webpack.DllReferencePlugin( {
 			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-dll'
+			scope: '@ckeditor/ckeditor5-enter'
+		} ),
+		new webpack.DllReferencePlugin( {
+			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
+			scope: '@ckeditor/ckeditor5-paragraph'
+		} ),
+		new webpack.DllReferencePlugin( {
+			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
+			scope: '@ckeditor/ckeditor5-select-all'
+		} ),
+		new webpack.DllReferencePlugin( {
+			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
+			scope: '@ckeditor/ckeditor5-typing'
+		} ),
+		new webpack.DllReferencePlugin( {
+			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
+			scope: '@ckeditor/ckeditor5-undo'
 		} )
 	]
 };
