@@ -7,11 +7,9 @@
  * @module table/tableui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { Plugin } from 'ckeditor5/src/core';
+import { addListToDropdown, createDropdown, Model, SplitButtonView } from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
 
 import InsertTableView from './ui/inserttableview';
 
