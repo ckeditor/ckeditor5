@@ -11,7 +11,7 @@
 
 import CKEditorError from './ckeditorerror';
 
-const version = '23.1.0';
+const version = '24.0.0';
 
 /* istanbul ignore next */
 const windowOrGlobal = typeof window === 'object' ? window : global;
