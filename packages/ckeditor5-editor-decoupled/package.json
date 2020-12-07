@@ -15,10 +15,12 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^23.1.0",
     "@ckeditor/ckeditor5-core": "^23.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^23.1.0",
     "@ckeditor/ckeditor5-engine": "^23.1.0",
     "@ckeditor/ckeditor5-enter": "^23.1.0",
     "@ckeditor/ckeditor5-heading": "^23.1.0",
     "@ckeditor/ckeditor5-paragraph": "^23.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
     "@ckeditor/ckeditor5-typing": "^23.1.0",
     "@ckeditor/ckeditor5-ui": "^23.1.0",
     "@ckeditor/ckeditor5-undo": "^23.1.0",
