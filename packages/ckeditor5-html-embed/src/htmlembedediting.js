@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import { toWidget } from 'ckeditor5/src/widget';
 import { logWarning, createElement } from 'ckeditor5/src/utils';
 
 import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
@@ -226,7 +225,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				writer.setCustomProperty( 'rawHtmlApi', rawHtmlApi, viewContainer );
 				writer.setCustomProperty( 'rawHtml', true, viewContainer );
 
-				return toWidget( viewContainer, writer, {
+				return editor.plugins.get( 'Widget' ).toWidget( viewContainer, writer, {
 					widgetLabel: t( 'HTML snippet' ),
 					hasSelectionHandle: true
 				} );

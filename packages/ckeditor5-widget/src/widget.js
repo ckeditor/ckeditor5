@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import { findOptimalInsertionPosition, getLabel, isWidget, toWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import {
 	isArrowKeyCode,
 	isForwardArrowKeyCode
@@ -129,6 +129,14 @@ export default class Widget extends Plugin {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
+	}
+
+	toWidget( element, writer, options ) {
+		return toWidget( element, writer, options );
+	}
+
+	findOptimalInsertionPosition( selection, model ) {
+		return findOptimalInsertionPosition( selection, model );
 	}
 
 	/**

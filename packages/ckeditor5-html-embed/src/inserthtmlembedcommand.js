@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionPosition } from 'ckeditor5/src/widget';
 
 /**
  * The insert HTML embed element command.
@@ -26,7 +25,7 @@ export default class InsertHtmlEmbedCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isHtmlEmbedAllowed( this.editor.model );
+		this.isEnabled = isHtmlEmbedAllowed( this.editor.model, this.editor );
 	}
 
 	/**
@@ -50,11 +49,11 @@ export default class InsertHtmlEmbedCommand extends Command {
 //
 // @param {module:engine/model/model~Model} model
 // @returns {Boolean}
-function isHtmlEmbedAllowed( model ) {
+function isHtmlEmbedAllowed( model, editor ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isHtmlEmbedAllowedInParent( selection, schema, model ) &&
+	return isHtmlEmbedAllowedInParent( selection, schema, model, editor ) &&
 		!checkSelectionOnObject( selection, schema );
 }
 
@@ -64,8 +63,8 @@ function isHtmlEmbedAllowed( model ) {
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {Boolean}
-function isHtmlEmbedAllowedInParent( selection, schema, model ) {
-	const parent = getInsertPageBreakParent( selection, model );
+function isHtmlEmbedAllowedInParent( selection, schema, model, editor ) {
+	const parent = getInsertPageBreakParent( selection, model, editor );
 
 	return schema.checkChild( parent, 'rawHtml' );
 }
@@ -86,8 +85,8 @@ function checkSelectionOnObject( selection, schema ) {
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {module:engine/model/element~Element}
-function getInsertPageBreakParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
+function getInsertPageBreakParent( selection, model, editor ) {
+	const insertAt = editor.plugins.get( 'Widget' ).findOptimalInsertionPosition( selection, model );
 
 	const parent = insertAt.parent;
 
