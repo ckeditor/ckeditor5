@@ -7,7 +7,7 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/ckeditor5-widget/widget';
+import { findOptimalInsertionPosition, isWidget, toWidget } from 'ckeditor5/src/widget';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:

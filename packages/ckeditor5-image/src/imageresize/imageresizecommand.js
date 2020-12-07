@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizecommand
  */
 
-import { Command } from '@ckeditor/ckeditor5-core/core';
+import { Command } from 'ckeditor5/src/core';
 import { isImage } from '../image/utils';
 
 /**

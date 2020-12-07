@@ -7,7 +7,7 @@
  * @module image/imagestyle/utils
  */
 
-import { logWarning } from '@ckeditor/ckeditor5-utils/utils';
+import { logWarning } from 'ckeditor5/src/utils';
 
 import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
 import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';

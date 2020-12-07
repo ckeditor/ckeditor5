@@ -7,11 +7,11 @@
  * @module image/autoimage
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/clipboard';
-import { LivePosition, LiveRange } from '@ckeditor/ckeditor5-engine/engine';
-import { Undo } from '@ckeditor/ckeditor5-undo/undo';
-import { global } from '@ckeditor/ckeditor5-utils/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
+import { Undo } from 'ckeditor5/src/undo';
+import { global } from 'ckeditor5/src/utils';
 
 import { insertImage } from './image/utils';
 

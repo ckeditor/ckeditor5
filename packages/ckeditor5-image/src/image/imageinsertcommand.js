@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { Command } from '@ckeditor/ckeditor5-core/core';
-import { toArray } from '@ckeditor/ckeditor5-utils/utils';
+import { Command } from 'ckeditor5/src/core';
+import { toArray } from 'ckeditor5/src/utils';
 
 import { insertImage, isImageAllowed } from './utils';
 

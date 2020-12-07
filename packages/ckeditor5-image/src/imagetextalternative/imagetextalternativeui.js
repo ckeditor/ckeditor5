@@ -7,8 +7,8 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { ButtonView, ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui/ui';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
 
 import TextAlternativeFormView from './ui/textalternativeformview';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';

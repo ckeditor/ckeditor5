@@ -8,7 +8,7 @@
  */
 
 import ImageTextAlternativeCommand from './imagetextalternativecommand';
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * The image text alternative editing plugin.

@@ -7,7 +7,7 @@
  * @module image/image/imageediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 
 import {

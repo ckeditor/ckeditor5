@@ -58,36 +58,8 @@ module.exports = {
 	},
 	plugins: [
 		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-clipboard'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-core'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-engine'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-ui'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-upload'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-utils'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-undo'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-widget'
+			manifest: require( '../../build/ckeditor5-dll.manifest.json' ),
+			scope: 'ckeditor5/src'
 		} )
 	]
 };

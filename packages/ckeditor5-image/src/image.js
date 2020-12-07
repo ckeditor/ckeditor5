@@ -7,8 +7,8 @@
  * @module image/image
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { Widget } from '@ckeditor/ckeditor5-widget/widget';
+import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
 
 import ImageEditing from '../src/image/imageediting';
 import ImageTextAlternative from './imagetextalternative';

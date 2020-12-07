@@ -7,14 +7,14 @@
  * @module image/imageupload/imageuploadediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { Plugin } from 'ckeditor5/src/core';
 
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/engine';
+import { UpcastWriter } from 'ckeditor5/src/engine';
 
-import { Notification } from '@ckeditor/ckeditor5-ui/ui';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/clipboard';
-import { FileRepository } from '@ckeditor/ckeditor5-upload/upload';
-import { env } from '@ckeditor/ckeditor5-utils/utils';
+import { Notification } from 'ckeditor5/src/ui';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { FileRepository } from 'ckeditor5/src/upload';
+import { env } from 'ckeditor5/src/utils';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';

@@ -7,7 +7,7 @@
  * @module image/image/converters
  */
 
-import { first } from '@ckeditor/ckeditor5-utils/utils';
+import { first } from 'ckeditor5/src/utils';
 import { getViewImgFromWidget } from './utils';
 
 /**
