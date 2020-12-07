@@ -36,7 +36,7 @@
     "@ckeditor/ckeditor5-typing": "^23.1.0",
     "@ckeditor/ckeditor5-undo": "^23.1.0",
     "@ckeditor/ckeditor5-upload": "^23.1.0",
-    "@ckeditor/ckeditor5-utis": "^23.1.0",
+    "@ckeditor/ckeditor5-utils": "^23.1.0",
     "@ckeditor/ckeditor5-widget": "^23.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"

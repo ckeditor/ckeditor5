@@ -1,5 +1,5 @@
 {
-  "name": "@ckeditor/ckeditor5-dll-decoupled",
+  "name": "@ckeditor/ckeditor5-dll-decoupled-document",
   "version": "23.1.0",
   "engines": {
     "node": ">=12.0.0",
