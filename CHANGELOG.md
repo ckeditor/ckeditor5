@@ -22,10 +22,10 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### Features
 
-* **[build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)**: Added new features to the build configuration (horizontal line, page break, remove formatting, and special characters) (see [#6146](https://github.com/ckeditor/ckeditor5/issues/6146)). ([commit](https://github.com/ckeditor/ckeditor5/commit/70157aec7c0ec62b63a51f6bb20764afad443637))
+* **[build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)**: Added new features to the build configuration ([horizontal line](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html), [page break](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html), [remove formatting](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html), and [special characters](https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html)) (see [#6146](https://github.com/ckeditor/ckeditor5/issues/6146)). ([commit](https://github.com/ckeditor/ckeditor5/commit/70157aec7c0ec62b63a51f6bb20764afad443637))
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Introduced the `focus()` method in the base `Editor` class. Closes [#714](https://github.com/ckeditor/ckeditor5/issues/714). ([commit](https://github.com/ckeditor/ckeditor5/commit/dea805153299404a130dcc12aa855cba922a2e86))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduce the `DataProcessor#registerRawContentMatcher()` API that marks content sections that contains arbitrary character data and should not be parsed during conversion. See [#8323](https://github.com/ckeditor/ckeditor5/issues/8323). ([commit](https://github.com/ckeditor/ckeditor5/commit/b8538dea19326a04ed0ff4d8b0ab346f6be8fc08))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Inserting images by pasting URL to an image directly into the editor. Closes [#8236](https://github.com/ckeditor/ckeditor5/issues/8236). ([commit](https://github.com/ckeditor/ckeditor5/commit/908a35ac381c852c466f6144ac25f21f0d5af877))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `DataProcessor#registerRawContentMatcher()` API that marks content sections that contains arbitrary character data and should not be parsed during conversion. See [#8323](https://github.com/ckeditor/ckeditor5/issues/8323). ([commit](https://github.com/ckeditor/ckeditor5/commit/b8538dea19326a04ed0ff4d8b0ab346f6be8fc08))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Support for inserting images by pasting URL to an image directly into the editor. Closes [#8236](https://github.com/ckeditor/ckeditor5/issues/8236). ([commit](https://github.com/ckeditor/ckeditor5/commit/908a35ac381c852c466f6144ac25f21f0d5af877))
 * **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Support for preventing the list styles while pasting from Word. Closes [#8080](https://github.com/ckeditor/ckeditor5/issues/8080). ([commit](https://github.com/ckeditor/ckeditor5/commit/2c03820644f83b2fe247d27fc2c645a5d497b4fd))
 * **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Added two new tooltip positions (east and west) in the `TooltipView` class and the `Button` interface (see [#8340](https://github.com/ckeditor/ckeditor5/issues/8340)). ([commit](https://github.com/ckeditor/ckeditor5/commit/ff62e50b9ef3aee69748cb42c7cc1fe51c76dd1d))
 * **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Implemented a toolbar configuration that allows rendering toolbar items in multiple rows. Closes [#6146](https://github.com/ckeditor/ckeditor5/issues/6146). ([commit](https://github.com/ckeditor/ckeditor5/commit/70157aec7c0ec62b63a51f6bb20764afad443637))
@@ -35,7 +35,7 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### Bug fixes
 
-* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)**: Code should not be copied to a new line on <kbd>Enter</kbd> key. Closes [#8144](https://github.com/ckeditor/ckeditor5/issues/8144). ([commit](https://github.com/ckeditor/ckeditor5/commit/000aeb69672115cf7aaeaee23125e4ac0255966e))
+* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)**: Code should not be copied to a new line on the <kbd>Enter</kbd> key. Closes [#8144](https://github.com/ckeditor/ckeditor5/issues/8144). ([commit](https://github.com/ckeditor/ckeditor5/commit/000aeb69672115cf7aaeaee23125e4ac0255966e))
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Pasting plain text inside a link or restricted editing editable region will no longer break them. Closes [#8158](https://github.com/ckeditor/ckeditor5/issues/8158). ([commit](https://github.com/ckeditor/ckeditor5/commit/8d376fd50be366a67f39423ee8603506a8aa530d))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `DomConverter` will not trim whitespaces in nodes that are siblings to inline raw content elements (e.g. MathML). Closes [#5870](https://github.com/ckeditor/ckeditor5/issues/5870). ([commit](https://github.com/ckeditor/ckeditor5/commit/b8538dea19326a04ed0ff4d8b0ab346f6be8fc08))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The select all command should include all selectable elements in the content. Closes [#7978](https://github.com/ckeditor/ckeditor5/issues/7978). ([commit](https://github.com/ckeditor/ckeditor5/commit/e9d7d17e78a3686a7e3442729f07367b35246e09))
@@ -83,7 +83,6 @@ Major releases (contain major breaking changes):
 
 Minor releases (contain minor breaking changes):
 
-* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image): v23.1.0 => v24.0.0
 * [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image): v23.1.0 => v24.0.0
 
 Releases containing new features:
@@ -130,6 +129,7 @@ Other releases:
 * [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline): v23.1.0 => v24.0.0
 * [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard): v23.1.0 => v24.0.0
 * [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services): v23.1.0 => v24.0.0
+* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image): v23.1.0 => v24.0.0
 * [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon): v23.1.0 => v24.0.0
 * [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v23.1.0 => v24.0.0
 * [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v23.1.0 => v24.0.0
