@@ -7,6 +7,7 @@
 
 const path = require( 'path' );
 const webpack = require( 'webpack' );
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	mode: 'development',
@@ -21,6 +22,37 @@ module.exports = {
 		library: [ 'CKEditor5', 'BalloonEditor' ],
 		libraryTarget: 'umd',
 		libraryExport: 'default'
+	},
+	module: {
+		rules: [
+			{
+				test: /\.svg$/,
+				use: [ 'raw-loader' ]
+			},
+			{
+				test: /\.css$/,
+				use: [
+					{
+						loader: 'style-loader',
+						options: {
+							injectType: 'singletonStyleTag',
+							attributes: {
+								'data-cke': true
+							}
+						}
+					},
+					{
+						loader: 'postcss-loader',
+						options: styles.getPostCssConfig( {
+							themeImporter: {
+								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+							},
+							minify: true
+						} )
+					}
+				]
+			}
+		]
 	},
 	plugins: [
 		new webpack.DllReferencePlugin( {

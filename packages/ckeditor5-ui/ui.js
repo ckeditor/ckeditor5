@@ -9,6 +9,7 @@ export { default as DropdownButtonView } from './src/dropdown/button/dropdownbut
 export { default as SplitButtonView } from './src/dropdown/button/splitbuttonview';
 export * from './src/dropdown/utils';
 
+export { default as EditorUIView } from './src/editorui/editoruiview';
 export { default as BoxedEditorUIView } from './src/editorui/boxed/boxededitoruiview';
 export { default as InlineEditableUIView } from './src/editableui/inline/inlineeditableuiview';
 
@@ -26,6 +27,7 @@ export { default as StickyPanelView } from './src/panel/sticky/stickypanelview';
 export { default as ToolbarView } from './src/toolbar/toolbarview';
 export { default as enableToolbarKeyboardFocus } from './src/toolbar/enabletoolbarkeyboardfocus';
 export { default as normalizeToolbarConfig } from './src/toolbar/normalizetoolbarconfig';
+export { default as BalloonToolbar } from './src/toolbar/balloon/balloontoolbar';
 
 export { default as View } from './src/view';
 export { default as ViewCollection } from './src/viewcollection';

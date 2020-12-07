@@ -15,6 +15,7 @@ export { default as ElementReplacer } from './src/elementreplacer';
 
 export { default as createElement } from './src/dom/createelement';
 export { default as getDataFromElement } from './src/dom/getdatafromelement';
+export { default as setDataInElement } from './src/dom/setdatainelement';
 
 export { default as Collection } from './src/collection';
 export { default as first } from './src/first';

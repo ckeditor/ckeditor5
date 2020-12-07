@@ -7,8 +7,7 @@
  * @module editor-balloon/ballooneditoruiview
  */
 
-import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import { EditorUIView, InlineEditableUIView } from 'ckeditor5/src/ui';
 
 /**
  * Contextual editor UI view. Uses the {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}.

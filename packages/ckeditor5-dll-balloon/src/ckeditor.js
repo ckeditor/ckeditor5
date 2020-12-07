@@ -5,7 +5,7 @@
 
 // The editor creator to use.
 
-import { BalloonEditor as BalloonEditorBase } from 'ckeditor5/src/ballooneditor';
+import BalloonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
