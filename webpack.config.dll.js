@@ -19,7 +19,6 @@ module.exports = {
 		'./src/ui.js',
 
 		// The base editors:
-		'./src/decouplededitor.js',
 		'./src/inlineeditor.js',
 
 		// The Essentials plugin contents:

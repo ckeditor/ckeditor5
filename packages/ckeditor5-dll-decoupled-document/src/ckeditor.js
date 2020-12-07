@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import { DecoupledEditor as DecoupledEditorBase } from 'ckeditor5/src/decouplededitor';
+import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
