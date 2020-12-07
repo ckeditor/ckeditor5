@@ -4,7 +4,11 @@
  */
 
 /**
- *  @module dll/classiceditor
+ * @module editor-classic
  */
 
-export * from '@ckeditor/ckeditor5-editor-classic/classiceditor';
+import ClassicEditor from './src/classiceditor';
+
+export default {
+	ClassicEditor
+};

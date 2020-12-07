@@ -1,3 +1,4 @@
+
 export { default as clickOutsideHandler } from './src/bindings/clickoutsidehandler';
 export { default as injectCssTransitionDisabler } from './src/bindings/injectcsstransitiondisabler';
 export { default as submitHandler } from './src/bindings/submithandler';
@@ -8,6 +9,9 @@ export { default as DropdownButtonView } from './src/dropdown/button/dropdownbut
 export { default as SplitButtonView } from './src/dropdown/button/splitbuttonview';
 export * from './src/dropdown/utils';
 
+export { default as BoxedEditorUIView } from './src/editorui/boxed/boxededitoruiview';
+export { default as InlineEditableUIView } from './src/editableui/inline/inlineeditableuiview';
+
 export { default as FocusCycler } from './src/focuscycler';
 export { default as Notification } from './src/notification/notification';
 
@@ -17,5 +21,11 @@ export * from './src/labeledfield/utils';
 export { default as Model } from './src/model';
 export { default as BalloonPanelView } from './src/panel/balloon/balloonpanelview';
 export { default as ContextualBalloon } from './src/panel/balloon/contextualballoon';
+export { default as StickyPanelView } from './src/panel/sticky/stickypanelview';
+
+export { default as ToolbarView } from './src/toolbar/toolbarview';
+export { default as enableToolbarKeyboardFocus } from './src/toolbar/enabletoolbarkeyboardfocus';
+export { default as normalizeToolbarConfig } from './src/toolbar/normalizetoolbarconfig';
+
 export { default as View } from './src/view';
 export { default as ViewCollection } from './src/viewcollection';

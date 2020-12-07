@@ -3,12 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module engine
+ */
+
 export * from './src/view/placeholder';
 
 export { default as EditingController } from './src/controller/editingcontroller';
 export { default as DataController } from './src/controller/datacontroller';
 
 export { default as Conversion } from './src/conversion/conversion';
+
+export { default as HtmlDataProcessor } from './src/dataprocessor/htmldataprocessor';
 
 export { default as LiveRange } from './src/model/liverange';
 export { default as LivePosition } from './src/model/liveposition';

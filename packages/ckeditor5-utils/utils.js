@@ -11,7 +11,10 @@ export { default as ObservableMixin } from './src/observablemixin';
 
 export { default as CKEditorError, logError, logWarning } from './src/ckeditorerror';
 
+export { default as ElementReplacer } from './src/elementreplacer';
+
 export { default as createElement } from './src/dom/createelement';
+export { default as getDataFromElement } from './src/dom/getdatafromelement';
 
 export { default as Collection } from './src/collection';
 export { default as first } from './src/first';
