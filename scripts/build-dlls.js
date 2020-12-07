@@ -39,8 +39,6 @@ const packages = childProcess.execSync( 'ls packages -1', {
 console.log( '------------------------' );
 console.log( 'Running full DLL rebuild' );
 console.log( '------------------------' );
-buildDll( 'ckeditor5-dll' );
-console.log( '------------------------' );
 
 packages
 	.filter( notBaseDLL )

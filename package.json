@@ -156,7 +156,7 @@
     "release:publish": "node ./scripts/release/publish.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
-    "build:dll": "node ./scripts/build-dlls.js"
+    "build:dll": "webpack --config=webpack.config.dll.js && node ./scripts/build-dlls.js"
   },
   "lint-staged": {
     "**/*.js": [
