@@ -10,7 +10,8 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor-cloud-services-core": "^23.1.0",
-    "@ckeditor/ckeditor5-core": "^23.1.0"
+    "@ckeditor/ckeditor5-core": "^23.1.0",
+    "@ckeditor/ckeditor5-utils": "^23.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-editor-classic": "^23.1.0"

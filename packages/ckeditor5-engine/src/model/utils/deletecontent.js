@@ -213,6 +213,18 @@ function mergeBranches( writer, startPosition, endPosition ) {
 	// Merging should not go deeper than common ancestor.
 	const [ startAncestor, endAncestor ] = getAncestorsJustBelowCommonAncestor( startPosition, endPosition );
 
+	// Branches can't be merged if one of the positions is directly inside a common ancestor.
+	//
+	// Example:
+	//     <blockQuote>
+	//         <paragraph>[foo</paragraph>]
+	//         <table> ... </table>
+	//     <blockQuote>
+	//
+	if ( !startAncestor || !endAncestor ) {
+		return;
+	}
+
 	if ( !model.hasContent( startAncestor, { ignoreMarkers: true } ) && model.hasContent( endAncestor, { ignoreMarkers: true } ) ) {
 		mergeBranchesRight( writer, startPosition, endPosition, startAncestor.parent );
 	} else {

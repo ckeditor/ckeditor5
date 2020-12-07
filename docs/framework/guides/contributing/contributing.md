@@ -23,7 +23,7 @@ To learn how to set up the project and run tests see the {@link framework/guides
 
 ### Code style
 
-Read more in the [code style](https://github.com/ckeditor/ckeditor5-design/wiki/Code-Style), [naming](https://github.com/ckeditor/ckeditor5-design/wiki/Code-Style-Naming-Guidelines) and [file naming](https://github.com/ckeditor/ckeditor5-design/wiki/File-Names) guidelines.
+Read more in the {@link framework/guides/contributing/code-style code style} guide, where you can also check the {@link framework/guides/contributing/code-style#naming naming} and {@link framework/guides/contributing/code-style#file-names file name} guidelines.
 
 Every package repository installs Git hooks that automatically lint and check the code for code style on commit. However, not every code style issue can be discovered this way, so please do not rely on tools too much :).
 

@@ -9,6 +9,7 @@ import CloudServices from '../src/cloudservices';
 import Context from '@ckeditor/ckeditor5-core/src/context';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import TokenMock from './_utils/tokenmock';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const Token = CloudServices.Token;
 
@@ -134,6 +135,84 @@ describe( 'CloudServices', () => {
 
 				return context.destroy();
 			} );
+		} );
+	} );
+
+	describe( 'registerTokenUrl()', () => {
+		it( 'should allow adding additional tokenUrl', async () => {
+			CloudServices.Token.initialToken = 'initial-token';
+
+			const context = await Context.create( {
+				plugins: [ CloudServices ],
+				cloudServices: {
+					tokenUrl: 'http://token-endpoint'
+				}
+			} );
+
+			CloudServices.Token.initialToken = 'another-token';
+
+			const cloudServicesPlugin = context.plugins.get( CloudServices );
+			const extraToken = await cloudServicesPlugin.registerTokenUrl( 'http://another-token-endpoint' );
+
+			expect( cloudServicesPlugin.token.value ).to.equal( 'initial-token' );
+			expect( extraToken.value ).to.equal( 'another-token' );
+
+			await context.destroy();
+		} );
+
+		it( 'should return already registered token', async () => {
+			const context = await Context.create( {
+				plugins: [ CloudServices ],
+				cloudServices: {
+					tokenUrl: 'http://token-endpoint'
+				}
+			} );
+
+			const cloudServicesPlugin = context.plugins.get( CloudServices );
+			const token = await cloudServicesPlugin.registerTokenUrl( 'http://token-endpoint' );
+
+			expect( token ).to.equal( cloudServicesPlugin.token );
+
+			await context.destroy();
+		} );
+	} );
+
+	describe( 'getTokenFor()', () => {
+		it( 'should return token for registered tokenUrl', async () => {
+			const context = await Context.create( {
+				plugins: [ CloudServices ],
+				cloudServices: {
+					tokenUrl: 'http://token-endpoint'
+				}
+			} );
+
+			const cloudServicesPlugin = context.plugins.get( CloudServices );
+			const token = await cloudServicesPlugin.registerTokenUrl( 'http://token-endpoint' );
+			const token2 = cloudServicesPlugin.getTokenFor( 'http://token-endpoint' );
+
+			expect( token ).to.equal( token2 );
+
+			await context.destroy();
+		} );
+
+		it( 'should throw for not registered tokenUrl', async () => {
+			const context = await Context.create( {
+				plugins: [ CloudServices ],
+				cloudServices: {
+					tokenUrl: 'http://token-endpoint'
+				}
+			} );
+
+			const cloudServicesPlugin = context.plugins.get( CloudServices );
+
+			expect( () => {
+				cloudServicesPlugin.getTokenFor( 'http://another-token-endpoint' );
+			} ).to.throw(
+				CKEditorError,
+				'cloudservices-token-not-registered'
+			);
+
+			await context.destroy();
 		} );
 	} );
 

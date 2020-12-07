@@ -12,6 +12,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^23.1.0",
     "@ckeditor/ckeditor5-ui": "^23.1.0",
+    "@ckeditor/ckeditor5-utils": "^23.1.0",
     "@ckeditor/ckeditor5-widget": "^23.1.0",
     "lodash-es": "^4.17.15"
   },
@@ -29,7 +30,6 @@
     "@ckeditor/ckeditor5-paragraph": "^23.1.0",
     "@ckeditor/ckeditor5-typing": "^23.1.0",
     "@ckeditor/ckeditor5-undo": "^23.1.0",
-    "@ckeditor/ckeditor5-utils": "^23.1.0",
     "json-diff": "^0.5.4"
   },
   "engines": {

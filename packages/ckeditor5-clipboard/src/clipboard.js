@@ -115,15 +115,25 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
-				// preserve selection attributes on pasted items.
-				if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
-					// Consider only formatting attributes.
-					const textAttributes = new Map( Array.from( modelDocument.selection.getAttributes() ).filter(
-						keyValuePair => editor.model.schema.getAttributeProperties( keyValuePair[ 0 ] ).isFormatting
-					) );
+				model.change( writer => {
+					const selection = model.document.selection;
 
-					model.change( writer => {
+					// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
+					// preserve selection attributes on pasted items.
+					if ( data.asPlainText || isPlainTextFragment( modelFragment, model.schema ) ) {
+						// Formatting attributes should be preserved.
+						const textAttributes = Array.from( selection.getAttributes() )
+							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
+
+						if ( !selection.isCollapsed ) {
+							model.deleteContent( selection, { doNotAutoparagraph: true } );
+						}
+
+						// But also preserve other attributes if they survived the content deletion (because they were not fully selected).
+						// For example linkHref is not a formatting attribute but it should be preserved if pasted text was in the middle
+						// of a link.
+						textAttributes.push( ...selection.getAttributes() );
+
 						const range = writer.createRangeIn( modelFragment );
 
 						for ( const item of range.getItems() ) {
@@ -131,10 +141,10 @@ export default class Clipboard extends Plugin {
 								writer.setAttributes( textAttributes, item );
 							}
 						}
-					} );
-				}
+					}
 
-				model.insertContent( modelFragment );
+					model.insertContent( modelFragment );
+				} );
 
 				evt.stop();
 			}
@@ -235,13 +245,18 @@ export default class Clipboard extends Plugin {
 // Returns true if specified `documentFragment` represents a plain text.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
+// @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function isPlainTextFragment( documentFragment ) {
+function isPlainTextFragment( documentFragment, schema ) {
 	if ( documentFragment.childCount > 1 ) {
 		return false;
 	}
 
 	const child = documentFragment.getChild( 0 );
+
+	if ( schema.isObject( child ) ) {
+		return false;
+	}
 
 	return [ ...child.getAttributeKeys() ].length == 0;
 }

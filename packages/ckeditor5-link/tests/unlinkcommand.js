@@ -144,6 +144,22 @@ describe( 'UnlinkCommand', () => {
 				expect( getData( model ) ).to.equal( '[foobar]' );
 			} );
 
+			it( 'should remove `linkHref` attribute from multiple blocks', () => {
+				setData( model,
+					'<p><$text linkHref="url">fo[oo</$text></p>' +
+					'<p><$text linkHref="url">123</$text></p>' +
+					'<p><$text linkHref="url">baa]ar</$text></p>'
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equal(
+					'<p><$text linkHref="url">fo</$text>[oo</p>' +
+					'<p>123</p>' +
+					'<p>baa]<$text linkHref="url">ar</$text></p>'
+				);
+			} );
+
 			it( 'should remove `linkHref` attribute from selection', () => {
 				setData( model, '<$text linkHref="url">f[ooba]r</$text>' );
 
