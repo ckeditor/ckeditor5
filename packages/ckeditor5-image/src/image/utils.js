@@ -7,8 +7,6 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, isWidget, toWidget } from 'ckeditor5/src/widget';
-
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element.
@@ -19,10 +17,10 @@ import { findOptimalInsertionPosition, isWidget, toWidget } from 'ckeditor5/src/
  * @param {String} label The element's label. It will be concatenated with the image `alt` attribute if one is present.
  * @returns {module:engine/view/element~Element}
  */
-export function toImageWidget( viewElement, writer, label ) {
+export function toImageWidget( viewElement, writer, label, editor ) {
 	writer.setCustomProperty( 'image', true, viewElement );
 
-	return toWidget( viewElement, writer, { label: labelCreator } );
+	return editor.plugins.get( 'Widget' ).toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
 		const imgElement = getViewImgFromWidget( viewElement );
@@ -38,8 +36,8 @@ export function toImageWidget( viewElement, writer, label ) {
  * @param {module:engine/view/element~Element} viewElement
  * @returns {Boolean}
  */
-export function isImageWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( 'image' ) && isWidget( viewElement );
+export function isImageWidget( viewElement, editor ) {
+	return !!viewElement.getCustomProperty( 'image' ) && editor.plugins.get( 'Widget' ).isWidget( viewElement );
 }
 
 /**
@@ -78,10 +76,11 @@ export function isImage( modelElement ) {
  * @param {module:engine/model/position~Position} [insertPosition] Position to insert the image. If not specified,
  * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied.
  */
-export function insertImage( model, attributes = {}, insertPosition = null ) {
+export function insertImage( model, attributes = {}, insertPosition = null, editor ) {
 	model.change( writer => {
 		const imageElement = writer.createElement( 'image', attributes );
 
+		const findOptimalInsertionPosition = editor.plugins.get( 'Widget' ).findOptimalInsertionPosition;
 		const insertAtSelection = insertPosition || findOptimalInsertionPosition( model.document.selection, model );
 
 		model.insertContent( imageElement, insertAtSelection );
@@ -157,8 +156,8 @@ function isInOtherImage( selection ) {
 }
 
 // Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
-function getInsertImageParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
+function getInsertImageParent( selection, model, editor ) {
+	const insertAt = editor.plugins.get( 'Widget' ).findOptimalInsertionPosition( selection, model );
 
 	const parent = insertAt.parent;
 
