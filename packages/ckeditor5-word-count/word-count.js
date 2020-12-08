@@ -7,4 +7,8 @@
  * @module word-count
  */
 
-export default {};
+import WordCount from './src/wordcount';
+
+export default {
+	WordCount
+};

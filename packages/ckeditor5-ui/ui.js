@@ -40,6 +40,8 @@ export { default as BalloonPanelView } from './src/panel/balloon/balloonpanelvie
 export { default as ContextualBalloon } from './src/panel/balloon/contextualballoon';
 export { default as StickyPanelView } from './src/panel/sticky/stickypanelview';
 
+export { default as Template } from './src/template';
+
 export { default as ToolbarView } from './src/toolbar/toolbarview';
 export { default as enableToolbarKeyboardFocus } from './src/toolbar/enabletoolbarkeyboardfocus';
 export { default as normalizeToolbarConfig } from './src/toolbar/normalizetoolbarconfig';
