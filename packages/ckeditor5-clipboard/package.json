@@ -19,10 +19,7 @@
     "@ckeditor/ckeditor5-block-quote": "^23.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
     "@ckeditor/ckeditor5-link": "^23.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^23.1.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "@ckeditor/ckeditor5-dev-utils": "^23.6.1"
+    "@ckeditor/ckeditor5-paragraph": "^23.1.0"
   },
   "engines": {
     "node": ">=12.0.0",
@@ -40,10 +37,6 @@
   "files": [
     "lang",
     "src",
-    "theme",
-    "build"
-  ],
-  "scripts": {
-    "build:dll": "webpack"
-  }
+    "theme"
+  ]
 }
