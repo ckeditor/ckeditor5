@@ -37,12 +37,21 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "build"
   ],
   "depcheckIgnore": [
     "collapse-whitespace",
     "jsdom",
     "void-elements",
     "block-elements"
-  ]
+  ],
+  "scripts": {
+    "build:dll": "webpack"
+  },
+  "devDependencies": {
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "@ckeditor/ckeditor5-dev-utils": "^23.6.1"
+  }
 }

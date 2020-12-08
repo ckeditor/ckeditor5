@@ -43,9 +43,10 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "build"
   ],
   "scripts": {
-    "build:dll": "webpack --config=webpack.config.js"
+    "build:dll": "webpack"
   }
 }
