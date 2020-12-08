@@ -7,4 +7,12 @@
  * @module watchdog
  */
 
-export default {};
+import ContextWatchdog from './src/contextwatchdog';
+import EditorWatchdog from './src/editorwatchdog';
+import Watchdog from './src/watchdog';
+
+export default {
+	ContextWatchdog,
+	EditorWatchdog,
+	Watchdog
+};
