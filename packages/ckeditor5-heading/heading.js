@@ -7,4 +7,14 @@
  * @module heading
  */
 
-export default {};
+import Heading from './src/heading';
+import HeadingEditing from './src/headingediting';
+import HeadingUI from './src/headingui';
+import HeadingButtonsUI from './src/headingbuttonsui';
+
+export default {
+	Heading,
+	HeadingEditing,
+	HeadingUI,
+	HeadingButtonsUI
+};

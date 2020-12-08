@@ -7,8 +7,8 @@
  * @module heading/headingbuttonsui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 import { getLocalizedOptions } from './utils';
 import iconHeading1 from '../theme/icons/heading1.svg';

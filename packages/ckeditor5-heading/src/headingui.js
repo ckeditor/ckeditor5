@@ -7,13 +7,11 @@
  * @module heading/headingui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { Plugin } from 'ckeditor5/src/core';
+import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
 
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import { getLocalizedOptions } from './utils';
-
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import '../theme/heading.css';
 
