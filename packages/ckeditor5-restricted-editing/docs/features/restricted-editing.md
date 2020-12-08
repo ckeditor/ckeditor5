@@ -40,7 +40,7 @@ There are more features that control the way the users are accessing the content
 * [Comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) &ndash; Users can add comments to any part of the content.
 
 <info-box>
-	Read this [CKEditor Ecosystem Blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.
+	Read this [CKEditor Ecosystem blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.
 </info-box>
 
 ## Configuration
