@@ -7,8 +7,8 @@
  * @module image/imagetoolbar
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget/widget';
+import { Plugin } from 'ckeditor5/src/core';
+import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 
 import { getSelectedImageWidget } from './image/utils';
 

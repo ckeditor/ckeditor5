@@ -7,20 +7,22 @@
  * @module table/tableproperties/ui/tablepropertiesview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
+import {
+	ButtonView,
+	FocusCycler,
+	FormHeaderView,
+	LabelView,
+	LabeledFieldView,
+	ToolbarView,
+	View,
+	ViewCollection,
+	addListToDropdown,
+	createLabeledDropdown,
+	createLabeledInputText,
+	submitHandler
+} from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
-import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
@@ -28,8 +30,6 @@ import {
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
-
-import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';

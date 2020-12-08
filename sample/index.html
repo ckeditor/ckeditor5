@@ -68,22 +68,24 @@
 <script src="../build/ckeditor5-dll.js"></script>
 
 <!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
-<script src="../../ckeditor5-dll-classic/build/dll-classic.js"></script>
-<script src="../../ckeditor5-dll-inline/build/dll-inline.js"></script>
-<script src="../../ckeditor5-dll-balloon/build/dll-balloon.js"></script>
-<script src="../../ckeditor5-dll-decoupled-document/build/dll-decoupled-document.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-dll-classic/build/dll-classic.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-dll-inline/build/dll-inline.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-dll-balloon/build/dll-balloon.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-dll-decoupled-document/build/dll-decoupled-document.js"></script>
 
 <!-- Editor features as DLL consumer builds exposed as CKEditor5[FeatureName] -->
-<script src="../../ckeditor5-basic-styles/build/basic-styles.js"></script>
-<script src="../../ckeditor5-html-embed/build/html-embed.js"></script>
-<script src="../../ckeditor5-image/build/image.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-html-embed/build/html-embed.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
 
 <!-- Finally, this is a end-user plugin that uses DLL -->
 <script src="../build/dll-consumer-plugin.js"></script>
 
 <script>
 	// Import Bold, Italic from the CKEditor 5 global.
-	const { BalloonEditor, ClassicEditor, DecoupledEditor, InlineEditor, BasicStyles, HtmlEmbed, Image } = CKEditor5;
+	const { BalloonEditor, ClassicEditor, DecoupledEditor, InlineEditor, BasicStyles, HtmlEmbed, Image, Table } = CKEditor5;
+	const { TableToolbar, TableCellProperties, TableProperties } = Table;
 	const { Bold, Italic } = BasicStyles;
 
 	const config = {
@@ -92,19 +94,28 @@
 			Italic,
 			Image.Image,
 			HtmlEmbed.HtmlEmbed,
+			Table.Table,
+			TableToolbar,
+			TableCellProperties,
+			TableProperties,
 			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
 		],
 		toolbar: [
 			'bold',
 			'italic',
 			'|',
+			'insertTable',
 			'htmlEmbed',
 			'|',
 			'a-button',
 			'|',
 			'undo',
 			'redo'
-		]
+		],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		}
 	};
 
 	// ClassicEditor is exposed by the ckeditor5-dll-classic:

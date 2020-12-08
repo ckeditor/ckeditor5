@@ -7,8 +7,8 @@
  * @module basic-styles/code/codeediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { TwoStepCaretMovement, inlineHighlight } from '@ckeditor/ckeditor5-typing/typing';
+import { Plugin } from 'ckeditor5/src/core';
+import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing';
 
 import AttributeCommand from '../attributecommand';
 

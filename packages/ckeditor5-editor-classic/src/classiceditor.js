@@ -7,17 +7,14 @@
  * @module editor-classic/classiceditor
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
-import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { Editor, DataApiMixin, ElementApiMixin, attachToForm } from 'ckeditor5/src/core';
+import { HtmlDataProcessor } from 'ckeditor5/src/engine';
+import { mix, getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
+
+import { isElement } from 'lodash-es';
+
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The {@glink builds/guides/overview#classic-editor classic editor} implementation.

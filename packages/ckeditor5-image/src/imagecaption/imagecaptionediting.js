@@ -7,7 +7,7 @@
  * @module image/imagecaption/imagecaptionediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { isImage } from '../image/utils';
 import { captionElementCreator, getCaptionFromImage, matchImageCaption } from './utils';
 

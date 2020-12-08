@@ -4,13 +4,13 @@
  */
 
 // The editor creator to use.
-import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic/classiceditor';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/paragraph';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/clipboard';
-import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter/enter';
-import { Typing } from '@ckeditor/ckeditor5-typing/typing';
-import { Undo } from '@ckeditor/ckeditor5-undo/undo';
-import { SelectAll } from '@ckeditor/ckeditor5-select-all/selectall';
+import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { Paragraph } from 'ckeditor5/src/paragraph';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
+import { Typing } from 'ckeditor5/src/typing';
+import { Undo } from 'ckeditor5/src/undo';
+import { SelectAll } from 'ckeditor5/src/selectall';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 

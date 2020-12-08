@@ -7,10 +7,10 @@
  * @module html-embed/htmlembedediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/ui';
-import { toWidget } from '@ckeditor/ckeditor5-widget/widget';
-import { logWarning, createElement } from '@ckeditor/ckeditor5-utils/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
+import { toWidget } from 'ckeditor5/src/widget';
+import { logWarning, createElement } from 'ckeditor5/src/utils';
 
 import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
 import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';

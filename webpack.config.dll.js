@@ -11,20 +11,44 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	mode: 'development',
+	entry: [
+		// The base of the CKEditor 5 framework, in order of appearance:
+		'./src/utils.js',
+		'./src/core.js',
+		'./src/engine.js',
+		'./src/ui.js',
+
+		// The Essentials plugin contents:
+		'./src/clipboard.js',
+		'./src/enter.js',
+		'./src/paragraph.js',
+		'./src/selectall.js',
+		'./src/typing.js',
+		'./src/undo.js',
+
+		// Other, common packages:
+		'./src/upload.js',
+		'./src/widget.js'
+	],
 	optimization: {
 		minimize: false,
 		moduleIds: 'named'
 	},
-	entry: {
-		path: path.resolve( __dirname, 'basic-styles.js' )
-	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
-		filename: 'basic-styles.js',
-		library: [ 'CKEditor5', 'BasicStyles' ],
-		libraryTarget: 'umd',
-		libraryExport: 'default'
+		filename: 'ckeditor5-dll.js',
+		library: 'CKEditor5_DLL',
+		libraryTarget: 'umd'
 	},
+	plugins: [
+		new webpack.DllPlugin( {
+			name: 'CKEditor5_DLL',
+			context: 'src',
+			path: path.resolve( __dirname, 'build/ckeditor5-dll.manifest.json' ),
+			format: true,
+			entryOnly: false
+		} )
+	],
 	module: {
 		rules: [
 			{
@@ -55,11 +79,5 @@ module.exports = {
 				]
 			}
 		]
-	},
-	plugins: [
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../build/ckeditor5-dll.manifest.json' ),
-			scope: 'ckeditor5/src'
-		} )
-	]
+	}
 };

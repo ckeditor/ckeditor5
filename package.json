@@ -38,6 +38,10 @@
     "@ckeditor/ckeditor5-cloud-services": "^23.1.0",
     "@ckeditor/ckeditor5-code-block": "^23.1.0",
     "@ckeditor/ckeditor5-core": "^23.1.0",
+    "@ckeditor/ckeditor5-dll-balloon": "^23.1.0",
+    "@ckeditor/ckeditor5-dll-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-dll-decoupled-document": "^23.1.0",
+    "@ckeditor/ckeditor5-dll-inline": "^23.1.0",
     "@ckeditor/ckeditor5-easy-image": "^23.1.0",
     "@ckeditor/ckeditor5-editor-balloon": "^23.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
@@ -156,7 +160,7 @@
     "release:publish": "node ./scripts/release/publish.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
-    "build:dll": "node ./scripts/build-dlls.js"
+    "build:dll": "webpack --config=webpack.config.dll.js && node ./scripts/build-dlls.js"
   },
   "lint-staged": {
     "**/*.js": [

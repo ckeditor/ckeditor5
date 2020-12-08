@@ -16,8 +16,8 @@ import {
 	createLabeledInputText,
 	injectCssTransitionDisabler,
 	submitHandler
-} from '@ckeditor/ckeditor5-ui/ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils/utils';
+} from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import '../../../theme/textalternativeform.css';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';

@@ -7,7 +7,7 @@
  * @module basic-styles/superscript
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { Plugin } from 'ckeditor5/src/core';
 import SuperscriptEditing from './superscript/superscriptediting';
 import SuperscriptUI from './superscript/superscriptui';
 

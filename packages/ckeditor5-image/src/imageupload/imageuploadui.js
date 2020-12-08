@@ -7,8 +7,8 @@
  * @module image/imageupload/imageuploadui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { FileDialogButtonView } from '@ckeditor/ckeditor5-upload/upload';
+import { Plugin } from 'ckeditor5/src/core';
+import { FileDialogButtonView } from 'ckeditor5/src/upload';
 import { createImageTypeRegExp } from './utils';
 
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';

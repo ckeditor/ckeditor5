@@ -7,6 +7,7 @@
 
 const path = require( 'path' );
 const webpack = require( 'webpack' );
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	mode: 'development',
@@ -22,38 +23,41 @@ module.exports = {
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},
+	module: {
+		rules: [
+			{
+				test: /\.svg$/,
+				use: [ 'raw-loader' ]
+			},
+			{
+				test: /\.css$/,
+				use: [
+					{
+						loader: 'style-loader',
+						options: {
+							injectType: 'singletonStyleTag',
+							attributes: {
+								'data-cke': true
+							}
+						}
+					},
+					{
+						loader: 'postcss-loader',
+						options: styles.getPostCssConfig( {
+							themeImporter: {
+								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+							},
+							minify: true
+						} )
+					}
+				]
+			}
+		]
+	},
 	plugins: [
 		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-clipboard'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-core'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-editor-decoupled'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-enter'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-paragraph'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-select-all'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-typing'
-		} ),
-		new webpack.DllReferencePlugin( {
-			manifest: require( '../../packages/ckeditor5-dll/build/ckeditor5-dll.manifest.json' ),
-			scope: '@ckeditor/ckeditor5-undo'
+			manifest: require( '../../build/ckeditor5-dll.manifest.json' ),
+			scope: 'ckeditor5/src'
 		} )
 	]
 };

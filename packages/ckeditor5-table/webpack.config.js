@@ -16,12 +16,12 @@ module.exports = {
 		moduleIds: 'named'
 	},
 	entry: {
-		path: path.resolve( __dirname, 'basic-styles.js' )
+		path: path.resolve( __dirname, 'table.js' )
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
-		filename: 'basic-styles.js',
-		library: [ 'CKEditor5', 'BasicStyles' ],
+		filename: 'table.js',
+		library: [ 'CKEditor5', 'Table' ],
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},
@@ -63,3 +63,4 @@ module.exports = {
 		} )
 	]
 };
+

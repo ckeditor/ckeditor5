@@ -7,8 +7,8 @@
  * @module basic-styles/code/codeui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/ui';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 import codeIcon from '../../theme/icons/code.svg';
 

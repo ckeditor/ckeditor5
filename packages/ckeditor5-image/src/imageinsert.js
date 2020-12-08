@@ -7,7 +7,7 @@
  * @module image/imageinsert
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core/core';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageUpload from './imageupload';
 import ImageInsertUI from './imageinsert/imageinsertui';
 

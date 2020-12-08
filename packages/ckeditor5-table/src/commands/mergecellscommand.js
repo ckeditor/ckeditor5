@@ -7,7 +7,7 @@
  * @module table/commands/mergecellscommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 import TableUtils from '../tableutils';
 import { getSelectedTableCells, isSelectionRectangular } from '../utils/selection';
 import { updateNumericAttribute } from '../utils/common';

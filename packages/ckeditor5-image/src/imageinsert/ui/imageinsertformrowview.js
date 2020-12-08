@@ -7,7 +7,7 @@
  * @module image/imageinsert/ui/imageinsertformrowview
  */
 
-import { View } from '@ckeditor/ckeditor5-ui/ui';
+import { View } from 'ckeditor5/src/ui';
 
 import '../../../theme/imageinsertformrowview.css';
 

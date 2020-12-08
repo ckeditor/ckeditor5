@@ -7,8 +7,8 @@
  * @module image/imagecaption/utils
  */
 
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/engine';
-import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/widget';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 /**
  * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.
