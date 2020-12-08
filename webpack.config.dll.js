@@ -18,12 +18,6 @@ module.exports = {
 		'./src/engine.js',
 		'./src/ui.js',
 
-		// The base editors:
-		'./src/ballooneditor.js',
-		'./src/classiceditor.js',
-		'./src/decouplededitor.js',
-		'./src/inlineeditor.js',
-
 		// The Essentials plugin contents:
 		'./src/clipboard.js',
 		'./src/enter.js',

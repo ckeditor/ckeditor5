@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import { InlineEditor as InlineEditorBase } from 'ckeditor5/src/inlineeditor';
+import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { Enter, ShiftEnter } from 'ckeditor5/src/enter';

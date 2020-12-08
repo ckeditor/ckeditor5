@@ -11,15 +11,17 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	mode: 'development',
-	entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
 	optimization: {
 		minimize: false,
 		moduleIds: 'named'
 	},
+	entry: {
+		path: path.resolve( __dirname, 'table.js' )
+	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
-		filename: 'dll-decoupled-document.js',
-		library: [ 'CKEditor5', 'DecoupledEditor' ],
+		filename: 'table.js',
+		library: [ 'CKEditor5', 'Table' ],
 		libraryTarget: 'umd',
 		libraryExport: 'default'
 	},
@@ -61,3 +63,4 @@ module.exports = {
 		} )
 	]
 };
+

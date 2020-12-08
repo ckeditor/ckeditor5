@@ -7,7 +7,7 @@
  * @module table/utils/ui/widget
  */
 
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget } from 'ckeditor5/src/widget';
 
 /**
  * Returns a table widget editing view element if one is selected.

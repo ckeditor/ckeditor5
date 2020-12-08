@@ -21,7 +21,9 @@
     "ckeditor5": "^23.1.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
     "@ckeditor/ckeditor5-clipboard": "^23.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
     "@ckeditor/ckeditor5-editor-balloon": "^23.1.0",
     "@ckeditor/ckeditor5-enter": "^23.1.0",
     "@ckeditor/ckeditor5-paragraph": "^23.1.0",

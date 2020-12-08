@@ -12,6 +12,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^23.1.0",
     "@ckeditor/ckeditor5-ui": "^23.1.0",
+    "ckeditor5": "^23.1.0",
     "@ckeditor/ckeditor5-utils": "^23.1.0",
     "@ckeditor/ckeditor5-widget": "^23.1.0",
     "lodash-es": "^4.17.15"
@@ -49,5 +50,8 @@
     "lang",
     "src",
     "theme"
-  ]
+  ],
+  "scripts": {
+    "build:dll": "webpack --config=webpack.config.js"
+  }
 }

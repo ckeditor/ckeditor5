@@ -7,12 +7,10 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView, clickOutsideHandler, ContextualBalloon, getLocalizedColorOptions, normalizeColorOptions } from 'ckeditor5/src/ui';
+
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
-import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import {
 	colorFieldValidator,
 	getLocalizedColorErrorText,
@@ -21,13 +19,11 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator
 } from '../utils/ui/table-properties';
-import {
-	getLocalizedColorOptions,
-	normalizeColorOptions
-} from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import { debounce } from 'lodash-es';
 import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
+
+import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 
 const ERROR_TEXT_TIMEOUT = 500;
 

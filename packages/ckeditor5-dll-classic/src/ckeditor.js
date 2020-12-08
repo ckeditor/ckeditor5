@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import { ClassicEditor as ClassicEditorBase } from 'ckeditor5/src/classiceditor';
+import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
