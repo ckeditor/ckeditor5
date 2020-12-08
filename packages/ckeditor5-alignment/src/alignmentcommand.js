@@ -7,8 +7,8 @@
  * @module alignment/alignmentcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 import { isDefault } from './utils';
 

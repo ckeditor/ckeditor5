@@ -7,4 +7,12 @@
  * @module alignment
  */
 
-export default {};
+import Alignment from './src/alignment';
+import AlignmentEditing from './src/alignmentediting';
+import AlignmentUI from './src/alignmentui';
+
+export default {
+	Alignment,
+	AlignmentEditing,
+	AlignmentUI
+};

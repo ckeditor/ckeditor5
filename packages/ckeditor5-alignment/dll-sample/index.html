@@ -2,16 +2,32 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>DLL sample - Adapter CKFinder</title>
+	<title>DLL sample - Alignment</title>
 </head>
 <body>
 
 <div id="editor">
-	<h2>Image upload</h2>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis
-		tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.</p>
-</div>
+	<p><strong>This should be aligned to the left</strong>. This is a test for text alignment feature.</p>
+	<figure class="image">
+		<img src="sample.jpg" alt="CKEditor logo"/>
+		<figcaption>An image</figcaption>
+	</figure>
+	<p style="text-align:right"><strong>This should be aligned to the right</strong>. Lorem ipsum dolor sit amet, consectetur adipiscing
+		elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+		laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+		fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+		laborum.</p>
 
+	<p style="text-align:center"><strong>This should be centered</strong>. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+		eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+		ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+		pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+	<p style="text-align:justify"><strong>This should be justified</strong>. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+		eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+		ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+		pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
 
 <script src="https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
 
@@ -63,13 +79,17 @@
 	// Import Bold, Italic from the CKEditor 5 global.
 	const {
 		ClassicEditor,
+		autoformat,
 		basicStyles,
 		heading,
 		htmlEmbed,
 		image,
+		indent,
+		link,
 		list,
+		mediaEmbed,
 		table,
-		adapterCkfinder
+		alignment
 	} = CKEditor5;
 
 	const config = {
@@ -78,18 +98,19 @@
 			basicStyles.Bold,
 			basicStyles.Italic,
 			list.List,
+			link.Link,
 			image.Image,
-			image.ImageToolbar,
 			image.ImageCaption,
 			image.ImageStyle,
-			image.ImageUpload,
-			adapterCkfinder.UploadAdapter
+			image.ImageToolbar,
+			mediaEmbed.MediaEmbed,
+			table.Table,
+			table.TableToolbar,
+			alignment.Alignment
 		].filter( plugin => !!plugin ),
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'imageUpload' ],
-		ckfinder: {
-			// eslint-disable-next-line max-len
-			uploadUrl: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-		}
+		toolbar: [
+			'heading', '|', 'alignment', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+		]
 	};
 
 	// ClassicEditor is exposed by the ckeditor5-dll-classic:
