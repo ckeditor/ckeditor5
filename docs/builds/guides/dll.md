@@ -1,5 +1,6 @@
 ---
-menu-title: DLL category: builds-guides
+menu-title: DLL
+category: builds-guides
 ---
 
 # CKEditor 5 DLL builds
@@ -442,3 +443,29 @@ The code bundled in the DLL can be used directly in a `<script>` tag:
 
 </script>
 ```
+
+## Building DLL and writing for DLLs
+
+To allow simultaneous development of standard and DLL builds you need to follow the below rules:
+
+1. You are allowed to import only from base DLL packages listed in [Base DLL bundle](#base-dll-bundle) using `ckeditor5` package.
+   For instance, import public API from the `ckeditor5` package:
+   ```js
+   import { Plugin } from 'ckeditor5/core';
+   ```
+   Do not import by a full path:
+   ```js
+   import { Plugin } from '@ckeditor5-core/src/plugin';
+   ```
+2. Do not import anything from other packages.
+   Imports from other packages are disallowed. Their API should be provided on the editor plugin:
+   Do not:
+   ```js
+   import { doBar } from '@ckeditor/ckeditor5-foo-bar/src/utils/bar';
+
+   doBar();
+   ```
+   Do instead:
+   ```js
+   editor.plugins.get( 'Foo' ).doBar();
+   ```
