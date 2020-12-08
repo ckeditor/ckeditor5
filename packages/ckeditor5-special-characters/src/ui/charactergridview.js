@@ -7,8 +7,7 @@
  * @module special-characters/ui/charactergridview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { View, ButtonView } from 'ckeditor5/src/ui';
 
 import '../../theme/charactergrid.css';
 

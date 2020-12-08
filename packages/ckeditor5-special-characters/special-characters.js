@@ -7,4 +7,20 @@
  * @module special-characters
  */
 
-export default {};
+import SpecialCharacters from './src/specialcharacters';
+import SpecialCharactersArrows from './src/specialcharactersarrows';
+import SpecialCharactersText from './src/specialcharacterstext';
+import SpecialCharactersMathematical from './src/specialcharactersmathematical';
+import SpecialCharactersLatin from './src/specialcharacterslatin';
+import SpecialCharactersEssentials from './src/specialcharactersessentials';
+import SpecialCharactersCurrency from './src/specialcharacterscurrency';
+
+export default {
+	SpecialCharacters,
+	SpecialCharactersArrows,
+	SpecialCharactersText,
+	SpecialCharactersMathematical,
+	SpecialCharactersLatin,
+	SpecialCharactersEssentials,
+	SpecialCharactersCurrency
+};

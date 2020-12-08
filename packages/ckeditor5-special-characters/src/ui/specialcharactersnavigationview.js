@@ -7,14 +7,8 @@
  * @module special-characters/ui/specialcharactersnavigationview
  */
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import {
-	createDropdown,
-	addListToDropdown
-} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-
-import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
+import { Collection } from 'ckeditor5/src/utils';
+import { Model, FormHeaderView, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
