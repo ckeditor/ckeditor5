@@ -17,3 +17,5 @@ export { default as attachToForm } from './src/editor/utils/attachtoform';
 export { default as DataApiMixin } from './src/editor/utils/dataapimixin';
 export { default as ElementApiMixin } from './src/editor/utils/elementapimixin';
 export { default as secureSourceElement } from './src/editor/utils/securesourceelement';
+
+export { default as PendingActions } from './src/pendingactions';

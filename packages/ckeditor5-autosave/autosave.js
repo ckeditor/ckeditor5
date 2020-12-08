@@ -7,4 +7,8 @@
  * @module autosave
  */
 
-export default {};
+import Autosave from './src/autosave';
+
+export default {
+	Autosave
+};

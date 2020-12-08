@@ -14,6 +14,7 @@ export { default as CKEditorError, logError, logWarning } from './src/ckeditorer
 export { default as ElementReplacer } from './src/elementreplacer';
 
 export { default as createElement } from './src/dom/createelement';
+export { default as DomEmitterMixin } from './src/dom/emittermixin';
 export { default as global } from './src/dom/global';
 export { default as getDataFromElement } from './src/dom/getdatafromelement';
 export { default as Rect } from './src/dom/rect';
