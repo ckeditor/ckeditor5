@@ -95,7 +95,7 @@ While the Markdown plugin is stable and ready to use, some issues were reported 
 
 * The horizontal rule is not yet supported by the {@link features/autoformat autoformatting} feature but it gets output to Markdown nevertheless if inserted using the toolbar button.
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. See these GitHub issues for possible future development: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
-* Tables would render as HTML output if there is no table head defined. See the current status of this issue on GitHub: [#8575](https://github.com/ckeditor/ckeditor5/issues/8572).
+* Tables will render as HTML output if there is no table head defined. GitHub issue: [#8575](https://github.com/ckeditor/ckeditor5/issues/8572).
 
 ## Contribute
 
