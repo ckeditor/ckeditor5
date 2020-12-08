@@ -32,7 +32,7 @@ const buildDll = fullPackageName => {
 	}
 };
 
-const packages = childProcess.execSync( 'ls packages -1', {
+const packages = childProcess.execSync( 'ls -1 packages', {
 	encoding: 'utf8'
 } ).toString().trim().split( '\n' );
 
