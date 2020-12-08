@@ -33,11 +33,11 @@ Then you can switch to the restricted editing mode to see how the editable and n
 
 ## Related features
 
-There are more features that control the way the users are accessing the content:
+There are more features that help control user permissions in the WYSIWYG editor:
 
-* {@link features/restricted-editing Restricted editing} &ndash; Define editable areas of the document for users with restricted editing rights.
-* [Track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) &ndash; User changes are marked and shown in the sidebar for acceptance or deletion.
-* [Comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) &ndash; Users can add comments to any part of the content.
+* {@link features/read-only Read-only} &ndash; Turn the entire content of the editor read-only.
+* [Track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
+* [Comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) &ndash; Users can add comments to any part of the content instead of editing it directly.
 
 <info-box>
 	Read this [CKEditor Ecosystem blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.

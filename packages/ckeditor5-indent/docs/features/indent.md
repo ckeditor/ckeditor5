@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-indent-source}
 
-The block indentation feature allows you to set indentation for text blocks such as paragraphs or headings and lists. It is implemented by three plugins: {@link module:indent/indent~Indent}, {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List}. Its main purpose is to visually distinguish parts of the content. It may be structure elements like headings or lists, or parts of text like paragraphs that need to be emphasized, present quotes or need to be otherwise separated from the main content body.
+The block indentation feature allows you to set indentation for text blocks such as paragraphs or headings and lists. It is implemented by three plugins: {@link module:indent/indent~Indent}, {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List}. Its main purpose is to visually distinguish parts of the content. Indent is mostly useful for graphically distinguishing structure elements like headings or lists. It can also be applied to present quotes or to make paragraphs or passages that need to be separated from the main content body stick out more.
 
 <info-box info>
 	Block indentation can be removed with the {@link features/remove-format remove format} feature.
