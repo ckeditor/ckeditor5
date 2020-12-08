@@ -98,7 +98,7 @@ msgstr "Убаци слику преко УРЛ-а"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Ажурирај УРЛ слике"
 
 msgctxt "The content of the tip below the Insert image via URL form."
 msgid "Paste the image source URL."

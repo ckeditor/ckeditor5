@@ -12,6 +12,7 @@
 		"builds/guides/browser-compatibility.html": "builds/guides/support/browser-compatibility.html",
 		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html",
 		"builds/guides/development/installing-plugins.html": "builds/guides/integration/installing-plugins.html",
+		"builds/guides/integration/frameworks/vuejs.html": "builds/guides/integration/frameworks/vuejs-v3.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",

@@ -9,6 +9,7 @@
 
 import TableWalker from './../tablewalker';
 import { setHighlightHandling, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * Model table element to view table element conversion helper.
@@ -314,8 +315,8 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi )
 	setHighlightHandling(
 		renamedCell,
 		viewWriter,
-		( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.classes ), element ),
-		( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.classes ), element )
+		( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
+		( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
 	);
 
 	viewWriter.insert( viewWriter.createPositionAfter( viewCell ), renamedCell );
@@ -363,8 +364,8 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 		setHighlightHandling(
 			cellElement,
 			conversionApi.writer,
-			( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.classes ), element ),
-			( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.classes ), element )
+			( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
+			( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
 		);
 	}
 
@@ -520,8 +521,4 @@ function getViewTable( viewFigure ) {
 // @returns {Boolean}
 function hasAnyAttribute( element ) {
 	return !![ ...element.getAttributeKeys() ].length;
-}
-
-function normalizeToArray( classes ) {
-	return Array.isArray( classes ) ? classes : [ classes ];
 }

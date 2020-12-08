@@ -130,6 +130,16 @@ describe( 'FontFamilyEditing', () => {
 
 					expect( editor.getData() ).to.equal( data );
 				} );
+
+				it( 'should convert from a nested element', () => {
+					const data = '<p>f<span><span><span><span style="font-family: Arial, sans-serif">o</span></span></span></span>o</p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial, sans-serif">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
+				} );
 			} );
 		} );
 	} );

@@ -38,6 +38,8 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 import DowncastWriter from '../../src/view/downcastwriter';
 
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;
 
@@ -190,6 +192,53 @@ describe( 'DowncastHelpers', () => {
 					} );
 
 					expectResult( '<div class="is-classy"></div>' );
+				} );
+
+				it( 'should properly re-bind mapper mappings and retain markers', () => {
+					downcastHelpers.elementToElement( {
+						model: 'simpleBlock',
+						view: ( modelElement, { writer } ) => {
+							const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
+
+							return toWidget( viewElement, writer );
+						},
+						triggerBy: {
+							attributes: [ 'toStyle', 'toClass' ]
+						},
+						converterPriority: 'high'
+					} );
+
+					const mapper = controller.mapper;
+
+					downcastHelpers.markerToHighlight( {
+						model: 'myMarker',
+						view: { classes: 'foo' }
+					} );
+
+					setModelData( model, '<simpleBlock></simpleBlock>' );
+
+					const modelElement = modelRoot.getChild( 0 );
+					const [ viewBefore ] = getNodes();
+
+					model.change( writer => {
+						writer.addMarker( 'myMarker', { range: writer.createRangeOn( modelElement ), usingOperation: false } );
+					} );
+
+					expect( mapper.toViewElement( modelElement ) ).to.equal( viewBefore );
+					expect( mapper.toModelElement( viewBefore ) ).to.equal( modelElement );
+					expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.true;
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:block', modelElement );
+					} );
+
+					const [ viewAfter ] = getNodes();
+
+					expect( mapper.toViewElement( modelElement ) ).to.equal( viewAfter );
+					expect( mapper.toModelElement( viewBefore ) ).to.be.undefined;
+					expect( mapper.toModelElement( viewAfter ) ).to.equal( modelElement );
+					expect( mapper.markerNameToElements( 'myMarker' ).has( viewAfter ) ).to.be.true;
+					expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.false;
 				} );
 
 				it( 'should do nothing if non-triggerBy attribute has changed', () => {

@@ -71,25 +71,26 @@ export function isImage( modelElement ) {
 /**
  * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
  *
- *		model.change( writer => {
- *			insertImage( writer, model, { src: 'path/to/image.jpg' } );
- *		} );
+ *		insertImage( model, { src: 'path/to/image.jpg' } );
  *
- * @param {module:engine/model/writer~Writer} writer
  * @param {module:engine/model/model~Model} model
  * @param {Object} [attributes={}] Attributes of inserted image
+ * @param {module:engine/model/position~Position} [insertPosition] Position to insert the image. If not specified,
+ * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied.
  */
-export function insertImage( writer, model, attributes = {} ) {
-	const imageElement = writer.createElement( 'image', attributes );
+export function insertImage( model, attributes = {}, insertPosition = null ) {
+	model.change( writer => {
+		const imageElement = writer.createElement( 'image', attributes );
 
-	const insertAtSelection = findOptimalInsertionPosition( model.document.selection, model );
+		const insertAtSelection = insertPosition || findOptimalInsertionPosition( model.document.selection, model );
 
-	model.insertContent( imageElement, insertAtSelection );
+		model.insertContent( imageElement, insertAtSelection );
 
-	// Inserting an image might've failed due to schema regulations.
-	if ( imageElement.parent ) {
-		writer.setSelection( imageElement, 'on' );
-	}
+		// Inserting an image might've failed due to schema regulations.
+		if ( imageElement.parent ) {
+			writer.setSelection( imageElement, 'on' );
+		}
+	} );
 }
 
 /**

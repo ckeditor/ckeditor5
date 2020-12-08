@@ -9,6 +9,7 @@
 
 import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin';
 import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Plugin introducing integration between CKEditor 5 and CKEditor Cloud Services .
@@ -39,6 +40,14 @@ export default class CloudServices extends ContextPlugin {
 		}
 
 		/**
+		 * Map of `Token` object instances keyed by `tokenUrl`s.
+		 *
+		 * @private
+		 * @type {Map.<String, module:cloud-services-core/token~Token>}
+		 */
+		this._tokens = new Map();
+
+		/**
 		 * The authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
 		 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
 		 *
@@ -58,7 +67,7 @@ export default class CloudServices extends ContextPlugin {
 		 * Its value is `null` when {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} is not provided.
 		 *
 		 * @readonly
-		 * @member {Object|null} #token
+		 * @member {module:cloud-services-core/token~Token|null} #token
 		 */
 
 		if ( !this.tokenUrl ) {
@@ -69,7 +78,50 @@ export default class CloudServices extends ContextPlugin {
 
 		this.token = new CloudServices.Token( this.tokenUrl );
 
+		this._tokens.set( this.tokenUrl, this.token );
+
 		return this.token.init();
+	}
+
+	/**
+	 * Registers an additional authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
+	 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
+	 *
+	 * @param {String|Function} tokenUrl The authentication token URL for CKEditor Cloud Services or a callback to the token value promise.
+	 * @returns {Promise.<module:cloud-services-core/token~Token>}
+	 */
+	registerTokenUrl( tokenUrl ) {
+		// Reuse Token instance in case of multiple features using the same tokenUrl.
+		if ( this._tokens.has( tokenUrl ) ) {
+			return Promise.resolve( this.getTokenFor( tokenUrl ) );
+		}
+
+		const token = new CloudServices.Token( tokenUrl );
+
+		this._tokens.set( tokenUrl, token );
+
+		return token.init();
+	}
+
+	/**
+	 * Returns authentication token provider previously registered by {@link #registerTokenUrl}.
+	 *
+	 * @param {String|Function} tokenUrl The authentication token URL for CKEditor Cloud Services or a callback to the token value promise.
+	 * @returns {module:cloud-services-core/token~Token}
+	 */
+	getTokenFor( tokenUrl ) {
+		const token = this._tokens.get( tokenUrl );
+
+		if ( !token ) {
+			/**
+			 * Provided `tokenUrl` was not registered by {@link module:cloud-services/cloudservices~CloudServices#registerTokenUrl}.
+			 *
+			 * @error cloudservices-token-not-registered
+			 */
+			throw new CKEditorError( 'cloudservices-token-not-registered', this );
+		}
+
+		return token;
 	}
 
 	/**
@@ -78,8 +130,8 @@ export default class CloudServices extends ContextPlugin {
 	destroy() {
 		super.destroy();
 
-		if ( this.token ) {
-			this.token.destroy();
+		for ( const token of this._tokens.values() ) {
+			token.destroy();
 		}
 	}
 }
