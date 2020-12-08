@@ -42,7 +42,7 @@ ClassicEditor
 
 ## Related features
 
-There are other productivity-boosting features that you may find helpful:
+CKEditor 5 provides other productivity-boosting features that you may find helpful:
 
 * {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
 * {@link builds/guides/integration/saving-data#autosave-feature Autosave} &ndash; Never lose you content by accident, stay safe and automatically save.
