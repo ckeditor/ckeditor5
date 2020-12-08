@@ -446,6 +446,8 @@ The code bundled in the DLL can be used directly in a `<script>` tag:
 
 ## Building DLL and writing for DLLs
 
+### Code guidelines
+
 To allow simultaneous development of standard and DLL builds you need to follow the below rules:
 
 1. You are allowed to import only from base DLL packages listed in [Base DLL bundle](#base-dll-bundle) using `ckeditor5` package.
@@ -469,3 +471,17 @@ To allow simultaneous development of standard and DLL builds you need to follow 
    ```js
    editor.plugins.get( 'Foo' ).doBar();
    ```
+
+### Building the DLL builds
+
+In the main repo you can run `build:dll` task which will build the base DLL build and all DLL-enabled builds:
+
+```shell
+yarn run build:dll
+```
+
+This script will look for `build:dll` script inside any packages from `./packages` folder.
+
+The full rebuild is not necessary for the DLL consumer plugins if the main DLL bundle has not changed. You can run `yarn run build:dll` in the DLL consumer plugin after changes.
+
+Additionally, if the main bundle has been changed but its exports remain the same (ie bugfix in `ckeditor5-core`), the rebuild of DLL consumer plugins is not needed.
