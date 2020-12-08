@@ -11,7 +11,7 @@ This release brings some new features:
 
 * [Accessible, Material design like input labels](https://github.com/ckeditor/ckeditor5/issues/1098).
 * The long-awaited [multiline toolbar](https://github.com/ckeditor/ckeditor5/issues/6146).
-* [Inserting images by pasting the URL directly into the editor](Ihttps://github.com/ckeditor/ckeditor5/issues/8236).
+* [Inserting images by pasting the URL directly into the editor](https://github.com/ckeditor/ckeditor5/issues/8236).
 * The [`editor.focus()` method](https://github.com/ckeditor/ckeditor5/issues/714).
 
 There were also some important bug fixes:
