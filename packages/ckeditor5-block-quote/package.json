@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^23.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^23.6.1"
+    "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
     "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
     "@ckeditor/ckeditor5-engine": "^23.1.0",
     "@ckeditor/ckeditor5-enter": "^23.1.0",
