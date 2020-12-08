@@ -458,7 +458,7 @@ To allow simultaneous development of standard and DLL builds you need to follow 
    ```
    Do not import by a full path:
    ```js
-   import { Plugin } from '@ckeditor5-core/src/plugin';
+   import Plugin from '@ckeditor5-core/src/plugin';
    ```
 2. Do not import anything from other packages.
    Imports from other packages are disallowed. Their API should be provided on the editor plugin:
