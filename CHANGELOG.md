@@ -7,7 +7,7 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v24.0.0.
 
-This release brings the new, exciting features to name just [accessible input labels](https://github.com/ckeditor/ckeditor5/issues/1098) and the long-awaited [multiline toolbar](https://github.com/ckeditor/ckeditor5/issues/6146). It is also now possible to [simply paste an image URL](Ihttps://github.com/ckeditor/ckeditor5/issues/8236) to put and image into the content.
+This release brings the new, exciting features to name just [accessible input labels](https://github.com/ckeditor/ckeditor5/issues/1098) and the long-awaited [multiline toolbar](https://github.com/ckeditor/ckeditor5/issues/6146). It is also now possible to [simply paste an image URL](https://github.com/ckeditor/ckeditor5/issues/8236) to put and image into the content.
 
 There were also some important bugfixes:
 * [Issues with the lists and list styles](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+38%22+-label%3Atype%3Adocs+-label%3Atype%3Atask+sort%3Aupdated-desc+label%3Apackage%3Alist).
