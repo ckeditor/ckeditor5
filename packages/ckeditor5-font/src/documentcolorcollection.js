@@ -7,9 +7,7 @@
  * @module font/documentcolorcollection
  */
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Collection, ObservableMixin, mix } from 'ckeditor5/src/utils';
 
 /**
  * A collection to store document colors. It enforces colors to be unique.

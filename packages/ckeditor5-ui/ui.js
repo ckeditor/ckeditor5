@@ -15,6 +15,7 @@ export { default as ButtonView } from './src/button/buttonview';
 
 export * from './src/colorgrid/utils';
 export { default as ColorGridView } from './src/colorgrid/colorgridview';
+export { default as ColorTileView } from './src/colorgrid/colortileview';
 
 export { default as DropdownButtonView } from './src/dropdown/button/dropdownbuttonview';
 export { default as SplitButtonView } from './src/dropdown/button/splitbuttonview';

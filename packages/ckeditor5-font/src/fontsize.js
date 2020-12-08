@@ -7,7 +7,7 @@
  * @module font/fontsize
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import FontSizeEditing from './fontsize/fontsizeediting';
 import FontSizeUI from './fontsize/fontsizeui';
 
