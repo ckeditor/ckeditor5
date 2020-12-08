@@ -5,6 +5,20 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v24.0.0.
+
+This release brings the new, exciting features to name just [accessible input labels](https://github.com/ckeditor/ckeditor5/issues/1098) and the long-awaited [multiline toolbar](https://github.com/ckeditor/ckeditor5/issues/6146).
+
+[Adding features to builds](https://github.com/ckeditor/ckeditor5/issues/8395) is now available as well as [simply pasting an image URL](Ihttps://github.com/ckeditor/ckeditor5/issues/8236) to put and image into the content.
+
+There were also some important bugfixes:
+* [Issues with the lists and list styles](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+38%22+-label%3Atype%3Adocs+-label%3Atype%3Atask+sort%3Aupdated-desc+label%3Apackage%3Alist).
+* [Enhancements to the HMTL embed feature](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+38%22+-label%3Atype%3Adocs+-label%3Atype%3Atask+sort%3Aupdated-desc+label%3Apackage%3Ahtml-embed) introduced in previous release.
+* [`Select All` does select all now](https://github.com/ckeditor/ckeditor5/issues/7978) - including tables and blockquotes.
+* [`editor.focus()` was implemented](https://github.com/ckeditor/ckeditor5/issues/714)
+
+Please note that there are some **major breaking changes** in this release. Be sure to review them before upgrading.
+
 <!-- TODO: Add a link to the blog post. -->
 
 ### Collaboration features
