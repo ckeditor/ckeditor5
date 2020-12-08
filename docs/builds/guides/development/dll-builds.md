@@ -1,6 +1,7 @@
 ---
 menu-title: DLL
-category: builds-guides
+category: builds-development
+order: 30
 ---
 
 # CKEditor 5 DLL builds
