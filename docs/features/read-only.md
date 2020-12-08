@@ -25,5 +25,5 @@ The feature may also be used to view content that should not be edited, like fin
 There are more features that help control user permissions in the WYSIWYG editor:
 
 * {@link features/restricted-editing Restricted editing} &ndash; Define editable areas of the document for users with restricted editing rights.
-* [Track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
-* [Comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) &ndash; Users can add comments to any part of the content instead of editing it directly.
+* {@link @ckeditor5 features/track-changes Track changes} &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
+* {@link @ckeditor5 features/track-changes Comments} &ndash; Users can add comments to any part of the content instead of editing it directly.
