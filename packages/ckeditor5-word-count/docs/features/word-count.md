@@ -45,7 +45,7 @@ ClassicEditor
 There are other productivity-boosting features that you may find helpful:
 
 * {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
-* {@link builds/guides/integration/saving-data#autosave-feature Autosave} &ndash; Never loose you content by accident, stay safe and save.
+* {@link builds/guides/integration/saving-data#autosave-feature Autosave} &ndash; Never lose you content by accident, stay safe and automatically save.
 * {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
 * {@link features/text-transformation Automatic text transformation} &ndash; The autocorrect feature automatically turns predefined snippets into their improved forms.
 
