@@ -14,15 +14,17 @@ export { default as CKEditorError, logError, logWarning } from './src/ckeditorer
 export { default as ElementReplacer } from './src/elementreplacer';
 
 export { default as createElement } from './src/dom/createelement';
+export { default as global } from './src/dom/global';
 export { default as getDataFromElement } from './src/dom/getdatafromelement';
 export { default as Rect } from './src/dom/rect';
 export { default as ResizeObserver } from './src/dom/resizeobserver';
 export { default as setDataInElement } from './src/dom/setdatainelement';
 export { default as toUnit } from './src/dom/tounit';
 
+export * from './src/keyboard';
 export { default as Collection } from './src/collection';
 export { default as first } from './src/first';
 export { default as FocusTracker } from './src/focustracker';
 export { default as KeystrokeHandler } from './src/keystrokehandler';
-export { default as global } from './src/dom/global';
 export { default as toArray } from './src/toarray';
+export { default as priorities } from './src/priorities';

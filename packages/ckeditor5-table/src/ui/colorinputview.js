@@ -7,12 +7,10 @@
  * @module table/ui/colorinputview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ColorGrid from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
+import { View, InputTextView, ButtonView, createDropdown, ColorGridView } from 'ckeditor5/src/ui';
+
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+
 import '../../theme/colorinput.css';
 
 /**
@@ -286,7 +284,7 @@ export default class ColorInputView extends View {
 	 * @private
 	 */
 	_createColorGrid( locale ) {
-		const colorGrid = new ColorGrid( locale, {
+		const colorGrid = new ColorGridView( locale, {
 			colorDefinitions: this.options.colorDefinitions,
 			columns: this.options.columns
 		} );

@@ -7,7 +7,7 @@
  * @module table/tableproperties/commands/tablepropertycommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The table cell attribute command.
