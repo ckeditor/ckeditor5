@@ -7,4 +7,8 @@
  * @module ckfinder
  */
 
-export default {};
+import CKFinder from './src/ckfinder';
+
+export default {
+	CKFinder
+};

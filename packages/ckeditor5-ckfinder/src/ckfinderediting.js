@@ -7,10 +7,12 @@
  * @module ckfinder/ckfinderediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import { Plugin } from 'ckeditor5/src/core';
+import { Notification } from 'ckeditor5/src/ui';
+
+// TODO: softRequires()
+// import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+// import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 
 import CKFinderCommand from './ckfindercommand';
 
@@ -31,7 +33,7 @@ export default class CKFinderEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Notification, ImageEditing, LinkEditing ];
+		return [ Notification ];
 	}
 
 	/**

@@ -9,8 +9,8 @@
  * @module ckfinder/ckfindercommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { Command } from 'ckeditor5/src/core';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing CKFinder editing feature}
