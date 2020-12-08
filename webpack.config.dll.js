@@ -22,7 +22,7 @@ module.exports = {
 		'./src/clipboard.js',
 		'./src/enter.js',
 		'./src/paragraph.js',
-		'./src/selectall.js',
+		'./src/select-all.js',
 		'./src/typing.js',
 		'./src/undo.js',
 

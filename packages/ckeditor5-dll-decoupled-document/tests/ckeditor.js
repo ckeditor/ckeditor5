@@ -11,7 +11,7 @@ import { Clipboard } from 'ckeditor5/src/clipboard';
 import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
 import { Typing } from 'ckeditor5/src/typing';
 import { Undo } from 'ckeditor5/src/undo';
-import { SelectAll } from 'ckeditor5/src/selectall';
+import { SelectAll } from 'ckeditor5/src/select-all';
 
 import DecoupledEditor from '../src/ckeditor';
 

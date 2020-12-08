@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^23.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
     "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
     "@ckeditor/ckeditor5-engine": "^23.1.0",
     "@ckeditor/ckeditor5-essentials": "^23.1.0",
@@ -42,9 +42,10 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "build"
   ],
   "scripts": {
-    "build:dll": "webpack --config=webpack.config.js"
+    "build:dll": "webpack"
   }
 }
