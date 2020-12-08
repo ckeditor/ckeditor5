@@ -20,7 +20,7 @@ The feature may be used to impose user-based access restriction, where a selecte
 
 ## Related features
 
-There are more features that control the way the users are accessing the content:
+There are more features that help control user permissions in the WYSIWYG editor:
 
 * {@link features/restricted-editing Restricted editing} &ndash; Define editable areas of the document for users with restricted editing rights.
 * [Track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) &ndash; User changes are marked and shown in the sidebar for acceptance or deletion.
