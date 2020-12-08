@@ -7,10 +7,11 @@
  * @module block-quote/blockquoteui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 import quoteIcon from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
+
 import '../theme/blockquote.css';
 
 /**

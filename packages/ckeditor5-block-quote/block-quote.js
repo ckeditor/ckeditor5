@@ -7,4 +7,12 @@
  * @module block-quote
  */
 
-export default {};
+import BlockQuote from './src/blockquote';
+import BlockQuoteEditing from './src/blockquoteediting';
+import BlockQuoteUI from './src/blockquoteui';
+
+export default {
+	BlockQuote,
+	BlockQuoteEditing,
+	BlockQuoteUI
+};
