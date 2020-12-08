@@ -123,6 +123,7 @@ export default class Title extends Plugin {
 	 * body, the result of this method might be incorrect.
 	 *
 	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The title of the document.
 	 */
 	getTitle( options = {} ) {
@@ -140,6 +141,7 @@ export default class Title extends Plugin {
 	 * body, the result of this method might be incorrect.
 	 *
 	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The body of the document.
 	 */
 	getBody( options = {} ) {
