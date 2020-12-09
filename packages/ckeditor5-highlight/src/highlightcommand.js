@@ -7,7 +7,7 @@
  * @module highlight/highlightcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}

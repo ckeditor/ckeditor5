@@ -44,6 +44,7 @@ export { default as StickyPanelView } from './src/panel/sticky/stickypanelview';
 export { default as Template } from './src/template';
 
 export { default as ToolbarView } from './src/toolbar/toolbarview';
+export { default as ToolbarSeparatorView } from './src/toolbar/toolbarseparatorview';
 export { default as enableToolbarKeyboardFocus } from './src/toolbar/enabletoolbarkeyboardfocus';
 export { default as normalizeToolbarConfig } from './src/toolbar/normalizetoolbarconfig';
 export { default as BalloonToolbar } from './src/toolbar/balloon/balloontoolbar';
