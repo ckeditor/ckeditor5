@@ -10,8 +10,9 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Widget } from 'ckeditor5/src/widget';
 
-import ImageEditing from '../src/image/imageediting';
+import ImageEditing from './image/imageediting';
 import ImageTextAlternative from './imagetextalternative';
+import { isImageWidget } from './image/utils';
 
 import '../theme/image.css';
 
@@ -43,6 +44,16 @@ export default class Image extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Image';
+	}
+
+	/**
+	 * Checks if a given view element is an image widget.
+	 *
+	 * @param {module:engine/view/element~Element} viewElement
+	 * @returns {Boolean}
+	 */
+	isImageWidget( viewElement ) {
+		return isImageWidget( viewElement );
 	}
 }
 

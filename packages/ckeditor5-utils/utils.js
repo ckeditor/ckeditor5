@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module utils
+ */
+
 export { default as env } from './src/env';
 
 export { default as mix } from './src/mix';
@@ -28,4 +32,5 @@ export { default as first } from './src/first';
 export { default as FocusTracker } from './src/focustracker';
 export { default as KeystrokeHandler } from './src/keystrokehandler';
 export { default as toArray } from './src/toarray';
+export { default as toMap } from './src/tomap';
 export { default as priorities } from './src/priorities';

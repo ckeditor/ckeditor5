@@ -7,11 +7,10 @@
  * @module link/linkcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from 'ckeditor5/src/core';
+import { findAttributeRange } from 'ckeditor5/src/typing';
+import { Collection, toMap, first } from 'ckeditor5/src/utils';
+
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isImageAllowed } from './utils';
 

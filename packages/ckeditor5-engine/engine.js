@@ -21,8 +21,11 @@ export { default as LivePosition } from './src/model/liveposition';
 export { default as Model } from './src/model/model';
 
 export { default as Observer } from './src/view/observer/observer';
+export { default as ClickObserver } from './src/view/observer/clickobserver';
 export { default as DomEventObserver } from './src/view/observer/domeventobserver';
+export { default as MouseObserver } from './src/view/observer/mouseobserver';
 export { default as UpcastWriter } from './src/view/upcastwriter';
+export { default as Matcher } from './src/view/matcher';
 
 export { StylesProcessor } from './src/view/stylesmap';
 export * from './src/view/styles/background';

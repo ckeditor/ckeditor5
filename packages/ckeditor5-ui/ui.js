@@ -12,6 +12,7 @@ export { default as injectCssTransitionDisabler } from './src/bindings/injectcss
 export { default as submitHandler } from './src/bindings/submithandler';
 
 export { default as ButtonView } from './src/button/buttonview';
+export { default as SwitchButtonView } from './src/button/switchbuttonview';
 
 export * from './src/colorgrid/utils';
 export { default as ColorGridView } from './src/colorgrid/colorgridview';

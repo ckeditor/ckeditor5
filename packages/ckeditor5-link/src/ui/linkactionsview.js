@@ -7,21 +7,16 @@
  * @module link/ui/linkactionsview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import { ensureSafeUrl } from '../utils';
 
-import unlinkIcon from '../../theme/icons/unlink.svg';
-import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import '../../theme/linkactions.css';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+import '../../theme/linkactions.css';
+
+import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
+import unlinkIcon from '../../theme/icons/unlink.svg';
 
 /**
  * The link actions view class. This view displays the link preview, allows
