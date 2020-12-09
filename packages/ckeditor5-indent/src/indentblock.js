@@ -7,12 +7,12 @@
  * @module indent/indentblock
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { addMarginRules } from 'ckeditor5/src/engine';
 
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
 import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
-import { addMarginRules } from '@ckeditor/ckeditor5-engine/src/view/styles/margin';
 
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
 

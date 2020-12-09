@@ -7,4 +7,14 @@
  * @module indent
  */
 
-export default {};
+import Indent from './src/indent';
+import IndentEditing from './src/indentediting';
+import IndentUI from './src/indentui';
+import IndentBlock from './src/indentblock';
+
+export default {
+	Indent,
+	IndentEditing,
+	IndentUI,
+	IndentBlock
+};

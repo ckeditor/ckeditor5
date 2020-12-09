@@ -6,8 +6,8 @@
 /**
  * @module indent/indentui
  */
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core';
 
 import indentIcon from '../theme/icons/indent.svg';
 import outdentIcon from '../theme/icons/outdent.svg';

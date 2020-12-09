@@ -9,6 +9,7 @@
 
 export { default as Plugin } from './src/plugin';
 export { default as Command } from './src/command';
+export { default as MultiCommand } from './src/multicommand';
 
 export { default as Editor } from './src/editor/editor';
 export { default as EditorUI } from './src/editor/editorui';
