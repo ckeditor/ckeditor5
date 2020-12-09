@@ -7,4 +7,18 @@
  * @module restricted-editing
  */
 
-export default {};
+import RestrictedEditingMode from './src/restrictededitingmode';
+import RestrictedEditingModeEditing from './src/restrictededitingmodeediting';
+import RestrictedEditingModeUI from './src/restrictededitingmodeui';
+import StandardEditingMode from './src/standardeditingmode';
+import StandardEditingModeEditing from './src/standardeditingmodeediting';
+import StandardEditingModeUI from './src/standardeditingmodeui';
+
+export default {
+	RestrictedEditingMode,
+	RestrictedEditingModeEditing,
+	RestrictedEditingModeUI,
+	StandardEditingMode,
+	StandardEditingModeEditing,
+	StandardEditingModeUI
+};

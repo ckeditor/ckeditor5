@@ -7,11 +7,11 @@
  * @module restricted-editing/restrictededitingmodeui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { Plugin } from 'ckeditor5/src/core';
+import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
+
 import lockIcon from '../theme/icons/contentlock.svg';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * The restricted editing mode UI feature.
