@@ -7,4 +7,10 @@
  * @module easy-image
  */
 
-export default {};
+import EasyImage from './src/easyimage';
+import CloudServicesUploadAdapter from './src/cloudservicesuploadadapter';
+
+export default {
+	EasyImage,
+	CloudServicesUploadAdapter
+};
