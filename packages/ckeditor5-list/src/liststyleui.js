@@ -7,13 +7,8 @@
  * @module list/liststyleui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import {
-	createDropdown,
-	addToolbarToDropdown
-} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView, SplitButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../theme/icons/numberedlist.svg';

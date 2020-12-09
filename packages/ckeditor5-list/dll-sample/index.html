@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DLL sample - List</title>
+</head>
+<body>
+
+<div id="editor">
+    <h2>Default styles</h2>
+    <figure class="table">
+        <table style="width: 600px;">
+            <tbody>
+            <tr>
+                <td colspan="2" style="text-align: center">
+                    <span class="text-big" style="font-weight: bold">Default styles</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Bulleted</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Numbered</span></td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; width: 50%">
+                    <ul>
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 50%">
+                    <ol>
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    <h2>Bulleted lists</h2>
+    <figure class="table">
+        <table style="width: 600px;">
+            <tbody>
+            <tr>
+                <td colspan="4" style="text-align: center">
+                    <span class="text-big" style="font-weight: bold">Type of list</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Circle</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Disc</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Square</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">'👉'</span></td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: circle;">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: disc;">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: square;">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: '👉';">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    <h2>Numbered lists</h2>
+    <figure class="table">
+        <table style="width: 800px;">
+            <tbody>
+            <tr>
+                <td colspan="4" style="text-align: center">
+                    <span class="text-big" style="font-weight: bold">Type of list</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Decimal</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Decimal-leading-zero</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Lower-latin</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Lower-roman</span></td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: decimal;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: decimal-leading-zero;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: lower-latin;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: lower-roman;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    <h2>Nested/mixed lists (numbered and bulleted)</h2>
+    <figure class="table">
+        <table style="width: 1200px;">
+            <tr>
+                <td style="width: 50%">
+                    <ol style="list-style-type: lower-roman;">
+                        <li>OL 1.1 <code>OL[style: lower-roman]</code></li>
+                        <li>OL 1.2 <code>OL[style: lower-roman]</code>
+                            <ul style="list-style-type: square;">
+                                <li>UL 1.2.1 <code>OL[style: lower-roman] &gt; UL[style: square]</code></li>
+                                <li>UL 1.2.2 <code>OL[style: lower-roman] &gt; UL[style: square]</code></li>
+                                <li>UL 1.2.3 <code>OL[style: lower-roman] &gt; UL[style: square]</code></li>
+                            </ul>
+                        </li>
+                        <li>OL 1.3 <code>OL[style: lower-roman]</code></li>
+                        <li>OL 1.4 <code>OL[style: lower-roman]</code></li>
+                        <ol style="list-style-type: lower-alpha;">
+                            <li>OL 1.4.1 <code>OL[style: lower-roman] &gt; OL[style: lower-alpha]</code></li>
+                            <li>OL 1.4.2 <code>OL[style: lower-roman] &gt; OL[style: lower-alpha]</code></li>
+                            <li>OL 1.4.3 <code>OL[style: lower-roman] &gt; OL[style: lower-alpha]</code></li>
+                        </ol>
+                        </li>
+                        <li>OL 1.5 <code>OL[style: lower-roman]</code></li>
+                        <li>OL 1.6 <code>OL[style: lower-roman]</code></li>
+                    </ol>
+                </td>
+                <td style="width: 50%">
+                    <ol style="list-style-type: upper-alpha;">
+                        <li>OL 2.1 <code>OL[style: upper-alpha]</code>
+                            <ol style="list-style-type: lower-greek;">
+                                <li>OL 2.2.1 <code>OL[style: lower-alpha] &gt; OL[style: lower-greek]</code>
+                                    <ul style="list-style-type: circle;">
+                                        <li>UL 2.2.1.1 <code>... &gt; OL[style: lower-greek] &gt; UL[style: circle]</code></li>
+                                        <li>UL 2.2.1.2 <code>... &gt; OL[style: lower-greek] &gt; UL[style: circle]</code></li>
+                                        <li>UL 2.2.1.3 <code>... &gt; OL[style: lower-greek] &gt; UL[style: circle]</code></li>
+                                    </ul>
+                                </li>
+                                <li>OL 2.2.2 <code>OL[style: lower-alpha] &gt; OL[style: lower-greek]</code></li>
+                                <li>OL 2.2.3 <code>OL[style: lower-alpha] &gt; OL[style: lower-greek]</code></li>
+                            </ol>
+                        </li>
+                        <li>OL 2.2 <code>OL[style: upper-alpha]</code></li>
+                    </ol>
+                </td>
+            </tr>
+        </table>
+    </figure>
+
+	<h2>TODO List</h2>
+	<ul>
+		<li><input type="checkbox">To-do list item 1</li>
+		<li><input type="checkbox" checked="checked">To-do list item 2</li>
+		<li><input type="checkbox">To-do list item 3</li>
+		<li><input type="checkbox" checked="checked">To-do list item 4</li>
+		<li><input type="checkbox">To-do list item 5</li>
+		<li>
+			<input type="checkbox">To-do list item 6
+			<ul class="todo-list">
+					<li>
+						<label class="todo-list__label">
+							<input type="checkbox" disabled="disabled" checked="checked">
+							Nested item
+						</label>
+					</li>
+			</ul>
+		</li>
+		<li><input type="checkbox" checked="checked">To-do list item 7</li>
+		<li><input type="checkbox">To-do list item 8</li>
+	</ul>
+</div>
+
+<script src="https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
+
+<!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
+<script src="./../../../node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
+
+<!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
+<script src="./../../../node_modules/@ckeditor/ckeditor5-dll-classic/build/dll-classic.js"></script>
+
+<!-- Editor features as DLL consumer builds exposed as CKEditor5[featureName] -->
+<script src="./../../../node_modules/@ckeditor/ckeditor-cloud-services-core/build/cloud-services-core.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-adapter-ckfinder/build/adapter-ckfinder.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-alignment/build/alignment.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-autosave/build/autosave.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-ckfinder/build/ckfinder.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-cloud-services/build/cloud-services.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-code-block/build/code-block.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-easy-image/build/easy-image.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-balloon/build/editor-balloon.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-inline/build/editor-inline.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-font/build/font.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-highlight/build/highlight.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-horizontal-line/build/horizontal-line.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-html-embed/build/html-embed.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-markdown-gfm/build/markdown-gfm.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-mention/build/mention.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-page-break/build/page-break.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-remove-format/build/remove-format.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-restricted-editing/build/restricted-editing.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-special-characters/build/special-characters.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-watchdog/build/watchdog.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-word-count/build/word-count.js"></script>
+
+<script>
+	const {
+		ClassicEditor,
+		blockQuote,
+		codeBlock,
+		basicStyles,
+		heading,
+		htmlEmbed,
+		image,
+		indent,
+		link,
+		list,
+		mediaEmbed,
+		table
+	} = CKEditor5;
+
+	const config = {
+		extraPlugins: [
+			blockQuote.BlockQuote,
+			codeBlock.CodeBlock,
+			heading.Heading,
+			basicStyles.Bold,
+			basicStyles.Italic,
+			basicStyles.Code,
+			basicStyles.StrictMode,
+			list.List,
+			link.Link,
+			image.Image,
+			image.ImageCaption,
+			image.ImageStyle,
+			image.ImageToolbar,
+			mediaEmbed.MediaEmbed,
+			table.Table,
+			table.TableToolbar,
+			indent.Indent,
+			indent.IndentBlock,
+			list.TodoList,
+			list.ListStyle
+
+		].filter( plugin => !!plugin ),
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', '|', 'outdent', 'indent', '|', 'bulletedList', 'numberedList', 'todoList', '|', 'blockQuote', 'undo', 'redo' ],
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		}
+	};
+
+	// ClassicEditor is exposed by the ckeditor5-dll-classic:
+	ClassicEditor.create( document.querySelector( '#editor' ), config )
+		.then( editor => {
+			window.editor = editor;
+
+			CKEditorInspector.attach( editor );
+		} );
+</script>
+</body>
+</html>

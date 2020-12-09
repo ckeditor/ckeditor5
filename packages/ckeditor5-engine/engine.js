@@ -19,7 +19,9 @@ export { default as HtmlDataProcessor } from './src/dataprocessor/htmldataproces
 export { default as LiveRange } from './src/model/liverange';
 export { default as LivePosition } from './src/model/liveposition';
 export { default as Model } from './src/model/model';
+export { default as TreeWalker } from './src/model/treewalker';
 
+export { getFillerOffset } from './src/view/containerelement';
 export { default as Observer } from './src/view/observer/observer';
 export { default as ClickObserver } from './src/view/observer/clickobserver';
 export { default as DomEventObserver } from './src/view/observer/domeventobserver';

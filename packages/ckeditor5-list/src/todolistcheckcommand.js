@@ -7,7 +7,7 @@
  * @module list/todolistcheckedcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 const attributeKey = 'todoListChecked';
 

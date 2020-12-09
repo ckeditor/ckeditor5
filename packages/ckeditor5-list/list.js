@@ -7,4 +7,24 @@
  * @module list
  */
 
-export default {};
+import List from './src/list';
+import ListEditing from './src/listediting';
+import ListUI from './src/listui';
+import ListStyle from './src/liststyle';
+import ListStyleEditing from './src/liststyleediting';
+import ListStyleUI from './src/liststyleui';
+import TodoList from './src/todolist';
+import TodoListEditing from './src/todolistediting';
+import TodoListUI from './src/todolistui';
+
+export default {
+	List,
+	ListEditing,
+	ListUI,
+	ListStyle,
+	ListStyleEditing,
+	ListStyleUI,
+	TodoList,
+	TodoListEditing,
+	TodoListUI
+};
