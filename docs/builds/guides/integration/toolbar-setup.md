@@ -24,7 +24,7 @@ ClassicEditor
 	} );
 ```
 
-### Extended format
+## Extended format
 
 You can use the extended toolbar configuration format to access additional options:
 
@@ -42,7 +42,7 @@ You can use the extended toolbar configuration format to access additional optio
 
  * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables items grouping.
 
-#### Separating toolbar items
+### Separating toolbar items
 
 You can use `'|'` to create a separator between groups of toolbar items. Works in both config formats:
 
@@ -56,6 +56,8 @@ You can use `'|'` to create a separator between groups of toolbar items. Works i
     }
 ```
 
+### Multiline toolbar
+
 It is also possible to arrange toolbar items into multiple lines. In the extended format set `shouldNotGroupWhenFull` option to `true`, so items will not be grouped when the toolbar overflows but will wrap to the new line instead. Additionally, a `'-'` could be used inside items list to set the breaking point explicitly.
 
 ```js
@@ -68,7 +70,7 @@ It is also possible to arrange toolbar items into multiple lines. In the extende
 	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
 </info-box>
 
-### Listing available items
+## Listing available items
 
 You can use the following snippet to retrieve all toolbar items available in your editor:
 
