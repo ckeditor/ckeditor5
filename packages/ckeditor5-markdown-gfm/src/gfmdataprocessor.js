@@ -7,7 +7,7 @@
  * @module markdown-gfm/gfmdataprocessor
  */
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { HtmlDataProcessor } from 'ckeditor5/src/engine';
 
 import markdown2html from './markdown2html/markdown2html';
 import html2markdown, { turndownService } from './html2markdown/html2markdown';
