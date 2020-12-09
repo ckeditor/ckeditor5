@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global setTimeout */
+
 import ImageLoadObserver from '../../../src/image/imageloadobserver';
 
 // A 100x50 black png image
@@ -30,7 +32,7 @@ export async function waitForAllImagesLoaded( editor ) {
 			images.delete( domEvent.target );
 
 			if ( images.size === 0 ) {
-				resolve();
+				setTimeout( resolve, 10 );
 			}
 		} );
 	} );

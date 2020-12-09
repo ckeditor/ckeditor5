@@ -15,12 +15,14 @@ import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 const commonConfig = {
 	plugins: [
 		ArticlePluginSet,
 		Indent,
 		IndentBlock,
+		CloudServices,
 		EasyImage,
 		ImageResizeEditing,
 		ImageResizeButtons

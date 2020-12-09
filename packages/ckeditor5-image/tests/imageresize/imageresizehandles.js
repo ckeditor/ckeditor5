@@ -31,6 +31,7 @@ import {
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
 import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils';
+import { Widget } from '@ckeditor/ckeditor5-widget/widget';
 
 describe( 'ImageResizeHandles', () => {
 	let widget, editor, view, viewDocument, editorElement;
@@ -484,7 +485,7 @@ describe( 'ImageResizeHandles', () => {
 
 	function createEditor( config ) {
 		return ClassicEditor.create( editorElement, config || {
-			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
+			plugins: [ Widget, Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
 			image: {
 				resizeUnit: 'px'
 			}

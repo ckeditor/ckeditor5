@@ -13,6 +13,7 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 const commonConfig = {
 	plugins: [
@@ -20,6 +21,7 @@ const commonConfig = {
 		ImageResize,
 		Indent,
 		IndentBlock,
+		CloudServices,
 		EasyImage
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',

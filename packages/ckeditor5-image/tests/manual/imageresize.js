@@ -11,6 +11,7 @@ import ImageResize from '../../src/imageresize';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -20,6 +21,7 @@ const commonConfig = {
 		ImageResize,
 		Indent,
 		IndentBlock,
+		CloudServices,
 		EasyImage
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
