@@ -21,6 +21,9 @@ export { default as LivePosition } from './src/model/liveposition';
 export { default as Model } from './src/model/model';
 export { default as TreeWalker } from './src/model/treewalker';
 
+export { default as DomConverter } from './src/view/domconverter';
+export { default as ViewDocument } from './src/view/document';
+
 export { getFillerOffset } from './src/view/containerelement';
 export { default as Observer } from './src/view/observer/observer';
 export { default as ClickObserver } from './src/view/observer/clickobserver';

@@ -7,4 +7,8 @@
  * @module paste-from-office
  */
 
-export default {};
+import PasteFromOffice from './src/pastefromoffice';
+
+export default {
+	PasteFromOffice
+};
