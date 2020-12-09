@@ -7,17 +7,13 @@
  * @module font/ui/colortableview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
-import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
+import { View, ButtonView, ColorTileView, ColorGridView, LabelView, Template, FocusCycler } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+
 import DocumentColorCollection from '../documentcolorcollection';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+
 import '../../theme/fontcolor.css';
 
 /**

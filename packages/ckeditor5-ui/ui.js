@@ -15,6 +15,7 @@ export { default as ButtonView } from './src/button/buttonview';
 
 export * from './src/colorgrid/utils';
 export { default as ColorGridView } from './src/colorgrid/colorgridview';
+export { default as ColorTileView } from './src/colorgrid/colortileview';
 
 export { default as DropdownButtonView } from './src/dropdown/button/dropdownbuttonview';
 export { default as SplitButtonView } from './src/dropdown/button/splitbuttonview';
@@ -40,7 +41,10 @@ export { default as BalloonPanelView } from './src/panel/balloon/balloonpanelvie
 export { default as ContextualBalloon } from './src/panel/balloon/contextualballoon';
 export { default as StickyPanelView } from './src/panel/sticky/stickypanelview';
 
+export { default as Template } from './src/template';
+
 export { default as ToolbarView } from './src/toolbar/toolbarview';
+export { default as ToolbarSeparatorView } from './src/toolbar/toolbarseparatorview';
 export { default as enableToolbarKeyboardFocus } from './src/toolbar/enabletoolbarkeyboardfocus';
 export { default as normalizeToolbarConfig } from './src/toolbar/normalizetoolbarconfig';
 export { default as BalloonToolbar } from './src/toolbar/balloon/balloontoolbar';

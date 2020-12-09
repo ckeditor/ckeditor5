@@ -7,9 +7,10 @@
  * @module autoformat/autoformat
  */
 
+import { Plugin } from 'ckeditor5/src/core';
+
 import blockAutoformatEditing from './blockautoformatediting';
 import inlineAutoformatEditing from './inlineautoformatediting';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
  * Enables a set of predefined autoformatting actions.

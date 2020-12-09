@@ -14,7 +14,7 @@ The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and e
 
 ## Demo
 
-Use the code block toolbar button and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}.
+Use the code block toolbar button and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just use the double caret function (press <kbd>Enter</kbd> twice).
 
 {@snippet features/code-block}
 

@@ -7,9 +7,8 @@
  * @module alignment/alignmentui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
 import { isSupported } from './utils';
 

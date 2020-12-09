@@ -7,7 +7,7 @@
  * @module block-quote/blockquoteediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import BlockQuoteCommand from './blockquotecommand';
 

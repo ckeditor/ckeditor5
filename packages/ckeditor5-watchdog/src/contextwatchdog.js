@@ -9,11 +9,11 @@
 
 /* globals console */
 
+import { toArray } from 'ckeditor5/src/utils';
 import Watchdog from './watchdog';
 import EditorWatchdog from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import getSubNodes from './utils/getsubnodes';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * A watchdog for the {@link module:core/context~Context} class.

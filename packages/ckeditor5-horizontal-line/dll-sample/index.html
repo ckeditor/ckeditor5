@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DLL sample - Horizontal Line</title>
+</head>
+<body>
+
+<div id="editor">
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris viverra ipsum a sapien accumsan, in fringilla ligula congue. Suspendisse eget urna ac nulla dignissim sollicitudin vel non sem. Curabitur consequat nisi vel orci mollis tincidunt. Nam eget sapien non ligula aliquet commodo vel sed lectus. Sed arcu orci, vehicula vitae augue lobortis, posuere tristique nisl. Sed eleifend venenatis magna in elementum. Cras sit amet arcu mi. Suspendisse vel purus a ex maximus pharetra quis in massa. Mauris pellentesque leo sed mi faucibus molestie. Cras felis justo, volutpat sed erat at, lacinia fermentum nunc. Pellentesque est leo, dignissim at odio sit amet, vulputate placerat turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla eget pharetra enim. Donec fermentum ligula est, quis ultrices arcu tristique eu. Vivamus a dui sem.</p>
+	<hr>
+	<p>Nunc mattis vehicula quam, eu ultrices elit. Nam rutrum, magna vel pharetra fermentum, mauris lectus aliquam mauris, ultrices sagittis massa justo ut urna. Curabitur nec odio commodo, euismod orci quis, lacinia magna. Cras cursus id dui et eleifend. Fusce eget consequat ante. Quisque at odio diam. Praesent vel lacinia urna, vel hendrerit diam. Nulla facilisi. Curabitur finibus augue luctus mi dapibus rutrum. Vestibulum id mi quam. Donec accumsan felis lacus, ac luctus arcu sagittis eget. Suspendisse porttitor mattis magna, in finibus ligula suscipit non. Mauris dictum convallis vehicula.</p>
+</div>
+
+<script src="https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
+
+<!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
+<script src="./../../../node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
+
+<!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
+<script src="./../../../node_modules/@ckeditor/ckeditor5-dll-classic/build/dll-classic.js"></script>
+
+<!-- Editor features as DLL consumer builds exposed as CKEditor5[featureName] -->
+<script src="./../../../node_modules/@ckeditor/ckeditor-cloud-services-core/build/cloud-services-core.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-adapter-ckfinder/build/adapter-ckfinder.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-alignment/build/alignment.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-autosave/build/autosave.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-ckfinder/build/ckfinder.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-cloud-services/build/cloud-services.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-code-block/build/code-block.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-easy-image/build/easy-image.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-balloon/build/editor-balloon.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-editor-inline/build/editor-inline.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-font/build/font.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-highlight/build/highlight.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-horizontal-line/build/horizontal-line.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-html-embed/build/html-embed.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-markdown-gfm/build/markdown-gfm.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-mention/build/mention.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-page-break/build/page-break.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-remove-format/build/remove-format.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-restricted-editing/build/restricted-editing.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-special-characters/build/special-characters.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-watchdog/build/watchdog.js"></script>
+<script src="./../../../node_modules/@ckeditor/ckeditor5-word-count/build/word-count.js"></script>
+
+<script>
+	const {
+		ClassicEditor,
+		blockQuote,
+		codeBlock,
+		basicStyles,
+		heading,
+		htmlEmbed,
+		image,
+		indent,
+		link,
+		list,
+		mediaEmbed,
+		table,
+		horizontalLine
+	} = CKEditor5;
+
+	const config = {
+		extraPlugins: [
+			blockQuote.BlockQuote,
+			codeBlock.CodeBlock,
+			heading.Heading,
+			basicStyles.Bold,
+			basicStyles.Italic,
+			basicStyles.Code,
+			basicStyles.StrictMode,
+			list.List,
+			link.Link,
+			image.Image,
+			image.ImageCaption,
+			image.ImageStyle,
+			image.ImageToolbar,
+			mediaEmbed.MediaEmbed,
+			table.Table,
+			table.TableToolbar,
+			horizontalLine.HorizontalLine
+		].filter( plugin => !!plugin ),
+		toolbar: [ 'heading', '|', 'highlight', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'horizontalLine', '|', 'undo', 'redo' ],
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		}
+	};
+
+	// ClassicEditor is exposed by the ckeditor5-dll-classic:
+	ClassicEditor.create( document.querySelector( '#editor' ), config )
+		.then( editor => {
+			window.editor = editor;
+
+			CKEditorInspector.attach( editor );
+		} );
+</script>
+</body>
+</html>

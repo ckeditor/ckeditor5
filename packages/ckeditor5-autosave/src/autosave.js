@@ -7,11 +7,8 @@
  * @module autosave/autosave
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Plugin, PendingActions } from 'ckeditor5/src/core';
+import { DomEmitterMixin, ObservableMixin, mix } from 'ckeditor5/src/utils';
 import { debounce } from 'lodash-es';
 
 /* globals window */

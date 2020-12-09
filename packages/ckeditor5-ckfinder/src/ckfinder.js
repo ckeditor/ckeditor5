@@ -7,11 +7,13 @@
  * @module ckfinder/ckfinder
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+
+// TODO: softRequires()
+// import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 import CKFinderUI from './ckfinderui';
 import CKFinderEditing from './ckfinderediting';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 /**
  * The CKFinder feature, a bridge between the CKEditor 5 WYSIWYG editor and the
@@ -43,7 +45,7 @@ export default class CKFinder extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CKFinderEditing, CKFinderUI, CKFinderUploadAdapter ];
+		return [ CKFinderEditing, CKFinderUI ];
 	}
 }
 
