@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-easy-image": "^23.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
     "@ckeditor/ckeditor5-image": "^23.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "^23.6.1",
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
     "@ckeditor/ckeditor5-typing": "^23.1.0",
     "@ckeditor/ckeditor5-ui": "^23.1.0",
     "@ckeditor/ckeditor5-utils": "^23.1.0",

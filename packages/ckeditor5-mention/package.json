@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-link": "^23.1.0",
     "@ckeditor/ckeditor5-paragraph": "^23.1.0",
     "@ckeditor/ckeditor5-table": "^23.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "^23.6.1",
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
     "@ckeditor/ckeditor5-undo": "^23.1.0",
     "@ckeditor/ckeditor5-widget": "^23.1.0",
     "lodash": "^4.17.15",

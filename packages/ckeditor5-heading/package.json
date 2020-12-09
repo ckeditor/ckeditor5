@@ -26,7 +26,7 @@
     "@ckeditor/ckeditor5-engine": "^23.1.0",
     "@ckeditor/ckeditor5-enter": "^23.1.0",
     "@ckeditor/ckeditor5-image": "^23.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "^23.6.1",
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
     "@ckeditor/ckeditor5-typing": "^23.1.0",
     "@ckeditor/ckeditor5-undo": "^23.1.0",
     "@ckeditor/ckeditor5-upload": "^23.1.0",

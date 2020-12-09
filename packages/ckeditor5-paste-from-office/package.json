@@ -30,7 +30,7 @@
     "@ckeditor/ckeditor5-page-break": "^23.1.0",
     "@ckeditor/ckeditor5-paragraph": "^23.1.0",
     "@ckeditor/ckeditor5-table": "^23.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "^23.6.1",
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
     "@ckeditor/ckeditor5-utils": "^23.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
