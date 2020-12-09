@@ -7,4 +7,6 @@
  * @module cloud-services-core
  */
 
-export default {};
+export { default as Token } from './src/token/token';
+export { default as FileUploader } from './src/uploadgateway/fileuploader';
+export { default as UploadGateway } from './src/uploadgateway/uploadgateway';

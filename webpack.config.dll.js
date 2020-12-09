@@ -18,6 +18,9 @@ module.exports = {
 		'./src/engine.js',
 		'./src/ui.js',
 
+		// The base packages of the CKEditor 5 Cloud Services:
+		'./src/cloud-services-core.js',
+
 		// The Essentials plugin contents:
 		'./src/clipboard.js',
 		'./src/enter.js',
