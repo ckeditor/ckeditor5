@@ -275,6 +275,21 @@ export default class PluginCollection {
 					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
 
+						if ( !RequiredPluginConstructor ) {
+							/**
+							 * Cannot load a plugin because one of its dependencies is listed in the `requires` by name was not found.
+							 *
+							 * @error plugincollection-soft-required
+							 * @param {String} plugin The name of the required plugin.
+							 * @param {String} requiredBy The name of the parent plugin.
+							 */
+							throw new CKEditorError(
+								'plugincollection-soft-required',
+								null,
+								{ plugin: RequiredPluginConstructorOrName, requiredBy: PluginConstructor.name }
+							);
+						}
+
 						if ( PluginConstructor.isContextPlugin && !RequiredPluginConstructor.isContextPlugin ) {
 							/**
 							 * If a plugin is a context plugin, all plugins it requires should also be context plugins

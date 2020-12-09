@@ -485,6 +485,38 @@ describe( 'PluginCollection', () => {
 			expect( plugins.get( PluginB ) ).to.equal( externalPlugins.get( PluginB ) ).to.instanceof( PluginB );
 			expect( plugins.get( PluginC ) ).to.instanceof( PluginC );
 		} );
+
+		it( 'should load dependency plugins using soft requirement', () => {
+			const plugins = new PluginCollection( editor, availablePlugins );
+			const spy = sinon.spy( plugins, '_add' );
+
+			return plugins.init( [ PluginJ ] )
+				.then( loadedPlugins => {
+					expect( getPlugins( plugins ).length ).to.equal( 3 );
+
+					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by plugins._add()' );
+					expect( getPluginNames( loadedPlugins ) )
+						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by returned value' );
+				} );
+		} );
+
+		it( 'should reject dependency plugins using soft requirement when plugin is unavailable', () => {
+			PluginFoo.requires = [ 'A', 'Baz' ];
+			const consoleErrorStub = sinon.stub( console, 'error' );
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.init( [ PluginFoo ] )
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be still executed.
+				.then( () => {
+					throw new Error( 'Test error: this promise should not be resolved successfully' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-soft-required/, null, { plugin: 'Baz', requiredBy: 'P' } );
+
+					sinon.assert.calledOnce( consoleErrorStub );
+				} );
+		} );
 	} );
 
 	describe( 'get()', () => {
