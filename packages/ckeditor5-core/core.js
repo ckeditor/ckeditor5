@@ -8,6 +8,7 @@
  */
 
 export { default as Plugin } from './src/plugin';
+export { default as ContextPlugin } from './src/contextplugin';
 export { default as Command } from './src/command';
 export { default as MultiCommand } from './src/multicommand';
 

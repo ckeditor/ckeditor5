@@ -7,4 +7,8 @@
  * @module cloud-services
  */
 
-export default {};
+import CloudServices from './src/cloudservices';
+
+export default {
+	CloudServices
+};
