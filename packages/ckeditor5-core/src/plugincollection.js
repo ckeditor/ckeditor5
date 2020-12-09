@@ -176,6 +176,14 @@ export default class PluginCollection {
 		const loading = new Set();
 		const loaded = [];
 
+		const pluginsMap = new Map();
+
+		for ( const pluginOrName of plugins ) {
+			if ( typeof pluginOrName == 'function' && pluginOrName.pluginName ) {
+				pluginsMap.set( pluginOrName.pluginName, pluginOrName );
+			}
+		}
+
 		const pluginConstructors = mapToAvailableConstructors( plugins );
 		const removePluginConstructors = mapToAvailableConstructors( removePlugins );
 		const missingPlugins = getMissingPluginNames( plugins );
@@ -342,7 +350,7 @@ export default class PluginCollection {
 				return PluginConstructorOrName;
 			}
 
-			return that._availablePlugins.get( PluginConstructorOrName );
+			return that._availablePlugins.get( PluginConstructorOrName ) || pluginsMap.get( PluginConstructorOrName );
 		}
 
 		function getMissingPluginNames( plugins ) {

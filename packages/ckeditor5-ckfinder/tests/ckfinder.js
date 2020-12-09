@@ -22,7 +22,7 @@ describe( 'CKFinder', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, Link, CKFinder ]
+				plugins: [ CKFinderUploadAdapter, Image, Link, CKFinder ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

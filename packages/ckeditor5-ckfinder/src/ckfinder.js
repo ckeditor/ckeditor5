@@ -9,9 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-// TODO: softRequires()
-// import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-
 import CKFinderUI from './ckfinderui';
 import CKFinderEditing from './ckfinderediting';
 
@@ -45,7 +42,7 @@ export default class CKFinder extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CKFinderEditing, CKFinderUI ];
+		return [ CKFinderEditing, CKFinderUI, 'CKFinderUploadAdapter' ];
 	}
 }
 

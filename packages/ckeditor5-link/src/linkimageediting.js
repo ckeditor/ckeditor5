@@ -28,7 +28,7 @@ export default class LinkImageEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ LinkEditing ];
+		return [ 'ImageEditing', LinkEditing ];
 	}
 
 	/**
