@@ -7,4 +7,12 @@
  * @module page-break
  */
 
-export default {};
+import PageBreak from './src/pagebreak';
+import PageBreakEditing from './src/pagebreakediting';
+import PageBreakUI from './src/pagebreakui';
+
+export default {
+	PageBreak,
+	PageBreakEditing,
+	PageBreakUI
+};
