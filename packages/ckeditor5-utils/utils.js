@@ -34,3 +34,5 @@ export { default as KeystrokeHandler } from './src/keystrokehandler';
 export { default as toArray } from './src/toarray';
 export { default as toMap } from './src/tomap';
 export { default as priorities } from './src/priorities';
+
+export { default as uid } from './src/uid';

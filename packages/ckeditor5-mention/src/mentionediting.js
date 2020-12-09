@@ -7,8 +7,8 @@
  * @module mention/mentionediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
+import { Plugin } from 'ckeditor5/src/core';
+import { uid } from 'ckeditor5/src/utils';
 
 import MentionCommand from './mentioncommand';
 

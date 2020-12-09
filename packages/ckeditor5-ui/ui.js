@@ -36,6 +36,9 @@ export { default as LabelView } from './src/label/labelview';
 export { default as LabeledFieldView } from './src/labeledfield/labeledfieldview';
 export * from './src/labeledfield/utils';
 
+export { default as ListItemView } from './src/list/listitemview';
+export { default as ListView } from './src/list/listview';
+
 export { default as Notification } from './src/notification/notification';
 
 export { default as Model } from './src/model';
