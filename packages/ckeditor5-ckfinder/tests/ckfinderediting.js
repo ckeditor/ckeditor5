@@ -13,6 +13,8 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import CKFinder from '../src/ckfinder';
 import CKFinderEditing from '../src/ckfinderediting';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 
 describe( 'CKFinderEditing', () => {
 	let editorElement, editor;
@@ -25,7 +27,7 @@ describe( 'CKFinderEditing', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ CKFinder ]
+				plugins: [ Image, Link, CKFinder ]
 
 			} )
 			.then( newEditor => {

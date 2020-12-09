@@ -345,7 +345,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ ListStyleEditing ]
+							plugins: [ Paragraph, ListStyleEditing ]
 						} )
 						.then( newEditor => {
 							editor = newEditor;

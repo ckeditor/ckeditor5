@@ -14,6 +14,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import LinkImage from '../src/linkimage';
 import LinkImageUI from '../src/linkimageui';
+import Image from '@ckeditor/ckeditor5-image/src/image';
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;
@@ -27,7 +28,7 @@ describe( 'LinkImageUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ LinkImageUI, LinkImage, Paragraph ]
+				plugins: [ Image, LinkImageUI, LinkImage, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

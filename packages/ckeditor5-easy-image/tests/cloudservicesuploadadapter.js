@@ -47,7 +47,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ CloudServicesUploadAdapter ],
+					plugins: [ CloudServices, CloudServicesUploadAdapter ],
 					cloudServices: {
 						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
@@ -65,7 +65,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ CloudServicesUploadAdapter ]
+					plugins: [ CloudServices, CloudServicesUploadAdapter ]
 				} )
 				.then( editor => {
 					expect( UploadGatewayMock.lastToken ).to.be.undefined;
@@ -80,7 +80,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor.create( div, {
-				plugins: [ CloudServicesUploadAdapter ],
+				plugins: [ CloudServices, CloudServicesUploadAdapter ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'http://upload.mock.url/'

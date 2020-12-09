@@ -8,6 +8,8 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
@@ -25,7 +27,7 @@ describe( 'CKFinderUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ CKFinder ]
+				plugins: [ Image, Link, CKFinder ]
 
 			} )
 			.then( newEditor => {

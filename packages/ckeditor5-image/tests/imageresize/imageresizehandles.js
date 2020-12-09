@@ -30,7 +30,6 @@ import {
 	getHandleCenterPoint
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils';
 
 describe( 'ImageResizeHandles', () => {
@@ -58,7 +57,7 @@ describe( 'ImageResizeHandles', () => {
 			plugins: [ Image, ImageResizeEditing, ImageResizeHandles ]
 		} );
 
-		const attachToSpy = sinon.spy( localEditor.plugins.get( WidgetResize ), 'attachTo' );
+		const attachToSpy = sinon.spy( localEditor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 		await setModelAndWaitForImages( localEditor, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -457,7 +456,7 @@ describe( 'ImageResizeHandles', () => {
 				}
 			} );
 
-			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 			setData( editor.model, '[<rawHtml></rawHtml>]' );
 
