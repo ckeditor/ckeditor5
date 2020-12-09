@@ -7,4 +7,12 @@
  * @module remove-format
  */
 
-export default {};
+import RemoveFormat from './src/removeformat';
+import RemoveFormatEditing from './src/removeformatediting';
+import RemoveFormatUI from './src/removeformatui';
+
+export default {
+	RemoveFormat,
+	RemoveFormatEditing,
+	RemoveFormatUI
+};

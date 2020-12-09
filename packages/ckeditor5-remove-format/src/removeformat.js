@@ -7,7 +7,7 @@
  * @module remove-format/removeformat
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import RemoveFormatUI from './removeformatui';
 import RemoveFormatEditing from './removeformatediting';
