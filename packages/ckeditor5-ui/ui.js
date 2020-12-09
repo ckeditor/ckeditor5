@@ -29,6 +29,7 @@ export { default as InlineEditableUIView } from './src/editableui/inline/inlinee
 export { default as FormHeaderView } from './src/formheader/formheaderview';
 export { default as FocusCycler } from './src/focuscycler';
 
+export { default as IconView } from './src/icon/iconview';
 export { default as InputTextView } from './src/inputtext/inputtextview';
 
 export { default as LabelView } from './src/label/labelview';
@@ -42,6 +43,7 @@ export { default as BalloonPanelView } from './src/panel/balloon/balloonpanelvie
 export { default as ContextualBalloon } from './src/panel/balloon/contextualballoon';
 export { default as StickyPanelView } from './src/panel/sticky/stickypanelview';
 
+export { default as TooltipView } from './src/tooltip/tooltipview';
 export { default as Template } from './src/template';
 
 export { default as ToolbarView } from './src/toolbar/toolbarview';
