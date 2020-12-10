@@ -18,7 +18,7 @@ A minimal example of an editor using `ClassicEditor` build is presented below:
 <body>
 <div id="editor"></div>
 
-<!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
+<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
 <script src="/path/to/ckeditor5-dll.js"></script>
 
 <!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
@@ -112,7 +112,7 @@ Every package is build as `build/feature-name.js` in their npm repository.
 An example classic editor build configuration using dll bundles:
 
 ```html
-<!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
+<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
 <script src="/path/to/ckeditor5/build/ckeditor5-dll.js"></script>
 
 <!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
@@ -255,7 +255,7 @@ module.exports = {
 };
 ```
 
-In the above example webpack config we use [`DLLReferencePlugin`](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin) to tell the bundler that all packages from `ckeditor5/src` will be loaded during the run-time using the `window.CKEditor5.DLL`. Every imported dependecy from base CKEditor 5 DLL should be loaded from `ckeditor5` package:
+In the above example webpack config we use [`DLLReferencePlugin`](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin) to tell the bundler that all packages from `ckeditor5/src` will be loaded during the run-time using the `window.CKEditor5.dll()`. Every imported dependency from base CKEditor 5 DLL should be loaded from `ckeditor5` package:
 
 ```js
 import { Plugin, Command } from 'ckeditor5/src/core';
@@ -303,7 +303,7 @@ export default DLLConsumerPlugin;
 After building your plugin using webpack, you can then use it together with the editor DLL build:
 
 ```html
-<!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
+<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
 <script src="./node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
 
 <!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
@@ -353,7 +353,7 @@ After building your plugin using webpack, you can then use it together with the 
 The code bundled in the DLL can be used directly in a `<script>` tag:
 
 ```html
-<!-- This adds the CKEditor5_DLL in the global scope, so it is possible to reference its contents -->
+<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
 <script src="./node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
 
 <!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
