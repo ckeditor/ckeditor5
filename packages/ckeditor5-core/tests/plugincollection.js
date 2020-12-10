@@ -517,6 +517,22 @@ describe( 'PluginCollection', () => {
 					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
+
+		it( 'should not reject dependency plugins using soft requirement when plugin was loaded as dependency of other plugin', () => {
+			PluginFoo.requires = [ 'A' ];
+			const plugins = new PluginCollection( editor, availablePlugins );
+			const spy = sinon.spy( plugins, '_add' );
+
+			return plugins.init( [ PluginD, PluginFoo ] )
+				.then( loadedPlugins => {
+					expect( getPlugins( plugins ).length ).to.equal( 5 );
+
+					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+						.to.deep.equal( [ 'A', 'B', 'C', 'D', 'Foo' ], 'order by plugins._add()' );
+					expect( getPluginNames( loadedPlugins ) )
+						.to.deep.equal( [ 'A', 'B', 'C', 'D', 'Foo' ], 'order by returned value' );
+				} );
+		} );
 	} );
 
 	describe( 'get()', () => {

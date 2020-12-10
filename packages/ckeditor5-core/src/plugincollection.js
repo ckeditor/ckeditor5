@@ -175,6 +175,7 @@ export default class PluginCollection {
 		const context = this._context;
 		const loading = new Set();
 		const loaded = [];
+		const loadedPluginsNames = new Set();
 
 		const pluginsMap = new Map();
 
@@ -281,6 +282,10 @@ export default class PluginCollection {
 
 				if ( PluginConstructor.requires ) {
 					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
+						if ( loadedPluginsNames.has( RequiredPluginConstructorOrName ) ) {
+							return;
+						}
+
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
 
 						if ( !RequiredPluginConstructor ) {
@@ -349,6 +354,10 @@ export default class PluginCollection {
 				const plugin = that._contextPlugins.get( PluginConstructor ) || new PluginConstructor( context );
 				that._add( PluginConstructor, plugin );
 				loaded.push( plugin );
+
+				if ( PluginConstructor.pluginName ) {
+					loadedPluginsNames.add( PluginConstructor.pluginName );
+				}
 
 				resolve();
 			} );
