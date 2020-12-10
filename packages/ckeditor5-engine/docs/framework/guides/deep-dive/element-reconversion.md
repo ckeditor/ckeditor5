@@ -115,7 +115,7 @@ In this example implementation you will implement a "card" box which is displaye
 A simplified model markup for the side card looks as follows:
 
 ```html
-<sideCardSection cardType="info" cardURL="https://ckeditor.com/">
+<sideCard cardType="info" cardURL="https://ckeditor.com/">
 	<sideCardTitle>The title</sideCardTitle>
 	<sideCardSection>
 		<paragraph>The content</paragraph>
