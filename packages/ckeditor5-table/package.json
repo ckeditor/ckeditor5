@@ -11,9 +11,6 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-ui": "^24.0.0",
-    "@ckeditor/ckeditor5-utils": "^24.0.0",
-    "@ckeditor/ckeditor5-widget": "^24.0.0",
     "ckeditor5": "^24.0.0",
     "lodash-es": "^4.17.15"
   },
@@ -30,8 +27,12 @@
     "@ckeditor/ckeditor5-list": "^24.0.0",
     "@ckeditor/ckeditor5-media-embed": "^24.0.0",
     "@ckeditor/ckeditor5-paragraph": "^24.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^24.0.0",
     "@ckeditor/ckeditor5-typing": "^24.0.0",
+    "@ckeditor/ckeditor5-ui": "^24.0.0",
     "@ckeditor/ckeditor5-undo": "^24.0.0",
+    "@ckeditor/ckeditor5-utils": "^24.0.0",
+    "@ckeditor/ckeditor5-widget": "^24.0.0",
     "json-diff": "^0.5.4",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
