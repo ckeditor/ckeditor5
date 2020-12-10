@@ -312,5 +312,36 @@ describe( 'GFMDataProcessor', () => {
 				'</code></pre>'
 			);
 		} );
+
+		it( 'should support #registerRawContentMatcher()', () => {
+			const viewFragment = testDataProcessor(
+				[
+					'```raw',
+					'var a = \'hello\';',
+					'console.log(a + \' world\');',
+					'```'
+				].join( '\n' ),
+
+				'<pre><code class="language-raw"></code></pre>',
+
+				'',
+
+				{
+					setup( processor ) {
+						processor.registerRawContentMatcher( {
+							name: 'code',
+							classes: 'language-raw'
+						} );
+					}
+				}
+			);
+
+			expect( viewFragment.getChild( 0 ).getChild( 0 ).getCustomProperty( '$rawContent' ) ).to.equal(
+				[
+					'var a = \'hello\';',
+					'console.log(a + \' world\');'
+				].join( '\n' )
+			);
+		} );
 	} );
 } );

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-paste-from-office",
-  "version": "23.1.0",
+  "version": "24.0.0",
   "description": "Paste from Office feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,25 +10,25 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^23.1.0",
-    "@ckeditor/ckeditor5-core": "^23.1.0",
-    "@ckeditor/ckeditor5-engine": "^23.1.0"
+    "@ckeditor/ckeditor5-clipboard": "^24.0.0",
+    "@ckeditor/ckeditor5-core": "^24.0.0",
+    "@ckeditor/ckeditor5-engine": "^24.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^23.1.0",
-    "@ckeditor/ckeditor5-cloud-services": "^23.1.0",
-    "@ckeditor/ckeditor5-easy-image": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
-    "@ckeditor/ckeditor5-enter": "^23.1.0",
-    "@ckeditor/ckeditor5-font": "^23.1.0",
-    "@ckeditor/ckeditor5-heading": "^23.1.0",
-    "@ckeditor/ckeditor5-image": "^23.1.0",
-    "@ckeditor/ckeditor5-link": "^23.1.0",
-    "@ckeditor/ckeditor5-list": "^23.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^23.1.0",
-    "@ckeditor/ckeditor5-page-break": "^23.1.0",
-    "@ckeditor/ckeditor5-table": "^23.1.0",
-    "@ckeditor/ckeditor5-utils": "^23.1.0"
+    "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "^24.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^24.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
+    "@ckeditor/ckeditor5-enter": "^24.0.0",
+    "@ckeditor/ckeditor5-font": "^24.0.0",
+    "@ckeditor/ckeditor5-heading": "^24.0.0",
+    "@ckeditor/ckeditor5-image": "^24.0.0",
+    "@ckeditor/ckeditor5-link": "^24.0.0",
+    "@ckeditor/ckeditor5-list": "^24.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^24.0.0",
+    "@ckeditor/ckeditor5-page-break": "^24.0.0",
+    "@ckeditor/ckeditor5-table": "^24.0.0",
+    "@ckeditor/ckeditor5-utils": "^24.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

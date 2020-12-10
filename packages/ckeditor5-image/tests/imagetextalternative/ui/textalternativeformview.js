@@ -67,6 +67,10 @@ describe( 'TextAlternativeFormView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
+		} );
 	} );
 
 	describe( 'render()', () => {
@@ -90,7 +94,7 @@ describe( 'TextAlternativeFormView', () => {
 			} );
 
 			it( 'should register child views\' #element in #focusTracker', () => {
-				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+				const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
 				view.render();
 

@@ -866,6 +866,35 @@ describe( 'Selection post-fixer', () => {
 
 				expect( model.document.selection.hasAttribute( 'foo' ) ).to.be.true;
 			} );
+
+			it( 'should include a selectable object at the end of the selection', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				setModelData( model,
+					'[<blockQuote>' +
+						'<paragraph>foo</paragraph>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell><paragraph>bar</paragraph></tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+					'</blockQuote>]'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<blockQuote>' +
+						'<paragraph>[foo</paragraph>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell><paragraph>bar</paragraph></tableCell>' +
+							'</tableRow>' +
+						'</table>]' +
+					'</blockQuote>'
+				);
+			} );
 		} );
 
 		describe( 'non-collapsed selection - image scenarios', () => {
@@ -1036,6 +1065,35 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<figure></figure>]'
+				);
+			} );
+
+			it( 'should fix multi-range selection with equal ranges', () => {
+				// It may happen that multi-range selection contains equal ranges.
+				// Duplicated ranges should be ommited from the final (merged) selection.
+				// https://github.com/ckeditor/ckeditor5/issues/7892
+				model.change( writer => {
+					const firstRange = writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 3 )
+					);
+
+					const duplicatedRange = firstRange.clone();
+
+					const otherRange = writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 3 ),
+						writer.createPositionAt( modelRoot.getChild( 2 ), 0 )
+					);
+
+					// <paragraph>foo</paragraph><image><caption>xxx[][][</caption></image><paragraph>]bar</paragraph>
+					writer.setSelection( [ firstRange, duplicatedRange, otherRange ] );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'[<image>' +
+						'<caption>xxx</caption>' +
+					'</image>' +
+					'<paragraph>]bar</paragraph>'
 				);
 			} );
 		} );

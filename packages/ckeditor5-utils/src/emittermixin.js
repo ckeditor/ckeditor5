@@ -156,6 +156,18 @@ const EmitterMixin = {
 		// All params provided. off() that single callback.
 		if ( callback ) {
 			removeCallback( emitter, event, callback );
+
+			// We must remove callbacks as well in order to prevent memory leaks.
+			// See https://github.com/ckeditor/ckeditor5/pull/8480
+			const index = eventCallbacks.indexOf( callback );
+
+			if ( index !== -1 ) {
+				if ( eventCallbacks.length === 1 ) {
+					delete emitterInfo.callbacks[ event ];
+				} else {
+					removeCallback( emitter, event, callback );
+				}
+			}
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {

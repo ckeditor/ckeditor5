@@ -556,6 +556,18 @@ describe( 'Editor', () => {
 		} );
 	} );
 
+	describe( 'focus()', () => {
+		it( 'should call view\'s focus() method', () => {
+			const editor = new TestEditor();
+			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			editor.editing.view.document.isFocused = true;
+			editor.focus();
+
+			expect( focusSpy.calledOnce ).to.be.true;
+		} );
+	} );
+
 	describe( 'create()', () => {
 		it( 'should return a promise that resolves properly', () => {
 			const promise = TestEditor.create();

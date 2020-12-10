@@ -14,6 +14,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
 
@@ -963,11 +964,10 @@ describe( 'TwoStepCaretMovement()', () => {
 			else {
 				const stepIndex = scenario.indexOf( step );
 				const stepString = `in step #${ stepIndex }`;
-				let caretPosition = step.caretPosition;
 
-				if ( caretPosition !== undefined ) {
+				if ( step.caretPosition !== undefined ) {
 					// Normalize position
-					caretPosition = Array.isArray( step.caretPosition ) ? caretPosition : [ caretPosition ];
+					const caretPosition = toArray( step.caretPosition );
 					expect( selection.getFirstPosition(), `in step #${ stepIndex }, selection's first position` )
 						.to.have.deep.property( 'path', caretPosition );
 				}
