@@ -6,7 +6,9 @@ category: features
 
 {@snippet build-classic-source}
 
-The editor can be set into a read-only mode by changing the value of the {@link module:core/editor/editor~Editor#isReadOnly `Editor#isReadOnly`} property. The read-only mode may have several applications. It may be used to impose user-based access restriction, where a selected user or a group of users may only access the content for evaluation purposes but not change it.
+The editor can be set into a read-only mode by changing the value of the {@link module:core/editor/editor~Editor#isReadOnly `Editor#isReadOnly`} property.
+
+The read-only mode may have several applications. It may be used to impose user-based access restriction, where a selected user or a group of users is only allowed to access the content for evaluation purposes but not change it.
 
 The feature may also be used to view content that should not be edited, like financial reports, software logs or reprinted stories. While not editable, this content will still be accessible for copying or for screen readers.
 
