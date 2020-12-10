@@ -80,6 +80,10 @@ module.exports = {
 						} )
 					}
 				]
+			},
+			{
+				test: /\.js$/,
+				loader: require.resolve( './scripts/dll/dll-loader' )
 			}
 		]
 	}
