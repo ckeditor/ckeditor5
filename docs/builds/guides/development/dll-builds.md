@@ -367,11 +367,11 @@ The code bundled in the DLL can be used directly in a `<script>` tag:
 
 <script>
 	// Import Bold, Italic from the CKEditor 5 global.
-	const { ClassicEditor, BasicStyles } = CKEditor5;
-	const { Bold, Italic } = BasicStyles;
+	const { ClassicEditor, basicStyles, core, ui } = CKEditor5;
+	const { Bold, Italic } = basicStyles;
 
-	const { Plugin, Command } = CKEditor5.DLL( './src/core.js' );
-	const { ButtonView } = CKEditor5.DLL( './src/core.js' );
+	const { Plugin, Command } = core;
+	const { ButtonView } = ui;
 
 	class ExampleCommand extends Command {
 		execute() {

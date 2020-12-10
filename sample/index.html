@@ -119,6 +119,31 @@
 	const { TableToolbar, TableCellProperties, TableProperties } = table;
 	const { Bold, Italic } = basicStyles;
 
+	// Create ad-hoc plugin.
+	const { core, ui } = CKEditor5;
+	const { Plugin } = core;
+	const { ButtonView } = ui;
+
+	class AdHocPlugin extends Plugin {
+		constructor( editor ) {
+			super( editor );
+
+			editor.ui.componentFactory.add( 'ad-hoc-button', locale => {
+				const button = new ButtonView( locale );
+
+				button.set( {
+					icon: false,
+					withText: true,
+					label: 'Ad-hoc'
+				} );
+
+				button.on( 'execute', () => console.log( 'It Works!' ) );
+
+				return button;
+			} );
+		}
+	}
+
 	const config = {
 		extraPlugins: [
 			Bold,
@@ -129,7 +154,8 @@
 			TableToolbar,
 			TableCellProperties,
 			TableProperties,
-			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
+			DLLConsumerPlugin, // exposed by the dll-consumer-plugin.js
+			AdHocPlugin
 		],
 		toolbar: [
 			'bold',
@@ -139,6 +165,7 @@
 			'htmlEmbed',
 			'|',
 			'a-button',
+			'ad-hoc-button',
 			'|',
 			'undo',
 			'redo'
