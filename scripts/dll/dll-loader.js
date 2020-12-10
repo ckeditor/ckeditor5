@@ -38,7 +38,7 @@ module.exports = function dllLoader( source, map ) {
 				// Define the global scope.
 				'window.CKEditor5 = window.CKEditor5 || {};',
 				// Load modules into the global scope using webpack loader.
-				`window.CKEditor5.${ windowScope } = CKEditor5_DLL( './src/${ scope }.js' );`
+				`window.CKEditor5.${ windowScope } = window.CKEditor5_DLL( './src/${ scope }.js' );`
 			].join( '' );
 
 			source += attachModuleToGlobalScope;
