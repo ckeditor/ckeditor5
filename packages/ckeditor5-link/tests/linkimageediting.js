@@ -40,6 +40,10 @@ describe( 'LinkImageEditing', () => {
 		expect( editor.plugins.get( LinkImageEditing ) ).to.be.instanceOf( LinkImageEditing );
 	} );
 
+	it( 'should require ImageEditing by name', () => {
+		expect( LinkImageEditing.requires ).to.include( 'ImageEditing' );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
 	} );
