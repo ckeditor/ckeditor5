@@ -135,6 +135,8 @@ export default class ListEditing extends Plugin {
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
+		//
+		// Priority high + 10 to override widget and blockquote feature listener.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			// Check conditions from those that require less computations like those immediately available.
 			if ( data.direction !== 'backward' ) {
