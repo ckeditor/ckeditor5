@@ -20,6 +20,7 @@
     "real-time",
     "framework"
   ],
+  "main": "src/index.js",
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^24.0.0",
     "@ckeditor/ckeditor5-utils": "^24.0.0",
