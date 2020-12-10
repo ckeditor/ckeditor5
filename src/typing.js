@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module dll/typing
+ *  @module ckeditor5/typing
  */
 
-export * from '@ckeditor/ckeditor5-typing/typing';
+export * from '@ckeditor/ckeditor5-typing';

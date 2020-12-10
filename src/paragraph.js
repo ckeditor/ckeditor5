@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module dll/paragraph
+ *  @module ckeditor5/paragraph
  */
 
-export * from '@ckeditor/ckeditor5-paragraph/paragraph';
+export * from '@ckeditor/ckeditor5-paragraph';

@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module dll/selectall
+ *  @module ckeditor5/selectall
  */
 
-export * from '@ckeditor/ckeditor5-select-all/select-all';
+export * from '@ckeditor/ckeditor5-select-all';

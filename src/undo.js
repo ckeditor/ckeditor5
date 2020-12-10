@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module dll/undo
+ *  @module ckeditor5/undo
  */
 
-export * from '@ckeditor/ckeditor5-undo/undo';
+export * from '@ckeditor/ckeditor5-undo';

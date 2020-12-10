@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module dll/upload
+ *  @module ckeditor5/upload
  */
 
-export * from '@ckeditor/ckeditor5-upload/upload';
+export * from '@ckeditor/ckeditor5-upload';

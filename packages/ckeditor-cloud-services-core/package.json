@@ -6,6 +6,7 @@
     "ckeditor5",
     "ckeditor5-lib"
   ],
+  "main": "src/index.js",
   "dependencies": {
     "ckeditor5": "^24.0.0"
   },

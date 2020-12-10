@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module dll/cloud-services-core
+ *  @module ckeditor5/cloud-services-core
  */
 
-export * from '@ckeditor/ckeditor-cloud-services-core/cloud-services-core';
+export * from '@ckeditor/ckeditor-cloud-services-core';

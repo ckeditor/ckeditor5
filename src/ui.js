@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module dll/ui
+ *  @module ckeditor5/ui
  */
 
-export * from '@ckeditor/ckeditor5-ui/ui';
+export * from '@ckeditor/ckeditor5-ui';
