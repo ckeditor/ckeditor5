@@ -285,11 +285,20 @@ export default class PluginCollection {
 
 						if ( !RequiredPluginConstructor ) {
 							/**
-							 * Cannot load a plugin because one of its dependencies is listed in the `requires` by name was not found.
+							 * A required "soft" dependency was not found on plugin list.
+							 *
+							 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
+							 * This is usually done in CKEditor 5 builds by setting the
+							 * {@link module:core/editor/editor~Editor.builtinPlugins} property. Alternatively they can be provided using
+							 * {@link module:core/editor/editorconfig~EditorConfig#plugins} or
+							 * {@link module:core/editor/editorconfig~EditorConfig#extrPlugins} configuration.
+							 *
+							 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
+							 * that you didn't add the required plugin to the plugins list when loading the editor.
 							 *
 							 * @error plugincollection-soft-required
 							 * @param {String} plugin The name of the required plugin.
-							 * @param {String} requiredBy The name of the parent plugin.
+							 * @param {String} requiredBy The name of the plugin that was requiring other plugin.
 							 */
 							throw new CKEditorError(
 								'plugincollection-soft-required',
