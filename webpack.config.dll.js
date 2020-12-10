@@ -49,7 +49,7 @@ module.exports = {
 			context: 'src',
 			path: path.resolve( __dirname, 'build/ckeditor5-dll.manifest.json' ),
 			format: true,
-			entryOnly: false
+			entryOnly: true
 		} )
 	],
 	module: {
