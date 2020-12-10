@@ -7,6 +7,7 @@
 .ck.ck-placeholder,
 .ck .ck-placeholder {
 	&::before {
+		position: absolute;
 		content: attr(data-placeholder);
 
 		/* See ckeditor/ckeditor5#469. */

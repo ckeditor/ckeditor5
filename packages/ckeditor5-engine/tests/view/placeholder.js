@@ -95,7 +95,7 @@ describe( 'placeholder', () => {
 			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'if element has selection inside but document is blurred should contain placeholder CSS class', () => {
@@ -132,7 +132,7 @@ describe( 'placeholder', () => {
 				writer.setSelection( ViewRange._createIn( element ) );
 			} );
 
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'should change placeholder settings when called twice', () => {
@@ -208,10 +208,10 @@ describe( 'placeholder', () => {
 			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
-			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'should update placeholder before rendering', () => {
@@ -233,7 +233,7 @@ describe( 'placeholder', () => {
 			} );
 
 			// After rendering - placeholder should be invisible since selection is moved there.
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'should not set attributes/class when multiple children (isDirectHost=false)', () => {
