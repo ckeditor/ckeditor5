@@ -40,12 +40,12 @@ module.exports = {
 	output: {
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'ckeditor5-dll.js',
-		library: 'CKEditor5_DLL',
+		library: [ 'CKEditor5', 'dll' ],
 		libraryTarget: 'umd'
 	},
 	plugins: [
 		new webpack.DllPlugin( {
-			name: 'CKEditor5_DLL',
+			name: 'CKEditor5.dll',
 			context: 'src',
 			path: path.resolve( __dirname, 'build/ckeditor5-dll.manifest.json' ),
 			format: true,
