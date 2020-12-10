@@ -21,7 +21,7 @@
  *   - packages/ckeditor5-enter/src/shiftenter.js
  *   - etc.
  *
- * The loader assumes that `window.CKEditor5_DLL` is a webpack require function.
+ * The loader assumes that `window.CKEditor5.dll()` is a webpack require function.
  *
  * @param {String} source
  * @param {*} map
