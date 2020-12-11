@@ -296,7 +296,7 @@ export default class PluginCollection {
 							 * This is usually done in CKEditor 5 builds by setting the
 							 * {@link module:core/editor/editor~Editor.builtinPlugins} property. Alternatively they can be provided using
 							 * {@link module:core/editor/editorconfig~EditorConfig#plugins} or
-							 * {@link module:core/editor/editorconfig~EditorConfig#extrPlugins} configuration.
+							 * {@link module:core/editor/editorconfig~EditorConfig#extraPlugins} configuration.
 							 *
 							 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
 							 * that you didn't add the required plugin to the plugins list when loading the editor.
