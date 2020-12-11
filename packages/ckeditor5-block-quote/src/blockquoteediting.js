@@ -117,11 +117,11 @@ export default class BlockQuoteEditing extends Plugin {
 		const selection = editor.model.document.selection;
 		const blockQuoteCommand = editor.commands.get( 'blockQuote' );
 
-		const enterObserver = editor.editing.getObserver( EnterModelObserver ).for( 'blockQuote' );
+		const enterObserver = editor.editing.getObserver( EnterModelObserver );
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
-		this.listenTo( enterObserver, 'enter', ( evt, data ) => {
+		this.listenTo( enterObserver.for( 'blockQuote' ), 'enter', ( evt, data ) => {
 			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
 			}
@@ -137,11 +137,11 @@ export default class BlockQuoteEditing extends Plugin {
 			}
 		} );
 
-		const deleteObserver = editor.editing.getObserver( DeleteModelObserver ).for( 'blockQuote' );
+		const deleteObserver = editor.editing.getObserver( DeleteModelObserver );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed in first empty block inside a quote, break the quote.
-		this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
+		this.listenTo( deleteObserver.for( 'blockQuote' ), 'delete', ( evt, data ) => {
 			if ( data.direction != 'backward' || !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
 			}

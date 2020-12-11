@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
+import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import {
 	isArrowKeyCode,
@@ -19,7 +20,6 @@ import {
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import verticalNavigationHandler from './verticalnavigation';
 
 /**
@@ -102,6 +102,8 @@ export default class Widget extends Plugin {
 		view.addObserver( MouseObserver );
 		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
+		const arrowKeyObserver = this.editor.editing.getObserver( ArrowKeysModelObserver );
+
 		// There are two keydown listeners working on different priorities. This allows other
 		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between
 		// and customize the behavior even further in different content/selection scenarios.
@@ -113,20 +115,25 @@ export default class Widget extends Plugin {
 		// * The second (late) listener makes sure the default browser action on arrow key press is
 		// prevented when a widget is selected. This prevents the selection from being moved
 		// from a fake selection container.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+		// TODO split into 2 separate handlers
+		this.listenTo( arrowKeyObserver.for( '$object' ), 'arrowkey', ( ...args ) => {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );
-		}, { priority: 'high' } );
+		} );
 
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+		this.listenTo( arrowKeyObserver.for( '$text' ), 'arrowkey', ( ...args ) => {
+			this._handleSelectionChangeOnArrowKeyPress( ...args );
+		} );
+
+		this.listenTo( arrowKeyObserver.for( '$object' ), 'arrowkey', ( ...args ) => {
 			this._preventDefaultOnArrowKeyPress( ...args );
-		}, { priority: priorities.get( 'high' ) - 20 } );
+		}, { priority: 'lowest' } );
 
-		this.listenTo( viewDocument, 'keydown', verticalNavigationHandler( this.editor.editing ) );
+		this.listenTo( arrowKeyObserver.for( '$text' ), 'arrowkey', verticalNavigationHandler( this.editor.editing ) );
 
-		const deleteObserver = this.editor.editing.getObserver( DeleteModelObserver ).for( '$text' );
+		const deleteObserver = this.editor.editing.getObserver( DeleteModelObserver );
 
 		// Handle custom delete behaviour.
-		this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
+		this.listenTo( deleteObserver.for( '$text' ), 'delete', ( evt, data ) => {
 			if ( this._handleDelete( data.direction == 'forward' ) ) {
 				data.preventDefault();
 				evt.stop();

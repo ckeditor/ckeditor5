@@ -120,11 +120,11 @@ export default class ListEditing extends Plugin {
 		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
 
-		const enterObserver = editor.editing.getObserver( EnterModelObserver ).for( 'listItem' );
+		const enterObserver = editor.editing.getObserver( EnterModelObserver );
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
-		this.listenTo( enterObserver, 'enter', ( evt, data ) => {
+		this.listenTo( enterObserver.for( 'listItem' ), 'enter', ( evt, data ) => {
 			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
@@ -136,11 +136,11 @@ export default class ListEditing extends Plugin {
 			}
 		} );
 
-		const deleteObserver = editor.editing.getObserver( DeleteModelObserver ).for( 'listItem' );
+		const deleteObserver = editor.editing.getObserver( DeleteModelObserver );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
+		this.listenTo( deleteObserver.for( 'listItem' ), 'delete', ( evt, data ) => {
 			// Check conditions from those that require less computations like those immediately available.
 			if ( data.direction !== 'backward' ) {
 				return;

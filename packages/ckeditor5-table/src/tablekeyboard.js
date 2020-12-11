@@ -11,7 +11,7 @@ import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import {
 	isArrowKeyCode,
 	getLocalizedArrowKeyCodeDirection
@@ -43,18 +43,14 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
-
 		// Handle Tab key navigation.
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
-		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
-		// the fake selection retention on the fully selected widget.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
+		const arrowKeyObserver = this.editor.editing.getObserver( ArrowKeysModelObserver );
+
+		this.listenTo( arrowKeyObserver.for( 'table' ), 'arrowkey', ( ...args ) => this._onKeydown( ...args ) );
 	}
 
 	/**

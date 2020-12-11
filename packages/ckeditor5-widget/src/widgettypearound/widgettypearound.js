@@ -13,8 +13,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
 import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
+import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import {
-	isArrowKeyCode,
 	isForwardArrowKeyCode,
 	keyCodes
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -256,16 +256,19 @@ export default class WidgetTypeAround extends Plugin {
 		const model = editor.model;
 		const modelSelection = model.document.selection;
 		const schema = model.schema;
-		const editingView = editor.editing.view;
+
+		const arrowKeyObserver = editor.editing.getObserver( ArrowKeysModelObserver );
 
 		// This is the main listener responsible for the fake caret.
-		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high-10").
-		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
-			if ( isArrowKeyCode( domEventData.keyCode ) ) {
-				this._handleArrowKeyPress( evt, domEventData );
-			}
-		}, { priority: priorities.get( 'high' ) + 10 } );
+		// Note: The priority must precede the default Widget class keydown handler ("high").
+		// TODO split into 2 separate handlers
+		this._listenToIfEnabled( arrowKeyObserver.for( '$object' ), 'arrowkey', ( evt, domEventData ) => {
+			this._handleArrowKeyPress( evt, domEventData );
+		}, { priority: 'high' } );
+
+		this._listenToIfEnabled( arrowKeyObserver.for( '$text' ), 'arrowkey', ( evt, domEventData ) => {
+			this._handleArrowKeyPress( evt, domEventData );
+		}, { priority: 'high' } );
 
 		// This listener makes sure the widget type around selection attribute will be gone from the model
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
@@ -535,9 +538,9 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const enterObserver = editor.editing.getObserver( EnterModelObserver ).for( '$object' );
+		const enterObserver = editor.editing.getObserver( EnterModelObserver );
 
-		this._listenToIfEnabled( enterObserver, 'enter', ( evt, domEventData ) => {
+		this._listenToIfEnabled( enterObserver.for( '$object' ), 'enter', ( evt, domEventData ) => {
 			const selectedModelElement = selection.getSelectedElement();
 
 			if ( !selectedModelElement ) {
@@ -622,10 +625,10 @@ export default class WidgetTypeAround extends Plugin {
 		const model = editor.model;
 		const schema = model.schema;
 
-		const deleteObserver = editor.editing.getObserver( DeleteModelObserver ).for( '$object' );
+		const deleteObserver = editor.editing.getObserver( DeleteModelObserver );
 
 		// Note: The priority must precede the default Widget class delete handler.
-		this._listenToIfEnabled( deleteObserver, 'delete', ( evt, domEventData ) => {
+		this._listenToIfEnabled( deleteObserver.for( '$object' ), 'delete', ( evt, domEventData ) => {
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 
 			if ( !selectedModelWidget ) {

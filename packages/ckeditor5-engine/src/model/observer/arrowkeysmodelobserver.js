@@ -20,7 +20,7 @@ export default class ArrowKeysModelObserver extends ModelObserver {
 	 * @inheritDoc
 	 */
 	constructor( model ) {
-		super( model, 'keydown', 'arrowkeydown' );
+		super( model, 'keydown', 'arrowkey' );
 	}
 
 	/**
@@ -32,7 +32,7 @@ export default class ArrowKeysModelObserver extends ModelObserver {
 		}
 
 		// TODO provide arrow direction
-		// TODO maybe event type could be namespaced like arrowkeydown:left ?
+		// TODO maybe event type could be namespaced like arrowkey:left ?
 
 		return data;
 	}

@@ -12,6 +12,7 @@ import ListEditing from './listediting';
 import TodoListCheckCommand from './todolistcheckcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 
 import {
 	dataModelViewInsertion,
@@ -95,6 +96,8 @@ export default class TodoListEditing extends Plugin {
 		editing.mapper.on( 'modelToViewPosition', mapModelToViewPosition( editing.view ) );
 		data.mapper.on( 'modelToViewPosition', mapModelToViewPosition( editing.view ) );
 
+		const arrowKeyObserver = this.editor.editing.getObserver( ArrowKeysModelObserver );
+
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
 		//
 		// <blockquote><p>Foo</p></blockquote>
@@ -105,7 +108,7 @@ export default class TodoListEditing extends Plugin {
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
 		//
-		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
+		this.listenTo( arrowKeyObserver.for( 'listItem' ), 'arrowkey', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
 		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );

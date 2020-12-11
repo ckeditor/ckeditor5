@@ -62,7 +62,7 @@ export default class ModelObserver {
 		 * TODO
 		 *
 		 * @private
-		 * @member {Map.<String|Function, module:utils/emittermixin~Emitter>}
+		 * @member {Map.<String, module:utils/emittermixin~Emitter>}
 		 */
 		this._elementMap = new Map();
 	}
@@ -126,18 +126,25 @@ export default class ModelObserver {
 
 			const position = selection.focus.path.length < selection.anchor.path.length ? selection.anchor : selection.focus;
 			let node = selection.getSelectedElement() || position.textNode || position.parent;
+			let bubbling = false;
 
-			while ( node && !eventInfo.stop.called ) {
+			while ( node ) {
 				if ( node.is( 'element' ) ) {
-					if ( selection.isCollapsed && schema.checkChild( position, '$text' ) ) {
+					if ( !bubbling && selection.isCollapsed && schema.checkChild( position, '$text' ) ) {
 						this._fireListenerFor( '$text', eventInfo, ...eventArgs );
 					}
 
-					if ( !eventInfo.stop.called ) {
-						this._fireListenerFor( node.name, eventInfo, ...eventArgs );
+					if ( eventInfo.stop.called ) {
+						break;
 					}
 
-					if ( schema.isObject( node ) && !eventInfo.stop.called ) {
+					this._fireListenerFor( node.name, eventInfo, ...eventArgs );
+
+					if ( eventInfo.stop.called ) {
+						break;
+					}
+
+					if ( schema.isObject( node ) ) {
 						this._fireListenerFor( '$object', eventInfo, ...eventArgs );
 					}
 				} else if ( node.is( '$text' ) ) {
@@ -146,7 +153,12 @@ export default class ModelObserver {
 					this._fireListenerFor( '$root', eventInfo, ...eventArgs );
 				}
 
+				if ( eventInfo.stop.called ) {
+					break;
+				}
+
 				node = node.parent;
+				bubbling = true;
 			}
 
 			if ( !eventInfo.stop.called ) {
@@ -162,11 +174,11 @@ export default class ModelObserver {
 	/**
 	 * TODO
 	 *
-	 * @param {String|Function} elementNameOrCallback
+	 * @param {String} name
 	 * @returns {module:utils/emittermixin~Emitter}
 	 */
-	for( elementNameOrCallback ) {
-		let listener = this._elementMap.get( elementNameOrCallback );
+	for( name ) {
+		let listener = this._elementMap.get( name );
 
 		if ( listener ) {
 			return listener;
@@ -174,7 +186,7 @@ export default class ModelObserver {
 
 		listener = Object.create( EmitterMixin );
 
-		this._elementMap.set( elementNameOrCallback, listener );
+		this._elementMap.set( name, listener );
 
 		return listener;
 	}
