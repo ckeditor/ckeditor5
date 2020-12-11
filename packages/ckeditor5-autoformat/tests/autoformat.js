@@ -384,24 +384,6 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
 		} );
-
-		it( 'should not replace triple grave accents when inside numbered list', () => {
-			setData( model, '<listItem listIndent="0" listType="numbered">1. ``[]</listItem>' );
-			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
-			} );
-
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">1. ```[]</listItem>' );
-		} );
-
-		it( 'should not replace triple grave accents when inside bulleted list', () => {
-			setData( model, '<listItem listIndent="0" listType="bulleted">1. ``[]</listItem>' );
-			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
-			} );
-
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">1. ```[]</listItem>' );
-		} );
 	} );
 
 	describe( 'Horizontal line', () => {
