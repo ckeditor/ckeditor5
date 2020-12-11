@@ -447,6 +447,47 @@ describe( 'ToolbarView', () => {
 			expect( items.get( 4 ).name ).to.equal( 'foo' );
 		} );
 
+		it( 'accepts configuration object', () => {
+			view.fillFromConfig( { items: [ 'foo', 'bar', 'foo' ] }, factory );
+
+			const items = view.items;
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'removes items listed in `removeItems`', () => {
+			view.fillFromConfig(
+				{
+					items: [ 'foo', 'bar', 'foo' ],
+					removeItems: [ 'foo' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+			expect( items ).to.have.length( 1 );
+			expect( items.get( 0 ).name ).to.equal( 'bar' );
+		} );
+
+		it( 'deduplicate consecutive separators after removing items listed in `removeItems`', () => {
+			view.fillFromConfig(
+				{
+					items: [ '|', '|', 'foo', '|', 'bar', '|', 'foo' ],
+					removeItems: [ 'bar' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+			expect( items ).to.have.length( 4 );
+			expect( items.get( 0 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 1 ).name ).to.equal( 'foo' );
+			expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 3 ).name ).to.equal( 'foo' );
+		} );
+
 		it( 'warns if there is no such component in the factory', () => {
 			const items = view.items;
 			const consoleWarnStub = sinon.stub( console, 'warn' );

@@ -20,6 +20,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+import normalizeToolbarConfig from './normalizetoolbarconfig';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -277,14 +278,24 @@ export default class ToolbarView extends View {
 	 * A utility that expands the plain toolbar configuration into
 	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
 	 *
-	 * @param {Array.<String>} config The toolbar items configuration.
+	 * @param {Array.<String>|Object} itemsOrConfig The toolbar items or the entire toolbar configuration object.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
-	fillFromConfig( config, factory ) {
-		this.items.addMany( config.map( name => {
-			if ( name == '|' ) {
+	fillFromConfig( itemsOrConfig, factory ) {
+		const config = normalizeToolbarConfig( itemsOrConfig );
+
+		// Items listed in `config.removeItems` should not be added to the toolbar.
+		const items = config.items.filter( name => config.removeItems.indexOf( name ) === -1 );
+
+		this.items.addMany( items.map( ( name, idx ) => {
+			if ( name === '|' ) {
+				// Omit duplicated separators. This can happen after removing items listed in `config.removeItems`.
+				if ( idx > 0 && items[ idx - 1 ] === '|' ) {
+					return;
+				}
+
 				return new ToolbarSeparatorView();
-			} else if ( name == '-' ) {
+			} else if ( name === '-' ) {
 				if ( this.options.shouldGroupWhenFull ) {
 					/**
 					 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
@@ -302,9 +313,7 @@ export default class ToolbarView extends View {
 					 *
 					 * @error toolbarview-line-break-ignored-when-grouping-items
 					 */
-					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', config );
-				} else {
-					return new ToolbarLineBreakView();
+					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', itemsOrConfig );
 				}
 			} else if ( factory.has( name ) ) {
 				return factory.create( name );
