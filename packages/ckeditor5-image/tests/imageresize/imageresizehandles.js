@@ -7,31 +7,27 @@
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import Image from '../../src/image';
-import ImageToolbar from '../../src/imagetoolbar';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
-import ImageTextAlternative from '../../src/imagetextalternative';
-
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageStyle from '../../src/imagestyle';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Table from '@ckeditor/ckeditor5-table/src/table';
 import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
-
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
 import {
 	focusEditor,
 	resizerMouseSimulator,
 	getWidgetDomParts,
 	getHandleCenterPoint
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-
 import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils';
-import { Widget } from '@ckeditor/ckeditor5-widget/widget';
+
+import Image from '../../src/image';
+import ImageToolbar from '../../src/imagetoolbar';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
+import ImageTextAlternative from '../../src/imagetextalternative';
+import ImageStyle from '../../src/imagestyle';
 
 describe( 'ImageResizeHandles', () => {
 	let widget, editor, view, viewDocument, editorElement;
