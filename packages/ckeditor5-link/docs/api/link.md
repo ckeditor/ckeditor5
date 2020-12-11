@@ -18,7 +18,7 @@ See the {@link features/link Link feature} guide and the {@link module:link/link
 
 ## Installation
 
-```nohighlight
+```plaintext
 npm install --save @ckeditor/ckeditor5-link
 ```
 

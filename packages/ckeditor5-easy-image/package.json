@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-easy-image",
-  "version": "23.1.0",
+  "version": "24.0.0",
   "description": "Easy Image feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,17 +10,17 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor-cloud-services-core": "^23.1.0",
-    "@ckeditor/ckeditor5-cloud-services": "^23.1.0",
-    "@ckeditor/ckeditor5-core": "^23.1.0",
-    "@ckeditor/ckeditor5-image": "^23.1.0",
-    "@ckeditor/ckeditor5-upload": "^23.1.0"
+    "@ckeditor/ckeditor-cloud-services-core": "^24.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "^24.0.0",
+    "@ckeditor/ckeditor5-core": "^24.0.0",
+    "@ckeditor/ckeditor5-image": "^24.0.0",
+    "@ckeditor/ckeditor5-upload": "^24.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^23.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^23.1.0",
-    "@ckeditor/ckeditor5-utils": "^23.1.0"
+    "@ckeditor/ckeditor5-clipboard": "^24.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^24.0.0",
+    "@ckeditor/ckeditor5-utils": "^24.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

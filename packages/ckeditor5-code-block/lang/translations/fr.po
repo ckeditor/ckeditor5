@@ -18,8 +18,8 @@ msgstr ""
 
 msgctxt "A label of the button that allows inserting a new code block into the editor content."
 msgid "Insert code block"
-msgstr "Insérer un bloque de code"
+msgstr "Insérer un bloc de code"
 
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
-msgstr "Texte brute"
+msgstr "Texte brut"
