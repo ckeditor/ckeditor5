@@ -51,7 +51,7 @@ ClassicEditor
 	} );
 ```
 <info-box>
-	Be careful when removing plugins from CKEditor builds using `config.removePlugins`. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the updated toolbar configuration as in the example above.
+	Be careful when removing plugins from CKEditor builds using `config.removePlugins`. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the {@link builds/guides/integration/toolbar-setup updated toolbar configuration} as in the example above.
 </info-box>
 
 ### List of plugins

@@ -59,7 +59,7 @@ You can use `'|'` to create a separator between groups of toolbar items. Works i
 
 #### Extended format demo
 
-The "regular" toolbar look. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via clickable "Show more buttons" button. The separators set in the config help organize the toolbar.
+The "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via clickable "Show more buttons" button. The separators `'|'` set in the config help organize the toolbar.
 
 {@snippet builds/guides/integration/toolbar-grouping}
 
@@ -75,13 +75,13 @@ It is also possible to arrange toolbar items into multiple lines. In the extende
 
 #### Automatic multiline wrapping demo
 
-The default multiline toolbar behaviour - the toolbar items are automatically wrapped into a new line once they do not fit the editor width. The mechanism is arbitrary and only wraps excess items. Notice the toolbar item separators and item groups have be also placed differently.
+The default multiline toolbar behaviour when `shouldNotGroupWhenFull` is set to `true` - the toolbar items are automatically wrapped into a new line once they do not fit the editor width. The mechanism is arbitrary and only wraps excess items. Notice the toolbar item separators `'|'` and item groups have be also placed differently.
 
 {@snippet builds/guides/integration/toolbar-wrapping}
 
 #### Set wrapping breakpoint demo
 
-Setting a break point as described above lets the users create their own multiline configuration. Toolbar items are grouped and distributed according to the user-defined configuration in file. The placement of toolbar item groups, separators and breakpoints is fully customizable as described in this guide.
+Setting a break point in the toolbar config with `'-'` as described above lets the users create their own multiline configuration. Toolbar items are grouped and distributed according to the user-defined configuration in file. The placement of toolbar item groups, separators `'|'` and breakpoints `'-'` is fully customizable as described in this guide.
 
 {@snippet builds/guides/integration/toolbar-breakpoint}
 
