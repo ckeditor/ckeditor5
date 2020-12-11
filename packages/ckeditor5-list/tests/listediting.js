@@ -23,7 +23,7 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;

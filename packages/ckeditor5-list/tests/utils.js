@@ -12,7 +12,7 @@ import ListEditing from '../src/listediting';
 import ListStyleEditing from '../src/liststyleediting';
 
 import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'utils', () => {
 	let writer;
