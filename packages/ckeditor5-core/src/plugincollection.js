@@ -175,6 +175,15 @@ export default class PluginCollection {
 		const context = this._context;
 		const loading = new Set();
 		const loaded = [];
+		const loadedPluginsNames = new Set();
+
+		const pluginsMap = new Map();
+
+		for ( const pluginOrName of plugins ) {
+			if ( typeof pluginOrName == 'function' && pluginOrName.pluginName ) {
+				pluginsMap.set( pluginOrName.pluginName, pluginOrName );
+			}
+		}
 
 		const pluginConstructors = mapToAvailableConstructors( plugins );
 		const removePluginConstructors = mapToAvailableConstructors( removePlugins );
@@ -273,7 +282,35 @@ export default class PluginCollection {
 
 				if ( PluginConstructor.requires ) {
 					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
+						if ( loadedPluginsNames.has( RequiredPluginConstructorOrName ) ) {
+							return;
+						}
+
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
+
+						if ( !RequiredPluginConstructor ) {
+							/**
+							 * A required "soft" dependency was not found on plugin list.
+							 *
+							 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
+							 * This is usually done in CKEditor 5 builds by setting the
+							 * {@link module:core/editor/editor~Editor.builtinPlugins} property. Alternatively they can be provided using
+							 * {@link module:core/editor/editorconfig~EditorConfig#plugins} or
+							 * {@link module:core/editor/editorconfig~EditorConfig#extraPlugins} configuration.
+							 *
+							 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
+							 * that you didn't add the required plugin to the plugins list when loading the editor.
+							 *
+							 * @error plugincollection-soft-required
+							 * @param {String} plugin The name of the required plugin.
+							 * @param {String} requiredBy The name of the plugin that was requiring other plugin.
+							 */
+							throw new CKEditorError(
+								'plugincollection-soft-required',
+								null,
+								{ plugin: RequiredPluginConstructorOrName, requiredBy: PluginConstructor.name }
+							);
+						}
 
 						if ( PluginConstructor.isContextPlugin && !RequiredPluginConstructor.isContextPlugin ) {
 							/**
@@ -318,6 +355,10 @@ export default class PluginCollection {
 				that._add( PluginConstructor, plugin );
 				loaded.push( plugin );
 
+				if ( PluginConstructor.pluginName ) {
+					loadedPluginsNames.add( PluginConstructor.pluginName );
+				}
+
 				resolve();
 			} );
 		}
@@ -327,7 +368,7 @@ export default class PluginCollection {
 				return PluginConstructorOrName;
 			}
 
-			return that._availablePlugins.get( PluginConstructorOrName );
+			return that._availablePlugins.get( PluginConstructorOrName ) || pluginsMap.get( PluginConstructorOrName );
 		}
 
 		function getMissingPluginNames( plugins ) {

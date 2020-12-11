@@ -49,6 +49,10 @@ describe( 'LinkImageUI', () => {
 		expect( LinkImageUI.pluginName ).to.equal( 'LinkImageUI' );
 	} );
 
+	it( 'should require Image by name', () => {
+		expect( LinkImageUI.requires ).to.include( 'Image' );
+	} );
+
 	describe( 'init()', () => {
 		it( 'should listen to the click event on the images', () => {
 			const listenToSpy = sinon.stub( plugin, 'listenTo' );

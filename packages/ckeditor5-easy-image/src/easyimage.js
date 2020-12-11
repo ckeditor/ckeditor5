@@ -18,9 +18,12 @@ import CloudServicesUploadAdapter from './cloudservicesuploadadapter';
  *
  * This is a "glue" plugin which enables:
  *
+ * * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter}.
+ *
+ * This plugin requires plugin to be present in the editor configuration:
+ *
  * * {@link module:image/image~Image},
  * * {@link module:image/imageupload~ImageUpload},
- * * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter}.
  *
  * See the {@glink features/image-upload/easy-image "Easy Image integration" guide} to learn how to configure
  * and use this feature.
@@ -39,7 +42,7 @@ export default class EasyImage extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CloudServicesUploadAdapter ];
+		return [ CloudServicesUploadAdapter, 'Image', 'ImageUpload' ];
 	}
 
 	/**

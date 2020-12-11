@@ -10,10 +10,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Notification } from 'ckeditor5/src/ui';
 
-// TODO: softRequires()
-// import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-// import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-
 import CKFinderCommand from './ckfindercommand';
 
 /**
@@ -33,7 +29,7 @@ export default class CKFinderEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Notification ];
+		return [ Notification, 'ImageEditing', 'LinkEditing' ];
 	}
 
 	/**
