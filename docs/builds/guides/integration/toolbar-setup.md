@@ -78,3 +78,19 @@ You can use the following snippet to retrieve all toolbar items available in you
 Array.from( editor.ui.componentFactory.names() );
 ```
 
+## Demos
+
+### Toolbar with items grouping
+
+{@snippet builds/guides/integration/toolbar-grouping}
+
+### Toolbar with automatic multiline wrapping
+
+{@snippet builds/guides/integration/toolbar-wrapping}
+
+### Toolbar with set wrapping breakpoint
+
+{@snippet builds/guides/integration/toolbar-breakpoint}
+
+
+
