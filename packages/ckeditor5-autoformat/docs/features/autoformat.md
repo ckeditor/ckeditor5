@@ -20,6 +20,7 @@ The following block formatting options are available:
 * {@link features/headings Headings} &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
 * {@link features/block-quote Block quote} &ndash; Start a line with `>` followed by a space.
 * {@link features/code-blocks Code block} &ndash; Start a line with `` ``` ``.
+* {@link features/horizontal-line Horizontal line} &ndash; Start a line with `---`.
 
 ## Inline formatting
 

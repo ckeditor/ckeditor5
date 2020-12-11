@@ -36,6 +36,7 @@ export default class Autoformat extends Plugin {
 		this._addHeadingAutoformats();
 		this._addBlockQuoteAutoformats();
 		this._addCodeBlockAutoformats();
+		this._addHorizontalLineAutoformats();
 	}
 
 	/**
@@ -164,6 +165,20 @@ export default class Autoformat extends Plugin {
 	_addCodeBlockAutoformats() {
 		if ( this.editor.commands.get( 'codeBlock' ) ) {
 			blockAutoformatEditing( this.editor, this, /^```$/, 'codeBlock' );
+		}
+	}
+
+	/**
+	 * Adds autoformatting related to {@link module:horizontal-line/horizontalline~HorizontalLine}.
+	 *
+	 * When typed:
+	 * - `` --- `` &ndash; Will be replaced with a horizontal line.
+	 *
+	 * @private
+	 */
+	_addHorizontalLineAutoformats() {
+		if ( this.editor.commands.get( 'horizontalLine' ) ) {
+			blockAutoformatEditing( this.editor, this, /^---$/, 'horizontalLine' );
 		}
 	}
 }
