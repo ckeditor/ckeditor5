@@ -19,7 +19,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
 const Token = CloudServices.Token;
 
@@ -37,11 +36,11 @@ describe( 'EasyImage', () => {
 	} );
 
 	it( 'should require Image by name', () => {
-		expect( LinkImageEditing.requires ).to.include( 'Image' );
+		expect( EasyImage.requires ).to.include( 'Image' );
 	} );
 
 	it( 'should require ImageUpload by name', () => {
-		expect( LinkImageEditing.requires ).to.include( 'ImageUpload' );
+		expect( EasyImage.requires ).to.include( 'ImageUpload' );
 	} );
 
 	it( 'should be able to initialize editor with itself', () => {
