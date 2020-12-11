@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals ClassicEditor, console, window */
+/* globals ClassicEditor, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -13,7 +13,7 @@ ClassicEditor
 			items: [
 				'heading', '|',
 				'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
-				'bold', 'italic', 'link', '|',
+				'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
 				'bulletedList', 'numberedList', 'todoList', '|',
 				'code', 'codeBlock', '|',
 				'outdent', 'indent', '|',

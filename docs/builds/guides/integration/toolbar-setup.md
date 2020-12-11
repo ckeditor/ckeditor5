@@ -57,6 +57,12 @@ You can use `'|'` to create a separator between groups of toolbar items. Works i
     }
 ```
 
+#### Extended format demo
+
+The "regular" toolbar look. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via clickable "Show more buttons" button. The separators set in the config help organize the toolbar.
+
+{@snippet builds/guides/integration/toolbar-grouping}
+
 ### Multiline toolbar
 
 It is also possible to arrange toolbar items into multiple lines. In the extended format set `shouldNotGroupWhenFull` option to `true`, so items will not be grouped when the toolbar overflows but will wrap to the new line instead. Additionally, a `'-'` could be used inside items list to set the breaking point explicitly.
@@ -67,8 +73,20 @@ It is also possible to arrange toolbar items into multiple lines. In the extende
     }
 ```
 
+#### Automatic multiline wrapping demo
+
+The default multiline toolbar behaviour - the toolbar items are automatically wrapped into a new line once they do not fit the editor width. The mechanism is arbitrary and only wraps excess items. Notice the toolbar item separators and item groups have be also placed differently.
+
+{@snippet builds/guides/integration/toolbar-wrapping}
+
+#### Set wrapping breakpoint demo
+
+Setting a break point as described above lets the users create their own multiline configuration. Toolbar items are grouped and distributed according to the user-defined configuration in file. The placement of toolbar item groups, separators and breakpoints is fully customizable as described in this guide.
+
+{@snippet builds/guides/integration/toolbar-breakpoint}
+
 <info-box hint>
-	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
+	The above extended format is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
 </info-box>
 
 ## Listing available items
@@ -78,17 +96,3 @@ You can use the following snippet to retrieve all toolbar items available in you
 ```js
 Array.from( editor.ui.componentFactory.names() );
 ```
-
-## Demos
-
-### Toolbar with items grouping
-
-{@snippet builds/guides/integration/toolbar-grouping}
-
-### Toolbar with automatic multiline wrapping
-
-{@snippet builds/guides/integration/toolbar-wrapping}
-
-### Toolbar with set wrapping breakpoint
-
-{@snippet builds/guides/integration/toolbar-breakpoint}

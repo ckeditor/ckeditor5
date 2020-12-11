@@ -8,6 +8,9 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
@@ -17,6 +20,9 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 
 ClassicEditor.builtinPlugins.push( Alignment );
+ClassicEditor.builtinPlugins.push( Strikethrough );
+ClassicEditor.builtinPlugins.push( Subscript );
+ClassicEditor.builtinPlugins.push( Superscript );
 ClassicEditor.builtinPlugins.push( FontSize );
 ClassicEditor.builtinPlugins.push( FontFamily );
 ClassicEditor.builtinPlugins.push( FontColor );
