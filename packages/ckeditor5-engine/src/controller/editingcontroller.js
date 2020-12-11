@@ -11,6 +11,7 @@ import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
+import ArrowKeysModelObserver from '../model/observer/arrowkeysmodelobserver';
 import { clearAttributes, convertCollapsedSelection, convertRangeSelection, insertText, remove } from '../conversion/downcasthelpers';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -69,6 +70,14 @@ export default class EditingController {
 			schema: model.schema
 		} );
 
+		/**
+		 * Map of registered {@link module:engine/model/observer/modelobserver~ModelObserver observers}.
+		 *
+		 * @private
+		 * @type {Map.<Function, module:engine/model/observer/modelobserver~ModelObserver>}
+		 */
+		this._observers = new Map();
+
 		const doc = this.model.document;
 		const selection = doc.selection;
 		const markers = this.model.markers;
@@ -125,6 +134,9 @@ export default class EditingController {
 			return viewRoot;
 		} );
 
+		// TODO
+		this.addObserver( ArrowKeysModelObserver );
+
 		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.model.document );
 		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.view.document );
 
@@ -137,10 +149,54 @@ export default class EditingController {
 	}
 
 	/**
+	 * Creates observer of the given type if not yet created,
+	 * {@link module:engine/model/observer/modelobserver~ModelObserver#enable enables} it and
+	 * {@link module:engine/model/observer/modelobserver~ModelObserver#observe attaches} to provided view document.
+	 *
+	 * Note: Observers are recognized by their constructor (classes). A single observer will be instantiated and used only
+	 * when registered for the first time. This means that features and other components can register a single observer
+	 * multiple times without caring whether it has been already added or not.
+	 *
+	 * @param {Function} ModelObserver The constructor of an model observer to add.
+	 * Should create an instance inheriting from {@link module:engine/model/observer/modelobserver~ModelObserver}.
+	 * @returns {module:engine/model/observer/modelobserver~ModelObserver} Added observer instance.
+	 */
+	addObserver( ModelObserver ) {
+		let observer = this._observers.get( ModelObserver );
+
+		if ( observer ) {
+			return observer;
+		}
+
+		observer = new ModelObserver( this.model );
+
+		this._observers.set( ModelObserver, observer );
+
+		observer.observe( this.view.document );
+		observer.enable();
+
+		return observer;
+	}
+
+	/**
+	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
+	 *
+	 * @param {Function} Observer The constructor of an observer to get.
+	 * @returns {module:engine/model/observer/modelobserver~ModelObserver|undefined} Observer instance or undefined.
+	 */
+	getObserver( Observer ) {
+		return this._observers.get( Observer );
+	}
+
+	/**
 	 * Removes all event listeners attached to the `EditingController`. Destroys all objects created
 	 * by `EditingController` that need to be destroyed.
 	 */
 	destroy() {
+		for ( const observer of this._observers.values() ) {
+			observer.destroy();
+		}
+
 		this.view.destroy();
 		this.stopListening();
 	}

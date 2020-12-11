@@ -11,6 +11,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
+import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import {
 	isArrowKeyCode,
 	isForwardArrowKeyCode,
@@ -531,11 +533,19 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableInsertingParagraphsOnEnterKeypress() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
+		const selection = editor.model.document.selection;
 
-		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
-			const selectedViewElement = editingView.document.selection.getSelectedElement();
-			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
+		const enterObserver = editor.editing.getObserver( EnterModelObserver ).for( '$object' );
+
+		this._listenToIfEnabled( enterObserver, 'enter', ( evt, domEventData ) => {
+			const selectedModelElement = selection.getSelectedElement();
+
+			if ( !selectedModelElement ) {
+				return;
+			}
+
+			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
 			const schema = editor.model.schema;
 			let wasHandled;
 
@@ -609,12 +619,19 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableDeleteIntegration() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
 		const model = editor.model;
 		const schema = model.schema;
 
+		const deleteObserver = editor.editing.getObserver( DeleteModelObserver ).for( '$object' );
+
 		// Note: The priority must precede the default Widget class delete handler.
-		this._listenToIfEnabled( editingView.document, 'delete', ( evt, domEventData ) => {
+		this._listenToIfEnabled( deleteObserver, 'delete', ( evt, domEventData ) => {
+			const selectedModelWidget = model.document.selection.getSelectedElement();
+
+			if ( !selectedModelWidget ) {
+				return;
+			}
+
 			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
 			// This listener handles only these cases when the fake caret is active.
@@ -623,7 +640,6 @@ export default class WidgetTypeAround extends Plugin {
 			}
 
 			const direction = domEventData.direction;
-			const selectedModelWidget = model.document.selection.getSelectedElement();
 
 			const isFakeCaretBefore = typeAroundFakeCaretPosition === 'before';
 			const isForwardDelete = direction == 'forward';
@@ -677,7 +693,7 @@ export default class WidgetTypeAround extends Plugin {
 			// If nothing was deleted, then the default handler will have nothing to do anyway.
 			domEventData.preventDefault();
 			evt.stop();
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		} );
 	}
 
 	/**

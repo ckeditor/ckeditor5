@@ -8,9 +8,12 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import BlockQuoteCommand from './blockquotecommand';
+import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 
 /**
  * The block quote editing.
@@ -25,6 +28,13 @@ export default class BlockQuoteEditing extends Plugin {
 	 */
 	static get pluginName() {
 		return 'BlockQuoteEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Enter, Delete ];
 	}
 
 	/**
@@ -104,15 +114,14 @@ export default class BlockQuoteEditing extends Plugin {
 			return false;
 		} );
 
-		const viewDocument = this.editor.editing.view.document;
 		const selection = editor.model.document.selection;
 		const blockQuoteCommand = editor.commands.get( 'blockQuote' );
 
+		const enterObserver = editor.editing.getObserver( EnterModelObserver ).for( 'blockQuote' );
+
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
-		//
-		// Priority normal - 10 to override default handler but not list's feature listener.
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		this.listenTo( enterObserver, 'enter', ( evt, data ) => {
 			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
 			}
@@ -126,13 +135,13 @@ export default class BlockQuoteEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: priorities.normal - 10 } );
+		} );
+
+		const deleteObserver = editor.editing.getObserver( DeleteModelObserver ).for( 'blockQuote' );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed in first empty block inside a quote, break the quote.
-		//
-		// Priority high + 5 to override widget's feature listener but not list's feature listener.
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+		this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
 			if ( data.direction != 'backward' || !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
 			}
@@ -146,6 +155,6 @@ export default class BlockQuoteEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: priorities.high + 5 } );
+		} );
 	}
 }

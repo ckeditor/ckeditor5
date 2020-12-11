@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
+import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import {
 	isArrowKeyCode,
@@ -122,13 +123,15 @@ export default class Widget extends Plugin {
 
 		this.listenTo( viewDocument, 'keydown', verticalNavigationHandler( this.editor.editing ) );
 
+		const deleteObserver = this.editor.editing.getObserver( DeleteModelObserver ).for( '$text' );
+
 		// Handle custom delete behaviour.
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+		this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
 			if ( this._handleDelete( data.direction == 'forward' ) ) {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: 'high' } );
+		} );
 	}
 
 	/**

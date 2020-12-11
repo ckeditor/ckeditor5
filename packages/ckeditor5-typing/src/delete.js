@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
 import DeleteObserver from './deleteobserver';
+import DeleteModelObserver from './deletemodelobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
@@ -35,7 +36,10 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+		// Add generic delete model observer (not bound to any element).
+		const deleteObserver = editor.editing.addObserver( DeleteModelObserver );
+
+		this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
 			const deleteCommandParams = { unit: data.unit, sequence: data.sequence };
 
 			// If a specific (view) selection to remove was set, convert it to a model selection and set as a parameter for `DeleteCommand`.
@@ -70,7 +74,7 @@ export default class Delete extends Plugin {
 		if ( env.isAndroid ) {
 			let domSelectionAfterDeletion = null;
 
-			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
 				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 
 				domSelectionAfterDeletion = {

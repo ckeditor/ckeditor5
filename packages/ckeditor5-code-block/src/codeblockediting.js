@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
 import OutdentCodeBlockCommand from './outdentcodeblockcommand';
@@ -203,11 +204,13 @@ export default class CodeBlockEditing extends Plugin {
 			outdent.registerChildCommand( commands.get( 'outdentCodeBlock' ) );
 		}
 
+		const enterObserver = editor.editing.getObserver( EnterModelObserver ).for( 'codeBlock' );
+
 		// Customize the response to the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd>
 		// key press when the selection is in the code block. Upon enter key press we can either
 		// leave the block if it's "two enters" in a row or create a new code block line, preserving
 		// previous line's indentation.
-		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
+		this.listenTo( enterObserver, 'enter', ( evt, data ) => {
 			const positionParent = editor.model.document.selection.getLastPosition().parent;
 
 			if ( !positionParent.is( 'element', 'codeBlock' ) ) {

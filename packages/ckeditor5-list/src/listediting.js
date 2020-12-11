@@ -12,7 +12,10 @@ import IndentCommand from './indentcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 
 import {
 	cleanList,
@@ -50,7 +53,7 @@ export default class ListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Paragraph ];
+		return [ Paragraph, Enter, Delete ];
 	}
 
 	/**
@@ -117,11 +120,11 @@ export default class ListEditing extends Plugin {
 		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
 
-		const viewDocument = editing.view.document;
+		const enterObserver = editor.editing.getObserver( EnterModelObserver ).for( 'listItem' );
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		this.listenTo( enterObserver, 'enter', ( evt, data ) => {
 			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
@@ -133,11 +136,11 @@ export default class ListEditing extends Plugin {
 			}
 		} );
 
+		const deleteObserver = editor.editing.getObserver( DeleteModelObserver ).for( 'listItem' );
+
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		//
-		// Priority high + 10 to override widget and blockquote feature listener.
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+		this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
 			// Check conditions from those that require less computations like those immediately available.
 			if ( data.direction !== 'backward' ) {
 				return;
@@ -171,7 +174,7 @@ export default class ListEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		}, { priority: priorities.high + 10 } );
+		} );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {

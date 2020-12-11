@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import EnterCommand from './entercommand';
 import EnterObserver from './enterobserver';
+import EnterModelObserver from './entermodelobserver';
 
 /**
  * This plugin handles the <kbd>Enter</kbd> key (hard line break) in the editor.
@@ -30,14 +31,17 @@ export default class Enter extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const view = editor.editing.view;
-		const viewDocument = view.document;
+		const editing = editor.editing;
+		const view = editing.view;
 
 		view.addObserver( EnterObserver );
 
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		// Add generic enter model observer (not bound to any element).
+		const enterObserver = editing.addObserver( EnterModelObserver );
+
+		this.listenTo( enterObserver, 'enter', ( evt, data ) => {
 			data.preventDefault();
 
 			// The soft enter key is handled by the ShiftEnter plugin.

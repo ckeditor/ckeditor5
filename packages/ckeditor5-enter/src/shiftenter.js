@@ -9,6 +9,7 @@
 
 import ShiftEnterCommand from './shiftentercommand';
 import EnterObserver from './enterobserver';
+import EnterModelObserver from './entermodelobserver';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
@@ -33,7 +34,6 @@ export default class ShiftEnter extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const view = editor.editing.view;
-		const viewDocument = view.document;
 
 		// Configure the schema.
 		schema.register( 'softBreak', {
@@ -58,7 +58,10 @@ export default class ShiftEnter extends Plugin {
 
 		editor.commands.add( 'shiftEnter', new ShiftEnterCommand( editor ) );
 
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		// Add generic enter model observer (not bound to any element).
+		const enterObserver = editor.editing.addObserver( EnterModelObserver );
+
+		this.listenTo( enterObserver, 'enter', ( evt, data ) => {
 			data.preventDefault();
 
 			// The hard enter key is handled by the Enter plugin.
