@@ -25,11 +25,12 @@ describe( 'Upload utils', () => {
 			const editor = await ClassicEditor
 				.create( editorElement, {
 					plugins: [
-						CKFinderUploadAdapter,
-						CKFinder,
 						Paragraph,
+						Link,
 						Image,
-						ImageUploadUI
+						ImageUploadUI,
+						CKFinderUploadAdapter,
+						CKFinder
 					],
 					image: {
 						insert: {
