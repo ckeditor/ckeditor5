@@ -7,6 +7,7 @@
 category: builds-integration
 order: 35
 ---
+{@snippet builds/guides/integration/build-toolbar-source}
 
 # Toolbar setup
 
@@ -91,6 +92,3 @@ Array.from( editor.ui.componentFactory.names() );
 ### Toolbar with set wrapping breakpoint
 
 {@snippet builds/guides/integration/toolbar-breakpoint}
-
-
-

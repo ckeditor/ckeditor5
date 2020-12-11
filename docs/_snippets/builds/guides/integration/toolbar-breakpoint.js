@@ -3,26 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, setTimeout */
+/* globals ClassicEditor, console, window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#toolbar-breakpoint' ), {
-		plugins: [ 	Alignment, ArticlePluginSet, EasyImage, Code, CodeBlock, TodoList, FontSize,
-			FontFamily, FontColor, FontBackgroundColor ],
 		toolbar: {
 			items: [
 				'heading', '|',
@@ -68,17 +54,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		const outputElement = document.querySelector( '#toolbar-breakpoint' );
-
-		editor.model.document.on( 'change', () => {
-			outputElement.innerText = editor.getData();
-		} );
-
-		// Set the initial data with delay so highlight.js doesn't catch it.
-		setTimeout( () => {
-			outputElement.innerText = editor.getData();
-		}, 500 );
 	} )
 	.catch( err => {
 		console.error( err.stack );
