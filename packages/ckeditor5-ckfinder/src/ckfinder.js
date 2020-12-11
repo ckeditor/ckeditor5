@@ -42,7 +42,7 @@ export default class CKFinder extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CKFinderEditing, CKFinderUI, 'CKFinderUploadAdapter' ];
+		return [ 'Image', 'Link', 'CKFinderUploadAdapter', CKFinderEditing, CKFinderUI ];
 	}
 }
 
