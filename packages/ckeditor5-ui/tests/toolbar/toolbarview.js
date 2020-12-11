@@ -471,7 +471,7 @@ describe( 'ToolbarView', () => {
 			expect( items.get( 0 ).name ).to.equal( 'bar' );
 		} );
 
-		it( 'deduplicate consecutive separators after removing items listed in `removeItems`', () => {
+		it( 'deduplicates consecutive separators after removing items listed in `removeItems`', () => {
 			view.fillFromConfig(
 				{
 					items: [ '|', '|', 'foo', '|', 'bar', '|', 'foo' ],
