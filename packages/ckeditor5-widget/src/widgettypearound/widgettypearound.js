@@ -20,7 +20,6 @@ import {
 	isForwardArrowKeyCode,
 	keyCodes
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import {
 	isTypeAroundWidget,
@@ -609,14 +608,13 @@ export default class WidgetTypeAround extends Plugin {
 			keyCodes.backspace
 		];
 
-		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high + 1").
+		// Note: The priority must precede the default model observers.
 		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
 			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
 				this._insertParagraphAccordingToFakeCaretPosition();
 			}
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		}, { priority: 'high' } );
 	}
 
 	/**
