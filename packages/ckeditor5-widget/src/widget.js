@@ -10,13 +10,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import {
-	isArrowKeyCode,
-	isForwardArrowKeyCode
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { isForwardArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
@@ -49,7 +47,7 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetTypeAround ];
+		return [ WidgetTypeAround, Delete ];
 	}
 
 	/**
@@ -124,9 +122,9 @@ export default class Widget extends Plugin {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );
 		} );
 
-		this.listenTo( arrowKeyObserver.for( '$object' ), 'arrowkey', ( ...args ) => {
+		this.listenTo( arrowKeyObserver.for( '$root' ), 'arrowkey', ( ...args ) => {
 			this._preventDefaultOnArrowKeyPress( ...args );
-		}, { priority: 'lowest' } );
+		} );
 
 		this.listenTo( arrowKeyObserver.for( '$text' ), 'arrowkey', verticalNavigationHandler( this.editor.editing ) );
 
@@ -213,12 +211,6 @@ export default class Widget extends Plugin {
 	_handleSelectionChangeOnArrowKeyPress( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
 
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
 		const model = this.editor.model;
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
@@ -270,14 +262,6 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_preventDefaultOnArrowKeyPress( eventInfo, domEventData ) {
-		const keyCode = domEventData.keyCode;
-
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
 		const model = this.editor.model;
 		const schema = model.schema;
 		const objectElement = model.document.selection.getSelectedElement();

@@ -50,7 +50,10 @@ export default class Enter extends Plugin {
 			}
 
 			editor.execute( 'enter' );
-			view.scrollToTheSelection();
+
+			if ( editor.ui ) {
+				view.scrollToTheSelection();
+			}
 		} );
 	}
 }

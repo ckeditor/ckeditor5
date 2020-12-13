@@ -164,13 +164,15 @@ describe( 'ListEditing', () => {
 		it( 'should not execute outdentList command on enter key in non-empty list', () => {
 			const domEvtDataStub = { preventDefault() {} };
 
-			sinon.spy( editor, 'execute' );
+			const enterCommandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
+			const outdentCommandExecuteSpy = sinon.stub( editor.commands.get( 'outdentList' ), 'execute' );
 
 			setModelData( model, '<listItem listType="bulleted" listIndent="0">foo[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( enterCommandExecuteSpy );
+			sinon.assert.notCalled( outdentCommandExecuteSpy );
 		} );
 	} );
 
@@ -208,7 +210,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'forwardDelete' );
 		} );
 
 		it( 'should not execute outdentList command when selection is not collapsed', () => {
@@ -220,7 +223,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should not execute outdentList command if not in list item', () => {
@@ -232,7 +236,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should not execute outdentList command if not in first list item', () => {
@@ -247,7 +252,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should not execute outdentList command when selection is not on first position', () => {
@@ -259,7 +265,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should outdent list when previous element is nested in block quote', () => {
@@ -305,6 +312,26 @@ describe( 'ListEditing', () => {
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should not outdent list when the selection is in an element nested inside a list item', () => {
+			model.schema.register( 'listItemSub', { allowIn: 'listItem', isInline: true } );
+			model.schema.extend( '$text', { allowIn: 'listItemSub' } );
+			editor.conversion.elementToElement( { model: 'listItemSub', view: 'listItemSub' } );
+
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<listItem listType="bulleted" listIndent="0"><listItemSub>[]foo</listItemSub></listItem>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 	} );
 

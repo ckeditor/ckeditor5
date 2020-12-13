@@ -70,7 +70,10 @@ export default class ShiftEnter extends Plugin {
 			}
 
 			editor.execute( 'shiftEnter' );
-			view.scrollToTheSelection();
+
+			if ( editor.ui ) {
+				view.scrollToTheSelection();
+			}
 		}, { priority: 'low' } );
 	}
 }

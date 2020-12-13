@@ -60,7 +60,9 @@ export default class Delete extends Plugin {
 
 			data.preventDefault();
 
-			view.scrollToTheSelection();
+			if ( editor.ui ) {
+				view.scrollToTheSelection();
+			}
 		} );
 
 		// Android IMEs have a quirk - they change DOM selection after the input changes were performed by the browser.
@@ -74,7 +76,7 @@ export default class Delete extends Plugin {
 		if ( env.isAndroid ) {
 			let domSelectionAfterDeletion = null;
 
-			this.listenTo( deleteObserver, 'delete', ( evt, data ) => {
+			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 
 				domSelectionAfterDeletion = {

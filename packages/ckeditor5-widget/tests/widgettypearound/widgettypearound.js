@@ -366,7 +366,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should activate before when the widget is selected and the navigation is backward', () => {
@@ -383,7 +383,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should activate if an arrow key is pressed along with Shift', () => {
@@ -508,7 +508,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				fireKeyboardEvent( 'arrowleft' );
 
@@ -521,7 +521,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should deactivate when the widget is selected and the navigation is forward to a valid position', () => {
@@ -533,7 +533,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				fireKeyboardEvent( 'arrowright' );
 
@@ -546,7 +546,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should deactivate if an arrow key is pressed along with Shift', () => {
@@ -558,7 +558,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
 
@@ -566,7 +566,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should not deactivate when the widget is selected and the navigation is backward but there is nowhere to go', () => {
@@ -578,7 +578,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				fireKeyboardEvent( 'arrowleft' );
 
@@ -586,7 +586,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -594,7 +594,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should not deactivate when the widget is selected and the navigation is forward but there is nowhere to go', () => {
@@ -606,7 +606,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				fireKeyboardEvent( 'arrowright' );
 
@@ -614,7 +614,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -622,7 +622,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should deactivate when the widget is selected and the navigation is against the fake caret (backward)', () => {
@@ -634,7 +634,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				fireKeyboardEvent( 'arrowright' );
 
@@ -647,7 +647,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			it( 'should deactivate when the widget is selected and the navigation is against the fake caret (forward)', () => {
@@ -659,7 +659,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 
 				fireKeyboardEvent( 'arrowleft' );
 
@@ -672,7 +672,7 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 		} );
 
@@ -1208,6 +1208,13 @@ describe( 'WidgetTypeAround', () => {
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should do nothing if some content inside widget is deleted', () => {
+					setModelData( editor.model, '<blockWidget><nested>[foo] bar</nested></blockWidget>' );
+
+					fireDeleteEvent();
+					expect( getModelData( model ) ).to.equal( '<blockWidget><nested>[] bar</nested></blockWidget>' );
 				} );
 			} );
 

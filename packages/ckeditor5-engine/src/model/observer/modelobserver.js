@@ -125,46 +125,54 @@ export default class ModelObserver {
 			const eventInfo = new EventInfo( this, this.modelEventType );
 
 			const position = selection.focus.path.length < selection.anchor.path.length ? selection.anchor : selection.focus;
+			const acceptsText = selection.isCollapsed && schema.checkChild( position, '$text' );
+
 			let node = selection.getSelectedElement() || position.textNode || position.parent;
 			let bubbling = false;
 
 			while ( node ) {
+				// Element node handling.
 				if ( node.is( 'element' ) ) {
-					if ( !bubbling && selection.isCollapsed && schema.checkChild( position, '$text' ) ) {
-						this._fireListenerFor( '$text', eventInfo, ...eventArgs );
-					}
-
-					if ( eventInfo.stop.called ) {
+					// For the not yet bubbling event trigger for $text node if it's accepted by the selection position.
+					if ( !bubbling && acceptsText && this._fireListenerFor( '$text', eventInfo, ...eventArgs ) ) {
 						break;
 					}
 
-					this._fireListenerFor( node.name, eventInfo, ...eventArgs );
-
-					if ( eventInfo.stop.called ) {
+					// Default handler for specified element.
+					if ( this._fireListenerFor( node.name, eventInfo, ...eventArgs ) ) {
 						break;
 					}
 
-					if ( schema.isObject( node ) ) {
-						this._fireListenerFor( '$object', eventInfo, ...eventArgs );
+					// Generic handler for $object.
+					if ( schema.isObject( node ) && this._fireListenerFor( '$object', eventInfo, ...eventArgs ) ) {
+						break;
 					}
-				} else if ( node.is( '$text' ) ) {
-					this._fireListenerFor( '$text', eventInfo, ...eventArgs );
-				} else if ( node.is( 'rootElement' ) ) {
-					this._fireListenerFor( '$root', eventInfo, ...eventArgs );
 				}
 
-				if ( eventInfo.stop.called ) {
-					break;
+				// Text node handling.
+				else if ( node.is( '$text' ) ) {
+					if ( this._fireListenerFor( '$text', eventInfo, ...eventArgs ) ) {
+						break;
+					}
+				}
+
+				// Root node handling.
+				else if ( node.is( 'rootElement' ) ) {
+					if ( this._fireListenerFor( '$root', eventInfo, ...eventArgs ) ) {
+						break;
+					}
 				}
 
 				node = node.parent;
 				bubbling = true;
 			}
 
+			// Fire generic handler (not assigned to any element).
 			if ( !eventInfo.stop.called ) {
 				this.fire( eventInfo, ...eventArgs );
 			}
 
+			// Stop the event if generic handler stopped it.
 			if ( eventInfo.stop.called ) {
 				event.stop();
 			}
@@ -210,6 +218,7 @@ export default class ModelObserver {
 	 * @param {String} name
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo The `EventInfo` object.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
+	 * @returns {Boolean} True if event stop was called.
 	 */
 	_fireListenerFor( name, eventInfo, ...args ) {
 		const listener = this._elementMap.get( name );
@@ -217,6 +226,8 @@ export default class ModelObserver {
 		if ( listener ) {
 			listener.fire( eventInfo, ...args );
 		}
+
+		return eventInfo.stop.called;
 	}
 }
 

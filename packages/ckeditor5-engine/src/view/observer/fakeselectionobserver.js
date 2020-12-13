@@ -52,7 +52,13 @@ export default class FakeSelectionObserver extends Observer {
 			if ( selection.isFake && isArrowKeyCode( data.keyCode ) && this.isEnabled ) {
 				// Prevents default key down handling - no selection change will occur.
 				data.preventDefault();
+			}
+		}, { priority: 'highest' } );
 
+		document.on( 'keydown', ( eventInfo, data ) => {
+			const selection = document.selection;
+
+			if ( selection.isFake && isArrowKeyCode( data.keyCode ) && this.isEnabled ) {
 				this._handleSelectionMove( data.keyCode );
 			}
 		}, { priority: 'lowest' } );

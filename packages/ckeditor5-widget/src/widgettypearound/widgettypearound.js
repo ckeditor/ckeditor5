@@ -11,6 +11,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
 import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
@@ -61,6 +63,13 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	static get pluginName() {
 		return 'WidgetTypeAround';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Enter, Delete ];
 	}
 
 	/**
@@ -627,7 +636,6 @@ export default class WidgetTypeAround extends Plugin {
 
 		const deleteObserver = editor.editing.getObserver( DeleteModelObserver );
 
-		// Note: The priority must precede the default Widget class delete handler.
 		this._listenToIfEnabled( deleteObserver.for( '$object' ), 'delete', ( evt, domEventData ) => {
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 

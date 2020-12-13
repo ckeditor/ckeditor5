@@ -12,10 +12,7 @@ import TableWalker from './tablewalker';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
-import {
-	isArrowKeyCode,
-	getLocalizedArrowKeyCodeDirection
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
 
 /**
@@ -50,7 +47,7 @@ export default class TableKeyboard extends Plugin {
 
 		const arrowKeyObserver = this.editor.editing.getObserver( ArrowKeysModelObserver );
 
-		this.listenTo( arrowKeyObserver.for( 'table' ), 'arrowkey', ( ...args ) => this._onKeydown( ...args ) );
+		this.listenTo( arrowKeyObserver.for( 'table' ), 'arrowkey', ( ...args ) => this._onArrowKey( ...args ) );
 	}
 
 	/**
@@ -167,13 +164,9 @@ export default class TableKeyboard extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onKeydown( eventInfo, domEventData ) {
+	_onArrowKey( eventInfo, domEventData ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
-
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
 
 		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
 		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
