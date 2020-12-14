@@ -11,6 +11,8 @@ export { default as clickOutsideHandler } from './bindings/clickoutsidehandler';
 export { default as injectCssTransitionDisabler } from './bindings/injectcsstransitiondisabler';
 export { default as submitHandler } from './bindings/submithandler';
 
+export { default as BodyCollection } from './editorui/bodycollection';
+
 export { default as ButtonView } from './button/buttonview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 

@@ -8,9 +8,11 @@
  */
 
 export { default as Plugin } from './plugin';
-export { default as ContextPlugin } from './contextplugin';
 export { default as Command } from './command';
 export { default as MultiCommand } from './multicommand';
+
+export { default as Context } from './context';
+export { default as ContextPlugin } from './contextplugin';
 
 export { default as Editor } from './editor/editor';
 export { default as EditorUI } from './editor/editorui';

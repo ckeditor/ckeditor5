@@ -8,6 +8,7 @@
  */
 
 export { default as env } from './env';
+export { default as diff } from './diff';
 
 export { default as mix } from './mix';
 export { default as EmitterMixin } from './emittermixin';
