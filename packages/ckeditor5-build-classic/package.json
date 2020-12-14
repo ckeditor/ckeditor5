@@ -70,5 +70,11 @@
   "scripts": {
     "build": "webpack --mode production",
     "preversion": "npm run build"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-export-pdf": "^24.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^24.0.0",
+    "@ckeditor/ckeditor5-html-embed": "^24.0.0",
+    "@ckeditor/ckeditor5-remove-format": "^24.0.0"
   }
 }
