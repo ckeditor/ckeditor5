@@ -12,7 +12,7 @@ import ModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/modelob
 /**
  * Observes... TODO
  *
- * @extends module:engine/model/observer/modelobserver~Observer
+ * @extends module:engine/model/observer/modelobserver~ModelObserver
  */
 export default class DeleteModelObserver extends ModelObserver {
 	/**

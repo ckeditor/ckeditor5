@@ -71,7 +71,7 @@ export default class ModelObserver {
 	 * Enables the observer. This method is called when the observer is registered to the
 	 * {@link module:engine/model/model~Model}.
 	 *
-	 * @see module:engine/model/observer/modelobserver~Observer#disable
+	 * @see module:engine/model/observer/modelobserver~ModelObserver#disable
 	 */
 	enable() {
 		this.isEnabled = true;
@@ -80,7 +80,7 @@ export default class ModelObserver {
 	/**
 	 * Disables the observer.
 	 *
-	 * @see module:engine/model/observer/modelobserver~Observer#enable
+	 * @see module:engine/model/observer/modelobserver~ModelObserver#enable
 	 */
 	disable() {
 		this.isEnabled = false;
@@ -205,7 +205,7 @@ export default class ModelObserver {
 	 * observer {@link #isEnabled is not enabled}.
 	 *
 	 * @param {...*} [args]
-	 * @returns {Array.<*>|false}
+	 * @returns {Array.<*>|Boolean} False if event should not be handled.
 	 */
 	translateViewEvent( ...args ) {
 		return args;
