@@ -303,9 +303,9 @@ export default class ToolbarView extends View {
 					 * @error toolbarview-line-break-ignored-when-grouping-items
 					 */
 					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', config );
+				} else {
+					return new ToolbarLineBreakView();
 				}
-
-				return new ToolbarLineBreakView();
 			} else if ( factory.has( name ) ) {
 				return factory.create( name );
 			} else {
