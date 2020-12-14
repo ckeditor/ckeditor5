@@ -68,6 +68,9 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
+		const editingView = editor.editing.view;
+		const rootElement = editingView.document.getRoot();
+
 		window.editor = editor;
 
 		// Clone the first message in the chat when "Send" is clicked, fill it with new data
@@ -76,12 +79,12 @@ ClassicEditor
 			const message = editor.getData();
 
 			if ( !message ) {
-				const editorContainer = editor.sourceElement;
+				editingView.change( writer => {
+					writer.addClass( 'highlighted', rootElement );
+					setTimeout( () => writer.removeClass( 'highlighted', rootElement ), 650 );
 
-				editor.editing.view.focus();
-
-				editorContainer.classList.add( 'highlighted' );
-				setTimeout( () => editorContainer.classList.remove( 'highlighted' ), 650 );
+					editingView.focus();
+				} );
 
 				return;
 			}
@@ -103,7 +106,7 @@ ClassicEditor
 			document.querySelector( '.chat__posts' ).appendChild( clone );
 
 			editor.setData( '' );
-			editor.editing.view.focus();
+			editingView.focus();
 		} );
 	} )
 	.catch( err => {
