@@ -478,6 +478,18 @@ describe( 'ToolbarView', () => {
 				sinon.match.string // Link to the documentation.
 			);
 		} );
+
+		it( 'does not render line separator when the button grouping option is enabled', () => {
+			view.options.shouldGroupWhenFull = true;
+
+			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 2 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
+		} );
 	} );
 
 	describe( 'toolbar with static items', () => {
