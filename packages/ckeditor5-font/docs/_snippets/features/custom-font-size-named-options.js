@@ -14,7 +14,6 @@ ClassicEditor
 			items: [
 				'heading', '|', 'fontSize', 'bulletedList', 'numberedList', 'undo', 'redo'
 			],
-			shouldNotGroupWhenFull: true,
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		fontSize: {
