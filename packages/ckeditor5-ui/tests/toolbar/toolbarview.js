@@ -480,6 +480,9 @@ describe( 'ToolbarView', () => {
 		} );
 
 		it( 'does not render line separator when the button grouping option is enabled', () => {
+			// Catch warn to stop tests from failing in production mode.
+			sinon.stub( console, 'warn' );
+
 			view.options.shouldGroupWhenFull = true;
 
 			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
