@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-function addButtonIndicator( item, text, document ) {
+function addItemIndicator( item, text ) {
 	if ( !item ) {
 		return;
 	}
@@ -24,10 +24,12 @@ function addButtonIndicator( item, text, document ) {
 		allowHTML: true,
 		maxWidth: 280,
 		showOnCreate: true,
-		// interactive: true,
-		// appendTo: () => document.body
+		interactive: true,
+		// eslint-disable-next-line no-undef
+		appendTo: () => document.body
 	} );
 
+	// eslint-disable-next-line no-undef
 	const closeButton = document.querySelector( '.tippy-content .tippy-content__close-button' );
 	closeButton.addEventListener( 'click', () => {
 		tooltip.hide();

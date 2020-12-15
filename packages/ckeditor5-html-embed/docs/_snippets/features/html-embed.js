@@ -164,10 +164,9 @@ ClassicEditor
 			iframeElement.contentWindow.document.close();
 		} );
 
-		window.addButtonIndicator(
-			window.selectToolbarButton( 9 ),
-			'Click this button to create a raw html widget',
-			document
+		window.addItemIndicator(
+			window.findToolbarItem( editor.ui.view.toolbar, { label: 'Insert media' } ),
+			'Click this button to create a raw html widget'
 		);
 	} )
 	.catch( err => {
