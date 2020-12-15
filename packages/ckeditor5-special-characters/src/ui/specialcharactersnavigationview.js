@@ -43,6 +43,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		 * @member {module:ui/dropdown/dropdownview~DropdownView}
 		 */
 		this.groupDropdownView = this._createGroupDropdown( groupNames );
+		this.groupDropdownView.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 
 		/**
 		 * @inheritDoc
