@@ -284,65 +284,87 @@ export default class ToolbarView extends View {
 	fillFromConfig( itemsOrConfig, factory ) {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 
-		// Items listed in `config.removeItems` should not be added to the toolbar.
-		const items = config.items.filter( name => config.removeItems.indexOf( name ) === -1 );
-
-		const itemsToAdd = items.reduce( ( itemsToAdd, name, idx, allItems ) => {
-			if ( name === '|' ) {
-				// Omit duplicated separators. This can happen after removing items listed in `config.removeItems`.
-				if ( idx > 0 && allItems[ idx - 1 ] === '|' ) {
-					// No changes to item list.
-					return itemsToAdd;
+		const itemsToAdd = config.items
+			// Items listed in `config.removeItems` should not be added to the toolbar.
+			// For the items that cannot be instantiated we are sending warning message.
+			.filter( name => {
+				// Ignore separators and dividers for now.
+				if ( name === '|' || name === '-' ) {
+					return true;
 				}
 
-				itemsToAdd.push( new ToolbarSeparatorView() );
-			} else if ( name === '-' ) {
-				if ( this.options.shouldGroupWhenFull ) {
+				if ( config.removeItems.indexOf( name ) !== -1 ) {
+					return false;
+				}
+
+				if ( !factory.has( name ) ) {
 					/**
-					 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
-					 * is disabled in the toolbar configuration.
-					 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
+					 * There was a problem processing the configuration of the toolbar. The item with the given
+					 * name does not exist so it was omitted when rendering the toolbar.
 					 *
-					 *		const config = {
-					 *			toolbar: {
-					 *				items: [ ... ],
-					 *				shouldNotGroupWhenFull: true
-					 *			}
-					 *		}
+					 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+					 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
 					 *
-					 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+					 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
+					 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
 					 *
-					 * @error toolbarview-line-break-ignored-when-grouping-items
+					 * You can use the following snippet to retrieve all available toolbar items:
+					 *
+					 *		Array.from( editor.ui.componentFactory.names() );
+					 *
+					 * @error toolbarview-item-unavailable
+					 * @param {String} name The name of the component.
 					 */
-					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', items );
+					logWarning( 'toolbarview-item-unavailable', { name } );
+
+					return false;
 				}
 
-				itemsToAdd.push( new ToolbarLineBreakView() );
-			} else if ( factory.has( name ) ) {
-				itemsToAdd.push( factory.create( name ) );
-			} else {
-				/**
-				 * There was a problem processing the configuration of the toolbar. The item with the given
-				 * name does not exist so it was omitted when rendering the toolbar.
-				 *
-				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
-				 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
-				 *
-				 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
-				 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
-				 *
-				 * You can use the following snippet to retrieve all available toolbar items:
-				 *
-				 *		Array.from( editor.ui.componentFactory.names() );
-				 *
-				 * @error toolbarview-item-unavailable
-				 * @param {String} name The name of the component.
-				 */
-				logWarning( 'toolbarview-item-unavailable', { name } );
-			}
+				return true;
+			} )
+			// Separators at the start and end of toolbar should be removed, as well as duplicated ones.
+			// This can happen after removing items listed in `config.removeItems` or if an item cannot be created.
+			.filter( ( name, idx, items ) => {
+				if ( name !== '|' ) {
+					return true;
+				}
 
-			return itemsToAdd;
-		}, [] );
+				const isFirst = idx === 0 || items[ idx - 1 ] === '|';
+				const isLast = idx === items.length - 1;
+				const isDuplicated = idx > 0 && items[ idx - 1 ] === '|';
+
+				return !( isFirst || isLast || isDuplicated );
+			} )
+			// Instantiate toolbar items.
+			.map( ( name, idx, items ) => {
+				if ( name === '|' ) {
+					return new ToolbarSeparatorView();
+				} else if ( name === '-' ) {
+					if ( this.options.shouldGroupWhenFull ) {
+						/**
+						 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
+						 * is disabled in the toolbar configuration.
+						 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
+						 *
+						 *		const config = {
+						 *			toolbar: {
+						 *				items: [ ... ],
+						 *				shouldNotGroupWhenFull: true
+						 *			}
+						 *		}
+						 *
+						 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+						 *
+						 * @error toolbarview-line-break-ignored-when-grouping-items
+						 */
+						logWarning( 'toolbarview-line-break-ignored-when-grouping-items', items );
+					}
+
+					return new ToolbarLineBreakView();
+				}
+
+				return factory.create( name );
+			} );
 
 		this.items.addMany( itemsToAdd );
 	}

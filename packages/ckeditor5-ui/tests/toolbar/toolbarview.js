@@ -481,11 +481,11 @@ describe( 'ToolbarView', () => {
 			);
 
 			const items = view.items;
-			expect( items ).to.have.length( 4 );
-			expect( items.get( 0 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 1 ).name ).to.equal( 'foo' );
-			expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 3 ).name ).to.equal( 'foo' );
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
 		} );
 
 		it( 'warns if there is no such component in the factory', () => {
