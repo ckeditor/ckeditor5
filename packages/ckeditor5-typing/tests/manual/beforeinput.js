@@ -43,7 +43,7 @@ ClassicEditor
 			Link,
 			List,
 			MediaEmbed,
-			// Mention,
+			Mention,
 			Paragraph,
 			Table,
 			TableToolbar
