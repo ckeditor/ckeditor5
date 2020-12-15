@@ -41,6 +41,14 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( modelTextProxy, 'type' ) ).to.be.true;
 		} );
 
+		it( 'should correctly add text instances', () => {
+			const modelText = new ModelText( 'foo' );
+
+			modelConsumable.add( modelText, 'type' );
+
+			expect( modelConsumable.test( modelText, 'type' ) ).to.be.true;
+		} );
+
 		it( 'should normalize type name', () => {
 			modelConsumable.add( modelElement, 'foo:bar:baz:abc' );
 
@@ -84,6 +92,17 @@ describe( 'ModelConsumable', () => {
 
 			expect( result ).to.be.true;
 			expect( modelConsumable.test( proxy1To4, 'type' ) ).to.be.false;
+		} );
+
+		it( 'should correctly consume text instances', () => {
+			const modelText = new ModelText( modelElement.getChild( 0 ) );
+
+			expect( modelConsumable.consume( modelText, 'type' ) ).to.be.false;
+
+			modelConsumable.add( modelText, 'type' );
+
+			expect( modelConsumable.consume( modelText, 'type' ) ).to.be.true;
+			expect( modelConsumable.test( modelText, 'type' ) ).to.be.false;
 		} );
 
 		it( 'should normalize type name', () => {
@@ -135,6 +154,18 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( modelTextProxy, 'type' ) ).to.be.true;
 		} );
 
+		it( 'should correctly revert text instances', () => {
+			const modelText = new ModelText( modelElement.getChild( 0 ) );
+
+			modelConsumable.add( modelText, 'type' );
+			modelConsumable.consume( modelText, 'type' );
+
+			const result = modelConsumable.revert( modelText, 'type' );
+
+			expect( result ).to.be.true;
+			expect( modelConsumable.test( modelText, 'type' ) ).to.be.true;
+		} );
+
 		it( 'should normalize type name', () => {
 			modelConsumable.add( modelElement, 'foo:bar:baz:abc' );
 			modelConsumable.consume( modelElement, 'foo:bar:baz' );
@@ -171,6 +202,17 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( proxy1To5, 'type' ) ).to.be.null;
 			expect( modelConsumable.test( proxyOther1To4, 'type' ) ).to.be.null;
 			expect( modelConsumable.test( equalProxy1To4, 'type' ) ).to.be.true;
+		} );
+
+		it( 'should correctly test for text instances', () => {
+			const modelText = new ModelText( modelElement.getChild( 0 ) );
+			const equalModelText = new ModelText( modelElement.getChild( 0 ) );
+
+			modelConsumable.add( modelText, 'type' );
+
+			expect( modelConsumable.test( modelText, 'type' ) ).to.be.true;
+			expect( modelConsumable.test( modelText, 'otherType' ) ).to.be.null;
+			expect( modelConsumable.test( equalModelText, 'type' ) ).to.be.true;
 		} );
 	} );
 } );
