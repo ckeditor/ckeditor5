@@ -25,7 +25,7 @@ function addItemIndicator( item, text ) {
 	} );
 
 	// eslint-disable-next-line no-undef
-	const closeButton = document.querySelector( '.tippy-content .tippy-content__close-button' );
+	const closeButton = tooltip.popper.querySelector( '.tippy-content__close-button' );
 	closeButton.addEventListener( 'click', () => {
 		tooltip.hide();
 	} );
