@@ -205,13 +205,15 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should add markers to the collection when selection is inside the marker range', () => {
+			selection.observeMarkers( 'marker' );
+
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionFromPath( root, [ 2, 2 ] ),
 					writer.createPositionFromPath( root, [ 2, 4 ] )
 				) );
 
-				writer.addMarker( 'marker-1', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 0, 0 ] ),
 						writer.createPositionFromPath( root, [ 2, 2 ] )
@@ -219,7 +221,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'marker-2', {
+				writer.addMarker( 'marker:2', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 2 ] ),
 						writer.createPositionFromPath( root, [ 2, 4 ] )
@@ -227,7 +229,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'marker-3', {
+				writer.addMarker( 'marker:3', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 1 ] ),
 						writer.createPositionFromPath( root, [ 2, 5 ] )
@@ -235,7 +237,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'marker-4', {
+				writer.addMarker( 'marker:4', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 4 ] ),
 						writer.createPositionFromPath( root, [ 3, 0 ] )
@@ -244,17 +246,19 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-2', 'marker-3' ] );
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:2', 'marker:3' ] );
 		} );
 
 		it( 'should update markers after selection change', () => {
+			selection.observeMarkers( 'marker' );
+
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionFromPath( root, [ 2, 1 ] ),
 					writer.createPositionFromPath( root, [ 2, 2 ] )
 				) );
 
-				writer.addMarker( 'marker-1', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 0 ] ),
 						writer.createPositionFromPath( root, [ 2, 6 ] )
@@ -262,7 +266,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'marker-2', {
+				writer.addMarker( 'marker:2', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 0 ] ),
 						writer.createPositionFromPath( root, [ 2, 3 ] )
@@ -270,7 +274,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'marker-3', {
+				writer.addMarker( 'marker:3', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 3 ] ),
 						writer.createPositionFromPath( root, [ 2, 6 ] )
@@ -279,7 +283,7 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-1', 'marker-2' ] );
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:1', 'marker:2' ] );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -288,17 +292,19 @@ describe( 'DocumentSelection', () => {
 				) );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-1', 'marker-3' ] );
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:1', 'marker:3' ] );
 		} );
 
 		it( 'should update markers after markers change', () => {
+			selection.observeMarkers( 'marker' );
+
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionFromPath( root, [ 2, 1 ] ),
 					writer.createPositionFromPath( root, [ 2, 2 ] )
 				) );
 
-				writer.addMarker( 'marker-1', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 0 ] ),
 						writer.createPositionFromPath( root, [ 2, 6 ] )
@@ -306,7 +312,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'marker-2', {
+				writer.addMarker( 'marker:2', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 0 ] ),
 						writer.createPositionFromPath( root, [ 2, 3 ] )
@@ -314,7 +320,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'marker-3', {
+				writer.addMarker( 'marker:3', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 3 ] ),
 						writer.createPositionFromPath( root, [ 2, 6 ] )
@@ -323,12 +329,12 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ), 1 ).to.have.members( [ 'marker-1', 'marker-2' ] );
+			expect( selection.markers.map( marker => marker.name ), 1 ).to.have.members( [ 'marker:1', 'marker:2' ] );
 
 			model.change( writer => {
-				writer.removeMarker( 'marker-1' );
+				writer.removeMarker( 'marker:1' );
 
-				writer.updateMarker( 'marker-2', {
+				writer.updateMarker( 'marker:2', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 3 ] ),
 						writer.createPositionFromPath( root, [ 2, 6 ] )
@@ -336,7 +342,7 @@ describe( 'DocumentSelection', () => {
 					usingOperation: false
 				} );
 
-				writer.updateMarker( 'marker-3', {
+				writer.updateMarker( 'marker:3', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 0 ] ),
 						writer.createPositionFromPath( root, [ 2, 3 ] )
@@ -345,17 +351,19 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ), 2 ).to.have.members( [ 'marker-3' ] );
+			expect( selection.markers.map( marker => marker.name ), 2 ).to.have.members( [ 'marker:3' ] );
 		} );
 
 		it( 'should not add marker when collapsed selection is on the marker left bound', () => {
+			selection.observeMarkers( 'marker' );
+
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionFromPath( root, [ 2, 2 ] ),
 					writer.createPositionFromPath( root, [ 2, 4 ] )
 				) );
 
-				writer.addMarker( 'marker', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 2 ] )
 					),
@@ -367,12 +375,14 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should not add marker when collapsed selection is on the marker right bound', () => {
+			selection.observeMarkers( 'marker' );
+
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionFromPath( root, [ 2, 4 ] )
 				) );
 
-				writer.addMarker( 'marker', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 2 ] ),
 						writer.createPositionFromPath( root, [ 2, 4 ] )
@@ -385,13 +395,15 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should add marker when non-collapsed selection is inside a marker and touches the left bound', () => {
+			selection.observeMarkers( 'marker' );
+
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionFromPath( root, [ 2, 1 ] ),
 					writer.createPositionFromPath( root, [ 2, 3 ] )
 				) );
 
-				writer.addMarker( 'marker', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 1 ] ),
 						writer.createPositionFromPath( root, [ 2, 5 ] )
@@ -400,17 +412,19 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:1' ] );
 		} );
 
 		it( 'should add marker when non-collapsed selection is inside a marker and touches the right bound', () => {
+			selection.observeMarkers( 'marker' );
+
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionFromPath( root, [ 2, 2 ] ),
 					writer.createPositionFromPath( root, [ 2, 5 ] )
 				) );
 
-				writer.addMarker( 'marker', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 1 ] ),
 						writer.createPositionFromPath( root, [ 2, 5 ] )
@@ -419,10 +433,12 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:1' ] );
 		} );
 
 		it( 'should add marker of selected widget', () => {
+			selection.observeMarkers( 'marker' );
+
 			root._insertChild( 0, new Element( 'widget' ) );
 
 			model.change( writer => {
@@ -431,7 +447,7 @@ describe( 'DocumentSelection', () => {
 					writer.createPositionFromPath( root, [ 1 ] )
 				) );
 
-				writer.addMarker( 'marker', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 0 ] ),
 						writer.createPositionFromPath( root, [ 1 ] )
@@ -440,14 +456,147 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:1' ] );
+		} );
+
+		it( 'should not add markers to the collection when markers observing is not enabled', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 2 ] ),
+					writer.createPositionFromPath( root, [ 2, 4 ] )
+				) );
+
+				writer.addMarker( 'marker:1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker:2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 2 ] ),
+						writer.createPositionFromPath( root, [ 2, 4 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker:3', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker:4', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 4 ] ),
+						writer.createPositionFromPath( root, [ 3, 0 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers ).to.length( 0 );
+		} );
+
+		it( 'should add markers to the collection only for observed marker groups', () => {
+			selection.observeMarkers( 'marker' );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 2 ] ),
+					writer.createPositionFromPath( root, [ 2, 4 ] )
+				) );
+
+				writer.addMarker( 'marker:1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker:2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 2 ] ),
+						writer.createPositionFromPath( root, [ 2, 4 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'otherGroup:3', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'otherGroup:4', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 4 ] ),
+						writer.createPositionFromPath( root, [ 3, 0 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker:2' ] );
+		} );
+
+		it( 'should add marker to the collection only for observed marker name', () => {
+			selection.observeMarkers( 'testMarker' );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 2 ] ),
+					writer.createPositionFromPath( root, [ 2, 4 ] )
+				) );
+
+				writer.addMarker( 'marker:1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'testMarker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 2 ] ),
+						writer.createPositionFromPath( root, [ 2, 4 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'otherMarker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'otherGroup:1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'testMarker' ] );
 		} );
 
 		describe( 'should fire change:marker event when', () => {
 			// Set marker to range 0-4.
 			beforeEach( () => {
 				model.change( writer => {
-					writer.addMarker( 'marker-1', {
+					writer.addMarker( 'marker:1', {
 						range: writer.createRange(
 							writer.createPositionFromPath( root, [ 2, 0 ] ),
 							writer.createPositionFromPath( root, [ 2, 4 ] )
@@ -459,6 +608,8 @@ describe( 'DocumentSelection', () => {
 
 			it( 'selection ranges change (marker added to the selection)', () => {
 				const spy = sinon.spy();
+
+				selection.observeMarkers( 'marker' );
 
 				model.change( writer => {
 					// The selection has no markers before the change.
@@ -480,6 +631,8 @@ describe( 'DocumentSelection', () => {
 			it( 'selection ranges change (marker removed from the selection)', () => {
 				const spy = sinon.spy();
 
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createRange(
 						writer.createPositionFromPath( root, [ 2, 1 ] ),
@@ -488,7 +641,7 @@ describe( 'DocumentSelection', () => {
 
 					// The selection is in a marker before the change.
 					model.document.selection.on( 'change:marker', ( evt, data ) => {
-						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker-1' ] );
+						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker:1' ] );
 						spy();
 					} );
 
@@ -502,12 +655,14 @@ describe( 'DocumentSelection', () => {
 			it( 'selection focus changes (marker removed from the selection)', () => {
 				const spy = sinon.spy();
 
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
 
 					// The selection is in a marker before the change.
 					model.document.selection.on( 'change:marker', ( evt, data ) => {
-						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker-1' ] );
+						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker:1' ] );
 						spy();
 					} );
 
@@ -521,6 +676,8 @@ describe( 'DocumentSelection', () => {
 			it( 'a new marker contains the selection', () => {
 				const spy = sinon.spy();
 
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
 
@@ -530,7 +687,7 @@ describe( 'DocumentSelection', () => {
 						spy();
 					} );
 
-					writer.updateMarker( 'marker-1', {
+					writer.updateMarker( 'marker:1', {
 						range: writer.createRange(
 							writer.createPositionFromPath( root, [ 2, 0 ] ),
 							writer.createPositionFromPath( root, [ 2, 6 ] )
@@ -544,16 +701,18 @@ describe( 'DocumentSelection', () => {
 			it( 'a marker stops contains the selection', () => {
 				const spy = sinon.spy();
 
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 3 ] ) );
 
 					// The selection is in a marker before the change.
 					model.document.selection.on( 'change:marker', ( evt, data ) => {
-						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker-1' ] );
+						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker:1' ] );
 						spy();
 					} );
 
-					writer.updateMarker( 'marker-1', {
+					writer.updateMarker( 'marker:1', {
 						range: writer.createRange(
 							writer.createPositionFromPath( root, [ 2, 0 ] ),
 							writer.createPositionFromPath( root, [ 2, 1 ] )
@@ -569,7 +728,7 @@ describe( 'DocumentSelection', () => {
 			// Set marker to range 0-4.
 			beforeEach( () => {
 				model.change( writer => {
-					writer.addMarker( 'marker-1', {
+					writer.addMarker( 'marker:1', {
 						range: writer.createRange(
 							writer.createPositionFromPath( root, [ 2, 0 ] ),
 							writer.createPositionFromPath( root, [ 2, 4 ] )
@@ -582,6 +741,8 @@ describe( 'DocumentSelection', () => {
 			it( 'selection ranges change does not change selection markers (no markers)', () => {
 				const spy = sinon.spy();
 
+				selection.observeMarkers( 'marker' );
+
 				model.document.selection.on( 'change:marker', spy );
 
 				model.change( writer => {
@@ -592,6 +753,8 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'selection ranges change does not change selection markers (same markers)', () => {
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
 				} );
@@ -608,6 +771,8 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'selection focus change does not change selection markers', () => {
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
 				} );
@@ -624,6 +789,8 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'changed marker still contains the selection', () => {
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
 				} );
@@ -633,7 +800,7 @@ describe( 'DocumentSelection', () => {
 				model.document.selection.on( 'change:marker', spy );
 
 				model.change( writer => {
-					writer.updateMarker( 'marker-1', {
+					writer.updateMarker( 'marker:1', {
 						range: writer.createRange(
 							writer.createPositionFromPath( root, [ 2, 0 ] ),
 							writer.createPositionFromPath( root, [ 2, 5 ] )
@@ -645,6 +812,8 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'removed marker did not contain the selection', () => {
+				selection.observeMarkers( 'marker' );
+
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
 				} );
@@ -654,7 +823,7 @@ describe( 'DocumentSelection', () => {
 				model.document.selection.on( 'change:marker', spy );
 
 				model.change( writer => {
-					writer.removeMarker( 'marker-1' );
+					writer.removeMarker( 'marker:1' );
 				} );
 
 				expect( spy.called ).to.be.false;
@@ -1385,15 +1554,17 @@ describe( 'DocumentSelection', () => {
 
 			const p = doc.getRoot().getChild( 0 );
 
+			selection.observeMarkers( 'marker' );
+
 			doc.registerPostFixer( () => {
 				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker' ] );
+				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker:1' ] );
 			} );
 
 			model.change( writer => {
 				writer.insertText( 'abcdef', { foo: 'bar' }, p );
 
-				writer.addMarker( 'marker', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( p, [ 1 ] ),
 						writer.createPositionFromPath( p, [ 5 ] )
@@ -1410,10 +1581,12 @@ describe( 'DocumentSelection', () => {
 
 			const p = doc.getRoot().getChild( 0 );
 
+			selection.observeMarkers( 'marker' );
+
 			doc.registerPostFixer( writer => {
 				writer.setAttribute( 'foo', 'biz', p.getChild( 0 ) );
-				writer.removeMarker( 'marker-1' );
-				writer.addMarker( 'marker-2', {
+				writer.removeMarker( 'marker:1' );
+				writer.addMarker( 'marker:2', {
 					range: writer.createRange(
 						writer.createPositionFromPath( p, [ 1 ] ),
 						writer.createPositionFromPath( p, [ 5 ] )
@@ -1424,13 +1597,13 @@ describe( 'DocumentSelection', () => {
 
 			doc.registerPostFixer( () => {
 				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
-				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker-2' ] );
+				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker:2' ] );
 			} );
 
 			model.change( writer => {
 				writer.insertText( 'abcdef', { foo: 'bar' }, p );
 
-				writer.addMarker( 'marker-1', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( p, [ 1 ] ),
 						writer.createPositionFromPath( p, [ 5 ] )
@@ -1447,16 +1620,18 @@ describe( 'DocumentSelection', () => {
 
 			const p = doc.getRoot().getChild( 0 );
 
+			selection.observeMarkers( 'marker' );
+
 			doc.on( 'change', () => {
 				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
-				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker-2' ] );
+				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker:2' ] );
 				done();
 			} );
 
 			doc.registerPostFixer( writer => {
 				writer.setAttribute( 'foo', 'biz', p.getChild( 0 ) );
-				writer.removeMarker( 'marker-1' );
-				writer.addMarker( 'marker-2', {
+				writer.removeMarker( 'marker:1' );
+				writer.addMarker( 'marker:2', {
 					range: writer.createRange(
 						writer.createPositionFromPath( p, [ 1 ] ),
 						writer.createPositionFromPath( p, [ 5 ] )
@@ -1468,7 +1643,7 @@ describe( 'DocumentSelection', () => {
 			model.change( writer => {
 				writer.insertText( 'abcdef', { foo: 'bar' }, p );
 
-				writer.addMarker( 'marker-1', {
+				writer.addMarker( 'marker:1', {
 					range: writer.createRange(
 						writer.createPositionFromPath( p, [ 1 ] ),
 						writer.createPositionFromPath( p, [ 5 ] )

@@ -122,13 +122,15 @@ export default class Title extends Plugin {
 	 * data output, like comments or track changes features. If such markers start in the title and end in the
 	 * body, the result of this method might be incorrect.
 	 *
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The title of the document.
 	 */
-	getTitle() {
+	getTitle( options = {} ) {
 		const titleElement = this._getTitleElement();
 		const titleContentElement = titleElement.getChild( 0 );
 
-		return this.editor.data.stringify( titleContentElement );
+		return this.editor.data.stringify( titleContentElement, options );
 	}
 
 	/**
@@ -138,9 +140,11 @@ export default class Title extends Plugin {
 	 * data output, like comments or track changes features. If such markers start in the title and end in the
 	 * body, the result of this method might be incorrect.
 	 *
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * See {@link module:engine/controller/datacontroller~DataController#get `DataController#get`}.
 	 * @returns {String} The body of the document.
 	 */
-	getBody() {
+	getBody( options = {} ) {
 		const editor = this.editor;
 		const data = editor.data;
 		const model = editor.model;
@@ -149,6 +153,8 @@ export default class Title extends Plugin {
 
 		const rootRange = model.createRangeIn( root );
 		const viewDocumentFragment = new ViewDocumentFragment( editor.editing.view.document );
+
+		data.downcastDispatcher.conversionApi.options = options;
 
 		// Convert the entire root to view.
 		data.mapper.clearBindings();
@@ -166,6 +172,9 @@ export default class Title extends Plugin {
 				data.downcastDispatcher.convertMarkerAdd( marker.name, intersection, viewWriter );
 			}
 		}
+
+		// Clean `conversionApi`.
+		delete data.downcastDispatcher.conversionApi.options;
 
 		// Remove title element from view.
 		viewWriter.remove( viewWriter.createRangeOn( viewDocumentFragment.getChild( 0 ) ) );

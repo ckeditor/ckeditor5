@@ -19,11 +19,16 @@
 		outline: var(--ck-html-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border);
 	}
 
-	& .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
-		margin-left: 50px;
+	/* HTML embed widget itself should respect UI language direction */
+	&[dir="ltr"] {
+		text-align: left;
 	}
 
-	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
+	&[dir="rtl"] {
+		text-align: right;
+	}
+
+	/* ----- Embed label in the upper left corner ----------------------------------------------- */
 
 	&::before {
 		content: attr(data-html-embed-label);
@@ -36,6 +41,16 @@
 		color: var(--ck-color-base-background);
 		font-size: var(--ck-font-size-tiny);
 		font-family: var(--ck-font-face);
+	}
+
+	&[dir="rtl"]::before {
+		left: auto;
+		right: var(--ck-spacing-standard);
+	}
+
+	/* Make space for label but it only collides in LTR languages */
+	&[dir="ltr"] .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
+		margin-left: 50px;
 	}
 
 	@nest .ck.ck-editor__editable.ck-blurred &.ck-widget_selected::before {
@@ -78,6 +93,11 @@
 		}
 	}
 
+	&[dir="rtl"] .raw-html-embed__buttons-wrapper {
+		left: var(--ck-spacing-standard);
+		right: auto;
+	}
+
 	/* The edit source element. */
 	& .raw-html-embed__source {
 		box-sizing: border-box;
@@ -91,6 +111,10 @@
 		tab-size: 4;
 		white-space: pre-wrap;
 		font-size: var(--ck-font-size-base); /* Safari needs this. */
+
+		/* HTML code is direction–agnostic. */
+		text-align: left;
+		direction: ltr;
 
 		&[disabled] {
 			background: hsl(0deg 0% 97%);
@@ -117,4 +141,3 @@
 		}
 	}
 }
-

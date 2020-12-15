@@ -223,14 +223,8 @@ export default class BlockToolbar extends Plugin {
 	_createToolbarView() {
 		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
-			shouldGroupWhenFull
-		} );
-
-		toolbarView.extendTemplate( {
-			attributes: {
-				// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
-				class: [ 'ck-toolbar_floating' ]
-			}
+			shouldGroupWhenFull,
+			isFloating: true
 		} );
 
 		// When toolbar lost focus then panel should hide.

@@ -64,7 +64,7 @@ export default class UnlinkCommand extends Command {
 					selection.getAttribute( 'linkHref' ),
 					model
 				) ] :
-				selection.getRanges();
+				model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {

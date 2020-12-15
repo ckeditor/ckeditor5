@@ -12,6 +12,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
+import ToolbarLineBreakView from './toolbarlinebreakview';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
@@ -182,15 +183,21 @@ export default class ToolbarView extends View {
 			}
 		} );
 
+		const classes = [
+			'ck',
+			'ck-toolbar',
+			bind.to( 'class' ),
+			bind.if( 'isCompact', 'ck-toolbar_compact' )
+		];
+
+		if ( this.options.shouldGroupWhenFull && this.options.isFloating ) {
+			classes.push( 'ck-toolbar_floating' );
+		}
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [
-					'ck',
-					'ck-toolbar',
-					bind.to( 'class' ),
-					bind.if( 'isCompact', 'ck-toolbar_compact' )
-				],
+				class: classes,
 				role: 'toolbar',
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
@@ -277,6 +284,28 @@ export default class ToolbarView extends View {
 		this.items.addMany( config.map( name => {
 			if ( name == '|' ) {
 				return new ToolbarSeparatorView();
+			} else if ( name == '-' ) {
+				if ( this.options.shouldGroupWhenFull ) {
+					/**
+					 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
+					 * is disabled in the toolbar configuration.
+					 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
+					 *
+					 *		const config = {
+					 *			toolbar: {
+					 *				items: [ ... ],
+					 *				shouldNotGroupWhenFull: true
+					 *			}
+					 *		}
+					 *
+					 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+					 *
+					 * @error toolbarview-line-break-ignored-when-grouping-items
+					 */
+					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', config );
+				}
+
+				return new ToolbarLineBreakView();
 			} else if ( factory.has( name ) ) {
 				return factory.create( name );
 			} else {
@@ -877,11 +906,22 @@ class DynamicGrouping {
 /**
  * When set to `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
  * would normally wrap to the next line when there is not enough space to display them in a single row, for
- * instance, if the parent container of the toolbar is narrow.
+ * instance, if the parent container of the toolbar is narrow. For toolbars in absolutely positioned containers
+ * without width restrictions also the {@link module:ui/toolbar/toolbarview~ToolbarOptions#isFloating} option is required to be `true`.
  *
- * Also see: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
+ * See also: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull
+ */
+
+/**
+ * This option should be enabled for toolbars in absolutely positioned containers without width restrictions
+ * to enable automatic {@link module:ui/toolbar/toolbarview~ToolbarView#items} grouping.
+ * When this option is set to `true`, the items will stop wrapping to the next line
+ * and together with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}
+ * this will allow grouping them when there is not enough space in a single row.
+ *
+ * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#isFloating
  */
 
 /**

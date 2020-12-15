@@ -13,6 +13,7 @@ import Watchdog from './watchdog';
 import EditorWatchdog from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import getSubNodes from './utils/getsubnodes';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * A watchdog for the {@link module:core/context~Context} class.
@@ -234,9 +235,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	add( itemConfigurationOrItemConfigurations ) {
-		const itemConfigurations = Array.isArray( itemConfigurationOrItemConfigurations ) ?
-			itemConfigurationOrItemConfigurations :
-			[ itemConfigurationOrItemConfigurations ];
+		const itemConfigurations = toArray( itemConfigurationOrItemConfigurations );
 
 		return this._actionQueue.enqueue( () => {
 			if ( this.state === 'destroyed' ) {
@@ -310,9 +309,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	remove( itemIdOrItemIds ) {
-		const itemIds = Array.isArray( itemIdOrItemIds ) ?
-			itemIdOrItemIds :
-			[ itemIdOrItemIds ];
+		const itemIds = toArray( itemIdOrItemIds );
 
 		return this._actionQueue.enqueue( () => {
 			return Promise.all( itemIds.map( itemId => {

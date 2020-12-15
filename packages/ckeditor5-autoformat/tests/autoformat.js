@@ -485,28 +485,64 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
+		describe( 'should not format', () => {
+			it( '* without space preceding it', () => {
+				setData( model, '<paragraph>fo*ob*ar[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '*', doc.selection.getFirstPosition() );
+				} );
+
+				expect( getData( model ) ).to
+					.equal( '<paragraph>fo*ob*ar*[]</paragraph>' );
+			} );
+
+			it( '__ without space preceding it', () => {
+				setData( model, '<paragraph>fo__ob__ar_[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '_', doc.selection.getFirstPosition() );
+				} );
+
+				expect( getData( model ) ).to
+					.equal( '<paragraph>fo__ob__ar__[]</paragraph>' );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/2388
+			it( 'snake_case sentences', () => {
+				setData( model, '<paragraph>foo_bar baz[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '_', doc.selection.getFirstPosition() );
+				} );
+
+				expect( getData( model ) ).to
+					.equal( '<paragraph>foo_bar baz_[]</paragraph>' );
+			} );
+		} );
+
 		describe( 'with code element', () => {
 			describe( 'should not format (inside)', () => {
 				it( '* inside', () => {
-					setData( model, '<paragraph><$text code="true">fo*obar[]</$text></paragraph>' );
+					setData( model, '<paragraph><$text code="true">fo *obar[]</$text></paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '*', { code: true }, doc.selection.getFirstPosition() );
 					} );
 
 					expect( getData( model ) ).to
-						.equal( '<paragraph><$text code="true">fo*obar*[]</$text></paragraph>' );
+						.equal( '<paragraph><$text code="true">fo *obar*[]</$text></paragraph>' );
 				} );
 
 				it( '__ inside', () => {
-					setData( model, '<paragraph><$text code="true">fo__obar_[]</$text></paragraph>' );
+					setData( model, '<paragraph><$text code="true">fo __obar_[]</$text></paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '_', { code: true }, doc.selection.getFirstPosition() );
 					} );
 
 					expect( getData( model ) ).to
-						.equal( '<paragraph><$text code="true">fo__obar__[]</$text></paragraph>' );
+						.equal( '<paragraph><$text code="true">fo __obar__[]</$text></paragraph>' );
 				} );
 
 				it( '~~ inside', () => {
@@ -534,24 +570,24 @@ describe( 'Autoformat', () => {
 
 			describe( 'should not format (across)', () => {
 				it( '* across', () => {
-					setData( model, '<paragraph><$text code="true">fo*o</$text>bar[]</paragraph>' );
+					setData( model, '<paragraph><$text code="true">fo *o</$text>bar[]</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '*', doc.selection.getFirstPosition() );
 					} );
 
 					expect( getData( model ) ).to
-						.equal( '<paragraph><$text code="true">fo*o</$text>bar*[]</paragraph>' );
+						.equal( '<paragraph><$text code="true">fo *o</$text>bar*[]</paragraph>' );
 				} );
 				it( '__ across', () => {
-					setData( model, '<paragraph><$text code="true">fo__o</$text>bar_[]</paragraph>' );
+					setData( model, '<paragraph><$text code="true">fo __o</$text>bar_[]</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '_', doc.selection.getFirstPosition() );
 					} );
 
 					expect( getData( model ) ).to
-						.equal( '<paragraph><$text code="true">fo__o</$text>bar__[]</paragraph>' );
+						.equal( '<paragraph><$text code="true">fo __o</$text>bar__[]</paragraph>' );
 				} );
 				it( '~~ across', () => {
 					setData( model, '<paragraph><$text code="true">fo~~o</$text>bar~[]</paragraph>' );
@@ -577,24 +613,24 @@ describe( 'Autoformat', () => {
 
 			describe( 'should format', () => {
 				it( '* after', () => {
-					setData( model, '<paragraph><$text code="true">fo*o</$text>b*ar[]</paragraph>' );
+					setData( model, '<paragraph><$text code="true">fo*o</$text>b *ar[]</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '*', doc.selection.getFirstPosition() );
 					} );
 
 					expect( getData( model ) ).to
-						.equal( '<paragraph><$text code="true">fo*o</$text>b<$text italic="true">ar</$text>[]</paragraph>' );
+						.equal( '<paragraph><$text code="true">fo*o</$text>b <$text italic="true">ar</$text>[]</paragraph>' );
 				} );
 				it( '__ after', () => {
-					setData( model, '<paragraph><$text code="true">fo__o</$text>b__ar_[]</paragraph>' );
+					setData( model, '<paragraph><$text code="true">fo__o</$text>b __ar_[]</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '_', doc.selection.getFirstPosition() );
 					} );
 
 					expect( getData( model ) ).to
-						.equal( '<paragraph><$text code="true">fo__o</$text>b<$text bold="true">ar</$text>[]</paragraph>' );
+						.equal( '<paragraph><$text code="true">fo__o</$text>b <$text bold="true">ar</$text>[]</paragraph>' );
 				} );
 				it( '~~ after', () => {
 					setData( model, '<paragraph><$text code="true">fo~~o</$text>b~~ar~[]</paragraph>' );
