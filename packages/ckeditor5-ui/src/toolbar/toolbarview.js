@@ -285,14 +285,41 @@ export default class ToolbarView extends View {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 
 		const itemsToAdd = config.items
-			.filter( name => {
-				if ( name === '|' || name === '-' ) {
+			.filter( ( name, idx, items ) => {
+				if ( name === '|' ) {
 					return true;
 				}
 
 				// Items listed in `config.removeItems` should not be added to the toolbar.
 				if ( config.removeItems.indexOf( name ) !== -1 ) {
 					return false;
+				}
+
+				if ( name === '-' ) {
+					// Toolbar line breaks must not be rendered when toolbar grouping is enabled.
+					if ( this.options.shouldGroupWhenFull ) {
+						/**
+						 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
+						 * is disabled in the toolbar configuration.
+						 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
+						 *
+						 *		const config = {
+						 *			toolbar: {
+						 *				items: [ ... ],
+						 *				shouldNotGroupWhenFull: true
+						 *			}
+						 *		}
+						 *
+						 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+						 *
+						 * @error toolbarview-line-break-ignored-when-grouping-items
+						 */
+						logWarning( 'toolbarview-line-break-ignored-when-grouping-items', items );
+
+						return false;
+					}
+
+					return true;
 				}
 
 				// For the items that cannot be instantiated we are sending warning message. We also filter them out.
@@ -335,30 +362,10 @@ export default class ToolbarView extends View {
 				return !( isFirst || isLast || isDuplicated );
 			} )
 			// Instantiate toolbar items.
-			.map( ( name, idx, items ) => {
+			.map( name => {
 				if ( name === '|' ) {
 					return new ToolbarSeparatorView();
 				} else if ( name === '-' ) {
-					if ( this.options.shouldGroupWhenFull ) {
-						/**
-						 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
-						 * is disabled in the toolbar configuration.
-						 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
-						 *
-						 *		const config = {
-						 *			toolbar: {
-						 *				items: [ ... ],
-						 *				shouldNotGroupWhenFull: true
-						 *			}
-						 *		}
-						 *
-						 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
-						 *
-						 * @error toolbarview-line-break-ignored-when-grouping-items
-						 */
-						logWarning( 'toolbarview-line-break-ignored-when-grouping-items', items );
-					}
-
 					return new ToolbarLineBreakView();
 				}
 

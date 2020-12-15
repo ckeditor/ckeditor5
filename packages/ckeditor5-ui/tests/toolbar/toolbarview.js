@@ -438,7 +438,6 @@ describe( 'ToolbarView', () => {
 			view.fillFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
 
 			const items = view.items;
-
 			expect( items ).to.have.length( 5 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
 			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
