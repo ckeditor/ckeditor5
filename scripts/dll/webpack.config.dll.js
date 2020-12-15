@@ -7,18 +7,19 @@
 
 const path = require( 'path' );
 const webpack = require( 'webpack' );
-const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const TerserPlugin = require( 'terser-webpack-plugin' );
+const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-const rootDirectory = path.resolve( __dirname, '..', '..' );
+const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
+const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
 
-if ( rootDirectory !== process.cwd() ) {
+if ( ROOT_DIRECTORY !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
 }
 
-module.exports = {
-	mode: 'development',
+const webpackConfig = {
+	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	entry: [
-		// The assumption is that `rootDirectory` is equal to `process.cwd()`.
 		// The base of the CKEditor 5 framework, in order of appearance:
 		'./src/utils.js',
 		'./src/core.js',
@@ -45,16 +46,20 @@ module.exports = {
 		moduleIds: 'named'
 	},
 	output: {
-		path: path.join( rootDirectory, 'build' ),
+		path: path.join( ROOT_DIRECTORY, 'build' ),
 		filename: 'ckeditor5-dll.js',
 		library: [ 'CKEditor5', 'dll' ],
 		libraryTarget: 'umd'
 	},
 	plugins: [
+		new webpack.BannerPlugin( {
+			banner: bundler.getLicenseBanner(),
+			raw: true
+		} ),
 		new webpack.DllPlugin( {
 			name: 'CKEditor5.dll',
 			context: 'src',
-			path: path.join( rootDirectory, 'build', 'ckeditor5-dll.manifest.json' ),
+			path: path.join( ROOT_DIRECTORY, 'build', 'ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: true
 		} )
@@ -95,3 +100,22 @@ module.exports = {
 		]
 	}
 };
+
+if ( !IS_DEVELOPMENT_MODE ) {
+	webpackConfig.optimization.minimize = true;
+
+	webpackConfig.optimization.minimizer = [
+		new TerserPlugin( {
+			terserOptions: {
+				output: {
+					// Preserve CKEditor 5 license comments.
+					comments: /^!/
+				}
+			},
+			extractComments: false
+		} )
+	];
+}
+
+module.exports = webpackConfig;
+

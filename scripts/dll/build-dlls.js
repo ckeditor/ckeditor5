@@ -9,40 +9,49 @@
 
 const childProcess = require( 'child_process' );
 const path = require( 'path' );
-const rootDirectory = path.resolve( __dirname, '..', '..' );
+const chalk = require( 'chalk' );
 
-const notBaseDLL = name => name !== 'ckeditor5-dll';
-const hasDLLBuild = name => {
-	const scripts = require( path.join( process.cwd(), 'packages', name, 'package.json' ) ).scripts;
+const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
+const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
 
-	return scripts && scripts[ 'build:dll' ];
-};
+if ( IS_DEVELOPMENT_MODE ) {
+	console.log( '🛠️️  ' + chalk.yellow( 'Development mode is active.' ) );
+} else {
+	console.log( '⚠️  ' + chalk.magenta( 'Production mode is active.' ) );
+}
 
-const buildDll = fullPackageName => {
-	console.log( `Running "${ fullPackageName }" build...` );
+// --------------------------------------------------------
+// -------------------------------------- Main package DLL.
 
-	const subprocess = childProcess.spawnSync( 'yarn', [ 'run', 'build:dll' ], {
-		encoding: 'utf8',
-		shell: true,
-		cwd: path.join( rootDirectory, 'packages', fullPackageName )
-	} );
+console.log( '\n📍 ' + chalk.cyan.underline( 'Building DLL for the main package...\n' ) );
 
-	if ( subprocess.status !== 0 ) {
-		console.log( subprocess.stdout );
-		console.log( `💥 DLL ${ fullPackageName } build failed 💥` );
-	}
-};
+const webpackArguments = [ '--config=./scripts/dll/webpack.config.dll.js' ];
 
-const packages = childProcess.execSync( 'ls -1 packages', {
+if ( IS_DEVELOPMENT_MODE ) {
+	webpackArguments.push( '--dev' );
+}
+
+childProcess.spawnSync( 'webpack', webpackArguments, {
 	encoding: 'utf8',
-	cwd: rootDirectory
-} ).toString().trim().split( '\n' );
+	cwd: ROOT_DIRECTORY,
+	stdio: 'inherit',
+	stderr: 'inherit'
+} );
 
-console.log( '----------------------' );
-console.log( 'Running full DLL build' );
-console.log( '----------------------' );
+// --------------------------------------------------------
+// ------------------------------ ckeditor5-* packages DLL.
 
-packages
-	.filter( notBaseDLL )
-	.filter( hasDLLBuild )
-	.forEach( buildDll );
+console.log( '\n📍 ' + chalk.underline( 'Building DLLs for ckeditor5-* packages...\n' ) );
+
+const nodeArguments = [ './scripts/dll/build-packages-dlls.js' ];
+
+if ( IS_DEVELOPMENT_MODE ) {
+	nodeArguments.push( '--dev' );
+}
+
+childProcess.spawnSync( 'node', nodeArguments, {
+	encoding: 'utf8',
+	cwd: ROOT_DIRECTORY,
+	stdio: 'inherit',
+	stderr: 'inherit'
+} );

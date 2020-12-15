@@ -99,6 +99,7 @@
     "babel-standalone": "^6.26.0",
     "cli-table": "^0.3.1",
     "coveralls": "^3.1.0",
+    "chalk": "^4.1.0",
     "css-loader": "^3.5.3",
     "eslint": "^7.1.0",
     "eslint-config-ckeditor5": "^3.0.0",
@@ -160,7 +161,7 @@
     "release:publish": "node ./scripts/release/publish.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
-    "build:dll": "webpack --config=./scripts/dll/webpack.config.dll.js && node ./scripts/dll/build-dlls.js"
+    "build:dll": "node ./scripts/dll/build-dlls.js"
   },
   "lint-staged": {
     "**/*.js": [
