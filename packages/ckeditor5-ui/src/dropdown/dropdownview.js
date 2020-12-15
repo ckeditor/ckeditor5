@@ -333,6 +333,13 @@ export default class DropdownView extends View {
  *
  * **South**
  *
+ * * `south`
+ *
+ *			[ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *
  * * `southEast`
  *
  *		[ Button ]
