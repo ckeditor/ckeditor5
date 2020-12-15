@@ -109,7 +109,7 @@
  * build with complex features, create a {@glink builds/guides/development/custom-builds custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
- * about {@glink features/toolbar-setup toolbar setup}.
+ * about the {@glink features/toolbar/toolbar-setup toolbar setup}.
  *
  * @member {Array.<Function>} module:core/editor/editorconfig~EditorConfig#extraPlugins
  */

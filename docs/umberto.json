@@ -238,6 +238,11 @@
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
+				},
+				{
+					"name": "Toolbar",
+					"id": "features-toolbar",
+					"slug": "toolbar"
 				}
 			]
 		},

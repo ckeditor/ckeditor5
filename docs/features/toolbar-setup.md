@@ -1,11 +1,7 @@
 ---
-# Scope:
-# * Introduction to setting configurations.
-# * Introduction to the top and must-know configurations.
-# * Point where to find the list of configuration options.
-
-category: builds-integration
-order: 35
+title: Editor toolbar
+category: features-toolbar
+order: 10
 ---
 {@snippet features/build-toolbar-source}
 
@@ -13,11 +9,7 @@ order: 35
 
 A toolbar is the most basic user interface element, that provides most of the interaction. It contains various items - function buttons or dropdowns, use to format, manage, insert and alter elements of the content.
 
-In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. 
-
-<info-box hint>
-    Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
-</info-box>
+In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
 
 ## Basic toolbar configuration
 
@@ -34,6 +26,11 @@ ClassicEditor
 		console.log( error );
 	} );
 ```
+
+<info-box hint>
+    Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
+</info-box>
+
 ### Demo
 
 TODO add demo for the snippet above
