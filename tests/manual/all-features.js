@@ -39,6 +39,8 @@ import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformatio
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -52,7 +54,8 @@ ClassicEditor
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,
-			SpecialCharacters, SpecialCharactersEssentials, WordCount
+			SpecialCharacters, SpecialCharactersEssentials, WordCount,
+			ImageUpload, CloudServices
 		],
 		toolbar: [
 			'heading',
