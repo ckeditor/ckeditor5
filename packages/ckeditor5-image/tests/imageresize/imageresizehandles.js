@@ -107,8 +107,7 @@ describe( 'ImageResizeHandles', () => {
 			expect( resizer.isEnabled ).to.be.true;
 		} );
 
-		// See: https://github.com/ckeditor/ckeditor5/issues/8617.
-		it.skip( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
+		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
 			setData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
