@@ -15,9 +15,7 @@ const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
 const webpackConfig = {
 	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
-	optimization: {
-		minimize: false
-	},
+	optimization: {},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'dll-decoupled-document.js',
