@@ -135,7 +135,7 @@ describe( 'DropdownView', () => {
 				describe( 'in "auto" mode', () => {
 					it( 'uses _getOptimalPosition() and a dedicated set of positions (LTR)', () => {
 						const spy = testUtils.sinon.spy( DropdownView, '_getOptimalPosition' );
-						const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
+						const { southEast, southWest, northEast, northWest, south } = DropdownView.defaultPanelPositions;
 
 						view.isOpen = true;
 
@@ -143,7 +143,7 @@ describe( 'DropdownView', () => {
 							element: panelView.element,
 							target: buttonView.element,
 							positions: [
-								southEast, southWest, northEast, northWest
+								southEast, southWest, northEast, northWest, south
 							],
 							fitInViewport: true
 						} ) );
@@ -151,7 +151,7 @@ describe( 'DropdownView', () => {
 
 					it( 'uses _getOptimalPosition() and a dedicated set of positions (RTL)', () => {
 						const spy = testUtils.sinon.spy( DropdownView, '_getOptimalPosition' );
-						const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
+						const { southEast, southWest, northEast, northWest, south } = DropdownView.defaultPanelPositions;
 
 						view.locale.uiLanguageDirection = 'rtl';
 						view.isOpen = true;
@@ -160,7 +160,7 @@ describe( 'DropdownView', () => {
 							element: panelView.element,
 							target: buttonView.element,
 							positions: [
-								southWest, southEast, northWest, northEast
+								southWest, southEast, northWest, northEast, south
 							],
 							fitInViewport: true
 						} ) );
@@ -352,7 +352,7 @@ describe( 'DropdownView', () => {
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 4 );
+			expect( Object.keys( positions ) ).to.have.length( 5 );
 		} );
 
 		it( 'should define the "southEast" position', () => {
