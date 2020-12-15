@@ -355,6 +355,14 @@ describe( 'DropdownView', () => {
 			expect( Object.keys( positions ) ).to.have.length( 5 );
 		} );
 
+		it( 'should define the "south" position', () => {
+			expect( positions.south( buttonRect, panelRect ) ).to.deep.equal( {
+				top: 200,
+				left: 125,
+				name: 's'
+			} );
+		} );
+
 		it( 'should define the "southEast" position', () => {
 			expect( positions.southEast( buttonRect, panelRect ) ).to.deep.equal( {
 				top: 200,
