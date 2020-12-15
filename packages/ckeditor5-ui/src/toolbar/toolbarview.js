@@ -286,10 +286,10 @@ export default class ToolbarView extends View {
 
 		const itemsToAdd = config.items
 			.filter( name => {
-				// Ignore separators and dividers for now.
 				if ( name === '|' || name === '-' ) {
 					return true;
 				}
+
 				// Items listed in `config.removeItems` should not be added to the toolbar.
 				if ( config.removeItems.indexOf( name ) !== -1 ) {
 					return false;
@@ -321,7 +321,7 @@ export default class ToolbarView extends View {
 
 				return true;
 			} )
-			// After cleanup in previous step, we can end up with redundant separators. We remove them here.
+			// After cleanup in the previous step, we can end up with duplicated or trailing separators. We remove them here.
 			.filter( ( name, idx, items ) => {
 				// Filter only separators.
 				if ( name !== '|' ) {
