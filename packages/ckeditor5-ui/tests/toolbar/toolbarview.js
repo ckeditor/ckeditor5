@@ -535,6 +535,7 @@ describe( 'ToolbarView', () => {
 			);
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8582
 		it( 'does not render line separator when the button grouping option is enabled', () => {
 			// Catch warn to stop tests from failing in production mode.
 			sinon.stub( console, 'warn' );

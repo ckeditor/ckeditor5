@@ -297,6 +297,7 @@ export default class ToolbarView extends View {
 
 				if ( name === '-' ) {
 					// Toolbar line breaks must not be rendered when toolbar grouping is enabled.
+					// (https://github.com/ckeditor/ckeditor5/issues/8582)
 					if ( this.options.shouldGroupWhenFull ) {
 						/**
 						 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
