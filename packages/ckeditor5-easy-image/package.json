@@ -9,6 +9,7 @@
     "ckeditor5-feature",
     "ckeditor5-plugin"
   ],
+  "main": "src/index.js",
   "dependencies": {
     "@ckeditor/ckeditor-cloud-services-core": "^24.0.0",
     "@ckeditor/ckeditor5-cloud-services": "^24.0.0",
