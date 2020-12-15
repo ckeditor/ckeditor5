@@ -12,7 +12,7 @@ import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Plugin introducing integration between CKEditor 5 and CKEditor Cloud Services .
+ * Plugin introducing the integration between CKEditor 5 and CKEditor Cloud Services .
  *
  * It initializes the token provider based on
  * the {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudService`}.
@@ -40,7 +40,7 @@ export default class CloudServices extends ContextPlugin {
 		}
 
 		/**
-		 * Map of `Token` object instances keyed by `tokenUrl`s.
+		 * Map of the `Token` object instances keyed by `tokenUrl`s.
 		 *
 		 * @private
 		 * @type {Map.<String, module:cloud-services-core/token~Token>}
@@ -104,7 +104,7 @@ export default class CloudServices extends ContextPlugin {
 	}
 
 	/**
-	 * Returns authentication token provider previously registered by {@link #registerTokenUrl}.
+	 * Returns an authentication token provider previously registered by {@link #registerTokenUrl}.
 	 *
 	 * @param {String|Function} tokenUrl The authentication token URL for CKEditor Cloud Services or a callback to the token value promise.
 	 * @returns {module:cloud-services-core/token~Token}

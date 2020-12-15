@@ -122,7 +122,7 @@ export default class DomConverter {
 
 		/**
 		 * Matcher for view elements whose content should be treated as a raw data
-		 * and not processed during conversion from DOM nodes to view elements.
+		 * and not processed during the conversion from DOM nodes to view elements.
 		 *
 		 * @private
 		 * @type {module:engine/view/matcher~Matcher}
@@ -1158,7 +1158,7 @@ export default class DomConverter {
 			return true;
 		}
 
-		// Shouldn't left trim if previous node is a node that was encountered as a raw content node.
+		// Should not left trim if the previous node is a node that was encountered as a raw content node.
 		if ( this._encounteredRawContentDomNodes.has( node.previousSibling ) ) {
 			return false;
 		}

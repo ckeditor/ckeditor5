@@ -41,7 +41,7 @@
 
 /**
  * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
- * and it's content should be converted to {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+ * and its content should be converted to {@link module:engine/view/element~Element#getCustomProperty view element custom property}
  * `"$rawContent"` while converting {@link #toView to view}.
  *
  * @method #registerRawContentMatcher
