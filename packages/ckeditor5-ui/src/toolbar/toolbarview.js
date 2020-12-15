@@ -285,18 +285,17 @@ export default class ToolbarView extends View {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 
 		const itemsToAdd = config.items
-			// Items listed in `config.removeItems` should not be added to the toolbar.
-			// For the items that cannot be instantiated we are sending warning message.
 			.filter( name => {
 				// Ignore separators and dividers for now.
 				if ( name === '|' || name === '-' ) {
 					return true;
 				}
-
+				// Items listed in `config.removeItems` should not be added to the toolbar.
 				if ( config.removeItems.indexOf( name ) !== -1 ) {
 					return false;
 				}
 
+				// For the items that cannot be instantiated we are sending warning message. We also filter them out.
 				if ( !factory.has( name ) ) {
 					/**
 					 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -322,9 +321,9 @@ export default class ToolbarView extends View {
 
 				return true;
 			} )
-			// Separators at the start and end of toolbar should be removed, as well as duplicated ones.
-			// This can happen after removing items listed in `config.removeItems` or if an item cannot be created.
+			// After cleanup in previous step, we can end up with redundant separators. We remove them here.
 			.filter( ( name, idx, items ) => {
+				// Filter only separators.
 				if ( name !== '|' ) {
 					return true;
 				}
