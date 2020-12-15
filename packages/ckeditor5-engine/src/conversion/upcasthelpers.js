@@ -7,12 +7,10 @@ import Matcher from '../view/matcher';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
-
-/* global console */
 
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
@@ -349,7 +347,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 		 *
 		 * @error upcast-helpers-element-to-marker-deprecated
 		 */
-		console.warn( attachLinkToDocumentation( 'upcast-helpers-element-to-marker-deprecated' ) );
+		logWarning( 'upcast-helpers-element-to-marker-deprecated' );
 
 		return this.add( upcastElementToMarker( config ) );
 	}

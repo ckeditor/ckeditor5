@@ -20,8 +20,8 @@ The number of features available for CKEditor 5 is constantly growing. Plenty of
 Each rich-text editor feature is presented on a separate page, with one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
 
 <info-box>
-	**In most demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more. However, in your CKEditor 5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available.
-</info-box> 
+	**In most demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more. However, in your CKEditor 5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. This can be easily and conveniently done in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+</info-box>
 
 ## Looking for more?
 

@@ -795,6 +795,21 @@ describe( 'LinkUI', () => {
 			sinon.assert.calledWithExactly( spy, true );
 		} );
 
+		it( 'should not show the UI on Ctrl+K keystroke on content with LinkCommand disabled', () => {
+			const spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
+			const command = editor.commands.get( 'link' );
+			command.isEnabled = false;
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should prevent default action on Ctrl+K keystroke', () => {
 			const preventDefaultSpy = sinon.spy();
 			const stopPropagationSpy = sinon.spy();
@@ -1092,6 +1107,18 @@ describe( 'LinkUI', () => {
 				sinon.assert.calledOnce( selectSpy );
 			} );
 
+			it( 'should disable CSS transitions before showing the form to avoid unnecessary animations' +
+				'(and then enable them again)', () => {
+				const addSpy = sinon.spy( balloon, 'add' );
+				const disableCssTransitionsSpy = sinon.spy( formView, 'disableCssTransitions' );
+				const enableCssTransitionsSpy = sinon.spy( formView, 'enableCssTransitions' );
+				const selectSpy = sinon.spy( formView.urlInputView.fieldView, 'select' );
+
+				actionsView.fire( 'edit' );
+
+				sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, selectSpy, enableCssTransitionsSpy );
+			} );
+
 			it( 'should execute unlink command on actionsView#unlink event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -1304,6 +1331,19 @@ describe( 'LinkUI', () => {
 
 					return editor.destroy();
 				} );
+			} );
+
+			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value ' +
+				'even when defaultProtocol is undefined', () => {
+				setModelData( editor.model, '<paragraph>[email@example.com]</paragraph>' );
+
+				formView.urlInputView.fieldView.value = 'email@example.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
+				expect( getModelData( editor.model ) ).to.equal(
+					'<paragraph>[<$text linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
+				);
 			} );
 
 			it( 'should not add an email protocol when given provided within the value' +

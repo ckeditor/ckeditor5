@@ -167,10 +167,6 @@ describe( 'Input', () => {
 				} );
 
 				it( 'should have the text property passed correctly to the insert text command', async () => {
-					const expectedSelection = editor.model.createSelection(
-						editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
-					);
-
 					viewDocument.fire( 'insertText', {
 						text: 'bar'
 					} );
@@ -179,7 +175,6 @@ describe( 'Input', () => {
 
 					sinon.assert.calledOnce( insertTextCommandSpy );
 					expect( firstCallArgs.text ).to.equal( 'bar' );
-					expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
 					expect( firstCallArgs.resultRange ).to.be.undefined;
 				} );
 

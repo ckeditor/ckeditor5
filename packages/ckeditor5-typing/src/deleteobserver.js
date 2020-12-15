@@ -23,10 +23,9 @@ const DELETE_FORWARD = 'forward';
 const DELETE_EVENT_TYPES = {
 	// --------------------------------------- Backward delete types -----------------------------------------------------
 
-	// This happens in Safari on Mac when a widget is selected and Ctrl + K is pressed.
+	// This happens in Safari on Mac when some content is selected and Ctrl + K is pressed.
 	deleteContent: {
-		// ??????
-		unit: DELETE_CHARACTER,
+		unit: DELETE_SELECTION,
 
 		// According to the Input Events Level 2 spec, this delete type has no direction
 		// but to keep things simple, let's default to backward.
@@ -97,7 +96,8 @@ const DELETE_EVENT_TYPES = {
 		unit: DELETE_SELECTION,
 		direction: DELETE_FORWARD
 	},
-	// ???
+	// At this moment there is no known way to trigger this event type but let's keep it for the symmetry with
+	// deleteSoftLineBackward.
 	deleteSoftLineForward: {
 		unit: DELETE_SELECTION,
 		direction: DELETE_FORWARD

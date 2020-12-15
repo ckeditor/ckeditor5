@@ -1019,6 +1019,8 @@ function filterOutFakeSelectionContainer( domChildList, fakeSelectionContainer )
 function createFakeSelectionContainer( domDocument ) {
 	const container = domDocument.createElement( 'div' );
 
+	container.className = 'ck-fake-selection-container';
+
 	Object.assign( container.style, {
 		position: 'fixed',
 		top: 0,

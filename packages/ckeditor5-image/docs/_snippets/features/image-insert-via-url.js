@@ -13,7 +13,7 @@ toolbarItems.splice( toolbarItems.indexOf( 'imageUpload' ), 1, 'imageInsert' );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-insert-via-url' ), {
-		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage' ],
+		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage', 'AutoImage' ],
 		toolbar: {
 			items: toolbarItems,
 			viewportTopOffset: window.getViewportTopOffsetConfig()

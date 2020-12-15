@@ -16,3 +16,8 @@
 1. In the **Editor 2** click on the arrow button in `imageInsert` plugin to reveal the image insert panel.
 1. Click on the **CKFinder** button.
 1. Choose image and confirm.
+
+## Image insert via pasting URL into editor
+
+1. Copy image URL to clipboard (eg: `https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg`).
+1. Paste the URL to the editor.

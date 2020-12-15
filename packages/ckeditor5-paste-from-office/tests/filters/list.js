@@ -181,6 +181,200 @@ describe( 'PasteFromOffice - filters', () => {
 							'</li>' +
 						'</ol>' );
 				} );
+
+				it( 'handles indentation for nested lists with different the `mso-list-id` value', () => {
+					const html = '<p style="mso-list:l0 level1 lfo0">Foo 1</p><p style="mso-list:l1 level2 lfo0">Bar 1.1</p>';
+					const view = htmlDataProcessor.toView( html );
+
+					const styles = '@list l0\n' +
+						'{ mso-list-id: 111; }\n' +
+						'@list l0:level1\n' +
+						'{ mso-level-number-format: alpha-upper; }\n' +
+						'@list l1' +
+						'{ mso-list-id:222; }' +
+						'@list l1:level1\n' +
+						'{ mso-level-number-format: bullet; }' +
+						'@list l1:level2\n' +
+						'{ mso-level-number-format: bullet; }';
+
+					transformListItemLikeElementsIntoLists( view, styles );
+
+					expect( view.childCount ).to.equal( 1 );
+					expect( stringify( view ) ).to.equal(
+						'<ol style="list-style-type:upper-alpha">' +
+							'<li style="mso-list:l0 level1 lfo0">Foo 1' +
+								'<ul>' +
+									'<li style="mso-list:l1 level2 lfo0">Bar 1.1</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+			} );
+
+			describe( 'list styles', () => {
+				const level1 = 'style="mso-list:l0 level1 lfo0"';
+
+				describe( 'ordered list', () => {
+					it( 'converts "roman-lower" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:roman-lower;}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol style="list-style-type:lower-roman"><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
+
+					it( 'converts "alpha-upper" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:alpha-upper;}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol style="list-style-type:upper-alpha"><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
+
+					it( 'converts "alpha-lower" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:alpha-lower;}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol style="list-style-type:lower-alpha"><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
+					it( 'converts "roman-upper" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:roman-upper;}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol style="list-style-type:upper-roman"><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
+
+					it( 'converts "arabic-leading-zero" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:arabic-leading-zero;}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol style="list-style-type:decimal-leading-zero"><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
+				} );
+
+				describe( 'unordered list', () => {
+					it( 'converts "circle" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:bullet;}';
+
+						const html = `<p class=MsoListBulletCxSpFirst ${ level1 }>` +
+							'<span lang=\'EN-US\'><span style=\'mso-list:Ignore\'>o<span>&nbsp;&nbsp;</span></span></span></span>' +
+							'<span>Foo</span>' +
+							'</p>';
+
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							'<ul style="list-style-type:circle">' +
+								`<li class="MsoListBulletCxSpFirst" ${ level1 }>` +
+									'<span lang="EN-US"></span><span>Foo</span>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
+
+					it( 'converts "disc" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:bullet;}';
+
+						const html = `<p class=MsoListBulletCxSpFirst ${ level1 }>` +
+							'<span lang=\'EN-US\'><span style=\'mso-list:Ignore\'>·<span>&nbsp;&nbsp;</span></span></span></span>' +
+							'<span>Foo</span>' +
+							'</p>';
+
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							'<ul style="list-style-type:disc">' +
+							`<li class="MsoListBulletCxSpFirst" ${ level1 }>` +
+							'<span lang="EN-US"></span><span>Foo</span>' +
+							'</li>' +
+							'</ul>'
+						);
+					} );
+
+					it( 'converts "square" style to proper CSS attribute', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:bullet;}';
+
+						const html = `<p class=MsoListBulletCxSpFirst ${ level1 }>` +
+							'<span lang=\'EN-US\'><span style=\'mso-list:Ignore\'>§<span>&nbsp;&nbsp;</span></span></span></span>' +
+							'<span>Foo</span>' +
+							'</p>';
+
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							'<ul style="list-style-type:square">' +
+							`<li class="MsoListBulletCxSpFirst" ${ level1 }>` +
+							'<span lang="EN-US"></span><span>Foo</span>' +
+							'</li>' +
+							'</ul>'
+						);
+					} );
+
+					it( 'ignores the marker if cannot be translated to list style feature', () => {
+						const styles = '@list l0:level1\n' +
+							'{mso-level-number-format:bullet;}';
+
+						const html = `<p class=MsoListBulletCxSpFirst ${ level1 }>` +
+							'<span lang=\'EN-US\'><span style=\'mso-list:Ignore\'>+<span>&nbsp;&nbsp;</span></span></span></span>' +
+							'<span>Foo</span>' +
+							'</p>';
+
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							'<ul>' +
+							`<li class="MsoListBulletCxSpFirst" ${ level1 }>` +
+							'<span lang="EN-US"></span><span>Foo</span>' +
+							'</li>' +
+							'</ul>'
+						);
+					} );
+				} );
 			} );
 		} );
 	} );
