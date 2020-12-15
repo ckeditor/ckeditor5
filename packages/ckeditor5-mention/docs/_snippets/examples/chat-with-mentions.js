@@ -81,10 +81,14 @@ ClassicEditor
 			if ( !message ) {
 				editingView.change( writer => {
 					writer.addClass( 'highlighted', rootElement );
-					setTimeout( () => writer.removeClass( 'highlighted', rootElement ), 650 );
-
 					editingView.focus();
 				} );
+
+				setTimeout( () => {
+					editingView.change( writer => {
+						writer.removeClass( 'highlighted', rootElement );
+					} );
+				}, 650 );
 
 				return;
 			}
