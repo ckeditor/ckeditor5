@@ -488,6 +488,22 @@ describe( 'ToolbarView', () => {
 			expect( items.get( 2 ).name ).to.equal( 'foo' );
 		} );
 
+		it( 'removes separators at the beginning and end of item list', () => {
+			view.fillFromConfig(
+				{
+					items: [ '|', '|', 'foo', '|', 'bar', '|' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
+		} );
+
 		it( 'warns if there is no such component in the factory', () => {
 			const items = view.items;
 			const consoleWarnStub = sinon.stub( console, 'warn' );
