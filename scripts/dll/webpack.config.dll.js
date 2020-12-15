@@ -9,9 +9,16 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
+const rootDirectory = path.resolve( __dirname, '..', '..' );
+
+if ( rootDirectory !== process.cwd() ) {
+	throw new Error( 'This script should be called from the package root directory.' );
+}
+
 module.exports = {
 	mode: 'development',
 	entry: [
+		// The assumption is that `rootDirectory` is equal to `process.cwd()`.
 		// The base of the CKEditor 5 framework, in order of appearance:
 		'./src/utils.js',
 		'./src/core.js',
@@ -38,7 +45,7 @@ module.exports = {
 		moduleIds: 'named'
 	},
 	output: {
-		path: path.resolve( __dirname, 'build' ),
+		path: path.join( rootDirectory, 'build' ),
 		filename: 'ckeditor5-dll.js',
 		library: [ 'CKEditor5', 'dll' ],
 		libraryTarget: 'umd'
@@ -47,7 +54,7 @@ module.exports = {
 		new webpack.DllPlugin( {
 			name: 'CKEditor5.dll',
 			context: 'src',
-			path: path.resolve( __dirname, 'build/ckeditor5-dll.manifest.json' ),
+			path: path.join( rootDirectory, 'build', 'ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: true
 		} )
@@ -83,7 +90,7 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
-				loader: require.resolve( './scripts/dll/dll-loader' )
+				loader: require.resolve( './dll-loader' )
 			}
 		]
 	}

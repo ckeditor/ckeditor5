@@ -9,6 +9,7 @@
 
 const childProcess = require( 'child_process' );
 const path = require( 'path' );
+const rootDirectory = path.resolve( __dirname, '..', '..' );
 
 const notBaseDLL = name => name !== 'ckeditor5-dll';
 const hasDLLBuild = name => {
@@ -23,7 +24,7 @@ const buildDll = fullPackageName => {
 	const subprocess = childProcess.spawnSync( 'yarn', [ 'run', 'build:dll' ], {
 		encoding: 'utf8',
 		shell: true,
-		cwd: `packages/${ fullPackageName }/`
+		cwd: path.join( rootDirectory, 'packages', fullPackageName )
 	} );
 
 	if ( subprocess.status !== 0 ) {
@@ -33,12 +34,13 @@ const buildDll = fullPackageName => {
 };
 
 const packages = childProcess.execSync( 'ls -1 packages', {
-	encoding: 'utf8'
+	encoding: 'utf8',
+	cwd: rootDirectory
 } ).toString().trim().split( '\n' );
 
-console.log( '------------------------' );
-console.log( 'Running full DLL rebuild' );
-console.log( '------------------------' );
+console.log( '----------------------' );
+console.log( 'Running full DLL build' );
+console.log( '----------------------' );
 
 packages
 	.filter( notBaseDLL )
