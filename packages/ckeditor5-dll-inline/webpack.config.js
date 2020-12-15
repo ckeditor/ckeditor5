@@ -7,10 +7,13 @@
 
 const path = require( 'path' );
 const webpack = require( 'webpack' );
+const TerserPlugin = require( 'terser-webpack-plugin' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-module.exports = {
-	mode: 'development',
+const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
+
+const webpackConfig = {
+	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
 	optimization: {
 		minimize: false,
@@ -61,3 +64,21 @@ module.exports = {
 		} )
 	]
 };
+
+if ( !IS_DEVELOPMENT_MODE ) {
+	webpackConfig.optimization.minimize = true;
+
+	webpackConfig.optimization.minimizer = [
+		new TerserPlugin( {
+			terserOptions: {
+				output: {
+					// Preserve CKEditor 5 license comments.
+					comments: /^!/
+				}
+			},
+			extractComments: false
+		} )
+	];
+}
+
+module.exports = webpackConfig;
