@@ -287,14 +287,15 @@ export default class ToolbarView extends View {
 		// Items listed in `config.removeItems` should not be added to the toolbar.
 		const items = config.items.filter( name => config.removeItems.indexOf( name ) === -1 );
 
-		this.items.addMany( items.map( ( name, idx ) => {
+		const itemsToAdd = items.reduce( ( itemsToAdd, name, idx, allItems ) => {
 			if ( name === '|' ) {
 				// Omit duplicated separators. This can happen after removing items listed in `config.removeItems`.
-				if ( idx > 0 && items[ idx - 1 ] === '|' ) {
-					return;
+				if ( idx > 0 && allItems[ idx - 1 ] === '|' ) {
+					// No changes to item list.
+					return itemsToAdd;
 				}
 
-				return new ToolbarSeparatorView();
+				itemsToAdd.push( new ToolbarSeparatorView() );
 			} else if ( name === '-' ) {
 				if ( this.options.shouldGroupWhenFull ) {
 					/**
@@ -315,8 +316,10 @@ export default class ToolbarView extends View {
 					 */
 					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', items );
 				}
+
+				itemsToAdd.push( new ToolbarLineBreakView() );
 			} else if ( factory.has( name ) ) {
-				return factory.create( name );
+				itemsToAdd.push( factory.create( name ) );
 			} else {
 				/**
 				 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -337,7 +340,11 @@ export default class ToolbarView extends View {
 				 */
 				logWarning( 'toolbarview-item-unavailable', { name } );
 			}
-		} ).filter( item => item !== undefined ) );
+
+			return itemsToAdd;
+		}, [] );
+
+		this.items.addMany( itemsToAdd );
 	}
 
 	/**
