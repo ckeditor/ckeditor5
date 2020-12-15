@@ -7,9 +7,11 @@ order: 10
 
 # Editor toolbar
 
-A toolbar is the most basic user interface element, that provides most of the interaction. It contains various items - function buttons or dropdowns, use to format, manage, insert and alter elements of the content.
+The toolbar is the most basic user interface element of the WYSIWYG editor that gives convenient access to all its features. It contains various items like buttons or dropdowns that you can use to format, manage, insert and alter elements of the content.
 
-In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
+<info-box hint>
+    Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
+</info-box>
 
 ## Basic toolbar configuration
 
@@ -26,10 +28,6 @@ ClassicEditor
 		console.log( error );
 	} );
 ```
-
-<info-box hint>
-    Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
-</info-box>
 
 ### Demo
 
@@ -69,7 +67,7 @@ toolbar: {
 }
 ```
 
- * **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) which can be used as toolbar items are described under the {@link features/index Features} tab. A full list is defined in {@link module:ui/componentfactory~ComponentFactory editor.ui.componentFactory} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`). You can find more details in the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide.
+ * **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) which can be used as toolbar items are described under the {@link features/index Features} tab. A full list is defined in {@link module:ui/componentfactory~ComponentFactory editor.ui.componentFactory} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
 
  * **`viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar. Useful when a page with which the editor is being integrated has some other sticky or fixed elements (e.g. the top menu). Thanks to setting the toolbar offset, the toolbar will not be positioned underneath or above the page's UI.
 
@@ -148,3 +146,7 @@ You can use the following snippet to retrieve all toolbar items available in you
 ```js
 Array.from( editor.ui.componentFactory.names() );
 ```
+
+## Adding a custom button
+
+Refer to the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
