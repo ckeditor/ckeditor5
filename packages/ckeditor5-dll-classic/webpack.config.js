@@ -16,8 +16,7 @@ const webpackConfig = {
 	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
 	optimization: {
-		minimize: false,
-		moduleIds: 'named'
+		minimize: false
 	},
 	output: {
 		path: path.resolve( __dirname, 'build' ),
