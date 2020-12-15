@@ -126,3 +126,6 @@ window.getViewportTopOffsetConfig = function() {
 window.selectToolbarButton = function( buttonPosition ) {
 	return document.querySelector( `.ck-editor__top .ck-toolbar .ck-button:nth-of-type( ${ buttonPosition } )` );
 };
+
+// eslint-disable-next-line no-undef
+window.addButtonIndicator = addButtonIndicator;

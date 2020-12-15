@@ -9,7 +9,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import { pinTourBalloon } from '@ckeditor/../../docs/assets/button-indicator.js';
 
 ClassicEditor.builtinPlugins.push( HtmlEmbed );
 ClassicEditor.builtinPlugins.push( CodeBlock );
@@ -165,10 +164,10 @@ ClassicEditor
 			iframeElement.contentWindow.document.close();
 		} );
 
-		pinTourBalloon(
-			editor,
+		window.addButtonIndicator(
 			window.selectToolbarButton( 9 ),
-			'Click this button to create a raw html widget.'
+			'Click this button to create a raw html widget',
+			document
 		);
 	} )
 	.catch( err => {

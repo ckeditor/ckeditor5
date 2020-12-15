@@ -118,7 +118,8 @@
     "terser-webpack-plugin": "^3.0.2",
     "umberto": "^1.6.2",
     "upath": "^2.0.0",
-    "webpack": "^4.43.0"
+    "webpack": "^4.43.0",
+    "tippy.js": "^6.2.7"
   },
   "engines": {
     "node": ">=12.0.0",
