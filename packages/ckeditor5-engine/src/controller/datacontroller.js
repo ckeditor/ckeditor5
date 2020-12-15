@@ -7,7 +7,9 @@
  * @module engine/controller/datacontroller
  */
 
-import { ObservableMixin, CKEditorError, mix } from '@ckeditor/ckeditor5-utils';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import Mapper from '../conversion/mapper';
 
