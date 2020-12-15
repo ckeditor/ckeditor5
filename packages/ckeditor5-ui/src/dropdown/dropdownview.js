@@ -313,12 +313,12 @@ export default class DropdownView extends View {
 	 * @private
 	 */
 	get _panelPositions() {
-		const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
+		const { south, southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
 
 		if ( this.locale.uiLanguageDirection === 'ltr' ) {
-			return [ southEast, southWest, northEast, northWest ];
+			return [ southEast, southWest, northEast, northWest, south ];
 		} else {
-			return [ southWest, southEast, northWest, northEast ];
+			return [ southWest, southEast, northWest, northEast, south ];
 		}
 	}
 }
@@ -372,6 +372,13 @@ export default class DropdownView extends View {
  * @member {Object} module:ui/dropdown/dropdownview~DropdownView.defaultPanelPositions
  */
 DropdownView.defaultPanelPositions = {
+	south: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - panelRect.width / 2 + buttonRect.width / 2,
+			name: 's'
+		};
+	},
 	southEast: buttonRect => {
 		return {
 			top: buttonRect.bottom,
