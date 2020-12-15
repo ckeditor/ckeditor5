@@ -7,11 +7,13 @@
 category: builds-integration
 order: 35
 ---
-{@snippet builds/guides/integration/build-toolbar-source}
+{@snippet features/build-toolbar-source}
 
 # Editor toolbar
 
-TODO
+A toolbar is the most basic user interface element, that provides most of the interaction. It contains various items - function buttons or dropdowns, use to format, manage, insert and alter elements of the content.
+
+In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. 
 
 <info-box hint>
     Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link builds/guides/integration/configuration#removing-features removing features} for more information.
@@ -80,7 +82,7 @@ toolbar: {
 
 The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via the clickable "Show more items" (⋮) button. The group separators (`'|'`) set in the configuration help organize the toolbar.
 
-{@snippet builds/guides/integration/toolbar-grouping}
+{@snippet features/toolbar-grouping}
 
 ## Multiline (wrapping) toolbar
 
@@ -119,7 +121,7 @@ toolbar: {
 
 See how it works in practice. You may play with the browser window width to see how the buttons behave when the toolbar gets wrapped into multiple lines.
 
-{@snippet builds/guides/integration/toolbar-wrapping}
+{@snippet features/toolbar-wrapping}
 
 ### Explicit wrapping breakpoint demo
 
@@ -140,7 +142,7 @@ toolbar: {
     shouldNotGroupWhenFull: true
 ````
 
-{@snippet builds/guides/integration/toolbar-breakpoint}
+{@snippet features/toolbar-breakpoint}
 
 ## Listing available items
 
