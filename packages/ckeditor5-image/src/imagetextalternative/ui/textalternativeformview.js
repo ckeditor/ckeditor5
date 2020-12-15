@@ -14,6 +14,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -23,6 +24,7 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../../theme/textalternativeform.css';
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
  * The TextAlternativeFormView class.
@@ -111,7 +113,8 @@ export default class TextAlternativeFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-text-alternative-form'
+					'ck-text-alternative-form',
+					'ck-responsive-form'
 				],
 
 				// https://github.com/ckeditor/ckeditor5-image/issues/40
@@ -124,6 +127,8 @@ export default class TextAlternativeFormView extends View {
 				this.cancelButtonView
 			]
 		} );
+
+		injectCssTransitionDisabler( this );
 	}
 
 	/**
@@ -189,7 +194,6 @@ export default class TextAlternativeFormView extends View {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Text alternative' );
-		labeledInput.fieldView.placeholder = t( 'Text alternative' );
 
 		return labeledInput;
 	}

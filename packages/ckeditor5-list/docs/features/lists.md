@@ -4,7 +4,7 @@ category: features
 
 # Lists
 
-The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists in the editor.
+The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
 
 <info-box info>
 	The feature is enabled by default in all CKEditor 5 WYSIWYG editor builds.
@@ -18,7 +18,10 @@ An unordered (bulleted) list can represent items where the order is not importan
 
 An ordered (numbered) list can be used if the order of the items matters, for example, when creating an instruction. Here, the sequence of steps that must be done is important.
 
-Use the editor below to see the list feature plugin in action.
+Use the editor below to see the list feature plugin in action. Lists can be introduced using toolbar buttons, or with Markdown code provided by the {@link features/autoformat autoformatting feature}:
+
+* Start a line with `*` or `-` followed by a space for a bulleted list.
+* Start a line with `1.` or `1)` followed by a space for a numbered list.
 
 ### Demo
 
@@ -34,7 +37,14 @@ Use the editor below to see the list style plugin in action.
 
 {@snippet features/lists-style}
 
-### Installation
+## Related features
+
+These features also provide similar functionality:
+* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
+
+## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
@@ -67,10 +77,6 @@ ClassicEditor
 ## List indentation
 
 Refer to the {@link features/indent Indenting lists} section of the Block indentation feature guide.
-
-## To-do list
-
-You can read more about the feature in the {@link features/todo-lists To-do lists} feature guide.
 
 ## Common API
 

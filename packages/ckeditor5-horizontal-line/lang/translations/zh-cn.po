@@ -18,4 +18,4 @@ msgstr ""
 
 msgctxt "Horizontal line"
 msgid "Horizontal line"
-msgstr "分割线"
+msgstr "水平线"

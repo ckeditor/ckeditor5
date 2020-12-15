@@ -215,6 +215,15 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'adds default protocol to link of detected www addresses', () => {
+			editor.config.set( 'link.defaultProtocol', 'http://' );
+			simulateTyping( 'www.cksource.com ' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="http://www.cksource.com">www.cksource.com</$text> []</paragraph>'
+			);
+		} );
+
 		// Some examples came from https://mathiasbynens.be/demo/url-regex.
 		describe( 'supported URL', () => {
 			const supportedURLs = [

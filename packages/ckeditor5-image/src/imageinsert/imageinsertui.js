@@ -113,7 +113,10 @@ export default class ImageInsertUI extends Plugin {
 					insertImageViaUrlForm.label = t( 'Insert image via URL' );
 				}
 			}
-		} );
+		// Note: Use the low priority to make sure the following listener starts working after the
+		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
+		// invisible form/input cannot be focused/selected.
+		}, { priority: 'low' } );
 
 		imageInsertView.delegate( 'submit', 'cancel' ).to( dropdownView );
 		this.delegate( 'cancel' ).to( dropdownView );

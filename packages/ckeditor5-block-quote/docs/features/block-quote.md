@@ -9,9 +9,18 @@ The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easil
 
 ## Demo
 
-Use the editor below to see the block quote plugin in action.
+Use the editor below to see the block quote plugin in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
+
+## Related features
+
+Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
+
+* {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/code-blocks Code block}  &ndash; Insert longer, multiline code listings.
+* {@link features/text-alignment Text alignment} &ndash; Align your content left, right, center it or justify.
+* {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as block quotes) as you type with Markdown code.
 
 ## Installation
 
@@ -39,15 +48,8 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-## Related features
-
-Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
-
-* The {@link features/indent block indentation feature} allows you to set indentation for text blocks such as paragraphs or lists.
-* The {@link features/code-blocks code block feature} allows for insertion of various code listings.
-
 ## Common API
- 
+
 The {@link module:block-quote/blockquote~BlockQuote} plugin registers:
 
 * the `'blockQuote'` UI button component implemented by the {@link module:block-quote/blockquoteui~BlockQuoteUI block quote UI feature},

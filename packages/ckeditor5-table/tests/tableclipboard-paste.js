@@ -23,7 +23,7 @@ import TableEditing from '../src/tableediting';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
 import TableWalker from '../src/tablewalker';
 
-import TableClipboard from '../src/tableclipboard';
+import TableClipboard, { getTableIfOnlyTableInContent } from '../src/tableclipboard';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
@@ -473,6 +473,30 @@ describe( 'table clipboard', () => {
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ 'foo', 'foo', '02', '03' ],
 				[ 'foo', 'foo', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( '#_replaceTableSlotCell() should be overridable', () => {
+			const tableClipboard = editor.plugins.get( 'TableClipboard' );
+
+			tableClipboard.on( '_replaceTableSlotCell', ( evt, args ) => {
+				const [ /* tableSlot */, cellToInsert, /* insertPosition */, writer ] = args;
+
+				if ( cellToInsert ) {
+					writer.setAttribute( 'foo', 'bar', cellToInsert );
+				}
+			}, { priority: 'high' } );
+
+			pasteTable( [
+				[ 'aa', 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ { contents: 'aa', foo: 'bar' }, { contents: 'ab', foo: 'bar' }, '02', '03' ],
+				[ { contents: 'ba', foo: 'bar' }, { contents: 'bb', foo: 'bar' }, '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
 			] ) );
@@ -3917,6 +3941,157 @@ describe( 'table clipboard', () => {
 				[ '02', '21', '22' ]
 			] ) );
 		} );
+
+		it( 'should not blow up when pasting unsupported element in table', async () => {
+			await createEditor( [ TableCellPropertiesEditing ] );
+
+			pasteHtml( editor,
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>' +
+								'<div>' +
+									'<table>' +
+										'<tbody>' +
+											'<tr>' +
+												'<td style="border: 2px solid rgb(242, 242, 242);">' +
+													'<p>Test</p>' +
+												'</td>' +
+											'</tr>' +
+										'</tbody>' +
+									'</table>' +
+								'</div>' +
+							'</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '<paragraph>Test</paragraph><paragraph></paragraph>' ]
+			] ) );
+		} );
+	} );
+
+	describe( 'getTableIfOnlyTableInContent helper', () => {
+		beforeEach( async () => {
+			await createEditor();
+		} );
+
+		it( 'should return null for no table provided', () => {
+			setModelData( model, '<paragraph>foo</paragraph>' );
+
+			const content = modelRoot.getChild( 0 );
+
+			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+		} );
+
+		it( 'should return null for a text node provided', async () => {
+			setModelData( model, '<paragraph>foo</paragraph>' );
+
+			const content = modelRoot.getNodeByPath( [ 0, 0 ] );
+
+			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+		} );
+
+		it( 'should return null for mixed content provided (table + paragraph)', () => {
+			setModelData( model,
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			const content = documentFragmentFromChildren( modelRoot );
+
+			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+		} );
+
+		it( 'should return null for mixed content provided (paragraph + table)', () => {
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
+			);
+
+			const content = documentFragmentFromChildren( modelRoot );
+
+			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+		} );
+
+		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
+			setModelData( model,
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>' +
+				'<paragraph></paragraph>'
+			);
+
+			const content = documentFragmentFromChildren( modelRoot );
+			const result = getTableIfOnlyTableInContent( content, model );
+
+			expect( result ).to.be.not.null;
+			expect( result.is( 'element', 'table' ) ).to.be.true;
+		} );
+
+		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
+			setModelData( model,
+				'<paragraph></paragraph>' +
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
+			);
+
+			const content = documentFragmentFromChildren( modelRoot );
+			const result = getTableIfOnlyTableInContent( content, model );
+
+			expect( result ).to.be.not.null;
+			expect( result.is( 'element', 'table' ) ).to.be.true;
+		} );
+
+		it( 'should return table element for mixed content provided (p + p + table + p)', () => {
+			setModelData( model,
+				'<paragraph></paragraph>' +
+				'<paragraph></paragraph>' +
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>' +
+				'<paragraph></paragraph>'
+			);
+
+			const content = documentFragmentFromChildren( modelRoot );
+			const result = getTableIfOnlyTableInContent( content, model );
+
+			expect( result ).to.be.not.null;
+			expect( result.is( 'element', 'table' ) ).to.be.true;
+		} );
+
+		it( 'should return table element for if table is the only element provided in document fragment', () => {
+			setModelData( model,
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
+			);
+
+			const content = documentFragmentFromChildren( modelRoot );
+			const result = getTableIfOnlyTableInContent( content, model );
+
+			expect( result ).to.be.not.null;
+			expect( result.is( 'element', 'table' ) ).to.be.true;
+		} );
+
+		it( 'should return table element for if table is the only element provided directly', () => {
+			setModelData( model,
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
+			);
+
+			const content = modelRoot.getChild( 0 );
+			const result = getTableIfOnlyTableInContent( content, model );
+
+			expect( result ).to.be.not.null;
+			expect( result.is( 'element', 'table' ) ).to.be.true;
+		} );
+
+		function documentFragmentFromChildren( element ) {
+			return model.change( writer => {
+				const documentFragment = writer.createDocumentFragment();
+
+				for ( const child of element.getChildren() ) {
+					writer.insert( writer.cloneElement( child ), documentFragment, 'end' );
+				}
+
+				return documentFragment;
+			} );
+		}
 	} );
 
 	async function createEditor( extraPlugins = [] ) {
@@ -3928,6 +4103,17 @@ describe( 'table clipboard', () => {
 		modelRoot = model.document.getRoot();
 		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( 'TableSelection' );
+	}
+
+	function pasteHtml( editor, html ) {
+		const data = {
+			dataTransfer: createDataTransfer(),
+			stopPropagation() {},
+			preventDefault() {}
+		};
+
+		data.dataTransfer.setData( 'text/html', html );
+		editor.editing.view.document.fire( 'paste', data );
 	}
 
 	function pasteTable( tableData, attributes = {} ) {

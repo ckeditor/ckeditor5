@@ -103,4 +103,23 @@ describe( 'XmlDataProcessor', () => {
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 	} );
+
+	describe( 'registerRawContentMatcher()', () => {
+		it( 'should handle elements matching to MatcherPattern as elements with raw content', () => {
+			dataProcessor.registerRawContentMatcher( { name: 'div', classes: 'raw' } );
+
+			const fragment = dataProcessor.toView(
+				'<p>foo</p>' +
+				'<div class="raw">' +
+					'<!-- 123 -->' +
+					' abc ' +
+					'<!-- 456 -->' +
+				'</div>' +
+				'<p>bar</p>'
+			);
+
+			expect( stringify( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
+			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
+		} );
+	} );
 } );

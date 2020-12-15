@@ -238,515 +238,515 @@ msgstr "俄罗斯卢布"
 
 msgctxt "A label for the \"latin capital letter a with macron\" symbol."
 msgid "Latin capital letter a with macron"
-msgstr ""
+msgstr "带长音符的大写拉丁字母a"
 
 msgctxt "A label for the \"latin small letter a with macron\" symbol."
 msgid "Latin small letter a with macron"
-msgstr ""
+msgstr "带长音符的小写拉丁字母a"
 
 msgctxt "A label for the \"latin capital letter a with breve\" symbol."
 msgid "Latin capital letter a with breve"
-msgstr ""
+msgstr "带短音符的大写拉丁字母a"
 
 msgctxt "A label for the \"latin small letter a with breve\" symbol."
 msgid "Latin small letter a with breve"
-msgstr ""
+msgstr "带短音符的小写拉丁字母a"
 
 msgctxt "A label for the \"latin capital letter a with ogonek\" symbol."
 msgid "Latin capital letter a with ogonek"
-msgstr ""
+msgstr "带反尾形符的大写拉丁字母a"
 
 msgctxt "A label for the \"latin small letter a with ogonek\" symbol."
 msgid "Latin small letter a with ogonek"
-msgstr ""
+msgstr "带反尾形符的小写拉丁字母a"
 
 msgctxt "A label for the \"latin capital letter c with acute\" symbol."
 msgid "Latin capital letter c with acute"
-msgstr ""
+msgstr "带锐音符的大写拉丁字母c"
 
 msgctxt "A label for the \"latin small letter c with acute\" symbol."
 msgid "Latin small letter c with acute"
-msgstr ""
+msgstr "带锐音符的小写拉丁字母c"
 
 msgctxt "A label for the \"latin capital letter c with circumflex\" symbol."
 msgid "Latin capital letter c with circumflex"
-msgstr ""
+msgstr "带扬抑符的大写拉丁字母c"
 
 msgctxt "A label for the \"latin small letter c with circumflex\" symbol."
 msgid "Latin small letter c with circumflex"
-msgstr ""
+msgstr "带扬抑符的小写拉丁字母c"
 
 msgctxt "A label for the \"latin capital letter c with dot above\" symbol."
 msgid "Latin capital letter c with dot above"
-msgstr ""
+msgstr "带上点的大写拉丁字母c"
 
 msgctxt "A label for the \"latin small letter c with dot above\" symbol."
 msgid "Latin small letter c with dot above"
-msgstr ""
+msgstr "带上点的小写拉丁字母c"
 
 msgctxt "A label for the \"latin capital letter c with caron\" symbol."
 msgid "Latin capital letter c with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母c"
 
 msgctxt "A label for the \"latin small letter c with caron\" symbol."
 msgid "Latin small letter c with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母c"
 
 msgctxt "A label for the \"latin capital letter d with caron\" symbol."
 msgid "Latin capital letter d with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母d"
 
 msgctxt "A label for the \"latin small letter d with caron\" symbol."
 msgid "Latin small letter d with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母d"
 
 msgctxt "A label for the \"latin capital letter d with stroke\" symbol."
 msgid "Latin capital letter d with stroke"
-msgstr ""
+msgstr "带删节线的大写拉丁字母d"
 
 msgctxt "A label for the \"latin small letter d with stroke\" symbol."
 msgid "Latin small letter d with stroke"
-msgstr ""
+msgstr "带删节线的小写拉丁字母d"
 
 msgctxt "A label for the \"latin capital letter e with macron\" symbol."
 msgid "Latin capital letter e with macron"
-msgstr ""
+msgstr "带长音符的大写拉丁字母e"
 
 msgctxt "A label for the \"latin small letter e with macron\" symbol."
 msgid "Latin small letter e with macron"
-msgstr ""
+msgstr "带长音符的小写拉丁字母e"
 
 msgctxt "A label for the \"latin capital letter e with breve\" symbol."
 msgid "Latin capital letter e with breve"
-msgstr ""
+msgstr "带短音符的大写拉丁字母e"
 
 msgctxt "A label for the \"latin small letter e with breve\" symbol."
 msgid "Latin small letter e with breve"
-msgstr ""
+msgstr "带短音符的小写拉丁字母e"
 
 msgctxt "A label for the \"latin capital letter e with dot above\" symbol."
 msgid "Latin capital letter e with dot above"
-msgstr ""
+msgstr "带上点的大写拉丁字母e"
 
 msgctxt "A label for the \"latin small letter e with dot above\" symbol."
 msgid "Latin small letter e with dot above"
-msgstr ""
+msgstr "带上点的小写拉丁字母e"
 
 msgctxt "A label for the \"latin capital letter e with ogonek\" symbol."
 msgid "Latin capital letter e with ogonek"
-msgstr ""
+msgstr "带反尾形符的大写拉丁字母e"
 
 msgctxt "A label for the \"latin small letter e with ogonek\" symbol."
 msgid "Latin small letter e with ogonek"
-msgstr ""
+msgstr "带反尾形符的小写拉丁字母e"
 
 msgctxt "A label for the \"latin capital letter e with caron\" symbol."
 msgid "Latin capital letter e with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母e"
 
 msgctxt "A label for the \"latin small letter e with caron\" symbol."
 msgid "Latin small letter e with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母e"
 
 msgctxt "A label for the \"latin capital letter g with circumflex\" symbol."
 msgid "Latin capital letter g with circumflex"
-msgstr ""
+msgstr "带扬抑符的大写拉丁字母g"
 
 msgctxt "A label for the \"latin small letter g with circumflex\" symbol."
 msgid "Latin small letter g with circumflex"
-msgstr ""
+msgstr "带扬抑符的小写拉丁字母g"
 
 msgctxt "A label for the \"latin capital letter g with breve\" symbol."
 msgid "Latin capital letter g with breve"
-msgstr ""
+msgstr "带短音符的大写拉丁字母g"
 
 msgctxt "A label for the \"latin small letter g with breve\" symbol."
 msgid "Latin small letter g with breve"
-msgstr ""
+msgstr "带短音符的小写拉丁字母g"
 
 msgctxt "A label for the \"latin capital letter g with dot above\" symbol."
 msgid "Latin capital letter g with dot above"
-msgstr ""
+msgstr "带上点的大写拉丁字母g"
 
 msgctxt "A label for the \"latin small letter g with dot above\" symbol."
 msgid "Latin small letter g with dot above"
-msgstr ""
+msgstr "带上点的小写拉丁字母g"
 
 msgctxt "A label for the \"latin capital letter g with cedilla\" symbol."
 msgid "Latin capital letter g with cedilla"
-msgstr ""
+msgstr "带软音符的大写拉丁字母g"
 
 msgctxt "A label for the \"latin small letter g with cedilla\" symbol."
 msgid "Latin small letter g with cedilla"
-msgstr ""
+msgstr "带软音符的小写拉丁字母g"
 
 msgctxt "A label for the \"latin capital letter h with circumflex\" symbol."
 msgid "Latin capital letter h with circumflex"
-msgstr ""
+msgstr "带扬抑符的大写拉丁字母h"
 
 msgctxt "A label for the \"latin small letter h with circumflex\" symbol."
 msgid "Latin small letter h with circumflex"
-msgstr ""
+msgstr "带扬抑符的小写拉丁字母h"
 
 msgctxt "A label for the \"latin capital letter h with stroke\" symbol."
 msgid "Latin capital letter h with stroke"
-msgstr ""
+msgstr "带删节线的大写拉丁字母h"
 
 msgctxt "A label for the \"latin small letter h with stroke\" symbol."
 msgid "Latin small letter h with stroke"
-msgstr ""
+msgstr "带删节线的小写拉丁字母h"
 
 msgctxt "A label for the \"latin capital letter i with tilde\" symbol."
 msgid "Latin capital letter i with tilde"
-msgstr ""
+msgstr "带腭化符的大写拉丁字母i"
 
 msgctxt "A label for the \"latin small letter i with tilde\" symbol."
 msgid "Latin small letter i with tilde"
-msgstr ""
+msgstr "带腭化符的小写拉丁字母i"
 
 msgctxt "A label for the \"latin capital letter i with macron\" symbol."
 msgid "Latin capital letter i with macron"
-msgstr ""
+msgstr "带长音符的大写拉丁字母i"
 
 msgctxt "A label for the \"latin small letter i with macron\" symbol."
 msgid "Latin small letter i with macron"
-msgstr ""
+msgstr "带长音符的小写拉丁字母i"
 
 msgctxt "A label for the \"latin capital letter i with breve\" symbol."
 msgid "Latin capital letter i with breve"
-msgstr ""
+msgstr "带短音符的大写拉丁字母i"
 
 msgctxt "A label for the \"latin small letter i with breve\" symbol."
 msgid "Latin small letter i with breve"
-msgstr ""
+msgstr "带短音符的小写拉丁字母i"
 
 msgctxt "A label for the \"latin capital letter i with ogonek\" symbol."
 msgid "Latin capital letter i with ogonek"
-msgstr ""
+msgstr "带反尾形符的大写拉丁字母i"
 
 msgctxt "A label for the \"latin small letter i with ogonek\" symbol."
 msgid "Latin small letter i with ogonek"
-msgstr ""
+msgstr "带反尾形符的小写拉丁字母i"
 
 msgctxt "A label for the \"latin capital letter i with dot above\" symbol."
 msgid "Latin capital letter i with dot above"
-msgstr ""
+msgstr "带上点的大写拉丁字母i"
 
 msgctxt "A label for the \"latin small letter dotless i\" symbol."
 msgid "Latin small letter dotless i"
-msgstr ""
+msgstr "没有点的小写拉丁字母i"
 
 msgctxt "A label for the \"latin capital ligature ij\" symbol."
 msgid "Latin capital ligature ij"
-msgstr ""
+msgstr "大写拉丁连字符ij"
 
 msgctxt "A label for the \"latin small ligature ij\" symbol."
 msgid "Latin small ligature ij"
-msgstr ""
+msgstr "小写拉丁连字符ij"
 
 msgctxt "A label for the \"latin capital letter j with circumflex\" symbol."
 msgid "Latin capital letter j with circumflex"
-msgstr ""
+msgstr "带扬抑符的大写拉丁字母j"
 
 msgctxt "A label for the \"latin small letter j with circumflex\" symbol."
 msgid "Latin small letter j with circumflex"
-msgstr ""
+msgstr "带扬抑符的小写拉丁字母j"
 
 msgctxt "A label for the \"latin capital letter k with cedilla\" symbol."
 msgid "Latin capital letter k with cedilla"
-msgstr ""
+msgstr "带软音符的大写拉丁字母k"
 
 msgctxt "A label for the \"latin small letter k with cedilla\" symbol."
 msgid "Latin small letter k with cedilla"
-msgstr ""
+msgstr "带软音符的小写拉丁字母k"
 
 msgctxt "A label for the \"latin small letter kra\" symbol."
 msgid "Latin small letter kra"
-msgstr ""
+msgstr "小写拉丁字母kra"
 
 msgctxt "A label for the \"latin capital letter l with acute\" symbol."
 msgid "Latin capital letter l with acute"
-msgstr ""
+msgstr "带锐音符的大写拉丁字母l"
 
 msgctxt "A label for the \"latin small letter l with acute\" symbol."
 msgid "Latin small letter l with acute"
-msgstr ""
+msgstr "带锐音符的小写拉丁字母l"
 
 msgctxt "A label for the \"latin capital letter l with cedilla\" symbol."
 msgid "Latin capital letter l with cedilla"
-msgstr ""
+msgstr "带软音符的大写拉丁字母l"
 
 msgctxt "A label for the \"latin small letter l with cedilla\" symbol."
 msgid "Latin small letter l with cedilla"
-msgstr ""
+msgstr "带软音符的小写拉丁字母l"
 
 msgctxt "A label for the \"latin capital letter l with caron\" symbol."
 msgid "Latin capital letter l with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母l"
 
 msgctxt "A label for the \"latin small letter l with caron\" symbol."
 msgid "Latin small letter l with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母l"
 
 msgctxt "A label for the \"latin capital letter l with middle dot\" symbol."
 msgid "Latin capital letter l with middle dot"
-msgstr ""
+msgstr "带中点的大写拉丁字母l"
 
 msgctxt "A label for the \"latin small letter l with middle dot\" symbol."
 msgid "Latin small letter l with middle dot"
-msgstr ""
+msgstr "带中点的小写拉丁字母l"
 
 msgctxt "A label for the \"latin capital letter l with stroke\" symbol."
 msgid "Latin capital letter l with stroke"
-msgstr ""
+msgstr "带删节线的大写拉丁字母l"
 
 msgctxt "A label for the \"latin small letter l with stroke\" symbol."
 msgid "Latin small letter l with stroke"
-msgstr ""
+msgstr "带删节线的小写拉丁字母l"
 
 msgctxt "A label for the \"latin capital letter n with acute\" symbol."
 msgid "Latin capital letter n with acute"
-msgstr ""
+msgstr "带锐音符的大写拉丁字母n"
 
 msgctxt "A label for the \"latin small letter n with acute\" symbol."
 msgid "Latin small letter n with acute"
-msgstr ""
+msgstr "带锐音符的小写拉丁字母n"
 
 msgctxt "A label for the \"latin capital letter n with cedilla\" symbol."
 msgid "Latin capital letter n with cedilla"
-msgstr ""
+msgstr "带软音符的大写拉丁字母n"
 
 msgctxt "A label for the \"latin small letter n with cedilla\" symbol."
 msgid "Latin small letter n with cedilla"
-msgstr ""
+msgstr "带软音符的小写拉丁字母n"
 
 msgctxt "A label for the \"latin capital letter n with caron\" symbol."
 msgid "Latin capital letter n with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母n"
 
 msgctxt "A label for the \"latin small letter n with caron\" symbol."
 msgid "Latin small letter n with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母n"
 
 msgctxt "A label for the \"latin small letter n preceded by apostrophe\" symbol."
 msgid "Latin small letter n preceded by apostrophe"
-msgstr ""
+msgstr "冠以撇号的小写拉丁字母n"
 
 msgctxt "A label for the \"latin capital letter eng\" symbol."
 msgid "Latin capital letter eng"
-msgstr ""
+msgstr "大写拉丁字母eng"
 
 msgctxt "A label for the \"latin small letter eng\" symbol."
 msgid "Latin small letter eng"
-msgstr ""
+msgstr "小写拉丁字母eng"
 
 msgctxt "A label for the \"latin capital letter o with macron\" symbol."
 msgid "Latin capital letter o with macron"
-msgstr ""
+msgstr "带长音符的大写拉丁字母o"
 
 msgctxt "A label for the \"latin small letter o with macron\" symbol."
 msgid "Latin small letter o with macron"
-msgstr ""
+msgstr "带长音符的小写拉丁字母o"
 
 msgctxt "A label for the \"latin capital letter o with breve\" symbol."
 msgid "Latin capital letter o with breve"
-msgstr ""
+msgstr "带短音符的大写拉丁字母o"
 
 msgctxt "A label for the \"latin small letter o with breve\" symbol."
 msgid "Latin small letter o with breve"
-msgstr ""
+msgstr "带短音符的小写拉丁字母o"
 
 msgctxt "A label for the \"latin capital letter o with double acute\" symbol."
 msgid "Latin capital letter o with double acute"
-msgstr ""
+msgstr "带双锐音符的大写拉丁字母o"
 
 msgctxt "A label for the \"latin small letter o with double acute\" symbol."
 msgid "Latin small letter o with double acute"
-msgstr ""
+msgstr "带双锐音符的小写拉丁字母o"
 
 msgctxt "A label for the \"latin capital ligature oe\" symbol."
 msgid "Latin capital ligature oe"
-msgstr ""
+msgstr "大写拉丁连字符oe"
 
 msgctxt "A label for the \"latin small ligature oe\" symbol."
 msgid "Latin small ligature oe"
-msgstr ""
+msgstr "小写拉丁连字符oe"
 
 msgctxt "A label for the \"latin capital letter r with acute\" symbol."
 msgid "Latin capital letter r with acute"
-msgstr ""
+msgstr "带锐音符的大写拉丁字母r"
 
 msgctxt "A label for the \"latin small letter r with acute\" symbol."
 msgid "Latin small letter r with acute"
-msgstr ""
+msgstr "带锐音符的小写拉丁字母r"
 
 msgctxt "A label for the \"latin capital letter r with cedilla\" symbol."
 msgid "Latin capital letter r with cedilla"
-msgstr ""
+msgstr "带软音符的大写拉丁字母r"
 
 msgctxt "A label for the \"latin small letter r with cedilla\" symbol."
 msgid "Latin small letter r with cedilla"
-msgstr ""
+msgstr "带软音符的小写拉丁字母r"
 
 msgctxt "A label for the \"latin capital letter r with caron\" symbol."
 msgid "Latin capital letter r with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母r"
 
 msgctxt "A label for the \"latin small letter r with caron\" symbol."
 msgid "Latin small letter r with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母r"
 
 msgctxt "A label for the \"latin capital letter s with acute\" symbol."
 msgid "Latin capital letter s with acute"
-msgstr ""
+msgstr "带锐音符的大写拉丁字母s"
 
 msgctxt "A label for the \"latin small letter s with acute\" symbol."
 msgid "Latin small letter s with acute"
-msgstr ""
+msgstr "带锐音符的小写拉丁字母s"
 
 msgctxt "A label for the \"latin capital letter s with circumflex\" symbol."
 msgid "Latin capital letter s with circumflex"
-msgstr ""
+msgstr "带扬抑符的大写拉丁字母s"
 
 msgctxt "A label for the \"latin small letter s with circumflex\" symbol."
 msgid "Latin small letter s with circumflex"
-msgstr ""
+msgstr "带扬抑符的小写拉丁字母s"
 
 msgctxt "A label for the \"latin capital letter s with cedilla\" symbol."
 msgid "Latin capital letter s with cedilla"
-msgstr ""
+msgstr "带软音符的大写拉丁字母s"
 
 msgctxt "A label for the \"latin small letter s with cedilla\" symbol."
 msgid "Latin small letter s with cedilla"
-msgstr ""
+msgstr "带软音符的小写拉丁字母s"
 
 msgctxt "A label for the \"latin capital letter s with caron\" symbol."
 msgid "Latin capital letter s with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母s"
 
 msgctxt "A label for the \"latin small letter s with caron\" symbol."
 msgid "Latin small letter s with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母s"
 
 msgctxt "A label for the \"latin capital letter t with cedilla\" symbol."
 msgid "Latin capital letter t with cedilla"
-msgstr ""
+msgstr "带软音符的大写拉丁字母t"
 
 msgctxt "A label for the \"latin small letter t with cedilla\" symbol."
 msgid "Latin small letter t with cedilla"
-msgstr ""
+msgstr "带软音符的小写拉丁字母t"
 
 msgctxt "A label for the \"latin capital letter t with caron\" symbol."
 msgid "Latin capital letter t with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母t"
 
 msgctxt "A label for the \"latin small letter t with caron\" symbol."
 msgid "Latin small letter t with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母t"
 
 msgctxt "A label for the \"latin capital letter t with stroke\" symbol."
 msgid "Latin capital letter t with stroke"
-msgstr ""
+msgstr "带删节线的大写拉丁字母t"
 
 msgctxt "A label for the \"latin small letter t with stroke\" symbol."
 msgid "Latin small letter t with stroke"
-msgstr ""
+msgstr "带删节线的小写拉丁字母t"
 
 msgctxt "A label for the \"latin capital letter u with tilde\" symbol."
 msgid "Latin capital letter u with tilde"
-msgstr ""
+msgstr "带腭化符的大写拉丁字母u"
 
 msgctxt "A label for the \"latin small letter u with tilde\" symbol."
 msgid "Latin small letter u with tilde"
-msgstr ""
+msgstr "带腭化符的小写拉丁字母u"
 
 msgctxt "A label for the \"latin capital letter u with macron\" symbol."
 msgid "Latin capital letter u with macron"
-msgstr ""
+msgstr "带长音符的大写拉丁字母u"
 
 msgctxt "A label for the \"latin small letter u with macron\" symbol."
 msgid "Latin small letter u with macron"
-msgstr ""
+msgstr "带长音符的小写拉丁字母u"
 
 msgctxt "A label for the \"latin capital letter u with breve\" symbol."
 msgid "Latin capital letter u with breve"
-msgstr ""
+msgstr "带短音符的大写拉丁字母u"
 
 msgctxt "A label for the \"latin small letter u with breve\" symbol."
 msgid "Latin small letter u with breve"
-msgstr ""
+msgstr "带短音符的小写拉丁字母u"
 
 msgctxt "A label for the \"latin capital letter u with ring above\" symbol."
 msgid "Latin capital letter u with ring above"
-msgstr ""
+msgstr "带上圆圈的大写拉丁字母u"
 
 msgctxt "A label for the \"latin small letter u with ring above\" symbol."
 msgid "Latin small letter u with ring above"
-msgstr ""
+msgstr "带上圆圈的小写拉丁字母u"
 
 msgctxt "A label for the \"latin capital letter u with double acute\" symbol."
 msgid "Latin capital letter u with double acute"
-msgstr ""
+msgstr "带双锐音符的大写拉丁字母u"
 
 msgctxt "A label for the \"latin small letter u with double acute\" symbol."
 msgid "Latin small letter u with double acute"
-msgstr ""
+msgstr "带双锐音符的小写拉丁字母u"
 
 msgctxt "A label for the \"latin capital letter u with ogonek\" symbol."
 msgid "Latin capital letter u with ogonek"
-msgstr ""
+msgstr "带反尾形符的大写拉丁字母u"
 
 msgctxt "A label for the \"latin small letter u with ogonek\" symbol."
 msgid "Latin small letter u with ogonek"
-msgstr ""
+msgstr "带反尾形符的小写拉丁字母u"
 
 msgctxt "A label for the \"latin capital letter w with circumflex\" symbol."
 msgid "Latin capital letter w with circumflex"
-msgstr ""
+msgstr "带扬抑符的大写拉丁字母w"
 
 msgctxt "A label for the \"latin small letter w with circumflex\" symbol."
 msgid "Latin small letter w with circumflex"
-msgstr ""
+msgstr "带扬抑符的小写拉丁字母w"
 
 msgctxt "A label for the \"latin capital letter y with circumflex\" symbol."
 msgid "Latin capital letter y with circumflex"
-msgstr ""
+msgstr "带扬抑符的大写拉丁字母y"
 
 msgctxt "A label for the \"latin small letter y with circumflex\" symbol."
 msgid "Latin small letter y with circumflex"
-msgstr ""
+msgstr "带扬抑符的小写拉丁字母y"
 
 msgctxt "A label for the \"latin capital letter y with diaeresis\" symbol."
 msgid "Latin capital letter y with diaeresis"
-msgstr ""
+msgstr "带分音符的大写拉丁字母y"
 
 msgctxt "A label for the \"latin capital letter z with acute\" symbol."
 msgid "Latin capital letter z with acute"
-msgstr ""
+msgstr "带锐音符的大写拉丁字母z"
 
 msgctxt "A label for the \"latin small letter z with acute\" symbol."
 msgid "Latin small letter z with acute"
-msgstr ""
+msgstr "带锐音符的小写拉丁字母z"
 
 msgctxt "A label for the \"latin capital letter z with dot above\" symbol."
 msgid "Latin capital letter z with dot above"
-msgstr ""
+msgstr "带上点的大写拉丁字母z"
 
 msgctxt "A label for the \"latin small letter z with dot above\" symbol."
 msgid "Latin small letter z with dot above"
-msgstr ""
+msgstr "带上点的小写拉丁字母z"
 
 msgctxt "A label for the \"latin capital letter z with caron\" symbol."
 msgid "Latin capital letter z with caron"
-msgstr ""
+msgstr "带抑扬符的大写拉丁字母z"
 
 msgctxt "A label for the \"latin small letter z with caron\" symbol."
 msgid "Latin small letter z with caron"
-msgstr ""
+msgstr "带抑扬符的小写拉丁字母z"
 
 msgctxt "A label for the \"latin small letter long s\" symbol."
 msgid "Latin small letter long s"
-msgstr ""
+msgstr "小写拉丁字母长s"
 
 msgctxt "A label for the \"less-than sign\" symbol."
 msgid "Less-than sign"
@@ -958,11 +958,11 @@ msgstr "右双引号"
 
 msgctxt "A label for the \"single low-9 quotation mark\" symbol."
 msgid "Single low-9 quotation mark"
-msgstr "单引号"
+msgstr "低位后单引号"
 
 msgctxt "A label for the \"double low-9 quotation mark\" symbol."
 msgid "Double low-9 quotation mark"
-msgstr "双引号"
+msgstr "低位后双引号"
 
 msgctxt "A label for the \"inverted exclamation mark\" symbol."
 msgid "Inverted exclamation mark"
@@ -1030,7 +1030,7 @@ msgstr "段落符号"
 
 msgctxt "A label for the \"reversed paragraph sign\" symbol."
 msgid "Reversed paragraph sign"
-msgstr ""
+msgstr "反向段落符号"
 
 msgctxt "A label for a tooltip showing when the user hovers over the plugin icon."
 msgid "Character categories"

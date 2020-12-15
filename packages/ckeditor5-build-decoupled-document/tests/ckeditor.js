@@ -180,6 +180,18 @@ describe( 'DecoupledEditor build', () => {
 				expect( editor.getData() ).to.equal( data );
 			} );
 
+			it( 'list style works', () => {
+				const data = [
+					'<ol style="list-style-type:upper-roman;">' +
+					'<li>Item 1.</li>' +
+					'<li>Item 2.</li>' +
+					'</ol>'
+				].join( '' );
+
+				editor.setData( data );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
 			it( 'link works', () => {
 				const data = '<p><a href="//ckeditor.com">CKEditor.com</a></p>';
 

@@ -8,10 +8,14 @@
 
 	& .ck-form__row {
 		&.ck-table-properties-form__alignment-row {
+			align-self: flex-end;
 			padding: 0;
 
 			& .ck.ck-toolbar {
 				background: none;
+
+				/* Compensate for missing input label that would push the margin (toolbar has no inputs). */
+				margin-top: var(--ck-spacing-standard);
 
 				& .ck-toolbar__items > * {
 					width: 40px;

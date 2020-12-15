@@ -18,6 +18,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Widget', () => {
@@ -809,10 +810,7 @@ describe( 'Widget', () => {
 			it( name, () => {
 				testUtils.sinon.stub( editor.locale, 'contentLanguageDirection' ).value( contentLanguageDirection );
 
-				if ( !Array.isArray( actions ) ) {
-					actions = [ actions ];
-				}
-
+				actions = toArray( actions );
 				actions = actions.map( action => {
 					if ( typeof action === 'object' ) {
 						return action;

@@ -74,6 +74,10 @@ describe( 'InlineEditorUIView', () => {
 
 				view.destroy();
 			} );
+
+			it( 'should have the isFloating option set to true', () => {
+				expect( view.toolbar.options.isFloating ).to.be.true;
+			} );
 		} );
 
 		describe( '#panel', () => {
@@ -115,10 +119,6 @@ describe( 'InlineEditorUIView', () => {
 		} );
 
 		describe( '#toolbar', () => {
-			it( 'is given the right CSS classes', () => {
-				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
-			} );
-
 			it( 'sets the default value of the #viewportTopOffset attribute', () => {
 				expect( view.viewportTopOffset ).to.equal( 0 );
 			} );
