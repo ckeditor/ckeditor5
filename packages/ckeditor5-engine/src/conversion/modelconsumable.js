@@ -7,8 +7,6 @@
  * @module engine/conversion/modelconsumable
  */
 
-import TextProxy from '../model/textproxy';
-
 /**
  * Manages a list of consumable values for {@link module:engine/model/item~Item model items}.
  *
@@ -131,7 +129,7 @@ export default class ModelConsumable {
 	add( item, type ) {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item && item.is && ( item.is( '$textProxy' ) || item.is( '$text' ) ) ) {
 			item = this._getSymbolForTextProxy( item );
 		}
 
@@ -160,7 +158,7 @@ export default class ModelConsumable {
 	consume( item, type ) {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item && item.is && ( item.is( '$textProxy' ) || item.is( '$text' ) ) ) {
 			item = this._getSymbolForTextProxy( item );
 		}
 
@@ -192,7 +190,7 @@ export default class ModelConsumable {
 	test( item, type ) {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item && item.is && ( item.is( '$textProxy' ) || item.is( '$text' ) ) ) {
 			item = this._getSymbolForTextProxy( item );
 		}
 
@@ -229,7 +227,7 @@ export default class ModelConsumable {
 	revert( item, type ) {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item && item.is && ( item.is( '$textProxy' ) || item.is( '$text' ) ) ) {
 			item = this._getSymbolForTextProxy( item );
 		}
 
