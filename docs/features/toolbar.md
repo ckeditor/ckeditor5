@@ -136,7 +136,7 @@ toolbar: {
     ],
     shouldNotGroupWhenFull: true
 }
-````
+```
 
 {@snippet features/toolbar-breakpoint}
 
