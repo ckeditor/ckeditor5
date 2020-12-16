@@ -313,12 +313,19 @@ export default class DropdownView extends View {
 	 * @private
 	 */
 	get _panelPositions() {
-		const { south, southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
+		const { south, north,
+			southEast, southWest,
+			northEast, northWest,
+			southMiddleEast, southMiddleWest,
+			northMiddleEast, northhMiddleWest
+		} = DropdownView.defaultPanelPositions;
 
 		if ( this.locale.uiLanguageDirection === 'ltr' ) {
-			return [ southEast, southWest, northEast, northWest, south ];
+			return [ southEast, southMiddleEast, southMiddleWest, southWest, south,
+				northEast, northMiddleEast, northhMiddleWest, northWest, north ];
 		} else {
-			return [ southWest, southEast, northWest, northEast, south ];
+			return [ southWest, southMiddleWest, southMiddleEast, southEast, south,
+				northWest, northhMiddleWest, northMiddleEast, northEast, north ];
 		}
 	}
 }
@@ -400,6 +407,27 @@ DropdownView.defaultPanelPositions = {
 			name: 'sw'
 		};
 	},
+	southMiddleEast: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - panelRect.width / 4 + buttonRect.width / 2,
+			name: 'sme'
+		};
+	},
+	southMiddleWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - panelRect.width * 3 / 4 + buttonRect.width / 2,
+			name: 'smw'
+		};
+	},
+	north: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - panelRect.width / 2 + buttonRect.width / 2,
+			name: 'n'
+		};
+	},
 	northEast: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.top - panelRect.height,
@@ -412,6 +440,20 @@ DropdownView.defaultPanelPositions = {
 			top: buttonRect.bottom - panelRect.height,
 			left: buttonRect.left - panelRect.width + buttonRect.width,
 			name: 'nw'
+		};
+	},
+	northMiddleEast: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - panelRect.width / 4 + buttonRect.width / 2,
+			name: 'nme'
+		};
+	},
+	northhMiddleWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - panelRect.width * 3 / 4 + buttonRect.width / 2,
+			name: 'nmw'
 		};
 	}
 };
