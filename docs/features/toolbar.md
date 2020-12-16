@@ -31,7 +31,9 @@ ClassicEditor
 
 ### Demo
 
-TODO add demo for the snippet above
+A basic toolbar in the CKEditor 5 WYSIWYG editor user interface. Toolbar items can be easily added or removed.
+
+{@snippet features/toolbar-basic}
 
 ## Separating toolbar items
 
@@ -53,7 +55,9 @@ toolbar: {
 
 ### Demo
 
-TODO add demo for the snippet above
+A simple toolbar with additional items. The group separators (`'|'`) set in the configuration help organize the toolbar.
+
+{@snippet features/toolbar-separator}
 
 ## Extended toolbar configuration format
 
@@ -75,7 +79,7 @@ toolbar: {
 
 ### Demo
 
-The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via the clickable "Show more items" (⋮) button. The group separators (`'|'`) set in the configuration help organize the toolbar.
+The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via the clickable "Show more items" (⋮) button.
 
 {@snippet features/toolbar-grouping}
 
@@ -135,6 +139,7 @@ toolbar: {
         'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
+}
 ````
 
 {@snippet features/toolbar-breakpoint}

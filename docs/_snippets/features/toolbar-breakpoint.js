@@ -12,10 +12,13 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'heading', '|',
-				'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
+				'alignment', '|',
+				'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
+				'link', '|',
 				'bulletedList', 'numberedList', 'todoList', '-',
 				'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
 				'code', 'codeBlock', '|',
+				'insertTable', '|',
 				'outdent', 'indent', '|',
 				'imageUpload', 'blockQuote', '|',
 				'undo', 'redo'

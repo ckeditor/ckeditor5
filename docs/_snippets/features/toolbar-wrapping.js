@@ -13,11 +13,14 @@ ClassicEditor
 			items: [
 				'heading', '|',
 				'fontfamily', 'fontsize', '|',
+				'alignment', '|',
 				'fontColor', 'fontBackgroundColor', '|',
-				'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
+				'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
+				'link', '|',
 				'outdent', 'indent', '|',
 				'bulletedList', 'numberedList', 'todoList', '|',
 				'code', 'codeBlock', '|',
+				'insertTable', '|',
 				'imageUpload', 'blockQuote', '|',
 				'undo', 'redo'
 			],
@@ -50,6 +53,9 @@ ClassicEditor
 				{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' },
 				{ model: 'heading4', view: 'h5', title: 'Heading 4', class: 'ck-heading_heading4' }
 			]
+		},
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
 		},
 		cloudServices: CS_CONFIG
 	} )

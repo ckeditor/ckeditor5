@@ -36,7 +36,6 @@ ClassicEditor
 				'undo',
 				'redo'
 			],
-			shouldNotGroupWhenFull: true,
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
