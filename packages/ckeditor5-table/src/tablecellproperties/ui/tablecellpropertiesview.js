@@ -22,6 +22,7 @@ import {
 	submitHandler
 } from 'ckeditor5/src/ui';
 import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
 import {
 	fillToolbar,
@@ -31,28 +32,18 @@ import {
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
 
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
-import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
-import alignJustifyIcon from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
-import alignTopIcon from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
-import alignMiddleIcon from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
-import alignBottomIcon from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
-
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
 
 const ALIGNMENT_ICONS = {
-	left: alignLeftIcon,
-	center: alignCenterIcon,
-	right: alignRightIcon,
-	justify: alignJustifyIcon,
-	top: alignTopIcon,
-	middle: alignMiddleIcon,
-	bottom: alignBottomIcon
+	left: icons.alignLeft,
+	center: icons.alignCenter,
+	right: icons.alignRight,
+	justify: icons.alignJustify,
+	top: icons.alignTop,
+	middle: icons.alignMiddle,
+	bottom: icons.alignBottom
 };
 
 /**
@@ -768,7 +759,7 @@ export default class TableCellPropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: checkIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -780,7 +771,7 @@ export default class TableCellPropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			type: 'cancel',
 			withText: true

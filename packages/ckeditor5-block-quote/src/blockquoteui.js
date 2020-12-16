@@ -7,10 +7,8 @@
  * @module block-quote/blockquoteui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-
-import quoteIcon from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
 
 import '../theme/blockquote.css';
 
@@ -35,7 +33,7 @@ export default class BlockQuoteUI extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Block quote' ),
-				icon: quoteIcon,
+				icon: icons.quote,
 				tooltip: true,
 				isToggleable: true
 			} );

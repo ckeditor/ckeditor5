@@ -18,9 +18,7 @@ import {
 	submitHandler
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
-
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import { icons } from 'ckeditor5/src/core';
 
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/mediaform.css';
@@ -78,7 +76,7 @@ export default class MediaFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
 
@@ -87,7 +85,7 @@ export default class MediaFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
 
 		/**
 		 * A collection of views that can be focused in the form.

@@ -8,8 +8,7 @@
  */
 
 import { View, InputTextView, ButtonView, createDropdown, ColorGridView } from 'ckeditor5/src/ui';
-
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import { icons } from 'ckeditor5/src/core';
 
 import '../../theme/colorinput.css';
 
@@ -267,7 +266,7 @@ export default class ColorInputView extends View {
 
 		removeColorButton.class = 'ck-input-color__remove-color';
 		removeColorButton.withText = true;
-		removeColorButton.icon = removeButtonIcon;
+		removeColorButton.icon = icons.eraser;
 		removeColorButton.label = t( 'Remove color' );
 		removeColorButton.on( 'execute', () => {
 			this.value = '';
