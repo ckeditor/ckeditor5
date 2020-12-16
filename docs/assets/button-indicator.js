@@ -1,3 +1,9 @@
+/**
+ * Attach to any HTML element tooltip with its description.
+ *
+ * @param {HTMLElement} [item] HTML element.
+ * @param {String} [text] Item description to be shown in the tooltip.
+ */
 // eslint-disable-next-line no-unused-vars
 function addItemIndicator( item, text ) {
 	if ( !item ) {
