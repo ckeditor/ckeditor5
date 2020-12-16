@@ -6,7 +6,7 @@ function addItemIndicator( item, text ) {
 
 	const content = `
 		<div class="tippy-content__message">${ text }</div>
-		<button class="ck ck-button tippy-content__close-button ck-off"></button>
+		<button class="ck ck-button tippy-content__close-button ck-off" />
 	`;
 
 	// eslint-disable-next-line no-undef
@@ -20,6 +20,8 @@ function addItemIndicator( item, text ) {
 		maxWidth: 280,
 		showOnCreate: true,
 		interactive: true,
+		touch: 'hold',
+		zIndex: 1,
 		// eslint-disable-next-line no-undef
 		appendTo: () => document.body
 	} );

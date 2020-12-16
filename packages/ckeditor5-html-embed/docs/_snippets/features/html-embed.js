@@ -166,7 +166,7 @@ ClassicEditor
 
 		window.addItemIndicator(
 			window.findToolbarItem( editor.ui.view.toolbar, { label: 'Insert media' } ),
-			'Click this button to create a raw html widget'
+			'Click this button to insert media'
 		);
 	} )
 	.catch( err => {
