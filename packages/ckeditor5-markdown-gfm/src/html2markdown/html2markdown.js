@@ -22,9 +22,6 @@ function escape( string ) {
 	return string;
 }
 
-// eslint-disable-next-line max-len
-const regex = /\b(?:https?:\/\/|www\.)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()[\]{};:'".,<>?«»“”‘’])/g;
-
 TurndownService.prototype.escape = function( string ) {
 	// Urls should not be escaped. Our strategy is using a regex to find them and escape everything
 	// which is out of the matches parts.
@@ -32,7 +29,7 @@ TurndownService.prototype.escape = function( string ) {
 	let escaped = '';
 	let lastLinkEnd = 0;
 
-	for ( const match of string.matchAll( regex ) ) {
+	for ( const match of matchAutolink( string ) ) {
 		const index = match.index;
 
 		// Append the substring between the last match and the current one (if anything).
@@ -90,4 +87,67 @@ function todoList( turndownService ) {
 			return ( node.checked ? '[x]' : '[ ]' ) + ' ';
 		}
 	} );
+}
+
+// Autolink matcher.
+const regex = new RegExp(
+	// Prefix.
+	/\b(?:(?:https?|ftp):\/\/|www\.)/.source +
+
+	// Domain name.
+	/(?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.)+(?:[a-z\u00a1-\uffff]{2,})/.source +
+
+	// The rest.
+	/(?:[^\s<>]*)/.source,
+	'gi'
+);
+
+// Trimming end of link.
+// https://github.github.com/gfm/#autolinks-extension-
+function* matchAutolink( string ) {
+	for ( const match of string.matchAll( regex ) ) {
+		const matched = match[ 0 ];
+		const length = autolinkFindEnd( matched );
+
+		yield Object.assign(
+			[ matched.substring( 0, length ) ],
+			{ index: match.index }
+		);
+
+		// We could adjust regex.lastIndex but it's not needed because what we skipped is for sure not a valid URL.
+	}
+}
+
+// Returns the new length of the link (after it would trim trailing characters).
+function autolinkFindEnd( string ) {
+	let length = string.length;
+
+	while ( length > 0 ) {
+		const char = string[ length - 1 ];
+
+		if ( '?!.,:*_~\'"'.includes( char ) ) {
+			length--;
+		} else if ( char == ')' ) {
+			let openBrackets = 0;
+
+			for ( let i = 0; i < length; i++ ) {
+				if ( string[ i ] == '(' ) {
+					openBrackets++;
+				} else if ( string[ i ] == ')' ) {
+					openBrackets--;
+				}
+			}
+
+			// If there is fewer opening brackets then closing ones we should remove a closing bracket.
+			if ( openBrackets < 0 ) {
+				length--;
+			} else {
+				break;
+			}
+		} else {
+			break;
+		}
+	}
+
+	return length;
 }
