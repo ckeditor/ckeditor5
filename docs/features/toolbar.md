@@ -29,9 +29,9 @@ ClassicEditor
 	} );
 ```
 
-### Demo
+## Demo
 
-A basic toolbar in the CKEditor 5 WYSIWYG editor user interface. Toolbar items can be easily added or removed.
+This is how a simplified toolbar from the snippet above looks in the CKEditor 5 WYSIWYG editor user interface. Toolbar items can be easily added or removed thanks to this configuration.
 
 {@snippet features/toolbar-basic}
 
@@ -53,9 +53,7 @@ toolbar: {
 }
 ```
 
-### Demo
-
-A simple toolbar with additional items. The group separators (`'|'`) set in the configuration help organize the toolbar.
+Below you can find an example of a simple toolbar with button grouping. The group separators (`'|'`) set in the configuration help organize the toolbar.
 
 {@snippet features/toolbar-separator}
 
@@ -77,8 +75,6 @@ toolbar: {
 
  * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables items grouping.
 
-### Demo
-
 The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are excess toolbar items for the display width, the toolbar gets grouped and some of the items are accessible via the clickable "Show more items" (⋮) button.
 
 {@snippet features/toolbar-grouping}
@@ -97,7 +93,7 @@ toolbar: {
 }
 ```
 
-### Automatic toolbar wrapping demo
+### Automatic toolbar wrapping
 
 When `shouldNotGroupWhenFull` is set to `true`, by default the toolbar items are automatically wrapped into a new line once they do not fit the editor width. The mechanism is automatic and only wraps excess items. Notice that while the toolbar group separators `'|'` are preserved, the groups may be split when they overflow.
 
@@ -122,7 +118,7 @@ See how it works in practice. You may play with the browser window width to see 
 
 {@snippet features/toolbar-wrapping}
 
-### Explicit wrapping breakpoint demo
+### Explicit wrapping breakpoint
 
 Setting an explicit break point in the toolbar configuration with `'-'` lets you create your own predefined multiline toolbar configuration. Toolbar items will then be grouped and put in lines as declared in the configuration.
 

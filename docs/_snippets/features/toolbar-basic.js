@@ -10,7 +10,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#toolbar-basic' ), {
 		toolbar: {
-			items: [ 'bold', 'italic', 'undo', 'redo', 'numberedList', 'bulletedList' ]
+			items: [ 'bold', 'italic', 'link', 'undo', 'redo', 'numberedList', 'bulletedList' ]
 		},
 		cloudServices: CS_CONFIG
 	} )
