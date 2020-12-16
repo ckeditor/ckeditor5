@@ -189,9 +189,9 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					jsFiles.push( path.join( snippetData.basePath, 'assets', 'snippet.js' ) );
 					jsFiles.push( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.js' ) );
 					jsFiles.push( path.join( snippetData.relativeOutputPath,
-						'../../../../../', 'node_modules', '@popperjs', 'core', 'dist', 'umd', 'popper.js' ) );
+						'../../../../../', 'node_modules', '@popperjs', 'core', 'dist', 'umd', 'popper.min.js' ) );
 					jsFiles.push( path.join( snippetData.relativeOutputPath,
-						'../../../../../', 'node_modules', 'tippy.js', 'dist', 'tippy-bundle.umd.js' ) );
+						'../../../../../', 'node_modules', 'tippy.js', 'dist', 'tippy-bundle.umd.min.js' ) );
 					jsFiles.push( path.join( snippetData.basePath, 'assets', 'button-indicator.js' ) );
 
 					cssFiles.push( path.join( snippetData.basePath, 'assets', 'snippet-styles.css' ) );
