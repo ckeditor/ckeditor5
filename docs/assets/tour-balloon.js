@@ -8,23 +8,39 @@
 /**
  * Attaches a tour balloon with a description to any DOM node element.
  *
- * Tip: Use the global `findToolbarItem()` method to easily pick toolbar items:
+ * **Tip**: Use the global `findToolbarItem()` method to easily pick toolbar items.
  *
- *		window.attachTourBalloon(
- *			window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
- *			'Balloon text.'
- *		);
+ * Examples:
  *
- *		window.attachTourBalloon(
- *			window.findToolbarItem( editor.ui.view.toolbar, 5 ),
- *			'Balloon text.'
- *		);
+ *		// Using a comparison callback to search for an item.
+ *		window.attachTourBalloon( {
+ *			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
+ *			text: 'Tour text to help users discover the feature.'
+ *		} );
  *
- * @param {HTMLElement} [domNode] DOM node.
- * @param {String} [text] The description to be shown in the tooltip.
+ *		// Using a toolbar item index.
+ *		window.attachTourBalloon( {
+ *			target: window.findToolbarItem( editor.ui.view.toolbar, 5 ),
+ *			text: 'Tour text to help users discover the feature.'
+ *		} );
+ *
+ *		// Specifying options of tippy.js, e.g. to customize the placement of the balloon.
+ *		// See https://atomiks.github.io/tippyjs/v6/all-props/ for all options.
+ *		window.attachTourBalloon( {
+ *			target: window.findToolbarItem( editor.ui.view.toolbar, 5 ),
+ *			text: 'Tour text to help users discover the feature.',
+ *			tippyOptions: {
+ *				placement: 'bottom-start'
+ *			}
+ *		} );
+ *
+ * @param {Object} options Balloon options.
+ * @param {HTMLElement} options.target A DOM node the balloon will point to.
+ * @param {String} options.text The description to be shown in the tooltip.
+ * @param {Object} [options.tippyOptions] Additional [configuration of tippy.js](https://atomiks.github.io/tippyjs/v6/all-props/).
  */
-window.attachTourBalloon = function( domNode, text ) {
-	if ( !domNode ) {
+window.attachTourBalloon = function( { target, text, tippyOptions } ) {
+	if ( !target ) {
 		console.warn( '[attachTourBalloon] The target DOM node for the feature tour balloon does not exist.', { text } );
 
 		return;
@@ -36,7 +52,7 @@ window.attachTourBalloon = function( domNode, text ) {
 	`;
 
 	// eslint-disable-next-line no-undef
-	const tooltip = tippy( domNode, {
+	const tooltip = tippy( target, {
 		content,
 		theme: 'light-border',
 		placement: 'bottom',
@@ -48,7 +64,8 @@ window.attachTourBalloon = function( domNode, text ) {
 		interactive: true,
 		touch: 'hold',
 		zIndex: 1,
-		appendTo: () => document.body
+		appendTo: () => document.body,
+		...tippyOptions
 	} );
 
 	// eslint-disable-next-line no-undef
@@ -58,7 +75,7 @@ window.attachTourBalloon = function( domNode, text ) {
 		tooltip.hide();
 	} );
 
-	domNode.addEventListener( 'click', () => {
+	target.addEventListener( 'click', () => {
 		tooltip.hide();
 	} );
 };

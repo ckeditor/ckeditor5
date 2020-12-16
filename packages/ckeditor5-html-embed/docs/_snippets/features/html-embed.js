@@ -164,10 +164,10 @@ ClassicEditor
 			iframeElement.contentWindow.document.close();
 		} );
 
-		window.attachTourBalloon(
-			window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
-			'Click here to insert an HTML embed.'
-		);
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
+			text: 'Click here to insert an HTML embed.'
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
