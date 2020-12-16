@@ -164,9 +164,9 @@ ClassicEditor
 			iframeElement.contentWindow.document.close();
 		} );
 
-		window.addItemIndicator(
-			window.findToolbarItem( editor.ui.view.toolbar, { label: 'Insert media' } ),
-			'Click this button to insert media'
+		window.attachTourBalloon(
+			window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
+			'Click here to insert an HTML embed.'
 		);
 	} )
 	.catch( err => {

@@ -192,14 +192,14 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 						'../../../../../', 'node_modules', '@popperjs', 'core', 'dist', 'umd', 'popper.min.js' ) );
 					jsFiles.push( path.join( snippetData.relativeOutputPath,
 						'../../../../../', 'node_modules', 'tippy.js', 'dist', 'tippy-bundle.umd.min.js' ) );
-					jsFiles.push( path.join( snippetData.basePath, 'assets', 'button-indicator.js' ) );
+					jsFiles.push( path.join( snippetData.basePath, 'assets', 'tour-balloon.js' ) );
 
 					cssFiles.push( path.join( snippetData.basePath, 'assets', 'snippet-styles.css' ) );
 					cssFiles.push( path.join( snippetData.relativeOutputPath,
 						'../../../../../', 'node_modules', 'tippy.js', 'dist', 'tippy.css' ) );
 					cssFiles.push( path.join( snippetData.relativeOutputPath,
 						'../../../../../', 'node_modules', 'tippy.js', 'themes', 'light-border.css' ) );
-					cssFiles.push( path.join( snippetData.basePath, 'assets', 'button-indicator.css' ) );
+					cssFiles.push( path.join( snippetData.basePath, 'assets', 'tour-balloon.css' ) );
 
 					if ( wasCSSGenerated ) {
 						cssFiles.unshift( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.css' ) );
