@@ -15,7 +15,7 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
+import { createImageFile, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
 import { getViewImgFromWidget } from '../image/utils';
 
@@ -123,7 +123,7 @@ export default class ImageUploadEditing extends Plugin {
 		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
 			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
-				.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
+				.map( value => { return { promise: createImageFile( value.item ), imageElement: value.item }; } );
 
 			if ( !fetchableImages.length ) {
 				return;
