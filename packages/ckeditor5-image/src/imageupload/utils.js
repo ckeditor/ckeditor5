@@ -40,7 +40,7 @@ export function createImageFile( image ) {
 
 	// Conversion to blob works asynchronously, so it does not block browser UI when processing data.
 	return getBlobFromImage( imageSrc ).then( blob => {
-		const mimeType = getImageMimeType( blob, imageSrc );
+		const mimeType = getImageMimeType( imageSrc );
 		const ext = mimeType.replace( 'image/', '' );
 		const filename = `image.${ ext }`;
 
@@ -81,7 +81,11 @@ function getBlobFromImage( imageSrc ) {
 
 			ctx.drawImage( image, 0, 0 );
 
-			canvas.toBlob( blob => blob ? resolve( blob ) : reject() );
+			canvas.toBlob(
+				blob => blob ? resolve( blob ) : reject(),
+				getImageMimeType( imageSrc ),
+				1
+			);
 		} );
 
 		image.addEventListener( 'error', reject );
@@ -90,18 +94,13 @@ function getBlobFromImage( imageSrc ) {
 	} );
 }
 
-// Extracts an image type based on its blob representation or its source.
+// Extracts an image type based on its source.
 //
 // @param {String} src Image `src` attribute value.
-// @param {Blob} blob Image blob representation.
 // @returns {String}
-function getImageMimeType( blob, src ) {
-	if ( blob.type ) {
-		return blob.type;
-	} else if ( src.match( /data:(image\/\w+);base64/ ) ) {
-		return src.match( /data:(image\/\w+);base64/ )[ 1 ].toLowerCase();
-	} else {
-		// Fallback to 'jpeg' as common extension.
-		return 'image/jpeg';
-	}
+function getImageMimeType( src ) {
+	const match = src.match( /data:(image\/\w+);base64/ );
+
+	// Fallback to 'jpeg' as common extension.
+	return match ? match[ 1 ].toLowerCase() : 'image/jpeg';
 }
