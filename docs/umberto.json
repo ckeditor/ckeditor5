@@ -30,7 +30,8 @@
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/mathtype.html": "features/math-equations.html",
-		"features/spell-checker.html": "features/spelling-and-grammar-checking.html"
+		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
+		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -238,6 +239,11 @@
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
+				},
+				{
+					"name": "Toolbar",
+					"id": "features-toolbar",
+					"slug": "toolbar"
 				}
 			]
 		},

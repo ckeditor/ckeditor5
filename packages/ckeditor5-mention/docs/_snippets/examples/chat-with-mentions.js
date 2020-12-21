@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
@@ -68,11 +68,31 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
+		const editingView = editor.editing.view;
+		const rootElement = editingView.document.getRoot();
+
 		window.editor = editor;
 
 		// Clone the first message in the chat when "Send" is clicked, fill it with new data
 		// and append to the chat list.
 		document.querySelector( '.chat-send' ).addEventListener( 'click', () => {
+			const message = editor.getData();
+
+			if ( !message ) {
+				editingView.change( writer => {
+					writer.addClass( 'highlighted', rootElement );
+					editingView.focus();
+				} );
+
+				setTimeout( () => {
+					editingView.change( writer => {
+						writer.removeClass( 'highlighted', rootElement );
+					} );
+				}, 650 );
+
+				return;
+			}
+
 			const clone = document.querySelector( '.chat__posts li' ).cloneNode( true );
 
 			clone.classList.add( 'new-post' );
@@ -85,9 +105,12 @@ ClassicEditor
 			mailtoUser.href = 'mailto:info@cksource.com';
 
 			clone.querySelector( '.chat__posts__post__time' ).textContent = 'just now';
-			clone.querySelector( '.chat__posts__post__content' ).innerHTML = editor.getData();
+			clone.querySelector( '.chat__posts__post__content' ).innerHTML = message;
 
 			document.querySelector( '.chat__posts' ).appendChild( clone );
+
+			editor.setData( '' );
+			editingView.focus();
 		} );
 	} )
 	.catch( err => {
