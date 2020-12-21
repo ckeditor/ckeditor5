@@ -375,14 +375,17 @@ export default class ToolbarView extends View {
 		const nonSeparatorPredicate = item => ( item !== '-' && item !== '|' );
 		const count = items.length;
 
+		// Find an index of the first item that is not a separator.
 		const firstCommandItem = items.findIndex( nonSeparatorPredicate );
+
+		// Search from the end of the list, then convert found index back to the original direction.
 		const lastCommandItem = count - items
 			.slice()
 			.reverse()
 			.findIndex( nonSeparatorPredicate );
 
 		return items
-			// Return items without leading and trailing separators.
+			// Return items without the leading and trailing separators.
 			.slice( firstCommandItem, lastCommandItem )
 			// Remove duplicated separators.
 			.filter( ( name, idx, items ) => {
