@@ -487,7 +487,24 @@ describe( 'ToolbarView', () => {
 			expect( items.get( 2 ).name ).to.equal( 'foo' );
 		} );
 
-		it( 'removes separators at the beginning and end of item list', () => {
+		it( 'deduplicates consecutive separators after removing items listed in `removeItems` 2', () => {
+			view.fillFromConfig(
+				{
+					items: [ '|', '-', '|', '-', 'foo', '|', 'bar', '|', 'foo' ],
+					removeItems: [ 'bar' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'removes trailing and leading separators from the item list', () => {
 			view.fillFromConfig(
 				{
 					items: [ '|', '|', 'foo', '|', 'bar', '|' ]
@@ -500,6 +517,22 @@ describe( 'ToolbarView', () => {
 			expect( items ).to.have.length( 3 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
 			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
+		} );
+
+		it( 'removes trailing and leading separators from the item list 2', () => {
+			view.fillFromConfig(
+				{
+					items: [ '-', '-', 'foo', '-', 'bar', '-' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
 			expect( items.get( 2 ).name ).to.equal( 'bar' );
 		} );
 

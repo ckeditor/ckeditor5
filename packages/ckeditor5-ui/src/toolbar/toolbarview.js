@@ -284,7 +284,7 @@ export default class ToolbarView extends View {
 	fillFromConfig( itemsOrConfig, factory ) {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 
-		const itemsToAdd = config.items
+		const itemsToClean = config.items
 			.filter( ( name, idx, items ) => {
 				if ( name === '|' ) {
 					return true;
@@ -348,20 +348,9 @@ export default class ToolbarView extends View {
 				}
 
 				return true;
-			} )
-			// After cleanup in the previous step, we can end up with duplicated or trailing separators. We remove them here.
-			.filter( ( name, idx, items ) => {
-				// Filter only separators.
-				if ( name !== '|' ) {
-					return true;
-				}
+			} );
 
-				const isFirst = idx === 0 || items[ idx - 1 ] === '|';
-				const isLast = idx === items.length - 1;
-				const isDuplicated = idx > 0 && items[ idx - 1 ] === '|';
-
-				return !( isFirst || isLast || isDuplicated );
-			} )
+		const itemsToAdd = this._cleanSeparators( itemsToClean )
 			// Instantiate toolbar items.
 			.map( name => {
 				if ( name === '|' ) {
@@ -374,6 +363,35 @@ export default class ToolbarView extends View {
 			} );
 
 		this.items.addMany( itemsToAdd );
+	}
+
+	/**
+	 * Remove leading, trailing, and duplicated separators (`-` and `|`).
+	 *
+	 * @private
+	 * @param {Array.<String>} items
+	 */
+	_cleanSeparators( items ) {
+		const nonSeparatorPredicate = item => ( item !== '-' && item !== '|' );
+		const count = items.length;
+
+		const firstCommandItem = items.findIndex( nonSeparatorPredicate );
+		const lastCommandItem = count - items
+			.slice()
+			.reverse()
+			.findIndex( nonSeparatorPredicate );
+
+		return items
+			.slice( firstCommandItem, lastCommandItem )
+			.filter( ( name, idx, items ) => {
+				// Filter only separators.
+				if ( nonSeparatorPredicate( name ) ) {
+					return true;
+				}
+				const isDuplicated = idx > 0 && items[ idx - 1 ] === name;
+
+				return !isDuplicated;
+			} );
 	}
 
 	/**
