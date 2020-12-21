@@ -131,7 +131,7 @@ export default class Widget extends Plugin {
 		const deleteObserver = this.editor.editing.getObserver( DeleteModelObserver );
 
 		// Handle custom delete behaviour.
-		this.listenTo( deleteObserver.for( '$text' ), 'delete', ( evt, data ) => {
+		this.listenTo( deleteObserver.for( '$root' ), 'delete', ( evt, data ) => {
 			if ( this._handleDelete( data.direction == 'forward' ) ) {
 				data.preventDefault();
 				evt.stop();
