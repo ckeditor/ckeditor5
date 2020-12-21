@@ -382,7 +382,9 @@ export default class ToolbarView extends View {
 			.findIndex( nonSeparatorPredicate );
 
 		return items
+			// Return items without leading and trailing separators.
 			.slice( firstCommandItem, lastCommandItem )
+			// Remove duplicated separators.
 			.filter( ( name, idx, items ) => {
 				// Filter only separators.
 				if ( nonSeparatorPredicate( name ) ) {
