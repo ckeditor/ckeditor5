@@ -37,10 +37,10 @@ export function createImageTypeRegExp( types ) {
  */
 export function createImageFile( image ) {
 	const imageSrc = image.getAttribute( 'src' );
+	const mimeType = getImageMimeType( imageSrc );
 
 	// Conversion to blob works asynchronously, so it does not block browser UI when processing data.
-	return getBlobFromImage( imageSrc ).then( blob => {
-		const mimeType = getImageMimeType( imageSrc );
+	return getBlobFromImage( imageSrc, mimeType ).then( blob => {
 		const ext = mimeType.replace( 'image/', '' );
 		const filename = `image.${ ext }`;
 
@@ -66,8 +66,9 @@ export function isLocalImage( node ) {
 // Creates a promise that resolves with a `Blob` object converted from the image source (Base64 or blob).
 //
 // @param {String} imageSrc Image `src` attribute value.
+// @param {String} mimeType Image type based on its source.
 // @returns {Promise.<Blob>}
-function getBlobFromImage( imageSrc ) {
+function getBlobFromImage( imageSrc, mimeType ) {
 	return new Promise( ( resolve, reject ) => {
 		const image = global.document.createElement( 'img' );
 
@@ -83,7 +84,7 @@ function getBlobFromImage( imageSrc ) {
 
 			canvas.toBlob(
 				blob => blob ? resolve( blob ) : reject(),
-				getImageMimeType( imageSrc ),
+				mimeType,
 				1
 			);
 		} );
