@@ -48,8 +48,8 @@ Below there is a full list of content styles used by the editor features. You ca
 
 ```css
 /*
- * CKEditor 5 (v23.1.0) content styles.
- * Generated on Thu, 29 Oct 2020 12:17:48 GMT.
+ * CKEditor 5 (v24.0.0) content styles.
+ * Generated on Thu, 10 Dec 2020 08:15:26 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -66,6 +66,20 @@ Below there is a full list of content styles used by the editor features. You ca
 	--ck-todo-list-checkmark-size: 16px;
 }
 
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized > figcaption {
+	display: block;
+}
 /* ckeditor5-image/theme/imagestyle.css */
 .ck-content .image-style-side {
 	float: right;
@@ -111,20 +125,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	padding: .6em;
 	font-size: .75em;
 	outline-offset: -1px;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized {
-	max-width: 100%;
-	display: block;
-	box-sizing: border-box;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized img {
-	width: 100%;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized > figcaption {
-	display: block;
 }
 /* ckeditor5-highlight/theme/highlight.css */
 .ck-content .marker-yellow {
@@ -258,6 +258,13 @@ Below there is a full list of content styles used by the editor features. You ca
 	-ms-user-select: none;
 	user-select: none;
 }
+/* ckeditor5-media-embed/theme/mediaembed.css */
+.ck-content .media {
+	clear: both;
+	margin: 1em 0;
+	display: block;
+	min-width: 15em;
+}
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list {
 	list-style: none;
@@ -325,17 +332,11 @@ Below there is a full list of content styles used by the editor features. You ca
 .ck-content .todo-list .todo-list__label .todo-list__label__description {
 	vertical-align: middle;
 }
-/* ckeditor5-media-embed/theme/mediaembed.css */
-.ck-content .media {
-	clear: both;
-	margin: 1em 0;
-	display: block;
-	min-width: 15em;
-}
 /* ckeditor5-html-embed/theme/htmlembed.css */
 .ck-content .raw-html-embed {
 	margin: 1em auto;
 	min-width: 15em;
+	font-style: normal;
 }
 /* ckeditor5-horizontal-line/theme/horizontalline.css */
 .ck-content hr {

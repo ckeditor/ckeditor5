@@ -287,11 +287,13 @@ export default class ToolbarView extends View {
 			} else if ( name == '-' ) {
 				if ( this.options.shouldGroupWhenFull ) {
 					/**
-					 * Toolbar line breaks can only work the when the automatic button grouping is disabled in the toolbar configuration.
+					 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
+					 * is disabled in the toolbar configuration.
 					 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
 					 *
 					 *		const config = {
 					 *			toolbar: {
+					 *				items: [ ... ],
 					 *				shouldNotGroupWhenFull: true
 					 *			}
 					 *		}
@@ -301,9 +303,9 @@ export default class ToolbarView extends View {
 					 * @error toolbarview-line-break-ignored-when-grouping-items
 					 */
 					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', config );
+				} else {
+					return new ToolbarLineBreakView();
 				}
-
-				return new ToolbarLineBreakView();
 			} else if ( factory.has( name ) ) {
 				return factory.create( name );
 			} else {
