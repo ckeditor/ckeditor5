@@ -157,7 +157,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-{@link builds/guides/overview CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link builds/guides/integration/configuration#toolbar-setup toolbar} or {@link builds/guides/integration/configuration#removing-features remove some plugins}, in order to add plugins you need to rebuild the editor.
+{@link builds/guides/overview CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link builds/guides/integration/configuration#removing-features remove some plugins}, in order to add plugins you need to rebuild the editor.
 
 There are three main ways to do that.
 

@@ -33,7 +33,7 @@ Check out also these CKEditor 5 features to gain better control over your conten
 
 ## Available text styles
 
-| Style feature | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | {@link builds/guides/integration/configuration#toolbar-setup Toolbar} component name | Output element |
+| Style feature | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | {@link features/toolbar Toolbar} component name | Output element |
 |-----|---|-----|-----|
 | {@link module:basic-styles/bold~Bold} | `'bold'` | `'bold'` | `<strong>bold</strong>` |
 | {@link module:basic-styles/italic~Italic} | `'italic'` | `'italic'` | `<i>italic</i>` |
