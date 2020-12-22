@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import BlockQuoteCommand from './blockquotecommand';
 
@@ -102,31 +103,49 @@ export default class BlockQuoteEditing extends Plugin {
 
 			return false;
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const editor = this.editor;
-		const command = editor.commands.get( 'blockQuote' );
+		const viewDocument = this.editor.editing.view.document;
+		const selection = editor.model.document.selection;
+		const blockQuoteCommand = editor.commands.get( 'blockQuote' );
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
-		// This listener is added in afterInit in order to register it after list's feature listener.
-		// We can't use a priority for this, because 'low' is already used by the enter feature, unless
-		// we'd use numeric priority in this case.
-		this.listenTo( this.editor.editing.view.document, 'enter', ( evt, data ) => {
-			const doc = this.editor.model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
+		//
+		// Priority normal - 10 to override default handler but not list's feature listener.
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
+				return;
+			}
 
-			if ( doc.selection.isCollapsed && positionParent.isEmpty && command.value ) {
-				this.editor.execute( 'blockQuote' );
-				this.editor.editing.view.scrollToTheSelection();
+			const positionParent = selection.getLastPosition().parent;
+
+			if ( positionParent.isEmpty ) {
+				editor.execute( 'blockQuote' );
+				editor.editing.view.scrollToTheSelection();
 
 				data.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { priority: priorities.normal - 10 } );
+
+		// Overwrite default Backspace key behavior.
+		// If Backspace key is pressed with selection collapsed in first empty block inside a quote, break the quote.
+		//
+		// Priority high + 5 to override widget's feature listener but not list's feature listener.
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			if ( data.direction != 'backward' || !selection.isCollapsed || !blockQuoteCommand.value ) {
+				return;
+			}
+
+			const positionParent = selection.getLastPosition().parent;
+
+			if ( positionParent.isEmpty && !positionParent.previousSibling ) {
+				editor.execute( 'blockQuote' );
+				editor.editing.view.scrollToTheSelection();
+
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: priorities.high + 5 } );
 	}
 }

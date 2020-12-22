@@ -1087,6 +1087,26 @@ describe( 'ToolbarView', () => {
 				expect( groupedItemsDropdown.buttonView.label ).to.equal( 'Show more items' );
 			} );
 
+			it( 'tooltip has the proper position depending on the UI language direction (LTR UI)', () => {
+				const locale = new Locale( { uiLanguage: 'en' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'sw' );
+
+				view.destroy();
+			} );
+
+			it( 'tooltip has the proper position depending on the UI language direction (RTL UI)', () => {
+				const locale = new Locale( { uiLanguage: 'ar' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'se' );
+
+				view.destroy();
+			} );
+
 			it( 'shares its toolbarView#items with grouped items', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
