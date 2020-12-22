@@ -71,6 +71,14 @@ describe( 'GFMDataProcessor', () => {
 				);
 			} );
 
+			// s/ckeditor5/2
+			it( 'should handle invalid urls with repeated characters', () => {
+				testDataProcessor(
+					'http://\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'',
+					'<p>http://\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'</p>'
+				);
+			} );
+
 			[
 				'https://test.com/do_[not]-escape',
 				'http://test.com/do_[not]-escape',
