@@ -863,6 +863,7 @@ class DynamicGrouping {
 		dropdown.buttonView.set( {
 			label: t( 'Show more items' ),
 			tooltip: true,
+			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
 			icon: verticalDotsIcon
 		} );
 
