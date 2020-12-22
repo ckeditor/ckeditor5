@@ -64,12 +64,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			nodesToInsert = [ content ];
 		}
 
-		insertion.handleNodes( nodesToInsert, {
-			// The set of children being inserted is the only set in this context
-			// so it's the first and last (it's a hack ;)).
-			isFirst: true,
-			isLast: true
-		} );
+		insertion.handleNodes( nodesToInsert );
 
 		const newRange = insertion.getSelectionRange();
 
@@ -143,6 +138,34 @@ class Insertion {
 		 */
 		this.schema = model.schema;
 
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._documentFragment = writer.createDocumentFragment();
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._documentFragmentPosition = writer.createPositionAt( this._documentFragment, 0 );
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._firstNode = null;
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._lastNode = null;
+
+		/**
+		 * TODO
+		 * @private
+		 */
 		this._filterAttributesOf = [];
 
 		/**
@@ -166,20 +189,29 @@ class Insertion {
 	 * Handles insertion of a set of nodes.
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to insert.
-	 * @param {Object} parentContext Context in which parent of these nodes was supposed to be inserted.
-	 * If the parent context is passed it means that the parent element was stripped (was not allowed).
 	 */
-	handleNodes( nodes, parentContext ) {
-		nodes = Array.from( nodes );
-
-		for ( let i = 0; i < nodes.length; i++ ) {
-			const node = nodes[ i ];
-
-			this._handleNode( node, {
-				isFirst: i === 0 && parentContext.isFirst,
-				isLast: ( i === ( nodes.length - 1 ) ) && parentContext.isLast
-			} );
+	handleNodes( nodes ) {
+		for ( const node of Array.from( nodes ) ) {
+			this._handleNode( node );
 		}
+
+		// Insert nodes collected in temporary DocumentFragment.
+		this._insertPartialFragment();
+
+		// After the node was inserted we may try to merge it with its siblings.
+		// This should happen only if it was the first and/or last of the nodes (so only with boundary nodes)
+		// and only if the selection was in those elements initially.
+		//
+		// E.g.:
+		// <p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
+		// and:
+		// <p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
+		// but:
+		// <p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
+		// <p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
+		//																	 it's exactly the same case as above)
+		this._mergeSiblingsOfFirstNode();
+		this._mergeSiblingsOfLastNode();
 
 		// TMP this will become a post-fixer.
 		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
@@ -232,16 +264,13 @@ class Insertion {
 	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node
-	 * @param {Object} context
-	 * @param {Boolean} context.isFirst Whether the given node is the first one in the content to be inserted.
-	 * @param {Boolean} context.isLast Whether the given node is the last one in the content to be inserted.
 	 */
-	_handleNode( node, context ) {
+	_handleNode( node ) {
 		// Let's handle object in a special way.
 		// * They should never be merged with other elements.
 		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.
 		if ( this.schema.isObject( node ) ) {
-			this._handleObject( node, context );
+			this._handleObject( node );
 
 			return;
 		}
@@ -249,60 +278,71 @@ class Insertion {
 		// Try to find a place for the given node.
 		// Split the position.parent's branch up to a point where the node can be inserted.
 		// If it isn't allowed in the whole branch, then of course don't split anything.
-		const isAllowed = this._checkAndSplitToAllowedPosition( node, context );
+		const isAllowed = this._checkAndSplitToAllowedPosition( node );
 
 		if ( !isAllowed ) {
-			this._handleDisallowedNode( node, context );
+			this._handleDisallowedNode( node );
 
 			return;
 		}
 
-		this._insert( node );
+		// Add node to the current temporary DocumentFragment.
+		this._insertToFragment( node );
 
-		// After the node was inserted we may try to merge it with its siblings.
-		// This should happen only if it was the first and/or last of the nodes (so only with boundary nodes)
-		// and only if the selection was in those elements initially.
-		//
-		// E.g.:
-		// <p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
-		// and:
-		// <p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
-		// but:
-		// <p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
-		// <p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
-		//																	 it's exactly the same case as above)
-		this._mergeSiblingsOf( node, context );
+		if ( !this._firstNode ) {
+			this._firstNode = node;
+		}
+
+		this._lastNode = node;
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	_insertPartialFragment() {
+		if ( this._documentFragment.isEmpty ) {
+			return;
+		}
+
+		const livePosition = LivePosition.fromPosition( this.position, 'toNext' );
+
+		this._setAffectedBoundaries( this.position );
+
+		this.writer.insert( this._documentFragment, this.position );
+		this._documentFragmentPosition = this.writer.createPositionAt( this._documentFragment, 0 );
+
+		this.position = livePosition.toPosition();
+		livePosition.detach();
 	}
 
 	/**
 	 * @private
 	 * @param {module:engine/model/element~Element} node The object element.
-	 * @param {Object} context
 	 */
-	_handleObject( node, context ) {
+	_handleObject( node ) {
 		// Try finding it a place in the tree.
 		if ( this._checkAndSplitToAllowedPosition( node ) ) {
-			this._insert( node );
+			this._insertToFragment( node );
 		}
 		// Try autoparagraphing.
 		else {
-			this._tryAutoparagraphing( node, context );
+			this._tryAutoparagraphing( node );
 		}
 	}
 
 	/**
 	 * @private
 	 * @param {module:engine/model/node~Node} node The disallowed node which needs to be handled.
-	 * @param {Object} context
 	 */
-	_handleDisallowedNode( node, context ) {
+	_handleDisallowedNode( node ) {
 		// If the node is an element, try inserting its children (strip the parent).
 		if ( node.is( 'element' ) ) {
-			this.handleNodes( node.getChildren(), context );
+			this.handleNodes( node.getChildren() );
 		}
 		// If text is not allowed, try autoparagraphing it.
 		else {
-			this._tryAutoparagraphing( node, context );
+			this._tryAutoparagraphing( node );
 		}
 	}
 
@@ -310,7 +350,7 @@ class Insertion {
 	 * @private
 	 * @param {module:engine/model/node~Node} node The node to insert.
 	 */
-	_insert( node ) {
+	_insertToFragment( node ) {
 		/* istanbul ignore if */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
@@ -330,13 +370,8 @@ class Insertion {
 			);
 		}
 
-		const livePos = LivePosition.fromPosition( this.position, 'toNext' );
-
-		this._setAffectedBoundaries( this.position );
-		this.writer.insert( node, this.position );
-
-		this.position = livePos.toPosition();
-		livePos.detach();
+		this.writer.insert( node, this._documentFragmentPosition );
+		this._documentFragmentPosition = this._documentFragmentPosition.getShiftedBy( node.offsetSize );
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
 		if ( this.schema.isObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
@@ -381,112 +416,136 @@ class Insertion {
 
 	/**
 	 * @private
-	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
-	 * @param {Object} context
 	 */
-	_mergeSiblingsOf( node, context ) {
+	_mergeSiblingsOfFirstNode() {
+		const node = this._firstNode;
+
 		if ( !( node instanceof Element ) ) {
 			return;
 		}
 
-		const mergeLeft = this._canMergeLeft( node, context );
-		const mergeRight = this._canMergeRight( node, context );
+		if ( !this._canMergeLeft( node ) ) {
+			return;
+		}
+
 		const mergePosLeft = LivePosition._createBefore( node );
 		mergePosLeft.stickiness = 'toNext';
+
+		const livePosition = LivePosition.fromPosition( this.position, 'toNext' );
+
+		// If `_affectedStart` is sames as merge position, it means that the element "marked" by `_affectedStart` is going to be
+		// removed and its contents will be moved. This won't transform `LivePosition` so `_affectedStart` needs to be moved
+		// by hand to properly reflect affected range. (Due to `_affectedStart` and `_affectedEnd` stickiness, the "range" is
+		// shown as `][`).
+		//
+		// Example - insert `<paragraph>Abc</paragraph><paragraph>Xyz</paragraph>` at the end of `<paragraph>Foo^</paragraph>`:
+		//
+		// <paragraph>Foo</paragraph><paragraph>Bar</paragraph>   -->
+		// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>   -->
+		// <paragraph>Foo]Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>
+		//
+		// Note, that if we are here then something must have been inserted, so `_affectedStart` and `_affectedEnd` have to be set.
+		if ( this._affectedStart.isEqual( mergePosLeft ) ) {
+			this._affectedStart.detach();
+			this._affectedStart = LivePosition._createAt( mergePosLeft.nodeBefore, 'end', 'toPrevious' );
+		}
+
+		if ( this._firstNode === this._lastNode ) {
+			this._firstNode = this._lastNode = mergePosLeft.nodeBefore;
+		}
+
+		this.writer.merge( mergePosLeft );
+
+		// If only one element (the merged one) is in the "affected range", also move the affected range end appropriately.
+		//
+		// Example - insert `<paragraph>Abc</paragraph>` at the of `<paragraph>Foo^</paragraph>`:
+		//
+		// <paragraph>Foo</paragraph><paragraph>Bar</paragraph>   -->
+		// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph>[<paragraph>Bar</paragraph>   -->
+		// <paragraph>Foo]Abc</paragraph>[<paragraph>Bar</paragraph>   -->
+		// <paragraph>Foo]Abc[</paragraph><paragraph>Bar</paragraph>
+		if ( mergePosLeft.isEqual( this._affectedEnd ) && this._firstNode === this._lastNode ) {
+			this._affectedEnd.detach();
+			this._affectedEnd = LivePosition._createAt( mergePosLeft.nodeBefore, 'end', 'toNext' );
+		}
+
+		this.position = livePosition.toPosition();
+		livePosition.detach();
+
+		// After merge elements that were marked by _insert() to be filtered might be gone so
+		// we need to mark the new container.
+		this._filterAttributesOf.push( this.position.parent );
+
+		mergePosLeft.detach();
+	}
+
+	/**
+	 * @private
+	 */
+	_mergeSiblingsOfLastNode() {
+		const node = this._lastNode;
+
+		if ( !( node instanceof Element ) ) {
+			return;
+		}
+
+		if ( !this._canMergeRight( node ) ) {
+			return;
+		}
+
 		const mergePosRight = LivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
-		if ( mergeLeft ) {
-			const livePosition = LivePosition.fromPosition( this.position );
-			livePosition.stickiness = 'toNext';
-
-			// If `_affectedStart` is sames as merge position, it means that the element "marked" by `_affectedStart` is going to be
-			// removed and its contents will be moved. This won't transform `LivePosition` so `_affectedStart` needs to be moved
-			// by hand to properly reflect affected range. (Due to `_affectedStart` and `_affectedEnd` stickiness, the "range" is
-			// shown as `][`).
-			//
-			// Example - insert `<paragraph>Abc</paragraph><paragraph>Xyz</paragraph>` at the end of `<paragraph>Foo^</paragraph>`:
-			//
-			// <paragraph>Foo</paragraph><paragraph>Bar</paragraph>   -->
-			// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>   -->
-			// <paragraph>Foo]Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>
-			//
-			// Note, that if we are here then something must have been inserted, so `_affectedStart` and `_affectedEnd` have to be set.
-			if ( this._affectedStart.isEqual( mergePosLeft ) ) {
-				this._affectedStart.detach();
-				this._affectedStart = LivePosition._createAt( mergePosLeft.nodeBefore, 'end', 'toPrevious' );
-			}
-
-			this.writer.merge( mergePosLeft );
-
-			// If only one element (the merged one) is in the "affected range", also move the affected range end appropriately.
-			//
-			// Example - insert `<paragraph>Abc</paragraph>` at the of `<paragraph>Foo^</paragraph>`:
-			//
-			// <paragraph>Foo</paragraph><paragraph>Bar</paragraph>   -->
-			// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph>[<paragraph>Bar</paragraph>   -->
-			// <paragraph>Foo]Abc</paragraph>[<paragraph>Bar</paragraph>   -->
-			// <paragraph>Foo]Abc[</paragraph><paragraph>Bar</paragraph>
-			if ( mergePosLeft.isEqual( this._affectedEnd ) && context.isLast ) {
-				this._affectedEnd.detach();
-				this._affectedEnd = LivePosition._createAt( mergePosLeft.nodeBefore, 'end', 'toNext' );
-			}
-
-			this.position = livePosition.toPosition();
-			livePosition.detach();
+		/* istanbul ignore if */
+		if ( !this.position.isEqual( mergePosRight ) ) {
+			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
+			// At this point the insertion position should be after the node we'll merge. If it isn't,
+			// it should need to be secured as in the left merge case.
+			/**
+			 * An internal error occurred when merging inserted content with its siblings.
+			 * The insertion position should equal the merge position.
+			 *
+			 * If you encountered this error, report it back to the CKEditor 5 team
+			 * with as many details as possible regarding the content being inserted and the insertion position.
+			 *
+			 * @error insertcontent-invalid-insertion-position
+			 */
+			throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
 		}
 
-		if ( mergeRight ) {
-			/* istanbul ignore if */
-			if ( !this.position.isEqual( mergePosRight ) ) {
-				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
-				// At this point the insertion position should be after the node we'll merge. If it isn't,
-				// it should need to be secured as in the left merge case.
-				/**
-				 * An internal error occurred when merging inserted content with its siblings.
-				 * The insertion position should equal the merge position.
-				 *
-				 * If you encountered this error, report it back to the CKEditor 5 team
-				 * with as many details as possible regarding the content being inserted and the insertion position.
-				 *
-				 * @error insertcontent-invalid-insertion-position
-				 */
-				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
-			}
+		// Move the position to the previous node, so it isn't moved to the graveyard on merge.
+		// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
+		this.position = Position._createAt( mergePosRight.nodeBefore, 'end' );
 
-			// Move the position to the previous node, so it isn't moved to the graveyard on merge.
-			// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
-			this.position = Position._createAt( mergePosRight.nodeBefore, 'end' );
+		// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
+		// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
+		const livePosition = LivePosition.fromPosition( this.position, 'toPrevious' );
 
-			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
-			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			const livePosition = LivePosition.fromPosition( this.position, 'toPrevious' );
-
-			// See comment above on moving `_affectedStart`.
-			if ( this._affectedEnd.isEqual( mergePosRight ) ) {
-				this._affectedEnd.detach();
-				this._affectedEnd = LivePosition._createAt( mergePosRight.nodeBefore, 'end', 'toNext' );
-			}
-
-			this.writer.merge( mergePosRight );
-
-			// See comment above on moving `_affectedStart`.
-			if ( mergePosRight.getShiftedBy( -1 ).isEqual( this._affectedStart ) && context.isFirst ) {
-				this._affectedStart.detach();
-				this._affectedStart = LivePosition._createAt( mergePosRight.nodeBefore, 0, 'toPrevious' );
-			}
-
-			this.position = livePosition.toPosition();
-			livePosition.detach();
+		// See comment above on moving `_affectedStart`.
+		if ( this._affectedEnd.isEqual( mergePosRight ) ) {
+			this._affectedEnd.detach();
+			this._affectedEnd = LivePosition._createAt( mergePosRight.nodeBefore, 'end', 'toNext' );
 		}
 
-		if ( mergeLeft || mergeRight ) {
-			// After merge elements that were marked by _insert() to be filtered might be gone so
-			// we need to mark the new container.
-			this._filterAttributesOf.push( this.position.parent );
+		if ( this._firstNode === this._lastNode ) {
+			this._firstNode = this._lastNode = mergePosRight.nodeBefore;
 		}
 
-		mergePosLeft.detach();
+		this.writer.merge( mergePosRight );
+
+		// See comment above on moving `_affectedStart`.
+		if ( mergePosRight.getShiftedBy( -1 ).isEqual( this._affectedStart ) && this._firstNode === this._lastNode ) {
+			this._affectedStart.detach();
+			this._affectedStart = LivePosition._createAt( mergePosRight.nodeBefore, 0, 'toPrevious' );
+		}
+
+		this.position = livePosition.toPosition();
+		livePosition.detach();
+
+		// After merge elements that were marked by _insert() to be filtered might be gone so
+		// we need to mark the new container.
+		this._filterAttributesOf.push( this.position.parent );
+
 		mergePosRight.detach();
 	}
 
@@ -495,14 +554,12 @@ class Insertion {
 	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
-	 * @param {Object} context
 	 * @returns {Boolean}
 	 */
-	_canMergeLeft( node, context ) {
+	_canMergeLeft( node ) {
 		const previousSibling = node.previousSibling;
 
-		return context.isFirst &&
-			( previousSibling instanceof Element ) &&
+		return ( previousSibling instanceof Element ) &&
 			this.canMergeWith.has( previousSibling ) &&
 			this.model.schema.checkMerge( previousSibling, node );
 	}
@@ -512,14 +569,12 @@ class Insertion {
 	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
-	 * @param {Object} context
 	 * @returns {Boolean}
 	 */
-	_canMergeRight( node, context ) {
+	_canMergeRight( node ) {
 		const nextSibling = node.nextSibling;
 
-		return context.isLast &&
-			( nextSibling instanceof Element ) &&
+		return ( nextSibling instanceof Element ) &&
 			this.canMergeWith.has( nextSibling ) &&
 			this.model.schema.checkMerge( node, nextSibling );
 	}
@@ -529,9 +584,8 @@ class Insertion {
 	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node The node which needs to be autoparagraphed.
-	 * @param {Object} context
 	 */
-	_tryAutoparagraphing( node, context ) {
+	_tryAutoparagraphing( node ) {
 		const paragraph = this.writer.createElement( 'paragraph' );
 
 		// Do not autoparagraph if the paragraph won't be allowed there,
@@ -539,7 +593,7 @@ class Insertion {
 		// the next _handleNode() call and we'd be here again.
 		if ( this._getAllowedIn( paragraph, this.position.parent ) && this.schema.checkChild( paragraph, node ) ) {
 			paragraph._appendChild( node );
-			this._handleNode( paragraph, context );
+			this._handleNode( paragraph );
 		}
 	}
 
@@ -554,6 +608,11 @@ class Insertion {
 
 		if ( !allowedIn ) {
 			return false;
+		}
+
+		// Insert nodes collected in temporary DocumentFragment if the position parent needs change to process further nodes.
+		if ( allowedIn != this.position.parent ) {
+			this._insertPartialFragment();
 		}
 
 		while ( allowedIn != this.position.parent ) {

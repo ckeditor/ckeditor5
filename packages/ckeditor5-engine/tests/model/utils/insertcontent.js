@@ -29,7 +29,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'a' ) );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
 			} );
 		} );
 
