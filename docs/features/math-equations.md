@@ -72,7 +72,7 @@ ClassicEditor
 
 ## Customizing MathType service
 
-It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor 5 framework environment. The following instructions will allow you to customize MathType Web Integration services CKEditor 5.
+It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor 5 framework environment. The following instructions will allow you to customize MathType Web Integration services for CKEditor 5.
 
 ### Java
 
@@ -82,7 +82,7 @@ To install the Java services follow the steps below:
 
 2. Deploy the **pluginwiris_engine war** file.
 
-3. #Add `mathTypeParameters` to CKEditor5 with the below configuration:
+3. Add `mathTypeParameters` to CKEditor5 with the configuration shown below:
 
     ```js
     ClassicEditor.create( document.querySelector( '#example' ), {
@@ -112,9 +112,9 @@ To install the PHP services follow the steps below:
 
 1. Download the [MathType Web Integration Services - PHP](http://www.wiris.com/en/plugins/services/download) package.
 
-2. Copy the generic_wiris/integration folder into your project. For this example we are assuming that the services are located at DOCUMENT_ROOT/php-services/
+2. Copy the **generic_wiris/integration** folder into your project. For this example we are assuming that the services are located at *DOCUMENT_ROOT/php-services/*
 
-3. #Add `mathTypeParameters` to CKEditor5 with the below configuration:
+3. Add `mathTypeParameters` to CKEditor5 with the following configuration:
 
     ```js
     ClassicEditor.create( document.querySelector( '#example' ), {
@@ -144,9 +144,9 @@ To install the PHP services follow the steps below:
 
 1. Download the [MathType Web Integration Services - Aspx](http://www.wiris.com/en/plugins/services/download) package.
 
-2. Copy the generic_wiris/integration folder into your project. For this example we are assuming that the services are located at DOCUMENT_ROOT/aspx-services/
+2. Copy the **generic_wiris/integration** folder into your project. For this example we are assuming that the services are located at *DOCUMENT_ROOT/aspx-services/*
 
-3. #Add `mathTypeParameters` to CKEditor5 with the below configuration:
+3. Add `mathTypeParameters` to CKEditor5 with this configuration:
 
     ```js
     ClassicEditor.create( document.querySelector( '#example' ), {
@@ -181,7 +181,9 @@ To install the Ruby on Rails services follow the steps below:
     ```
         gem install -l wirispluginengine.gem
     ```
-3. #Add `mathTypeParameters` to CKEditor5 with the below configuration:
+
+3. Add `mathTypeParameters` to CKEditor5 with the configuration below:
+
 
     ```js
     ClassicEditor.create( document.querySelector( '#example' ), {
