@@ -9,13 +9,21 @@ menu-title: Spelling and grammar checking
 	The spell checker for CKEditor 5 is a commercial solution provided by our partner, [WebSpellChecker](https://webspellchecker.com/). You can report any issues in its [GitHub repository](https://github.com/WebSpellChecker/wproofreader). The license can be purchased [here](https://ckeditor.com/contact/).
 </info-box>
 
-[WProofreader](https://webspellchecker.com/wsc-proofreader) is an innovative proofreading tool that combines the functionality of "spell check as you type" and "spell check in a dialog" in a modern, distraction-free UI. Spelling and grammar suggestions are available on hover with no clicking needed.
+[WProofreader](https://webspellchecker.com/wsc-proofreader) is an innovative, multi-language proofreading tool that combines the functionality of "spell check as you type" and "spell check in a dialog" in a modern, distraction-free UI. Spelling and grammar suggestions are available on hover with no clicking needed or as a convenient dialog, both with additional in-place replacement suggestions.
+
+Readily available settings include several rules of including or ommiting certain cases. You can choose from a set if predefined languages (more may be added as language packs) and manage additional dictionaries. Words can be added to the user dictionary directly from the suggestion card, too.
+
+If needed, the spellchecker can be easily disabled and enabled again with a click.
 
 ## Demo
 
-Click in the editor below to enable the spelling and grammar checking. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found.
+See the spelling and grammar checking in the editor below.
 
-The proofreader badge in the bottom right-hand corner shows you the number of mistakes detected. It also gives you access to proofreader settings. If you want to see an overview of all spelling and grammar mistakes, click the "Proofread in dialog" icon in the badge.
+The proofreader badge in the bottom right corner shows you the number of mistakes detected. Hover on an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. If you want to see an overview of all spelling and grammar mistakes, click the "Proofread in dialog" option in the toolbar dropdown. You can access the proofreader settings from the toolbar, too.
+
+<info-box>
+	The toolbar button has been introduced in version 2.x of the WProofreader. If you are still using version 1.x, the available settings and dialog options are located in the bottom-right indicator.
+</info-box>
 
 {@snippet features/wproofreader}
 
@@ -67,12 +75,17 @@ import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofread
 ClassicEditor
 	.create( editorElement, {
 		plugins: [ ..., WProofreader ],
+		toolbar: [ ..., 'wproofreader' ]
 		wproofreader: {
 			serviceId: 'your-service-ID',
 			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
 		}
 	} )
 ```
+
+<info-box info>
+	Please notice that the toolbar item is only added in versions 2.x or higher. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. For version 1.x simply ommit adding the item to the toolbar configuration.
+</info-box>
 
 Refer to the [official documentation](https://github.com/WebSpellChecker/wproofreader-ckeditor5#install-instructions) for more details about the cloud setup and available configuration options.
 
@@ -89,6 +102,7 @@ import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofread
 ClassicEditor
 	.create( editorElement, {
 		plugins: [ ..., WProofreader ],
+		toolbar: [ ..., 'wproofreader' ]
 		wproofreader: {
 			serviceProtocol: 'https',
 			serviceHost: 'localhost',
