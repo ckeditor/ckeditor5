@@ -160,4 +160,4 @@ Refer to the {@link framework/guides/creating-simple-plugin Creating a simple pl
 
 ## Block toolbar
 
-The {@link features/blocktoolbar BlockToolbar} plugin provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. certain {@link builds/guides/overview#balloon-block-editor balloon block editor} scenarios).
+The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link builds/guides/overview#balloon-block-editor balloon block editor} scenarios).
