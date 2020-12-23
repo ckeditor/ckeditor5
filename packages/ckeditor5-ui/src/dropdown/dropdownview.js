@@ -150,7 +150,7 @@ export default class DropdownView extends View {
 		 *
 		 * @observable
 		 * @default 'auto'
-		 * @member {'auto'|'se'|'sw'|'ne'|'nw'} #panelPosition
+		 * @member {'auto'|'s'|'se'|'sw'|'sme'|'smw'|'n'|'ne'|'nw'|'nme'|'nmw'} #panelPosition
 		 */
 		this.set( 'panelPosition', 'auto' );
 
@@ -313,19 +313,24 @@ export default class DropdownView extends View {
 	 * @private
 	 */
 	get _panelPositions() {
-		const { south, north,
+		const {
+			south, north,
 			southEast, southWest,
 			northEast, northWest,
 			southMiddleEast, southMiddleWest,
-			northMiddleEast, northhMiddleWest
+			northMiddleEast, northMiddleWest
 		} = DropdownView.defaultPanelPositions;
 
-		if ( this.locale.uiLanguageDirection === 'ltr' ) {
-			return [ southEast, southMiddleEast, southMiddleWest, southWest, south,
-				northEast, northMiddleEast, northhMiddleWest, northWest, north ];
+		if ( this.locale.uiLanguageDirection !== 'rtl' ) {
+			return [
+				southEast, southWest, southMiddleEast, southMiddleWest, south,
+				northEast, northWest, northMiddleEast, northMiddleWest, north
+			];
 		} else {
-			return [ southWest, southMiddleWest, southMiddleEast, southEast, south,
-				northWest, northhMiddleWest, northMiddleEast, northEast, north ];
+			return [
+				southWest, southEast, southMiddleWest, southMiddleEast, south,
+				northWest, northEast, northMiddleWest, northMiddleEast, north
+			];
 		}
 	}
 }
@@ -361,7 +366,28 @@ export default class DropdownView extends View {
  *		|      Panel      |
  *		+-----------------+
  *
+ * * `southMiddleEast`
+ *
+ *		  [ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *
+ * * `southMiddleWest`
+ *
+ *		       [ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *
  * **North**
+ *
+ * * `north`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		    [ Button ]
  *
  * * `northEast`
  *
@@ -376,6 +402,20 @@ export default class DropdownView extends View {
  *		|      Panel      |
  *		+-----------------+
  *		         [ Button ]
+ *
+ * * `northMiddleEast`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		  [ Button ]
+ *
+ * * `northMiddleWest`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		       [ Button ]
  *
  * Positioning functions are compatible with {@link module:utils/dom/position~Position}.
  *
