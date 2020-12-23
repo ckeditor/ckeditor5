@@ -69,6 +69,16 @@ export function isImage( modelElement ) {
 }
 
 /**
+ * Checks if the provided model element is an `inlineImage`.
+ *
+ * @param {module:engine/model/element~Element} modelElement
+ * @returns {Boolean}
+ */
+export function isInlineImage( modelElement ) {
+	return !!modelElement && modelElement.is( 'element', 'imageInline' );
+}
+
+/**
  * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
  *
  *		insertImage( model, { src: 'path/to/image.jpg' } );

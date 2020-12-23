@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import ImageLoadObserver from './imageloadobserver';
 
 import {
@@ -19,6 +20,8 @@ import {
 import { toImageWidget } from './utils';
 
 import ImageInsertCommand from './imageinsertcommand';
+import ImageBlockToInlineCommand from './imageblocktoinlinecommand';
+import ImageInlineToBlockCommand from './imageinlinetoblockcommand';
 
 /**
  * The image engine plugin.
@@ -59,14 +62,40 @@ export default class ImageEditing extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
+		schema.register( 'imageInline', {
+			isObject: true,
+			isInline: true,
+			allowWhere: '$text',
+			allowAttributes: [ 'alt', 'src', 'srcset' ]
+		} );
+
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'image',
 			view: ( modelElement, { writer } ) => createImageViewElement( writer )
 		} );
 
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'imageInline',
+			view: ( modelElement, { writer } ) => writer.createContainerElement( 'img' )
+		} );
+
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'image',
 			view: ( modelElement, { writer } ) => toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ) )
+		} );
+
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'imageInline',
+			view: ( modelElement, { writer } ) => {
+				const inlineImage = writer.createContainerElement( 'img' );
+				return toWidget( inlineImage, writer );
+			}
+		} ).attributeToAttribute( {
+			model: {
+				name: 'imageInline',
+				key: 'src'
+			},
+			view: 'src'
 		} );
 
 		conversion.for( 'downcast' )
@@ -82,7 +111,13 @@ export default class ImageEditing extends Plugin {
 						src: true
 					}
 				},
-				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
+				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
+			} )
+			.elementToElement( {
+				view: {
+					name: 'figure'
+				},
+				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getChild( 0 ).getAttribute( 'src' ) } )
 			} )
 			.attributeToAttribute( {
 				view: {
@@ -114,6 +149,8 @@ export default class ImageEditing extends Plugin {
 			.add( viewFigureToModel() );
 
 		editor.commands.add( 'imageInsert', new ImageInsertCommand( editor ) );
+		editor.commands.add( 'imageBlockToInline', new ImageBlockToInlineCommand( this.editor ) );
+		editor.commands.add( 'imageInlineToBlock', new ImageInlineToBlockCommand( this.editor ) );
 	}
 }
 
