@@ -429,7 +429,7 @@ DropdownView.defaultPanelPositions = {
 	south: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.bottom,
-			left: buttonRect.left - panelRect.width / 2 + buttonRect.width / 2,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 2,
 			name: 's'
 		};
 	},
@@ -450,21 +450,21 @@ DropdownView.defaultPanelPositions = {
 	southMiddleEast: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.bottom,
-			left: buttonRect.left - panelRect.width / 4 + buttonRect.width / 2,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 4,
 			name: 'sme'
 		};
 	},
 	southMiddleWest: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.bottom,
-			left: buttonRect.left - panelRect.width * 3 / 4 + buttonRect.width / 2,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) * 3 / 4,
 			name: 'smw'
 		};
 	},
 	north: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.top - panelRect.height,
-			left: buttonRect.left - panelRect.width / 2 + buttonRect.width / 2,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 2,
 			name: 'n'
 		};
 	},
@@ -477,7 +477,7 @@ DropdownView.defaultPanelPositions = {
 	},
 	northWest: ( buttonRect, panelRect ) => {
 		return {
-			top: buttonRect.bottom - panelRect.height,
+			top: buttonRect.top - panelRect.height,
 			left: buttonRect.left - panelRect.width + buttonRect.width,
 			name: 'nw'
 		};
@@ -485,14 +485,14 @@ DropdownView.defaultPanelPositions = {
 	northMiddleEast: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.top - panelRect.height,
-			left: buttonRect.left - panelRect.width / 4 + buttonRect.width / 2,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 4,
 			name: 'nme'
 		};
 	},
-	northhMiddleWest: ( buttonRect, panelRect ) => {
+	northMiddleWest: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.top - panelRect.height,
-			left: buttonRect.left - panelRect.width * 3 / 4 + buttonRect.width / 2,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) * 3 / 4,
 			name: 'nmw'
 		};
 	}
