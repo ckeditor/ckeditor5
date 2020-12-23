@@ -81,7 +81,7 @@
 		&.ck-dropdown__panel_n,
 		&.ck-dropdown__panel_nmw,
 		&.ck-dropdown__panel_nme {
-			/* Positioning all panels not aligned to button edge relatively to the center of the button */
+			/* Positioning panels relatively to the center of the button */
 			left: 50%;
 		}
 
