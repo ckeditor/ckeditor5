@@ -185,7 +185,7 @@ export default class BalloonToolbar extends Plugin {
 	afterInit() {
 		const factory = this.editor.ui.componentFactory;
 
-		this.toolbarView.fillFromConfig( this._balloonConfig.items, factory );
+		this.toolbarView.fillFromConfig( this._balloonConfig, factory );
 	}
 
 	/**

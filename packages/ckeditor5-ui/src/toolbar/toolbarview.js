@@ -20,6 +20,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+import normalizeToolbarConfig from './normalizetoolbarconfig';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -277,58 +278,125 @@ export default class ToolbarView extends View {
 	 * A utility that expands the plain toolbar configuration into
 	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
 	 *
-	 * @param {Array.<String>} config The toolbar items configuration.
+	 * @param {Array.<String>|Object} itemsOrConfig The toolbar items or the entire toolbar configuration object.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
-	fillFromConfig( config, factory ) {
-		this.items.addMany( config.map( name => {
-			if ( name == '|' ) {
-				return new ToolbarSeparatorView();
-			} else if ( name == '-' ) {
-				if ( this.options.shouldGroupWhenFull ) {
+	fillFromConfig( itemsOrConfig, factory ) {
+		const config = normalizeToolbarConfig( itemsOrConfig );
+
+		const itemsToClean = config.items
+			.filter( ( name, idx, items ) => {
+				if ( name === '|' ) {
+					return true;
+				}
+
+				// Items listed in `config.removeItems` should not be added to the toolbar.
+				if ( config.removeItems.indexOf( name ) !== -1 ) {
+					return false;
+				}
+
+				if ( name === '-' ) {
+					// Toolbar line breaks must not be rendered when toolbar grouping is enabled.
+					// (https://github.com/ckeditor/ckeditor5/issues/8582)
+					if ( this.options.shouldGroupWhenFull ) {
+						/**
+						 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
+						 * is disabled in the toolbar configuration.
+						 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
+						 *
+						 *		const config = {
+						 *			toolbar: {
+						 *				items: [ ... ],
+						 *				shouldNotGroupWhenFull: true
+						 *			}
+						 *		}
+						 *
+						 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+						 *
+						 * @error toolbarview-line-break-ignored-when-grouping-items
+						 */
+						logWarning( 'toolbarview-line-break-ignored-when-grouping-items', items );
+
+						return false;
+					}
+
+					return true;
+				}
+
+				// For the items that cannot be instantiated we are sending warning message. We also filter them out.
+				if ( !factory.has( name ) ) {
 					/**
-					 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
-					 * is disabled in the toolbar configuration.
-					 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
+					 * There was a problem processing the configuration of the toolbar. The item with the given
+					 * name does not exist so it was omitted when rendering the toolbar.
 					 *
-					 *		const config = {
-					 *			toolbar: {
-					 *				items: [ ... ],
-					 *				shouldNotGroupWhenFull: true
-					 *			}
-					 *		}
+					 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+					 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
 					 *
-					 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+					 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
+					 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
 					 *
-					 * @error toolbarview-line-break-ignored-when-grouping-items
+					 * You can use the following snippet to retrieve all available toolbar items:
+					 *
+					 *		Array.from( editor.ui.componentFactory.names() );
+					 *
+					 * @error toolbarview-item-unavailable
+					 * @param {String} name The name of the component.
 					 */
-					logWarning( 'toolbarview-line-break-ignored-when-grouping-items', config );
-				} else {
+					logWarning( 'toolbarview-item-unavailable', { name } );
+
+					return false;
+				}
+
+				return true;
+			} );
+
+		const itemsToAdd = this._cleanSeparators( itemsToClean )
+			// Instantiate toolbar items.
+			.map( name => {
+				if ( name === '|' ) {
+					return new ToolbarSeparatorView();
+				} else if ( name === '-' ) {
 					return new ToolbarLineBreakView();
 				}
-			} else if ( factory.has( name ) ) {
+
 				return factory.create( name );
-			} else {
-				/**
-				 * There was a problem processing the configuration of the toolbar. The item with the given
-				 * name does not exist so it was omitted when rendering the toolbar.
-				 *
-				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
-				 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
-				 *
-				 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
-				 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
-				 *
-				 * You can use the following snippet to retrieve all available toolbar items:
-				 *
-				 *		Array.from( editor.ui.componentFactory.names() );
-				 *
-				 * @error toolbarview-item-unavailable
-				 * @param {String} name The name of the component.
-				 */
-				logWarning( 'toolbarview-item-unavailable', { name } );
-			}
-		} ).filter( item => item !== undefined ) );
+			} );
+
+		this.items.addMany( itemsToAdd );
+	}
+
+	/**
+	 * Remove leading, trailing, and duplicated separators (`-` and `|`).
+	 *
+	 * @private
+	 * @param {Array.<String>} items
+	 */
+	_cleanSeparators( items ) {
+		const nonSeparatorPredicate = item => ( item !== '-' && item !== '|' );
+		const count = items.length;
+
+		// Find an index of the first item that is not a separator.
+		const firstCommandItem = items.findIndex( nonSeparatorPredicate );
+
+		// Search from the end of the list, then convert found index back to the original direction.
+		const lastCommandItem = count - items
+			.slice()
+			.reverse()
+			.findIndex( nonSeparatorPredicate );
+
+		return items
+			// Return items without the leading and trailing separators.
+			.slice( firstCommandItem, lastCommandItem )
+			// Remove duplicated separators.
+			.filter( ( name, idx, items ) => {
+				// Filter only separators.
+				if ( nonSeparatorPredicate( name ) ) {
+					return true;
+				}
+				const isDuplicated = idx > 0 && items[ idx - 1 ] === name;
+
+				return !isDuplicated;
+			} );
 	}
 
 	/**

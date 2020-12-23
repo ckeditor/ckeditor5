@@ -71,6 +71,8 @@ toolbar: {
 
  * **`items`** &ndash; An array of toolbar item names. Most of the components (buttons, dropdowns, etc.) which can be used as toolbar items are described under the {@link features/index Features} tab. A full list is defined in {@link module:ui/componentfactory~ComponentFactory editor.ui.componentFactory} and can be listed using the following snippet: `Array.from( editor.ui.componentFactory.names() )`. Besides button names, you can also use the dedicated separators for toolbar groups (`'|'`) and toolbar lines (`'-'`).
 
+ * **`removeItems`** &ndash; An array of toolbar item names. With this setting you can modify the default toolbar configuration without the need of defining the entire list (you can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep). If, after removing an item, toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
+
  * **`viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar. Useful when a page with which the editor is being integrated has some other sticky or fixed elements (e.g. the top menu). Thanks to setting the toolbar offset, the toolbar will not be positioned underneath or above the page's UI.
 
  * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables items grouping.
@@ -101,14 +103,17 @@ When `shouldNotGroupWhenFull` is set to `true`, by default the toolbar items are
 toolbar: {
     items: [
         'heading', '|',
-        'fontfamily', 'fontsize', '|',
-        'fontColor', 'fontBackgroundColor', '|',
-        'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
-        'outdent', 'indent', '|',
-        'bulletedList', 'numberedList', 'todoList', '|',
-        'code', 'codeBlock', '|',
-        'imageUpload', 'blockQuote', '|',
-        'undo', 'redo'
+		'fontfamily', 'fontsize', '|',
+		'alignment', '|',
+		'fontColor', 'fontBackgroundColor', '|',
+		'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
+		'link', '|',
+		'outdent', 'indent', '|',
+		'bulletedList', 'numberedList', 'todoList', '|',
+		'code', 'codeBlock', '|',
+		'insertTable', '|',
+		'imageUpload', 'blockQuote', '|',
+		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
 }
@@ -126,13 +131,16 @@ Setting an explicit break point in the toolbar configuration with `'-'` lets you
 toolbar: {
     items: [
         'heading', '|',
-        'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
-        'bulletedList', 'numberedList', 'todoList', '-',
-        'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
-        'code', 'codeBlock', '|',
-        'outdent', 'indent', '|',
-        'imageUpload', 'blockQuote', '|',
-        'undo', 'redo'
+		'alignment', '|',
+		'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
+		'link', '|',
+		'bulletedList', 'numberedList', 'todoList', '-',
+		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
+		'code', 'codeBlock', '|',
+		'insertTable', '|',
+		'outdent', 'indent', '|',
+		'imageUpload', 'blockQuote', '|',
+		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
 }
@@ -151,3 +159,7 @@ Array.from( editor.ui.componentFactory.names() );
 ## Adding a custom button
 
 Refer to the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+
+## Block toolbar
+
+The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link builds/guides/overview#balloon-block-editor balloon block editor} scenarios).
