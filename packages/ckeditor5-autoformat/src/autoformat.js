@@ -163,7 +163,14 @@ export default class Autoformat extends Plugin {
 	 */
 	_addCodeBlockAutoformats() {
 		if ( this.editor.commands.get( 'codeBlock' ) ) {
-			blockAutoformatEditing( this.editor, this, /^```$/, 'codeBlock' );
+			blockAutoformatEditing( this.editor, this, /^```$/, ( { blockToFormat } ) => {
+				// Prevent creating code blocks inside a numbered/bulleted lists (#8633).
+				if ( blockToFormat.is( 'element', 'listItem' ) ) {
+					return false;
+				}
+
+				this.editor.execute( 'codeBlock' );
+			} );
 		}
 	}
 }

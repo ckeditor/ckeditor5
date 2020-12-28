@@ -124,7 +124,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			const end = writer.createPositionAt( blockToFormat, match[ 0 ].length );
 			const range = new LiveRange( start, end );
 
-			const wasChanged = callback( { match } );
+			const wasChanged = callback( { match, blockToFormat } );
 
 			// Remove matched text.
 			if ( wasChanged !== false ) {
