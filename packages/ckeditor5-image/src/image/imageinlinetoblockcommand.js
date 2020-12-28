@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { insertImage, isInlineImage } from './utils';
+import { insertImage, isElementOfType } from './utils';
 
 /**
  * The image inline command. It is used to convert block image io inline image.
@@ -21,7 +21,7 @@ export default class ImageInlineToBlockCommand extends Command {
 	 */
 	refresh() {
 		const element = this.editor.model.document.selection.getSelectedElement();
-		this.isEnabled = isInlineImage( element );
+		this.isEnabled = isElementOfType( element, 'imageInline' );
 	}
 
 	/**
