@@ -11,6 +11,7 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'blockAutoformatEditing', () => {
 	let editor, model, doc, plugin;
@@ -99,6 +100,20 @@ describe( 'blockAutoformatEditing', () => {
 			} );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should run callback with proper parameters when the pattern is matched', () => {
+			const spy = testUtils.sinon.spy();
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
+
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.calledWithMatch( spy, sinon.match.object );
+			sinon.assert.calledWithMatch( spy, sinon.match.has( 'match', sinon.match.array ) );
+			sinon.assert.calledWithMatch( spy, sinon.match.has( 'blockToFormat', sinon.match.instanceOf( Element ) ) );
 		} );
 
 		it( 'should not call the callback when the pattern is matched but the plugin is disabled', () => {
