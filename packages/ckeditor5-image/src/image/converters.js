@@ -66,9 +66,10 @@ export function viewFigureToModel() {
  *
  * @returns {Function}
  */
-export function srcsetAttributeConverter() {
+export function srcsetAttributeConverter( isInline ) {
 	return dispatcher => {
-		dispatcher.on( 'attribute:srcset:image', converter );
+		const schemaKey = isInline ? 'imageInline' : 'image';
+		dispatcher.on( `attribute:srcset:${ schemaKey }`, converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -78,7 +79,7 @@ export function srcsetAttributeConverter() {
 
 		const writer = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = getViewImgFromWidget( figure );
+		const img = isInline ? figure : getViewImgFromWidget( figure );
 
 		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
@@ -107,9 +108,10 @@ export function srcsetAttributeConverter() {
 	}
 }
 
-export function modelToViewAttributeConverter( attributeKey ) {
+export function modelToViewAttributeConverter( attributeKey, isInline = false ) {
 	return dispatcher => {
-		dispatcher.on( `attribute:${ attributeKey }:image`, converter );
+		const schemaKey = isInline ? 'imageInline' : 'image';
+		dispatcher.on( `attribute:${ attributeKey }:${ schemaKey }`, converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -119,7 +121,7 @@ export function modelToViewAttributeConverter( attributeKey ) {
 
 		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = getViewImgFromWidget( figure );
+		const img = isInline ? figure : getViewImgFromWidget( figure );
 
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}

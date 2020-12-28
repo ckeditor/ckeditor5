@@ -15,6 +15,9 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ImageBlockToInlineCommand from '../../src/image/imageblocktoinlinecommand';
+import ImageInlineToBlockCommand from '../../src/image/imageinlinetoblockcommand';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'ImageEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -24,7 +27,7 @@ describe( 'ImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing ]
+				plugins: [ ImageEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -44,23 +47,39 @@ describe( 'ImageEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+		expect( model.schema.isRegistered( 'image' ) ).to.be.true;
+		expect( model.schema.isBlock( 'image' ) ).to.be.true;
+		expect( model.schema.isObject( 'image' ) ).to.be.true;
+
 		expect( model.schema.checkChild( [ '$root' ], 'image' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'src' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'alt' ) ).to.be.true;
 
-		expect( model.schema.isObject( 'image' ) ).to.be.true;
-
 		expect( model.schema.checkChild( [ '$root', 'image' ], 'image' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'image' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
+
+		expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
+		expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
+		expect( model.schema.isObject( 'imageInline' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'image' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
 	} );
 
 	it( 'should register ImageLoadObserver', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
-	it( 'should register imageInsert command', () => {
+	it( 'should register imageInsert, imageBlockToInline and imageInlineToBlock commands', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
+		expect( editor.commands.get( 'imageBlockToInline' ) ).to.be.instanceOf( ImageBlockToInlineCommand );
+		expect( editor.commands.get( 'imageInlineToBlock' ) ).to.be.instanceOf( ImageInlineToBlockCommand );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.
@@ -86,18 +105,48 @@ describe( 'ImageEditing', () => {
 		} );
 	} );
 
+	it( 'should update the ui after inline image has been loaded in the DOM', () => {
+		const element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor.create( element, {
+			plugins: [ ImageEditing ]
+		} ).then( editor => {
+			editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );
+
+			const spy = sinon.spy();
+
+			editor.ui.on( 'update', spy );
+
+			const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
+			htmlImageElement.dispatchEvent( new Event( 'load' ) );
+
+			sinon.assert.calledOnce( spy );
+
+			return editor.destroy().then( () => element.remove() );
+		} );
+	} );
+
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img alt="alt text" src="/assets/sample.png"></figure>' );
+
+				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
 				setModelData( model, '<image src="/assets/sample.png"></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+
+				setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
@@ -109,6 +158,16 @@ describe( 'ImageEditing', () => {
 					'<figure class="image">' +
 						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
+				);
+
+				setModelData( model,
+					'<paragraph>' +
+						'<imageInline src="/assets/sample.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
+					'</imageInline></paragraph>'
+				);
+
+				expect( normalizeHtml( editor.getData() ) ).to.equal(
+					'<p><img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img></p>'
 				);
 			} );
 
@@ -126,6 +185,20 @@ describe( 'ImageEditing', () => {
 					'<figure class="image">' +
 						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" width="1024"></img>' +
 					'</figure>'
+				);
+				/* eslint-enable max-len */
+
+				setModelData( model,
+					'<paragraph><imageInline ' +
+					'src="/assets/sample.png" ' +
+					'alt="alt text" ' +
+					'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+					'</imageInline></paragraph>'
+				);
+
+				/* eslint-disable max-len */
+				expect( normalizeHtml( editor.getData() ) ).to.equal(
+					'<p><img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" width="1024"></img></p>'
 				);
 				/* eslint-enable max-len */
 			} );
@@ -150,6 +223,22 @@ describe( 'ImageEditing', () => {
 						'<img alt="alt text" src="/assets/sample.png">' +
 					'</figure>'
 				);
+
+				editor.data.downcastDispatcher.on( 'attribute:srcset:imageInline', ( evt, data, conversionApi ) => {
+					const modelImage = data.item;
+
+					conversionApi.consumable.consume( modelImage, evt.name );
+				}, { priority: 'high' } );
+
+				setModelData( model,
+					'<paragraph><imageInline ' +
+					'src="/assets/sample.png" ' +
+					'alt="alt text" ' +
+					'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+					'</imageInline></paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
 			} );
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
@@ -170,6 +259,20 @@ describe( 'ImageEditing', () => {
 						'<img alt="alt text" src="/assets/sample.png">' +
 					'</figure>'
 				);
+
+				setModelData( model,
+					'<paragraph><imageInline ' +
+					'src="/assets/sample.png" ' +
+					'alt="alt text" ' +
+					'srcset=\'{ "foo":"bar" }\'>' +
+					'</imageInline></paragraph>' );
+
+				const imageInline = doc.getRoot().getChild( 0 );
+				model.change( writer => {
+					writer.removeAttribute( 'srcset', imageInline );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
 			} );
 		} );
 
@@ -181,25 +284,32 @@ describe( 'ImageEditing', () => {
 					.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
 			} );
 
+			it( 'should convert image inline', () => {
+				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
+			} );
+
 			it( 'should not convert if there is no image class', () => {
 				editor.setData( '<figure class="quote">My quote</figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<paragraph>My quote</paragraph>' );
 			} );
 
 			it( 'should not convert if there is no img inside #1', () => {
 				editor.setData( '<figure class="image"></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<paragraph></paragraph>' );
 			} );
 
 			it( 'should not convert if there is no img inside #2', () => {
 				editor.setData( '<figure class="image">test</figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<paragraph>test</paragraph>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
@@ -207,13 +317,23 @@ describe( 'ImageEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="/assets/sample.png"></image>' );
+
+				editor.setData( '<p><img src="/assets/sample.png" /></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should not convert without src attribute', () => {
 				editor.setData( '<figure class="image"><img alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<paragraph></paragraph>' );
+
+				editor.setData( '<p><img alt="alt text" /></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph></paragraph>' );
 			} );
 
 			it( 'should not convert in wrong context', () => {
@@ -230,6 +350,11 @@ describe( 'ImageEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
+
+				editor.setData( '<div><img src="/assets/sample.png" alt="alt text" /></div>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<div></div>' );
 			} );
 
 			it( 'should not convert if img is already consumed', () => {
@@ -241,7 +366,17 @@ describe( 'ImageEditing', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<paragraph></paragraph>' );
+
+				editor.data.upcastDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+					const img = data.viewItem.getChild( 0 );
+					conversionApi.consumable.consume( img, { name: true } );
+				}, { priority: 'high' } );
+
+				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph></paragraph>' );
 			} );
 
 			it( 'should not convert if figure is already consumed', () => {
@@ -252,7 +387,7 @@ describe( 'ImageEditing', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<paragraph></paragraph>' );
 			} );
 
 			it( 'should dispatch conversion for nested elements', () => {
@@ -295,6 +430,17 @@ describe( 'ImageEditing', () => {
 					.to.equal(
 						'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>'
 					);
+
+				editor.setData(
+					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" /></p>'
+				);
+
+				/* eslint-disable max-len */
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal(
+						'<paragraph><imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline></paragraph>'
+					);
+				/* eslint-enable max-len */
 			} );
 
 			it( 'should convert image with srcset and width attributes', () => {
@@ -307,6 +453,16 @@ describe( 'ImageEditing', () => {
 				/* eslint-disable max-len */
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}"></image>'
+				);
+				/* eslint-enable max-len */
+
+				editor.setData(
+					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" /></p>'
+				);
+
+				/* eslint-disable max-len */
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}"></imageInline></paragraph>'
 				);
 				/* eslint-enable max-len */
 			} );
@@ -322,6 +478,17 @@ describe( 'ImageEditing', () => {
 					.to.equal(
 						'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>'
 					);
+
+				editor.setData(
+					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" sizes="50vw" /></p>'
+				);
+
+				/* eslint-disable max-len */
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal(
+						'<paragraph><imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline></paragraph>'
+					);
+				/* eslint-enable max-len */
 			} );
 
 			describe( 'should autohoist images', () => {

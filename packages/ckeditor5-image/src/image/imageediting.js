@@ -61,7 +61,6 @@ export default class ImageEditing extends Plugin {
 			allowWhere: '$block',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
-
 		schema.register( 'imageInline', {
 			isObject: true,
 			isInline: true,
@@ -72,9 +71,7 @@ export default class ImageEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'image',
 			view: ( modelElement, { writer } ) => createImageViewElement( writer )
-		} );
-
-		conversion.for( 'dataDowncast' ).elementToElement( {
+		} ).elementToElement( {
 			model: 'imageInline',
 			view: ( modelElement, { writer } ) => writer.createContainerElement( 'img' )
 		} );
@@ -82,14 +79,9 @@ export default class ImageEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'image',
 			view: ( modelElement, { writer } ) => toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ) )
-		} );
-
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		} ).elementToElement( {
 			model: 'imageInline',
-			view: ( modelElement, { writer } ) => {
-				const inlineImage = writer.createContainerElement( 'img' );
-				return toWidget( inlineImage, writer );
-			}
+			view: ( modelElement, { writer } ) => toWidget( writer.createContainerElement( 'img' ), writer )
 		} ).attributeToAttribute( {
 			model: {
 				name: 'imageInline',
@@ -100,10 +92,17 @@ export default class ImageEditing extends Plugin {
 
 		conversion.for( 'downcast' )
 			.add( modelToViewAttributeConverter( 'src' ) )
+			.add( modelToViewAttributeConverter( 'src', true ) )
 			.add( modelToViewAttributeConverter( 'alt' ) )
-			.add( srcsetAttributeConverter() );
+			.add( modelToViewAttributeConverter( 'alt', true ) )
+			.add( srcsetAttributeConverter() )
+			.add( srcsetAttributeConverter( true ) );
 
 		conversion.for( 'upcast' )
+			.elementToElement( {
+				view: matchImageInsideParent( 'p' ),
+				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
+			} )
 			.elementToElement( {
 				view: {
 					name: 'img',
@@ -111,13 +110,7 @@ export default class ImageEditing extends Plugin {
 						src: true
 					}
 				},
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
-			} )
-			.elementToElement( {
-				view: {
-					name: 'figure'
-				},
-				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getChild( 0 ).getAttribute( 'src' ) } )
+				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.attributeToAttribute( {
 				view: {
@@ -170,4 +163,25 @@ export function createImageViewElement( writer ) {
 	writer.insert( writer.createPositionAt( figure, 0 ), emptyElement );
 
 	return figure;
+}
+
+/**
+ * {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<image>` element that is placed
+ * inside the element of a provided type.
+ *
+ * @param {string} parentType
+ * @returns {Function}
+ */
+function matchImageInsideParent( parentType ) {
+	return element => {
+		const parent = element.parent;
+
+		if ( element.name === 'img' && element.hasAttribute( 'src' ) && // Convert only images with src attribute.
+			parent && parent.name === parentType // Convert only images inside paragraph.
+		) {
+			return { name: true };
+		}
+
+		return null;
+	};
 }
