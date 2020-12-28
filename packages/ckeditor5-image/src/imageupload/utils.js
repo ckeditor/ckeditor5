@@ -7,9 +7,9 @@
  * @module image/imageupload/utils
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+/* global fetch, File */
 
-/* global fetch File */
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -92,7 +92,8 @@ function getImageMimeType( blob, src ) {
 	}
 }
 
-// Creates a promise that converts the image local source (Base64 or blob) to a blob and resolves with a `File` object.
+// Creates a promise that converts the image local source (Base64 or blob) to a blob using canvas and resolves
+// with a `File` object.
 //
 // @param {String} imageSrc Image `src` attribute value.
 // @returns {Promise.<File>} A promise which resolves when an image source is converted to a `File` instance.
