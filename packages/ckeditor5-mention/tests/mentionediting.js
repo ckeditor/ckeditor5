@@ -238,6 +238,20 @@ describe( 'MentionEditing', () => {
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/8370
+		it( 'should pass down only relevant attributes', () => {
+			editor.setData( '<p>foo<span class="mention" data-mention="@John">John</span></p>' );
+
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+			const attributeValue = textNode.getAttribute( 'mention' );
+
+			expect( Object.keys( attributeValue ) ).to.have.members( [
+				'id',
+				'uid',
+				'_text'
+			] );
+		} );
 	} );
 
 	describe( 'selection post-fixer', () => {
