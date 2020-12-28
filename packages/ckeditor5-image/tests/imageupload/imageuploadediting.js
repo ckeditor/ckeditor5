@@ -28,7 +28,6 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	const base64InvalidSample = 'data:image/png;base64,INVALID-DATA';
 
 	let adapterMocks = [];
 	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
@@ -672,7 +671,7 @@ describe( 'ImageUploadEditing', () => {
 		expectModel( done, getModelData( model ), expected );
 	} );
 
-	it( 'should not upload and remove image if conversion to a blob failed', done => {
+	it( 'should not upload and remove image if fetch failed', done => {
 		const notification = editor.plugins.get( Notification );
 
 		// Prevent popping up alert window.
@@ -682,11 +681,16 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<img src=${ base64InvalidSample } />`;
+		const clipboardHtml = `<img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` so it can be rejected.
+		sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( ( res, rej ) => rej( 'could not fetch' ) );
+		} );
 
 		let content = null;
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
@@ -705,7 +709,7 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
-	it( 'should upload only images which were successfully converted to a blob and remove failed ones', done => {
+	it( 'should upload only images which were successfully fetched and remove failed ones', done => {
 		const notification = editor.plugins.get( Notification );
 
 		// Prevent popping up alert window.
@@ -725,14 +729,24 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		// The first 2 images are valid ones, and the 3rd one fails.
 		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />` +
-			`<img src=${ base64ToBlobUrl( base64Sample ) } />` +
-			`<img src=${ base64InvalidSample } />`;
+			`<img src=${ base64ToBlobUrl( base64Sample ) } /><img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` in a way that 2 first calls are successful and 3rd fails.
+		let counter = 0;
+		const fetch = window.fetch;
+		sinon.stub( window, 'fetch' ).callsFake( src => {
+			counter++;
+			if ( counter < 3 ) {
+				return fetch( src );
+			} else {
+				return Promise.reject();
+			}
+		} );
 
 		let content = null;
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
@@ -834,6 +848,15 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
+		// Stub `fetch` to return custom blob without type.
+		sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( res => res( {
+				blob() {
+					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
+				}
+			} ) );
+		} );
+
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		tryExpect( done, () => {
@@ -849,6 +872,15 @@ describe( 'ImageUploadEditing', () => {
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` to return custom blob without type.
+		sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( res => res( {
+				blob() {
+					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
+				}
+			} ) );
+		} );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
@@ -875,8 +907,8 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		// Stub `HTMLCanvasElement#toBlob` to return invalid blob, so image conversion always fails.
-		sinon.stub( HTMLCanvasElement.prototype, 'toBlob' ).callsFake( fn => fn( null ) );
+		// Stub `fetch` in a way that it always fails.
+		sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject() );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
@@ -891,11 +923,12 @@ describe( 'ImageUploadEditing', () => {
 		} );
 	} );
 
-	describe( 'with Content Security Policy rules', () => {
+	describe( 'fallback image conversion on canvas', () => {
 		let metaElement;
 		let previousMetaContent;
 
-		// Set the CSP rules before the first test in this block has been executed.
+		// Set strict Content Security Policy (CSP) rules before the first test in this block has been executed.
+		// The CSP rules cause that fetch() fails and it triggers the fallback procedure.
 		before( () => {
 			metaElement = document.querySelector( '[http-equiv=Content-Security-Policy]' );
 
@@ -928,7 +961,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/7957.
-		it( 'should upload image if strict CSP rules are defined', done => {
+		it( 'should upload image using canvas conversion', done => {
 			const spy = sinon.spy();
 			const notification = editor.plugins.get( Notification );
 
@@ -958,15 +991,44 @@ describe( 'ImageUploadEditing', () => {
 				} );
 			} );
 		} );
+
+		it( 'should not upload and remove image if canvas convertion failed', done => {
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const clipboardHtml = `<img src=${ base64Sample } />`;
+			const dataTransfer = mockDataTransfer( clipboardHtml );
+
+			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+			// Stub `HTMLCanvasElement#toBlob` to return invalid blob, so image conversion always fails.
+			sinon.stub( HTMLCanvasElement.prototype, 'toBlob' ).callsFake( fn => fn( null ) );
+
+			let content = null;
+			editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+				content = data.content;
+			} );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+			expectData(
+				'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+				'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
+				'<paragraph>[]foo</paragraph>',
+				content,
+				done,
+				false
+			);
+		} );
 	} );
 
 	// Helper for validating clipboard and model data as a result of a paste operation. This function checks both clipboard
 	// data and model data synchronously (`expectedClipboardData`, `expectedModel`) and then the model data after `loader.file`
-	// promise is resolved (so model state after successful/failed file conversion attempt).
+	// promise is resolved (so model state after successful/failed file fetch attempt).
 	//
 	// @param {String} expectedClipboardData Expected clipboard data on `inputTransformation` event.
 	// @param {String} expectedModel Expected model data on `inputTransformation` event.
-	// @param {String} expectedModelOnFile Expected model data after all `file.loader` promises are fulfilled.
+	// @param {String} expectedModelOnFile Expected model data after all `file.loader` promises are fetched.
 	// @param {DocumentFragment} content Content processed in inputTransformation
 	// @param {Function} doneFn Callback function to be called when all assertions are done or error occures.
 	// @param {Boolean} [onSuccess=true] If `expectedModelOnFile` data should be validated

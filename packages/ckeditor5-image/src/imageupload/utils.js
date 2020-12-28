@@ -9,7 +9,7 @@
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
-/* global File */
+/* global fetch File */
 
 /**
  * Creates a regular expression used to test for image files.
@@ -29,22 +29,35 @@ export function createImageTypeRegExp( types ) {
 }
 
 /**
- * Creates a promise that converts the image local source (Base64 or blob) to a blob and resolves with a `File` object.
+ * Creates a promise that fetches the image local source (Base64 or blob) and resolves with a `File` object.
  *
- * @param {module:engine/view/element~Element} image Image whose source to convert.
- * @returns {Promise.<File>} A promise which resolves when an image source is converted to a `File` instance.
+ * @param {module:engine/view/element~Element} image Image whose source to fetch.
+ * @returns {Promise.<File>} A promise which resolves when an image source is fetched and converted to a `File` instance.
  * It resolves with a `File` object. If there were any errors during file processing, the promise will be rejected.
  */
-export function createImageFile( image ) {
-	const imageSrc = image.getAttribute( 'src' );
-	const mimeType = getImageMimeType( imageSrc );
+export function fetchLocalImage( image ) {
+	return new Promise( ( resolve, reject ) => {
+		const imageSrc = image.getAttribute( 'src' );
 
-	// Conversion to blob works asynchronously, so it does not block browser UI when processing data.
-	return getBlobFromImage( imageSrc, mimeType ).then( blob => {
-		const ext = mimeType.replace( 'image/', '' );
-		const filename = `image.${ ext }`;
+		// Fetch works asynchronously and so does not block browser UI when processing data.
+		fetch( imageSrc )
+			.then( resource => resource.blob() )
+			.then( blob => {
+				const mimeType = getImageMimeType( blob, imageSrc );
+				const ext = mimeType.replace( 'image/', '' );
+				const filename = `image.${ ext }`;
+				const file = new File( [ blob ], filename, { type: mimeType } );
 
-		return new File( [ blob ], filename, { type: mimeType } );
+				resolve( file );
+			} )
+			.catch( err => {
+				// Fetch fails only, if it can't make a request due to a network failure or if anything prevented the request
+				// from completing, i.e. the Content Security Policy rules. It is not possible to detect the exact cause of failure,
+				// so we are just trying the fallback solution, if general TypeError is thrown.
+				return err && err.name === 'TypeError' ?
+					convertLocalImageOnCanvas( imageSrc ).then( resolve ).catch( reject ) :
+					reject( err );
+			} );
 	} );
 }
 
@@ -63,12 +76,42 @@ export function isLocalImage( node ) {
 		node.getAttribute( 'src' ).match( /^blob:/g );
 }
 
+// Extracts an image type based on its blob representation or its source.
+//
+// @param {String} src Image `src` attribute value.
+// @param {Blob} blob Image blob representation.
+// @returns {String}
+function getImageMimeType( blob, src ) {
+	if ( blob.type ) {
+		return blob.type;
+	} else if ( src.match( /data:(image\/\w+);base64/ ) ) {
+		return src.match( /data:(image\/\w+);base64/ )[ 1 ].toLowerCase();
+	} else {
+		// Fallback to 'jpeg' as common extension.
+		return 'image/jpeg';
+	}
+}
+
+// Creates a promise that converts the image local source (Base64 or blob) to a blob and resolves with a `File` object.
+//
+// @param {String} imageSrc Image `src` attribute value.
+// @returns {Promise.<File>} A promise which resolves when an image source is converted to a `File` instance.
+// It resolves with a `File` object. If there were any errors during file processing, the promise will be rejected.
+function convertLocalImageOnCanvas( imageSrc ) {
+	return getBlobFromCanvas( imageSrc ).then( blob => {
+		const mimeType = getImageMimeType( blob, imageSrc );
+		const ext = mimeType.replace( 'image/', '' );
+		const filename = `image.${ ext }`;
+
+		return new File( [ blob ], filename, { type: mimeType } );
+	} );
+}
+
 // Creates a promise that resolves with a `Blob` object converted from the image source (Base64 or blob).
 //
 // @param {String} imageSrc Image `src` attribute value.
-// @param {String} mimeType Image type based on its source.
 // @returns {Promise.<Blob>}
-function getBlobFromImage( imageSrc, mimeType ) {
+function getBlobFromCanvas( imageSrc ) {
 	return new Promise( ( resolve, reject ) => {
 		const image = global.document.createElement( 'img' );
 
@@ -82,26 +125,11 @@ function getBlobFromImage( imageSrc, mimeType ) {
 
 			ctx.drawImage( image, 0, 0 );
 
-			canvas.toBlob(
-				blob => blob ? resolve( blob ) : reject(),
-				mimeType,
-				1
-			);
+			canvas.toBlob( blob => blob ? resolve( blob ) : reject() );
 		} );
 
 		image.addEventListener( 'error', reject );
 
 		image.src = imageSrc;
 	} );
-}
-
-// Extracts an image type based on its source.
-//
-// @param {String} src Image `src` attribute value.
-// @returns {String}
-function getImageMimeType( src ) {
-	const match = src.match( /data:(image\/\w+);base64/ );
-
-	// Fallback to 'jpeg' as common extension.
-	return match ? match[ 1 ].toLowerCase() : 'image/jpeg';
 }
