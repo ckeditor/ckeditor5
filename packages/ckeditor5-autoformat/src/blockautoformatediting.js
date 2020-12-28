@@ -49,7 +49,7 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  * from the beginning until the caret position.
  * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
  * In case of providing the callback, it receives the following parameters:
- * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
+ * * `Object` match RegExp.exec() result of matching the pattern to inserted text.
  * * {@link module:engine/model/element~Element} blockToFormat An element surrounding inserted text.
  */
 export default function blockAutoformatEditing( editor, plugin, pattern, callbackOrCommand ) {
