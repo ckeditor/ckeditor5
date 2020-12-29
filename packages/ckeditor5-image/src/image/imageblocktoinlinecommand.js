@@ -43,6 +43,11 @@ export default class ImageBlockToInlineCommand extends Command {
 
 			writer.append( imageInlineElement, paragraph );
 			model.insertContent( paragraph, position );
+
+			if ( imageInlineElement.parent ) {
+				writer.setSelection( imageInlineElement, 'on' );
+			}
+
 			writer.remove( imageElement );
 		} );
 	}
