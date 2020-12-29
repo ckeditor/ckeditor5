@@ -12,6 +12,7 @@ import {
 	isImageWidget,
 	getSelectedImageWidget,
 	isImage,
+	isImageInline,
 	isImageAllowed,
 	insertImage,
 	getViewImgFromWidget
@@ -108,15 +109,34 @@ describe( 'image widget utils', () => {
 			expect( isImage( image ) ).to.be.true;
 		} );
 
-		it( 'should return true false for different elements', () => {
+		it( 'should return false for different elements', () => {
 			const image = new ModelElement( 'foo' );
 
 			expect( isImage( image ) ).to.be.false;
 		} );
 
-		it( 'should return true false for null and undefined', () => {
+		it( 'should return false for null and undefined', () => {
 			expect( isImage( null ) ).to.be.false;
 			expect( isImage( undefined ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isInlineImage()', () => {
+		it( 'should return true for inline image element', () => {
+			const image = new ModelElement( 'imageInline' );
+
+			expect( isImageInline( image ) ).to.be.true;
+		} );
+
+		it( 'should return false for different elements', () => {
+			const image = new ModelElement( 'foo' );
+
+			expect( isImageInline( image ) ).to.be.false;
+		} );
+
+		it( 'should return false for null and undefined', () => {
+			expect( isImageInline( null ) ).to.be.false;
+			expect( isImageInline( undefined ) ).to.be.false;
 		} );
 	} );
 

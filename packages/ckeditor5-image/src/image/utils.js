@@ -65,18 +65,17 @@ export function getSelectedImageWidget( selection ) {
  * @returns {Boolean}
  */
 export function isImage( modelElement ) {
-	return isElementOfType( modelElement, 'image' );
+	return !!modelElement && modelElement.is( 'element', 'image' );
 }
 
 /**
- * Checks if the provided model element is of a given type.
+ * Checks if the provided model element is an `imageInline`.
  *
  * @param {module:engine/model/element~Element} modelElement
- * @param {String} type
  * @returns {Boolean}
  */
-export function isElementOfType( modelElement, type ) {
-	return !!modelElement && modelElement.is( 'element', type );
+export function isImageInline( modelElement ) {
+	return !!modelElement && modelElement.is( 'element', 'imageInline' );
 }
 
 /**
