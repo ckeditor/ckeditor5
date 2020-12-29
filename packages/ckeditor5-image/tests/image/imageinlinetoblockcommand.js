@@ -97,6 +97,16 @@ describe( 'ImageInlineToBlockCommand', () => {
 		it( 'should convert inline image to block image', () => {
 			const imgSrc = 'foo/bar.jpg';
 
+			setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
+		} );
+
+		it( 'should convert inline image with alt and srcset attributes to block image', () => {
+			const imgSrc = 'foo/bar.jpg';
+
 			setModelData( model, `<paragraph>[<imageInline alt="alt text" src="${ imgSrc }" srcset="{}"></imageInline>]</paragraph>` );
 
 			command.execute();
