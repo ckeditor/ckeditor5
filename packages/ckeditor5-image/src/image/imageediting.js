@@ -169,7 +169,7 @@ export function createImageViewElement( writer ) {
  * {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<image>` element that is placed
  * inside the element of a provided type.
  *
- * @param {string} parentType
+ * @param {String} parentType
  * @returns {Function}
  */
 function matchImageInsideParent( parentType ) {

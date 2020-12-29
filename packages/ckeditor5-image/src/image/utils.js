@@ -72,7 +72,7 @@ export function isImage( modelElement ) {
  * Checks if the provided model element is of a given type.
  *
  * @param {module:engine/model/element~Element} modelElement
- * @param {string} type
+ * @param {String} type
  * @returns {Boolean}
  */
 export function isElementOfType( modelElement, type ) {
