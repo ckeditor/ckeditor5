@@ -22,6 +22,7 @@ export default class ImageBlockToInlineCommand extends Command {
 	 */
 	refresh() {
 		const element = this.editor.model.document.selection.getSelectedElement();
+
 		this.isEnabled = isImage( element );
 	}
 
@@ -35,11 +36,27 @@ export default class ImageBlockToInlineCommand extends Command {
 		const selection = model.document.selection;
 		const imageElement = selection.getSelectedElement();
 		const src = imageElement.getAttribute( 'src' );
+		const alt = imageElement.getAttribute( 'alt' );
+		const srcset = imageElement.getAttribute( 'srcset' );
 		const position = findOptimalInsertionPosition( selection, model );
+
+		if ( !src ) {
+			return;
+		}
+
+		const attrs = { src };
+
+		if ( alt ) {
+			attrs.alt = alt;
+		}
+
+		if ( srcset ) {
+			attrs.srcset = srcset;
+		}
 
 		model.change( writer => {
 			const paragraph = writer.createElement( 'paragraph' );
-			const imageInlineElement = writer.createElement( 'imageInline', { src } );
+			const imageInlineElement = writer.createElement( 'imageInline', attrs );
 
 			writer.append( imageInlineElement, paragraph );
 			model.insertContent( paragraph, position );

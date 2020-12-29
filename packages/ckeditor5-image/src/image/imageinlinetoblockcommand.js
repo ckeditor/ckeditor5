@@ -21,6 +21,7 @@ export default class ImageInlineToBlockCommand extends Command {
 	 */
 	refresh() {
 		const element = this.editor.model.document.selection.getSelectedElement();
+
 		this.isEnabled = isImageInline( element );
 	}
 
@@ -32,8 +33,25 @@ export default class ImageInlineToBlockCommand extends Command {
 	execute( ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const src = selection.getSelectedElement().getAttribute( 'src' );
+		const element = selection.getSelectedElement();
+		const src = element.getAttribute( 'src' );
+		const alt = element.getAttribute( 'alt' );
+		const srcset = element.getAttribute( 'srcset' );
 
-		insertImage( model, { src }, selection );
+		if ( !src ) {
+			return;
+		}
+
+		const attrs = { src };
+
+		if ( alt ) {
+			attrs.alt = alt;
+		}
+
+		if ( srcset ) {
+			attrs.srcset = srcset;
+		}
+
+		insertImage( model, attrs, selection );
 	}
 }

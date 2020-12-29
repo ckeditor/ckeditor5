@@ -66,10 +66,10 @@ export function viewFigureToModel() {
  *
  * @returns {Function}
  */
-export function srcsetAttributeConverter( isInline ) {
+export function srcsetAttributeConverter() {
 	return dispatcher => {
-		const schemaKey = isInline ? 'imageInline' : 'image';
-		dispatcher.on( `attribute:srcset:${ schemaKey }`, converter );
+		dispatcher.on( 'attribute:srcset:image', converter );
+		dispatcher.on( 'attribute:srcset:imageInline', converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -78,8 +78,8 @@ export function srcsetAttributeConverter( isInline ) {
 		}
 
 		const writer = conversionApi.writer;
-		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = isInline ? figure : getViewImgFromWidget( figure );
+		const element = conversionApi.mapper.toViewElement( data.item );
+		const img = element.name === 'img' ? element : getViewImgFromWidget( element );
 
 		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
@@ -108,10 +108,16 @@ export function srcsetAttributeConverter( isInline ) {
 	}
 }
 
-export function modelToViewAttributeConverter( attributeKey, isInline = false ) {
+/**
+ * Converter used to convert a given image attribute from the model to the view.
+ *
+ * @param {String} attributeKey
+ * @returns {Function}
+ */
+export function modelToViewAttributeConverter( attributeKey ) {
 	return dispatcher => {
-		const schemaKey = isInline ? 'imageInline' : 'image';
-		dispatcher.on( `attribute:${ attributeKey }:${ schemaKey }`, converter );
+		dispatcher.on( `attribute:${ attributeKey }:image`, converter );
+		dispatcher.on( `attribute:${ attributeKey }:imageInline`, converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -120,8 +126,8 @@ export function modelToViewAttributeConverter( attributeKey, isInline = false ) 
 		}
 
 		const viewWriter = conversionApi.writer;
-		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = isInline ? figure : getViewImgFromWidget( figure );
+		const element = conversionApi.mapper.toViewElement( data.item );
+		const img = element.name === 'img' ? element : getViewImgFromWidget( element );
 
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}

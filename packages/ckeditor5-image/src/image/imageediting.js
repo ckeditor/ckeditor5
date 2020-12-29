@@ -68,35 +68,36 @@ export default class ImageEditing extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'image',
-			view: ( modelElement, { writer } ) => createImageViewElement( writer )
-		} ).elementToElement( {
-			model: 'imageInline',
-			view: ( modelElement, { writer } ) => writer.createContainerElement( 'img' )
-		} );
+		conversion.for( 'dataDowncast' )
+			.elementToElement( {
+				model: 'image',
+				view: ( modelElement, { writer } ) => createImageViewElement( writer )
+			} )
+			.elementToElement( {
+				model: 'imageInline',
+				view: ( modelElement, { writer } ) => writer.createEmptyElement( 'img' )
+			} );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'image',
-			view: ( modelElement, { writer } ) => toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ) )
-		} ).elementToElement( {
-			model: 'imageInline',
-			view: ( modelElement, { writer } ) => toWidget( writer.createContainerElement( 'img' ), writer )
-		} ).attributeToAttribute( {
-			model: {
-				name: 'imageInline',
-				key: 'src'
-			},
-			view: 'src'
-		} );
+		conversion.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'image',
+				view: ( modelElement, { writer } ) => toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ) )
+			} )
+			.elementToElement( {
+				model: 'imageInline',
+				view: ( modelElement, { writer } ) => {
+					const emptyElement = writer.createEmptyElement( 'img' );
+					const element = writer.createContainerElement( 'span' );
+					writer.insert( writer.createPositionAt( element, 0 ), emptyElement );
+
+					return toWidget( element, writer );
+				}
+			} );
 
 		conversion.for( 'downcast' )
 			.add( modelToViewAttributeConverter( 'src' ) )
-			.add( modelToViewAttributeConverter( 'src', true ) )
 			.add( modelToViewAttributeConverter( 'alt' ) )
-			.add( modelToViewAttributeConverter( 'alt', true ) )
-			.add( srcsetAttributeConverter() )
-			.add( srcsetAttributeConverter( true ) );
+			.add( srcsetAttributeConverter() );
 
 		conversion.for( 'upcast' )
 			.elementToElement( {
@@ -165,23 +166,25 @@ export function createImageViewElement( writer ) {
 	return figure;
 }
 
-/**
- * {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<image>` element that is placed
- * inside the element of a provided type.
- *
- * @param {String} parentType
- * @returns {Function}
- */
-function matchImageInsideParent( parentType ) {
+// {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<image>` element that is placed
+// inside the element of a provided type.
+//
+// @param {String} parentType
+// @returns {Function}
+function matchImageInsideParent( parentName ) {
 	return element => {
 		const parent = element.parent;
 
-		if ( element.name === 'img' && element.hasAttribute( 'src' ) && // Convert only images with src attribute.
-			parent && parent.name === parentType // Convert only images inside paragraph.
-		) {
-			return { name: true };
+		// Convert only images with src attribute.
+		if ( !element.is( 'element', 'img' ) || !element.hasAttribute( 'src' ) ) {
+			return null;
 		}
 
-		return null;
+		// Convert only images inside paragraph.
+		if ( !parent || !parent.is( 'element', parentName ) ) {
+			return null;
+		}
+
+		return { name: true, attributes: [ 'src' ] };
 	};
 }
