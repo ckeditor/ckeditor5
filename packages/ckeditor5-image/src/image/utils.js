@@ -130,6 +130,10 @@ export function isImageAllowed( model ) {
  * @returns {module:engine/view/element~Element}
  */
 export function getViewImgFromWidget( figureView ) {
+	if ( figureView.is( 'element', 'img' ) ) {
+		return figureView;
+	}
+
 	const figureChildren = [];
 
 	for ( const figureChild of figureView.getChildren() ) {

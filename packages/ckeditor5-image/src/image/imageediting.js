@@ -71,7 +71,7 @@ export default class ImageEditing extends Plugin {
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'image',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer )
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'image' )
 			} )
 			.elementToElement( {
 				model: 'imageInline',
@@ -81,17 +81,15 @@ export default class ImageEditing extends Plugin {
 		conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'image',
-				view: ( modelElement, { writer } ) => toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ) )
+				view: ( modelElement, { writer } ) => toImageWidget(
+					createImageViewElement( writer, 'image' ), writer, t( 'image widget' )
+				)
 			} )
 			.elementToElement( {
 				model: 'imageInline',
-				view: ( modelElement, { writer } ) => {
-					const emptyElement = writer.createEmptyElement( 'img' );
-					const element = writer.createContainerElement( 'span' );
-					writer.insert( writer.createPositionAt( element, 0 ), emptyElement );
-
-					return toWidget( element, writer );
-				}
+				view: ( modelElement, { writer } ) => toWidget(
+					createImageViewElement( writer, 'image-inline' ), writer
+				)
 			} );
 
 		conversion.for( 'downcast' )
@@ -156,10 +154,12 @@ export default class ImageEditing extends Plugin {
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {String} imageType
 // @returns {module:engine/view/containerelement~ContainerElement}
-export function createImageViewElement( writer ) {
+export function createImageViewElement( writer, imageType ) {
+	const parentName = imageType === 'image' ? 'figure' : 'span';
 	const emptyElement = writer.createEmptyElement( 'img' );
-	const figure = writer.createContainerElement( 'figure', { class: 'image' } );
+	const figure = writer.createContainerElement( parentName, { class: imageType } );
 
 	writer.insert( writer.createPositionAt( figure, 0 ), emptyElement );
 

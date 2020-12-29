@@ -79,7 +79,7 @@ export function srcsetAttributeConverter() {
 
 		const writer = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item );
-		const img = element.name === 'img' ? element : getViewImgFromWidget( element );
+		const img = getViewImgFromWidget( element );
 
 		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
@@ -127,7 +127,7 @@ export function modelToViewAttributeConverter( attributeKey ) {
 
 		const viewWriter = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item );
-		const img = element.name === 'img' ? element : getViewImgFromWidget( element );
+		const img = getViewImgFromWidget( element );
 
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}

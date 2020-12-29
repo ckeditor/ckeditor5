@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imagetoinlinecommand
+ * @module image/image/imageinlinetoblockcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -61,6 +61,7 @@ export default class ImageBlockToInlineCommand extends Command {
 			writer.append( imageInlineElement, paragraph );
 			model.insertContent( paragraph, position );
 
+			// Inserting an image might've failed due to schema regulations.
 			if ( imageInlineElement.parent ) {
 				writer.setSelection( imageInlineElement, 'on' );
 			}

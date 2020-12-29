@@ -97,11 +97,21 @@ describe( 'ImageBlockToInlineCommand', () => {
 		it( 'should convert block image to inline image', () => {
 			const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+			setModelData( model, `[<image src="${ imgSrc }" alt="alt text" srcset="{}"></image>]` );
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+			expect( getModelData( model ) ).to.equal(
+				`<paragraph>[<imageInline alt="alt text" src="${ imgSrc }" srcset="{}"></imageInline>]</paragraph>`
+			);
+		} );
+
+		it( 'should not convert if "src" attribute is not set', () => {
+			setModelData( model, '[<image></image>]' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
 		} );
 	} );
 } );

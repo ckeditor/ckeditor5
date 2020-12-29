@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imagetoinlinecommand
+ * @module image/image/imageinlinetoblockcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
