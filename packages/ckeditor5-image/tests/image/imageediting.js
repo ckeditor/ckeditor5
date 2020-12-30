@@ -83,48 +83,50 @@ describe( 'ImageEditing', () => {
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.
-	it( 'should update the ui after image has been loaded in the DOM', () => {
+	it( 'should update the ui after image has been loaded in the DOM', async () => {
 		const element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor.create( element, {
+		const editor = await ClassicTestEditor.create( element, {
 			plugins: [ ImageEditing ]
-		} ).then( editor => {
-			editor.data.set( '<figure class="image"><img src="/assets/sample.png" alt="bar" /></figure>' );
-
-			const spy = sinon.spy();
-
-			editor.ui.on( 'update', spy );
-
-			const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
-			htmlImageElement.dispatchEvent( new Event( 'load' ) );
-
-			sinon.assert.calledOnce( spy );
-
-			return editor.destroy().then( () => element.remove() );
 		} );
+
+		editor.data.set( '<figure class="image"><img src="/assets/sample.png" alt="bar" /></figure>' );
+
+		const spy = sinon.spy();
+
+		editor.ui.on( 'update', spy );
+
+		const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
+		htmlImageElement.dispatchEvent( new Event( 'load' ) );
+
+		sinon.assert.calledOnce( spy );
+
+		await editor.destroy();
+		await element.remove();
 	} );
 
-	it( 'should update the ui after inline image has been loaded in the DOM', () => {
+	it( 'should update the ui after inline image has been loaded in the DOM', async () => {
 		const element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor.create( element, {
+		const editor = await ClassicTestEditor.create( element, {
 			plugins: [ ImageEditing ]
-		} ).then( editor => {
-			editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );
-
-			const spy = sinon.spy();
-
-			editor.ui.on( 'update', spy );
-
-			const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
-			htmlImageElement.dispatchEvent( new Event( 'load' ) );
-
-			sinon.assert.calledOnce( spy );
-
-			return editor.destroy().then( () => element.remove() );
 		} );
+
+		editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );
+
+		const spy = sinon.spy();
+
+		editor.ui.on( 'update', spy );
+
+		const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
+		htmlImageElement.dispatchEvent( new Event( 'load' ) );
+
+		sinon.assert.calledOnce( spy );
+
+		await editor.destroy();
+		await element.remove();
 	} );
 
 	describe( 'conversion in data pipeline', () => {
