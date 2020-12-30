@@ -156,14 +156,15 @@ export default class ImageEditing extends Plugin {
 // @param {String} [imageType] type of created image: 'block' or 'inline'
 // @returns {module:engine/view/containerelement~ContainerElement}
 export function createImageViewElement( writer, imageType ) {
-	const parentName = imageType === 'block' ? 'figure' : 'span';
-	const className = imageType === 'block' ? 'image' : 'image-inline';
 	const emptyElement = writer.createEmptyElement( 'img' );
-	const figure = writer.createContainerElement( parentName, { class: className } );
 
-	writer.insert( writer.createPositionAt( figure, 0 ), emptyElement );
+	const container = imageType === 'block' ?
+		writer.createContainerElement( 'figure', { class: 'image' } ) :
+		writer.createContainerElement( 'span', { class: 'image-inline' } );
 
-	return figure;
+	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
+
+	return container;
 }
 
 // {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<img>` element that is placed

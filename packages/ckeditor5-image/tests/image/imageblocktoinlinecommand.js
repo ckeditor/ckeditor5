@@ -23,9 +23,6 @@ describe( 'ImageBlockToInlineCommand', () => {
 				model = editor.model;
 
 				command = new ImageBlockToInlineCommand( editor );
-
-				const schema = model.schema;
-				schema.extend( 'image', { allowAttributes: 'uploadId' } );
 			} );
 	} );
 
@@ -109,12 +106,16 @@ describe( 'ImageBlockToInlineCommand', () => {
 		it( 'should convert block image with alt and srcset attributes to inline image', () => {
 			const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, `[<image src="${ imgSrc }" alt="alt text" srcset="{}"></image>]` );
+			setModelData( model,
+				`[<image src="${ imgSrc }" alt="alt text"  srcset='{ "data": "small.png 148w, big.png 1024w" }'></image>]`
+			);
 
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				`<paragraph>[<imageInline alt="alt text" src="${ imgSrc }" srcset="{}"></imageInline>]</paragraph>`
+				`<paragraph>
+				[<imageInline alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]
+				</paragraph>`
 			);
 		} );
 

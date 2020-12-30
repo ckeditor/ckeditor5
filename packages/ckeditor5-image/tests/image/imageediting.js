@@ -180,13 +180,17 @@ describe( 'ImageEditing', () => {
 					'</image>'
 				);
 
-				/* eslint-disable max-len */
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
 					'<figure class="image">' +
-						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" width="1024"></img>' +
+					'<img ' +
+					'alt="alt text" ' +
+					'sizes="100vw" ' +
+					'src="/assets/sample.png" ' +
+					'srcset="small.png 148w, big.png 1024w" ' +
+					'width="1024">' +
+					'</img>' +
 					'</figure>'
 				);
-				/* eslint-enable max-len */
 
 				setModelData( model,
 					'<paragraph><imageInline ' +
@@ -196,11 +200,17 @@ describe( 'ImageEditing', () => {
 					'</imageInline></paragraph>'
 				);
 
-				/* eslint-disable max-len */
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<p><img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" width="1024"></img></p>'
+					'<p>' +
+					'<img ' +
+					'alt="alt text" ' +
+					'sizes="100vw" ' +
+					'src="/assets/sample.png" ' +
+					'srcset="small.png 148w, big.png 1024w" ' +
+					'width="1024">' +
+					'</img>' +
+					'</p>'
 				);
-				/* eslint-enable max-len */
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
@@ -435,12 +445,13 @@ describe( 'ImageEditing', () => {
 					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" /></p>'
 				);
 
-				/* eslint-disable max-len */
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<paragraph><imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline></paragraph>'
+						'<paragraph>' +
+					'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+					'</imageInline>' +
+					'</paragraph>'
 					);
-				/* eslint-enable max-len */
 			} );
 
 			it( 'should convert image with srcset and width attributes', () => {
@@ -450,21 +461,25 @@ describe( 'ImageEditing', () => {
 					'</figure>'
 				);
 
-				/* eslint-disable max-len */
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}"></image>'
+					'<image ' +
+					'alt="alt text" src="/assets/sample.png" ' +
+					'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
+					'</image>'
 				);
-				/* eslint-enable max-len */
 
 				editor.setData(
 					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" /></p>'
 				);
 
-				/* eslint-disable max-len */
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}"></imageInline></paragraph>'
+					'<paragraph>' +
+					'<imageInline ' +
+					'alt="alt text" ' +
+					'src="/assets/sample.png" ' +
+					'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
+					'</imageInline></paragraph>'
 				);
-				/* eslint-enable max-len */
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -483,12 +498,13 @@ describe( 'ImageEditing', () => {
 					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" sizes="50vw" /></p>'
 				);
 
-				/* eslint-disable max-len */
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<paragraph><imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline></paragraph>'
+						'<paragraph>' +
+					'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+					'</imageInline>' +
+					'</paragraph>'
 					);
-				/* eslint-enable max-len */
 			} );
 
 			describe( 'should autohoist images', () => {
@@ -698,13 +714,17 @@ describe( 'ImageEditing', () => {
 						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
 					'</image>' );
 
-				/* eslint-disable max-len */
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
-						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" width="1024"></img>' +
+						'<img ' +
+					'alt="alt text" ' +
+					'sizes="100vw" ' +
+					'src="/assets/sample.png" ' +
+					'srcset="small.png 148w, big.png 1024w" ' +
+					'width="1024">' +
+					'</img>' +
 					'</figure>'
 				);
-				/* eslint-enable max-len */
 			} );
 
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {

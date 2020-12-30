@@ -8,7 +8,6 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import Image from '../../src/image/imageediting';
-import ImageInlineToBlockCommand from '../../src/image/imageinlinetoblockcommand';
 
 describe( 'ImageInlineToBlockCommand', () => {
 	let editor, command, model;
@@ -22,7 +21,7 @@ describe( 'ImageInlineToBlockCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new ImageInlineToBlockCommand( editor );
+				command = editor.commands.get( 'imageInlineToBlock' );
 
 				const schema = model.schema;
 				schema.extend( 'image', { allowAttributes: 'uploadId' } );
@@ -107,11 +106,17 @@ describe( 'ImageInlineToBlockCommand', () => {
 		it( 'should convert inline image with alt and srcset attributes to block image', () => {
 			const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, `<paragraph>[<imageInline alt="alt text" src="${ imgSrc }" srcset="{}"></imageInline>]</paragraph>` );
+			setModelData( model,
+				`<paragraph>
+					[<imageInline alt="alt text" src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
+					</paragraph>`
+			);
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( `[<image alt="alt text" src="${ imgSrc }" srcset="{}"></image>]` );
+			expect( getModelData( model ) ).to.equal(
+				`[<image alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>]`
+			);
 		} );
 
 		it( 'should not convert if "src" attribute is not set', () => {
