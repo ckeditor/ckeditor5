@@ -126,6 +126,8 @@ export function isImageAllowed( model ) {
  *
  * The `<img>` can be wrapped to other elements, e.g. `<a>`. Nested check required.
  *
+ * If provided `figureView` is an <img> element, than there is no need for extracting it, so this element will be returned.
+ *
  * @param {module:engine/view/element~Element} figureView
  * @returns {module:engine/view/element~Element}
  */

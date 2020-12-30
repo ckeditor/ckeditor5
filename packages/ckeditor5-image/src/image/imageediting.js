@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import ImageLoadObserver from './imageloadobserver';
 
 import {
@@ -71,7 +70,7 @@ export default class ImageEditing extends Plugin {
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'image',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'image' )
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'block' )
 			} )
 			.elementToElement( {
 				model: 'imageInline',
@@ -82,13 +81,13 @@ export default class ImageEditing extends Plugin {
 			.elementToElement( {
 				model: 'image',
 				view: ( modelElement, { writer } ) => toImageWidget(
-					createImageViewElement( writer, 'image' ), writer, t( 'image widget' )
+					createImageViewElement( writer, 'block' ), writer, t( 'image widget' )
 				)
 			} )
 			.elementToElement( {
 				model: 'imageInline',
-				view: ( modelElement, { writer } ) => toWidget(
-					createImageViewElement( writer, 'image-inline' ), writer
+				view: ( modelElement, { writer } ) => toImageWidget(
+					createImageViewElement( writer, 'inline' ), writer, t( 'image widget' )
 				)
 			} );
 
@@ -154,22 +153,23 @@ export default class ImageEditing extends Plugin {
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {String} imageType
+// @param {String} [imageType] type of created image: 'block' or 'inline'
 // @returns {module:engine/view/containerelement~ContainerElement}
 export function createImageViewElement( writer, imageType ) {
-	const parentName = imageType === 'image' ? 'figure' : 'span';
+	const parentName = imageType === 'block' ? 'figure' : 'span';
+	const className = imageType === 'block' ? 'image' : 'image-inline';
 	const emptyElement = writer.createEmptyElement( 'img' );
-	const figure = writer.createContainerElement( parentName, { class: imageType } );
+	const figure = writer.createContainerElement( parentName, { class: className } );
 
 	writer.insert( writer.createPositionAt( figure, 0 ), emptyElement );
 
 	return figure;
 }
 
-// {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<image>` element that is placed
+// {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<img>` element that is placed
 // inside the element of a provided type.
 //
-// @param {String} parentType
+// @param {String} parentName
 // @returns {Function}
 function matchImageInsideParent( parentName ) {
 	return element => {

@@ -111,7 +111,7 @@ export function srcsetAttributeConverter() {
 /**
  * Converter used to convert a given image attribute from the model to the view.
  *
- * @param {String} attributeKey
+ * @param {String} [attributeKey] name of the attribute to convert
  * @returns {Function}
  */
 export function modelToViewAttributeConverter( attributeKey ) {

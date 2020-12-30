@@ -4,11 +4,10 @@
  */
 
 /**
- * @module image/image/imageinlinetoblockcommand
+ * @module image/image/imageblocktoinlinecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 import { isImage } from './utils';
 
 /**
@@ -38,7 +37,6 @@ export default class ImageBlockToInlineCommand extends Command {
 		const src = imageElement.getAttribute( 'src' );
 		const alt = imageElement.getAttribute( 'alt' );
 		const srcset = imageElement.getAttribute( 'srcset' );
-		const position = findOptimalInsertionPosition( selection, model );
 
 		if ( !src ) {
 			return;
@@ -59,10 +57,8 @@ export default class ImageBlockToInlineCommand extends Command {
 			const imageInlineElement = writer.createElement( 'imageInline', attrs );
 
 			writer.append( imageInlineElement, paragraph );
-			model.insertContent( paragraph, position );
+			model.insertContent( paragraph, selection );
 			writer.setSelection( imageInlineElement, 'on' );
-
-			writer.remove( imageElement );
 		} );
 	}
 }
