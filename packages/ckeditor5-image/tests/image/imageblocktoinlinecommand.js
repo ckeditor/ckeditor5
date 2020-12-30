@@ -4,11 +4,10 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Image from '../../src/image/imageediting';
-import ImageBlockToInlineCommand from '../../src/image/imageblocktoinlinecommand';
 
 describe( 'ImageBlockToInlineCommand', () => {
 	let editor, command, model;
@@ -22,7 +21,7 @@ describe( 'ImageBlockToInlineCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new ImageBlockToInlineCommand( editor );
+				command = editor.commands.get( 'imageBlockToInline' );
 			} );
 	} );
 

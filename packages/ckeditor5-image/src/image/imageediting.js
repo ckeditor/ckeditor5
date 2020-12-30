@@ -153,7 +153,7 @@ export default class ImageEditing extends Plugin {
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {String} [imageType] type of created image: 'block' or 'inline'
+// @param {'block'|'inline'} imageType The type of created image.
 // @returns {module:engine/view/containerelement~ContainerElement}
 export function createImageViewElement( writer, imageType ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
