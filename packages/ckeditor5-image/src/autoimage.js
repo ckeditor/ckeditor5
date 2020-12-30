@@ -17,7 +17,7 @@ import { insertImage } from './image/utils';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
 const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+(\.[\w-]+)+[\w._~:/?#[\]@!$&'()*+,;=%-]+/.source +
-	/\.(jpg|jpeg|png|gif|ico|JPG|JPEG|PNG|GIF|ICO)\??[\w._~:/#[\]@!$&'()*+,;=%-]*$/.source ) );
+	/\.(jpg|jpeg|png|gif|ico|webp|JPG|JPEG|PNG|GIF|ICO|WEBP)\??[\w._~:/#[\]@!$&'()*+,;=%-]*$/.source ) );
 
 /**
  * The auto-image plugin. It recognizes image links in the pasted content and embeds
