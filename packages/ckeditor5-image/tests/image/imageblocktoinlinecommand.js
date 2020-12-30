@@ -112,9 +112,9 @@ describe( 'ImageBlockToInlineCommand', () => {
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				`<paragraph>
-				[<imageInline alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]
-				</paragraph>`
+				'<paragraph>' +
+				`[<imageInline alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
+				'</paragraph>'
 			);
 		} );
 
