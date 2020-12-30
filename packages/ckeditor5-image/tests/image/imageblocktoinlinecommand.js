@@ -22,7 +22,7 @@ describe( 'ImageBlockToInlineCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new ImageBlockToInlineCommand( editor );
+				command = editor.commands.get( 'imageBlockToInline' );
 
 				const schema = model.schema;
 				schema.extend( 'image', { allowAttributes: 'uploadId' } );
