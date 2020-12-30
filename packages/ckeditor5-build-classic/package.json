@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-build-classic",
-  "version": "24.0.0",
-  "description": "The classic editor build of CKEditor 5 – the best browser-based rich text editor.",
+  "name": "@jtoshkhani/ckeditor5-custom-build",
+  "version": "24.0.1",
+  "description": "Custom build of CKEditor 5",
   "keywords": [
     "ckeditor5-build",
     "ckeditor",
@@ -58,17 +58,23 @@
     "node": ">=12.0.0",
     "npm": ">=5.7.1"
   },
-  "author": "CKSource (http://cksource.com/)",
+  "author": "Janhavi Toshkhani",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "url": "git+https://github.com/janhavi529/ckeditor5.git",
     "directory": "packages/ckeditor5-build-classic"
   },
   "scripts": {
     "build": "webpack --mode production",
     "preversion": "npm run build"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/janhavi529/ckeditor5/issues"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {}
 }
