@@ -76,13 +76,21 @@
 		}
 
 		&.ck-dropdown__panel_s,
-		&.ck-dropdown__panel_smw,
-		&.ck-dropdown__panel_sme,
-		&.ck-dropdown__panel_n,
-		&.ck-dropdown__panel_nmw,
-		&.ck-dropdown__panel_nme {
-			/* Positioning panels relatively to the center of the button */
+		&.ck-dropdown__panel_n {
+			/* Positioning panels relative to the center of the button */
 			left: 50%;
+		}
+
+		&.ck-dropdown__panel_nmw,
+		&.ck-dropdown__panel_smw {
+			/* Positioning panels relative to the middle-west of the button */
+			left: 75%;
+		}
+
+		&.ck-dropdown__panel_nme,
+		&.ck-dropdown__panel_sme {
+			/* Positioning panels relative to the middle-east of the button */
+			left: 25%;
 		}
 
 		&.ck-dropdown__panel_s,
