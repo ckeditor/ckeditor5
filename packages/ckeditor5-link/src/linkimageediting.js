@@ -214,6 +214,11 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
+			// The unlink command is removing the link by the time this dispatcher is ran.
+			if ( !linkInImage ) {
+				return;
+			}
+
 			for ( const [ key, val ] of toMap( attributes ) ) {
 				conversionApi.writer.setAttribute( key, val, linkInImage );
 			}

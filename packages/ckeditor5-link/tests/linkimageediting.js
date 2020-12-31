@@ -826,6 +826,34 @@ describe( 'LinkImageEditing', () => {
 					'</p>'
 				);
 			} );
+
+			it( 'should downcast without error if the image already has no link', () => {
+				setModelData( model,
+					'[<image alt="bar" src="sample.jpg"></image>]'
+				);
+
+				editor.execute( 'link', 'https://cksource.com', {
+					linkIsDownloadable: true,
+					linkIsExternal: true,
+					linkIsGallery: true
+				} );
+
+				// Attributes will be removed along with the link, but the downcast will be fired.
+				// The lack of link should not affect the downcasting. #8401.
+				expect( () => {
+					editor.execute( 'unlink', 'https://cksource.com', {
+						linkIsDownloadable: true,
+						linkIsExternal: true,
+						linkIsGallery: true
+					} );
+				} ).to.not.throw();
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<img src="sample.jpg" alt="bar">' +
+					'</figure>'
+				);
+			} );
 		} );
 	} );
 } );
