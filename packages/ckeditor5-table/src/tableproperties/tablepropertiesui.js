@@ -271,15 +271,9 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	_showView() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view.document;
 
-		// Reposition the balloon or hide the form if a table is no longer selected.
 		this.listenTo( editor.ui, 'update', () => {
-			if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
-				this._hideView();
-			} else if ( this._isViewVisible ) {
-				repositionContextualBalloon( editor, 'table' );
-			}
+			this._updateView();
 		} );
 
 		// Update the view with the model values.
@@ -316,6 +310,22 @@ export default class TablePropertiesUI extends Plugin {
 		// Make sure the focus is not lost in the process by putting it directly
 		// into the editing view.
 		this.editor.editing.view.focus();
+	}
+
+	/**
+	 * Repositions the {@link #_balloon} or hides the {@link #view} if a table is no longer selected.
+	 *
+	 * @protected
+	 */
+	_updateView() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
+
+		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+			this._hideView();
+		} else if ( this._isViewVisible ) {
+			repositionContextualBalloon( editor, 'table' );
+		}
 	}
 
 	/**
