@@ -214,7 +214,9 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
-			// The unlink command is removing the link by the time this dispatcher is ran.
+			// The <a> element was removed by the time this converter is executed.
+			// It may happen when the base `linkHref` and decorator attributes are removed
+			// at the same time (see #8401).
 			if ( !linkInImage ) {
 				return;
 			}
