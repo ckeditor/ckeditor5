@@ -111,7 +111,7 @@ describe( 'ImageEditing', () => {
 		document.body.appendChild( element );
 
 		const editor = await ClassicTestEditor.create( element, {
-			plugins: [ ImageEditing ]
+			plugins: [ ImageEditing, Paragraph ]
 		} );
 
 		editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );
@@ -362,11 +362,6 @@ describe( 'ImageEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
-
-				editor.setData( '<div><img src="/assets/sample.png" alt="alt text" /></div>' );
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<div></div>' );
 			} );
 
 			it( 'should not convert if img is already consumed', () => {
@@ -415,7 +410,7 @@ describe( 'ImageEditing', () => {
 				editor.setData( '<img src="/assets/sample.png" alt="alt text" />' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
+					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should not convert alt attribute on non-img element', () => {
@@ -517,17 +512,25 @@ describe( 'ImageEditing', () => {
 				} );
 
 				it( 'image between non-hoisted elements', () => {
-					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />bar</div>' );
+					editor.setData( '<div>foo<figure class="image"><img src="foo.jpg" alt="foo" /></figure>bar</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>bar</div>'
 					);
+
+					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />bar</div>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div>foo<imageInline alt="foo" src="foo.jpg"></imageInline>bar</div>'
+					);
 				} );
 
 				it( 'multiple images', () => {
-					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />ba<img src="foo.jpg" alt="foo" />r</div>' );
+					editor.setData( '<div>foo' +
+						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>ba' +
+						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>r</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
@@ -536,31 +539,59 @@ describe( 'ImageEditing', () => {
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>r</div>'
 					);
+
+					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />ba<img src="foo.jpg" alt="foo" />r</div>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div>foo' +
+						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
+						'ba' +
+						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
+						'r</div>'
+					);
 				} );
 
 				it( 'images on borders of parent', () => {
-					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
+					editor.setData( '<div><figure class="image"><img src="foo.jpg" alt="foo" /></figure>foobar' +
+						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>foobar</div>' +
 						'<image alt="foo" src="foo.jpg"></image>'
 					);
+
+					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div>' +
+						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
+						'foobar' +
+						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
+						'</div>'
+					);
 				} );
 
 				it( 'images are only content of parent', () => {
-					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
+					editor.setData( '<div><figure class="image"><img src="foo.jpg" alt="foo" /></figure>' +
+						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<image alt="foo" src="foo.jpg"></image>'
+					);
+
+					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div><imageInline alt="foo" src="foo.jpg"></imageInline><imageInline alt="foo" src="foo.jpg"></imageInline></div>'
 					);
 				} );
 
 				it( 'deep autohoisting #1', () => {
 					model.schema.extend( 'div', { allowIn: 'div' } );
 
-					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
+					editor.setData( '<div>foo<div>xx<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>bar</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>' +
@@ -572,10 +603,26 @@ describe( 'ImageEditing', () => {
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>bar</div>'
 					);
+
+					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div>foo<div>xx<imageInline alt="foo" src="foo.jpg"></imageInline></div>bar</div>'
+					);
 				} );
 
 				it( 'deep autohoisting #2', () => {
 					model.schema.extend( 'div', { allowIn: 'div' } );
+
+					editor.setData(
+						'<div>x</div>' +
+						'<div><div><div><figure class="image"><img src="foo.jpg" alt="foo" /></figure></div></div></div>' +
+						'<div>y</div>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
+					);
 
 					editor.setData(
 						'<div>x</div>' +
@@ -584,7 +631,7 @@ describe( 'ImageEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
+						'<div>x</div><div><div><div><imageInline alt="foo" src="foo.jpg"></imageInline></div></div></div><div>y</div>'
 					);
 				} );
 
@@ -597,10 +644,17 @@ describe( 'ImageEditing', () => {
 
 					editor.conversion.elementToElement( { model: 'limit', view: 'limit' } );
 
-					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
+					editor.setData( '<limit><div>foo<figure class="image"><img src="foo.jpg" alt="foo" /></figure>bar</div></limit>' );
 
 					// <limit> element does not have converters so it is not converted.
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
+
+					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
+
+					// <limit> element does not have converters so it is not converted.
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<limit><div>foo<imageInline alt="foo" src="foo.jpg"></imageInline>bar</div></limit>'
+					);
 				} );
 
 				it( 'should not convert and autohoist image element without src attribute (which is not allowed by schema)', () => {

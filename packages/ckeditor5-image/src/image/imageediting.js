@@ -98,17 +98,12 @@ export default class ImageEditing extends Plugin {
 
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: matchImageInsideParent( 'p' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
+				view: matchImageByType( false ),
+				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.elementToElement( {
-				view: {
-					name: 'img',
-					attributes: {
-						src: true
-					}
-				},
-				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
+				view: matchImageByType( true ),
+				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.attributeToAttribute( {
 				view: {
@@ -172,7 +167,7 @@ export function createImageViewElement( writer, imageType ) {
 //
 // @param {String} parentName
 // @returns {Function}
-function matchImageInsideParent( parentName ) {
+function matchImageByType( matchInlineImage ) {
 	return element => {
 		const parent = element.parent;
 
@@ -181,8 +176,15 @@ function matchImageInsideParent( parentName ) {
 			return null;
 		}
 
-		// Convert only images inside paragraph.
-		if ( !parent || !parent.is( 'element', parentName ) ) {
+		const isBlockImage = ( parent &&
+			( parent.is( 'element', 'figure' ) ||
+				( parent.is( 'element', 'a' ) && parent.parent.is( 'element', 'figure' ) )
+			)
+		);
+
+		const incorrectParent = matchInlineImage ? isBlockImage : !isBlockImage;
+
+		if ( incorrectParent ) {
 			return null;
 		}
 

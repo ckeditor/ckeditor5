@@ -3791,7 +3791,7 @@ describe( 'table clipboard', () => {
 			);
 
 			pasteTable( [
-				[ '<img src="/assets/sample.png">', 'ab' ],
+				[ '<figure class="image"><img src="/assets/sample.png"></figure>', 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
 
@@ -3816,7 +3816,7 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const img = '<img src="/assets/sample.png">';
+			const img = '<figure class="image"><img src="/assets/sample.png"></figure>';
 			const list = '<ul><li>foo</li><li>bar</li></ul>';
 			const blockquote = `<blockquote><p>baz</p>${ list }</blockquote>`;
 

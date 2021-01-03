@@ -196,7 +196,7 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should convert table with image', () => {
-				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
+				editor.setData( '<table><tbody><tr><td><figure class="image"><img src="sample.png"></figure></td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><image src="sample.png"></image></tableCell></tableRow></table>' );

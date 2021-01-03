@@ -619,7 +619,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should upload image with base64 src', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />`;
+		const clipboardHtml = `<p>bar</p><figure class="image"><img src=${ base64Sample } /></figure>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -638,7 +638,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should upload image with blob src', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const clipboardHtml = `<figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -658,7 +658,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const clipboardHtml = `<figure class="image"><img src=${ base64Sample } /></figure>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -681,7 +681,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const clipboardHtml = `<figure class="image"><img src=${ base64Sample } /></figure>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -700,7 +700,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		expectData(
-			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+			'<figure class="image"><img src="" uploadId="#loader1_id" uploadProcessed="true"></img></figure>',
 			'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
 			'<paragraph>[]foo</paragraph>',
 			content,
@@ -729,8 +729,8 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />` +
-			`<img src=${ base64ToBlobUrl( base64Sample ) } /><img src=${ base64Sample } />`;
+		const clipboardHtml = `<p>bar</p><figure class="image"><img src=${ base64Sample } /></figure>` +
+			`<figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure><figure><img src=${ base64Sample } /></figure>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -778,7 +778,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } /><p>baz</p>`;
+		const clipboardHtml = `<figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure><p>baz</p>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -792,7 +792,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		expectData(
-			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
+			'<figure class="image"><img src="" uploadId="#loader1_id" uploadProcessed="true"></img></figure><p>baz</p>',
 			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image><paragraph>baz[]foo</paragraph>',
 			'<paragraph>baz[]foo</paragraph>',
 			content,
@@ -816,7 +816,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<p>baz</p><img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const clipboardHtml = `<p>baz</p><figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -830,7 +830,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		expectData(
-			'<p>baz</p><img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+			'<p>baz</p><figure class="image"><img src="" uploadId="#loader1_id" uploadProcessed="true"></img></figure>',
 			'<paragraph>baz</paragraph>[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
 			'<paragraph>baz[]</paragraph><paragraph>foo</paragraph>',
 			content,

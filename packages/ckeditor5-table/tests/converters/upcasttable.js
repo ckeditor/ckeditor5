@@ -488,7 +488,7 @@ describe( 'upcastTable()', () => {
 				'<table>' +
 					'<tbody>' +
 						'<tr>' +
-							'<td><img src="sample.png"></td>' +
+							'<td><figure class="image"><img src="sample.png"></figure></td>' +
 						'</tr>' +
 					'</tbody>' +
 				'</table>'

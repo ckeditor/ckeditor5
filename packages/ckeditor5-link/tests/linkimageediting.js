@@ -177,7 +177,7 @@ describe( 'LinkImageEditing', () => {
 			describe( 'a > img', () => {
 				it( 'should convert a link in an image figure', () => {
 					editor.setData(
-						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
+						'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a></figure>'
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
@@ -185,14 +185,14 @@ describe( 'LinkImageEditing', () => {
 				} );
 
 				it( 'should convert an image with a link and without alt attribute', () => {
-					editor.setData( '<a href="http://ckeditor.com"><img src="/assets/sample.png" /></a>' );
+					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" /></a></figure>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( '<image linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
 				} );
 
 				it( 'should not convert without src attribute', () => {
-					editor.setData( '<a href="http://ckeditor.com"><img alt="alt text" /></a>' );
+					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" /></a></figure>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( '<paragraph></paragraph>' );
@@ -210,9 +210,9 @@ describe( 'LinkImageEditing', () => {
 
 					editor.setData(
 						'<div>' +
-							'<a href="http://ckeditor.com">' +
+							'<figure class="image"><a href="http://ckeditor.com">' +
 								'<img src="/assets/sample.png" alt="alt text" />' +
-							'</a>' +
+							'</a></figure>' +
 						'</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
@@ -225,7 +225,7 @@ describe( 'LinkImageEditing', () => {
 					}, { priority: 'highest' } );
 
 					editor.setData(
-						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
+						'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a></figure>'
 					);
 
 					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
@@ -233,7 +233,7 @@ describe( 'LinkImageEditing', () => {
 
 				it( 'should not convert if a link misses "href" attribute', () => {
 					editor.setData(
-						'<a href=""><img src="/assets/sample.png" alt="alt text" /></a>'
+						'<figure class="image"><a href=""><img src="/assets/sample.png" alt="alt text" /></a></figure>'
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
@@ -459,7 +459,9 @@ describe( 'LinkImageEditing', () => {
 					it( `link: ${ link.url } should be treat as ${ link.external ? 'external' : 'non-external' } link`, () => {
 						// Upcast check.
 						editor.setData(
-							`<a href="${ link.url }" target="_blank" rel="noopener noreferrer"><img src="/assets/sample.png"></a>`
+							`<figure class="image"><a href="${ link.url }" target="_blank" rel="noopener noreferrer">` +
+							'<img src="/assets/sample.png">' +
+							'</a></figure>'
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
@@ -568,7 +570,7 @@ describe( 'LinkImageEditing', () => {
 							return acc + `${ cur[ 0 ] }="${ cur[ 1 ] }" `;
 						}, '' ).trim();
 
-						editor.setData( `<a href="${ link.url }"><img src="/assets/sample.png"></a>` );
+						editor.setData( `<figure class="image"><a href="${ link.url }"><img src="/assets/sample.png"></a></figure>` );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
@@ -718,9 +720,11 @@ describe( 'LinkImageEditing', () => {
 			it( 'should upcast the decorators when linked image (a > img)', () => {
 				// (#7975)
 				editor.setData(
-					'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
-						'<img src="sample.jpg" alt="bar">' +
-					'</a>' +
+					'<figure class="image">' +
+						'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+							'<img src="sample.jpg" alt="bar">' +
+						'</a>' +
+					'</figure>' +
 					'<p>' +
 						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
 							'https://cksource.com' +
