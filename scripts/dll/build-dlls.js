@@ -33,6 +33,7 @@ if ( IS_DEVELOPMENT_MODE ) {
 
 childProcess.spawnSync( 'webpack', webpackArguments, {
 	encoding: 'utf8',
+	shell: true,
 	cwd: ROOT_DIRECTORY,
 	stdio: 'inherit',
 	stderr: 'inherit'
@@ -51,6 +52,7 @@ if ( IS_DEVELOPMENT_MODE ) {
 
 childProcess.spawnSync( 'node', nodeArguments, {
 	encoding: 'utf8',
+	shell: true,
 	cwd: ROOT_DIRECTORY,
 	stdio: 'inherit',
 	stderr: 'inherit'
