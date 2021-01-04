@@ -57,6 +57,8 @@ async function startCrawler( options ) {
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 
+	dismissDialogs( page );
+
 	const spinner = createSpinner();
 
 	spinner.start( 'Registering error handlers…' );
@@ -84,6 +86,17 @@ async function startCrawler( options ) {
 	browser.close();
 
 	logErrors( errors );
+}
+
+/**
+ * Dismisses any dialogs (alert, prompt, confirm, beforeunload) that could be displayed on page load.
+ *
+ * @param {Object} page The page instance from Puppeteer.
+ */
+function dismissDialogs( page ) {
+	page.on( 'dialog', async dialog => {
+		await dialog.dismiss();
+	} );
 }
 
 /**
