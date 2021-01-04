@@ -313,7 +313,7 @@ function parseArguments( args ) {
 
 	return {
 		url: options.url,
-		// Multiple containers are supported by separating them with a colon.
+		// Multiple containers are supported by separating them with a comma.
 		// To prepare a selector pointing to anchors inside a container, each
 		// of them must end with an 'a' tag.
 		selectors: options.containers
