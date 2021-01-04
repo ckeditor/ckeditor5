@@ -106,6 +106,19 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<image alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
 				} );
 
+				it( 'should not convert a link on an inline image', () => {
+					editor.setData(
+						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) )
+						.to.equal(
+							'<paragraph>' +
+							'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
+							'</paragraph>'
+						);
+				} );
+
 				it( 'should convert an image with a link and without alt attribute', () => {
 					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" /></a></figure>' );
 
