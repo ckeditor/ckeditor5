@@ -13,7 +13,39 @@ feedback-widget: false
 
 ## Feature availability
 
-The number of features available for CKEditor 5 is constantly growing. Plenty of them are included by default in CKEditor 5 Builds and are available out-of-the-box, like for example {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}. However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML.
+The number of features available for CKEditor 5 is constantly growing. Plenty of them are included by default in {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like for example {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}. However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML.
+
+CKEditor 5 features cover several functional areas of application and use.
+
+### Formatting features
+
+{@link features/basic-styles Basic text styles} include essentials like bold, italics, super- and subscript as well as inline code formatting and more. The {@link features/font font feature} provides support for using different font families, controlling the font size as well as font and background colors.
+
+An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
+
+{@link features/headings Headings} (with configurable levels and styles), as well as the {@link features/text-alignment text alignment feature} help organize the structure of the document.
+
+Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature}.
+
+### Structure and advanced formatting
+
+tables, lists, media, images, ...
+
+### Productivity features
+
+autosave, counters, ...
+
+### Cross-platform operability
+
+Paste from Word, Excell, Googl Docs, import
+
+### Output and exports
+
+PDF, Word, Markdown
+
+### Collaboration
+
+Users, permissions, track changes, comments, ...
 
 ## Feature examples
 
