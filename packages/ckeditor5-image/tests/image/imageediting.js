@@ -504,6 +504,19 @@ describe( 'ImageEditing', () => {
 					);
 			} );
 
+			it( 'should not convert a link on an inline image', () => {
+				editor.setData(
+					'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal(
+						'<paragraph>' +
+						'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
+						'</paragraph>'
+					);
+			} );
+
 			describe( 'should autohoist images', () => {
 				beforeEach( () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
