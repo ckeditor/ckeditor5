@@ -1,7 +1,7 @@
 ---
 category: features
 order: 10
-toc: true
+toc: false
 feedback-widget: false
 ---
 
