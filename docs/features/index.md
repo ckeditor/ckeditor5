@@ -15,7 +15,7 @@ feedback-widget: false
 
 The number of features available for CKEditor 5 is constantly growing. Plenty of them are included by default in {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like for example {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}. However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML.
 
-CKEditor 5 features cover several functional areas of application and use.
+CKEditor 5 features cover several functional areas of application and use. Most of them are easily accessible from a {@link features/toolbar highly configurable toolbar} (if fact there are {@link features/blocktoolbar two of those}). The user interface comes with {@link features/ui-language multitude of translations} and it supports RTL languages.
 
 ### Formatting features
 
@@ -27,25 +27,29 @@ An essential feature for online content are {@link features/link links} - these 
 
 Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature}.
 
-### Structure and advanced formatting
+### Advanced content
 
-tables, lists, media, images, ...
+Rich text would not be rich without images. You can upload them, style them, you even paste them straight from the URL with the help of the {@link features/image image feature}. If that is not enough, {@link features/media-embed embed media} into your content.
+
+Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
+
+Provide clear and accessible data using {@link features/table tables}, ordered and unordered {@link features/lists lists} and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw reader's attention to it.
 
 ### Productivity features
 
-autosave, counters, ...
+autosave, counters, two toolbars, different builds, ...
 
 ### Cross-platform operability
 
 Paste from Word, Excell, Googl Docs, import
 
-### Output and exports
-
-PDF, Word, Markdown
-
 ### Collaboration
 
 Users, permissions, track changes, comments, ...
+
+### Output and exports
+
+PDF, Word, Markdown
 
 ## Feature examples
 
