@@ -827,6 +827,7 @@ describe( 'LinkImageEditing', () => {
 				);
 			} );
 
+			// See #8401.
 			it( 'should downcast without error if the image already has no link', () => {
 				setModelData( model,
 					'[<image alt="bar" src="sample.jpg"></image>]'
@@ -839,7 +840,7 @@ describe( 'LinkImageEditing', () => {
 				} );
 
 				// Attributes will be removed along with the link, but the downcast will be fired.
-				// The lack of link should not affect the downcasting. #8401.
+				// The lack of link should not affect the downcasting.
 				expect( () => {
 					editor.execute( 'unlink', 'https://cksource.com', {
 						linkIsDownloadable: true,
@@ -850,8 +851,32 @@ describe( 'LinkImageEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img src="sample.jpg" alt="bar">' +
-					'</figure>'
+							'<img src="sample.jpg" alt="bar">' +
+						'</figure>'
+				);
+			} );
+
+			// See #8401.
+			it( 'order of model updates should not affect converters', () => {
+				setModelData( model,
+					'[<image ' +
+						'src="https://cksource.com"></image>]'
+				);
+
+				model.change( writer => {
+					const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), 'linkIsDownloadable' );
+
+					for ( const range of ranges ) {
+						// `linkHref` gets processed first, as it is just the first property assigned to the model by `LinkCommand`.
+						// Here we force attributes to be set on a model in a different order,
+						// to force unusual order of downcast converters down the line.
+						writer.setAttribute( 'linkIsDownloadable', true, range );
+						writer.setAttribute( 'linkHref', 'url', range );
+					}
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
 				);
 			} );
 		} );

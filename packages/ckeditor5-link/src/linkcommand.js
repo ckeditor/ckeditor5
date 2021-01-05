@@ -187,7 +187,7 @@ export default class LinkCommand extends Command {
 					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
-				// However, since selection in collapsed, attribute value will be used as data for text node.
+				// However, since selection is collapsed, attribute value will be used as data for text node.
 				// So, if `href` is empty, do not create text node.
 				else if ( href !== '' ) {
 					const attributes = toMap( selection.getAttributes() );
