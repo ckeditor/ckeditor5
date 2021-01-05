@@ -19,7 +19,7 @@ However, some of the presented features need to be manually included in a custom
 
 ## CKEditor 5 WYSIWYG editor features and functions
 
-CKEditor 5 features cover several functional areas of application and use.
+CKEditor 5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
 
 <info-box>
 	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through selected CKEditor 5 features.
@@ -33,6 +33,8 @@ CKEditor 5 features cover several functional areas of application and use.
 
 Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature}.
 
+{@img assets/img/features-basic-formatting.png 800 CKEditor 5 features.}
+
 ### Advanced content
 
 Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/image image feature} and create responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
@@ -43,6 +45,8 @@ Provide clear and accessible data using {@link features/table tables}, ordered a
 
 Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
 
+{@img assets/img/features-images.png 800 CKEditor 5 features.}
+
 ### Productivity features
 
 Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link builds/index editor build} to suit your needs.
@@ -50,6 +54,8 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} to ensure everything is correct.
+
+{@img assets/img/features-productivity.png 800 CKEditor 5 features.}
 
 ### Collaboration
 
@@ -61,22 +67,28 @@ Where tracking changes is not enough, the {@link features/comments comments} com
 
 Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected part of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the uses access the content, but not edit it.
 
+{@img assets/img/features-collaboration.png 800 CKEditor 5 features.}
+
 ### Cross-platform interoperability
 
 Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-word from MS Word}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
+
+{@img assets/img/features-paste.png 800 CKEditor 5 features.}
 
 ### Output and exports
 
 Writing and editing content is one thing, sharing it is another. The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@lik features/markdown Github-flavored Markdown} formatted text.
 
-If you need to share the document, use {@link features/export-pdf export to PDF feature} to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word} instead - and keep your comment and changes in the resulting
+If you need to share the document, use {@link features/export-pdf export to PDF feature} to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word} instead - and keep your comment and changes in the resulting document, ready to be edited further.
+
+{@img assets/img/features-output.png 800 CKEditor 5 features.}
 
 ## Feature examples
 
 Each rich-text editor feature is presented on a separate page, with one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
 
 <info-box>
-	**In most demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more. However, in your CKEditor 5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. This can be easily and conveniently done in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+	**In most feature demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more, as shown in the screenshots above. However, in your CKEditor 5 WYSIWYG editor implementation you are free to choose and combine any features you like from those available. This can be easily and conveniently done in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 </info-box>
 
 ## Looking for more?
