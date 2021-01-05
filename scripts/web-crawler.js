@@ -346,28 +346,43 @@ function parseArguments( args ) {
 			'exclude'
 		],
 
+		boolean: [
+			'docs',
+			'manual'
+		],
+
 		alias: {
 			u: 'url',
 			d: 'depth',
 			e: 'exclude'
-		},
-
-		default: {
-			url: '',
-			depth: Infinity,
-			exclude: ''
 		}
 	};
 
-	const options = minimist( args, config );
+	const parsedOptions = minimist( args, config );
+
+	if ( parsedOptions.docs && parsedOptions.manual ) {
+		throw new Error( 'Mutually exclusive --docs and --manual arguments.' );
+	}
+
+	const defaultOptionsForDocs = minimist( '-u http://fake.ckeditor.com:8080/ckeditor5/ -e /api/,/assets/'.split( ' ' ), config );
+	const defaultOptionsForManual = minimist( '-u http://localhost:8125/ -d 1'.split( ' ' ), config );
+	const options = {};
+
+	if ( parsedOptions.docs ) {
+		Object.assign( options, defaultOptionsForDocs, parsedOptions );
+	}
+
+	if ( parsedOptions.manual ) {
+		Object.assign( options, defaultOptionsForManual, parsedOptions );
+	}
 
 	if ( !options.url ) {
-		throw new Error( 'Missing required --url parameter.' );
+		throw new Error( 'Missing required --url argument.' );
 	}
 
 	return {
 		url: options.url,
-		depth: Number( options.depth ),
+		depth: options.depth ? Number( options.depth ) : Infinity,
 		exclude: options.exclude ? new RegExp( options.exclude.replace( ',', '|' ) ) : null
 	};
 }
