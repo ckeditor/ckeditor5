@@ -390,6 +390,27 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
 			} );
 
+			it( 'switches to "preview mode" after clicking save button when there are no changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+
+				let widget = viewDocument.getRoot().getChild( 0 );
+				let contentWrapper = widget.getChild( 1 );
+				let domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				// The entire DOM has rendered once again. The references were invalid.
+				widget = viewDocument.getRoot().getChild( 0 );
+				contentWrapper = widget.getChild( 1 );
+				domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				// There's exactly this button, and nothing else.
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+			} );
+
 			it( 'does not lose editor focus after saving changes', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );

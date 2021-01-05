@@ -281,7 +281,7 @@ describe( 'BlockQuote integration', () => {
 			);
 		} );
 
-		it( 'removes empty quote when merging into another quote', () => {
+		it( 'unwraps empty quote when the backspace key pressed in the first empty paragraph in a quote', () => {
 			const data = fakeEventData();
 
 			setModelData( model,
@@ -295,12 +295,13 @@ describe( 'BlockQuote integration', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
-				'<blockQuote><paragraph>a[]</paragraph></blockQuote>' +
+				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
+				'<paragraph>[]</paragraph>' +
 				'<paragraph>y</paragraph>'
 			);
 		} );
 
-		it( 'removes empty quote when merging into a paragraph', () => {
+		it( 'unwraps empty quote when the backspace key pressed in the empty paragraph that is the only content of quote', () => {
 			const data = fakeEventData();
 
 			setModelData( model,
@@ -312,7 +313,45 @@ describe( 'BlockQuote integration', () => {
 			viewDocument.fire( 'delete', data );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>x[]</paragraph>' +
+				'<paragraph>x</paragraph>' +
+				'<paragraph>[]</paragraph>' +
+				'<paragraph>y</paragraph>'
+			);
+		} );
+
+		it( 'unwraps quote from the first paragraph when the backspace key pressed', () => {
+			const data = fakeEventData();
+
+			setModelData( model,
+				'<paragraph>x</paragraph>' +
+				'<blockQuote><paragraph>[]</paragraph><paragraph>foo</paragraph></blockQuote>' +
+				'<paragraph>y</paragraph>'
+			);
+
+			viewDocument.fire( 'delete', data );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>x</paragraph>' +
+				'<paragraph>[]</paragraph>' +
+				'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
+				'<paragraph>y</paragraph>'
+			);
+		} );
+
+		it( 'merges paragraphs in a quote when the backspace key pressed not in the first paragraph', () => {
+			const data = fakeEventData();
+
+			setModelData( model,
+				'<paragraph>x</paragraph>' +
+				'<blockQuote><paragraph></paragraph><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>y</paragraph>'
+			);
+
+			viewDocument.fire( 'delete', data );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>x</paragraph>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
 			);
 		} );
