@@ -53,11 +53,17 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 ### Collaboration
 
-Users, permissions, track changes, comments, ...
+The {@link framework/index CKEditor 5 Framework} was created with {@link features/collaboration collaboration} in mind.
 
-### Cross-platform operability
+The {@link features/users users API} is used by functions such as {@link features/track-changes track changes}, that allow the users to follow any changes made to the edited document in real time. Accepting or rejecting those changes is done with a single click from a convenient side panel.
 
-Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-word from MS Word}, {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text}.
+Where tracking changes is not enough, the {@link features/comments comments} come in, offering perfect collaboration communication platform for writing and editing as a team.
+
+Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected part of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the uses access the content, but not edit it.
+
+### Cross-platform interoperability
+
+Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-word from MS Word}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
 
 ### Output and exports
 
