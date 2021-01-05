@@ -857,27 +857,49 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			// See #8401.
-			it( 'order of model updates should not affect converters', () => {
-				setModelData( model,
-					'[<image ' +
-						'src="https://cksource.com"></image>]'
-				);
+			describe( 'order of model updates', () => {
+				it( 'should not affect converters - base link attributes first', () => {
+					setModelData( model,
+						'[<image src="https://cksource.com"></image>]'
+					);
 
-				model.change( writer => {
-					const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), 'linkIsDownloadable' );
+					model.change( writer => {
+						const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), 'linkIsDownloadable' );
 
-					for ( const range of ranges ) {
-						// `linkHref` gets processed first, as it is just the first property assigned to the model by `LinkCommand`.
-						// Here we force attributes to be set on a model in a different order,
-						// to force unusual order of downcast converters down the line.
-						writer.setAttribute( 'linkIsDownloadable', true, range );
-						writer.setAttribute( 'linkHref', 'url', range );
-					}
+						for ( const range of ranges ) {
+							// The `linkHref` should be processed first - this is the default order of `LinkCommand`.
+							writer.setAttribute( 'linkHref', 'url', range );
+							writer.setAttribute( 'linkIsDownloadable', true, range );
+						}
+					} );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
+					);
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
-				);
+				it( 'should not affect converters - decorators first', () => {
+					setModelData( model,
+						'[<image src="https://cksource.com"></image>]'
+					);
+
+					model.change( writer => {
+						const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), 'linkIsDownloadable' );
+
+						for ( const range of ranges ) {
+							// Here we force attributes to be set on a model in a different order
+							// to force unusual order of downcast converters down the line.
+							// Normally, the `linkHref` gets processed first, as it is just the first property assigned
+							// to the model by `LinkCommand`.
+							writer.setAttribute( 'linkIsDownloadable', true, range );
+							writer.setAttribute( 'linkHref', 'url', range );
+						}
+					} );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
+					);
+				} );
 			} );
 		} );
 	} );
