@@ -115,7 +115,7 @@ In this example implementation you will implement a "card" box which is displaye
 A simplified model markup for the side card looks as follows:
 
 ```html
-<sideCard cardType="info" cardURL="https://ckeditor.com/">
+<sideCardSection cardType="info" cardURL="https://ckeditor.com/">
 	<sideCardTitle>The title</sideCardTitle>
 	<sideCardSection>
 		<paragraph>The content</paragraph>
@@ -601,21 +601,21 @@ class ComplexBox extends Plugin {
 		const editor = this.editor;
 
 		// Defines a simple text button.
-		editor.ui.componentFactory.add( 'complexBox', locale => {
+		editor.ui.componentFactory.add( 'insertCard', locale => {
 			const button = new ButtonView( locale );
 
-			const command = editor.commands.get( 'insertComplexBox' );
+			const command = editor.commands.get( 'insertCard' );
 
 			button.set( {
 				withText: true,
 				icon: false,
-				label: 'Complex Box'
+				label: 'Insert card'
 			} );
 
 			button.bind( 'isEnabled' ).to( command );
 
 			button.on( 'execute', () => {
-				editor.execute( 'insertComplexBox' );
+				editor.execute( 'insertCard' );
 				editor.editing.view.focus();
 			} );
 

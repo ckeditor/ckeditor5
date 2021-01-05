@@ -7,16 +7,11 @@ import normalizeToolbarConfig from '../../src/toolbar/normalizetoolbarconfig';
 
 describe( 'normalizeToolbarConfig()', () => {
 	it( 'normalizes the config specified as an Array', () => {
-		const items = [ 'foo', 'bar' ];
-		const normalized = normalizeToolbarConfig( items );
+		const cfg = [ 'foo', 'bar' ];
+		const normalized = normalizeToolbarConfig( cfg );
 
 		expect( normalized ).to.be.an( 'object' );
-		expect( normalized ).to.deep.equal(
-			{
-				items,
-				removeItems: []
-			}
-		);
+		expect( normalized.items ).to.deep.equal( cfg );
 	} );
 
 	it( 'passes through an already normalized config', () => {
@@ -26,9 +21,7 @@ describe( 'normalizeToolbarConfig()', () => {
 		};
 		const normalized = normalizeToolbarConfig( cfg );
 
-		expect( normalized ).to.deep.equal(
-			Object.assign( { removeItems: [] }, cfg )
-		);
+		expect( normalized ).to.deep.equal( cfg );
 	} );
 
 	it( 'adds missing items property', () => {
@@ -40,7 +33,6 @@ describe( 'normalizeToolbarConfig()', () => {
 
 		expect( normalized ).to.deep.equal( {
 			items: [],
-			removeItems: [],
 			foo: 'bar'
 		} );
 		expect( normalized ).to.not.equal( cfg ); // Make sure we don't modify an existing obj.
@@ -51,6 +43,5 @@ describe( 'normalizeToolbarConfig()', () => {
 
 		expect( normalized ).to.be.an( 'object' );
 		expect( normalized.items ).to.be.an( 'array' ).of.length( 0 );
-		expect( normalized.removeItems ).to.be.an( 'array' ).of.length( 0 );
 	} );
 } );

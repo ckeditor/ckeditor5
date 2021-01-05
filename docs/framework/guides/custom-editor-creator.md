@@ -126,6 +126,7 @@ The `*EditorUI` class is the main UI class which initializes UI components (the 
 ```js
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
+import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
@@ -150,6 +151,14 @@ class MultirootEditorUI extends EditorUI {
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
 		 */
 		this.view = view;
+
+		/**
+		 * A normalized `config.toolbar` object.
+		 *
+		 * @type {Object}
+		 * @private
+		 */
+		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 	}
 
 	/**
@@ -267,7 +276,7 @@ class MultirootEditorUI extends EditorUI {
 		const view = this.view;
 		const toolbar = view.toolbar;
 
-		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
+		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,

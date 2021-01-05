@@ -179,7 +179,7 @@ export default class BlockToolbar extends Plugin {
 		const factory = this.editor.ui.componentFactory;
 		const config = this._blockToolbarConfig;
 
-		this.toolbarView.fillFromConfig( config, factory );
+		this.toolbarView.fillFromConfig( config.items, factory );
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
