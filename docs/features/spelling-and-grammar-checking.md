@@ -22,7 +22,7 @@ See the spelling and grammar checking in the editor below.
 The proofreader badge in the bottom right corner shows you the number of mistakes detected. Hover on an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. If you want to see an overview of all spelling and grammar mistakes, click the "Proofread in dialog" option in the toolbar dropdown. You can access the proofreader settings from the toolbar, too.
 
 <info-box>
-	The toolbar button has been introduced in version 2.x of the WProofreader. If you are still using version 1.x, the available settings and dialog options are located in the bottom-right indicator.
+	The toolbar button has been introduced in version 2.x of the WProofreader. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. If you are still using version 1.x, the available settings and dialog options are located in the bottom-right indicator.
 </info-box>
 
 {@snippet features/wproofreader}
@@ -82,10 +82,6 @@ ClassicEditor
 		}
 	} )
 ```
-
-<info-box info>
-	Please notice that the toolbar item is only added in versions 2.x or higher. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. For version 1.x simply ommit adding the item to the toolbar configuration.
-</info-box>
 
 Refer to the [official documentation](https://github.com/WebSpellChecker/wproofreader-ckeditor5#install-instructions) for more details about the cloud setup and available configuration options.
 
