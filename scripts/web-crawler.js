@@ -41,17 +41,18 @@ startCrawler( options );
 
 /**
  * Main crawler function. Its purpose is to:
- * - create puppeteer's browser,
- * - open new page instance,
+ * - create Puppeteer's browser,
+ * - create Puppeteer's page instance from browser instance,
  * - register error handlers,
- * - collect all links from the provided URL,
- * - open all collected links,
- * - show error summary.
+ * - open sequentially all links from the provided URL,
+ * - show error summary after all links have been visited.
  *
- * @param {Object} page The page instance from Puppeteer.
- * @param {Function} onError Called each time an error has been emitted.
+ * @param {Object} options Parsed CLI arguments.
+ * @param {String} options.url The URL to start crawling.
+ * @param {Number} options.depth Defines how many nested page levels should be examined. Infinity by default.
+ * @param {RegExp|null} options.exclude A regular expression pattern to exclude links. Null by default to not exclude anything.
  */
-async function startCrawler( options ) {
+async function startCrawler( { url, depth, exclude } ) {
 	console.log( chalk.bold( '\n🔎 Starting the Crawler\n' ) );
 
 	const browser = await puppeteer.launch();
@@ -65,20 +66,19 @@ async function startCrawler( options ) {
 
 	const errors = new Map();
 
-	registerErrorHandlers( page, handleError( errors ) );
+	registerErrorHandlers( page, getErrorHandler( errors ) );
 
 	spinner.succeed( `Registering error handlers… ${ chalk.bold( 'Done' ) }` );
 
-	spinner.start( 'Collecting links…' );
-
-	const links = new Set( await getLinksFromUrl( page, options.url, ...options.selectors ) );
-
-	spinner.succeed( `Collecting links… ${ chalk.bold( `${ links.size } found` ) }` );
-
 	spinner.start( 'Checking pages…' );
 
-	await openLinks( page, links, ( { current, total } ) => {
-		spinner.text = `Checking pages… ${ chalk.bold( `${ Math.round( current / total * 100 ) }%` ) }`;
+	await openLink( page, {
+		host: new URL( url ).host,
+		link: url,
+		foundLinks: [ url ],
+		exclude,
+		depth,
+		onProgress: getProgressHandler( spinner )
 	} );
 
 	spinner.succeed( `Checking pages… ${ chalk.bold( 'Done' ) }` );
@@ -112,12 +112,12 @@ function createSpinner() {
 }
 
 /**
- * Returns an error handler, which is called each time new error is emitted.
+ * Returns an error handler, which is called every time new error is found.
  *
  * @param {Map<Object, Object>} errors All errors grouped by their type.
  * @returns {Function} Error handler.
  */
-function handleError( errors ) {
+function getErrorHandler( errors ) {
 	return error => {
 		if ( !errors.has( error.type ) ) {
 			errors.set( error.type, {
@@ -145,7 +145,7 @@ function handleError( errors ) {
  * Registers all error handlers on given page instance.
  *
  * @param {Object} page The page instance from Puppeteer.
- * @param {Function} onError Called each time an error has been emitted.
+ * @param {Function} onError Called each time an error has been found.
  */
 function registerErrorHandlers( page, onError ) {
 	page.on( ERROR_TYPES.PAGE_CRASH.event, error => onError( {
@@ -178,8 +178,7 @@ function registerErrorHandlers( page, onError ) {
 
 	page.on( ERROR_TYPES.CONSOLE_ERROR.event, message => {
 		const ignoredMessages = [
-			// The resource loading failure, which is tracked in console, is already covered by the
-			// `response` or `requestfailed` events.
+			// The resource loading failure is already covered by the `response` or `requestfailed` events.
 			'Failed to load resource: the server responded with a status of'
 		];
 
@@ -198,65 +197,102 @@ function registerErrorHandlers( page, onError ) {
 }
 
 /**
- * Collects all links from requested URL. Each selector is passed to the `document.querySelectorAll()` method,
- * which is invoked within the page context and returns matched elements: that is anchors with the `href` attribute
- * with the same host as the page. External links are excluded.
+ * Returns a progress handler, which is called every time just before opening a new link.
  *
- * This function is called recursively to support multi-page sites: for each link found inside nth selector, the
- * (n+1)th selector (if exists) is searched for anchors. Example: if a site has a main navigation bar on top and
- * each page has also additional navigation section aside, then providing 2 selectors (first one for the bar on top,
- * and second one for the aside container), this function will automatically collect all these links. It is not
- * limited to only 2 navigation containers, but it works with any number of nested sub-pages!
- *
- * @param {Object} page The page instance from Puppeteer.
- * @param {String} url The URL to open and collect links.
- * @param {Array.<String>} selectors An array of CSS selector strings to search for links.
- * @returns {Array.<String>} An array of collected links.
+ * @param {Object} spinner Spinner instance
+ * @returns {Function} Progress handler.
  */
-async function getLinksFromUrl( page, url, ...selectors ) {
-	// Consider navigation to be finished when there are no network connections for at least 500 ms.
-	await page.goto( url, { waitUntil: 'networkidle0' } );
+function getProgressHandler( spinner ) {
+	let current = 0;
 
-	const host = new URL( url ).host;
+	return ( { total } ) => {
+		const progress = Math.round( current / total * 100 );
 
-	const links = await page.$$eval( selectors.shift(), ( links, host ) => {
-		return links
-			.filter( link => link.href && new URL( link.href ).host === host )
-			.map( link => link.href );
-	}, host );
+		spinner.text = `Checking pages… ${ chalk.bold( `${ progress }% (${ current } of ${ total })` ) }`;
 
-	if ( selectors.length ) {
-		for ( const link of [ ...links ] ) {
-			links.push( ...await getLinksFromUrl( page, link, ...selectors ) );
-		}
-	}
-
-	return links;
+		current++;
+	};
 }
 
 /**
- * Opens sequentially all provided links to pages.
+ * Searches and opens all found links in the document body from requested URL, recursively. Only links from the same
+ * host are collected and opened sequentially. Only the main URL part consisting of a protocol, a host, a port and
+ * a path is collected, without a hash and search parts. Duplicated links, which were already collected and enqueued,
+ * are skipped to avoid loops. Explicitly excluded links are also skipped.
  *
  * @param {Object} page The page instance from Puppeteer.
- * @param {Array.<String>} links An array of links to pages to examine.
- * @param {Function} onProgress Called each time a link to a page has been opened.
+ * @param {Object} data All data needed for crawling the links.
+ * @param {String} data.host The host from the initial page URL.
+ * @param {String} data.link The link to crawl.
+ * @param {Array.<String>} data.foundLinks An array of links, which have been already discovered.
+ * @param {RegExp|null} data.exclude A regular expression pattern to exclude links. Null by default to not exclude anything.
+ * @param {Number} data.depth Defines how many nested page levels should be examined. Infinity by default.
+ * @param {Function} data.onProgress Callback called every time just before opening a new link.
  */
-async function openLinks( page, links, onProgress ) {
-	let current = 0;
+async function openLink( page, { host, link, foundLinks, exclude, depth, onProgress } ) {
+	// Inform progress handler about current number of total discovered links.
+	onProgress( {
+		total: foundLinks.length
+	} );
 
-	for ( const link of links ) {
+	try {
 		// Consider navigation to be finished when there are no network connections for at least 500 ms.
 		await page.goto( link, { waitUntil: 'networkidle0' } );
+	} catch ( err ) {
+		// Page opening failure is already covered by the `requestfailed` event.
+		return;
+	}
 
-		onProgress( {
-			current: ++current,
-			total: links.size
+	// Skip crawling deeper, if the bottom has been reached.
+	if ( depth === 0 ) {
+		return;
+	}
+
+	// Callback function executed in the page context to return an unique list of links.
+	const evaluatePage = anchors => [ ...new Set( anchors
+		.filter( anchor => /http(s)?:/.test( anchor.protocol ) )
+		.map( anchor => `${ anchor.origin }${ anchor.pathname }` ) )
+	];
+
+	// Collect unique links from the page body.
+	const links = ( await page.$$eval( 'body a[href]', evaluatePage ) )
+		.filter( link => {
+			// Skip external link.
+			if ( new URL( link ).host !== host ) {
+				return false;
+			}
+
+			// Skip already discovered link.
+			if ( foundLinks.includes( link ) ) {
+				return false;
+			}
+
+			// Skip explicitly excluded link.
+			if ( exclude && exclude.test( link ) ) {
+				return false;
+			}
+
+			return true;
+		} );
+
+	// Remember new links to avoid loops in subsequent pages.
+	links.forEach( link => foundLinks.push( link ) );
+
+	// Visit all new links sequentially.
+	for ( const link of links ) {
+		await openLink( page, {
+			host,
+			link,
+			foundLinks,
+			exclude,
+			depth: depth - 1,
+			onProgress
 		} );
 	}
 }
 
 /**
- * Analyzes the error collection and logs them in the console.
+ * Analyzes collected errors and logs them in the console.
  *
  * @param {Map<Object, Object>} errors All found errors grouped by their type.
  */
@@ -298,23 +334,28 @@ function logErrors( errors ) {
  *
  * @param {Array.<String>} args CLI arguments and options.
  * @returns {Object} options
- * @returns {String} options.url A page URL to crawl and and check its pages.
- * @returns {Array.<String>} options.selectors An array of CSS selector strings to search for links.
+ * @returns {String} options.url The URL to start crawling.
+ * @returns {Number} options.depth Defines how many nested page levels should be examined. Infinity by default.
+ * @returns {RegExp|null} options.exclude A regular expression pattern to exclude links. Null by default to not exclude anything.
  */
 function parseArguments( args ) {
 	const config = {
 		string: [
 			'url',
-			'containers'
+			'depth',
+			'exclude'
 		],
 
 		alias: {
 			u: 'url',
-			c: 'containers'
+			d: 'depth',
+			e: 'exclude'
 		},
 
 		default: {
-			containers: 'body'
+			url: '',
+			depth: Infinity,
+			exclude: ''
 		}
 	};
 
@@ -326,11 +367,7 @@ function parseArguments( args ) {
 
 	return {
 		url: options.url,
-		// Multiple containers are supported by separating them with a comma.
-		// To prepare a selector pointing to anchors inside a container, each
-		// of them must end with an 'a' tag.
-		selectors: options.containers
-			.split( ',' )
-			.map( container => `${ container } a` )
+		depth: Number( options.depth ),
+		exclude: options.exclude ? new RegExp( options.exclude.replace( ',', '|' ) ) : null
 	};
 }

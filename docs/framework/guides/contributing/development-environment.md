@@ -131,6 +131,39 @@ The stylesheet will be saved in the `build/content-styles` folder.
 
 To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
 
+## Verifying whether all pages in documentation and all manual tests are green
+
+To verify that all pages in our documentation can be opened without any errors, you don't need to do that manually, page by page.
+Instead, there is a web crawler that automatically traverses through the provided URL and it visits all sub-pages, which have been found (and which were not visited already). The crawler opens a headless Chromium browser and logs any error that has been found.
+
+To check pages in the documentation, run the following command:
+
+```
+yarn docs:verify
+```
+
+This script collects and opens all links from the documentation, except the API and assets.
+
+<info-box info>
+	Before starting the web crawler for documentation, the local web server with documentation has to be running (so documentation has to be built).
+</info-box>
+
+Similarly, all manual tests can be verified automatically by executing:
+
+```
+yarn manual:verify
+```
+
+<info-box info>
+	Before starting the web crawler for manual tests, the local web server with manual tests has to be running.
+</info-box>
+
+The web crawler accepts the following arguments:
+
+* `--url`, `-u` &ndash; The URL to start crawling. This argument is required.
+* `--depth`, `-d` &ndash; Defines how many nested page levels should be examined. Infinity by default.
+* `--exclude`, `-e` &ndash; A comma-separated string with exclusions - links that match the excluded part are skipped. Empty string by default.
+
 ## Additional information for contributors
 
 ### SVG icons
