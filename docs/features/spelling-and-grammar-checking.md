@@ -41,16 +41,15 @@ WProofreader is delivered as a CKEditor 5 plugin, so it could be combined into a
 npm install --save @webspellchecker/wproofreader-ckeditor5
 ```
 
-Then, add it to your plugin list:
+Then, add it to your plugin list and the toolbar configuration:
 
 ```js
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
-// ...
 
 ClassicEditor
 	.create( editorElement, {
 		plugins: [ ..., WProofreader ],
-		// ...
+		toolbar: [ ..., 'wproofreader' ]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -70,7 +69,6 @@ Add the following configuration to your editor:
 
 ```js
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
-// ...
 
 ClassicEditor
 	.create( editorElement, {
@@ -93,7 +91,6 @@ You will need to add the following configuration to your editor:
 
 ```js
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
-// ...
 
 ClassicEditor
 	.create( editorElement, {
