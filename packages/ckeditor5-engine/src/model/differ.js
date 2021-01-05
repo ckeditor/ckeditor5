@@ -393,7 +393,7 @@ export default class Differ {
 		}
 
 		// Will contain returned results.
-		let diffSet = [];
+		const diffSet = [];
 
 		// Check all changed elements.
 		for ( const element of this._changesInElement.keys() ) {
@@ -483,8 +483,8 @@ export default class Differ {
 		} );
 
 		// Glue together multiple changes (mostly on text nodes).
-		for ( let i = 1, prevIndex = 0; i < diffSet.length; i++ ) {
-			const prevDiff = diffSet[ prevIndex ];
+		for ( let i = 1; i < diffSet.length; i++ ) {
+			const prevDiff = diffSet[ i - 1 ];
 			const thisDiff = diffSet[ i ];
 
 			// Glue remove changes if they happen on text on same position.
@@ -511,19 +511,16 @@ export default class Differ {
 				prevDiff.attributeNewValue == thisDiff.attributeNewValue;
 
 			if ( isConsecutiveTextRemove || isConsecutiveTextAdd || isConsecutiveAttributeChange ) {
-				prevDiff.length++;
+				diffSet[ i - 1 ].length++;
 
 				if ( isConsecutiveAttributeChange ) {
-					prevDiff.range.end = prevDiff.range.end.getShiftedBy( 1 );
+					diffSet[ i - 1 ].range.end = diffSet[ i - 1 ].range.end.getShiftedBy( 1 );
 				}
 
-				diffSet[ i ] = null;
-			} else {
-				prevIndex = i;
+				diffSet.splice( i, 1 );
+				i--;
 			}
 		}
-
-		diffSet = diffSet.filter( v => v );
 
 		// Remove `changeCount` property from diff items. It is used only for sorting and is internal thing.
 		for ( const item of diffSet ) {
@@ -539,7 +536,7 @@ export default class Differ {
 
 		// Cache changes.
 		this._cachedChangesWithGraveyard = diffSet.slice();
-		this._cachedChanges = diffSet.filter( _changesInGraveyardFilter );
+		this._cachedChanges = diffSet.slice().filter( _changesInGraveyardFilter );
 
 		if ( options.includeChangesInGraveyard ) {
 			return this._cachedChangesWithGraveyard;

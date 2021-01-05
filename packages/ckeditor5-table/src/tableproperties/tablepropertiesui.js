@@ -147,7 +147,6 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	_createPropertiesView() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view.document;
 		const config = editor.config.get( 'table.tableProperties' );
 		const borderColorsConfig = normalizeColorOptions( config.borderColors );
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
@@ -179,15 +178,6 @@ export default class TablePropertiesUI extends Plugin {
 		view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideView();
 			cancel();
-		} );
-
-		// Reposition the balloon or hide the form if a table is no longer selected.
-		this.listenTo( editor.ui, 'update', () => {
-			if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
-				this._hideView();
-			} else if ( this._isViewVisible ) {
-				repositionContextualBalloon( editor, 'table' );
-			}
 		} );
 
 		// Close on click outside of balloon panel element.
@@ -278,6 +268,10 @@ export default class TablePropertiesUI extends Plugin {
 	_showView() {
 		const editor = this.editor;
 
+		this.listenTo( editor.ui, 'update', () => {
+			this._updateView();
+		} );
+
 		// Update the view with the model values.
 		this._fillViewFormFromCommandValues();
 
@@ -299,10 +293,6 @@ export default class TablePropertiesUI extends Plugin {
 	 * @protected
 	 */
 	_hideView() {
-		if ( !this._isViewInBalloon ) {
-			return;
-		}
-
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
@@ -316,6 +306,22 @@ export default class TablePropertiesUI extends Plugin {
 		// Make sure the focus is not lost in the process by putting it directly
 		// into the editing view.
 		this.editor.editing.view.focus();
+	}
+
+	/**
+	 * Repositions the {@link #_balloon} or hides the {@link #view} if a table is no longer selected.
+	 *
+	 * @protected
+	 */
+	_updateView() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
+
+		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+			this._hideView();
+		} else if ( this._isViewVisible ) {
+			repositionContextualBalloon( editor, 'table' );
+		}
 	}
 
 	/**
