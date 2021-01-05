@@ -18,7 +18,6 @@
  *
  *		toolbar: {
  *			items: [ 'heading', 'bold', 'italic', 'link', ... ],
- *			removeItems: [ 'bold' ],
  *			...
  *		}
  *
@@ -32,20 +31,17 @@
 export default function normalizeToolbarConfig( config ) {
 	if ( Array.isArray( config ) ) {
 		return {
-			items: config,
-			removeItems: []
+			items: config
 		};
 	}
 
 	if ( !config ) {
 		return {
-			items: [],
-			removeItems: []
+			items: []
 		};
 	}
 
 	return Object.assign( {
-		items: [],
-		removeItems: []
+		items: []
 	}, config );
 }

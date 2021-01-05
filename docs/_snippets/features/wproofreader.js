@@ -38,6 +38,8 @@ ClassicEditor
 				'mediaEmbed',
 				'insertTable',
 				'|',
+				'wproofreader',
+				'|',
 				'undo',
 				'redo'
 			],
