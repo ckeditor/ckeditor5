@@ -1,27 +1,33 @@
 ---
 category: features
 order: 10
-toc: false
+toc: true
 feedback-widget: false
 ---
 
 # Features
 
+The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left.
+
+Most of them are easily accessible from a {@link features/toolbar highly configurable toolbar} (if fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. Many actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with {@link features/ui-language multitude of translations} and it supports RTL languages.
+
+## Feature availability
+
+Plenty of these features are included by default in {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like for example {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+
+However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML, or easily and conveniently added to a custom build in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+## CKEditor 5 WYSIWYG editor features and functions
+
+CKEditor 5 features cover several functional areas of application and use.
+
 <info-box>
 	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through selected CKEditor 5 features.
 </info-box>
 
-## Feature availability
-
-The number of features available for CKEditor 5 is constantly growing. Plenty of them are included by default in {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like for example {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}. However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML, or easily and conveniently added to a custom build in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
-
-CKEditor 5 features cover several functional areas of application and use. Most of them are easily accessible from a {@link features/toolbar highly configurable toolbar} (if fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. Many actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with {@link features/ui-language multitude of translations} and it supports RTL languages.
-
 ### Formatting features
 
 {@link features/basic-styles Basic text styles} include essentials like bold, italics, super- and subscript as well as inline code formatting and more. The {@link features/font font feature} provides support for using different font families, controlling the font size as well as font and background colors.
-
-An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
 
 {@link features/headings Headings} (with configurable levels and styles), as well as the {@link features/text-alignment text alignment feature} help organize the structure of the document.
 
@@ -31,9 +37,11 @@ Most of these formatting options can be applied from the {@link features/toolbar
 
 Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/image image feature} and create responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
 
-Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
+An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
 
 Provide clear and accessible data using {@link features/table tables}, ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw reader's attention to it.
+
+Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
 
 ### Productivity features
 
@@ -69,7 +77,7 @@ Each rich-text editor feature is presented on a separate page, with one or more 
 
 The examples on the left do not present all features included in CKEditor 5. For example, some end-user features like bulleted and numbered lists or undo and redo are quite self-explanatory.
 
-CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍 to show your support.
+CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍&nbsp; to show your support.
 
 ## How about creating your own features?
 
