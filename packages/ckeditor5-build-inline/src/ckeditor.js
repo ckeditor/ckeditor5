@@ -8,6 +8,7 @@ import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -34,11 +35,13 @@ import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 
 export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
+	Alignment,
 	Essentials,
 	UploadAdapter,
 	Autoformat,
@@ -66,7 +69,8 @@ InlineEditor.builtinPlugins = [
 	Superscript,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	Underline
 ];
 
 // Editor configuration.
