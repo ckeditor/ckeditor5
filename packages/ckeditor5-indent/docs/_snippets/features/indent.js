@@ -28,6 +28,11 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Increase indent' ),
+			text: 'Click here to indent or outdent a block.'
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
