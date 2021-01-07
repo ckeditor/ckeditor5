@@ -140,8 +140,6 @@ The web crawler accepts the following arguments:
 * `--url`, `-u` &ndash; The URL to start crawling. This argument is required. Thanks to it you can verify e.g. a deployed documentation.
 * `--depth`, `-d` &ndash; Defines how many nested page levels should be examined. Infinity by default.
 * `--exclude`, `-e` &ndash; A comma-separated string with URL exclusions &ndash; links that match the excluded part are skipped. Nothing is excluded by default.
-* `--docs` &ndash; A boolean option to use default arguments for documentation verification.
-* `--manual` &ndash; A boolean option to use default arguments for manual tests verification.
 
 ## Generating content styles
 
