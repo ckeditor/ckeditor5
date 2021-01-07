@@ -139,32 +139,42 @@ class Insertion {
 		this.schema = model.schema;
 
 		/**
-		 * TODO
+		 * The temporary DocumentFragment used for grouping multiple nodes for single insert operation.
+		 *
 		 * @private
+		 * @type {module:engine/model/documentfragment~DocumentFragment}
 		 */
 		this._documentFragment = writer.createDocumentFragment();
 
 		/**
-		 * TODO
+		 * The current position in the temporary DocumentFragment.
+		 *
 		 * @private
+		 * @type {module:engine/model/position~Position}
 		 */
 		this._documentFragmentPosition = writer.createPositionAt( this._documentFragment, 0 );
 
 		/**
-		 * TODO
+		 * The reference to the first inserted node.
+		 *
 		 * @private
+		 * @type {module:engine/model/node~Node}
 		 */
 		this._firstNode = null;
 
 		/**
-		 * TODO
+		 * The reference to the last inserted node.
+		 *
 		 * @private
+		 * @type {module:engine/model/node~Node}
 		 */
 		this._lastNode = null;
 
 		/**
-		 * TODO
+		 * The array of nodes that should be cleaned of not allowed attributes.
+		 *
 		 * @private
+		 * @type {Array.<module:engine/model/node~Node>}
 		 */
 		this._filterAttributesOf = [];
 
@@ -198,9 +208,8 @@ class Insertion {
 		// Insert nodes collected in temporary DocumentFragment.
 		this._insertPartialFragment();
 
-		// After the node was inserted we may try to merge it with its siblings.
-		// This should happen only if it was the first and/or last of the nodes (so only with boundary nodes)
-		// and only if the selection was in those elements initially.
+		// After the content was inserted we may try to merge it with its siblings.
+		// This should happen only if the selection was in those elements initially.
 		//
 		// E.g.:
 		// <p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
@@ -287,8 +296,9 @@ class Insertion {
 		}
 
 		// Add node to the current temporary DocumentFragment.
-		this._insertToFragment( node );
+		this._appendToFragment( node );
 
+		// Store the first and last nodes for easy access for merging with sibling nodes.
 		if ( !this._firstNode ) {
 			this._firstNode = node;
 		}
@@ -297,7 +307,8 @@ class Insertion {
 	}
 
 	/**
-	 * TODO
+	 * Inserts the temporary DocumentFragment into the model.
+	 *
 	 * @private
 	 */
 	_insertPartialFragment() {
@@ -309,7 +320,17 @@ class Insertion {
 
 		this._setAffectedBoundaries( this.position );
 
-		this.writer.insert( this._documentFragment, this.position );
+		// Insert the first node in a separate operation to avoid operation transformation on multiple nodes on undoing (insert + merge).
+		if ( this._documentFragment.getChild( 0 ) == this._firstNode ) {
+			this.writer.insert( this._firstNode, this.position );
+			this.position = livePosition.toPosition();
+		}
+
+		// Insert the remaining nodes from document fragment.
+		if ( !this._documentFragment.isEmpty ) {
+			this.writer.insert( this._documentFragment, this.position );
+		}
+
 		this._documentFragmentPosition = this.writer.createPositionAt( this._documentFragment, 0 );
 
 		this.position = livePosition.toPosition();
@@ -323,7 +344,7 @@ class Insertion {
 	_handleObject( node ) {
 		// Try finding it a place in the tree.
 		if ( this._checkAndSplitToAllowedPosition( node ) ) {
-			this._insertToFragment( node );
+			this._appendToFragment( node );
 		}
 		// Try autoparagraphing.
 		else {
@@ -347,10 +368,12 @@ class Insertion {
 	}
 
 	/**
+	 * Append a node to the temporary DocumentFragment.
+	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node The node to insert.
 	 */
-	_insertToFragment( node ) {
+	_appendToFragment( node ) {
 		/* istanbul ignore if */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
@@ -415,6 +438,8 @@ class Insertion {
 	}
 
 	/**
+	 * Merges sibling of the first node if should be merged.
+	 *
 	 * @private
 	 */
 	_mergeSiblingsOfFirstNode() {
@@ -480,6 +505,8 @@ class Insertion {
 	}
 
 	/**
+	 * Merges sibling of the last node if should be merged.
+	 *
 	 * @private
 	 */
 	_mergeSiblingsOfLastNode() {
