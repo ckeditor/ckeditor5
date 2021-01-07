@@ -519,6 +519,20 @@ describe( 'ImageCaptionEditing', () => {
 			);
 		} );
 
+		it( 'should not show empty figcaption when image is selected but editor is in the readOnly mode', () => {
+			editor.isReadOnly = true;
+
+			setModelData( model, '[<image src="img.png"><caption></caption></image>]' );
+
+			expect( getViewData( view ) ).to.equal(
+				'[<figure class="ck-widget image" contenteditable="false">' +
+					'<img src="img.png"></img>' +
+					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-hidden ck-placeholder" ' +
+						'contenteditable="false" data-placeholder="Enter image caption"></figcaption>' +
+				'</figure>]'
+			);
+		} );
+
 		describe( 'undo/redo integration', () => {
 			it( 'should create view element after redo', () => {
 				setModelData( model, '<paragraph>foo</paragraph><image src=""><caption>[foo bar baz]</caption></image>' );

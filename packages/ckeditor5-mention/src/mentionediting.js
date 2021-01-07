@@ -49,7 +49,7 @@ export default class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: _toMentionAttribute
+				value: viewElement => _toMentionAttribute( viewElement )
 			}
 		} );
 
