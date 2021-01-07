@@ -7,7 +7,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 
@@ -16,7 +15,7 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableCellProperties ],
+		plugins: [ ArticlePluginSet, Indent, IndentBlock, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'indent', 'blockQuote', 'undo', 'redo'
 		],
