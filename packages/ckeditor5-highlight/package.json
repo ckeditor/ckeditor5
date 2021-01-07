@@ -11,11 +11,11 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^24.0.0",
     "ckeditor5": "^24.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-block-quote": "^24.0.0",
+    "@ckeditor/ckeditor5-core": "^24.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
     "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
     "@ckeditor/ckeditor5-engine": "^24.0.0",

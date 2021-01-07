@@ -7,12 +7,11 @@
  * @module font/ui/colortableview
  */
 
-import { View, ButtonView, ColorTileView, ColorGridView, LabelView, Template, FocusCycler } from 'ckeditor5/src/ui';
+import { icons } from 'ckeditor5/src/core';
+import { ButtonView, ColorGridView, ColorTileView, FocusCycler, LabelView, Template, View } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import DocumentColorCollection from '../documentcolorcollection';
-
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 
 import '../../theme/fontcolor.css';
 
@@ -293,7 +292,7 @@ export default class ColorTableView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: removeButtonIcon,
+			icon: icons.eraser,
 			tooltip: true,
 			label: this.removeButtonLabel
 		} );

@@ -22,6 +22,7 @@ import {
 	submitHandler
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
 import {
 	fillToolbar,
@@ -31,20 +32,14 @@ import {
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
 
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import objectLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import objectRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-import objectCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
 
 const ALIGNMENT_ICONS = {
-	left: objectLeftIcon,
-	center: objectCenterIcon,
-	right: objectRightIcon
+	left: icons.objectLeft,
+	center: icons.objectCenter,
+	right: icons.objectRight
 };
 
 /**
@@ -666,7 +661,7 @@ export default class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: checkIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -678,7 +673,7 @@ export default class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			type: 'cancel',
 			withText: true

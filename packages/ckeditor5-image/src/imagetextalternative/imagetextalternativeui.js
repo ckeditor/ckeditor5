@@ -7,14 +7,12 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
 
 import TextAlternativeFormView from './ui/textalternativeformview';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
 import { getSelectedImageWidget } from '../image/utils';
-
-import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 
 /**
  * The image text alternative UI plugin.
@@ -72,7 +70,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: textAlternativeIcon,
+				icon: icons.lowVision,
 				tooltip: true
 			} );
 

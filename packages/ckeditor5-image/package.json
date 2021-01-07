@@ -11,7 +11,6 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^24.0.0",
     "@ckeditor/ckeditor5-ui": "^24.0.0",
     "ckeditor5": "^24.0.0"
   },
@@ -22,6 +21,7 @@
     "@ckeditor/ckeditor5-ckfinder": "^24.0.0",
     "@ckeditor/ckeditor5-clipboard": "^24.0.0",
     "@ckeditor/ckeditor5-cloud-services": "^24.0.0",
+    "@ckeditor/ckeditor5-core": "^24.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
     "@ckeditor/ckeditor5-easy-image": "^24.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
