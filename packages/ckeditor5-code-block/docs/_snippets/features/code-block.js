@@ -31,6 +31,11 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		// looks good, doesn't work
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.śui.view.toolbar, item => item.label && item.buttonView.label === 'Insert code block' ),
+			text: 'Click to insert a code block.'
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
