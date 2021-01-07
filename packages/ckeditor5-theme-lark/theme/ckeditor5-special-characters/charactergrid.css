@@ -16,6 +16,7 @@
 	max-height: 200px;
 
 	& .ck-character-grid__tiles {
+		grid-template-columns: repeat(auto-fit, minmax(var(--ck-character-grid-tile-size), 1fr));
 		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 		grid-gap: var(--ck-spacing-standard);
 	}
