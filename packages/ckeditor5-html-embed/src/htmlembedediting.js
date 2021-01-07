@@ -182,8 +182,6 @@ export default class HtmlEmbedEditing extends Plugin {
 						if ( newValue !== state.getRawHtmlValue() ) {
 							editor.execute( 'updateHtmlEmbed', newValue );
 							editor.editing.view.focus();
-						} else {
-							this.cancel();
 						}
 					},
 					cancel() {

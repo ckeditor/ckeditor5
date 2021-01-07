@@ -507,6 +507,21 @@ export class MyComponent {
 
 For advanced usage see the {@link features/ui-language Setting the UI language} guide.
 
+## Common issues
+
+### zone.js
+
+There is a repeatable issue with zone.js library when upgrading to new Angular versions. The ngOnDestroy handler crashes throwing:
+```
+ERROR Error: Uncaught (in promise): TypeError: Cannot read property 'data-ck-expando' of undefined
+TypeError: Cannot read property 'data-ck-expando' of undefined
+```
+
+Workaround: in `polyfills.js` import zone.js using `import zone.js/dist/zone.js` instead of `import 'zone.js'`.
+More details:
+- https://github.com/ckeditor/ckeditor5-angular/issues/109
+- https://github.com/angular/angular/tree/master/packages/zone.js#breaking-changes-since-zonejs-v0111
+
 ## Contributing and reporting issues
 
 The source code of the CKEditor 5 rich text editor component for Angular is available on GitHub in https://github.com/ckeditor/ckeditor5-angular.
