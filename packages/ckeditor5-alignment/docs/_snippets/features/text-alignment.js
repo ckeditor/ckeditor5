@@ -29,9 +29,10 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		// looks good, doesn't work
+
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Text alignment' ),
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Text alignment' ),
 			text: 'Click to change text alignment.'
 		} );
 	} )
