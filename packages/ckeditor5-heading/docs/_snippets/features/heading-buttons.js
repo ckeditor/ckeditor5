@@ -19,7 +19,9 @@ ClassicEditor
 		window.editor = editor;
 		// looks good, doesn't work
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Heading 1' ),
+			target: window.findToolbarItem(
+				editor.ui.view.toolbar, item => item.label && item.label === 'Heading 1'
+			),
 			text: 'Click to choose heading level.'
 		} );
 	} )
