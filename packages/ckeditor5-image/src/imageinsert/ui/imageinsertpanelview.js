@@ -7,14 +7,11 @@
  * @module image/imageinsert/ui/imageinsertpanelview
  */
 
+import { icons } from 'ckeditor5/src/core';
 import { ButtonView, View, SplitButtonView, ViewCollection, submitHandler, createDropdown, FocusCycler } from 'ckeditor5/src/ui';
 import { Collection, FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import ImageInsertFormRowView from './imageinsertformrowview';
-
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../../../theme/imageinsert.css';
 
@@ -232,7 +229,7 @@ export default class ImageInsertPanelView extends View {
 
 		splitButtonView.set( {
 			label: t( 'Insert image' ),
-			icon: imageIcon,
+			icon: icons.image,
 			tooltip: true
 		} );
 
@@ -263,7 +260,7 @@ export default class ImageInsertPanelView extends View {
 
 		insertButtonView.set( {
 			label: t( 'Insert' ),
-			icon: checkIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true,
@@ -272,7 +269,7 @@ export default class ImageInsertPanelView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			withText: true
 		} );
