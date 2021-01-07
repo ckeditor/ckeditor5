@@ -15,8 +15,9 @@ ClassicEditor
 				'|',
 				'bold',
 				'italic',
-				'bulletedList',
+				'|',
 				'numberedList',
+				'bulletedList',
 				'|',
 				'outdent',
 				'indent',
@@ -51,6 +52,11 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editorBasic = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Numbered List' ),
+			text: 'Click to create an ordered or unordered list.'
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
