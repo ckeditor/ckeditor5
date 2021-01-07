@@ -520,5 +520,8 @@ function getViewTable( viewFigure ) {
 // @param {module:engine/model/element~Element element
 // @returns {Boolean}
 function hasAnyAttribute( element ) {
+  if(element === null) {
+    return false;
+  }
 	return !![ ...element.getAttributeKeys() ].length;
 }
