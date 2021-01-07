@@ -227,19 +227,9 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderColor', 'red' );
 					assertTRBLAttribute( table, 'borderStyle', 'solid' );
 					assertTRBLAttribute( table, 'borderWidth', '1px' );
-				} );
 
-				// https://github.com/ckeditor/ckeditor5/issues/8393.
-				it( 'should not upcast contents of nested table', () => {
-					editor.setData( '<table style="border:1px solid red">' +
-						'<tr>' +
-							'<td>parent:00</td>' +
-							'<td>' +
-								'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
-							'</td>' +
-						'</tr>' +
-					'</table>' );
-
+					// Also check the entire structure of the model.
+					// Previously the test was too loose in that regard.
 					expect( getModelData( editor.model ) ).to.equal(
 						'[<table ' +
 							'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
@@ -259,6 +249,65 @@ describe( 'table properties', () => {
 							'</tableRow>' +
 						'</table>]'
 					);
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/8393.
+				it( 'should not throw error when loading nested table with border styles', () => {
+					expect( () => {
+						editor.setData(
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td> ' +
+											'<table>' +
+												'<tbody>' +
+													'<tr>' +
+														'<td style="border-bottom: 0 solid #fff;"></td>' +
+													'</tr>' +
+												'</tbody>' +
+											'</table>' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' );
+					} ).not.to.throw();
+
+					expect( () => {
+						editor.setData(
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td> ' +
+											'<table style="border-bottom: 0 solid #fff;"></table>' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' );
+					} ).not.to.throw();
+
+					// Conversion will create a merged text node out of all the text contents,
+					// including the one in elements not allowed by schema in this scope.
+					// Let's make sure that upcasting will not try to use model that got processed this way.
+					expect( () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<img src="X">' +
+								'<figcaption>' +
+									'<table>' +
+										'<tr>' +
+											'<td>parent:00</td>' +
+											'<td>' +
+												'<table style="border:1px solid green">' +
+													'<tr>' +
+														'<td>child:00</td>' +
+													'</tr>' +
+												'</table>' +
+											'</td>' +
+										'</tr>' +
+									'</table>' +
+								'</figcaption>' +
+							'</figure>' );
+					} ).not.to.throw();
 				} );
 			} );
 
