@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-editor__editable {
+	& ul, & ol {
+		margin-left: 0;
+		padding-left: 0;
+	}
+
+	& li {
+		display: flow-root;
+		padding-inline-start: 40px;
+
+		&::before {
+			content: '';
+			display: list-item;
+			position: absolute;
+		}
+	}
+
+}
