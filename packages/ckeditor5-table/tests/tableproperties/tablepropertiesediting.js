@@ -17,7 +17,7 @@ import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcomm
 import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand';
 import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
@@ -211,7 +211,7 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
 				} );
 
-				// https://github.com/ckeditor/ckeditor5/issues/6177
+				// https://github.com/ckeditor/ckeditor5/issues/6177.
 				it( 'should upcast tables with nested tables in their cells', () => {
 					editor.setData( '<table style="border:1px solid red">' +
 						'<tr>' +
@@ -227,6 +227,38 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderColor', 'red' );
 					assertTRBLAttribute( table, 'borderStyle', 'solid' );
 					assertTRBLAttribute( table, 'borderWidth', '1px' );
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/8393.
+				it( 'should not upcast contents of nested table', () => {
+					editor.setData( '<table style="border:1px solid red">' +
+						'<tr>' +
+							'<td>parent:00</td>' +
+							'<td>' +
+								'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+							'</td>' +
+						'</tr>' +
+					'</table>' );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<table ' +
+							'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
+							'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
+							'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>' +
+										'parent:00' +
+									'</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>' +
+										'child:00' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>]'
+					);
 				} );
 			} );
 
