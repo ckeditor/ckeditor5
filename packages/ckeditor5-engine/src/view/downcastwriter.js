@@ -143,6 +143,17 @@ export default class DowncastWriter {
 	}
 
 	/**
+	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
+	 *
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into the created document fragment.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
+	 */
+	createDocumentFragment( children ) {
+		return new DocumentFragment( this.document, children );
+	}
+
+	/**
 	 * Creates a new {@link module:engine/view/text~Text text node}.
 	 *
 	 *		writer.createText( 'foo' );
