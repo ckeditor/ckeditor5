@@ -214,14 +214,16 @@ describe( 'table properties', () => {
 				describe( 'nested tables', () => {
 					// https://github.com/ckeditor/ckeditor5/issues/6177.
 					it( 'should upcast tables with nested tables in their cells', () => {
-						editor.setData( '<table style="border:1px solid red">' +
-						'<tr>' +
-							'<td>parent:00</td>' +
-							'<td>' +
-								'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
-							'</td>' +
-						'</tr>' +
-					'</table>' );
+						editor.setData(
+							'<table style="border:1px solid red">' +
+								'<tr>' +
+									'<td>parent:00</td>' +
+									'<td>' +
+										'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+									'</td>' +
+								'</tr>' +
+							'</table>'
+						);
 
 						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
@@ -233,22 +235,22 @@ describe( 'table properties', () => {
 						// Previously the test was too loose in that regard.
 						expect( getModelData( editor.model ) ).to.equal(
 							'[<table ' +
-							'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
-							'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
-							'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}">' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>' +
-										'parent:00' +
-									'</paragraph>' +
-								'</tableCell>' +
-								'<tableCell>' +
-									'<paragraph>' +
-										'child:00' +
-									'</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>]'
+								'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
+								'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
+								'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>' +
+											'parent:00' +
+										'</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>' +
+											'child:00' +
+										'</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
 						);
 					} );
 
@@ -257,20 +259,21 @@ describe( 'table properties', () => {
 						expect( () => {
 							editor.setData(
 								'<table>' +
-								'<tbody>' +
-									'<tr>' +
-										'<td> ' +
-											'<table>' +
-												'<tbody>' +
-													'<tr>' +
-														'<td style="border-bottom: 0 solid #fff;"></td>' +
-													'</tr>' +
-												'</tbody>' +
-											'</table>' +
-										'</td>' +
-									'</tr>' +
-								'</tbody>' +
-							'</table>' );
+									'<tbody>' +
+										'<tr>' +
+											'<td> ' +
+												'<table>' +
+													'<tbody>' +
+														'<tr>' +
+															'<td style="border-bottom: 0 solid #fff;"></td>' +
+														'</tr>' +
+													'</tbody>' +
+												'</table>' +
+											'</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>'
+							);
 						} ).not.to.throw();
 
 						expect( getModelData( editor.model ) ).to.equal(
@@ -289,14 +292,15 @@ describe( 'table properties', () => {
 						expect( () => {
 							editor.setData(
 								'<table>' +
-								'<tbody>' +
-									'<tr>' +
-										'<td> ' +
-											'<table style="border-bottom: 0 solid #fff;"></table>' +
-										'</td>' +
-									'</tr>' +
-								'</tbody>' +
-							'</table>' );
+									'<tbody>' +
+										'<tr>' +
+											'<td> ' +
+												'<table style="border-bottom: 0 solid #fff;"></table>' +
+											'</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>'
+							);
 						} ).not.to.throw();
 
 						expect( getModelData( editor.model ) ).to.equal(
@@ -318,22 +322,23 @@ describe( 'table properties', () => {
 						expect( () => {
 							editor.setData(
 								'<figure class="image">' +
-								'<img src="X">' +
-								'<figcaption>' +
-									'<table>' +
-										'<tr>' +
-											'<td>parent:00</td>' +
-											'<td>' +
-												'<table style="border:1px solid green">' +
-													'<tr>' +
-														'<td>child:00</td>' +
-													'</tr>' +
-												'</table>' +
-											'</td>' +
-										'</tr>' +
-									'</table>' +
-								'</figcaption>' +
-							'</figure>' );
+									'<img src="X">' +
+									'<figcaption>' +
+										'<table>' +
+											'<tr>' +
+												'<td>parent:00</td>' +
+												'<td>' +
+													'<table style="border:1px solid green">' +
+														'<tr>' +
+															'<td>child:00</td>' +
+														'</tr>' +
+													'</table>' +
+												'</td>' +
+											'</tr>' +
+										'</table>' +
+									'</figcaption>' +
+								'</figure>'
+							);
 						} ).not.to.throw();
 
 						expect( getModelData( editor.model ) ).to.equal(
