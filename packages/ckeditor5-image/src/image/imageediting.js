@@ -87,7 +87,7 @@ export default class ImageEditing extends Plugin {
 			.elementToElement( {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => toImageWidget(
-					createImageViewElement( writer, 'inline' ), writer, t( 'image widget' )
+					createImageViewElement( writer, 'inline' ), writer, t( 'inline image widget' )
 				)
 			} );
 
