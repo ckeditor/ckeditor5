@@ -32,11 +32,11 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		// looks good, doesn't work
-		window.attachTourBalloon( {
+		// eslint-disable-next-line no-undef
+		setTimeout( () => window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Block quote' ),
 			text: 'Click to insert a block quote.'
-		} );
+		} ) );
 	} )
 	.catch( err => {
 		console.error( err.stack );
