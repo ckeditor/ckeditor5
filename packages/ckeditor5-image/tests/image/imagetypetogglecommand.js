@@ -9,7 +9,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 
 import Image from '../../src/image/imageediting';
 
-describe( 'ImageBlockToInlineCommand', () => {
+describe( 'ImageTypeToggleCommand', () => {
 	let editor, command, model;
 
 	beforeEach( () => {
@@ -21,7 +21,7 @@ describe( 'ImageBlockToInlineCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = editor.commands.get( 'imageBlockToInline' );
+				command = editor.commands.get( 'imageTypeToggle' );
 			} );
 	} );
 
@@ -64,9 +64,9 @@ describe( 'ImageBlockToInlineCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is an inline image', () => {
+		it( 'should be true when the selection is an inline image', () => {
 			setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
@@ -115,6 +115,32 @@ describe( 'ImageBlockToInlineCommand', () => {
 				'<paragraph>' +
 				`[<imageInline alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
 				'</paragraph>'
+			);
+		} );
+
+		it( 'should convert inline image to block image', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
+		} );
+
+		it( 'should convert inline image with alt and srcset attributes to block image', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model,
+				`<paragraph>
+					[<imageInline alt="alt text" src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
+					</paragraph>`
+			);
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				`[<image alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>]`
 			);
 		} );
 

@@ -15,8 +15,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ImageBlockToInlineCommand from '../../src/image/imageblocktoinlinecommand';
-import ImageInlineToBlockCommand from '../../src/image/imageinlinetoblockcommand';
+import ImageTypeToggleCommand from '../../src/image/imagetypetogglecommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'ImageEditing', () => {
@@ -76,10 +75,9 @@ describe( 'ImageEditing', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
-	it( 'should register imageInsert, imageBlockToInline and imageInlineToBlock commands', () => {
+	it( 'should register imageInsert, imageTypeToggle', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
-		expect( editor.commands.get( 'imageBlockToInline' ) ).to.be.instanceOf( ImageBlockToInlineCommand );
-		expect( editor.commands.get( 'imageInlineToBlock' ) ).to.be.instanceOf( ImageInlineToBlockCommand );
+		expect( editor.commands.get( 'imageTypeToggle' ) ).to.be.instanceOf( ImageTypeToggleCommand );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.

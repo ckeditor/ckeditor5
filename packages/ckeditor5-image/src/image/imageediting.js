@@ -19,8 +19,7 @@ import {
 import { toImageWidget } from './utils';
 
 import ImageInsertCommand from './imageinsertcommand';
-import ImageBlockToInlineCommand from './imageblocktoinlinecommand';
-import ImageInlineToBlockCommand from './imageinlinetoblockcommand';
+import ImageTypeToggleCommand from './imagetypetogglecommand';
 
 /**
  * The image engine plugin.
@@ -60,6 +59,7 @@ export default class ImageEditing extends Plugin {
 			allowWhere: '$block',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
+
 		schema.register( 'imageInline', {
 			isObject: true,
 			isInline: true,
@@ -70,7 +70,7 @@ export default class ImageEditing extends Plugin {
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'image',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'block' )
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'image' )
 			} )
 			.elementToElement( {
 				model: 'imageInline',
@@ -81,13 +81,13 @@ export default class ImageEditing extends Plugin {
 			.elementToElement( {
 				model: 'image',
 				view: ( modelElement, { writer } ) => toImageWidget(
-					createImageViewElement( writer, 'block' ), writer, t( 'image widget' )
+					createImageViewElement( writer, 'image' ), writer, t( 'image widget' )
 				)
 			} )
 			.elementToElement( {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => toImageWidget(
-					createImageViewElement( writer, 'inline' ), writer, t( 'image widget' )
+					createImageViewElement( writer, 'imageInline' ), writer, t( 'image widget' )
 				)
 			} );
 
@@ -98,11 +98,11 @@ export default class ImageEditing extends Plugin {
 
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: matchImageByType( false ),
+				view: getImageTypeMatcher( 'image' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.elementToElement( {
-				view: matchImageByType( true ),
+				view: getImageTypeMatcher( 'imageInline' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.attributeToAttribute( {
@@ -135,8 +135,7 @@ export default class ImageEditing extends Plugin {
 			.add( viewFigureToModel() );
 
 		editor.commands.add( 'imageInsert', new ImageInsertCommand( editor ) );
-		editor.commands.add( 'imageBlockToInline', new ImageBlockToInlineCommand( this.editor ) );
-		editor.commands.add( 'imageInlineToBlock', new ImageInlineToBlockCommand( this.editor ) );
+		editor.commands.add( 'imageTypeToggle', new ImageTypeToggleCommand( this.editor ) );
 	}
 }
 
@@ -148,12 +147,12 @@ export default class ImageEditing extends Plugin {
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {'block'|'inline'} imageType The type of created image.
+// @param {'image'|'imageInline'} imageType The type of created image.
 // @returns {module:engine/view/containerelement~ContainerElement}
 export function createImageViewElement( writer, imageType ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 
-	const container = imageType === 'block' ?
+	const container = imageType === 'image' ?
 		writer.createContainerElement( 'figure', { class: 'image' } ) :
 		writer.createContainerElement( 'span', { class: 'image-inline' } );
 
@@ -165,9 +164,9 @@ export function createImageViewElement( writer, imageType ) {
 // {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<img>` element that is placed
 // inside the element of a provided type.
 //
-// @param {String} parentName
+// @param {'image'|'imageInline'} imageType The type of created image.
 // @returns {Function}
-function matchImageByType( matchInlineImage ) {
+function getImageTypeMatcher( imageType ) {
 	return element => {
 		const parent = element.parent;
 
@@ -182,7 +181,7 @@ function matchImageByType( matchInlineImage ) {
 			)
 		);
 
-		const incorrectParent = matchInlineImage ? isBlockImage : !isBlockImage;
+		const incorrectParent = imageType === 'image' ? !isBlockImage : isBlockImage;
 
 		if ( incorrectParent ) {
 			return null;
