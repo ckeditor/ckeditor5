@@ -11,7 +11,6 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import { first } from 'ckeditor5/src/utils';
 import {
-	UpcastWriter,
 	DowncastWriter,
 	needsPlaceholder,
 	showPlaceholder,
@@ -152,7 +151,7 @@ export default class Title extends Plugin {
 		const viewWriter = new DowncastWriter( view.document );
 
 		const rootRange = model.createRangeIn( root );
-		const viewDocumentFragment = new UpcastWriter( view.document ).createDocumentFragment();
+		const viewDocumentFragment = viewWriter.createDocumentFragment();
 
 		data.downcastDispatcher.conversionApi.options = options;
 
