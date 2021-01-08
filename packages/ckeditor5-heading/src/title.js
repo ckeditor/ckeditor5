@@ -7,18 +7,16 @@
  * @module heading/title
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Plugin } from 'ckeditor5/src/core';
 
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { first } from 'ckeditor5/src/utils';
 import {
+	UpcastWriter,
 	needsPlaceholder,
 	showPlaceholder,
 	hidePlaceholder,
 	enablePlaceholder
-} from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+} from 'ckeditor5/src/engine';
 
 // A list of element names that should be treated by the Title plugin as title-like.
 // This means that an element of a type from this list will be changed to a title element
@@ -44,7 +42,7 @@ export default class Title extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Paragraph ];
+		return [ 'Paragraph' ];
 	}
 
 	/**
@@ -149,10 +147,11 @@ export default class Title extends Plugin {
 		const data = editor.data;
 		const model = editor.model;
 		const root = editor.model.document.getRoot();
-		const viewWriter = new ViewDowncastWriter( editor.editing.view.document );
+		const view = editor.editing.view;
+		const viewWriter = view.change( viewWriter => viewWriter );
 
 		const rootRange = model.createRangeIn( root );
-		const viewDocumentFragment = new ViewDocumentFragment( editor.editing.view.document );
+		const viewDocumentFragment = new UpcastWriter( view.document ).createDocumentFragment();
 
 		data.downcastDispatcher.conversionApi.options = options;
 
