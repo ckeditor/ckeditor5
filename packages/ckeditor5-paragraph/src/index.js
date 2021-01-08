@@ -8,3 +8,4 @@
  */
 
 export { default as Paragraph } from './paragraph';
+export { default as ParagraphButtonUI } from './paragraphbuttonui';

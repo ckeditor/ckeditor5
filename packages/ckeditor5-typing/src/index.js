@@ -9,6 +9,7 @@
 
 export { default as Typing } from './typing';
 export { default as Input } from './input';
+export { default as Delete } from './delete';
 
 export { default as TextWatcher } from './textwatcher';
 export { default as TwoStepCaretMovement } from './twostepcaretmovement';

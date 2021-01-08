@@ -17,6 +17,7 @@ export { default as ObservableMixin } from './observablemixin';
 export { default as CKEditorError, logError, logWarning } from './ckeditorerror';
 
 export { default as ElementReplacer } from './elementreplacer';
+export { default as Locale } from './locale';
 
 export { default as createElement } from './dom/createelement';
 export { default as DomEmitterMixin } from './dom/emittermixin';

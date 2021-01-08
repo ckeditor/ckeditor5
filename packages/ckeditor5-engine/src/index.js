@@ -16,10 +16,18 @@ export { default as Conversion } from './conversion/conversion';
 
 export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor';
 
+export { default as InsertOperation } from './model/operation/insertoperation';
+export { default as MarkerOperation } from './model/operation/markeroperation';
+export { default as OperationFactory } from './model/operation/operationfactory';
+export { transformSets } from './model/operation/transform';
+
+export { default as DocumentSelection } from './model/documentselection';
+export { default as Range } from './model/range';
 export { default as LiveRange } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
 export { default as TreeWalker } from './model/treewalker';
+export { default as Element } from './model/element';
 
 export { default as DomConverter } from './view/domconverter';
 export { default as ViewDocument } from './view/document';
