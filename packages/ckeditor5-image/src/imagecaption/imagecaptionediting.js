@@ -115,7 +115,7 @@ export default class ImageCaptionEditing extends Plugin {
 		}
 
 		// Is currently any caption selected?
-		if ( viewCaption ) {
+		if ( viewCaption && !this.editor.isReadOnly ) {
 			// Was any caption selected before?
 			if ( lastCaption ) {
 				// Same caption as before?

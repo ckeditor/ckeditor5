@@ -170,6 +170,24 @@ describe( 'DecoupledEditorUI', () => {
 							return editor.destroy();
 						} );
 				} );
+
+				it( 'can be removed using config.toolbar.removeItems', () => {
+					return VirtualDecoupledTestEditor
+						.create( '', {
+							toolbar: {
+								items: [ 'foo', 'bar' ],
+								removeItems: [ 'bar' ]
+							}
+						} )
+						.then( editor => {
+							const items = editor.ui.view.toolbar.items;
+
+							expect( items.get( 0 ).name ).to.equal( 'foo' );
+							expect( items.length ).to.equal( 1 );
+
+							return editor.destroy();
+						} );
+				} );
 			} );
 		} );
 

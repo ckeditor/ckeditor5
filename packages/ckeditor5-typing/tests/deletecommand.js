@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DeleteCommand from '../src/deletecommand';
 import Delete from '../src/delete';
 import ChangeBuffer from '../src/utils/changebuffer';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand', () => {
 	let editor, model, doc;
@@ -25,6 +28,8 @@ describe( 'DeleteCommand', () => {
 
 				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.add( 'delete', command );
+
+				editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
@@ -314,6 +319,72 @@ describe( 'DeleteCommand', () => {
 			editor.execute( 'delete' );
 
 			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
+		} );
+
+		describe( 'with the empty first block', () => {
+			it( 'replaces the first empty block with paragraph', () => {
+				setData( model, '<heading1>[]</heading1><paragraph>foo</paragraph>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+			} );
+
+			it( 'does not replace an element when Backspace key is held', () => {
+				setData( model, '<heading1>foo[]</heading1><paragraph>bar</paragraph>' );
+
+				for ( let sequence = 1; sequence < 10; ++sequence ) {
+					editor.execute( 'delete', { sequence } );
+				}
+
+				expect( getData( model ) ).to.equal( '<heading1>[]</heading1><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'does not replace with paragraph in another paragraph already occurs in limit element', () => {
+				setData( model, '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+
+				const element = doc.getRoot().getNodeByPath( [ 0 ] );
+
+				editor.execute( 'delete' );
+
+				expect( element ).is.equal( doc.getRoot().getNodeByPath( [ 0 ] ) );
+				expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+			} );
+
+			it( 'does not replace an element if a paragraph is not allowed in current position', () => {
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( ctx.endsWith( '$root' ) && childDef.name == 'paragraph' ) {
+						return false;
+					}
+				} );
+
+				setData( model, '<heading1>[]</heading1><heading1>foo</heading1>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<heading1>[]</heading1><heading1>foo</heading1>' );
+			} );
+
+			it( 'does not replace an element if it\'s not empty', () => {
+				setData( model, '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'does not replace an element if it\'s wrapped with some other element', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				setData( model, '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
+
+				editor.execute( 'delete' );
+
+				expect( getData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
+			} );
 		} );
 	} );
 } );
