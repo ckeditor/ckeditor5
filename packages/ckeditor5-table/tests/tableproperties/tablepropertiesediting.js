@@ -211,9 +211,10 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
 				} );
 
-				// https://github.com/ckeditor/ckeditor5/issues/6177.
-				it( 'should upcast tables with nested tables in their cells', () => {
-					editor.setData( '<table style="border:1px solid red">' +
+				describe( 'nested tables', () => {
+					// https://github.com/ckeditor/ckeditor5/issues/6177.
+					it( 'should upcast tables with nested tables in their cells', () => {
+						editor.setData( '<table style="border:1px solid red">' +
 						'<tr>' +
 							'<td>parent:00</td>' +
 							'<td>' +
@@ -222,16 +223,16 @@ describe( 'table properties', () => {
 						'</tr>' +
 					'</table>' );
 
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', 'red' );
-					assertTRBLAttribute( table, 'borderStyle', 'solid' );
-					assertTRBLAttribute( table, 'borderWidth', '1px' );
+						assertTRBLAttribute( table, 'borderColor', 'red' );
+						assertTRBLAttribute( table, 'borderStyle', 'solid' );
+						assertTRBLAttribute( table, 'borderWidth', '1px' );
 
-					// Also check the entire structure of the model.
-					// Previously the test was too loose in that regard.
-					expect( getModelData( editor.model ) ).to.equal(
-						'[<table ' +
+						// Also check the entire structure of the model.
+						// Previously the test was too loose in that regard.
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table ' +
 							'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
 							'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
 							'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}">' +
@@ -248,14 +249,14 @@ describe( 'table properties', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>]'
-					);
-				} );
+						);
+					} );
 
-				// https://github.com/ckeditor/ckeditor5/issues/8393.
-				it( 'should not throw error when loading nested table with border styles', () => {
-					expect( () => {
-						editor.setData(
-							'<table>' +
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - inner cell with border style', () => {
+						expect( () => {
+							editor.setData(
+								'<table>' +
 								'<tbody>' +
 									'<tr>' +
 										'<td> ' +
@@ -270,11 +271,24 @@ describe( 'table properties', () => {
 									'</tr>' +
 								'</tbody>' +
 							'</table>' );
-					} ).not.to.throw();
+						} ).not.to.throw();
 
-					expect( () => {
-						editor.setData(
-							'<table>' +
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+									'<paragraph></paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - inner empty table with border style', () => {
+						expect( () => {
+							editor.setData(
+								'<table>' +
 								'<tbody>' +
 									'<tr>' +
 										'<td> ' +
@@ -283,14 +297,27 @@ describe( 'table properties', () => {
 									'</tr>' +
 								'</tbody>' +
 							'</table>' );
-					} ).not.to.throw();
+						} ).not.to.throw();
 
-					// Conversion will create a merged text node out of all the text contents,
-					// including the one in elements not allowed by schema in this scope.
-					// Let's make sure that upcasting will not try to use model that got processed this way.
-					expect( () => {
-						editor.setData(
-							'<figure class="image">' +
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+									'<paragraph></paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - no tables allowed in an element', () => {
+						// Conversion will create a merged text node out of all the text contents,
+						// including the one in elements not allowed by schema in this scope.
+						// Let's make sure that upcasting will not try to use model that got processed this way.
+						expect( () => {
+							editor.setData(
+								'<figure class="image">' +
 								'<img src="X">' +
 								'<figcaption>' +
 									'<table>' +
@@ -307,7 +334,21 @@ describe( 'table properties', () => {
 									'</table>' +
 								'</figcaption>' +
 							'</figure>' );
-					} ).not.to.throw();
+						} ).not.to.throw();
+
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>parent:00</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>child:00</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
 				} );
 			} );
 
