@@ -163,26 +163,18 @@ export function createImageViewElement( writer, imageType ) {
 
 // A function returning a {@link module:engine/view/matcher~Matcher} callback for a particular type of View images.
 //
-// @param {'image'|'imageInline'} imageType The type of created image.
+// @param {'image'|'imageInline'} matchImageType The type of created image.
 // @returns {Function}
-function getImageTypeMatcher( imageType ) {
+function getImageTypeMatcher( matchImageType ) {
 	return element => {
-		const parent = element.parent;
-
 		// Convert only images with src attribute.
 		if ( !element.is( 'element', 'img' ) || !element.hasAttribute( 'src' ) ) {
 			return null;
 		}
 
-		const isBlockImage = ( parent &&
-			( parent.is( 'element', 'figure' ) ||
-				( parent.is( 'element', 'a' ) && parent.parent.is( 'element', 'figure' ) )
-			)
-		);
+		const imageType = element.findAncestor( 'figure' ) ? 'image' : 'imageInline';
 
-		const incorrectParent = imageType === 'image' ? !isBlockImage : isBlockImage;
-
-		if ( incorrectParent ) {
+		if ( imageType !== matchImageType ) {
 			return null;
 		}
 
