@@ -85,8 +85,8 @@ ClassicEditor
 		} );
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
-			text: 'Click to insert an HTML snippet.'
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Page break' ),
+			text: 'Click to insert a page break.'
 		} );
 	} )
 	.catch( err => {
