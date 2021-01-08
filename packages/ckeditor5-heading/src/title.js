@@ -12,6 +12,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 import {
 	UpcastWriter,
+	DowncastWriter,
 	needsPlaceholder,
 	showPlaceholder,
 	hidePlaceholder,
@@ -148,7 +149,7 @@ export default class Title extends Plugin {
 		const model = editor.model;
 		const root = editor.model.document.getRoot();
 		const view = editor.editing.view;
-		const viewWriter = view.change( viewWriter => viewWriter );
+		const viewWriter = new DowncastWriter( view.document );
 
 		const rootRange = model.createRangeIn( root );
 		const viewDocumentFragment = new UpcastWriter( view.document ).createDocumentFragment();
