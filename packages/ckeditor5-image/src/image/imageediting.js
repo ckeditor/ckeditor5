@@ -87,7 +87,7 @@ export default class ImageEditing extends Plugin {
 			.elementToElement( {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => toImageWidget(
-					createImageViewElement( writer, 'imageInline' ), writer, t( 'image widget' )
+					createImageViewElement( writer, 'imageInline' ), writer, t( 'inline image widget' )
 				)
 			} );
 
@@ -161,8 +161,7 @@ export function createImageViewElement( writer, imageType ) {
 	return container;
 }
 
-// {@link module:engine/view/matcher~Matcher} pattern. Returns function which checks if a given element is `<img>` element that is placed
-// inside the element of a provided type.
+// A function returning a {@link module:engine/view/matcher~Matcher} callback for a particular type of View images.
 //
 // @param {'image'|'imageInline'} imageType The type of created image.
 // @returns {Function}
