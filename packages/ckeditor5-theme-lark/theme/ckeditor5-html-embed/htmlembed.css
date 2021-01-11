@@ -125,19 +125,47 @@
 	/* The preview data container. */
 	& .raw-html-embed__preview {
 		overflow: hidden;
-		box-sizing: border-box;
-		width: var(--ck-html-embed-content-width);
+		position: relative;
 		min-height: var(--ck-html-embed-content-min-height);
-		text-align: center;
-
-		& > table {
-			margin-left: auto;
-			margin-right: auto;
-		}
+		width: var(--ck-html-embed-content-width);
+		display: flex;
 
 		/* Disable all mouse interaction as long as the editor is not read–only. */
 		@nest .ck-editor__editable:not(.ck-read-only) & {
 			pointer-events: none;
 		}
+	}
+
+	& .raw-html-embed__preview-content {
+		box-sizing: border-box;
+		width: 100%;
+		position: relative;
+		margin: auto;
+
+		text-align: center;
+		background-color: var(--ck-color-base-foreground);
+
+		& > * {
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		/* The empty content fills the whole preview, so the placeholder is not visible */
+		&:empty {
+			margin: 0;
+		}
+	}
+
+	& .raw-html-embed__preview-placeholder {
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: var(--ck-disabled-opacity);
 	}
 }
