@@ -9,6 +9,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
@@ -20,7 +22,8 @@ import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePluginSet, EasyImage, Markdown, Code, CodeBlock, TodoList, Strikethrough, HorizontalLine ],
+		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, Markdown,
+			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine ],
 		toolbar: [
 			'heading',
 			'|',
