@@ -27,6 +27,35 @@
 		display: flex;
 		flex-direction: column;
 	}
+
+	& .raw-html-embed__preview {
+		position: relative;
+		overflow: hidden;
+		display: flex;
+	}
+
+	& .raw-html-embed__preview-content {
+		width: 100%;
+		position: relative;
+		margin: auto;
+
+		/* The empty content fills the whole preview, so the placeholder is not visible */
+		&:empty {
+			margin: 0;
+		}
+	}
+
+	& .raw-html-embed__preview-placeholder {
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 }
 
 .ck-content .raw-html-embed {
