@@ -128,7 +128,13 @@ export function setData( model, data, options = {} ) {
 		modelDocumentFragment = parsedResult;
 	}
 
-	model.change( writer => {
+	if ( typeof options.batchType === 'string' ) {
+		model.enqueueChange( options.batchType, writeToModel );
+	} else {
+		model.change( writeToModel );
+	}
+
+	function writeToModel( writer ) {
 		// Replace existing model in document by new one.
 		writer.remove( writer.createRangeIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
@@ -154,7 +160,7 @@ export function setData( model, data, options = {} ) {
 				writer.setSelectionAttribute( selection.getAttributes() );
 			}
 		}
-	} );
+	};
 }
 
 // Set parse as setData private method - needed for testing/spying.
