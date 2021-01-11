@@ -5,6 +5,11 @@
 
 /* global console, window, document */
 
+import tippy from 'tippy.js';
+
+import 'tippy.js/dist/tippy.css';
+import './tour-balloon.css';
+
 /**
  * Attaches a tour balloon with a description to any DOM node element.
  *
@@ -51,7 +56,6 @@ window.attachTourBalloon = function( { target, text, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	// eslint-disable-next-line no-undef
 	const tooltip = tippy( target, {
 		content,
 		theme: 'light-border',
@@ -68,7 +72,6 @@ window.attachTourBalloon = function( { target, text, tippyOptions } ) {
 		...tippyOptions
 	} );
 
-	// eslint-disable-next-line no-undef
 	const closeButton = tooltip.popper.querySelector( '.tippy-content__close-button' );
 
 	closeButton.addEventListener( 'click', () => {
