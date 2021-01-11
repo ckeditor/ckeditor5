@@ -203,20 +203,6 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					// The snippet source.
 					jsFiles.push( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.js' ) );
 
-					// TODO: Remove.
-					// jsFiles.push( path.join( snippetData.relativeOutputPath,
-					// 	'../../../../../', 'node_modules', '@popperjs', 'core', 'dist', 'umd', 'popper.min.js' ) );
-					// jsFiles.push( path.join( snippetData.relativeOutputPath,
-					// 	'../../../../../', 'node_modules', 'tippy.js', 'dist', 'tippy-bundle.umd.min.js' ) );
-					// jsFiles.push( path.join( snippetData.basePath, 'assets', 'tour-balloon.js' ) );
-
-					// TODO: Remove.
-					// cssFiles.push( path.join( snippetData.relativeOutputPath,
-					// 	'../../../../../', 'node_modules', 'tippy.js', 'dist', 'tippy.css' ) );
-					// cssFiles.push( path.join( snippetData.relativeOutputPath,
-					// 	'../../../../../', 'node_modules', 'tippy.js', 'themes', 'light-border.css' ) );
-					// cssFiles.push( path.join( snippetData.basePath, 'assets', 'tour-balloon.css' ) );
-
 					if ( wasCSSGenerated ) {
 						cssFiles.unshift( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.css' ) );
 					}
@@ -571,10 +557,13 @@ function countUniqueSnippets( snippets ) {
 }
 
 /**
- * Returns
+ * Returns a configuration for webpack that parses the `/docs/_snippets/assets.js` file.
+ * Thanks to that, we're able to load libraries from the `node_modules` directory in our snippets.
+ *
  * @param {Object} config
- * @param {Boolean} config.production
- * @param {Object} config.snippetWebpackConfig
+ * @param {Boolean} config.production Whether to build for production.
+ * @param {Object} config.snippetWebpackConfig The configuration returned by the `getWebpackConfig()` function.
+ * It is used to configure the output path for the asset file.
  * @returns {Object}
  */
 function getWebpackConfigForAssets( config ) {
