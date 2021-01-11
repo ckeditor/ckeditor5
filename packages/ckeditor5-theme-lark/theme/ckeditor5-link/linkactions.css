@@ -11,8 +11,6 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-link-actions {
-	padding: var(--ck-spacing-standard);
-
 	& .ck-button.ck-link-actions__preview {
 		padding-left: 0;
 		padding-right: 0;
@@ -52,11 +50,6 @@
 		}
 	}
 
-	&:focus {
-		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
-		outline: none;
-	}
-
 	@mixin ck-dir ltr {
 		& .ck-button:not(:first-child) {
 			margin-left: var(--ck-spacing-standard);
@@ -70,9 +63,6 @@
 	}
 
 	@mixin ck-media-phone {
-		padding: 0;
-		width: calc(.8 * var(--ck-input-text-width));
-
 		& .ck-button.ck-link-actions__preview {
 			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
 
@@ -83,27 +73,12 @@
 		}
 
 		& .ck-button:not(.ck-link-actions__preview) {
-			padding: var(--ck-spacing-standard);
-			margin-top: var(--ck-spacing-standard);
-
-			border-radius: 0;
-			border: 0;
-			border-top: 1px solid var(--ck-color-base-border);
-
 			@mixin ck-dir ltr {
 				margin-left: 0;
-
-				&:first-of-type {
-					border-right: 1px solid var(--ck-color-base-border);
-				}
 			}
 
 			@mixin ck-dir rtl {
 				margin-left: 0;
-
-				&:last-of-type {
-					border-right: 1px solid var(--ck-color-base-border);
-				}
 			}
 		}
 	}

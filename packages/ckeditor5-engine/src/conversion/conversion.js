@@ -10,6 +10,7 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import UpcastHelpers from './upcasthelpers';
 import DowncastHelpers from './downcasthelpers';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.
@@ -74,10 +75,10 @@ export default class Conversion {
 		this._helpers = new Map();
 
 		// Define default 'downcast' & 'upcast' dispatchers groups. Those groups are always available as two-way converters needs them.
-		this._downcast = Array.isArray( downcastDispatchers ) ? downcastDispatchers : [ downcastDispatchers ];
+		this._downcast = toArray( downcastDispatchers );
 		this._createConversionHelpers( { name: 'downcast', dispatchers: this._downcast, isDowncast: true } );
 
-		this._upcast = Array.isArray( upcastDispatchers ) ? upcastDispatchers : [ upcastDispatchers ];
+		this._upcast = toArray( upcastDispatchers );
 		this._createConversionHelpers( { name: 'upcast', dispatchers: this._upcast, isDowncast: false } );
 	}
 
@@ -636,9 +637,7 @@ function* _getUpcastDefinition( model, view, upcastAlso ) {
 	yield { model, view };
 
 	if ( upcastAlso ) {
-		upcastAlso = Array.isArray( upcastAlso ) ? upcastAlso : [ upcastAlso ];
-
-		for ( const upcastAlsoItem of upcastAlso ) {
+		for ( const upcastAlsoItem of toArray( upcastAlso ) ) {
 			yield { model, view: upcastAlsoItem };
 		}
 	}

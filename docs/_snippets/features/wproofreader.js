@@ -17,6 +17,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, EasyImage, WProofreader ],
 		wproofreader: {
 			serviceId: '1:Eebp63-lWHbt2-ASpHy4-AYUpy2-fo3mk4-sKrza1-NsuXy4-I1XZC2-0u2F54-aqYWd1-l3Qf14-umd',
+			lang: 'en_AI',
 			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
 		},
 		cloudServices: CS_CONFIG,
@@ -36,6 +37,8 @@ ClassicEditor
 				'link',
 				'mediaEmbed',
 				'insertTable',
+				'|',
+				'wproofreader',
 				'|',
 				'undo',
 				'redo'

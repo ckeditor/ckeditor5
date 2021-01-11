@@ -1085,7 +1085,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			it( 'should react to removed row form the end of a body rows (no heading rows)', () => {
+			it( 'should react to removed row from the end of a body rows (no heading rows)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -1149,7 +1149,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			it( 'should react to removed row form the end of a heading rows (no body rows)', () => {
+			it( 'should react to removed row from the end of a heading rows (no body rows)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
@@ -1182,7 +1182,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			it( 'should react to removed row form the end of a heading rows (first cell in body has colspan)', () => {
+			it( 'should react to removed row from the end of a heading rows (first cell in body has colspan)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01', '02', '03' ],
 					[ { rowspan: 2, colspan: 2, contents: '10' }, '12', '13' ],

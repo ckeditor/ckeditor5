@@ -9,8 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow } from './converters/upcasttable';
+import upcastTable, { skipEmptyTableRow } from './converters/upcasttable';
 import {
+	convertParagraphInTableCell,
 	downcastInsertCell,
 	downcastInsertRow,
 	downcastInsertTable,
@@ -80,10 +81,10 @@ export default class TableEditing extends Plugin {
 			isSelectable: true
 		} );
 
-		// Allow all $block content inside table cell.
+		// Allow all $block content inside a table cell.
 		schema.extend( '$block', { allowIn: 'tableCell' } );
 
-		// Disallow table in table.
+		// Disallow a table in a table.
 		schema.addChildCheck( ( context, childDefinition ) => {
 			if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
 				return false;
@@ -106,16 +107,21 @@ export default class TableEditing extends Plugin {
 		// Table cell conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'th' } );
-		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
-		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
+
+		// Duplicates code - needed to properly refresh paragraph inside a table cell.
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'paragraph',
+			view: convertParagraphInTableCell,
+			converterPriority: 'high'
+		} );
 
 		// Table attributes conversion.
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
-		// Table heading columns conversion (change of heading rows requires reconversion of the whole table).
+		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
 		// Define all the commands.
@@ -146,7 +152,7 @@ export default class TableEditing extends Plugin {
 
 		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
-		injectTableCellRefreshPostFixer( model );
+		injectTableCellRefreshPostFixer( model, editor.editing.mapper );
 		injectTableCellParagraphPostFixer( model );
 	}
 

@@ -31,4 +31,15 @@
  */
 .ck.ck-link-form_layout-vertical {
 	display: block;
+
+	/*
+	 * Whether the form is in the responsive mode or not, if there are decorator buttons
+	 * keep the top margin of action buttons medium.
+	 */
+	& .ck-button {
+		&.ck-button-save,
+		&.ck-button-cancel {
+			margin-top: var(--ck-spacing-medium);
+		}
+	}
 }

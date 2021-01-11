@@ -7,6 +7,8 @@
  * @module utils/ckeditorerror
  */
 
+/* globals console */
+
 /**
  * URL to the documentation with error codes.
  */
@@ -22,9 +24,10 @@ export const DOCUMENTATION_URL =
  * by the {@link module:watchdog/watchdog~Watchdog watchdog} (if it is integrated),
  * * If the editor is incorrectly integrated or the editor API is used in the wrong way. This way you will give
  * feedback to the developer as soon as possible. Keep in mind that for common integration issues which should not
- * stop editor initialization (like missing upload adapter, wrong name of a toolbar component) we use `console.warn()` with
- * {@link module:utils/ckeditorerror~attachLinkToDocumentation `attachLinkToDocumentation()`}
- * to improve developers experience and let them see the working editor as soon as possible.
+ * stop editor initialization (like missing upload adapter, wrong name of a toolbar component) we use
+ * {@link module:utils/ckeditorerror~logWarning `logWarning()`} and
+ * {@link module:utils/ckeditorerror~logError `logError()`}
+ * to improve developers experience and let them see the a working editor as soon as possible.
  *
  *		/**
  *		 * Error thrown when a plugin cannot be loaded due to JavaScript errors, lack of plugins with a given name, etc.
@@ -56,11 +59,7 @@ export default class CKEditorError extends Error {
 	 * data object will also be later available under the {@link #data} property.
 	 */
 	constructor( errorName, context, data ) {
-		let message = attachLinkToDocumentation( errorName );
-
-		if ( data ) {
-			message += ' ' + JSON.stringify( data );
-		}
+		const message = `${ errorName }${ ( data ? ` ${ JSON.stringify( data ) }` : '' ) }${ getLinkToDocumentationMessage( errorName ) }`;
 
 		super( message );
 
@@ -92,11 +91,12 @@ export default class CKEditorError extends Error {
 	}
 
 	/**
-	 * A utility that ensures the the thrown error is a {@link module:utils/ckeditorerror~CKEditorError} one.
+	 * A utility that ensures that the thrown error is a {@link module:utils/ckeditorerror~CKEditorError} one.
 	 * It is useful when combined with the {@link module:watchdog/watchdog~Watchdog} feature, which can restart the editor in case
 	 * of a {@link module:utils/ckeditorerror~CKEditorError} error.
 	 *
-	 * @param {Error} err An error.
+	 * @static
+	 * @param {Error} err The error to rethrow.
 	 * @param {Object} context An object connected through properties with the editor instance. This context will be used
 	 * by the watchdog to verify which editor should be restarted.
 	 */
@@ -125,21 +125,60 @@ export default class CKEditorError extends Error {
 }
 
 /**
- * Attaches the link to the documentation at the end of the error message. Use whenever you log a warning or error on the
- * console. It is also used by {@link module:utils/ckeditorerror~CKEditorError}.
+ * Logs a warning to the console with a properly formatted message and adds a link to the documentation.
+ * Use whenever you want to log a warning to the console.
  *
- *		 /**
- *		  * There was a problem processing the configuration of the toolbar. The item with the given
- *		  * name does not exist so it was omitted when rendering the toolbar.
- *		  *
- *		  * @error toolbarview-item-unavailable
- *		  * @param {String} name The name of the component.
- *		  * /
- *		 console.warn( attachLinkToDocumentation( 'toolbarview-item-unavailable' ), { name } );
+ *		/**
+ *		 * There was a problem processing the configuration of the toolbar. The item with the given
+ *		 * name does not exist, so it was omitted when rendering the toolbar.
+ *		 *
+ *		 * @error toolbarview-item-unavailable
+ *		 * @param {String} name The name of the component.
+ *		 * /
+ *		logWarning( 'toolbarview-item-unavailable', { name } );
  *
- * @param {String} errorName Error name to be linked.
+ * See also {@link module:utils/ckeditorerror~CKEditorError} for an explanation when to throw an error and when to log
+ * a warning or an error to the console.
+ *
+ * @param {String} errorName The error name to be logged.
+ * @param {Object} [data] Additional data to be logged.
  * @returns {String}
  */
-export function attachLinkToDocumentation( errorName ) {
-	return errorName + ` Read more: ${ DOCUMENTATION_URL }#error-${ errorName }\n`;
+export function logWarning( errorName, data ) {
+	console.warn( ...formatConsoleArguments( errorName, data ) );
+}
+
+/**
+ * Logs an error to the console with a properly formatted message and adds a link to the documentation.
+ * Use whenever you want to log an error to the console.
+ *
+ *		/**
+ *		 * There was a problem processing the configuration of the toolbar. The item with the given
+ *		 * name does not exist, so it was omitted when rendering the toolbar.
+ *		 *
+ *		 * @error toolbarview-item-unavailable
+ *		 * @param {String} name The name of the component.
+ *		 * /
+ *		 logError( 'toolbarview-item-unavailable', { name } );
+ *
+ * **Note**: In most cases logging a warning using {@link module:utils/ckeditorerror~logWarning} is enough.
+ *
+ * See also {@link module:utils/ckeditorerror~CKEditorError} for an explanation when to use each method.
+ *
+ * @param {String} errorName The error name to be logged.
+ * @param {Object} [data] Additional data to be logged.
+ * @returns {String}
+ */
+export function logError( errorName, data ) {
+	console.error( ...formatConsoleArguments( errorName, data ) );
+}
+
+function getLinkToDocumentationMessage( errorName ) {
+	return `\nRead more: ${ DOCUMENTATION_URL }#error-${ errorName }`;
+}
+
+function formatConsoleArguments( errorName, data ) {
+	const documentationMessage = getLinkToDocumentationMessage( errorName );
+
+	return data ? [ errorName, data, documentationMessage ] : [ errorName, documentationMessage ];
 }

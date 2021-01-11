@@ -203,7 +203,7 @@ export default class WordCount extends Plugin {
 
 			if ( displayWords || displayWords === undefined ) {
 				this.bind( '_wordsLabel' ).to( this, 'words', words => {
-					return t( 'Words: %0', [ words ] );
+					return t( 'Words: %0', words );
 				} );
 
 				children.push( {
@@ -221,7 +221,7 @@ export default class WordCount extends Plugin {
 
 			if ( displayCharacters || displayCharacters === undefined ) {
 				this.bind( '_charactersLabel' ).to( this, 'characters', words => {
-					return t( 'Characters: %0', [ words ] );
+					return t( 'Characters: %0', words );
 				} );
 
 				children.push( {

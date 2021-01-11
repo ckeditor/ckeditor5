@@ -7,8 +7,6 @@
  * @module mention/mentionui
  */
 
-/* global console */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -16,7 +14,7 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import { debounce } from 'lodash-es';
 
@@ -156,11 +154,9 @@ export default class MentionUI extends Plugin {
 				 * See {@link module:mention/mention~MentionConfig}.
 				 *
 				 * @error mentionconfig-incorrect-marker
+				 * @param {String} marker Configured marker
 				 */
-				throw new CKEditorError(
-					'mentionconfig-incorrect-marker',
-					null
-				);
+				throw new CKEditorError( 'mentionconfig-incorrect-marker', null, { marker } );
 			}
 
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
@@ -348,8 +344,9 @@ export default class MentionUI extends Plugin {
 				 * not displayed at all.
 				 *
 				 * @error mention-feed-callback-error
+				 * @param {String} marker Configured marker for which error occurred.
 				 */
-				console.warn( attachLinkToDocumentation( 'mention-feed-callback-error' ) );
+				logWarning( 'mention-feed-callback-error', { marker } );
 			} );
 	}
 

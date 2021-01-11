@@ -114,9 +114,9 @@ export default class ListStyleEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		// First the most-outer `listItem` in the first list reference.
-		// If found, lists should be merged and this `listItem` provides the `listStyle` attribute
-		// and it' also a starting point when searching for items in the second list.
+		// First the outer-most`listItem` in the first list reference.
+		// If found, the lists should be merged and this `listItem` provides the `listStyle` attribute
+		// and it is also a starting point when searching for items in the second list.
 		let firstMostOuterItem;
 
 		// Check whether the removed content is between two lists.
@@ -213,7 +213,7 @@ function upcastListItemStyle() {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 			const listParent = data.viewItem.parent;
 			const listStyle = listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
-			const listItem = data.modelRange.start.nodeAfter;
+			const listItem = data.modelRange.start.nodeAfter || data.modelRange.end.nodeBefore;
 
 			conversionApi.writer.setAttribute( 'listStyle', listStyle, listItem );
 		}, { priority: 'low' } );
@@ -249,8 +249,8 @@ function downcastListStyleAttribute() {
 
 	// Checks whether specified list items belong to the same list.
 	//
-	// @param {module:engine/model/element~Element} listItem1 The first list item to check.
-	// @param {module:engine/model/element~Element|null} listItem2 The second list item to check.
+	// @param {module:engine/model/element~Element} `listItem1` The first list item to check.
+	// @param {module:engine/model/element~Element|null} `listItem2` The second list item to check.
 	// @returns {Boolean}
 	function areRepresentingSameList( listItem1, listItem2 ) {
 		return listItem2 &&
@@ -295,7 +295,7 @@ function fixListAfterIndentListCommand( editor ) {
 
 		const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === rootIndent );
 
-		// A case where a few list items are intended must be checked separately
+		// A case where a few list items are indented must be checked separately
 		// since `getSiblingListItem()` returns the first changed element.
 		// ■ List item 1.
 		//     ○ [List item 2.
@@ -490,43 +490,100 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 				} else {
 					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
 				}
-
 				wasFixed = true;
+			} else {
+				// Adjust the `listStyle` attribute for inserted (pasted) items. See #8160.
+				//
+				// ■ List item 1. // [listStyle="square", listType="bulleted"]
+				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+				//     ○ [] (selection is here)
+				//
+				// Then, pasting a list with different attributes (listStyle, listType):
+				//
+				// 1. First. // [listStyle="decimal", listType="numbered"]
+				// 2. Second // [listStyle="decimal", listType="numbered"]
+				//
+				// The `listType` attribute will be corrected by the `ListEditing` converters.
+				// We need to adjust the `listStyle` attribute. Expected structure:
+				//
+				// ■ List item 1. // [listStyle="square", listType="bulleted"]
+				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+				//     ○ First. // [listStyle="circle", listType="bulleted"]
+				//     ○ Second // [listStyle="circle", listType="bulleted"]
+				const previousSibling = item.previousSibling;
+
+				if ( shouldInheritListTypeFromPreviousItem( previousSibling, item ) ) {
+					writer.setAttribute( 'listStyle', previousSibling.getAttribute( 'listStyle' ), item );
+
+					wasFixed = true;
+				}
 			}
 		}
 
 		return wasFixed;
 	};
+}
 
-	// Checks whether the `listStyle` attribute should be copied from the `baseItem` element.
-	//
-	// The attribute should be copied if the inserted element does not have defined it and
-	// the value for the element is other than default in the base element.
-	//
-	// @param {module:engine/model/element~Element|null} baseItem
-	// @param {module:engine/model/element~Element} itemToChange
-	// @returns {Boolean}
-	function shouldInheritListType( baseItem, itemToChange ) {
-		if ( !baseItem ) {
-			return false;
-		}
-
-		const baseListStyle = baseItem.getAttribute( 'listStyle' );
-
-		if ( !baseListStyle ) {
-			return false;
-		}
-
-		if ( baseListStyle === DEFAULT_LIST_TYPE ) {
-			return false;
-		}
-
-		if ( baseItem.getAttribute( 'listType' ) !== itemToChange.getAttribute( 'listType' ) ) {
-			return false;
-		}
-
-		return true;
+// Checks whether the `listStyle` attribute should be copied from the `baseItem` element.
+//
+// The attribute should be copied if the inserted element does not have defined it and
+// the value for the element is other than default in the base element.
+//
+// @param {module:engine/model/element~Element|null} baseItem
+// @param {module:engine/model/element~Element} itemToChange
+// @returns {Boolean}
+function shouldInheritListType( baseItem, itemToChange ) {
+	if ( !baseItem ) {
+		return false;
 	}
+
+	const baseListStyle = baseItem.getAttribute( 'listStyle' );
+
+	if ( !baseListStyle ) {
+		return false;
+	}
+
+	if ( baseListStyle === DEFAULT_LIST_TYPE ) {
+		return false;
+	}
+
+	if ( baseItem.getAttribute( 'listType' ) !== itemToChange.getAttribute( 'listType' ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+// Checks whether the `listStyle` attribute should be copied from previous list item.
+//
+// The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
+// Top-level lists are not normalized as we allow side-by-side list of different types.
+//
+// @param {module:engine/model/element~Element|null} previousItem
+// @param {module:engine/model/element~Element} itemToChange
+// @returns {Boolean}
+function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange ) {
+	if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
+		return false;
+	}
+
+	if ( itemToChange.getAttribute( 'listType' ) !== previousItem.getAttribute( 'listType' ) ) {
+		return false;
+	}
+
+	const previousItemIndent = previousItem.getAttribute( 'listIndent' );
+
+	if ( previousItemIndent < 1 || previousItemIndent !== itemToChange.getAttribute( 'listIndent' ) ) {
+		return false;
+	}
+
+	const previousItemListStyle = previousItem.getAttribute( 'listStyle' );
+
+	if ( !previousItemListStyle || previousItemListStyle === itemToChange.getAttribute( 'listStyle' ) ) {
+		return false;
+	}
+
+	return true;
 }
 
 // Removes the `listStyle` attribute from "todo" list items.
@@ -570,7 +627,7 @@ function restoreDefaultListStyle( editor ) {
 	};
 }
 
-// Returns `listItem` that were inserted or changed.
+// Returns the `listItem` that was inserted or changed.
 //
 // @param {Array.<Object>} changes The changes list returned by the differ.
 // @returns {Array.<module:engine/model/element~Element>}

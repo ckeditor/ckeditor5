@@ -109,7 +109,7 @@
  * build with complex features, create a {@glink builds/guides/development/custom-builds custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
- * about {@glink builds/guides/integration/configuration#toolbar-setup toolbar setup}.
+ * about the {@glink features/toolbar/toolbar toolbar setup}.
  *
  * @member {Array.<Function>} module:core/editor/editorconfig~EditorConfig#extraPlugins
  */
@@ -142,7 +142,7 @@
  *
  *		const config = {
  *			toolbar: {
- *				items: [ 'bold', 'italic', '|', 'undo', 'redo' ],
+ *				items: [ 'bold', 'italic', '|', 'undo', 'redo', '-', 'numberedList', 'bulletedList' ],
  *
  *				viewportTopOffset: 30,
  *
@@ -161,11 +161,17 @@
  *
  *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *
+ *	or `'-'` to make a line break and render items in multiple lines:
+ *
+ *		toolbar: [ 'bold', 'italic', '-', 'undo', 'redo' ]
+ *
+ *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`.
+ *
  * * **`toolbar.viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
- * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set `true`, the toolbar will stop grouping items that wrap to the next line when
- * there is not enough space to display them in a single row.
+ * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items
+ * and let them wrap to the next line if there is not enough space to display them in a single row.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
  */

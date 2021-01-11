@@ -12,6 +12,13 @@ import { upperFirst } from 'lodash-es';
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
 
+// Simplified email test - should be run over previously found URL.
+const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
+
+// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
+// or non-word characters at the beginning of the link ('/', '#' etc.).
+const PROTOCOL_REG_EXP = /^((\w+:(\/{2,})?)|(\W))/i;
+
 /**
  * A keystroke used by the {@link module:link/linkui~LinkUI link UI feature}.
  */
@@ -28,7 +35,7 @@ export function isLinkElement( node ) {
 }
 
 /**
- * Creates link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
  *
  * @param {String} href
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
@@ -134,4 +141,33 @@ export function isImageAllowed( element, schema ) {
 	}
 
 	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
+}
+
+/**
+ * Returns `true` if the specified `value` is an email.
+ *
+ * @params {String} value
+ * @returns {Boolean}
+ */
+export function isEmail( value ) {
+	return EMAIL_REG_EXP.test( value );
+}
+
+/**
+ * Adds the protocol prefix to the specified `link` when:
+ *
+ * * it does not contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
+ * configuration value provided,
+ * * or the link is an email address.
+ *
+ *
+ * @params {String} link
+ * @params {String} defaultProtocol
+ * @returns {Boolean}
+ */
+export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
+	const protocol = isEmail( link ) ? 'mailto:' : defaultProtocol;
+	const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( link );
+
+	return link && isProtocolNeeded ? protocol + link : link;
 }

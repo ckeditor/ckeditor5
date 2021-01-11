@@ -7,7 +7,7 @@
 	padding: 0 0 var(--ck-spacing-large);
 
 	&:focus {
-		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
+		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
 		outline: none;
 	}
 

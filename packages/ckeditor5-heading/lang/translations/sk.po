@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "Paragraf"
+msgstr "Odsek"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
