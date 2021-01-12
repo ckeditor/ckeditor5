@@ -12,6 +12,8 @@ import UpdateHtmlEmbedCommand from '../src/updatehtmlembedcommand';
 import InsertHtmlEmbedCommand from '../src/inserthtmlembedcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import { createDataTransfer } from '@ckeditor/ckeditor5-clipboard/tests/clipboard';
 
 describe( 'HtmlEmbedEditing', () => {
 	let element, editor, model, view, viewDocument;
@@ -24,7 +26,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ HtmlEmbedEditing ]
+				plugins: [ HtmlEmbedEditing, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -246,6 +248,33 @@ describe( 'HtmlEmbedEditing', () => {
 				const rawHtml = model.document.getRoot().getChild( 0 );
 
 				expect( rawHtml.getAttribute( 'value' ) ).to.equal( rawContent );
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5/issues/8789.
+			it( 'should convert content from clipboard', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html':
+						'<div class="raw-html-embed">' +
+							'<b>Foo B.</b>' +
+							'<i>Foo I.</i>' +
+							'<u>Foo U.</u>' +
+						'</div>',
+					'text/plain': 'plain text'
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation: sinon.spy(),
+					preventDefault: sinon.spy()
+				} );
+
+				const rawHtml = model.document.getRoot().getChild( 0 );
+
+				expect( rawHtml.getAttribute( 'value' ) ).to.equal(
+					'<b>Foo B.</b>' +
+					'<i>Foo I.</i>' +
+					'<u>Foo U.</u>'
+				);
 			} );
 		} );
 	} );

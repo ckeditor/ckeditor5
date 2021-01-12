@@ -452,8 +452,7 @@ export default class DataController {
 	 * be treated as a raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
-		// The `this.processor` can be the same instance as the `this.htmlProcessor`.
-		// Do not register same pattern twice then.
+		// No need to register the pattern if both `htmlProcessor` and `processor` are the same instances.
 		if ( this.processor && this.processor !== this.htmlProcessor ) {
 			this.processor.registerRawContentMatcher( pattern );
 		}

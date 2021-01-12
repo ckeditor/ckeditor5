@@ -584,14 +584,6 @@ describe( 'Clipboard feature', () => {
 				);
 			} );
 		} );
-
-		function createDataTransfer( data ) {
-			return {
-				getData( type ) {
-					return data[ type ];
-				}
-			};
-		}
 	} );
 
 	describe( 'clipboard copy/cut pipeline', () => {
@@ -833,3 +825,11 @@ describe( 'Clipboard feature', () => {
 		}
 	} );
 } );
+
+export function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
+}
