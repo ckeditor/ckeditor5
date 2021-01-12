@@ -9,14 +9,14 @@
  * @module widget/widgettypearound
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
+import { Plugin } from 'ckeditor5/src/core';
+import { Template } from 'ckeditor5/src/ui';
 import {
 	isArrowKeyCode,
 	isForwardArrowKeyCode,
-	keyCodes
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+	keyCodes,
+	priorities
+} from 'ckeditor5/src/utils';
 
 import {
 	isTypeAroundWidget,
@@ -29,7 +29,7 @@ import {
 
 import {
 	isNonTypingKeystroke
-} from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+} from 'ckeditor5/src/typing';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';

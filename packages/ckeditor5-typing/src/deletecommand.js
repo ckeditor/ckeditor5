@@ -7,8 +7,8 @@
  * @module typing/deletecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import count from '@ckeditor/ckeditor5-utils/src/count';
+import { Command } from 'ckeditor5/src/core';
+import { count } from 'ckeditor5/src/utils';
 
 import ChangeBuffer from './utils/changebuffer';
 

@@ -13,7 +13,7 @@
  * {@link module:ui/view~View#template template}.
  *
  *		// In a class extending View.
- *		import preventDefault from '@ckeditor/ckeditor5-ui/src/bindings/preventdefault';
+ *		import { preventDefault } from 'ckeditor5/src/ui';
  *
  *		// ...
  *

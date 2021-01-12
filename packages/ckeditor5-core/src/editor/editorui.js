@@ -9,11 +9,8 @@
 
 /* globals console */
 
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { ComponentFactory } from 'ckeditor5/src/ui';
+import { FocusTracker, mix, EmitterMixin } from 'ckeditor5/src/utils';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.

@@ -9,6 +9,7 @@
 
 export { default as Typing } from './typing';
 export { default as Input } from './input';
+export { default as Delete } from './delete';
 
 export { default as TextWatcher } from './textwatcher';
 export { default as TwoStepCaretMovement } from './twostepcaretmovement';
@@ -16,3 +17,5 @@ export { default as TwoStepCaretMovement } from './twostepcaretmovement';
 export { default as inlineHighlight } from './utils/inlinehighlight';
 export { default as findAttributeRange } from './utils/findattributerange';
 export { default as getLastTextLine } from './utils/getlasttextline';
+
+export * from './utils/injectunsafekeystrokeshandling';

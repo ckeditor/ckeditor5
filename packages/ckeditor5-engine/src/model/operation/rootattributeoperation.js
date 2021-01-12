@@ -8,7 +8,7 @@
  */
 
 import Operation from './operation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.

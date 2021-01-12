@@ -7,8 +7,7 @@
  * @module widget/highlightstack
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { mix, EmitterMixin } from 'ckeditor5/src/utils';
 
 /**
  * Class used to handle correct order of highlights on elements.

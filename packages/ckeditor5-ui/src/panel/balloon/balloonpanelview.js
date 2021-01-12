@@ -8,10 +8,7 @@
  */
 
 import View from '../../view';
-import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
-import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { getOptimalPosition, isRange, toUnit, global } from 'ckeditor5/src/utils';
 import { isElement } from 'lodash-es';
 
 import '../../../theme/components/panel/balloonpanel.css';

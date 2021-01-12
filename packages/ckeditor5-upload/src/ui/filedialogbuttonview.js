@@ -7,8 +7,7 @@
  * @module upload/ui/filedialogbuttonview
  */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { View, ButtonView } from 'ckeditor5/src/ui';
 
 /**
  * The file dialog button view.

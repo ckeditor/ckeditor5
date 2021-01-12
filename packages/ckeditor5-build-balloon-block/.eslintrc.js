@@ -3,9 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/**
- * @module paragraph
- */
+/* eslint-env node */
 
-export { default as Paragraph } from './paragraph';
-export { default as ParagraphButtonUI } from './paragraphbuttonui';
+'use strict';
+
+module.exports = {
+	rules: {
+		'ckeditor5-rules/ckeditor-dll-import': 'off'
+	}
+};

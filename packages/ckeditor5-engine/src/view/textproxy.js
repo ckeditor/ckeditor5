@@ -7,7 +7,7 @@
  * @module engine/view/textproxy
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * TextProxy is a wrapper for substring of {@link module:engine/view/text~Text}. Instance of this class is created by

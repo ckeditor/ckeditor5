@@ -7,7 +7,7 @@
  * @module paragraph/insertparagraphcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific

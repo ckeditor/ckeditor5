@@ -7,9 +7,8 @@ import Matcher from '../view/matcher';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning, priorities } from 'ckeditor5/src/utils';
 
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
 /**

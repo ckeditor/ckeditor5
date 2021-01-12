@@ -7,17 +7,10 @@
  * @module upload/filerepository
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Plugin, PendingActions } from 'ckeditor5/src/core';
+import { CKEditorError, logWarning, ObservableMixin, Collection, mix, uid } from 'ckeditor5/src/utils';
 
 import FileReader from './filereader.js';
-
-import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
 
 /**
  * File repository plugin. A central point for managing file upload.

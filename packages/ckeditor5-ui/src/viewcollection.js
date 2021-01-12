@@ -7,8 +7,7 @@
  * @module ui/viewcollection
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { Collection, CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * Collects {@link module:ui/view~View} instances.

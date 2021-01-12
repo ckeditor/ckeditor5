@@ -12,7 +12,7 @@
 import Template from '../template';
 import ViewCollection from '../viewcollection';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import { createElement } from 'ckeditor5/src/utils';
 
 /**
  * This is a special {@link module:ui/viewcollection~ViewCollection} dedicated to elements that are detached

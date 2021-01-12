@@ -7,10 +7,8 @@
  * @module typing/twostepcaretmovement
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { Plugin } from 'ckeditor5/src/core';
+import { keyCodes, priorities } from 'ckeditor5/src/utils';
 
 /**
  * This plugin enables the two-step caret (phantom) movement behavior for

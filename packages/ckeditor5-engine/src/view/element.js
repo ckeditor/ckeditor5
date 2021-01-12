@@ -7,12 +7,10 @@
  * @module engine/view/element
  */
 
+import { toMap, isIterable, toArray } from 'ckeditor5/src/utils';
 import Node from './node';
 import Text from './text';
 import TextProxy from './textproxy';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import StylesMap from './stylesmap';
 

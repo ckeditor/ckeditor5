@@ -7,8 +7,8 @@
  * @module select-all/selectallediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { Plugin } from 'ckeditor5/src/core';
+import { getCode, parseKeystroke } from 'ckeditor5/src/utils';
 import SelectAllCommand from './selectallcommand';
 
 const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );

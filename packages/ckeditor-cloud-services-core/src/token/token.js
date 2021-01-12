@@ -9,9 +9,7 @@
 
 /* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { mix, ObservableMixin, CKEditorError } from 'ckeditor5/src/utils';
 
 const DEFAULT_OPTIONS = { autoRefresh: true };
 const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;

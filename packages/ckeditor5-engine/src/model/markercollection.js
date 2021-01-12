@@ -8,9 +8,7 @@
  */
 
 import LiveRange from './liverange';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { EmitterMixin, CKEditorError, mix } from 'ckeditor5/src/utils';
 
 /**
  * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.

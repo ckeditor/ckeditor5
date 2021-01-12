@@ -13,7 +13,7 @@ import Position from '../position';
 import Range from '../range';
 import { _insert, _move } from './utils';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * Operation to split {@link module:engine/model/element~Element an element} at given

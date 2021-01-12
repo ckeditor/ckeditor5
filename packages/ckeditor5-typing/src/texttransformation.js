@@ -7,7 +7,7 @@
  * @module typing/texttransformation
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import TextWatcher from './textwatcher';
 import { escapeRegExp } from 'lodash-es';
 

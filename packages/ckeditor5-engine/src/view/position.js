@@ -7,14 +7,13 @@
  * @module engine/view/position
  */
 
+import { compareArrays, CKEditorError } from 'ckeditor5/src/utils';
 import TreeWalker from './treewalker';
-
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
 // To check if component is loaded more than once.
-import '@ckeditor/ckeditor5-utils/src/version';
+// eslint-disable-next-line no-duplicate-imports, no-unused-vars
+import { version } from 'ckeditor5/src/utils';
 
 /**
  * Position in the view tree. Position is represented by its parent node and an offset in this parent.

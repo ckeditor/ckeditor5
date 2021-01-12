@@ -13,8 +13,7 @@ import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
 import { clearAttributes, convertCollapsedSelection, convertRangeSelection, insertText, remove } from '../conversion/downcasthelpers';
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { mix, ObservableMixin } from 'ckeditor5/src/utils';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );

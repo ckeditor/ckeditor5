@@ -7,7 +7,7 @@
  * @module core/editingkeystrokehandler
  */
 
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { KeystrokeHandler } from 'ckeditor5/src/utils';
 
 /**
  * A keystroke handler for editor editing. Its instance is available

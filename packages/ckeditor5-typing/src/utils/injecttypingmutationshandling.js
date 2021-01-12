@@ -7,8 +7,8 @@
  * @module typing/utils/injecttypingmutationshandling
  */
 
-import diff from '@ckeditor/ckeditor5-utils/src/diff';
-import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
+import { diff } from 'ckeditor5/src/utils';
+import { DomConverter } from 'ckeditor5/src/engine';
 
 import { getSingleTextNodeChange, containerChildrenMutated } from './utils';
 
