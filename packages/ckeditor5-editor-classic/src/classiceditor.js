@@ -11,7 +11,6 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
@@ -66,7 +65,7 @@ export default class ClassicEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
+		this.data.processor = this.data.htmlProcessor;
 
 		this.model.document.createRoot();
 

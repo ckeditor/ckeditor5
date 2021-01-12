@@ -8,7 +8,6 @@
  */
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
@@ -77,7 +76,7 @@ export default class BalloonEditor extends Editor {
 
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
 
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
+		this.data.processor = this.data.htmlProcessor;
 
 		this.model.document.createRoot();
 
