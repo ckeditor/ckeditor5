@@ -13,16 +13,7 @@ import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import diff from '@ckeditor/ckeditor5-utils/src/diff';
-import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
-import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { mix, diff, insertAt, remove, ObservableMixin, CKEditorError, isText, isNode, fastDiff, env } from 'ckeditor5/src/utils';
 
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on

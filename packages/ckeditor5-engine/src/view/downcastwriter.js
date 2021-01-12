@@ -7,6 +7,9 @@
  * @module module:engine/view/downcastwriter
  */
 
+import { CKEditorError, isIterable } from 'ckeditor5/src/utils';
+import { isPlainObject } from 'lodash-es';
+
 import Position from './position';
 import Range from './range';
 import Selection from './selection';
@@ -15,12 +18,9 @@ import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
 import RawElement from './rawelement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Text from './text';
 import EditableElement from './editableelement';
-import { isPlainObject } from 'lodash-es';
 
 /**
  * View downcast writer.

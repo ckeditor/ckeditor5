@@ -7,8 +7,7 @@
  * @module typing/utils/utils
  */
 
-import diff from '@ckeditor/ckeditor5-utils/src/diff';
-import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
+import { diff, diffToChanges } from 'ckeditor5/src/utils';
 
 /**
  * Returns true if container children have mutated or more than a single text node was changed.

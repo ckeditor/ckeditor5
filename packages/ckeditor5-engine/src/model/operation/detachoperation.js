@@ -10,7 +10,7 @@
 import Operation from './operation';
 import Range from '../range';
 import { _remove } from './utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 

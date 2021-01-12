@@ -9,7 +9,7 @@
 
 import ShiftEnterCommand from './shiftentercommand';
 import EnterObserver from './enterobserver';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.

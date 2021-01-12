@@ -9,9 +9,8 @@
 
 import View from '../view';
 import ColorTileView from './colortileview';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 import FocusCycler from '../focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import '../../theme/components/colorgrid/colorgrid.css';
 
 /**

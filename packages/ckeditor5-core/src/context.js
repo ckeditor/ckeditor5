@@ -7,11 +7,8 @@
  * @module core/context
  */
 
-import Config from '@ckeditor/ckeditor5-utils/src/config';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { Config, Collection, Locale, CKEditorError } from 'ckeditor5/src/utils';
 import PluginCollection from './plugincollection';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}

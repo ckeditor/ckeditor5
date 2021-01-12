@@ -15,7 +15,7 @@ import NoOperation from './nooperation';
 import Range from '../range';
 import Position from '../position';
 
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { compareArrays } from 'ckeditor5/src/utils';
 
 const transformations = new Map();
 

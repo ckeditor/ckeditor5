@@ -7,7 +7,7 @@
  * @module typing/input
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import InputCommand from './inputcommand';
 
 import injectUnsafeKeystrokesHandling from './utils/injectunsafekeystrokeshandling';

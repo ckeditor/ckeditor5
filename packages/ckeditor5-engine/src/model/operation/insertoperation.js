@@ -14,7 +14,7 @@ import MoveOperation from './moveoperation';
 import { _insert, _normalizeNodes } from './utils';
 import Text from '../text';
 import Element from '../element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * Operation to insert one or more nodes at given position in the model.

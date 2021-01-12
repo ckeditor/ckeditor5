@@ -7,7 +7,7 @@
  * @module ui/focuscycler
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { global } from 'ckeditor5/src/utils';
 
 /**
  * A utility class that helps cycling over focusable {@link module:ui/view~View views} in a

@@ -11,7 +11,7 @@ import NodeList from './nodelist';
 import Element from './element';
 import Text from './text';
 import TextProxy from './textproxy';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { isIterable } from 'ckeditor5/src/utils';
 
 // @if CK_DEBUG_ENGINE // const { stringifyMap } = require( '../dev-utils/utils' );
 

@@ -7,8 +7,7 @@
  * @module typing/utils/injectunsafekeystrokeshandling
  */
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { env, getCode } from 'ckeditor5/src/utils';
 
 /**
  * Handles keystrokes which are unsafe for typing. This handler's logic is explained

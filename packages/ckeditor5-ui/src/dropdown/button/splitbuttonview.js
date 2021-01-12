@@ -10,8 +10,7 @@
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
 
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 

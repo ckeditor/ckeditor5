@@ -7,17 +7,12 @@
  * @module engine/model/documentselection
  */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { mix, EmitterMixin, toMap, uid, Collection, CKEditorError } from 'ckeditor5/src/utils';
 
 import Selection from './selection';
 import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 const storePrefix = 'selection:';
 

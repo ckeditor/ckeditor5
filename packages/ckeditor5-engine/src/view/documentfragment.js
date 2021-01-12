@@ -9,9 +9,7 @@
 
 import Text from './text';
 import TextProxy from './textproxy';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { mix, isIterable, EmitterMixin } from 'ckeditor5/src/utils';
 
 /**
  * Document fragment.

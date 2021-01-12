@@ -7,19 +7,19 @@
  * @module widget/widget
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+import { Plugin } from 'ckeditor5/src/core';
+import { MouseObserver } from 'ckeditor5/src/engine';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import {
 	isArrowKeyCode,
-	isForwardArrowKeyCode
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+	isForwardArrowKeyCode,
+	env,
+	priorities
+} from 'ckeditor5/src/utils';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import verticalNavigationHandler from './verticalnavigation';
 
 import '../theme/widget.css';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-import verticalNavigationHandler from './verticalnavigation';
 
 /**
  * The widget plugin. It enables base support for widgets.

@@ -8,8 +8,7 @@
  */
 
 import Selection from './selection';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { mix, EmitterMixin } from 'ckeditor5/src/utils';
 
 /**
  * Class representing the document selection in the view.

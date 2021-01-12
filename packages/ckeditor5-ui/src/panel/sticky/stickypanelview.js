@@ -7,10 +7,9 @@
  * @module ui/panel/sticky/stickypanelview
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { global, toUnit } from 'ckeditor5/src/utils';
 import View from '../../view';
 import Template from '../../template';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 import '../../../theme/components/panel/stickypanel.css';
 

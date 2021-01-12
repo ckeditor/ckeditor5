@@ -9,8 +9,7 @@
 
 import Position from './position';
 import TreeWalker from './treewalker';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { CKEditorError, compareArrays } from 'ckeditor5/src/utils';
 
 /**
  * Represents a range in the model tree.

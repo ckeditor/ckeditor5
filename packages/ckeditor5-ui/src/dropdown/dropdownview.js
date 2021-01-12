@@ -8,11 +8,9 @@
  */
 
 import View from '../view';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { KeystrokeHandler, getOptimalPosition } from 'ckeditor5/src/utils';
 
 import '../../theme/components/dropdown/dropdown.css';
-
-import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 
 /**
  * The dropdown view class. It manages the dropdown button and dropdown panel.

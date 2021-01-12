@@ -13,7 +13,7 @@ import Element from '../element';
 import Range from '../range';
 import DocumentSelection from '../documentselection';
 import Selection from '../selection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste

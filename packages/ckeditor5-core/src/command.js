@@ -7,8 +7,7 @@
  * @module core/command
  */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { mix, ObservableMixin } from 'ckeditor5/src/utils';
 
 /**
  * The base class for CKEditor commands.

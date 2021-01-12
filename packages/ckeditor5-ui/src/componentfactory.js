@@ -7,7 +7,7 @@
  * @module ui/componentfactory
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * A helper class implementing the UI component ({@link module:ui/view~View view}) factory.

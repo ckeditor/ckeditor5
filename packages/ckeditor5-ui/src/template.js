@@ -9,14 +9,10 @@
 
 /* global document */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { CKEditorError, EmitterMixin, mix, isNode, toArray } from 'ckeditor5/src/utils';
+import { isObject, cloneDeepWith } from 'lodash-es';
 import View from './view';
 import ViewCollection from './viewcollection';
-import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import { isObject, cloneDeepWith } from 'lodash-es';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 

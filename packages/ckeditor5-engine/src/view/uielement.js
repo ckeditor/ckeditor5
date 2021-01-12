@@ -8,9 +8,8 @@
  */
 
 import Element from './element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError, keyCodes } from 'ckeditor5/src/utils';
 import Node from './node';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * UI element class. It should be used to represent editing UI which needs to be injected into the editing view

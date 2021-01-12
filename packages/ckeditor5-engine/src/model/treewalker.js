@@ -16,7 +16,7 @@ import {
 	getNodeAfterPosition,
 	getNodeBeforePosition
 } from './position';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.

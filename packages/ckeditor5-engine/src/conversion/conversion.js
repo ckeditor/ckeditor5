@@ -7,10 +7,9 @@
  * @module engine/conversion/conversion
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { toArray, CKEditorError } from 'ckeditor5/src/utils';
 import UpcastHelpers from './upcasthelpers';
 import DowncastHelpers from './downcasthelpers';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.

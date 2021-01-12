@@ -7,20 +7,15 @@
  * @module ui/toolbar/toolbarview
  */
 
+import { icons } from 'ckeditor5/src/core';
+import { FocusTracker, KeystrokeHandler, ResizeObserver, Rect, global, logWarning } from 'ckeditor5/src/utils';
 import View from '../view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import ToolbarLineBreakView from './toolbarlinebreakview';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
-import { icons } from 'ckeditor5/src/core';
 
 import '../../theme/components/toolbar/toolbar.css';
 

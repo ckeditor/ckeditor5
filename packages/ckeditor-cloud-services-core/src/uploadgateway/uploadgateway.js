@@ -8,7 +8,7 @@
  */
 
 import FileUploader from './fileuploader';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * UploadGateway abstracts file uploads to CKEditor Cloud Services.
