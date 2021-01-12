@@ -104,6 +104,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5/issues/1985.
+	// Might be obsolete after changes in table refreshing (now it refreshes siblings of an image and not its parent).
 	it( 'should work if image parent is refreshed by the differ', function( done ) {
 		model.schema.register( 'outerBlock', {
 			allowWhere: '$block',
@@ -125,7 +126,7 @@ describe( 'ImageUploadProgress', () => {
 				if ( change.type == 'insert' && change.name == 'image' ) {
 					doc.differ.refreshItem( change.position.parent );
 
-					return true;
+					return false; // Refreshing item should not trigger calling post-fixer again.
 				}
 			}
 		} );
@@ -137,10 +138,14 @@ describe( 'ImageUploadProgress', () => {
 		model.document.once( 'change', () => {
 			try {
 				expect( getViewData( view ) ).to.equal(
-					'<outerBlock><innerBlock>[<figure class="ck-appear ck-widget image" contenteditable="false">' +
-					`<img src="${ base64Sample }"></img>` +
-					'<div class="ck-progress-bar"></div>' +
-					'</figure>]</innerBlock></outerBlock>'
+					'<outerBlock>' +
+						'<innerBlock>' +
+							'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+								`<img src="${ base64Sample }"></img>` +
+								'<div class="ck-progress-bar"></div>' +
+							'</figure>]' +
+						'</innerBlock>' +
+					'</outerBlock>'
 				);
 
 				done();

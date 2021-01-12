@@ -30,12 +30,13 @@ export default class MediaEmbedCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const schema = model.schema;
-		const position = selection.getFirstPosition();
+		const insertPosition = findOptimalInsertionPosition( selection, model );
 		const selectedMedia = getSelectedMediaModelWidget( selection );
 
-		let parent = position.parent;
+		let parent = insertPosition.parent;
 
-		if ( parent != parent.root ) {
+		// The model.insertContent() will remove empty parent (unless it is a $root or a limit).
+		if ( parent.isEmpty && !model.schema.isLimit( parent ) ) {
 			parent = parent.parent;
 		}
 
@@ -68,4 +69,3 @@ export default class MediaEmbedCommand extends Command {
 		}
 	}
 }
-

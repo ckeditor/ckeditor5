@@ -10,6 +10,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#snippet-text-transformation' ), {
 		cloudServices: CS_CONFIG,
+		placeholder: 'Type here...',
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}

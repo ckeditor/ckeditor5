@@ -231,6 +231,7 @@ describe( 'Clipboard feature', () => {
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
+				stopPropagation() {},
 				preventDefault() {}
 			} );
 
@@ -526,23 +527,61 @@ describe( 'Clipboard feature', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
 			} );
 
-			it( 'ignores non-formatting text attributes', () => {
-				setModelData( model, '<paragraph><$text test="true">Bolded []text.</$text></paragraph>' );
-
-				const dataTransferMock = createDataTransfer( {
-					'text/html': 'foo',
-					'text/plain': 'foo'
-				} );
+			it( 'should preserve non formatting attribute if it wasn\'t fully selected', () => {
+				setModelData( model, '<paragraph><$text test="true">Linked [text].</$text></paragraph>' );
 
 				viewDocument.fire( 'clipboardInput', {
-					dataTransfer: dataTransferMock,
-					asPlainText: false,
+					dataTransfer: createDataTransfer( {
+						'text/html': 'foo',
+						'text/plain': 'foo'
+					} ),
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text test="true">Linked foo[].</$text></paragraph>' );
+			} );
+
+			it( 'should not preserve non formatting attribute if it was fully selected', () => {
+				setModelData( model, '<paragraph><$text test="true">[Linked text.]</$text></paragraph>' );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: createDataTransfer( {
+						'text/html': 'foo',
+						'text/plain': 'foo'
+					} ),
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+			} );
+
+			it( 'should not treat a pasted object as a plain text', () => {
+				model.schema.register( 'obj', {
+					allowWhere: '$block',
+					isObject: true,
+					isBlock: true
+				} );
+
+				editor.conversion.elementToElement( { model: 'obj', view: 'obj' } );
+
+				setModelData( model, '<paragraph><$text bold="true">Bolded [text].</$text></paragraph>' );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: createDataTransfer( {
+						'text/html': '<obj></obj>',
+						'text/plain': 'foo'
+					} ),
 					stopPropagation() {},
 					preventDefault() {}
 				} );
 
 				expect( getModelData( model ) ).to.equal(
-					'<paragraph><$text test="true">Bolded </$text>foo[]<$text test="true">text.</$text></paragraph>' );
+					'<paragraph><$text bold="true">Bolded </$text></paragraph>' +
+					'[<obj></obj>]' +
+					'<paragraph><$text bold="true">.</$text></paragraph>'
+				);
 			} );
 		} );
 

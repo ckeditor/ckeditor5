@@ -320,7 +320,7 @@ The table plugins register the following UI components:
 
 <table>
 	<thead>
-		<th>{@link builds/guides/integration/configuration#toolbar-setup Component} name</th>
+		<th>{@link features/toolbar Component} name</th>
 		<th>Registered by</th>
 	</thead>
 	<tbody>

@@ -7,6 +7,8 @@
  * @module table/converters/table-cell-refresh-post-fixer
  */
 
+import { isSingleParagraphWithoutAttributes } from './downcast';
+
 /**
  * Injects a table cell post-fixer into the model which marks the table cell in the differ to have it re-rendered.
  *
@@ -17,87 +19,57 @@
  * re-rendered so it changes from `<span>` to `<p>`. The easiest way to do it is to re-render the entire table cell.
  *
  * @param {module:engine/model/model~Model} model
+ * @param {module:engine/conversion/mapper~Mapper} mapper
  */
-export default function injectTableCellRefreshPostFixer( model ) {
-	model.document.registerPostFixer( () => tableCellRefreshPostFixer( model ) );
+export default function injectTableCellRefreshPostFixer( model, mapper ) {
+	model.document.registerPostFixer( () => tableCellRefreshPostFixer( model.document.differ, mapper ) );
 }
 
-function tableCellRefreshPostFixer( model ) {
-	const differ = model.document.differ;
+function tableCellRefreshPostFixer( differ, mapper ) {
+	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
 
-	// Stores cells to be refreshed so the table cell will be refreshed once for multiple changes.
-	const cellsToRefresh = new Set();
-
-	// Counting the paragraph inserts to verify if it increased to more than one paragraph in the current differ.
-	let insertCount = 0;
+	// 1. Gather all changes inside table cell.
+	const cellsToCheck = new Set();
 
 	for ( const change of differ.getChanges() ) {
-		const parent = change.type == 'insert' || change.type == 'remove' ? change.position.parent : change.range.start.parent;
+		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
 
-		if ( !parent.is( 'element', 'tableCell' ) ) {
-			continue;
-		}
-
-		if ( change.type == 'insert' ) {
-			insertCount++;
-		}
-
-		if ( checkRefresh( parent, change.type, insertCount ) ) {
-			cellsToRefresh.add( parent );
+		if ( parent.is( 'element', 'tableCell' ) ) {
+			cellsToCheck.add( parent );
 		}
 	}
 
-	if ( cellsToRefresh.size ) {
-		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing cells (${ cellsToRefresh.size }).` );
+	// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: Checking table cell to refresh (${ cellsToCheck.size }).` );
+	// @if CK_DEBUG_TABLE // let paragraphsRefreshed = 0;
 
-		for ( const tableCell of cellsToRefresh.values() ) {
-			differ.refreshItem( tableCell );
+	for ( const tableCell of cellsToCheck.values() ) {
+		for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => shouldRefresh( child, mapper ) ) ) {
+			// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing paragraph in table cell (${++paragraphsRefreshed}).` );
+			differ.refreshItem( paragraph );
 		}
-
-		return true;
 	}
 
+	// Always return false to prevent the refresh post-fixer from re-running on the same set of changes and going into an infinite loop.
+	// This "post-fixer" does not change the model structure so there shouldn't be need to run other post-fixers again.
+	// See https://github.com/ckeditor/ckeditor5/issues/1936 & https://github.com/ckeditor/ckeditor5/issues/8200.
 	return false;
 }
 
-// Checks if the model table cell requires refreshing to be re-rendered to a proper state in the view.
+// Check if given model element needs refreshing.
 //
-// This method detects changes that will require renaming `<span>` to `<p>` (or vice versa) in the view.
-//
-// This method is a simple heuristic that checks only a single change and will sometimes give a false positive result when multiple changes
-// will result in a state that does not require renaming in the view (but will be seen as requiring a refresh).
-//
-// For instance: A `<span>` should be renamed to `<p>` when adding an attribute to a `<paragraph>`.
-// But adding one attribute and removing another one will result in a false positive: the check for an added attribute will see one
-// attribute on a paragraph and will falsely qualify such change as adding an attribute to a paragraph without any attribute.
-//
-// @param {module:engine/model/element~Element} tableCell The table cell to check.
-// @param {String} type Type of change.
-// @param {Number} insertCount The number of inserts in differ.
-function checkRefresh( tableCell, type, insertCount ) {
-	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'element', 'paragraph' ) );
-
-	// If there is no paragraph in table cell then the view doesn't require refreshing.
-	//
-	// Why? What we really want to achieve is to make all the old paragraphs (which weren't added in this batch) to be
-	// converted once again, so that the paragraph-in-table-cell converter can correctly create a `<p>` or a `<span>` element.
-	// If there are no paragraphs in the table cell, we don't care.
-	if ( !hasInnerParagraph ) {
+// @param {module:engine/model/element~Element} modelElement
+// @param {module:engine/conversion/mapper~Mapper} mapper
+// @returns {Boolean}
+function shouldRefresh( child, mapper ) {
+	if ( !child.is( 'element', 'paragraph' ) ) {
 		return false;
 	}
 
-	// For attribute change we only refresh if there is a single paragraph as in this case we may want to change existing `<span>` to `<p>`.
-	if ( type == 'attribute' ) {
-		const attributesCount = Array.from( tableCell.getChild( 0 ).getAttributeKeys() ).length;
+	const viewElement = mapper.toViewElement( child );
 
-		return tableCell.childCount === 1 && attributesCount < 2;
+	if ( !viewElement ) {
+		return false;
 	}
 
-	// For other changes (insert, remove) the `<span>` to `<p>` change is needed when:
-	//
-	// - another element is added to a single paragraph (childCount becomes >= 2)
-	// - another element is removed and a single paragraph is left (childCount == 1)
-	//
-	// Change is not needed if there were multiple blocks before change.
-	return tableCell.childCount <= ( type == 'insert' ? insertCount + 1 : 1 );
+	return isSingleParagraphWithoutAttributes( child ) !== viewElement.is( 'element', 'span' );
 }

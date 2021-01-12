@@ -31,6 +31,8 @@ import ViewRange from '../../src/view/range';
 import { StylesProcessor } from '../../src/view/stylesmap';
 import Writer from '../../src/model/writer';
 
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+
 /* globals console */
 
 describe( 'UpcastHelpers', () => {
@@ -899,7 +901,7 @@ describe( 'UpcastHelpers', () => {
 		const conversionResult = model.change( writer => upcastDispatcher.convert( viewToConvert, writer ) );
 
 		if ( markers ) {
-			markers = Array.isArray( markers ) ? markers : [ markers ];
+			markers = toArray( markers );
 
 			for ( const marker of markers ) {
 				expect( conversionResult.markers.has( marker.name ) ).to.be.true;

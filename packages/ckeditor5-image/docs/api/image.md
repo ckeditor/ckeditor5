@@ -22,6 +22,7 @@ See the {@link features/image Image feature} guide and the documentation of the 
 * {@link module:image/imagetextalternative~ImageTextAlternative}
 * {@link module:image/imagetoolbar~ImageToolbar}
 * {@link module:image/imageupload~ImageUpload}
+* {@link module:image/autoimage~AutoImage}
 
 ## Installation
 

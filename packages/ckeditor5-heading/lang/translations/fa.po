@@ -54,8 +54,8 @@ msgstr "عنوان 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "عنوان خود را تایپ کنید"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "محتوای خود را در اینجا تایپ یا پیست کنید."

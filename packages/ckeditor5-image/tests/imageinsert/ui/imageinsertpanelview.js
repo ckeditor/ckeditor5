@@ -161,9 +161,9 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with no integrations', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
 			view = new ImageUploadPanelView( { t: () => {} } );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.insertButtonView.element );
@@ -171,11 +171,12 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with "insertImageViaUrl" integration', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
 			view = new ImageUploadPanelView( { t: () => {} }, {
 				'insertImageViaUrl': createLabeledInputView( { t: val => val } )
 			} );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.getIntegration( 'insertImageViaUrl' ).element );
@@ -293,6 +294,33 @@ describe( 'ImageUploadPanelView', () => {
 			form.fieldView.fire( 'input' );
 
 			expect( view.imageURLInputValue ).to.equal( 'xyz' );
+		} );
+
+		it( 'should trim input value', () => {
+			const form = view.getIntegration( 'insertImageViaUrl' );
+
+			form.fieldView.element.value = '   ';
+			form.fieldView.fire( 'input' );
+
+			expect( view.imageURLInputValue ).to.equal( '' );
+
+			form.fieldView.element.value = '   test   ';
+			form.fieldView.fire( 'input' );
+
+			expect( view.imageURLInputValue ).to.equal( 'test' );
+		} );
+
+		it( 'binds saveButtonView#isEnabled to URL input value', () => {
+			const form = view.getIntegration( 'insertImageViaUrl' );
+			const saveButtonView = view.template.children[ 1 ].children.first;
+
+			expect( saveButtonView.isEnabled ).to.be.false;
+
+			form.fieldView.element.value = 'test';
+			form.fieldView.fire( 'input' );
+
+			expect( view.imageURLInputValue ).to.equal( 'test' );
+			expect( !!saveButtonView.isEnabled ).to.be.true;
 		} );
 	} );
 } );

@@ -36,8 +36,8 @@ import DomEventData from './domeventdata';
  */
 export default class DomEventObserver extends Observer {
 	/**
-	 * Type of the DOM event the observer should listen on. Array of types can be defined
-	 * if the obsever should listen to multiple DOM events.
+	 * Type of the DOM event the observer should listen to. Array of types can be defined
+	 * if the observer should listen to multiple DOM events.
 	 *
 	 * @readonly
 	 * @member {String|Array.<String>} #domEventType
@@ -75,7 +75,7 @@ export default class DomEventObserver extends Observer {
 
 		types.forEach( type => {
 			this.listenTo( domElement, type, ( eventInfo, domEvent ) => {
-				if ( this.isEnabled ) {
+				if ( this.isEnabled && !this.checkShouldIgnoreEventFromTarget( domEvent.target ) ) {
 					this.onDomEvent( domEvent );
 				}
 			}, { useCapture: this.useCapture } );

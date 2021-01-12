@@ -14,6 +14,8 @@ import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
 import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
 import { addMarginRules } from '@ckeditor/ckeditor5-engine/src/view/styles/margin';
 
+const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
+
 /**
  * The block indentation feature.
  *
@@ -79,8 +81,10 @@ export default class IndentBlock extends Plugin {
 		const indentCommand = editor.commands.get( 'indent' );
 		const outdentCommand = editor.commands.get( 'outdent' );
 
-		// Enable block indentation by default in paragraph and default headings.
-		const knownElements = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
+		// Enable block indentation to heading configuration options. If it is not defined enable in paragraph and default headings.
+		const options = editor.config.get( 'heading.options' );
+		const configuredElements = options && options.map( option => option.model );
+		const knownElements = configuredElements || DEFAULT_ELEMENTS;
 
 		knownElements.forEach( elementName => {
 			if ( schema.isRegistered( elementName ) ) {
