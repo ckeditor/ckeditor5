@@ -992,7 +992,7 @@ describe( 'ImageUploadEditing', () => {
 			} );
 		} );
 
-		it( 'should not upload and remove image if canvas convertion failed', done => {
+		it( 'should not upload and remove image if canvas conversion failed', done => {
 			setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			const clipboardHtml = `<img src=${ base64Sample } />`;
@@ -1019,6 +1019,35 @@ describe( 'ImageUploadEditing', () => {
 				done,
 				false
 			);
+		} );
+
+		it( 'should not show notification when image could not be loaded', done => {
+			const spy = sinon.spy();
+			const notification = editor.plugins.get( Notification );
+
+			notification.on( 'show:warning', evt => {
+				spy();
+				evt.stop();
+			}, { priority: 'high' } );
+
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const clipboardHtml = '<img src=data:image/png;base64,INVALID-DATA />';
+			const dataTransfer = mockDataTransfer( clipboardHtml );
+
+			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+			adapterMocks[ 0 ].loader.file.then( () => {
+				expect.fail( 'Promise should be rejected.' );
+			} ).catch( () => {
+				setTimeout( () => {
+					sinon.assert.notCalled( spy );
+					done();
+				} );
+			} );
 		} );
 	} );
 

@@ -129,7 +129,7 @@ function getBlobFromCanvas( imageSrc ) {
 			canvas.toBlob( blob => blob ? resolve( blob ) : reject() );
 		} );
 
-		image.addEventListener( 'error', reject );
+		image.addEventListener( 'error', () => reject() );
 
 		image.src = imageSrc;
 	} );
