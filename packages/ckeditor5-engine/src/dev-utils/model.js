@@ -160,7 +160,7 @@ export function setData( model, data, options = {} ) {
 				writer.setSelectionAttribute( selection.getAttributes() );
 			}
 		}
-	};
+	}
 }
 
 // Set parse as setData private method - needed for testing/spying.
