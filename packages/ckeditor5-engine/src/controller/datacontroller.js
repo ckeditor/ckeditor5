@@ -109,13 +109,15 @@ export default class DataController {
 		this.stylesProcessor = stylesProcessor;
 
 		/**
-		 * TODO
+		 * Data processor used specifically for HTML conversion.
+		 *
+		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #htmlProcessor
 		 */
 		this.htmlProcessor = new HtmlDataProcessor( this.viewDocument );
 
 		/**
 		 * Data processor used during the conversion.
-		 * Same instance as `this.htmlProcessor` by default.
+		 * Same instance as {@link #htmlProcessor} by default. Can be replaced at run time to handle different format, e.g. XML or Markdown.
 		 *
 		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
 		 */
@@ -439,7 +441,13 @@ export default class DataController {
 	}
 
 	/**
-	 * TODO
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} on {@link #htmlProcessor htmlProcessor}
+	 * and {@link #processor processor} for view elements whose content should be treated as a raw data
+	 * and not processed during conversion from DOM to view elements.
+	 *
+	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+	 * `"$rawContent"`.
+	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
 	 * be treated as a raw data.
 	 */
