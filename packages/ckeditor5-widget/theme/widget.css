@@ -5,16 +5,11 @@
 
 :root {
 	--ck-color-resizer: var(--ck-color-focus-border);
-	--ck-resizer-size: 10px;
-	--ck-resizer-border-width: 1px;
-	--ck-resizer-border-radius: 2px;
-
-	/* Set the resizer with a 50% offset. */
-	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);
-
-	--ck-resizer-tooltip-offset: 10px;
 	--ck-color-resizer-tooltip-background: hsl(0, 0%, 15%);
 	--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);
+
+	--ck-resizer-border-radius: var(--ck-border-radius);
+	--ck-resizer-tooltip-offset: 10px;
 }
 
 .ck .ck-widget {
@@ -66,22 +61,22 @@
 	}
 
 	&.ck-orientation-top-left {
-		top: var( --ck-resizer-tooltip-offset );
-		left: var( --ck-resizer-tooltip-offset );
+		top: var(--ck-resizer-tooltip-offset);
+		left: var(--ck-resizer-tooltip-offset);
 	}
 
 	&.ck-orientation-top-right {
-		top: var( --ck-resizer-tooltip-offset );
-		right: var( --ck-resizer-tooltip-offset );
+		top: var(--ck-resizer-tooltip-offset);
+		right: var(--ck-resizer-tooltip-offset);
 	}
 
 	&.ck-orientation-bottom-right {
-		bottom: var( --ck-resizer-tooltip-offset );
-		right: var( --ck-resizer-tooltip-offset );
+		bottom: var(--ck-resizer-tooltip-offset);
+		right: var(--ck-resizer-tooltip-offset);
 	}
 
 	&.ck-orientation-bottom-left {
-		bottom: var( --ck-resizer-tooltip-offset );
-		left: var( --ck-resizer-tooltip-offset );
+		bottom: var(--ck-resizer-tooltip-offset);
+		left: var(--ck-resizer-tooltip-offset);
 	}
 }
