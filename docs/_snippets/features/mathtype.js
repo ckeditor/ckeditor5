@@ -8,6 +8,8 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import MathType from '@wiris/mathtype-ckeditor5';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -16,6 +18,8 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet,
 			EasyImage,
+			ImageUpload,
+			CloudServices,
 			MathType
 		],
 		toolbar: {
