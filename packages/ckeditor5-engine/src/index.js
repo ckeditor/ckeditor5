@@ -41,6 +41,8 @@ export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';
 export { default as Matcher } from './view/matcher';
 
+export { default as DomEventData } from './view/observer/domeventdata';
+
 export { StylesProcessor } from './view/stylesmap';
 export * from './view/styles/background';
 export * from './view/styles/border';

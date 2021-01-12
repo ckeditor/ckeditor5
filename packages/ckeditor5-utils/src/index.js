@@ -10,9 +10,11 @@
 export { default as env } from './env';
 export { default as diff } from './diff';
 export { default as fastDiff } from './fastdiff';
+export { default as diffToChanges } from './difftochanges';
 
 export { default as mix } from './mix';
 export { default as EmitterMixin } from './emittermixin';
+export { default as EventInfo } from './eventinfo';
 export { default as ObservableMixin } from './observablemixin';
 
 export { default as CKEditorError, logError, logWarning } from './ckeditorerror';
