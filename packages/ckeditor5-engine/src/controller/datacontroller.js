@@ -111,6 +111,7 @@ export default class DataController {
 		/**
 		 * Data processor used specifically for HTML conversion.
 		 *
+		 * @readonly
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #htmlProcessor
 		 */
 		this.htmlProcessor = new HtmlDataProcessor( this.viewDocument );

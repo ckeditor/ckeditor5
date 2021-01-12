@@ -13,7 +13,6 @@ import InsertHtmlEmbedCommand from '../src/inserthtmlembedcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import { createDataTransfer } from '@ckeditor/ckeditor5-clipboard/tests/clipboard';
 
 describe( 'HtmlEmbedEditing', () => {
 	let element, editor, model, view, viewDocument;
@@ -779,4 +778,12 @@ describe( 'HtmlEmbedEditing', () => {
 
 function isRawHtmlWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( 'rawHtml' ) && isWidget( viewElement );
+}
+
+function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
 }

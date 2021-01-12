@@ -71,7 +71,7 @@ describe( 'DataController', () => {
 			const stylesProcessor = new StylesProcessor();
 			const data = new DataController( model, stylesProcessor );
 
-			expect( data.htmlProcessor ).to.be.equal( data.processor );
+			expect( data.htmlProcessor ).to.equal( data.processor );
 		} );
 	} );
 
