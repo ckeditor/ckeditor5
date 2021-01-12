@@ -7,13 +7,12 @@
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin"
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-ui": "^24.0.0",
-    "@ckeditor/ckeditor5-utils": "^24.0.0"
+    "ckeditor5": "^24.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^24.0.0",

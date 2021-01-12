@@ -15,10 +15,11 @@
     "collaborative",
     "real-time",
     "framework",
-    "ckeditor5-lib",
     "ckeditor",
     "ckeditor5",
-    "ckeditor 5"
+    "ckeditor 5",
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
   "main": "src/index.js",
   "dependencies": {

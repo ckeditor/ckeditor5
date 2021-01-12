@@ -47,5 +47,8 @@
     "src",
     "theme",
     "build"
-  ]
+  ],
+  "scripts": {
+    "build:dll": "webpack"
+  }
 }
