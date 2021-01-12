@@ -51,14 +51,6 @@ export default class Clipboard extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		/**
-		 * Data processor used to convert pasted HTML to a view structure.
-		 *
-		 * @private
-		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #_htmlDataProcessor
-		 */
-		this._htmlDataProcessor = editor.data.htmlProcessor;
-
 		view.addObserver( ClipboardObserver );
 
 		// The clipboard paste pipeline.
@@ -81,7 +73,7 @@ export default class Clipboard extends Plugin {
 				content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
 			}
 
-			content = this._htmlDataProcessor.toView( content );
+			content = this.editor.data.htmlProcessor.toView( content );
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
 			this.fire( eventInfo, {
@@ -174,7 +166,7 @@ export default class Clipboard extends Plugin {
 
 		this.listenTo( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
-				data.dataTransfer.setData( 'text/html', this._htmlDataProcessor.toData( data.content ) );
+				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
 				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
 			}
 
