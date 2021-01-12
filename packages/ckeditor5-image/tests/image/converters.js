@@ -7,8 +7,7 @@ import {
 	viewFigureToModel,
 	modelToViewAttributeConverter
 } from '../../src/image/converters';
-import { toImageWidget } from '../../src/image/utils';
-import { createImageViewElement } from '../../src/image/imageediting';
+import { toImageWidget, createImageViewElement } from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
