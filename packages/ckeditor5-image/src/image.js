@@ -12,11 +12,9 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
 
 import '../theme/image.css';
-import ImageTypeToggleCommand from './image/imagetypetogglecommand';
-import ImageInsertCommand from './image/imageinsertcommand';
 import ImageBlock from './image/imageblock';
 import ImageInline from './image/imageinline';
-import { modelToViewAttributeConverter, srcsetAttributeConverter } from './image/converters';
+import ImageEditing from './image/imageediting';
 
 /**
  * The image plugin.
@@ -39,7 +37,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageBlock, ImageInline, Widget, ImageTextAlternative ];
+		return [ ImageEditing, ImageBlock, ImageInline, Widget, ImageTextAlternative ];
 	}
 
 	/**
@@ -47,48 +45,6 @@ export default class Image extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Image';
-	}
-
-	init() {
-		const editor = this.editor;
-		const conversion = editor.conversion;
-
-		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( 'src' ) )
-			.add( modelToViewAttributeConverter( 'alt' ) )
-			.add( srcsetAttributeConverter() );
-
-		conversion.for( 'upcast' )
-			.attributeToAttribute( {
-				view: {
-					name: 'img',
-					key: 'alt'
-				},
-				model: 'alt'
-			} )
-			.attributeToAttribute( {
-				view: {
-					name: 'img',
-					key: 'srcset'
-				},
-				model: {
-					key: 'srcset',
-					value: viewImage => {
-						const value = {
-							data: viewImage.getAttribute( 'srcset' )
-						};
-
-						if ( viewImage.hasAttribute( 'width' ) ) {
-							value.width = viewImage.getAttribute( 'width' );
-						}
-
-						return value;
-					}
-				}
-			} );
-
-		editor.commands.add( 'imageInsert', new ImageInsertCommand( editor ) );
-		editor.commands.add( 'imageTypeToggle', new ImageTypeToggleCommand( this.editor ) );
 	}
 }
 

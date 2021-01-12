@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageLoadObserver from './imageloadobserver';
 
 import { viewFigureToModel } from './converters';
 
@@ -41,9 +40,6 @@ export default class ImageBlock extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;
-
-		// See https://github.com/ckeditor/ckeditor5-image/issues/142.
-		editor.editing.view.addObserver( ImageLoadObserver );
 
 		// Configure schema.
 		schema.register( 'image', {

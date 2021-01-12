@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageLoadObserver from './imageloadobserver';
 
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
 
@@ -39,9 +38,6 @@ export default class ImageInline extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;
-
-		// See https://github.com/ckeditor/ckeditor5-image/issues/142.
-		editor.editing.view.addObserver( ImageLoadObserver );
 
 		schema.register( 'imageInline', {
 			isObject: true,
