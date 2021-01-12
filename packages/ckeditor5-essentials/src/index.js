@@ -4,12 +4,12 @@
  */
 
 /**
- * @module editor-inline
+ * @module essentials
  */
 
-import InlineEditor from './inlineeditor';
+import Essentials from './essentials';
 
 export default {
-	InlineEditor
+	Essentials
 };
 

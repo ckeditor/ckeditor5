@@ -67,13 +67,14 @@
 <!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
 <script src="../build/ckeditor5-dll.js"></script>
 
-<!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
-<script src="./../node_modules/@ckeditor/ckeditor5-dll-classic/build/dll-classic.js"></script>
-<script src="./../node_modules/@ckeditor/ckeditor5-dll-inline/build/dll-inline.js"></script>
-<script src="./../node_modules/@ckeditor/ckeditor5-dll-balloon/build/dll-balloon.js"></script>
-<script src="./../node_modules/@ckeditor/ckeditor5-dll-decoupled-document/build/dll-decoupled-document.js"></script>
+<!-- Editor creators exposed under CKEditor5[packageName] -->
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-inline/build/editor-inline.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-balloon/build/editor-balloon.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled.js"></script>
 
-<!-- Editor features as DLL consumer builds exposed as CKEditor5[featureName] -->
+<!-- Non-essential features exposed under CKEditor5[packageName] -->
+<script src="./../node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
 <script src="./../node_modules/@ckeditor/ckeditor5-adapter-ckfinder/build/adapter-ckfinder.js"></script>
 <script src="./../node_modules/@ckeditor/ckeditor5-alignment/build/alignment.js"></script>
 <script src="./../node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
@@ -109,15 +110,18 @@
 <script src="../build/dll-consumer-plugin.js"></script>
 
 <script>
-	// Import Bold, Italic from the CKEditor 5 global.
-	const { BalloonEditor, ClassicEditor, DecoupledEditor, InlineEditor, basicStyles, htmlEmbed, image, table } = CKEditor5;
-	const { TableToolbar, TableCellProperties, TableProperties } = table;
-	const { Bold, Italic } = basicStyles;
+	const {
+		editorBalloon, editorClassic, editorDecoupled, editorInline,
+		essentials, paragraph, basicStyles, htmlEmbed, image, table
+	} = CKEditor5;
+	const BalloonEditor = editorBalloon.BalloonEditor;
+	const ClassicEditor = editorClassic.ClassicEditor;
+	const DecoupledEditor = editorDecoupled.DecoupledEditor;
+	const InlineEditor = editorInline.InlineEditor;
 
 	// Create ad-hoc plugin.
-	const { core, ui } = CKEditor5;
-	const { Plugin } = core;
-	const { ButtonView } = ui;
+	const Plugin = CKEditor5.core.Plugin;
+	const ButtonView = CKEditor5.ui.ButtonView;
 
 	class AdHocPlugin extends Plugin {
 		constructor( editor ) {
@@ -141,14 +145,17 @@
 
 	const config = {
 		extraPlugins: [
-			Bold,
-			Italic,
+			essentials.Essentials,
+			paragraph.Paragraph,
+			basicStyles.Bold,
+			basicStyles.Italic,
 			image.Image,
 			htmlEmbed.HtmlEmbed,
 			table.Table,
-			TableToolbar,
-			TableCellProperties,
-			TableProperties,
+			table.TableToolbar,
+			table.TableCellProperties,
+			table.TableProperties,
+
 			DLLConsumerPlugin, // exposed by the dll-consumer-plugin.js
 			AdHocPlugin
 		],

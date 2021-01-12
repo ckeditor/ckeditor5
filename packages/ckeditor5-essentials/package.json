@@ -9,13 +9,8 @@
     "ckeditor5-feature",
     "ckeditor5-plugin"
   ],
+  "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^24.0.0",
-    "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-enter": "^24.0.0",
-    "@ckeditor/ckeditor5-select-all": "^24.0.0",
-    "@ckeditor/ckeditor5-typing": "^24.0.0",
-    "@ckeditor/ckeditor5-undo": "^24.0.0",
     "ckeditor5": "^24.0.0"
   },
   "devDependencies": {
@@ -44,5 +39,8 @@
     "src",
     "theme",
     "build"
-  ]
+  ],
+  "scripts": {
+    "build:dll": "webpack"
+  }
 }
