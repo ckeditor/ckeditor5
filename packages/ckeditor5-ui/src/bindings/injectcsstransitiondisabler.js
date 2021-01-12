@@ -21,7 +21,7 @@
  * **Note**: This helper extends the {@link module:ui/view~View#template template} and must be used **after**
  * {@link module:ui/view~View#setTemplate} is called:
  *
- *		import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
+ *		import { injectCssTransitionDisabler } from 'ckeditor5/src/ui';
  *
  *		class MyView extends View {
  *			constructor() {
