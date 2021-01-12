@@ -7,8 +7,13 @@
  * @module widget/widgetresize/resizer
  */
 
-import { View, Template } from 'ckeditor5/src/ui';
-import { Rect, mix, ObservableMixin, compareArrays } from 'ckeditor5/src/utils';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import ResizeState from './resizerstate';
 

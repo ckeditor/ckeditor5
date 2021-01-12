@@ -13,7 +13,9 @@ import ModelPosition from '../model/position';
 import { SchemaContext } from '../model/schema';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
-import { CKEditorError, mix, EmitterMixin } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Upcast dispatcher is a central point of the view-to-model conversion, which is a process of

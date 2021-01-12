@@ -9,7 +9,7 @@
 
 import Operation from './operation';
 import Element from '../element';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Position from '../position';
 
 /**

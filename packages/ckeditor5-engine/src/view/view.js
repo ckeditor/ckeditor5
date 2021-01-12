@@ -23,10 +23,13 @@ import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
 
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
-
-import { ObservableMixin, mix, scrollViewportToShowTarget, CKEditorError, env } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide

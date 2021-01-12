@@ -13,7 +13,7 @@ import TextProxy from '../textproxy';
 import Range from '../range';
 import DocumentFragment from '../documentfragment';
 import NodeList from '../nodelist';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Contains functions used for composing model tree by {@link module:engine/model/operation/operation~Operation operations}.

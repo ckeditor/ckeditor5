@@ -7,7 +7,10 @@
  * @module core/plugincollection
  */
 
-import { mix, EmitterMixin, CKEditorError, logError } from 'ckeditor5/src/utils';
+import CKEditorError, { logError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.

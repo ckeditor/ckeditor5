@@ -7,8 +7,10 @@
  * @module typing/deleteobserver
  */
 
-import { Observer, DomEventData } from 'ckeditor5/src/engine';
-import { keyCodes, env } from 'ckeditor5/src/utils';
+import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.

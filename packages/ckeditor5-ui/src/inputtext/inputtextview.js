@@ -8,7 +8,7 @@
  */
 
 import View from '../view';
-import { FocusTracker } from 'ckeditor5/src/utils';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import '../../theme/components/inputtext/inputtext.css';
 
 /**

@@ -10,14 +10,20 @@
 /* global window */
 
 import { Plugin, icons } from 'ckeditor5/src/core';
-import { ResizeObserver, toUnit, Rect, getOptimalPosition } from 'ckeditor5/src/utils';
 
 import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
 import ToolbarView from '../toolbarview';
 
 import clickOutsideHandler from '../../bindings/clickoutsidehandler';
+
+import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
+
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 const toPx = toUnit( 'px' );
 

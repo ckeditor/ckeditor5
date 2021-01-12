@@ -8,7 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
-import { getCode } from 'ckeditor5/src/utils';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Observer for events connected with pressing keyboard keys.

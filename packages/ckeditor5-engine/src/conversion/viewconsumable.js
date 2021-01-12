@@ -8,7 +8,7 @@
  */
 
 import { isArray } from 'lodash-es';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},

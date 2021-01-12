@@ -8,7 +8,9 @@
  */
 
 import ContextPlugin from './contextplugin';
-import { ObservableMixin, CKEditorError, Collection } from 'ckeditor5/src/utils';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The list of pending editor actions.

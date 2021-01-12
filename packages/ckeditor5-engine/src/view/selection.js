@@ -7,10 +7,14 @@
  * @module engine/view/selection
  */
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Range from './range';
 import Position from './position';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Node from './node';
-import { CKEditorError, mix, EmitterMixin, count, isIterable } from 'ckeditor5/src/utils';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import DocumentSelection from './documentselection';
 
 /**

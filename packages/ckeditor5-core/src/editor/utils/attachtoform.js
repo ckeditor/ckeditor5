@@ -4,7 +4,7 @@
  */
 
 import { isFunction } from 'lodash-es';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * @module core/editor/utils/attachtoform

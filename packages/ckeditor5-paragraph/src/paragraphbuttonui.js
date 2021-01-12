@@ -7,8 +7,8 @@
  * @module paragraph/paragraphbuttonui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import icon from '../theme/icons/paragraph.svg';
 
 /**

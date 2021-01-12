@@ -11,7 +11,8 @@ import Consumable from './modelconsumable';
 import Range from '../model/range';
 import Position, { getNodeAfterPosition, getTextNodeAtPosition } from '../model/position';
 
-import { mix, EmitterMixin } from 'ckeditor5/src/utils';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting

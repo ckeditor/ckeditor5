@@ -7,13 +7,15 @@
  * @module widget/widgettoolbarrepository
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ContextualBalloon, ToolbarView, BalloonPanelView } from 'ckeditor5/src/ui';
-import { CKEditorError, logWarning } from 'ckeditor5/src/utils';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import {
 	isWidget,
 	centeredBalloonPositionForLongWidgets
 } from './utils';
+import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole

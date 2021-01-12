@@ -8,12 +8,15 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Rect, FocusTracker, ResizeObserver, toUnit } from 'ckeditor5/src/utils';
-import { debounce } from 'lodash-es';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
+import { debounce } from 'lodash-es';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 const toPx = toUnit( 'px' );
 

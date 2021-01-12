@@ -7,7 +7,8 @@
  * @module core/plugin
  */
 
-import { mix, ObservableMixin } from 'ckeditor5/src/utils';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The base class for CKEditor plugin classes.

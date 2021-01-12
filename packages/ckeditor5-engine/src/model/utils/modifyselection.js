@@ -10,7 +10,7 @@
 import Position from '../position';
 import TreeWalker from '../treewalker';
 import Range from '../range';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from 'ckeditor5/src/utils';
+import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 import DocumentSelection from '../documentselection';
 
 const wordBoundaryCharacters = ' ,.?!:;"-()';

@@ -8,7 +8,7 @@
  */
 
 import View from '../view';
-import { uid } from 'ckeditor5/src/utils';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import '../../theme/components/label/label.css';
 

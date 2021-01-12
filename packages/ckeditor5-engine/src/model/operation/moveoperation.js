@@ -10,7 +10,8 @@
 import Operation from './operation';
 import Position from '../position';
 import Range from '../range';
-import { CKEditorError, compareArrays } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import { _move } from './utils';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;

@@ -25,7 +25,9 @@ import Position from './position';
 import Range from './range.js';
 import DocumentSelection from './documentselection';
 
-import { CKEditorError, toMap } from 'ckeditor5/src/utils';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify

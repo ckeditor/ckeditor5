@@ -7,7 +7,8 @@
  * @module typing/textwatcher
  */
 
-import { mix, ObservableMixin } from 'ckeditor5/src/utils';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import getLastTextLine from './utils/getlasttextline';
 
 /**

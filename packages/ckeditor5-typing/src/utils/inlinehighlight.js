@@ -23,7 +23,7 @@ import findAttributeRange from './findattributerange';
  *
  * Usage:
  *
- *		import { inlineHighlight } from 'ckeditor5/src/typing';
+ *		import inlineHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
  *
  *		// Make `ck-link_selected` class be applied on an `a` element
  *		// whenever the corresponding `linkHref` attribute element is selected.

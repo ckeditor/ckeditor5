@@ -7,8 +7,9 @@
  * @module enter/enterobserver
  */
 
-import { DomEventData, Observer } from 'ckeditor5/src/engine';
-import { keyCodes } from 'ckeditor5/src/utils';
+import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.

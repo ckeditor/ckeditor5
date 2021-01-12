@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { keyCodes, isText } from 'ckeditor5/src/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
  * Set of utils related to block and inline fillers handling.

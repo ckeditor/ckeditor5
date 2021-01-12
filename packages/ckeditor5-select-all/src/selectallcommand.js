@@ -7,7 +7,7 @@
  * @module select-all/selectallcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
  * The select all command.

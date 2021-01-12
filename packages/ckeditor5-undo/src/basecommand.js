@@ -7,8 +7,8 @@
  * @module undo/basecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { transformSets } from 'ckeditor5/src/engine';
+import Command from '@ckeditor/ckeditor5-core/src/command';
+import { transformSets } from '@ckeditor/ckeditor5-engine/src/model/operation/transform';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.

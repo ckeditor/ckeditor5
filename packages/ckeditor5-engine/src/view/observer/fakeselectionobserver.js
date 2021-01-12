@@ -9,7 +9,7 @@
 
 import Observer from './observer';
 import ViewSelection from '../selection';
-import { keyCodes, isArrowKeyCode } from 'ckeditor5/src/utils';
+import { keyCodes, isArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { debounce } from 'lodash-es';
 
 /**

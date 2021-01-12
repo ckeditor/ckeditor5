@@ -7,7 +7,8 @@
  * @module ui/model
  */
 
-import { ObservableMixin, mix } from 'ckeditor5/src/utils';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { extend } from 'lodash-es';
 
 /**

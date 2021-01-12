@@ -7,7 +7,7 @@
  * @module core/commandcollection
  */
 
-import { CKEditorError } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Collection of commands. Its instance is available in {@link module:core/editor/editor~Editor#commands `editor.commands`}.

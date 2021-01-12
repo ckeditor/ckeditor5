@@ -17,8 +17,9 @@ import ViewAttributeElement from '../view/attributeelement';
 import DocumentSelection from '../model/documentselection';
 import ConversionHelpers from './conversionhelpers';
 
-import { CKEditorError, toArray } from 'ckeditor5/src/utils';
 import { cloneDeep } from 'lodash-es';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * Downcast conversion helper functions.

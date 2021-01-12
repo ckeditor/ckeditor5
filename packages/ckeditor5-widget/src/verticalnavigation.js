@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { keyCodes, Rect } from 'ckeditor5/src/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 /**
  * @module widget/verticalnavigationhandler

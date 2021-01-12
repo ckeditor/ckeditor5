@@ -8,7 +8,8 @@
  */
 
 import Range from './range';
-import { EmitterMixin, mix } from 'ckeditor5/src/utils';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * `LiveRange` is a type of {@link module:engine/model/range~Range Range}

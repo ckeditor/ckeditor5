@@ -8,7 +8,9 @@
  */
 
 import DocumentSelection from './documentselection';
-import { Collection, ObservableMixin, mix } from 'ckeditor5/src/utils';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 

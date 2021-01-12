@@ -7,7 +7,7 @@
  * @module undo/undo
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import UndoEditing from './undoediting';
 import UndoUI from './undoui';
 

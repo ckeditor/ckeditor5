@@ -7,7 +7,9 @@
  * @module engine/model/schema
  */
 
-import { CKEditorError, mix, ObservableMixin } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import Range from './range';
 import Position from './position';

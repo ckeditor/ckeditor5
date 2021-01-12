@@ -13,7 +13,7 @@
  * fires the `submit` event on a view instead. Such a custom event can be then used by any
  * {@link module:utils/dom/emittermixin~Emitter emitter}, e.g. to serialize the form data.
  *
- *		import { submitHandler } from 'ckeditor5/src/ui';
+ *		import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
  *
  *		// ...
  *

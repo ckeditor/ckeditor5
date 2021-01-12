@@ -9,9 +9,9 @@
 
 /* globals XMLHttpRequest, FormData */
 
-import { Plugin } from 'ckeditor5/src/core';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '../filerepository';
-import { logWarning } from 'ckeditor5/src/utils';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The Simple upload adapter allows uploading images to an application running on your server using

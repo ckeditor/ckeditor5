@@ -7,9 +7,14 @@
  * @module ui/view
  */
 
-import { CKEditorError, DomEmitterMixin, ObservableMixin, Collection, mix, isIterable } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ViewCollection from './viewcollection';
 import Template from './template';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 import '../theme/globals/globals.css';
 

@@ -7,13 +7,17 @@
  * @module widget/utils
  */
 
-import { BalloonPanelView, IconView } from 'ckeditor5/src/ui';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
-import { global, Rect, CKEditorError, toArray } from 'ckeditor5/src/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 import HighlightStack from './highlightstack';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
 
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
 /**

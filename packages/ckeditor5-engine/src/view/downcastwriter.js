@@ -7,9 +7,6 @@
  * @module module:engine/view/downcastwriter
  */
 
-import { CKEditorError, isIterable } from 'ckeditor5/src/utils';
-import { isPlainObject } from 'lodash-es';
-
 import Position from './position';
 import Range from './range';
 import Selection from './selection';
@@ -18,9 +15,12 @@ import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
 import RawElement from './rawelement';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Text from './text';
 import EditableElement from './editableelement';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * View downcast writer.
@@ -140,17 +140,6 @@ export default class DowncastWriter {
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
 		this.document.selection._setFocus( itemOrPosition, offset );
-	}
-
-	/**
-	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
-	 *
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * A list of nodes to be inserted into the created document fragment.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
-	 */
-	createDocumentFragment( children ) {
-		return new DocumentFragment( this.document, children );
 	}
 
 	/**

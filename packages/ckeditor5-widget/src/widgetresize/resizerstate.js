@@ -7,7 +7,10 @@
  * @module widget/widgetresize/resizerstate
  */
 
-import { Rect, mix, ObservableMixin } from 'ckeditor5/src/utils';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Stores the internal state of a single resizable object.

@@ -38,7 +38,7 @@ import {
 } from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
-import { toMap } from 'ckeditor5/src/utils';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import { StylesProcessor } from '../view/stylesmap';
 
 /**

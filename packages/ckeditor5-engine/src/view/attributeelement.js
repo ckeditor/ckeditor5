@@ -8,7 +8,7 @@
  */
 
 import Element from './element';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;

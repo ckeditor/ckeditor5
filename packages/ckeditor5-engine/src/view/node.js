@@ -7,12 +7,14 @@
  * @module engine/view/node
  */
 
-import { CKEditorError, EmitterMixin, mix, compareArrays } from 'ckeditor5/src/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import { clone } from 'lodash-es';
 
 // To check if component is loaded more than once.
-// eslint-disable-next-line no-duplicate-imports, no-unused-vars
-import { version } from 'ckeditor5/src/utils';
+import '@ckeditor/ckeditor5-utils/src/version';
 
 /**
  * Abstract view node class.

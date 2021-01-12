@@ -8,8 +8,9 @@
  */
 
 import View from '../view';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import '../../theme/components/list/list.css';
 

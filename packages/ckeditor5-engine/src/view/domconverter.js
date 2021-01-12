@@ -19,7 +19,11 @@ import ViewTreeWalker from './treewalker';
 import Matcher from './matcher';
 import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
 
-import { global, indexOf, getAncestors, getCommonAncestor, isText } from 'ckeditor5/src/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
+import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
+import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
+import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import { isElement } from 'lodash-es';
 
 // eslint-disable-next-line new-cap
