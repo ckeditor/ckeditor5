@@ -85,7 +85,7 @@ If you need to share the document, use {@link features/export-pdf export to PDF 
 
 ## Backwards feature compatibility
 
-If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link builds/guides/migrate migration guide} for all the features that are already cover by the modern version.
+If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link builds/guides/migrate migration guide} for all the features that are already covered by the modern version.
 
 ## Feature examples
 
