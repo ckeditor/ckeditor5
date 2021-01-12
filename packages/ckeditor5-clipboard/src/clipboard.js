@@ -16,7 +16,6 @@ import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';
 import viewToPlainText from './utils/viewtoplaintext.js';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 /**
@@ -58,7 +57,7 @@ export default class Clipboard extends Plugin {
 		 * @private
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #_htmlDataProcessor
 		 */
-		this._htmlDataProcessor = new HtmlDataProcessor( viewDocument );
+		this._htmlDataProcessor = editor.data.htmlProcessor;
 
 		view.addObserver( ClipboardObserver );
 
