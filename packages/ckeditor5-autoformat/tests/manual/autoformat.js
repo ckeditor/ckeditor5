@@ -6,14 +6,15 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
 import Autoformat from '../../src/autoformat';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
@@ -25,18 +26,38 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			Essentials,	Widget,	Paragraph, Bold, Italic,
-			Code, Strikethrough, Heading, List, Autoformat,
-			BlockQuote, CodeBlock,
-			ShiftEnter, HorizontalLine
+			Enter,
+			Typing,
+			Paragraph,
+			Undo,
+			Bold,
+			Italic,
+			Code,
+			Strikethrough,
+			Heading,
+			List,
+			TodoList,
+			Autoformat,
+			BlockQuote,
+			CodeBlock,
+			ShiftEnter,
+			HorizontalLine
 		],
 		toolbar: [
 			'heading',
 			'|',
-			'numberedList', 'bulletedList', 'blockQuote', 'codeBlock', 'horizontalLine',
-			'bold', 'italic', 'code', 'strikethrough',
-			'|',
-			'undo', 'redo'
+			'numberedList',
+			'bulletedList',
+			'todoList',
+			'blockQuote',
+			'codeBlock',
+			'horizontalLine',
+			'bold',
+			'italic',
+			'code',
+			'strikethrough',
+			'undo',
+			'redo'
 		]
 	} )
 	.then( editor => {

@@ -17,7 +17,7 @@ import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcomm
 import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand';
 import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
@@ -211,22 +211,149 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
 				} );
 
-				// https://github.com/ckeditor/ckeditor5/issues/6177
-				it( 'should upcast tables with nested tables in their cells', () => {
-					editor.setData( '<table style="border:1px solid red">' +
-						'<tr>' +
-							'<td>parent:00</td>' +
-							'<td>' +
-								'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
-							'</td>' +
-						'</tr>' +
-					'</table>' );
+				describe( 'nested tables', () => {
+					// https://github.com/ckeditor/ckeditor5/issues/6177.
+					it( 'should upcast tables with nested tables in their cells', () => {
+						editor.setData(
+							'<table style="border:1px solid red">' +
+								'<tr>' +
+									'<td>parent:00</td>' +
+									'<td>' +
+										'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+									'</td>' +
+								'</tr>' +
+							'</table>'
+						);
 
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', 'red' );
-					assertTRBLAttribute( table, 'borderStyle', 'solid' );
-					assertTRBLAttribute( table, 'borderWidth', '1px' );
+						assertTRBLAttribute( table, 'borderColor', 'red' );
+						assertTRBLAttribute( table, 'borderStyle', 'solid' );
+						assertTRBLAttribute( table, 'borderWidth', '1px' );
+
+						// Also check the entire structure of the model.
+						// Previously the test was too loose in that regard.
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table ' +
+								'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
+								'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
+								'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>' +
+											'parent:00' +
+										'</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>' +
+											'child:00' +
+										'</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - inner cell with border style', () => {
+						expect( () => {
+							editor.setData(
+								'<table>' +
+									'<tbody>' +
+										'<tr>' +
+											'<td> ' +
+												'<table>' +
+													'<tbody>' +
+														'<tr>' +
+															'<td style="border-bottom: 0 solid #fff;"></td>' +
+														'</tr>' +
+													'</tbody>' +
+												'</table>' +
+											'</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>'
+							);
+						} ).not.to.throw();
+
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+									'<paragraph></paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - inner empty table with border style', () => {
+						expect( () => {
+							editor.setData(
+								'<table>' +
+									'<tbody>' +
+										'<tr>' +
+											'<td> ' +
+												'<table style="border-bottom: 0 solid #fff;"></table>' +
+											'</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>'
+							);
+						} ).not.to.throw();
+
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+									'<paragraph></paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - no tables allowed in an element', () => {
+						// Conversion will create a merged text node out of all the text contents,
+						// including the one in elements not allowed by schema in this scope.
+						// Let's make sure that upcasting will not try to use model that got processed this way.
+						expect( () => {
+							editor.setData(
+								'<figure class="image">' +
+									'<img src="X">' +
+									'<figcaption>' +
+										'<table>' +
+											'<tr>' +
+												'<td>parent:00</td>' +
+												'<td>' +
+													'<table style="border:1px solid green">' +
+														'<tr>' +
+															'<td>child:00</td>' +
+														'</tr>' +
+													'</table>' +
+												'</td>' +
+											'</tr>' +
+										'</table>' +
+									'</figcaption>' +
+								'</figure>'
+							);
+						} ).not.to.throw();
+
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>parent:00</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<paragraph>child:00</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
 				} );
 			} );
 

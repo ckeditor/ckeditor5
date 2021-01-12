@@ -291,6 +291,21 @@ describe( 'ListEditing', () => {
 
 			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 		} );
+
+		it( 'should outdent empty list when list is nested in block quote', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData(
+				model,
+				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]</listItem></blockQuote>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
 	} );
 
 	describe( 'tab key handling callback', () => {

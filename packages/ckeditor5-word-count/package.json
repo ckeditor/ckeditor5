@@ -24,7 +24,8 @@
     "@ckeditor/ckeditor5-list": "^24.0.0",
     "@ckeditor/ckeditor5-paragraph": "^24.0.0",
     "@ckeditor/ckeditor5-table": "^24.0.0",
-    "@ckeditor/ckeditor5-utils": "^24.0.0"
+    "@ckeditor/ckeditor5-utils": "^24.0.0",
+    "@ckeditor/ckeditor5-image": "^24.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

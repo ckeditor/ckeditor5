@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, setTimeout, atob, URL, Blob, console */
+/* globals document, window, setTimeout, atob, URL, Blob, HTMLCanvasElement, console */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -919,6 +919,134 @@ describe( 'ImageUploadEditing', () => {
 			setTimeout( () => {
 				expect( notificationsCount ).to.equal( 0 );
 				done();
+			} );
+		} );
+	} );
+
+	describe( 'fallback image conversion on canvas', () => {
+		let metaElement;
+		let previousMetaContent;
+
+		// Set strict Content Security Policy (CSP) rules before the first test in this block has been executed.
+		// The CSP rules cause that fetch() fails and it triggers the fallback procedure.
+		before( () => {
+			metaElement = document.querySelector( '[http-equiv=Content-Security-Policy]' );
+
+			if ( metaElement ) {
+				previousMetaContent = metaElement.getAttribute( 'content' );
+			} else {
+				metaElement = document.createElement( 'meta' );
+				metaElement.setAttribute( 'http-equiv', 'Content-Security-Policy' );
+
+				document.head.appendChild( metaElement );
+			}
+
+			metaElement.setAttribute( 'content', '' +
+				'default-src \'none\'; ' +
+				'connect-src \'self\'; ' +
+				'script-src \'self\'; ' +
+				'img-src * data: blob:;' +
+				'style-src \'self\' \'unsafe-inline\'; ' +
+				'frame-src *'
+			);
+		} );
+
+		// Remove or restore the previous CSP rules after the last test in this block has been executed.
+		after( () => {
+			if ( previousMetaContent ) {
+				metaElement.setAttribute( 'content', previousMetaContent );
+			} else {
+				document.head.removeChild( metaElement );
+			}
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/7957.
+		it( 'should upload image using canvas conversion', done => {
+			const spy = sinon.spy();
+			const notification = editor.plugins.get( Notification );
+
+			notification.on( 'show:warning', evt => {
+				spy();
+				evt.stop();
+			}, { priority: 'high' } );
+
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />`;
+			const dataTransfer = mockDataTransfer( clipboardHtml );
+
+			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+			adapterMocks[ 0 ].loader.file.then( () => {
+				setTimeout( () => {
+					sinon.assert.notCalled( spy );
+					done();
+				} );
+			} ).catch( () => {
+				setTimeout( () => {
+					expect.fail( 'Promise should be resolved.' );
+				} );
+			} );
+		} );
+
+		it( 'should not upload and remove image if canvas conversion failed', done => {
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const clipboardHtml = `<img src=${ base64Sample } />`;
+			const dataTransfer = mockDataTransfer( clipboardHtml );
+
+			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+			// Stub `HTMLCanvasElement#toBlob` to return invalid blob, so image conversion always fails.
+			sinon.stub( HTMLCanvasElement.prototype, 'toBlob' ).callsFake( fn => fn( null ) );
+
+			let content = null;
+			editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+				content = data.content;
+			} );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+			expectData(
+				'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+				'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
+				'<paragraph>[]foo</paragraph>',
+				content,
+				done,
+				false
+			);
+		} );
+
+		it( 'should not show notification when image could not be loaded', done => {
+			const spy = sinon.spy();
+			const notification = editor.plugins.get( Notification );
+
+			notification.on( 'show:warning', evt => {
+				spy();
+				evt.stop();
+			}, { priority: 'high' } );
+
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			const clipboardHtml = '<img src=data:image/png;base64,INVALID-DATA />';
+			const dataTransfer = mockDataTransfer( clipboardHtml );
+
+			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+			adapterMocks[ 0 ].loader.file.then( () => {
+				expect.fail( 'Promise should be rejected.' );
+			} ).catch( () => {
+				setTimeout( () => {
+					sinon.assert.notCalled( spy );
+					done();
+				} );
 			} );
 		} );
 	} );
