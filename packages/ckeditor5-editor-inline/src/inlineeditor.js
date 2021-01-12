@@ -63,8 +63,6 @@ export default class InlineEditor extends Editor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		this.data.processor = this.data.htmlProcessor;
-
 		this.model.document.createRoot();
 
 		if ( isElement( sourceElementOrData ) ) {

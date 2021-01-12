@@ -109,16 +109,17 @@ export default class DataController {
 		this.stylesProcessor = stylesProcessor;
 
 		/**
-		 * Data processor used during the conversion.
-		 *
-		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
-		 */
-		this.processor = undefined;
-
-		/**
 		 * TODO
 		 */
 		this.htmlProcessor = new HtmlDataProcessor( this.viewDocument );
+
+		/**
+		 * Data processor used during the conversion.
+		 * Same instance as `this.htmlProcessor` by default.
+		 *
+		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
+		 */
+		this.processor = this.htmlProcessor;
 
 		/**
 		 * The view downcast writer just for data conversion purposes, i.e. to modify

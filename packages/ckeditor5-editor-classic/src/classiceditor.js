@@ -65,8 +65,6 @@ export default class ClassicEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		this.data.processor = this.data.htmlProcessor;
-
 		this.model.document.createRoot();
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );

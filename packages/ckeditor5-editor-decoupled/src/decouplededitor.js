@@ -71,8 +71,6 @@ export default class DecoupledEditor extends Editor {
 			secureSourceElement( this );
 		}
 
-		this.data.processor = this.data.htmlProcessor;
-
 		this.model.document.createRoot();
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
