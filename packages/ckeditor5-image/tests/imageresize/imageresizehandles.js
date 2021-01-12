@@ -9,16 +9,17 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Image from '../../src/image';
+import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
 import ImageTextAlternative from '../../src/imagetextalternative';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageStyle from '../../src/imagestyle';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -468,6 +469,24 @@ describe( 'ImageResizeHandles', () => {
 			await waitForAllImagesLoaded( editor );
 
 			expect( attachToSpy ).not.called;
+
+			attachToSpy.restore();
+		} );
+	} );
+
+	describe( 'Link image integration', () => {
+		it( 'should attach the resizer to the image inside the link', async () => {
+			editor = await createEditor( {
+				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing ]
+			} );
+
+			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+
+			setData( editor.model, `[<image linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></image>]` );
+
+			await waitForAllImagesLoaded( editor );
+
+			expect( attachToSpy ).calledOnce;
 
 			attachToSpy.restore();
 		} );
