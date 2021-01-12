@@ -83,6 +83,10 @@ If you need to share the document, use {@link features/export-pdf export to PDF 
 
 {@img assets/img/features-output.png 800 CKEditor 5 features.}
 
+## Backwards feature compatibility
+
+If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link builds/guides/migrate migration guide} for all the features that are already cover by the modern version.
+
 ## Feature examples
 
 Each rich-text editor feature is presented on a separate page, with one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
