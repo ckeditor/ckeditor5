@@ -3,6 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+:root {
+	--ck-resizer-size: 10px;
+
+	/* Set the resizer with a 50% offset. */
+	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);
+	--ck-resizer-border-width: 1px;
+}
+
 .ck .ck-widget__resizer {
 	outline: 1px solid var(--ck-color-resizer);
 }
