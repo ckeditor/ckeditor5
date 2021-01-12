@@ -15,22 +15,22 @@
 	border-radius: var(--ck-resizer-border-radius);
 
 	&.ck-widget__resizer__handle-top-left {
-		top: var( --ck-resizer-offset );
-		left: var( --ck-resizer-offset );
+		top: var(--ck-resizer-offset);
+		left: var(--ck-resizer-offset);
 	}
 
 	&.ck-widget__resizer__handle-top-right {
-		top: var( --ck-resizer-offset );
-		right: var( --ck-resizer-offset );
+		top: var(--ck-resizer-offset);
+		right: var(--ck-resizer-offset);
 	}
 
 	&.ck-widget__resizer__handle-bottom-right {
-		bottom: var( --ck-resizer-offset );
-		right: var( --ck-resizer-offset );
+		bottom: var(--ck-resizer-offset);
+		right: var(--ck-resizer-offset);
 	}
 
 	&.ck-widget__resizer__handle-bottom-left {
-		bottom: var( --ck-resizer-offset );
-		left: var( --ck-resizer-offset );
+		bottom: var(--ck-resizer-offset);
+		left: var(--ck-resizer-offset);
 	}
 }
