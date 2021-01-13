@@ -39,10 +39,10 @@
 		position: relative;
 		margin: auto;
 
-		/* The empty content fills the whole preview, so the placeholder is not visible */
-		&:empty {
-			margin: 0;
-		}
+		/* Gives spacing to the small renderable elements, so they always cover the placeholder. */
+		display: table;
+		border-collapse: separate;
+		border-spacing: 7px;
 	}
 
 	& .raw-html-embed__preview-placeholder {
