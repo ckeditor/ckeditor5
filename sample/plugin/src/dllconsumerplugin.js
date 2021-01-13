@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { Plugin, Command } from '@ckeditor/ckeditor5-dll/core';
-import { ButtonView } from '@ckeditor/ckeditor5-dll/ui';
+import { Plugin, Command } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 class ACommand extends Command {
 	execute() {
