@@ -173,7 +173,16 @@ export function createImageViewElement( writer, imageType ) {
 //
 // @param {'image'|'imageInline'} matchImageType The type of created image.
 // @returns {Function}
-export function getImageTypeMatcher( matchImageType ) {
+export function getImageTypeMatcher( matchImageType, editor ) {
+	if ( editor.plugins.has( 'ImageInline' ) ^ editor.plugins.has( 'ImageBlock' ) ) {
+		return {
+			name: 'img',
+			attributes: {
+				src: true
+			}
+		};
+	}
+
 	return element => {
 		// Convert only images with src attribute.
 		if ( !element.is( 'element', 'img' ) || !element.hasAttribute( 'src' ) ) {

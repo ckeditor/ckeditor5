@@ -62,7 +62,7 @@ export default class ImageInline extends Plugin {
 
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( 'imageInline' ),
+				view: getImageTypeMatcher( 'imageInline', editor ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
 	}

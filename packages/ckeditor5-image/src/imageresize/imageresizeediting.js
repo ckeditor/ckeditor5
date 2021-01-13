@@ -74,7 +74,8 @@ export default class ImageResizeEditing extends Plugin {
 	 * @private
 	 */
 	_registerSchema() {
-		this.editor.model.schema.extend( 'image', { allowAttributes: 'width' } );
+		const imageType = this.editor.plugins.has( 'ImageBlock' ) ? 'image' : 'imageInline';
+		this.editor.model.schema.extend( imageType, { allowAttributes: 'width' } );
 		this.editor.model.schema.setAttributeProperties( 'width', {
 			isFormatting: true
 		} );

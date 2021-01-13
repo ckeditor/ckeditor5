@@ -65,7 +65,7 @@ export default class ImageBlock extends Plugin {
 
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( 'image' ),
+				view: getImageTypeMatcher( 'image', editor ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel() );
