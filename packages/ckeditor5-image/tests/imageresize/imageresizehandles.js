@@ -109,17 +109,13 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
-			setData( editor.model, '<paragraph>foo[]</paragraph>' );
-
 			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
 				evt.return = false;
 				evt.stop();
 			}, { priority: 'highest' } );
 			editor.commands.get( 'imageResize' ).refresh();
 
-			editor.model.change( writer => {
-				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );
-			} );
+			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			await waitForAllImagesLoaded( editor );
 
