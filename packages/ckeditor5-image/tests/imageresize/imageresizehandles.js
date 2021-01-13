@@ -12,6 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import {
@@ -471,6 +472,24 @@ describe( 'ImageResizeHandles', () => {
 			await waitForAllImagesLoaded( editor );
 
 			expect( attachToSpy ).not.called;
+
+			attachToSpy.restore();
+		} );
+	} );
+
+	describe( 'Link image integration', () => {
+		it( 'should attach the resizer to the image inside the link', async () => {
+			editor = await createEditor( {
+				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing ]
+			} );
+
+			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+
+			setData( editor.model, `[<image linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></image>]` );
+
+			await waitForAllImagesLoaded( editor );
+
+			expect( attachToSpy ).calledOnce;
 
 			attachToSpy.restore();
 		} );

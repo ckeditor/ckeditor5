@@ -21,22 +21,19 @@
 // Use:
 // npm run release:publish -- --dry-run
 
-/* eslint-disable max-len */
-
 require( '@ckeditor/ckeditor5-dev-env' )
 	.releaseSubRepositories( {
 		cwd: process.cwd(),
 		packages: 'packages',
 		releaseBranch: 'release',
-		emptyReleases: [
+		customReleases: [
 			'ckeditor5'
 		],
-		packageJsonForEmptyReleases: {
+		packageJsonForCustomReleases: {
 			ckeditor5: {
-				description: 'A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.'
+				description: 'A set of ready-to-use rich text editors created with a powerful framework.' +
+				' Made with real-time collaborative editing in mind.'
 			}
 		},
 		dryRun: process.argv.includes( '--dry-run' )
 	} );
-
-/* eslint-enable max-len */
