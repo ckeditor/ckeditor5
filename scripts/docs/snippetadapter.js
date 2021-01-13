@@ -621,10 +621,6 @@ function getWebpackConfigForAssets( config ) {
 		module: {
 			rules: [
 				{
-					test: /\.svg$/,
-					use: [ 'raw-loader' ]
-				},
-				{
 					test: /\.css$/,
 					use: [
 						MiniCssExtractPlugin.loader,
