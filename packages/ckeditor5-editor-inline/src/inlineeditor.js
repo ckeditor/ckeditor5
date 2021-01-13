@@ -11,7 +11,6 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
@@ -63,8 +62,6 @@ export default class InlineEditor extends Editor {
 	 */
 	constructor( sourceElementOrData, config ) {
 		super( config );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 

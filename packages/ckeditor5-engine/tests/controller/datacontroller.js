@@ -24,7 +24,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DataController', () => {
-	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument;
+	let model, modelDocument, data, schema, upcastHelpers, downcastHelpers, viewDocument;
 
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();
@@ -39,11 +39,7 @@ describe( 'DataController', () => {
 		schema.register( '$title', { inheritAllFrom: '$root' } );
 
 		viewDocument = new ViewDocument( stylesProcessor );
-		htmlDataProcessor = new HtmlDataProcessor( viewDocument );
-
 		data = new DataController( model, stylesProcessor );
-		data.processor = htmlDataProcessor;
-
 		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
 		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
 	} );
@@ -62,6 +58,20 @@ describe( 'DataController', () => {
 			const data = new DataController( model, stylesProcessor );
 
 			expect( data.viewDocument ).to.be.instanceOf( ViewDocument );
+		} );
+
+		it( 'should create #htmlProcessor property', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
+
+			expect( data.htmlProcessor ).to.be.instanceOf( HtmlDataProcessor );
+		} );
+
+		it( 'should assign #htmlProcessor property to the #processor property', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
+
+			expect( data.htmlProcessor ).to.equal( data.processor );
 		} );
 	} );
 
@@ -736,6 +746,41 @@ describe( 'DataController', () => {
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, stylesProcessor );
+		} );
+	} );
+
+	describe( 'registerRawContentMatcher()', () => {
+		it( 'should not register matcher twice for one instance of data processor', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
+
+			const spy = sinon.spy();
+
+			data.processor.registerRawContentMatcher = spy;
+
+			data.registerRawContentMatcher( 'div' );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, 'div' );
+		} );
+
+		it( 'should register matcher on both of data processor instances', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
+			data.processor = new HtmlDataProcessor( viewDocument );
+
+			const spyProcessor = sinon.spy();
+			const spyHtmlProcessor = sinon.spy();
+
+			data.processor.registerRawContentMatcher = spyProcessor;
+			data.htmlProcessor.registerRawContentMatcher = spyHtmlProcessor;
+
+			data.registerRawContentMatcher( 'div' );
+
+			sinon.assert.calledOnce( spyProcessor );
+			sinon.assert.calledWithExactly( spyProcessor, 'div' );
+			sinon.assert.calledOnce( spyHtmlProcessor );
+			sinon.assert.calledWithExactly( spyHtmlProcessor, 'div' );
 		} );
 	} );
 } );
