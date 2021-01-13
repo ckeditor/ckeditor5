@@ -7,6 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageEditing from '../../src/image/imageediting';
+import ImageBlock from '../../src/image/imageblock';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
@@ -23,7 +24,7 @@ describe( 'ImageCaptionEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageCaptionEditing, ImageEditing, UndoEditing, Paragraph ]
+				plugins: [ ImageCaptionEditing, ImageEditing, ImageBlock, UndoEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

@@ -21,7 +21,9 @@ import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Image from '../../src/image/imageediting';
+import ImageEditing from '../../src/image/imageediting';
+import ImageBlock from '../../src/image/imageblock';
+import ImageInline from '../../src/image/imageinline';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'image widget utils', () => {
@@ -146,7 +148,7 @@ describe( 'image widget utils', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Image, Paragraph ]
+					plugins: [ ImageEditing, ImageBlock, ImageInline, Paragraph ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -246,7 +248,7 @@ describe( 'image widget utils', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Image, Paragraph ]
+					plugins: [ ImageEditing, ImageBlock, ImageInline, Paragraph ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;

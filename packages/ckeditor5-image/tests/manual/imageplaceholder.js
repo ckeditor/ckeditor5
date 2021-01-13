@@ -7,11 +7,12 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ImageEditing from '../../src/image/imageediting';
+import ImageBlock from '../../src/image/imageblock';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ ImageEditing, ImageUploadEditing, ImageUploadProgress ]
+	plugins: [ ImageEditing, ImageBlock, ImageUploadEditing, ImageUploadProgress ]
 } )
 	.then( editor => {
 		window.editor = editor;

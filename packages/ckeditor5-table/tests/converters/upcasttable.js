@@ -7,6 +7,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import { modelTable } from '../_utils/utils';
@@ -19,7 +20,7 @@ describe( 'upcastTable()', () => {
 	beforeEach( () => {
 		return ClassicTestEditor
 			.create( '', {
-				plugins: [ TableEditing, Paragraph, ImageEditing, Widget ]
+				plugins: [ TableEditing, Paragraph, ImageEditing, ImageBlock, Widget ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
