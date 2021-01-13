@@ -95,7 +95,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 		// Register div.raw-html-embed as a raw content element so all of it's content will be provided
 		// as a view element's custom property while data upcasting.
-		editor.data.processor.registerRawContentMatcher( {
+		editor.data.registerRawContentMatcher( {
 			name: 'div',
 			classes: 'raw-html-embed'
 		} );
