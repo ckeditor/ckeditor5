@@ -9,6 +9,6 @@
 
 module.exports = {
 	rules: {
-		'ckeditor5-rules/ckeditor-dll-import': 'off'
+		'ckeditor5-rules/ckeditor-imports': 'off'
 	}
 };

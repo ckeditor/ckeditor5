@@ -17,20 +17,20 @@ module.exports = {
 		dllPackages
 	},
 	rules: {
-		'ckeditor5-rules/ckeditor-dll-import': 'error'
+		'ckeditor5-rules/ckeditor-imports': 'error'
 	},
 	overrides: [
 		{
 			files: [ '**/tests/**/*.js' ],
 			rules: {
 				'no-unused-expressions': 'off',
-				'ckeditor5-rules/ckeditor-dll-import': 'off'
+				'ckeditor5-rules/ckeditor-imports': 'off'
 			}
 		},
 		{
 			files: [ '**/docs/**/*.js' ],
 			rules: {
-				'ckeditor5-rules/ckeditor-dll-import': 'off'
+				'ckeditor5-rules/ckeditor-imports': 'off'
 			}
 		}
 	]

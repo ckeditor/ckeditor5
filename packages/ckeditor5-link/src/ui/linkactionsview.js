@@ -13,6 +13,8 @@ import { icons } from 'ckeditor5/src/core';
 
 import { ensureSafeUrl } from '../utils';
 
+// See: #8833.
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/linkactions.css';
 
