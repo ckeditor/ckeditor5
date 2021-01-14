@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, setTimeout, atob, URL, Blob, HTMLCanvasElement, console */
+/* globals window, setTimeout, atob, URL, Blob, HTMLCanvasElement, console */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -16,6 +16,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
@@ -31,6 +32,8 @@ describe( 'ImageUploadEditing', () => {
 
 	let adapterMocks = [];
 	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
+
+	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -924,40 +927,10 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	describe( 'fallback image conversion on canvas', () => {
-		let metaElement;
-		let previousMetaContent;
-
-		// Set strict Content Security Policy (CSP) rules before the first test in this block has been executed.
-		// The CSP rules cause that fetch() fails and it triggers the fallback procedure.
-		before( () => {
-			metaElement = document.querySelector( '[http-equiv=Content-Security-Policy]' );
-
-			if ( metaElement ) {
-				previousMetaContent = metaElement.getAttribute( 'content' );
-			} else {
-				metaElement = document.createElement( 'meta' );
-				metaElement.setAttribute( 'http-equiv', 'Content-Security-Policy' );
-
-				document.head.appendChild( metaElement );
-			}
-
-			metaElement.setAttribute( 'content', '' +
-				'default-src \'none\'; ' +
-				'connect-src \'self\'; ' +
-				'script-src \'self\'; ' +
-				'img-src * data: blob:;' +
-				'style-src \'self\' \'unsafe-inline\'; ' +
-				'frame-src *'
-			);
-		} );
-
-		// Remove or restore the previous CSP rules after the last test in this block has been executed.
-		after( () => {
-			if ( previousMetaContent ) {
-				metaElement.setAttribute( 'content', previousMetaContent );
-			} else {
-				document.head.removeChild( metaElement );
-			}
+		// The following one simulates strict Content Security Policy (CSP) rules
+		// that would make fetch() fail so that the the fallback procedure is triggered.
+		beforeEach( () => {
+			sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject( new TypeError() ) );
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/7957.
