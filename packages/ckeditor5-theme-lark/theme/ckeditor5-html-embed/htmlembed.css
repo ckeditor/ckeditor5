@@ -123,7 +123,7 @@
 			background: var(--ck-html-embed-source-disabled-background);
 			color: var(--ck-html-embed-source-disabled-color);
 
-			/* Safari needs this for the proper text color in disabled input. */
+			/* Safari needs this for the proper text color in disabled input (https://github.com/ckeditor/ckeditor5/issues/8320). */
 			-webkit-text-fill-color: var(--ck-html-embed-source-disabled-color);
 			opacity: 1;
 		}
