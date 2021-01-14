@@ -8,7 +8,6 @@
  */
 
 import { Editor, DataApiMixin, ElementApiMixin, attachToForm, secureSourceElement } from 'ckeditor5/src/core';
-import { HtmlDataProcessor } from 'ckeditor5/src/engine';
 import { BalloonToolbar } from 'ckeditor5/src/ui';
 import { CKEditorError, setDataInElement, getDataFromElement, mix } from 'ckeditor5/src/utils';
 
@@ -71,8 +70,6 @@ export default class BalloonEditor extends Editor {
 		this.config.set( 'plugins', plugins );
 
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 

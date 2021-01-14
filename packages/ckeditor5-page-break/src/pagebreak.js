@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-
+import { Widget } from 'ckeditor5/src/widget';
 import PageBreakEditing from './pagebreakediting';
 import PageBreakUI from './pagebreakui';
 
@@ -26,7 +26,7 @@ export default class PageBreak extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ PageBreakEditing, PageBreakUI ];
+		return [ PageBreakEditing, PageBreakUI, Widget ];
 	}
 
 	/**

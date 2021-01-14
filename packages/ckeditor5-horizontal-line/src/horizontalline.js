@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
 import HorizontalLineEditing from './horizontallineediting';
 import HorizontalLineUI from './horizontallineui';
 
@@ -25,7 +26,7 @@ export default class HorizontalLine extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HorizontalLineEditing, HorizontalLineUI ];
+		return [ HorizontalLineEditing, HorizontalLineUI, Widget ];
 	}
 
 	/**

@@ -8,7 +8,6 @@
  */
 
 import { Editor, DataApiMixin, ElementApiMixin, attachToForm, secureSourceElement } from 'ckeditor5/src/core';
-import { HtmlDataProcessor } from 'ckeditor5/src/engine';
 import { mix, getDataFromElement, setDataInElement, CKEditorError } from 'ckeditor5/src/utils';
 
 import { isElement } from 'lodash-es';
@@ -58,8 +57,6 @@ export default class InlineEditor extends Editor {
 	 */
 	constructor( sourceElementOrData, config ) {
 		super( config );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 

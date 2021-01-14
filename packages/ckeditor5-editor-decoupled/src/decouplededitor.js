@@ -8,7 +8,6 @@
  */
 
 import { Editor, DataApiMixin, secureSourceElement } from 'ckeditor5/src/core';
-import { HtmlDataProcessor } from 'ckeditor5/src/engine';
 import { CKEditorError, getDataFromElement, setDataInElement, mix } from 'ckeditor5/src/utils';
 
 import { isElement } from 'lodash-es';
@@ -68,8 +67,6 @@ export default class DecoupledEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 			secureSourceElement( this );
 		}
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 

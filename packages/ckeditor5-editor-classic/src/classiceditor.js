@@ -8,7 +8,6 @@
  */
 
 import { Editor, DataApiMixin, ElementApiMixin, attachToForm } from 'ckeditor5/src/core';
-import { HtmlDataProcessor } from 'ckeditor5/src/engine';
 import { mix, getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
 
 import { isElement } from 'lodash-es';
@@ -62,8 +61,6 @@ export default class ClassicEditor extends Editor {
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
 		}
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 
