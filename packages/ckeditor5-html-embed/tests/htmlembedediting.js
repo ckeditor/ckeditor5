@@ -708,7 +708,7 @@ describe( 'HtmlEmbedEditing', () => {
 					expect( placeholder.classList.value ).to.contain( 'ck ck-reset_all' );
 				} );
 
-				it( 'should display the proper information if the preview is empty', () => {
+				it( 'should display the proper information if the snippet is empty', () => {
 					setModelData( model, '<rawHtml value=""></rawHtml>' );
 					const placeholder = getPlaceholder();
 
