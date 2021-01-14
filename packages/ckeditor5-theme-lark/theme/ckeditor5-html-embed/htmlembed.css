@@ -8,6 +8,8 @@
 	--ck-html-embed-source-height: 10em;
 	--ck-html-embed-unfocused-outline-width: 1px;
 	--ck-html-embed-content-min-height: calc(var(--ck-icon-size) + var(--ck-spacing-standard));
+
+	--ck-html-embed-source-disabled-color: hsl(0deg 0% 45%)
 }
 
 /* The feature container. */
@@ -145,6 +147,6 @@
 	}
 
 	& .raw-html-embed__preview-placeholder {
-		opacity: var(--ck-disabled-opacity);
+		color: var(--ck-html-embed-source-disabled-color)
 	}
 }
