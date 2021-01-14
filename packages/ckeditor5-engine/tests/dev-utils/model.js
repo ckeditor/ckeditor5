@@ -130,6 +130,22 @@ describe( 'model test utils', () => {
 			expect( args[ 0 ] ).to.equal( data );
 		} );
 
+		it( 'should use model#enqueueChange method if the batchType option was provided', () => {
+			const changeSpy = sinon.spy( model, 'enqueueChange' );
+			const batchType = 'default';
+			setData( model, 'text', { batchType } );
+
+			sinon.assert.calledTwice( changeSpy );
+			sinon.assert.calledWith( changeSpy, batchType );
+		} );
+
+		it( 'should use model#change method if no batchType option was provided', () => {
+			const changeSpy = sinon.spy( model, 'change' );
+			setData( model, 'text', {} );
+
+			sinon.assert.calledOnce( changeSpy );
+		} );
+
 		it( 'should insert text', () => {
 			testUtils( 'this is test text', '[]this is test text' );
 		} );

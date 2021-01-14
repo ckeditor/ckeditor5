@@ -25,6 +25,7 @@ import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
 import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
+import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -58,21 +59,6 @@ export default class DataController {
 		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = model;
-
-		/**
-		 * Styles processor used during the conversion.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
-		this.stylesProcessor = stylesProcessor;
-
-		/**
-		 * Data processor used during the conversion.
-		 *
-		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
-		 */
-		this.processor = undefined;
 
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and
@@ -113,6 +99,30 @@ export default class DataController {
 		 * @member {module:engine/view/document~Document}
 		 */
 		this.viewDocument = new ViewDocument( stylesProcessor );
+
+		/**
+		 * Styles processor used during the conversion.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = stylesProcessor;
+
+		/**
+		 * Data processor used specifically for HTML conversion.
+		 *
+		 * @readonly
+		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #htmlProcessor
+		 */
+		this.htmlProcessor = new HtmlDataProcessor( this.viewDocument );
+
+		/**
+		 * Data processor used during the conversion.
+		 * Same instance as {@link #htmlProcessor} by default. Can be replaced at run time to handle different format, e.g. XML or Markdown.
+		 *
+		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
+		 */
+		this.processor = this.htmlProcessor;
 
 		/**
 		 * The view downcast writer just for data conversion purposes, i.e. to modify
@@ -429,6 +439,26 @@ export default class DataController {
 	 */
 	addStyleProcessorRules( callback ) {
 		callback( this.stylesProcessor );
+	}
+
+	/**
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} on {@link #htmlProcessor htmlProcessor}
+	 * and {@link #processor processor} for view elements whose content should be treated as a raw data
+	 * and not processed during conversion from DOM to view elements.
+	 *
+	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+	 * `"$rawContent"`.
+	 *
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
+	 * be treated as a raw data.
+	 */
+	registerRawContentMatcher( pattern ) {
+		// No need to register the pattern if both `htmlProcessor` and `processor` are the same instances.
+		if ( this.processor && this.processor !== this.htmlProcessor ) {
+			this.processor.registerRawContentMatcher( pattern );
+		}
+
+		this.htmlProcessor.registerRawContentMatcher( pattern );
 	}
 
 	/**

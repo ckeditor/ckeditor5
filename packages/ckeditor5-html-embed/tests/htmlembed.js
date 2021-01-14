@@ -6,10 +6,11 @@
 import HtmlEmbed from '../src/htmlembed';
 import HtmlEmbedUI from '../src/htmlembedui';
 import HtmlEmbedEditing from '../src/htmlembedediting';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 describe( 'HtmlEmbed', () => {
-	it( 'should require HtmlEmbedEditing and HtmlEmbedUI', () => {
-		expect( HtmlEmbed.requires ).to.deep.equal( [ HtmlEmbedEditing, HtmlEmbedUI ] );
+	it( 'should require HtmlEmbedEditing, HtmlEmbedUI and Widget', () => {
+		expect( HtmlEmbed.requires ).to.deep.equal( [ HtmlEmbedEditing, HtmlEmbedUI, Widget ] );
 	} );
 
 	it( 'should be named', () => {
