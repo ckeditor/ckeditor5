@@ -41,7 +41,7 @@ export default class DropdownPanelView extends View {
 		 *
 		 * @observable
 		 * @default 'se'
-		 * @member {'se'|'sw'|'ne'|'nw'} #position
+		 * @member {'s'|'se'|'sw'|'sme'|'smw'|'n'|'ne'|'nw'|'nme'|'nmw'} #position
 		 */
 		this.set( 'position', 'se' );
 

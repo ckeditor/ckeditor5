@@ -4,8 +4,9 @@
  */
 
 .ck.ck-character-grid {
+	max-width: 100%;
+	
 	& .ck-character-grid__tiles {
 		display: grid;
-		grid-template-columns: repeat( 10, 1fr );
 	}
 }

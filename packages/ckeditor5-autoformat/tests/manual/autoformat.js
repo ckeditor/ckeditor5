@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Autoformat from '../../src/autoformat';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -23,10 +24,38 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Code, Strikethrough, Heading, List, Autoformat, BlockQuote, CodeBlock,
-			ShiftEnter ],
-		toolbar: [ 'heading', '|', 'numberedList', 'bulletedList', 'blockQuote', 'codeBlock', 'bold', 'italic', 'code', 'strikethrough',
-			'undo', 'redo' ]
+		plugins: [
+			Enter,
+			Typing,
+			Paragraph,
+			Undo,
+			Bold,
+			Italic,
+			Code,
+			Strikethrough,
+			Heading,
+			List,
+			TodoList,
+			Autoformat,
+			BlockQuote,
+			CodeBlock,
+			ShiftEnter
+		],
+		toolbar: [
+			'heading',
+			'|',
+			'numberedList',
+			'bulletedList',
+			'todoList',
+			'blockQuote',
+			'codeBlock',
+			'bold',
+			'italic',
+			'code',
+			'strikethrough',
+			'undo',
+			'redo'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -103,14 +103,17 @@ When `shouldNotGroupWhenFull` is set to `true`, by default the toolbar items are
 toolbar: {
     items: [
         'heading', '|',
-        'fontfamily', 'fontsize', '|',
-        'fontColor', 'fontBackgroundColor', '|',
-        'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
-        'outdent', 'indent', '|',
-        'bulletedList', 'numberedList', 'todoList', '|',
-        'code', 'codeBlock', '|',
-        'imageUpload', 'blockQuote', '|',
-        'undo', 'redo'
+		'fontfamily', 'fontsize', '|',
+		'alignment', '|',
+		'fontColor', 'fontBackgroundColor', '|',
+		'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
+		'link', '|',
+		'outdent', 'indent', '|',
+		'bulletedList', 'numberedList', 'todoList', '|',
+		'code', 'codeBlock', '|',
+		'insertTable', '|',
+		'imageUpload', 'blockQuote', '|',
+		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
 }
@@ -128,13 +131,16 @@ Setting an explicit break point in the toolbar configuration with `'-'` lets you
 toolbar: {
     items: [
         'heading', '|',
-        'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'link', '|',
-        'bulletedList', 'numberedList', 'todoList', '-',
-        'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
-        'code', 'codeBlock', '|',
-        'outdent', 'indent', '|',
-        'imageUpload', 'blockQuote', '|',
-        'undo', 'redo'
+		'alignment', '|',
+		'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
+		'link', '|',
+		'bulletedList', 'numberedList', 'todoList', '-',
+		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
+		'code', 'codeBlock', '|',
+		'insertTable', '|',
+		'outdent', 'indent', '|',
+		'imageUpload', 'blockQuote', '|',
+		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
 }
@@ -153,3 +159,7 @@ Array.from( editor.ui.componentFactory.names() );
 ## Adding a custom button
 
 Refer to the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+
+## Block toolbar
+
+The {@link features/blocktoolbar BlockToolbar} feature provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (e.g. in certain {@link builds/guides/overview#balloon-block-editor balloon block editor} scenarios).
