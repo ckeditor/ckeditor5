@@ -208,19 +208,9 @@ class Insertion {
 		// Insert nodes collected in temporary DocumentFragment.
 		this._insertPartialFragment();
 
-		// After the content was inserted we may try to merge it with its siblings.
-		// This should happen only if the selection was in those elements initially.
-		//
-		// E.g.:
-		// <p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
-		// and:
-		// <p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
-		// but:
-		// <p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
-		// <p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
-		//																	 it's exactly the same case as above)
-		this._mergeSiblingsOfFirstNode();
-		this._mergeSiblingsOfLastNode();
+		// After the content was inserted we may try to merge it with its next sibling if the selection was in it initially.
+		// Merging with the previous sibling was performed just after inserting the first node to the document.
+		this._mergeOnRight();
 
 		// TMP this will become a post-fixer.
 		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
@@ -320,9 +310,16 @@ class Insertion {
 
 		this._setAffectedBoundaries( this.position );
 
-		// Insert the first node in a separate operation to avoid operation transformation on multiple nodes on undoing (insert + merge).
+		// If the very first node of the whole insertion process is inserted, insert it separately for OT reasons (undo).
+		// Note: there can be multiple calls to `_insertPartialFragment()` during one insertion process.
+		// Note: only the very first node can be merged so we have to do separate operation only for it.
 		if ( this._documentFragment.getChild( 0 ) == this._firstNode ) {
 			this.writer.insert( this._firstNode, this.position );
+
+			// We must merge the first node just after inserting it to avoid problems with OT.
+			// (See: https://github.com/ckeditor/ckeditor5/pull/8773#issuecomment-760945652).
+			this._mergeOnLeft();
+
 			this.position = livePosition.toPosition();
 		}
 
@@ -440,9 +437,20 @@ class Insertion {
 	/**
 	 * Merges sibling of the first node if should be merged.
 	 *
+	 * After the content was inserted we may try to merge it with its siblings.
+	 * This should happen only if the selection was in those elements initially.
+	 *
+	 * Example:
+	 * 		<p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
+	 * 		and:
+	 * 		<p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
+	 * 		but:
+	 * 		<p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
+	 * 		<p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
+	 * 																			 it's exactly the same case as above)
 	 * @private
 	 */
-	_mergeSiblingsOfFirstNode() {
+	_mergeOnLeft() {
 		const node = this._firstNode;
 
 		if ( !( node instanceof Element ) ) {
@@ -475,8 +483,18 @@ class Insertion {
 			this._affectedStart = LivePosition._createAt( mergePosLeft.nodeBefore, 'end', 'toPrevious' );
 		}
 
+		// We need to update the references to the first and last nodes if they will be merged into the previous sibling node
+		// because the reference would point to the removed node.
+		//
+		// <p>A^A</p> + <p>X</p>
+		//
+		// <p>A</p>^<p>A</p>
+		// <p>A</p><p>X</p><p>A</p>
+		// <p>AX</p><p>A</p>
+		// <p>AXA</p>
 		if ( this._firstNode === this._lastNode ) {
-			this._firstNode = this._lastNode = mergePosLeft.nodeBefore;
+			this._firstNode = mergePosLeft.nodeBefore;
+			this._lastNode = mergePosLeft.nodeBefore;
 		}
 
 		this.writer.merge( mergePosLeft );
@@ -507,9 +525,20 @@ class Insertion {
 	/**
 	 * Merges sibling of the last node if should be merged.
 	 *
+	 * After the content was inserted we may try to merge it with its siblings.
+	 * This should happen only if the selection was in those elements initially.
+	 *
+	 * Example:
+	 * 		<p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
+	 * 		and:
+	 * 		<p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
+	 * 		but:
+	 * 		<p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
+	 * 		<p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
+	 * 																			 it's exactly the same case as above)
 	 * @private
 	 */
-	_mergeSiblingsOfLastNode() {
+	_mergeOnRight() {
 		const node = this._lastNode;
 
 		if ( !( node instanceof Element ) ) {
@@ -544,23 +573,34 @@ class Insertion {
 		// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
 		this.position = Position._createAt( mergePosRight.nodeBefore, 'end' );
 
+		// Explanation of setting position stickiness to `'toPrevious'`:
 		// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 		// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
 		const livePosition = LivePosition.fromPosition( this.position, 'toPrevious' );
 
-		// See comment above on moving `_affectedStart`.
+		// See comment in `_mergeOnLeft()` on moving `_affectedStart`.
 		if ( this._affectedEnd.isEqual( mergePosRight ) ) {
 			this._affectedEnd.detach();
 			this._affectedEnd = LivePosition._createAt( mergePosRight.nodeBefore, 'end', 'toNext' );
 		}
 
+		// We need to update the references to the first and last nodes if they will be merged into the previous sibling node
+		// because the reference would point to the removed node.
+		//
+		// <p>A^A</p> + <p>X</p>
+		//
+		// <p>A</p>^<p>A</p>
+		// <p>A</p><p>X</p><p>A</p>
+		// <p>AX</p><p>A</p>
+		// <p>AXA</p>
 		if ( this._firstNode === this._lastNode ) {
-			this._firstNode = this._lastNode = mergePosRight.nodeBefore;
+			this._firstNode = mergePosRight.nodeBefore;
+			this._lastNode = mergePosRight.nodeBefore;
 		}
 
 		this.writer.merge( mergePosRight );
 
-		// See comment above on moving `_affectedStart`.
+		// See comment in `_mergeOnLeft()` on moving `_affectedStart`.
 		if ( mergePosRight.getShiftedBy( -1 ).isEqual( this._affectedStart ) && this._firstNode === this._lastNode ) {
 			this._affectedStart.detach();
 			this._affectedStart = LivePosition._createAt( mergePosRight.nodeBefore, 0, 'toPrevious' );

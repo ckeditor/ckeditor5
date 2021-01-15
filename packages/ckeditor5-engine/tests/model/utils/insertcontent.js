@@ -279,12 +279,12 @@ describe( 'DataController utils', () => {
 			expect( operations[ 1 ].position.path ).to.deep.equal( [ 1 ] );
 			expect( operations[ 1 ].nodes.length ).to.equal( 1 );
 
-			expect( operations[ 2 ].type ).to.equal( 'insert' );
-			expect( operations[ 2 ].position.path ).to.deep.equal( [ 2 ] );
-			expect( operations[ 2 ].nodes.length ).to.equal( 3 );
+			expect( operations[ 2 ].type ).to.equal( 'merge' );
+			expect( operations[ 2 ].targetPosition.path ).to.deep.equal( [ 0, 1 ] );
 
-			expect( operations[ 3 ].type ).to.equal( 'merge' );
-			expect( operations[ 3 ].targetPosition.path ).to.deep.equal( [ 0, 1 ] );
+			expect( operations[ 3 ].type ).to.equal( 'insert' );
+			expect( operations[ 3 ].position.path ).to.deep.equal( [ 1 ] );
+			expect( operations[ 3 ].nodes.length ).to.equal( 3 );
 
 			expect( operations[ 4 ].type ).to.equal( 'merge' );
 			expect( operations[ 4 ].targetPosition.path ).to.deep.equal( [ 3, 3 ] );
