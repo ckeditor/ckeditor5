@@ -499,7 +499,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( '-', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph></paragraph><horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should replace three dashes in a heading', () => {
@@ -508,7 +508,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( '-', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<heading1></heading1><horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should replace three dashes in a non-empty paragraph', () => {
@@ -518,7 +518,7 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph></paragraph><horizontalLine></horizontalLine><paragraph>[]foo - bar</paragraph>'
+				'<horizontalLine></horizontalLine><paragraph>[]foo - bar</paragraph>'
 			);
 		} );
 
