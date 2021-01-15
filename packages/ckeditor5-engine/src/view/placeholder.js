@@ -29,9 +29,10 @@ const documentPlaceholders = new WeakMap();
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
+ * @param {Boolean} [options.hideOnFocus=false] TODO
  */
 export function enablePlaceholder( options ) {
-	const { view, element, text, isDirectHost = true } = options;
+	const { view, element, text, isDirectHost = true, hideOnFocus = false } = options;
 	const doc = view.document;
 
 	// Use a single a single post fixer per—document to update all placeholders.
@@ -46,7 +47,8 @@ export function enablePlaceholder( options ) {
 	// Store information about the element placeholder under its document.
 	documentPlaceholders.get( doc ).set( element, {
 		text,
-		isDirectHost
+		isDirectHost,
+		hideOnFocus
 	} );
 
 	// Update the placeholders right away.
@@ -141,9 +143,10 @@ export function hidePlaceholder( writer, element ) {
  * sure the correct element is passed to the helper.
  *
  * @param {module:engine/view/element~Element} element
+ * @param {Boolean} hideOnFocus TODO
  * @returns {Boolean}
  */
-export function needsPlaceholder( element ) {
+export function needsPlaceholder( element, hideOnFocus ) {
 	if ( !element.isAttached() ) {
 		return false;
 	}
@@ -152,12 +155,26 @@ export function needsPlaceholder( element ) {
 	const isEmptyish = !Array.from( element.getChildren() )
 		.some( element => !element.is( 'uiElement' ) );
 
-	// If the element, keep placeholder
-	if ( isEmptyish ) {
+	if ( !isEmptyish ) {
+		return false;
+	}
+
+	if ( !hideOnFocus ) {
 		return true;
 	}
 
-	return false;
+	const doc = element.document;
+
+	// If the element is empty and the document is blurred.
+	if ( !doc.isFocused ) {
+		return true;
+	}
+
+	const viewSelection = doc.selection;
+	const selectionAnchor = viewSelection.anchor;
+
+	// If document is focused and the element is empty but the selection is not anchored inside it.
+	return selectionAnchor && selectionAnchor.parent !== element;
 }
 
 // Updates all placeholders associated with a document in a post–fixer callback.
@@ -211,7 +228,7 @@ function updatePlaceholder( writer, element, config ) {
 		wasViewModified = true;
 	}
 
-	if ( needsPlaceholder( hostElement ) ) {
+	if ( needsPlaceholder( hostElement, config.hideOnFocus ) ) {
 		if ( showPlaceholder( writer, hostElement ) ) {
 			wasViewModified = true;
 		}
