@@ -5,7 +5,6 @@
 
 import Editor from '../../src/editor/editor';
 import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -19,9 +18,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 export default class VirtualTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
-
-		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
