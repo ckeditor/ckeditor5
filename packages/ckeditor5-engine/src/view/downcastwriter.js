@@ -965,6 +965,7 @@ export default class DowncastWriter {
 	 *
 	 * @param {String} newName New name for element.
 	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
+	 * @returns {module:engine/view/containerelement~ContainerElement} Element created due to rename.
 	 */
 	rename( newName, viewElement ) {
 		const newElement = new ContainerElement( this.document, newName, viewElement.getAttributes() );
