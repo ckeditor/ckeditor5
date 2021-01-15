@@ -16,8 +16,17 @@ import Selection from '../selection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Inserts content into the editor (specified selection) as one would expect the paste
- * functionality to work.
+ * Inserts content into the editor (specified selection) as one would expect the paste functionality to work.
+ *
+ * It takes care of removing the selected content, splitting elements (if needed), inserting elements and merging elements appropriately.
+ *
+ * Some examples:
+ *
+ * 		<p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
+ * 		<p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
+ * 		<p>x^y</p> + <img /> => <p>x</p>^<p>y</p> + <img /> => <p>x</p><img /><p>y</p>
+ * 		<p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y[]</p><p>z</p> (no merging)
+ * 		<p>x</p>[<img />]<p>z</p> + <p>y</p> => <p>x</p>^<p>z</p> + <p>y</p> => <p>x</p><p>y[]</p><p>z</p>
  *
  * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
  * to the insertion selection (equal to a range to be selected after insertion).
@@ -435,19 +444,11 @@ class Insertion {
 	}
 
 	/**
-	 * Merges sibling of the first node if should be merged.
+	 * Merges the previous sibling of the first node if it should be merged.
 	 *
 	 * After the content was inserted we may try to merge it with its siblings.
 	 * This should happen only if the selection was in those elements initially.
 	 *
-	 * Example:
-	 * 		<p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
-	 * 		and:
-	 * 		<p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
-	 * 		but:
-	 * 		<p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
-	 * 		<p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
-	 * 																			 it's exactly the same case as above)
 	 * @private
 	 */
 	_mergeOnLeft() {
@@ -523,19 +524,11 @@ class Insertion {
 	}
 
 	/**
-	 * Merges sibling of the last node if should be merged.
+	 * Merges the next sibling of the last node if it should be merged.
 	 *
 	 * After the content was inserted we may try to merge it with its siblings.
 	 * This should happen only if the selection was in those elements initially.
 	 *
-	 * Example:
-	 * 		<p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
-	 * 		and:
-	 * 		<p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
-	 * 		but:
-	 * 		<p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
-	 * 		<p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
-	 * 																			 it's exactly the same case as above)
 	 * @private
 	 */
 	_mergeOnRight() {
