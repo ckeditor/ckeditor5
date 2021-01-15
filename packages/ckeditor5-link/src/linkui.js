@@ -665,7 +665,7 @@ export default class LinkUI extends Plugin {
 			} else {
 				if ( range.start.isAtEnd ) {
 					const startPosition = range.start.getLastMatchingPosition(
-						( { item } ) => !item.is( '$text' ) && !item.is( '$textProxy' ) && !model.schema.isLimit( item ),
+						( { item } ) => !model.schema.isContent( item ),
 						{ boundaries: range }
 					);
 
