@@ -25,3 +25,12 @@
 		min-width: 50px;
 	}
 }
+
+/*
+ * Since the caption placeholder for images disappears when focused, it does not require special treatment
+ * and can go with a position that follows text alignment of an .image out-of-the-box (center by default).
+ * See https://github.com/ckeditor/ckeditor5/issues/8689.
+ */
+.ck.ck-editor__editable .image > figcaption.ck-placeholder::before {
+	position: static;
+}
