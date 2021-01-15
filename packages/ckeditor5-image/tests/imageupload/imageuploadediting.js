@@ -10,6 +10,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ImageEditing from '../../src/image/imageediting';
+import ImageBlock from '../../src/image/imageblock';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -55,7 +56,7 @@ describe( 'ImageUploadEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageEditing, ImageBlock, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -87,7 +88,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should load Clipboard plugin', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+				plugins: [ ImageEditing, ImageBlock, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
 			} )
 			.then( editor => {
 				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
@@ -174,7 +175,7 @@ describe( 'ImageUploadEditing', () => {
 		// Clipboard plugin is required for this test.
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageEditing, ImageBlock, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( editor => {
 				const fileMock = createNativeFileMock();

@@ -8,6 +8,8 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ImageEditing from '../../src/image/imageediting';
+import ImageBlock from '../../src/image/imageblock';
+import ImageInline from '../../src/image/imageinline';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -26,7 +28,7 @@ describe( 'ImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, Paragraph ]
+				plugins: [ ImageEditing, ImageBlock, ImageInline, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -86,7 +88,7 @@ describe( 'ImageEditing', () => {
 		document.body.appendChild( element );
 
 		const editor = await ClassicTestEditor.create( element, {
-			plugins: [ ImageEditing ]
+			plugins: [ ImageEditing, ImageBlock ]
 		} );
 
 		editor.data.set( '<figure class="image"><img src="/assets/sample.png" alt="bar" /></figure>' );
@@ -109,7 +111,7 @@ describe( 'ImageEditing', () => {
 		document.body.appendChild( element );
 
 		const editor = await ClassicTestEditor.create( element, {
-			plugins: [ ImageEditing, Paragraph ]
+			plugins: [ ImageEditing, ImageBlock, ImageInline, Paragraph ]
 		} );
 
 		editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );

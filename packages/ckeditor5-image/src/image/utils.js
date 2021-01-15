@@ -147,6 +147,58 @@ export function getViewImgFromWidget( figureView ) {
 	return figureChildren.find( viewChild => viewChild.is( 'element', 'img' ) );
 }
 
+// Creates a view element representing the image.
+//
+//		<figure class="image"><img></img></figure>
+//
+// Note that `alt` and `src` attributes are converted separately, so they are not included.
+//
+// @private
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {'image'|'imageInline'} imageType The type of created image.
+// @returns {module:engine/view/containerelement~ContainerElement}
+export function createImageViewElement( writer, imageType ) {
+	const emptyElement = writer.createEmptyElement( 'img' );
+
+	const container = imageType === 'image' ?
+		writer.createContainerElement( 'figure', { class: 'image' } ) :
+		writer.createContainerElement( 'span', { class: 'image-inline' } );
+
+	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
+
+	return container;
+}
+
+// A function returning a {@link module:engine/view/matcher~Matcher} callback for a particular type of View images.
+//
+// @param {'image'|'imageInline'} matchImageType The type of created image.
+// @returns {Function}
+export function getImageTypeMatcher( matchImageType, editor ) {
+	if ( editor.plugins.has( 'ImageInline' ) ^ editor.plugins.has( 'ImageBlock' ) ) {
+		return {
+			name: 'img',
+			attributes: {
+				src: true
+			}
+		};
+	}
+
+	return element => {
+		// Convert only images with src attribute.
+		if ( !element.is( 'element', 'img' ) || !element.hasAttribute( 'src' ) ) {
+			return null;
+		}
+
+		const imageType = element.findAncestor( 'figure' ) ? 'image' : 'imageInline';
+
+		if ( imageType !== matchImageType ) {
+			return null;
+		}
+
+		return { name: true, attributes: [ 'src' ] };
+	};
+}
+
 // Checks if image is allowed by schema in optimal insertion parent.
 //
 // @returns {Boolean}

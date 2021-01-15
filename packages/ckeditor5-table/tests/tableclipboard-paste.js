@@ -12,6 +12,7 @@ import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horiz
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -880,7 +881,7 @@ describe( 'table clipboard', () => {
 
 				it( 'should replace the table cells when selection is on the image inside the table cell', async () => {
 					await editor.destroy();
-					await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+					await createEditor( [ ImageEditing, ImageBlock, ImageCaptionEditing ] );
 
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
@@ -903,7 +904,7 @@ describe( 'table clipboard', () => {
 
 				it( 'should replace the table cells when selection is in the image caption inside the table cell', async () => {
 					await editor.destroy();
-					await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+					await createEditor( [ ImageEditing, ImageBlock, ImageCaptionEditing ] );
 
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
@@ -3777,7 +3778,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'handles image in table cell', async () => {
-			await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+			await createEditor( [ ImageEditing, ImageBlock, ImageCaptionEditing ] );
 
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -3803,7 +3804,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'handles mixed nested content in table cell', async () => {
-			await createEditor( [ ImageEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
+			await createEditor( [ ImageEditing, ImageBlock, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
 
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
