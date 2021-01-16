@@ -21,10 +21,12 @@ import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload";
 import Indent from "@ckeditor/ckeditor5-indent/src/indent";
 import Italic from "@ckeditor/ckeditor5-basic-styles/src/italic";
 import Link from "@ckeditor/ckeditor5-link/src/link";
+import LinkImage from "@ckeditor/ckeditor5-link/src/linkimage";
 import List from "@ckeditor/ckeditor5-list/src/list";
 import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed";
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import PasteFromOffice from "@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice";
+import Subscript from "@ckeditor/ckeditor5-basic-styles/src/subscript";
 import Superscript from "@ckeditor/ckeditor5-basic-styles/src/superscript";
 import Title from "@ckeditor/ckeditor5-heading/src/title";
 import Table from "@ckeditor/ckeditor5-table/src/table";
@@ -54,10 +56,12 @@ BalloonEditor.builtinPlugins = [
 	Indent,
 	Italic,
 	Link,
+	LinkImage,
 	List,
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+	Subscript,
 	Superscript,
 	Title,
 	Table,
@@ -96,6 +100,7 @@ BalloonEditor.defaultConfig = {
 			"blockQuote",
 			"indent",
 			"outdent",
+			"subscript",
 			"superscript",
 		],
 	},
@@ -105,6 +110,7 @@ BalloonEditor.defaultConfig = {
 			"imageStyle:side",
 			"|",
 			"imageTextAlternative",
+			"linkImage",
 		],
 	},
 	heading: {
