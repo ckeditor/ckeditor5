@@ -10,6 +10,9 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
+import ImageInline from '@ckeditor/ckeditor5-image/src/image/imageinline';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -38,8 +41,14 @@ describe( 'LinkImageEditing', () => {
 		expect( editor.plugins.get( LinkImageEditing ) ).to.be.instanceOf( LinkImageEditing );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
+		editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, LinkImageEditing ] } );
+		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+	} );
+
+	it( 'should set proper schema rules for image style when ImageInline plugin is enabled', async () => {
+		editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, LinkImageEditing ] } );
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
 	} );
 
 	describe( 'conversion in data pipeline', () => {

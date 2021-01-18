@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ImageEditing from '../../src/image/imageediting';
 import ImageBlock from '../../src/image/imageblock';
+import ImageInline from '../../src/image/imageinline';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -79,6 +80,16 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should register proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
+	} );
+
+	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
+		editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, ImageUploadEditing ] } );
+		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
+	} );
+
+	it( 'should register proper schema rules for image style when ImageInline plugin is enabled', async () => {
+		editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, ImageUploadEditing ] } );
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
 	} );
 
 	it( 'should register imageUpload command', () => {

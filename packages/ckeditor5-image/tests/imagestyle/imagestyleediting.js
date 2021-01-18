@@ -7,6 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
 import ImageEditing from '../../src/image/imageediting';
 import ImageBlock from '../../src/image/imageblock';
+import ImageInline from '../../src/image/imageinline';
 import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -72,10 +73,14 @@ describe( 'ImageStyleEditing', () => {
 				} );
 		} );
 
-		it( 'should set schema rules for image style', () => {
-			const schema = model.schema;
+		it( 'should set schema rules for image style when ImageBlock plugin is enabled', async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ] } );
+			expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
+		} );
 
-			expect( schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
+		it( 'should set schema rules for image style when ImageInline plugin is enabled', async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, ImageStyleEditing ] } );
+			expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'imageStyle' ) ).to.be.true;
 		} );
 
 		it( 'should register a command', () => {
