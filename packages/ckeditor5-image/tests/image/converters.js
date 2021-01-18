@@ -45,8 +45,10 @@ describe( 'Image converters', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.add( modelToViewAttributeConverter( 'src' ) )
-					.add( modelToViewAttributeConverter( 'alt' ) );
+					.add( modelToViewAttributeConverter( 'src', 'image' ) )
+					.add( modelToViewAttributeConverter( 'src', 'imageInline' ) )
+					.add( modelToViewAttributeConverter( 'alt', 'image' ) )
+					.add( modelToViewAttributeConverter( 'alt', 'imageInline' ) );
 			} );
 	} );
 

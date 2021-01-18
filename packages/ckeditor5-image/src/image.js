@@ -23,6 +23,7 @@ import ImageEditing from './image/imageediting';
  *
  * This is a "glue" plugin which loads the following plugins:
  *
+ * * {@link module:image/image/imageediting~ImageEditing},
  * * {@link module:image/image/imageblock~ImageBlock},
  * * {@link module:image/image/imageinline~ImageInline},
  * * {@link module:image/imagetextalternative~ImageTextAlternative}.

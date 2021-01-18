@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
+import { addUpcastImageConverters, modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
 
 /**
  * The image engine plugin.
@@ -60,11 +61,18 @@ export default class ImageInline extends Plugin {
 				)
 			} );
 
+		conversion.for( 'downcast' )
+			.add( modelToViewAttributeConverter( 'src', 'imageInline' ) )
+			.add( modelToViewAttributeConverter( 'alt', 'imageInline' ) )
+			.add( srcsetAttributeConverter( 'imageInline' ) );
+
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'imageInline', editor ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
+
+		addUpcastImageConverters( conversion );
 	}
 }
 

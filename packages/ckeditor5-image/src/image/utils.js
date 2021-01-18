@@ -174,7 +174,7 @@ export function createImageViewElement( writer, imageType ) {
 // @param {'image'|'imageInline'} matchImageType The type of created image.
 // @returns {Function}
 export function getImageTypeMatcher( matchImageType, editor ) {
-	if ( editor.plugins.has( 'ImageInline' ) ^ editor.plugins.has( 'ImageBlock' ) ) {
+	if ( editor.plugins.has( 'ImageInline' ) !== editor.plugins.has( 'ImageBlock' ) ) {
 		return {
 			name: 'img',
 			attributes: {

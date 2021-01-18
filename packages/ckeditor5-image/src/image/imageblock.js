@@ -9,7 +9,12 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import { viewFigureToModel } from './converters';
+import {
+	addUpcastImageConverters,
+	modelToViewAttributeConverter,
+	srcsetAttributeConverter,
+	viewFigureToModel
+} from './converters';
 
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
 
@@ -63,11 +68,18 @@ export default class ImageBlock extends Plugin {
 				)
 			} );
 
+		conversion.for( 'downcast' )
+			.add( modelToViewAttributeConverter( 'src', 'image' ) )
+			.add( modelToViewAttributeConverter( 'alt', 'image' ) )
+			.add( srcsetAttributeConverter( 'image' ) );
+
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'image', editor ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel() );
+
+		addUpcastImageConverters( conversion );
 	}
 }

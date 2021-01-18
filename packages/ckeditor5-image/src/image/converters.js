@@ -64,12 +64,12 @@ export function viewFigureToModel() {
 /**
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
+ * @param {'image'|'imageInline'} imageType The type of created image.
  * @returns {Function}
  */
-export function srcsetAttributeConverter() {
+export function srcsetAttributeConverter( imageType ) {
 	return dispatcher => {
-		dispatcher.on( 'attribute:srcset:image', converter );
-		dispatcher.on( 'attribute:srcset:imageInline', converter );
+		dispatcher.on( `attribute:srcset:${ imageType }`, converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -112,12 +112,12 @@ export function srcsetAttributeConverter() {
  * Converter used to convert a given image attribute from the model to the view.
  *
  * @param {String} attributeKey The name of the attribute to convert.
+ * @param {'image'|'imageInline'} imageType The type of created image.
  * @returns {Function}
  */
-export function modelToViewAttributeConverter( attributeKey ) {
+export function modelToViewAttributeConverter( attributeKey, imageType ) {
 	return dispatcher => {
-		dispatcher.on( `attribute:${ attributeKey }:image`, converter );
-		dispatcher.on( `attribute:${ attributeKey }:imageInline`, converter );
+		dispatcher.on( `attribute:${ attributeKey }:${ imageType }`, converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -131,4 +131,40 @@ export function modelToViewAttributeConverter( attributeKey ) {
 
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}
+}
+
+/**
+ * Set upcast image converters applicable to both available image types: block and inline.
+ *
+ * @param {module:engine/conversion/conversion~Conversion} conversion
+ */
+export function addUpcastImageConverters( conversion ) {
+	conversion.for( 'upcast' )
+		.attributeToAttribute( {
+			view: {
+				name: 'img',
+				key: 'alt'
+			},
+			model: 'alt'
+		} )
+		.attributeToAttribute( {
+			view: {
+				name: 'img',
+				key: 'srcset'
+			},
+			model: {
+				key: 'srcset',
+				value: viewImage => {
+					const value = {
+						data: viewImage.getAttribute( 'srcset' )
+					};
+
+					if ( viewImage.hasAttribute( 'width' ) ) {
+						value.width = viewImage.getAttribute( 'width' );
+					}
+
+					return value;
+				}
+			}
+		} );
 }
