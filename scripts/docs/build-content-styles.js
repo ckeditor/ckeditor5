@@ -16,7 +16,9 @@ const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
 const Table = require( 'cli-table' );
 const { tools, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
-const { version } = require( '../../package.json' );
+const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/versions' );
+
+const version = getLastFromChangelog();
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
 const CONTENT_STYLES_GUIDE_PATH = path.join( __dirname, '..', '..', 'docs', 'builds', 'guides', 'integration', 'content-styles.md' );

@@ -327,13 +327,27 @@ export default class HtmlEmbedEditing extends Plugin {
 		}
 
 		function createPreviewContainer( { domDocument, state, props, editor } ) {
-			const domPreviewContainer = createElement( domDocument, 'div', {
-				class: 'raw-html-embed__preview',
+			const sanitizedOutput = props.sanitizeHtml( state.getRawHtmlValue() );
+			const placeholderText = state.getRawHtmlValue().length > 0 ?
+				t( 'No preview available' ) :
+				t( 'Empty snippet content' );
+
+			const domPreviewPlaceholder = createElement( domDocument, 'div', {
+				class: 'ck ck-reset_all raw-html-embed__preview-placeholder'
+			}, placeholderText );
+
+			const domPreviewContent = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview-content',
 				dir: editor.locale.contentLanguageDirection
 			} );
 
-			const sanitizeOutput = props.sanitizeHtml( state.getRawHtmlValue() );
-			domPreviewContainer.innerHTML = sanitizeOutput.html;
+			domPreviewContent.innerHTML = sanitizedOutput.html;
+
+			const domPreviewContainer = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview'
+			}, [
+				domPreviewPlaceholder, domPreviewContent
+			] );
 
 			return domPreviewContainer;
 		}

@@ -987,7 +987,7 @@ class DynamicGrouping {
  * This option should be enabled for toolbars in absolutely positioned containers without width restrictions
  * to enable automatic {@link module:ui/toolbar/toolbarview~ToolbarView#items} grouping.
  * When this option is set to `true`, the items will stop wrapping to the next line
- * and together with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}
+ * and together with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull},
  * this will allow grouping them when there is not enough space in a single row.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#isFloating

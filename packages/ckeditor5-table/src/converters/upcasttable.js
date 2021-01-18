@@ -10,7 +10,7 @@
 import { createEmptyTableCell } from '../utils/common';
 
 /**
- * View the table element to model the table element conversion helper.
+ * View table element to model table element conversion helper.
  *
  * This conversion helper converts the table element as well as table rows.
  *
@@ -64,13 +64,13 @@ export default function upcastTable() {
 }
 
 /**
- * A conversion helper that skips empty <tr> from upcasting at the beginning of the table.
+ * A conversion helper that skips empty <tr> elements from upcasting at the beginning of the table.
  *
- * AN empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
- * and empty TR-s are used to maintain table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only rows
- * that have related `tableRow` elements).
+ * An empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
+ * and empty TR-s are used to maintain the table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only
+ * rows that have related `tableRow` elements).
  *
- * *Note:* Only the first empty rows are removed because those have no meaning and it solves the issue
+ * *Note:* Only the first empty rows are removed because they have no meaning and it solves the issue
  * of an improper table with all empty rows.
  *
  * @returns {Function} Conversion helper.

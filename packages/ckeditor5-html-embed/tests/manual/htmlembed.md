@@ -18,17 +18,22 @@
 
 ---
 
-After the editor initialization, it should contain 5 widgets with embedded HTML:
+After the editor initialization, it should contain 8 widgets with embedded HTML:
 
 - `video`
 - `audio`
 - `picture` (resize the window to see other images, limits: 1200px, 650px)
 - `iframe`
 - `table`
+- `text with comment`
+- `comment`
+- `empty`
 
-All resources are provided by the ["Sample Files for Development"](http://techslides.com/sample-files-for-development) article. Thanks!
+Resources are provided by the ["Sample Files for Development"](http://techslides.com/sample-files-for-development) article. Thanks!
 
-By default, the "previews in view" mode is enabled. It means that previews should be visible. 
+By default, the "previews in view" mode is enabled. It means that previews should be visible.
+* If no preview is available (e.g. the only content of HTML snippet is a comment or script), the text "No preview available" should be displayed.
+* If the HTML snippet is empty, the text "Empty content" should be displayed.
 
 We use the [`sanitize-html`](https://www.npmjs.com/package/sanitize-html) package to clean up the input HTML. It means that some of the 
 elements or attributes may be not rendered in the editing view. However, they still will be returned in the editor's data.
