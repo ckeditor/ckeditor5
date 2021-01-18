@@ -34,7 +34,7 @@ export default class DataSchema {
 		for ( const attribute of attributes ) {
 			this.allowAttribute( {
 				name: attribute,
-				elements: [ viewName ]
+				elements: viewName
 			} );
 		}
 	}
