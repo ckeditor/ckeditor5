@@ -252,7 +252,7 @@ describe( 'PageBreakEditing', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label">Page break</span></div>'
 				);
 			} );
