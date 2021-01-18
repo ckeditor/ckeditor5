@@ -64,7 +64,7 @@ export function viewFigureToModel() {
 /**
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
- * @param {'image'|'imageInline'} imageType The type of created image.
+ * @param {'image'|'imageInline'} imageType The type of the image.
  * @returns {Function}
  */
 export function srcsetAttributeConverter( imageType ) {
@@ -112,7 +112,7 @@ export function srcsetAttributeConverter( imageType ) {
  * Converter used to convert a given image attribute from the model to the view.
  *
  * @param {String} attributeKey The name of the attribute to convert.
- * @param {'image'|'imageInline'} imageType The type of created image.
+ * @param {'image'|'imageInline'} imageType The type of the image.
  * @returns {Function}
  */
 export function modelToViewAttributeConverter( attributeKey, imageType ) {

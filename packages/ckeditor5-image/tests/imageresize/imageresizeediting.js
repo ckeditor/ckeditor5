@@ -143,13 +143,15 @@ describe( 'ImageResizeEditing', () => {
 		} );
 
 		it( 'allows the width attribute when ImageBlock plugin is enabled', async () => {
-			editor = await ClassicEditor.create( editorElement, { plugins: [ ImageEditing, ImageBlock, ImageResizeEditing ] } );
-			expect( editor.model.schema.checkAttribute( 'image', 'width' ) ).to.be.true;
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageEditing, ImageBlock, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'width' ) ).to.be.true;
+			newEditor.destroy();
 		} );
 
 		it( 'allows the width attribute when ImageInline plugin is enabled', async () => {
-			editor = await ClassicEditor.create( editorElement, { plugins: [ ImageEditing, ImageInline, ImageResizeEditing ] } );
-			expect( editor.model.schema.checkAttribute( 'imageInline', 'width' ) ).to.be.true;
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageEditing, ImageInline, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'width' ) ).to.be.true;
+			newEditor.destroy();
 		} );
 
 		it( 'defines width as a formatting attribute', () => {

@@ -42,13 +42,15 @@ describe( 'LinkImageEditing', () => {
 	} );
 
 	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, LinkImageEditing ] } );
-		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, LinkImageEditing ] } );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+		newEditor.destroy();
 	} );
 
 	it( 'should set proper schema rules for image style when ImageInline plugin is enabled', async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, LinkImageEditing ] } );
-		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, LinkImageEditing ] } );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
+		newEditor.destroy();
 	} );
 
 	describe( 'conversion in data pipeline', () => {

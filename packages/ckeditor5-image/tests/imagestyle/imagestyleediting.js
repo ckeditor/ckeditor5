@@ -74,13 +74,15 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should set schema rules for image style when ImageBlock plugin is enabled', async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ] } );
-			expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
+			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
+			newEditor.destroy();
 		} );
 
 		it( 'should set schema rules for image style when ImageInline plugin is enabled', async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, ImageStyleEditing ] } );
-			expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'imageStyle' ) ).to.be.true;
+			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, ImageStyleEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'imageStyle' ) ).to.be.true;
+			newEditor.destroy();
 		} );
 
 		it( 'should register a command', () => {
