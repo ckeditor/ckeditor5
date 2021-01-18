@@ -9,8 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
-import ImageInline from '@ckeditor/ckeditor5-image/src/image/imageinline';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import LinkEditing from './linkediting';
@@ -30,7 +28,7 @@ export default class LinkImageEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, ImageBlock, ImageInline, LinkEditing ];
+		return [ ImageEditing, LinkEditing ];
 	}
 
 	/**

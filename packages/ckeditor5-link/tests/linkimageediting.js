@@ -10,7 +10,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
 import ImageInline from '@ckeditor/ckeditor5-image/src/image/imageinline';
 
@@ -20,7 +19,7 @@ describe( 'LinkImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, LinkImageEditing ]
+				plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -42,13 +41,13 @@ describe( 'LinkImageEditing', () => {
 	} );
 
 	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, LinkImageEditing ] } );
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlock, LinkImageEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
 		newEditor.destroy();
 	} );
 
 	it( 'should set proper schema rules for image style when ImageInline plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, LinkImageEditing ] } );
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInline, LinkImageEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
 		newEditor.destroy();
 	} );
@@ -269,7 +268,7 @@ describe( 'LinkImageEditing', () => {
 				it( 'should convert a link and the caption element', () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+							plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing, ImageCaptionEditing ]
 						} )
 						.then( editor => {
 							editor.setData(
@@ -351,7 +350,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert a link and the caption element', () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing, ImageCaptionEditing ]
 					} )
 					.then( editor => {
 						setModelData( editor.model,
@@ -420,7 +419,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false
 						}
@@ -465,7 +464,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: true
 						}
@@ -543,7 +542,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false,
 							decorators: {
@@ -618,7 +617,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {
@@ -779,7 +778,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {
