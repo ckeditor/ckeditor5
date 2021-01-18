@@ -330,7 +330,7 @@ export default class HtmlEmbedEditing extends Plugin {
 			const sanitizedOutput = props.sanitizeHtml( state.getRawHtmlValue() );
 			const placeholderText = state.getRawHtmlValue().length > 0 ?
 				t( 'No preview available' ) :
-				t( 'Empty content' );
+				t( 'Empty snippet content' );
 
 			const domPreviewPlaceholder = createElement( domDocument, 'div', {
 				class: 'raw-html-embed__preview-placeholder ck ck-reset_all'

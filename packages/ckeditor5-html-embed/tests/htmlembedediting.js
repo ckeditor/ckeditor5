@@ -740,7 +740,7 @@ describe( 'HtmlEmbedEditing', () => {
 					setModelData( model, '<rawHtml value=""></rawHtml>' );
 					const placeholder = getPlaceholder();
 
-					expect( placeholder.innerHTML ).to.equal( 'Empty content' );
+					expect( placeholder.innerHTML ).to.equal( 'Empty snippet content' );
 				} );
 
 				it( 'should display the proper information if the snippet is not empty', () => {
