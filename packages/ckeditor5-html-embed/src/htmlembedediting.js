@@ -333,7 +333,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				t( 'Empty snippet content' );
 
 			const domPreviewPlaceholder = createElement( domDocument, 'div', {
-				class: 'raw-html-embed__preview-placeholder ck ck-reset_all'
+				class: 'ck ck-reset_all raw-html-embed__preview-placeholder'
 			}, placeholderText );
 
 			const domPreviewContent = createElement( domDocument, 'div', {
