@@ -302,7 +302,7 @@ export default class Editor {
 	 * **Note** To explicitly focus the editing area of the editor, use the
 	 * {@link module:engine/view/view~View#focus `editor.editing.view.focus()`} method of the editing view.
 	 *
-	 * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking#focus-in-the-editor-ui Focus in the editor ui} section
+	 * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking#focus-in-the-editor-ui Focus in the editor UI} section
 	 * of the {@glink framework/guides/deep-dive/ui/focus-tracking Deep dive into focus tracking} guide to learn more.
 	 */
 	focus() {

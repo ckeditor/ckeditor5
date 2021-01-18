@@ -80,14 +80,14 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
-	 * and not processed during the conversion from DOM to view elements.
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
+	 * and not processed during the conversion from the DOM to the view elements.
 	 *
-	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
-	 * `"$rawContent"`.
+	 * The raw data can be later accessed by a
+	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as a raw data.
+	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
 		this._domConverter.registerRawContentMatcher( pattern );

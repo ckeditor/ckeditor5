@@ -69,3 +69,140 @@ ClassicEditor
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
+
+## Customizing MathType service
+
+It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor 5 environment. The following instructions will allow you to customize MathType Web Integration services for CKEditor 5.
+
+### Java
+
+To install the Java service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - Java](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Deploy the `pluginwiris_engine` war file.
+
+3. Add `mathTypeParameters` to CKEditor 5 with the configuration shown below:
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : '/pluginwiris_engine/app/configurationjs',
+                    server : 'java'
+                }
+            }
+    }
+    ```
+
+### PHP
+
+To install the PHP service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - PHP](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Copy the `generic_wiris/integration` folder into your project. In this example it was assumed the services are located at `DOCUMENT_ROOT/php-services/`.
+
+3. Add `mathTypeParameters` to CKEditor 5 with the following configuration:
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : 'http://localhost/php-services/integration',
+                    server : 'php'
+                }
+            }
+    }
+    ```
+
+### .NET
+
+To install the .NET service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - Aspx](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Copy the `generic_wiris/integration` folder into your project. In this example it was assumed the services are located at `DOCUMENT_ROOT/aspx-services/`.
+
+3. Add `mathTypeParameters` to CKEditor 5 with this configuration:
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : 'http://localhost/aspx-services/integration',
+                    server : 'aspx'
+                }
+            }
+    }
+    ```
+
+### Ruby on Rails
+
+To install the Ruby on Rails service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - Ruby on Rails](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Instal the `wirispluginengine.gem` gem.
+
+    ```
+    gem install -l wirispluginengine.gem
+    ```
+
+3. Add `mathTypeParameters` to CKEditor 5 with the configuration below:
+
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : '/wirispluginengine/integrationn',
+                    server : 'ruby'
+                }
+            }
+    }
+    ```

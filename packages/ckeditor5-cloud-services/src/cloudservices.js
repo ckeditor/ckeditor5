@@ -40,7 +40,7 @@ export default class CloudServices extends ContextPlugin {
 		}
 
 		/**
-		 * Map of the `Token` object instances keyed by `tokenUrl`s.
+		 * A map of token object instances keyed by the token URLs.
 		 *
 		 * @private
 		 * @type {Map.<String, module:cloud-services-core/token~Token>}
@@ -91,7 +91,7 @@ export default class CloudServices extends ContextPlugin {
 	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */
 	registerTokenUrl( tokenUrl ) {
-		// Reuse Token instance in case of multiple features using the same tokenUrl.
+		// Reuse the token instance in case of multiple features using the same token URL.
 		if ( this._tokens.has( tokenUrl ) ) {
 			return Promise.resolve( this.getTokenFor( tokenUrl ) );
 		}
@@ -114,7 +114,7 @@ export default class CloudServices extends ContextPlugin {
 
 		if ( !token ) {
 			/**
-			 * Provided `tokenUrl` was not registered by {@link module:cloud-services/cloudservices~CloudServices#registerTokenUrl}.
+			 * The provided `tokenUrl` was not registered by {@link module:cloud-services/cloudservices~CloudServices#registerTokenUrl}.
 			 *
 			 * @error cloudservices-token-not-registered
 			 */
