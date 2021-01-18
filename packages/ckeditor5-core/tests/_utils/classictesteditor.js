@@ -6,7 +6,6 @@
 import Editor from '../../src/editor/editor';
 import ElementApiMixin from '../../src/editor/utils/elementapimixin';
 import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import EditorUI from '../../src/editor/editorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
@@ -32,9 +31,6 @@ export default class ClassicTestEditor extends Editor {
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
 		}
-
-		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
