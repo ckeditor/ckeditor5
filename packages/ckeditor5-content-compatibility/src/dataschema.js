@@ -104,6 +104,10 @@ export default class DataSchema {
 					return;
 				}
 
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
 				const viewWriter = conversionApi.writer;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 				const attributeKey = decodeAttributeKey( data.attributeKey );
