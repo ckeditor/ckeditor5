@@ -93,7 +93,7 @@ export default class LabeledFieldView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
-		 * An observable flag set `true` when {@link #fieldView} is empty (`false` otherwise).
+		 * An observable flag set to `true` when {@link #fieldView} is empty (`false` otherwise).
 		 *
 		 * @readonly
 		 * @observable
@@ -103,7 +103,7 @@ export default class LabeledFieldView extends View {
 		this.set( 'isEmpty', true );
 
 		/**
-		 * An observable flag set `true` when {@link #fieldView} is currently focused by
+		 * An observable flag set to `true` when {@link #fieldView} is currently focused by
 		 * the user (`false` otherwise).
 		 *
 		 * @readonly
