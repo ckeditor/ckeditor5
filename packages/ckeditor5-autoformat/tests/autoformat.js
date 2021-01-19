@@ -15,6 +15,7 @@ import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
@@ -46,6 +47,7 @@ describe( 'Autoformat', () => {
 					StrikethroughEditing,
 					BlockQuoteEditing,
 					CodeBlockEditing,
+					HorizontalLineEditing,
 					ShiftEnter
 				]
 			} )
@@ -488,23 +490,36 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
 		} );
+	} );
 
-		it( 'should not replace triple grave accents when inside numbered list', () => {
-			setData( model, '<listItem listIndent="0" listType="numbered">1. ``[]</listItem>' );
+	describe( 'Horizontal line', () => {
+		it( 'should replace three dashes with a horizontal line', () => {
+			setData( model, '<paragraph>--[]</paragraph>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( '-', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">1. ```[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
 		} );
 
-		it( 'should not replace triple grave accents when inside buletted list', () => {
-			setData( model, '<listItem listIndent="0" listType="bulleted">1. ``[]</listItem>' );
+		it( 'should replace three dashes in a heading', () => {
+			setData( model, '<heading1>--[]</heading1>' );
 			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
+				writer.insertText( '-', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">1. ```[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<horizontalLine></horizontalLine><paragraph>[]</paragraph>' );
+		} );
+
+		it( 'should replace three dashes in a non-empty paragraph', () => {
+			setData( model, '<paragraph>--[]foo - bar</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '-', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<horizontalLine></horizontalLine><paragraph>[]foo - bar</paragraph>'
+			);
 		} );
 
 		it( 'should not replace triple grave accents when inside todo list', () => {
@@ -893,6 +908,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>```[]</paragraph>' );
+		} );
+
+		it( 'should not replace "---" with horizontal line', () => {
+			setData( model, '<paragraph>--[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '-', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>---[]</paragraph>' );
 		} );
 
 		it( 'should use only configured headings', () => {
