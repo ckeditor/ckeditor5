@@ -20,6 +20,7 @@ import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -30,9 +31,12 @@ describe( 'WordCount', () => {
 	let wordCountPlugin, editor, model;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ WordCount, Paragraph, ShiftEnter, TableEditing, ListEditing, LinkEditing, ImageEditing, ImageCaptionEditing ]
-		} )
+		return VirtualTestEditor
+			.create( {
+				plugins: [
+					WordCount, Paragraph, ShiftEnter, TableEditing, ListEditing, LinkEditing, ImageEditing, ImageBlock, ImageCaptionEditing
+				]
+			} )
 			.then( _editor => {
 				editor = _editor;
 				model = editor.model;
