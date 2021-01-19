@@ -56,8 +56,8 @@ export default class ImageResizeHandles extends Plugin {
 		editingView.addObserver( ImageLoadObserver );
 
 		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
-			// The resizer must be attached only to images loaded by the `ImageInsert` or `ImageUpload` plugins.
-			if ( !domEvent.target.matches( 'figure.image.ck-widget > img' ) ) {
+			// The resizer must be attached only to images loaded by the `ImageInsert`, `ImageUpload` or `LinkImage` plugins.
+			if ( !domEvent.target.matches( 'figure.image.ck-widget > img, figure.image.ck-widget > a > img' ) ) {
 				return;
 			}
 
