@@ -11,20 +11,20 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
-    "@ckeditor/ckeditor5-code-block": "^24.0.0",
-    "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
-    "@ckeditor/ckeditor5-engine": "^24.0.0",
-    "@ckeditor/ckeditor5-list": "^24.0.0",
-    "@ckeditor/ckeditor5-table": "^24.0.0",
     "ckeditor5": "^24.0.0",
     "marked": "1.1.1",
     "turndown": "^6.0.0",
     "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
+    "@ckeditor/ckeditor5-code-block": "^24.0.0",
+    "@ckeditor/ckeditor5-core": "^24.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
+    "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
+    "@ckeditor/ckeditor5-engine": "^24.0.0",
+    "@ckeditor/ckeditor5-list": "^24.0.0",
+    "@ckeditor/ckeditor5-table": "^24.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^24.0.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"

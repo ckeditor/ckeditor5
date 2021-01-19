@@ -136,8 +136,16 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			// Remove matched text.
 			if ( wasChanged !== false ) {
 				writer.remove( range );
-			}
 
+				const selectionRange = editor.model.document.selection.getFirstRange();
+				const blockRange = writer.createRangeIn( blockToFormat );
+
+				// If the block is empty and the document selection has been moved when
+				// applying formatting (e.g. is now in newly created block).
+				if ( blockToFormat.isEmpty && !blockRange.isEqual( selectionRange ) && !blockRange.containsRange( selectionRange, true ) ) {
+					writer.remove( blockToFormat );
+				}
+			}
 			range.detach();
 		} );
 	} );
