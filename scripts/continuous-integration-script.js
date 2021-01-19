@@ -135,7 +135,7 @@ function runSubprocess( binaryName, cliArguments, packageName, checkName, failMe
 	}
 
 	if ( subprocess.status !== 0 ) {
-		failedChecks.unitTests.add( packageName );
+		failedChecks[ checkName ].add( packageName );
 		console.log( `💥 ${ RED }${ packageName }${ NO_COLOR } ` + failMessage + ' 💥' );
 	}
 }
