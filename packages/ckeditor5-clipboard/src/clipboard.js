@@ -189,7 +189,7 @@ export default class Clipboard extends Plugin {
 /**
  * Fired with a `content` and `dataTransfer` objects. The `content` which comes from the clipboard (was pasted or dropped)
  * should be processed in order to be inserted into the editor. The `dataTransfer` object is available
- * in case the transformation functions need access to a raw clipboard data.
+ * in case the transformation functions need access to raw clipboard data.
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
