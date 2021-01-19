@@ -85,13 +85,15 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, ImageUploadEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
-		newEditor.destroy();
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		await newEditor.destroy();
 	} );
 
 	it( 'should register proper schema rules for image style when ImageInline plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, ImageUploadEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
-		newEditor.destroy();
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
+		await newEditor.destroy();
 	} );
 
 	it( 'should register imageUpload command', () => {

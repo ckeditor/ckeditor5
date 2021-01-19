@@ -43,13 +43,13 @@ describe( 'LinkImageEditing', () => {
 	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlock, LinkImageEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
-		newEditor.destroy();
+		await newEditor.destroy();
 	} );
 
 	it( 'should set proper schema rules for image style when ImageInline plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInline, LinkImageEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
-		newEditor.destroy();
+		await newEditor.destroy();
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -653,6 +653,38 @@ describe( 'LinkImageEditing', () => {
 
 			afterEach( () => {
 				return editor.destroy();
+			} );
+
+			it( 'should register manual decorators for block images', async () => {
+				const newEditor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageBlock, LinkImageEditing ],
+					link: {
+						decorators: {
+							isGallery: {
+								mode: 'manual'
+							}
+						}
+					}
+				} );
+
+				expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkIsGallery' ) ).to.be.true;
+				await newEditor.destroy();
+			} );
+
+			it( 'should register manual decorators for inline images', async () => {
+				const newEditor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageInline, LinkImageEditing ],
+					link: {
+						decorators: {
+							isGallery: {
+								mode: 'manual'
+							}
+						}
+					}
+				} );
+
+				expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkIsGallery' ) ).to.be.true;
+				await newEditor.destroy();
 			} );
 
 			it( 'should upcast attributes', async () => {
