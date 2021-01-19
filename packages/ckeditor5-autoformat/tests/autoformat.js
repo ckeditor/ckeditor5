@@ -482,6 +482,24 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
 		} );
 
+		it( 'should not replace triple grave accents in a numbered list', () => {
+			setData( model, '<listItem listIndent="0" listType="numbered">``[]let foo = 1;</listItem>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">```[]let foo = 1;</listItem>' );
+		} );
+
+		it( 'should not replace triple grave accents in a bulleted list', () => {
+			setData( model, '<listItem listIndent="0" listType="bulleted">``[]let foo = 1;</listItem>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">```[]let foo = 1;</listItem>' );
+		} );
+
 		it( 'should not replace triple grave accents when already in a code block', () => {
 			setData( model, '<codeBlock language="plaintext">``[]</codeBlock>' );
 			model.change( writer => {
