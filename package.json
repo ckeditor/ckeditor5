@@ -165,7 +165,7 @@
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
     "build:dll": "node ./scripts/dll/build-dlls.js",
-    "check-dependencies": "node node_modules/@ckeditor/ckeditor5-dev-tests/bin/check-dependencies.js"
+    "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
   },
   "lint-staged": {
     "**/*.js": [
