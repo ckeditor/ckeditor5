@@ -367,11 +367,12 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Registers marker group prefix or marker name to be collected in {@link ~DocumentSelection#markers selection markers collection}.
+	 * Registers a marker group prefix or a marker name to be collected in the
+	 * {@link ~DocumentSelection#markers selection markers collection}.
 	 *
 	 * See also {@link module:engine/model/markercollection~MarkerCollection#getMarkersGroup `MarkerCollection#getMarkersGroup()`}.
 	 *
-	 * @param {String} prefixOrName Marker group prefix or marker name.
+	 * @param {String} prefixOrName The marker group prefix or marker name.
 	 */
 	observeMarkers( prefixOrName ) {
 		this._selection.observeMarkers( prefixOrName );

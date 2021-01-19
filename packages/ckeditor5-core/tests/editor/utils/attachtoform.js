@@ -6,7 +6,6 @@
 import attachToForm from '../../../src/editor/utils/attachtoform';
 import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -31,7 +30,6 @@ describe( 'attachToForm()', () => {
 		mix( CustomEditor, ElementApiMixin );
 
 		editor = new CustomEditor();
-		editor.data.processor = new HtmlDataProcessor( editor.data.viewDocument );
 		editor.model.document.createRoot();
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
 		editor.fire( 'ready' );

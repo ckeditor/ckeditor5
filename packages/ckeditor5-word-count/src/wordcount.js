@@ -37,7 +37,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * 		// Words: 0, Characters: 5
  *
  * 		<paragraph>foo(bar)</paragraph>
- * 		//Words: 2, Characters: 8
+ * 		//Words: 1, Characters: 8
  *
  * 		<paragraph>12345</paragraph>
  * 		// Words: 1, Characters: 5
@@ -134,11 +134,8 @@ export default class WordCount extends Plugin {
 			// Groups:
 			// {L} - Any kind of letter from any language.
 			// {N} - Any kind of numeric character in any script.
-			// {M} - A character intended to be combined with another character (e.g. accents, umlauts, enclosing boxes, etc.).
-			// {Pd} - Any kind of hyphen or dash.
-			// {Pc} - A punctuation character such as an underscore that connects words.
-			new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) :
-			/[_\-a-zA-Z0-9À-ž]+/gu;
+			new RegExp( '([\\p{L}\\p{N}]+\\S?)+', 'gu' ) :
+			/([a-zA-Z0-9À-ž]+\S?)+/gu;
 	}
 
 	/**

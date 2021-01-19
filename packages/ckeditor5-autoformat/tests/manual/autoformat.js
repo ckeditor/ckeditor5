@@ -21,6 +21,7 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -39,7 +40,8 @@ ClassicEditor
 			Autoformat,
 			BlockQuote,
 			CodeBlock,
-			ShiftEnter
+			ShiftEnter,
+			HorizontalLine
 		],
 		toolbar: [
 			'heading',
@@ -49,6 +51,7 @@ ClassicEditor
 			'todoList',
 			'blockQuote',
 			'codeBlock',
+			'horizontalLine',
 			'bold',
 			'italic',
 			'code',

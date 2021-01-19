@@ -11,6 +11,7 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^24.0.0",
+    "@ckeditor/ckeditor5-engine": "^24.0.0",
     "@ckeditor/ckeditor5-ui": "^24.0.0",
     "@ckeditor/ckeditor5-utils": "^24.0.0",
     "@ckeditor/ckeditor5-widget": "^24.0.0",
@@ -21,7 +22,6 @@
     "@ckeditor/ckeditor5-block-quote": "^24.0.0",
     "@ckeditor/ckeditor5-clipboard": "^24.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
-    "@ckeditor/ckeditor5-engine": "^24.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^24.0.0",
     "@ckeditor/ckeditor5-image": "^24.0.0",
     "@ckeditor/ckeditor5-indent": "^24.0.0",
