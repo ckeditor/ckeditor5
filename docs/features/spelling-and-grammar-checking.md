@@ -11,33 +11,33 @@ menu-title: Spelling and grammar checking
 
 [WProofreader](https://webspellchecker.com/wsc-proofreader) is an innovative, multi-language proofreading tool that combines the functionality of "spell check as you type" and "spell check in a dialog" in a modern, distraction-free UI. Spelling and grammar suggestions are available on hover with no clicking needed or as a convenient dialog, both with additional in-place replacement suggestions.
 
-Readily available settings include several rules of including or ommiting certain cases. You can choose from a set if predefined languages (more may be added as language packs) and manage additional dictionaries. Words can be added to the user dictionary directly from the suggestion card, too.
+You can fine-tune the spell checking rules via the dedicated settings menu. You can choose from a set of predefined languages (more may be added as language packs) and manage additional dictionaries. Words can be added to the user dictionary directly from the suggestion card, too.
 
-If needed, the spellchecker can be easily disabled and enabled again with a click.
+If needed, the spell checker can be easily disabled and enabled again with a click.
 
 ## Demo
 
 See the spelling and grammar checking in the editor below.
 
-The proofreader badge in the bottom right corner shows you the number of mistakes detected. Hover on an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. If you want to see an overview of all spelling and grammar mistakes, click the "Proofread in dialog" option in the toolbar dropdown. You can access the proofreader settings from the toolbar, too.
+The proofreader badge in the bottom-right corner shows you the number of mistakes detected. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. If you want to see an overview of all mistakes, click the "Proofread in dialog" option in the toolbar dropdown. You can access the proofreader settings from the toolbar, too.
 
 <info-box>
-	The toolbar button has been introduced in version 2.x of the WProofreader. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. If you are still using version 1.x, the available settings and dialog options are located in the bottom-right indicator.
+	The toolbar button has been introduced in version 2.x of the WProofreader. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. If you are still using version 1.x, the available settings and dialog options can be accessed through the bottom-right badge.
 </info-box>
 
 {@snippet features/wproofreader}
 
 ## Supported languages
 
-By default the spell checker supports 17 languages: American English, British English, Brazilian Portuguese, Canadian English, Canadian French, Danish, Dutch, Finnish, French, German, Greek, Italian, Norwegian Bokmal, Portuguese, Spanish, Swedish and Ukrainian. Grammar checking is available for 15 of them &mdash; there is no grammar checking for Finnish and Norwegian.
+By default the spell checker supports 18 languages: AI-based English (default), American English, Brazilian Portuguese, British English, Canadian English, Canadian French, Danish, Dutch, Finnish, French, German, Greek, Italian, Norwegian Bokmål, Portuguese, Spanish, Swedish and Ukrainian. Grammar checking is available for 16 of them &mdash; there is no grammar checking for Finnish and Norwegian.
 
 There are also over 150 additional languages and specialized dictionaries such as medical and legal available for an additional fee. You can check the full list [here](https://webspellchecker.com/additional-dictionaries/).
 
 ## Installation
 
-WProofreader is delivered as a CKEditor 5 plugin, so it could be combined into an editor build as other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
+WProofreader is delivered as a CKEditor 5 plugin, so it can be combined into an editor build as other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
-```bash
+```
 npm install --save @webspellchecker/wproofreader-ckeditor5
 ```
 
@@ -110,7 +110,7 @@ Refer to the [official documentation](https://github.com/WebSpellChecker/wproofr
 
 ## Configuration
 
-WProofreader configuration is set inside the CKEditor 5 configuration in `wproofreader` object. Refer to the [WProofreader API](https://webspellchecker.com/docs/api/wscbundle/Options.html) for further information.
+WProofreader configuration is set inside the CKEditor 5 configuration in the `wproofreader` object. Refer to the [WProofreader API](https://webspellchecker.com/docs/api/wscbundle/Options.html) for further information.
 
 ## Contribute
 

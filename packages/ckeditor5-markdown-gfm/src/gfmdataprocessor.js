@@ -71,14 +71,14 @@ export default class GFMDataProcessor {
 	}
 
 	/**
-	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
-	 * and not processed during conversion from Markdown to view elements.
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
+	 * and not processed during the conversion from Markdown to view elements.
 	 *
-	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
-	 * `"$rawContent"`.
+	 * The raw data can be later accessed by a
+	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as a raw data.
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern The pattern matching all view elements whose content should
+	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
 		this._htmlDP.registerRawContentMatcher( pattern );
