@@ -98,8 +98,8 @@ export default class Clipboard extends Plugin {
 				const model = this.editor.model;
 
 				// Convert the pasted content to a model document fragment.
-				// Conversion is contextual, but in this case we need an "all allowed" context and for that
-				// we use the $clipboardHolder item.
+				// The conversion is contextual, but in this case we need an "all allowed" context
+				// and for that we use the $clipboardHolder item.
 				const modelFragment = dataController.toModel( data.content, '$clipboardHolder' );
 
 				if ( modelFragment.childCount == 0 ) {
@@ -109,7 +109,7 @@ export default class Clipboard extends Plugin {
 				model.change( writer => {
 					const selection = model.document.selection;
 
-					// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
+					// Plain text can be determined based on event flag (#7799) or auto-detection (#1006). If detected,
 					// preserve selection attributes on pasted items.
 					if ( data.asPlainText || isPlainTextFragment( modelFragment, model.schema ) ) {
 						// Formatting attributes should be preserved.
@@ -120,7 +120,7 @@ export default class Clipboard extends Plugin {
 							model.deleteContent( selection, { doNotAutoparagraph: true } );
 						}
 
-						// But also preserve other attributes if they survived the content deletion (because they were not fully selected).
+						// Also preserve other attributes if they survived the content deletion (because they were not fully selected).
 						// For example linkHref is not a formatting attribute but it should be preserved if pasted text was in the middle
 						// of a link.
 						textAttributes.push( ...selection.getAttributes() );
@@ -180,7 +180,7 @@ export default class Clipboard extends Plugin {
 /**
  * Fired with a `content` and `dataTransfer` objects. The `content` which comes from the clipboard (was pasted or dropped)
  * should be processed in order to be inserted into the editor. The `dataTransfer` object is available
- * in case the transformation functions needs access to a raw clipboard data.
+ * in case the transformation functions need access to raw clipboard data.
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
@@ -192,7 +192,7 @@ export default class Clipboard extends Plugin {
  * It can be modified by the event listeners. Read more about the clipboard pipelines in
  * {@glink framework/guides/deep-dive/clipboard "Clipboard" deep dive}.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
- * @param {Boolean} data.asPlainText If set to `true` content is pasted as plain text.
+ * @param {Boolean} data.asPlainText If set to `true`, the content is pasted as plain text.
  */
 
 /**
@@ -228,7 +228,7 @@ export default class Clipboard extends Plugin {
  */
 
 /**
- * Whether the event was triggered by copy or cut operation.
+ * Whether the event was triggered by a copy or cut operation.
  *
  * @member {'copy'|'cut'} module:clipboard/clipboard~ClipboardOutputEventData#method
  */
