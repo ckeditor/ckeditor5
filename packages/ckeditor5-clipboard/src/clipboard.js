@@ -201,7 +201,7 @@ export default class Clipboard extends Plugin {
  * It can be modified by the event listeners. Read more about the clipboard pipelines in
  * {@glink framework/guides/deep-dive/clipboard "Clipboard" deep dive}.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
- * @param {Boolean} data.asPlainText If set to `true` the content is pasted as plain text.
+ * @param {Boolean} data.asPlainText If set to `true`, the content is pasted as plain text.
  */
 
 /**
