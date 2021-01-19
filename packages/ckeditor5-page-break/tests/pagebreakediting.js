@@ -252,6 +252,11 @@ describe( 'PageBreakEditing', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
 
+				// The page break label should be an UI element, thus should not be rendered by default.
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label"></span></div>'
+				);
+
 				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label">Page break</span></div>'
 				);
