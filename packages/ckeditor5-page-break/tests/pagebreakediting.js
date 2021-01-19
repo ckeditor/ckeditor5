@@ -57,6 +57,7 @@ describe( 'PageBreakEditing', () => {
 		setModelData( model, '[<pageBreak></pageBreak>]' );
 		const textNode = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
+		expect( textNode.hasClass( 'page-break__label' ) ).to.be.true;
 		expect( textNode.is( 'uiElement' ) ).to.be.true;
 	} );
 
