@@ -19,7 +19,6 @@
     "@ckeditor/ckeditor5-engine": "^24.0.0",
     "@ckeditor/ckeditor5-essentials": "^24.0.0",
     "@ckeditor/ckeditor5-paragraph": "^24.0.0",
-    "@ckeditor/ckeditor5-remove-format": "^24.0.0",
     "@ckeditor/ckeditor5-utils": "^24.0.0"
   },
   "engines": {

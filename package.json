@@ -157,7 +157,8 @@
     "release:bump-version": "node ./scripts/release/bump-versions.js",
     "release:publish": "node ./scripts/release/publish.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
-    "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh"
+    "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
+    "check-dependencies": "node node_modules/@ckeditor/ckeditor5-dev-tests/bin/check-dependencies.js"
   },
   "lint-staged": {
     "**/*.js": [
@@ -165,6 +166,9 @@
     ],
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
+    ],
+    "**/(*.{js,css}|package.json)": [
+      "yarn run check-dependencies"
     ]
   },
   "eslintIgnore": [
