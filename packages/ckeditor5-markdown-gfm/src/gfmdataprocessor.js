@@ -37,7 +37,7 @@ export default class GFMDataProcessor {
 
 	/**
 	 * Keeps the specified element in the output as HTML. This is useful if the editor contains
-	 * HTML-producing features that are not part of the Markdown standards.
+	 * features producing HTML that is not a part of the Markdown standard.
 	 *
 	 * By default, all HTML tags are removed.
 	 *
