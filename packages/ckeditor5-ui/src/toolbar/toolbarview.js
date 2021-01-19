@@ -296,11 +296,11 @@ export default class ToolbarView extends View {
 				}
 
 				if ( name === '-' ) {
-					// Toolbar line breaks must not be rendered when toolbar grouping is enabled.
+					// The toolbar line breaks must not be rendered when toolbar grouping is enabled.
 					// (https://github.com/ckeditor/ckeditor5/issues/8582)
 					if ( this.options.shouldGroupWhenFull ) {
 						/**
-						 * Toolbar line breaks (`-` items) can only work when the automatic button grouping
+						 * The toolbar multiline breaks (`-` items) only work when the automatic button grouping
 						 * is disabled in the toolbar configuration.
 						 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
 						 *

@@ -57,7 +57,7 @@ export default class AutoImage extends Plugin {
 
 		/**
 		 * The position where the `<image>` element will be inserted after the timeout,
-		 * determined each time the new content is pasted into the document.
+		 * determined each time a new content is pasted into the document.
 		 *
 		 * @private
 		 * @member {module:engine/model/liveposition~LivePosition} #_positionToInsert
@@ -74,7 +74,7 @@ export default class AutoImage extends Plugin {
 
 		// We need to listen on `Clipboard#inputTransformation` because we need to save positions of selection.
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
-		// into image.
+		// into an image.
 		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange();
 
@@ -104,7 +104,7 @@ export default class AutoImage extends Plugin {
 	}
 
 	/**
-	 * Analyzes the part of the document between provided positions in search for an URL representing an image.
+	 * Analyzes the part of the document between provided positions in search for a URL representing an image.
 	 * When the URL is found, it is automatically converted into an image.
 	 *
 	 * @protected
@@ -113,7 +113,7 @@ export default class AutoImage extends Plugin {
 	 */
 	_embedImageBetweenPositions( leftPosition, rightPosition ) {
 		const editor = this.editor;
-		// TODO: Use marker instead of LiveRange & LivePositions.
+		// TODO: Use a marker instead of LiveRange & LivePositions.
 		const urlRange = new LiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 
@@ -127,19 +127,19 @@ export default class AutoImage extends Plugin {
 
 		src = src.trim();
 
-		// If the URL does not match to image URL regexp, let's skip that.
+		// If the URL does not match the image URL regexp, let's skip that.
 		if ( !src.match( IMAGE_URL_REGEXP ) ) {
 			urlRange.detach();
 
 			return;
 		}
 
-		// Position won't be available in the `setTimeout` function so let's clone it.
+		// Position will not be available in the `setTimeout` function so let's clone it.
 		this._positionToInsert = LivePosition.fromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = global.window.setTimeout( () => {
-			// Don't do anything if image element cannot be inserted at the current position.
+			// Do nothing if image element cannot be inserted at the current position.
 			// See https://github.com/ckeditor/ckeditor5/issues/2763.
 			// Condition must be checked after timeout - pasting may take place on an element, replacing it. The final position matters.
 			const imageCommand = editor.commands.get( 'imageInsert' );
@@ -158,7 +158,7 @@ export default class AutoImage extends Plugin {
 
 				let insertionPosition;
 
-				// Check if position where the element should be inserted is still valid.
+				// Check if the position where the element should be inserted is still valid.
 				// Otherwise leave it as undefined to use the logic of insertImage().
 				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
 					insertionPosition = this._positionToInsert.toPosition();

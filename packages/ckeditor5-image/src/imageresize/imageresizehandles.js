@@ -67,8 +67,8 @@ export default class ImageResizeHandles extends Plugin {
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 
 			if ( resizer ) {
-				// There are rare cases when image will be triggered multiple times for the same widget, e.g. when
-				// image's src was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
+				// There are rare cases when the image will be triggered multiple times for the same widget, e.g. when
+				// the image's source was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
 				resizer.redraw();
 
 				return;
