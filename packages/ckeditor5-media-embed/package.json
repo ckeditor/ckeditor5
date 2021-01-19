@@ -23,7 +23,6 @@
     "@ckeditor/ckeditor5-engine": "^24.0.0",
     "@ckeditor/ckeditor5-image": "^24.0.0",
     "@ckeditor/ckeditor5-link": "^24.0.0",
-    "@ckeditor/ckeditor5-list": "^24.0.0",
     "@ckeditor/ckeditor5-paragraph": "^24.0.0",
     "@ckeditor/ckeditor5-table": "^24.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^24.0.0",

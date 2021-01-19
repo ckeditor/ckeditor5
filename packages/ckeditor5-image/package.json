@@ -17,7 +17,6 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "^24.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^24.0.0",
     "@ckeditor/ckeditor5-ckfinder": "^24.0.0",
     "@ckeditor/ckeditor5-clipboard": "^24.0.0",
     "@ckeditor/ckeditor5-cloud-services": "^24.0.0",
