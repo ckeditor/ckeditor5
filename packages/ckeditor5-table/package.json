@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-block-quote": "^24.0.0",
     "@ckeditor/ckeditor5-clipboard": "^24.0.0",
     "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
+    "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
     "@ckeditor/ckeditor5-engine": "^24.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^24.0.0",

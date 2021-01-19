@@ -175,7 +175,7 @@
       "stylelint --quiet --allow-empty-input"
     ],
     "**/(*.{js,css}|package.json)": [
-      "yarn run check-dependencies"
+      "ckeditor5-dev-tests-check-dependencies"
     ]
   },
   "eslintIgnore": [
