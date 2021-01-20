@@ -429,7 +429,7 @@ describe( 'Model', () => {
 
 			model.change( writer => {
 				model.insertContent( new ModelText( 'abc' ) );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
 			} );
 		} );
 	} );

@@ -29,7 +29,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'a' ) );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
 			} );
 		} );
 
@@ -239,6 +239,55 @@ describe( 'DataController utils', () => {
 			insertHelper( 'xyz' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
+		} );
+
+		it( 'should group multiple node inserts', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>f[]oo</paragraph>' );
+			const affectedRange = insertHelper(
+				'<paragraph>abc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl</paragraph>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>fabc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl[]oo</paragraph>'
+			);
+			expect( stringify( root, affectedRange ) ).to.equal(
+				'<paragraph>f[abc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl]oo</paragraph>'
+			);
+
+			const batch = model.document.history.getOperation( model.document.version - 1 ).batch;
+			const operations = batch.operations.filter( operation => operation.isDocumentOperation );
+
+			expect( operations.length ).to.equal( 5 );
+
+			expect( operations[ 0 ].type ).to.equal( 'split' );
+			expect( operations[ 0 ].splitPosition.path ).to.deep.equal( [ 0, 1 ] );
+
+			// First node should always be inserted by a separate operation (to avoid operation transformation
+			// on multiple nodes on undoing (insert + merge).
+			expect( operations[ 1 ].type ).to.equal( 'insert' );
+			expect( operations[ 1 ].position.path ).to.deep.equal( [ 1 ] );
+			expect( operations[ 1 ].nodes.length ).to.equal( 1 );
+
+			expect( operations[ 2 ].type ).to.equal( 'merge' );
+			expect( operations[ 2 ].targetPosition.path ).to.deep.equal( [ 0, 1 ] );
+
+			expect( operations[ 3 ].type ).to.equal( 'insert' );
+			expect( operations[ 3 ].position.path ).to.deep.equal( [ 1 ] );
+			expect( operations[ 3 ].nodes.length ).to.equal( 3 );
+
+			expect( operations[ 4 ].type ).to.equal( 'merge' );
+			expect( operations[ 4 ].targetPosition.path ).to.deep.equal( [ 3, 3 ] );
 		} );
 
 		describe( 'in simple scenarios', () => {

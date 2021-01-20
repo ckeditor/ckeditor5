@@ -3968,7 +3968,7 @@ describe( 'table clipboard', () => {
 			);
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '<paragraph>Test</paragraph><paragraph></paragraph>' ]
+				[ '<paragraph>Test</paragraph>' ]
 			] ) );
 		} );
 	} );

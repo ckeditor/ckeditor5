@@ -5,7 +5,6 @@
 
 import DataApiMixin from '../../../src/editor/utils/dataapimixin';
 import Editor from '../../../src/editor/editor';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import testUtils from '../../../tests/_utils/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -18,7 +17,6 @@ describe( 'DataApiMixin', () => {
 		mix( CustomEditor, DataApiMixin );
 
 		editor = new CustomEditor();
-		editor.data.processor = new HtmlDataProcessor( editor.data.viewDocument );
 		editor.model.document.createRoot( '$root', 'main' );
 		editor.model.document.createRoot( '$root', 'secondRoot' );
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
