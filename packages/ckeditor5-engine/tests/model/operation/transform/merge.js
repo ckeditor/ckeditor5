@@ -78,7 +78,7 @@ describe( 'transform', () => {
 
 				john.undo();
 				syncClients();
-				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph></paragraph>' );
+				expectClients( '<paragraph>Foo</paragraph><paragraph></paragraph><paragraph>Bar</paragraph>' );
 
 				kate.undo();
 				syncClients();
