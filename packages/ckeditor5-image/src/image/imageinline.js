@@ -39,6 +39,7 @@ export default class ImageInline extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 
+		// 'alt' and 'srcset' converters are added in 'ImageEditing' plugin
 		schema.register( 'imageInline', {
 			isObject: true,
 			isInline: true,
