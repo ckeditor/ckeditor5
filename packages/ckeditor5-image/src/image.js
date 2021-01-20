@@ -21,12 +21,10 @@ import '../theme/image.css';
  *
  * This is a "glue" plugin which loads the following plugins:
  *
- * * {@link module:image/image/imageediting~ImageEditing},
- * * {@link module:image/image/imageblock~ImageBlock},
- * * {@link module:image/image/imageinline~ImageInline},
- * * {@link module:image/imagetextalternative~ImageTextAlternative}.
+ * * {@link module:image/imageblock~ImageBlock},
+ * * {@link module:image/imageinline~ImageInline},
  *
- * Usually, it is used in conjuction with other plugins from this package. See the {@glink api/image package page}
+ * Usually, it is used in conjunction with other plugins from this package. See the {@glink api/image package page}
  * for more information.
  *
  * @extends module:core/plugin~Plugin

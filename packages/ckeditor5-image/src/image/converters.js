@@ -111,11 +111,11 @@ export function srcsetAttributeConverter( imageType ) {
 /**
  * Converter used to convert a given image attribute from the model to the view.
  *
- * @param {String} attributeKey The name of the attribute to convert.
  * @param {'image'|'imageInline'} imageType The type of the image.
+ * @param {String} attributeKey The name of the attribute to convert.
  * @returns {Function}
  */
-export function modelToViewAttributeConverter( attributeKey, imageType ) {
+export function modelToViewAttributeConverter( imageType, attributeKey ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:${ attributeKey }:${ imageType }`, converter );
 	};

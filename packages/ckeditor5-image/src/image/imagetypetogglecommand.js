@@ -22,9 +22,11 @@ export default class ImageTypeToggleCommand extends Command {
 	refresh() {
 		const element = this.editor.model.document.selection.getSelectedElement();
 
-		this.isEnabled =
-			this.editor.plugins.has( 'ImageBlock' ) && this.editor.plugins.has( 'ImageInline' ) &&
-			( isImage( element ) || isImageInline( element ) );
+		if ( !this.editor.plugins.has( 'ImageBlock' ) || !this.editor.plugins.has( 'ImageInline' ) ) {
+			this.isEnabled = false;
+		} else {
+			this.isEnabled = isImage( element ) || isImageInline( element );
+		}
 	}
 
 	/**

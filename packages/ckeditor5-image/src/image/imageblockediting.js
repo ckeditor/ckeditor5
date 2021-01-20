@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imageblock
+ * @module image/image/imageblockediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -47,7 +47,7 @@ export default class ImageBlockEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 
-		// 'alt' and 'srcset' converters are added in 'ImageEditing' plugin
+		// TODO comment: 'alt' and 'srcset' converters are added in 'ImageEditing' plugin
 		schema.register( 'image', {
 			isObject: true,
 			isBlock: true,
@@ -70,11 +70,11 @@ export default class ImageBlockEditing extends Plugin {
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( 'src', 'image' ) )
-			.add( modelToViewAttributeConverter( 'alt', 'image' ) )
+			.add( modelToViewAttributeConverter( 'image', 'src' ) )
+			.add( modelToViewAttributeConverter( 'image', 'alt' ) )
 			.add( srcsetAttributeConverter( 'image' ) );
 
-		// more upcasts are in 'ImageEditing' plugin
+		// TODO comment: more upcasts are in 'ImageEditing' plugin
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'image', editor ),

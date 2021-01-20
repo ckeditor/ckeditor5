@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imageinline
+ * @module image/image/imageinlineediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -47,7 +47,7 @@ export default class ImageInlineEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 
-		// 'alt' and 'srcset' converters are added in 'ImageEditing' plugin
+		// TODO comment: 'alt' and 'srcset' converters are added in 'ImageEditing' plugin
 		schema.register( 'imageInline', {
 			isObject: true,
 			isInline: true,
@@ -70,11 +70,11 @@ export default class ImageInlineEditing extends Plugin {
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( 'src', 'imageInline' ) )
-			.add( modelToViewAttributeConverter( 'alt', 'imageInline' ) )
+			.add( modelToViewAttributeConverter( 'imageInline', 'src' ) )
+			.add( modelToViewAttributeConverter( 'imageInline', 'alt' ) )
 			.add( srcsetAttributeConverter( 'imageInline' ) );
 
-		// more upcasts are in 'ImageEditing' plugin
+		// TODO comment: more upcasts are in 'ImageEditing' plugin
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'imageInline', editor ),

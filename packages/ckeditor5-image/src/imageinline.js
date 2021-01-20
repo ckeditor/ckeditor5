@@ -4,12 +4,12 @@
  */
 
 /**
- * @module image/image/imageinline
+ * @module image/imageinline
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+
 import ImageTextAlternative from './imagetextalternative';
 import ImageInlineEditing from './image/imageinlineediting';
 
@@ -18,10 +18,13 @@ import '../theme/image.css';
 /**
  * The image inline plugin.
  *
- * It registers:
+ * This is a "glue" plugin which loads the following plugins:
  *
- * * `<imageInline>` as an inline element in the document schema, and allows `alt`, `src` and `srcset` attributes.
- * * converters for editing and data pipelines.
+ * * {@link module:image/image/imageinlineediting~ImageInlineEditing},
+ * * {@link module:image/imagetextalternative~ImageTextAlternative}.
+ *
+ * Usually, it is used in conjunction with other plugins from this package. See the {@glink api/image package page}
+ * for more information.
  *
  * @extends module:core/plugin~Plugin
  */
