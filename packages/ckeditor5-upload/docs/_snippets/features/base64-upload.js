@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
@@ -19,7 +19,6 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		// eslint-disable-next-line no-undef
 		setTimeout( () => window.attachTourBalloon( {
 			target: window.findToolbarItem(
 				editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert image'

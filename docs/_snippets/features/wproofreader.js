@@ -65,7 +65,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		// looks good, doesn't work
+
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'WProofreader' ),

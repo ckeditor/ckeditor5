@@ -63,7 +63,6 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 
-	// added code
 	.then( editor => {
 		window.editor = editor;
 
