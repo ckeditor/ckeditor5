@@ -36,10 +36,57 @@ describe( 'GFMDataProcessor', () => {
 				);
 			} );
 
+			it( 'should not escape urls with matching parenthesis', () => {
+				testDataProcessor(
+					'escape\\_this www.test.com/foobar(v2)) escape\\_this',
+					'<p>escape_this www.test.com/foobar(v2)) escape_this</p>'
+				);
+			} );
+
+			it( 'should not escape urls with matching double parenthesis', () => {
+				testDataProcessor(
+					'escape\\_this www.test.com/foobar((v2))) escape\\_this',
+					'<p>escape_this www.test.com/foobar((v2))) escape_this</p>'
+				);
+			} );
+
+			it( 'should escape trailing "*""', () => {
+				testDataProcessor(
+					'escape\\_this www.test.com/foobar.html\\* escape\\_this',
+					'<p>escape_this www.test.com/foobar.html* escape_this</p>'
+				);
+			} );
+
+			it( 'should escape "*" on both ends of a link', () => {
+				testDataProcessor(
+					'escape\\_this \\*www.test.com/foobar\\* escape\\_this',
+					'<p>escape_this *www.test.com/foobar* escape_this</p>'
+				);
+			} );
+
+			it( 'should escape all trailing special characters', () => {
+				testDataProcessor(
+					'escape\\_this www.test.com/foobar\\*?!).,:\\_~\'" escape\\_this',
+					'<p>escape_this www.test.com/foobar*?!).,:_~\'" escape_this</p>'
+				);
+			} );
+
+			// s/ckeditor5/2
+			it( 'should handle invalid urls with repeated characters', () => {
+				testDataProcessor(
+					'http://\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'',
+					'<p>http://\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'\'</p>'
+				);
+			} );
+
 			[
 				'https://test.com/do_[not]-escape',
 				'http://test.com/do_[not]-escape',
-				'www.test.com/do_[not]-escape'
+				'www.test.com/do_[not]-escape',
+				'www.test.com/foobar.html~~',
+				'www.test.com/foobar((v2)))',
+				'www.test.com/foobar(v2))',
+				'www.test.com/foobar((v2)'
 			].forEach( url => {
 				it( `should not escape urls (${ url })`, () => {
 					testDataProcessor( url, `<p>${ url }</p>` );
