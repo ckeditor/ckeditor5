@@ -4,11 +4,11 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageInsertCommand', () => {
 	let editor, command, model;

@@ -4,8 +4,9 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { insertImage, isImageAllowed } from './utils';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+
+import { insertImage, isImageAllowed } from './utils';
 
 /**
  * @module image/image/imageinsertcommand

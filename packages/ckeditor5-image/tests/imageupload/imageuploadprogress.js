@@ -51,9 +51,7 @@ describe( 'ImageUploadProgress', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [
-					ImageBlockEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock, Clipboard
-				]
+				plugins: [ ImageBlockEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

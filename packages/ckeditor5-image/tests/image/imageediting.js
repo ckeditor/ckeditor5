@@ -184,33 +184,33 @@ describe( 'ImageEditing', () => {
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
 					'<figure class="image">' +
-					'<img ' +
-					'alt="alt text" ' +
-					'sizes="100vw" ' +
-					'src="/assets/sample.png" ' +
-					'srcset="small.png 148w, big.png 1024w" ' +
-					'width="1024">' +
-					'</img>' +
+						'<img ' +
+							'alt="alt text" ' +
+							'sizes="100vw" ' +
+							'src="/assets/sample.png" ' +
+							'srcset="small.png 148w, big.png 1024w" ' +
+							'width="1024">' +
+						'</img>' +
 					'</figure>'
 				);
 
 				setModelData( model,
 					'<paragraph><imageInline ' +
-					'src="/assets/sample.png" ' +
-					'alt="alt text" ' +
-					'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'src="/assets/sample.png" ' +
+						'alt="alt text" ' +
+						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</imageInline></paragraph>'
 				);
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
 					'<p>' +
-					'<img ' +
-					'alt="alt text" ' +
-					'sizes="100vw" ' +
-					'src="/assets/sample.png" ' +
-					'srcset="small.png 148w, big.png 1024w" ' +
-					'width="1024">' +
-					'</img>' +
+						'<img ' +
+							'alt="alt text" ' +
+							'sizes="100vw" ' +
+							'src="/assets/sample.png" ' +
+							'srcset="small.png 148w, big.png 1024w" ' +
+							'width="1024">' +
+						'</img>' +
 					'</p>'
 				);
 			} );
@@ -244,9 +244,9 @@ describe( 'ImageEditing', () => {
 
 				setModelData( model,
 					'<paragraph><imageInline ' +
-					'src="/assets/sample.png" ' +
-					'alt="alt text" ' +
-					'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'src="/assets/sample.png" ' +
+						'alt="alt text" ' +
+						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</imageInline></paragraph>'
 				);
 
@@ -274,9 +274,9 @@ describe( 'ImageEditing', () => {
 
 				setModelData( model,
 					'<paragraph><imageInline ' +
-					'src="/assets/sample.png" ' +
-					'alt="alt text" ' +
-					'srcset=\'{ "foo":"bar" }\'>' +
+						'src="/assets/sample.png" ' +
+						'alt="alt text" ' +
+						'srcset=\'{ "foo":"bar" }\'>' +
 					'</imageInline></paragraph>' );
 
 				const imageInline = doc.getRoot().getChild( 0 );
@@ -445,9 +445,9 @@ describe( 'ImageEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-					'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
-					'</imageInline>' +
-					'</paragraph>'
+							'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+							'</imageInline>' +
+						'</paragraph>'
 					);
 			} );
 
@@ -460,8 +460,9 @@ describe( 'ImageEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<image ' +
-					'alt="alt text" src="/assets/sample.png" ' +
-					'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
+						'alt="alt text" ' +
+						'src="/assets/sample.png" ' +
+						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
 					'</image>'
 				);
 
@@ -470,11 +471,10 @@ describe( 'ImageEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph>' +
-					'<imageInline ' +
-					'alt="alt text" ' +
-					'src="/assets/sample.png" ' +
-					'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
+					'<paragraph><imageInline ' +
+						'alt="alt text" ' +
+						'src="/assets/sample.png" ' +
+						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
 					'</imageInline></paragraph>'
 				);
 			} );
@@ -498,9 +498,9 @@ describe( 'ImageEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-					'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
-					'</imageInline>' +
-					'</paragraph>'
+							'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+							'</imageInline>' +
+						'</paragraph>'
 					);
 			} );
 
@@ -512,7 +512,7 @@ describe( 'ImageEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-						'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
+							'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
 						'</paragraph>'
 					);
 			} );
@@ -541,9 +541,12 @@ describe( 'ImageEditing', () => {
 				} );
 
 				it( 'multiple images', () => {
-					editor.setData( '<div>foo' +
-						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>ba' +
-						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>r</div>' );
+					editor.setData(
+						'<div>foo' +
+							'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>ba' +
+							'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>r' +
+						'</div>'
+					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
@@ -644,7 +647,9 @@ describe( 'ImageEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>x</div><div><div><div><imageInline alt="foo" src="foo.jpg"></imageInline></div></div></div><div>y</div>'
+						'<div>x</div><div><div><div>' +
+							'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
+						'</div></div></div><div>y</div>'
 					);
 				} );
 
@@ -786,12 +791,12 @@ describe( 'ImageEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img ' +
-					'alt="alt text" ' +
-					'sizes="100vw" ' +
-					'src="/assets/sample.png" ' +
-					'srcset="small.png 148w, big.png 1024w" ' +
-					'width="1024">' +
-					'</img>' +
+							'alt="alt text" ' +
+							'sizes="100vw" ' +
+							'src="/assets/sample.png" ' +
+							'srcset="small.png 148w, big.png 1024w" ' +
+							'width="1024">' +
+						'</img>' +
 					'</figure>'
 				);
 			} );
