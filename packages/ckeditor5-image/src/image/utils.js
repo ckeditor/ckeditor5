@@ -147,16 +147,23 @@ export function getViewImgFromWidget( figureView ) {
 	return figureChildren.find( viewChild => viewChild.is( 'element', 'img' ) );
 }
 
-// Creates a view element representing the image.
-//
-//		<figure class="image"><img></img></figure>
-//
-// Note that `alt` and `src` attributes are converted separately, so they are not included.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {'image'|'imageInline'} imageType The type of created image.
-// @returns {module:engine/view/containerelement~ContainerElement}
+/**
+ * Creates a view element representing the image of provided image type.
+ *
+ * An 'image' type (block image):
+ *
+ * 		<figure class="image"><img></img></figure>
+ *
+ * An 'imageInline' type (inline image):
+ *
+ * 		<span class="image-inline"><img></img></span>
+ *
+ * Note that `alt` and `src` attributes are converted separately, so they are not included.
+ *
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {'image'|'imageInline'} imageType The type of created image.
+ * @returns {module:engine/view/containerelement~ContainerElement}
+ */
 export function createImageViewElement( writer, imageType ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 
@@ -169,10 +176,13 @@ export function createImageViewElement( writer, imageType ) {
 	return container;
 }
 
-// A function returning a {@link module:engine/view/matcher~Matcher} callback for a particular type of View images.
-//
-// @param {'image'|'imageInline'} matchImageType The type of created image.
-// @returns {Function}
+/**
+ * A function returning a {@link module:engine/view/matcher~Matcher} callback for a particular type of View images.
+ *
+ * @param {'image'|'imageInline'} matchImageType The type of created image.
+ * @param editor
+ * @returns {Function}
+ */
 export function getImageTypeMatcher( matchImageType, editor ) {
 	if ( editor.plugins.has( 'ImageInline' ) !== editor.plugins.has( 'ImageBlock' ) ) {
 		return {

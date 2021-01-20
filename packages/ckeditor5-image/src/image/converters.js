@@ -132,39 +132,3 @@ export function modelToViewAttributeConverter( attributeKey, imageType ) {
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}
 }
-
-/**
- * Set upcast image converters applicable to both available image types: block and inline.
- *
- * @param {module:engine/conversion/conversion~Conversion} conversion
- */
-export function addUpcastImageConverters( conversion ) {
-	conversion.for( 'upcast' )
-		.attributeToAttribute( {
-			view: {
-				name: 'img',
-				key: 'alt'
-			},
-			model: 'alt'
-		} )
-		.attributeToAttribute( {
-			view: {
-				name: 'img',
-				key: 'srcset'
-			},
-			model: {
-				key: 'srcset',
-				value: viewImage => {
-					const value = {
-						data: viewImage.getAttribute( 'srcset' )
-					};
-
-					if ( viewImage.hasAttribute( 'width' ) ) {
-						value.width = viewImage.getAttribute( 'width' );
-					}
-
-					return value;
-				}
-			}
-		} );
-}

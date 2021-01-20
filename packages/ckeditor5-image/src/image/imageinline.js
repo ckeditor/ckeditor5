@@ -10,16 +10,15 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
-import { addUpcastImageConverters, modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
+import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
 
 /**
- * The image engine plugin.
+ * The image inline plugin.
  *
  * It registers:
  *
- * * `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
+ * * `<imageInline>` as an inline element in the document schema, and allows `alt`, `src` and `srcset` attributes.
  * * converters for editing and data pipelines.
- * * `'imageInsert'` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -71,8 +70,6 @@ export default class ImageInline extends Plugin {
 				view: getImageTypeMatcher( 'imageInline', editor ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
-
-		addUpcastImageConverters( conversion );
 	}
 }
 

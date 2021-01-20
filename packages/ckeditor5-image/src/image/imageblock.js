@@ -9,23 +9,16 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import {
-	addUpcastImageConverters,
-	modelToViewAttributeConverter,
-	srcsetAttributeConverter,
-	viewFigureToModel
-} from './converters';
-
+import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
 
 /**
- * The image engine plugin.
+ * The image block plugin.
  *
  * It registers:
  *
  * * `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
  * * converters for editing and data pipelines.
- * * `'imageInsert'` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -79,7 +72,5 @@ export default class ImageBlock extends Plugin {
 				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel() );
-
-		addUpcastImageConverters( conversion );
 	}
 }

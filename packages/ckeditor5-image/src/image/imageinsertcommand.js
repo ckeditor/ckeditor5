@@ -14,7 +14,7 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 /**
  * Insert image command.
  *
- * The command is registered by the {@link module:image/image~Image} plugin as `'imageInsert'`.
+ * The command is registered by the {@link module:image/image/imageediting~ImageEditing} plugin as `'imageInsert'`.
  *
  * In order to insert an image at the current selection position
  * (according to the {@link module:widget/utils~findOptimalInsertionPosition} algorithm),

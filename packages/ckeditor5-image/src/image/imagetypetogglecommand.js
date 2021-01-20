@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { insertImage, isImage, isImageInline } from './utils';
 
 /**
- * The image inline command. It is used to convert block image io inline image.
+ * The image type toggle command. It is used to convert images between block and inline type.
  *
  * @extends module:core/command~Command
  */
@@ -28,9 +28,7 @@ export default class ImageTypeToggleCommand extends Command {
 	}
 
 	/**
-	 * Executes the command.
-	 *
-	 * @fires execute
+	 * @inheritDoc
 	 */
 	execute() {
 		const model = this.editor.model;
