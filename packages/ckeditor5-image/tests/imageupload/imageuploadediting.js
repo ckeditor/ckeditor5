@@ -9,9 +9,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ImageEditing from '../../src/image/imageediting';
-import ImageBlock from '../../src/image/imageblock';
-import ImageInline from '../../src/image/imageinline';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -60,7 +59,7 @@ describe( 'ImageUploadEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageBlock, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageBlockEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -86,14 +85,14 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, ImageUploadEditing ] } );
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, ImageUploadEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
 		await newEditor.destroy();
 	} );
 
 	it( 'should register proper schema rules for image style when ImageInline plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, ImageUploadEditing ] } );
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, ImageUploadEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
 		await newEditor.destroy();
@@ -106,7 +105,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should load Clipboard plugin', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageBlock, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+				plugins: [ ImageBlockEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
 			} )
 			.then( editor => {
 				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
@@ -193,7 +192,7 @@ describe( 'ImageUploadEditing', () => {
 		// Clipboard plugin is required for this test.
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageBlock, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageBlockEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( editor => {
 				const fileMock = createNativeFileMock();
@@ -638,7 +637,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should upload image with base64 src', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<p>bar</p><figure class="image"><img src=${ base64Sample } /></figure>`;
+		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -657,7 +656,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should upload image with blob src', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure>`;
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -677,7 +676,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<figure class="image"><img src=${ base64Sample } /></figure>`;
+		const clipboardHtml = `<img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -700,7 +699,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<figure class="image"><img src=${ base64Sample } /></figure>`;
+		const clipboardHtml = `<img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -719,7 +718,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		expectData(
-			'<figure class="image"><img src="" uploadId="#loader1_id" uploadProcessed="true"></img></figure>',
+			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
 			'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
 			'<paragraph>[]foo</paragraph>',
 			content,
@@ -748,8 +747,8 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<p>bar</p><figure class="image"><img src=${ base64Sample } /></figure>` +
-			`<figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure><figure><img src=${ base64Sample } /></figure>`;
+		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />` +
+			`<img src=${ base64ToBlobUrl( base64Sample ) } /><img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -797,7 +796,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure><p>baz</p>`;
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } /><p>baz</p>`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -811,7 +810,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		expectData(
-			'<figure class="image"><img src="" uploadId="#loader1_id" uploadProcessed="true"></img></figure><p>baz</p>',
+			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
 			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image><paragraph>baz[]foo</paragraph>',
 			'<paragraph>baz[]foo</paragraph>',
 			content,
@@ -835,7 +834,7 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const clipboardHtml = `<p>baz</p><figure class="image"><img src=${ base64ToBlobUrl( base64Sample ) } /></figure>`;
+		const clipboardHtml = `<p>baz</p><img src=${ base64ToBlobUrl( base64Sample ) } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -849,7 +848,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		expectData(
-			'<p>baz</p><figure class="image"><img src="" uploadId="#loader1_id" uploadProcessed="true"></img></figure>',
+			'<p>baz</p><img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
 			'<paragraph>baz</paragraph>[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
 			'<paragraph>baz[]</paragraph><paragraph>foo</paragraph>',
 			content,

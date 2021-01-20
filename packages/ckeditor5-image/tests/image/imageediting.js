@@ -8,8 +8,6 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ImageEditing from '../../src/image/imageediting';
-import ImageBlock from '../../src/image/imageblock';
-import ImageInline from '../../src/image/imageinline';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -19,6 +17,8 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ImageTypeToggleCommand from '../../src/image/imagetypetogglecommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 
 describe( 'ImageEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -28,7 +28,7 @@ describe( 'ImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageBlock, ImageInline, Paragraph ]
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -88,7 +88,7 @@ describe( 'ImageEditing', () => {
 		document.body.appendChild( element );
 
 		const editor = await ClassicTestEditor.create( element, {
-			plugins: [ ImageEditing, ImageBlock ]
+			plugins: [ ImageBlockEditing ]
 		} );
 
 		editor.data.set( '<figure class="image"><img src="/assets/sample.png" alt="bar" /></figure>' );
@@ -111,7 +111,7 @@ describe( 'ImageEditing', () => {
 		document.body.appendChild( element );
 
 		const editor = await ClassicTestEditor.create( element, {
-			plugins: [ ImageEditing, ImageBlock, ImageInline, Paragraph ]
+			plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
 		} );
 
 		editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );

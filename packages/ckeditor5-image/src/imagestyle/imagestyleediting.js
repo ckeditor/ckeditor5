@@ -43,11 +43,11 @@ export default class ImageStyleEditing extends Plugin {
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
-		if ( this.editor.plugins.has( 'ImageBlock' ) ) {
+		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
 			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
 		}
 
-		if ( this.editor.plugins.has( 'ImageInline' ) ) {
+		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
 		}
 

@@ -7,8 +7,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
 import ImageEditing from '../../src/image/imageediting';
-import ImageBlock from '../../src/image/imageblock';
-import ImageInline from '../../src/image/imageinline';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -29,7 +29,7 @@ describe( 'ImageStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ]
+					plugins: [ ImageBlockEditing, ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -45,7 +45,7 @@ describe( 'ImageStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ],
+					plugins: [ ImageBlockEditing, ImageStyleEditing ],
 					image: {
 						styles: [
 							{ name: 'fullStyle', title: 'foo', icon: 'object-center', isDefault: true },
@@ -65,7 +65,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should define image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ]
+					plugins: [ ImageBlockEditing, ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -75,13 +75,13 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should set schema rules for image style when ImageBlock plugin is enabled', async () => {
-			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ] } );
+			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, ImageStyleEditing ] } );
 			expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
 
 		it( 'should set schema rules for image style when ImageInline plugin is enabled', async () => {
-			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageEditing, ImageInline, ImageStyleEditing ] } );
+			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, ImageStyleEditing ] } );
 			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'imageStyle' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
@@ -282,7 +282,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should fall back to defaults when no image.styles', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ]
+					plugins: [ ImageBlockEditing, ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -294,7 +294,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should not alter the image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ],
+					plugins: [ ImageBlockEditing, ImageStyleEditing ],
 					image: {
 						styles: [
 							'side'
@@ -311,7 +311,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should not alter object definitions in the image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageEditing, ImageBlock, ImageStyleEditing ],
+					plugins: [ ImageBlockEditing, ImageStyleEditing ],
 					image: {
 						styles: [
 							{ name: 'side' }

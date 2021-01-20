@@ -6,9 +6,8 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
 import ImageStyleUI from '../../src/imagestyle/imagestyleui';
-import ImageEditing from '../../src/image/imageediting';
-import ImageBlock from '../../src/image/imageblock';
-import ImageInline from '../../src/image/imageinline';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -29,7 +28,7 @@ describe( 'ImageStyleUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImageEditing, ImageBlock, ImageStyleEditing, ImageStyleUI ],
+				plugins: [ ImageBlockEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles
 				}
@@ -86,7 +85,7 @@ describe( 'ImageStyleUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ TranslationMock, ImageEditing, ImageBlock, ImageInline, ImageStyleEditing, ImageStyleUI ],
+				plugins: [ TranslationMock, ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: [
 						{ name: 'style 1', title: 'Side image', icon: 'style1-icon', isDefault: true }
@@ -109,7 +108,7 @@ describe( 'ImageStyleUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImageEditing, ImageBlock, ImageStyleEditing, ImageStyleUI ],
+				plugins: [ ImageBlockEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles,
 					toolbar: [ 'foo', 'bar' ]

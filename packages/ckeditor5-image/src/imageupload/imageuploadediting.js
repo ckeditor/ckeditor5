@@ -62,13 +62,13 @@ export default class ImageUploadEditing extends Plugin {
 		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' ) );
 
 		// Setup schema to allow uploadId and uploadStatus for images.
-		if ( this.editor.plugins.has( 'ImageBlock' ) ) {
+		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
 			schema.extend( 'image', {
 				allowAttributes: [ 'uploadId', 'uploadStatus' ]
 			} );
 		}
 
-		if ( this.editor.plugins.has( 'ImageInline' ) ) {
+		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
 			schema.extend( 'imageInline', {
 				allowAttributes: [ 'uploadId', 'uploadStatus' ]
 			} );

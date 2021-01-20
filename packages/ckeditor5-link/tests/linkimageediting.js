@@ -10,8 +10,8 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
-import ImageInline from '@ckeditor/ckeditor5-image/src/image/imageinline';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -19,7 +19,7 @@ describe( 'LinkImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ]
+				plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -41,13 +41,13 @@ describe( 'LinkImageEditing', () => {
 	} );
 
 	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlock, LinkImageEditing ] } );
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, LinkImageEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
 		await newEditor.destroy();
 	} );
 
 	it( 'should set proper schema rules for image style when ImageInline plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInline, LinkImageEditing ] } );
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, LinkImageEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
 		await newEditor.destroy();
 	} );
@@ -114,19 +114,6 @@ describe( 'LinkImageEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( '<image alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
-				} );
-
-				it( 'should not convert a link on an inline image', () => {
-					editor.setData(
-						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
-					);
-
-					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal(
-							'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
-							'</paragraph>'
-						);
 				} );
 
 				it( 'should convert an image with a link and without alt attribute', () => {
@@ -200,7 +187,7 @@ describe( 'LinkImageEditing', () => {
 			describe( 'a > img', () => {
 				it( 'should convert a link in an image figure', () => {
 					editor.setData(
-						'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a></figure>'
+						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
@@ -233,9 +220,9 @@ describe( 'LinkImageEditing', () => {
 
 					editor.setData(
 						'<div>' +
-							'<figure class="image"><a href="http://ckeditor.com">' +
+							'<a href="http://ckeditor.com">' +
 								'<img src="/assets/sample.png" alt="alt text" />' +
-							'</a></figure>' +
+							'</a>' +
 						'</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
@@ -248,7 +235,7 @@ describe( 'LinkImageEditing', () => {
 					}, { priority: 'highest' } );
 
 					editor.setData(
-						'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a></figure>'
+						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
 					);
 
 					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
@@ -256,7 +243,7 @@ describe( 'LinkImageEditing', () => {
 
 				it( 'should not convert if a link misses "href" attribute', () => {
 					editor.setData(
-						'<figure class="image"><a href=""><img src="/assets/sample.png" alt="alt text" /></a></figure>'
+						'<a href=""><img src="/assets/sample.png" alt="alt text" /></a>'
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
@@ -268,7 +255,7 @@ describe( 'LinkImageEditing', () => {
 				it( 'should convert a link and the caption element', () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing, ImageCaptionEditing ]
+							plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing, ImageCaptionEditing ]
 						} )
 						.then( editor => {
 							editor.setData(
@@ -350,7 +337,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert a link and the caption element', () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing, ImageCaptionEditing ]
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing, ImageCaptionEditing ]
 					} )
 					.then( editor => {
 						setModelData( editor.model,
@@ -419,7 +406,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false
 						}
@@ -464,7 +451,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: true
 						}
@@ -482,9 +469,7 @@ describe( 'LinkImageEditing', () => {
 					it( `link: ${ link.url } should be treat as ${ link.external ? 'external' : 'non-external' } link`, () => {
 						// Upcast check.
 						editor.setData(
-							`<figure class="image"><a href="${ link.url }" target="_blank" rel="noopener noreferrer">` +
-							'<img src="/assets/sample.png">' +
-							'</a></figure>'
+							`<a href="${ link.url }" target="_blank" rel="noopener noreferrer"><img src="/assets/sample.png"></a>`
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
@@ -542,7 +527,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false,
 							decorators: {
@@ -617,7 +602,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {
@@ -657,7 +642,7 @@ describe( 'LinkImageEditing', () => {
 
 			it( 'should register manual decorators for block images', async () => {
 				const newEditor = await VirtualTestEditor.create( {
-					plugins: [ Paragraph, ImageBlock, LinkImageEditing ],
+					plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 					link: {
 						decorators: {
 							isGallery: {
@@ -673,7 +658,7 @@ describe( 'LinkImageEditing', () => {
 
 			it( 'should register manual decorators for inline images', async () => {
 				const newEditor = await VirtualTestEditor.create( {
-					plugins: [ Paragraph, ImageInline, LinkImageEditing ],
+					plugins: [ Paragraph, ImageInlineEditing, LinkImageEditing ],
 					link: {
 						decorators: {
 							isGallery: {
@@ -775,11 +760,9 @@ describe( 'LinkImageEditing', () => {
 			it( 'should upcast the decorators when linked image (a > img)', () => {
 				// (#7975)
 				editor.setData(
-					'<figure class="image">' +
-						'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
-							'<img src="sample.jpg" alt="bar">' +
-						'</a>' +
-					'</figure>' +
+					'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+						'<img src="sample.jpg" alt="bar">' +
+					'</a>' +
 					'<p>' +
 						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
 							'https://cksource.com' +
@@ -810,7 +793,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, ImageBlock, ImageInline, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {

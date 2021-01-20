@@ -9,7 +9,7 @@
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
 import { isImageWidget } from '@ckeditor/ckeditor5-image/src/image/utils';
@@ -30,7 +30,7 @@ export default class LinkImageUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Image, LinkEditing, LinkUI ];
+		return [ ImageBlockEditing, LinkEditing, LinkUI ];
 	}
 
 	/**

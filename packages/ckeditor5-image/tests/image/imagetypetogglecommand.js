@@ -7,9 +7,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import ImageEditing from '../../src/image/imageediting';
-import ImageBlock from '../../src/image/imageblock';
-import ImageInline from '../../src/image/imageinline';
+import ImageInline from '../../src/image/imageinlineediting';
+import ImageBlockEditing from '../../src/image/imageblockediting';
 
 describe( 'ImageTypeToggleCommand', () => {
 	let editor, command, model;
@@ -17,7 +16,7 @@ describe( 'ImageTypeToggleCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageBlock, ImageInline, Paragraph ]
+				plugins: [ ImageBlockEditing, ImageInline, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

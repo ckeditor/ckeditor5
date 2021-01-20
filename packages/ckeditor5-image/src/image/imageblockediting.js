@@ -47,7 +47,7 @@ export default class ImageBlockEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 
-		// TODO comment: 'alt' and 'srcset' converters are added in 'ImageEditing' plugin
+		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'image', {
 			isObject: true,
 			isBlock: true,
@@ -74,7 +74,7 @@ export default class ImageBlockEditing extends Plugin {
 			.add( modelToViewAttributeConverter( 'image', 'alt' ) )
 			.add( srcsetAttributeConverter( 'image' ) );
 
-		// TODO comment: more upcasts are in 'ImageEditing' plugin
+		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'image', editor ),

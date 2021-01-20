@@ -42,11 +42,11 @@ export default class LinkImageEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		if ( editor.plugins.has( 'ImageBlock' ) ) {
+		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
 			schema.extend( 'image', { allowAttributes: [ 'linkHref' ] } );
 		}
 
-		if ( editor.plugins.has( 'ImageInline' ) ) {
+		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
 			schema.extend( 'imageInline', { allowAttributes: [ 'linkHref' ] } );
 		}
 
@@ -87,11 +87,11 @@ export default class LinkImageEditing extends Plugin {
 		const manualDecorators = command.manualDecorators;
 
 		for ( const decorator of command.manualDecorators ) {
-			if ( editor.plugins.has( 'ImageBlock' ) ) {
+			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
 				editor.model.schema.extend( 'image', { allowAttributes: decorator.id } );
 			}
 
-			if ( editor.plugins.has( 'ImageInline' ) ) {
+			if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
 				editor.model.schema.extend( 'imageInline', { allowAttributes: decorator.id } );
 			}
 

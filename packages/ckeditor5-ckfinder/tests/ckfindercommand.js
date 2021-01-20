@@ -9,8 +9,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
@@ -27,7 +26,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, ImageBlock, ImageUploadEditing, LinkEditing, Notification, Clipboard ]
+				plugins: [ Paragraph, ImageBlockEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -257,7 +256,7 @@ describe( 'CKFinderCommand', () => {
 
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ImageEditing, ImageBlock, ImageUploadEditing, LinkEditing, Notification, Clipboard ],
+					plugins: [ Paragraph, ImageBlockEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ],
 					language: 'pl'
 				} )
 				.then( newEditor => {

@@ -12,8 +12,7 @@ import { getTableCellsContainingSelection } from '../src/utils/selection';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/image/imageblock';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -3074,7 +3073,7 @@ describe( 'TableKeyboard', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageEditing, ImageBlock, MediaEmbedEditing ],
+						plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageBlockEditing, MediaEmbedEditing ],
 						language: 'ar'
 					} )
 					.then( newEditor => {
