@@ -42,7 +42,7 @@ export default class Observer {
 		this.document = view.document;
 
 		/**
-		 * State of the observer. If it is disabled no events will be fired.
+		 * The state of the observer. If it is disabled, no events will be fired.
 		 *
 		 * @readonly
 		 * @member {Boolean}

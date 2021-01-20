@@ -140,7 +140,7 @@ function findAllItemLikeElements( documentFragment, writer ) {
 
 // Extracts list item style from the provided CSS.
 //
-// List item style is extracted from CSS stylesheet. Each list with its specific style attribute
+// List item style is extracted from the CSS stylesheet. Each list with its specific style attribute
 // value (`mso-list:l1 level1 lfo1`) has its dedicated properties in a CSS stylesheet defined with a selector like:
 //
 // 		@list l1:level1 { ... }
@@ -176,10 +176,10 @@ function detectListStyle( listLikeItem, stylesString ) {
 			type = listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul';
 		}
 
-		// Styles for the numbered lists are always defined in Word CSS stylesheet.
+		// Styles for the numbered lists are always defined in the Word CSS stylesheet.
 		// Unordered lists MAY contain a value for the Word CSS definition `mso-level-text` but sometimes
-		// the tag is missing. And because of that, we cannot depend on that. We need to predict the list style value based on
-		// the list style marker element.
+		// this tag is missing. And because of that, we cannot depend on that. We need to predict the list style value
+		// based on the list style marker element.
 		if ( listStyleType === 'bullet' ) {
 			const bulletedStyle = findBulletedListStyle( listLikeItem.element );
 
@@ -195,7 +195,7 @@ function detectListStyle( listLikeItem, stylesString ) {
 	};
 }
 
-// Tries extract the `list-style-type` value based on the marker element for bulleted list.
+// Tries to extract the `list-style-type` value based on the marker element for bulleted list.
 //
 // @param {module:engine/view/element~Element} element
 // @returns {module:engine/view/element~Element|null}
@@ -280,7 +280,7 @@ function insertNewEmptyList( listStyle, element, writer ) {
 
 	writer.insertChild( position, list, parent );
 
-	// We do not support modifying the marker for particular list item.
+	// We do not support modifying the marker for a particular list item.
 	// Set the value for the `list-style-type` property directly to the list container.
 	if ( listStyle.style ) {
 		writer.setStyle( 'list-style-type', listStyle.style, list );
@@ -289,10 +289,10 @@ function insertNewEmptyList( listStyle, element, writer ) {
 	return list;
 }
 
-// Transforms given element into a semantic list item. As the function operates on a provided
+// Transforms a given element into a semantic list item. As the function operates on a provided
 // {module:engine/src/view/element~Element element} it will modify the view structure to which this element belongs.
 //
-// @param {module:engine/view/element~Element} element Element which will be transformed into list item.
+// @param {module:engine/view/element~Element} element Element which will be transformed into a list item.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {module:engine/view/element~Element} New element to which the given one was transformed. It is
 // inserted in place of the old element (the reference to the old element is lost due to renaming).
@@ -358,12 +358,12 @@ function removeBulletElement( element, writer ) {
 	}
 }
 
-// Whether previous and current item belongs to the same list. It is determined based on `item.id`
-// (extracted from `mso-list` style, see #getListItemData) and previous sibling of the current item.
+// Whether the previous and current items belong to the same list. It is determined based on `item.id`
+// (extracted from `mso-list` style, see #getListItemData) and a previous sibling of the current item.
 //
 // However, it's quite easy to change the `id` attribute for nested lists in Word. It will break the list feature while pasting.
-// Let's check also the `indent` attribute. If between those two elements, the difference is equal to 1, we can assume that
-// the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always starts with the `indent=0` attribute.
+// Let's check also the `indent` attribute. If the difference between those two elements is equal to 1, we can assume that
+// the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always start with the `indent=0` attribute.
 // See: https://github.com/ckeditor/ckeditor5/issues/7805.
 //
 // @param {Object} previousItem
@@ -400,8 +400,8 @@ function isList( element ) {
 	return element.is( 'element', 'ol' ) || element.is( 'element', 'ul' );
 }
 
-// Calculates the indentation difference between two given list items (based on indent attribute
-// extracted from `mso-list` style, see #getListItemData).
+// Calculates the indentation difference between two given list items (based on the indent attribute
+// extracted from the `mso-list` style, see #getListItemData).
 //
 // @param {Object} previousItem
 // @param {Object} currentItem
@@ -410,7 +410,7 @@ function getIndentationDifference( previousItem, currentItem ) {
 	return previousItem ? currentItem.indent - previousItem.indent : currentItem.indent - 1;
 }
 
-// Finds parent list element (ul/ol) of a given list element with indentation level lower by a given value.
+// Finds the parent list element (ul/ol) of a given list element with indentation level lower by a given value.
 //
 // @param {module:engine/view/element~Element} listElement List element from which to start looking for a parent list.
 // @param {Number} indentationDifference Indentation difference between lists.

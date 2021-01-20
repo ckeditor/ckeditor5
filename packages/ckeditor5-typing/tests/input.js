@@ -14,8 +14,6 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Input from '../src/input';
 import TextTransformation from '../src/texttransformation';
 
-import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
-
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
@@ -323,9 +321,6 @@ describe( 'Input feature', () => {
 			const viewSelection = view.createSelection();
 			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			testUtils.sinon.spy( Writer.prototype, 'insert' );
-			testUtils.sinon.spy( Writer.prototype, 'remove' );
-
 			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
@@ -336,8 +331,12 @@ describe( 'Input feature', () => {
 				viewSelection
 			);
 
-			expect( Writer.prototype.insert.calledOnce ).to.be.true;
-			expect( Writer.prototype.remove.calledOnce ).to.be.true;
+			const batch = model.document.history.getOperation( model.document.version - 1 ).batch;
+			const operations = batch.operations.filter( operation => operation.isDocumentOperation );
+
+			expect( operations.length ).to.equal( 2 );
+			expect( operations[ 0 ].type ).to.equal( 'remove' );
+			expect( operations[ 1 ].type ).to.equal( 'insert' );
 		} );
 
 		it( 'should place selection after when correcting to longer word (spellchecker)', () => {

@@ -142,7 +142,7 @@ export default class InlineEditorUI extends EditorUI {
 			}
 		} );
 
-		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editingView,

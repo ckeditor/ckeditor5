@@ -12,7 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClipboardObserver from './clipboardobserver';
 
 /**
- * The plugin detects user intentions for pasting plain text.
+ * The plugin detects the user's intention to paste plain text.
  *
  * For example, it detects <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke.
  *

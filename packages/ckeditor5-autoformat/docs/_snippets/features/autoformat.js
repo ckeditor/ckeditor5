@@ -9,11 +9,17 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autoformat' ), {
-		plugins: ClassicEditor.builtinPlugins.concat( [ Code, CodeBlock, Strikethrough ] ),
+		plugins: ClassicEditor.builtinPlugins.concat( [
+			Code,
+			CodeBlock,
+			HorizontalLine,
+			Strikethrough
+		] ),
 		toolbar: {
 			items: [
 				'heading',
@@ -23,6 +29,7 @@ ClassicEditor
 				'strikethrough',
 				'code',
 				'link',
+				'|',
 				'bulletedList',
 				'numberedList',
 				'|',
@@ -31,6 +38,7 @@ ClassicEditor
 				'|',
 				'blockQuote',
 				'codeBlock',
+				'horizontalLine',
 				'|',
 				'undo',
 				'redo'

@@ -200,6 +200,21 @@ describe( 'ClassicEditor build', () => {
 					expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 42 );
 				} );
 		} );
+
+		it( 'allows removing built-in toolbar items', () => {
+			return ClassicEditor
+				.create( editorElement, {
+					toolbar: {
+						removeItems: [ 'italic' ]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					expect( editor.ui.view.toolbar.items.length ).to.equal( 16 );
+					expect( editor.ui.view.toolbar.items.find( item => item.label === 'Italic' ) ).to.be.undefined;
+				} );
+		} );
 	} );
 
 	describeMemoryUsage( () => {
