@@ -195,14 +195,14 @@ describe( 'LinkImageEditing', () => {
 				} );
 
 				it( 'should convert an image with a link and without alt attribute', () => {
-					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" /></a></figure>' );
+					editor.setData( '<a href="http://ckeditor.com"><img src="/assets/sample.png" /></a>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( '<image linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
 				} );
 
 				it( 'should not convert without src attribute', () => {
-					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" /></a></figure>' );
+					editor.setData( '<a href="http://ckeditor.com"><img alt="alt text" /></a>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( '<paragraph></paragraph>' );
@@ -578,7 +578,7 @@ describe( 'LinkImageEditing', () => {
 							return acc + `${ cur[ 0 ] }="${ cur[ 1 ] }" `;
 						}, '' ).trim();
 
-						editor.setData( `<figure class="image"><a href="${ link.url }"><img src="/assets/sample.png"></a></figure>` );
+						editor.setData( `<a href="${ link.url }"><img src="/assets/sample.png"></a>` );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
