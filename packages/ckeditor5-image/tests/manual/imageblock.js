@@ -24,7 +24,8 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import ImageInline from '../../src/imageinline';
+import ImageBlock from '../../src/imageblock';
+import ImageCaption from '../../src/imagecaption';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -34,9 +35,10 @@ ClassicEditor
 			BlockQuote,
 			Bold,
 			Heading,
-			ImageInline,
+			ImageBlock,
 			ImageStyle,
 			ImageToolbar,
+			ImageCaption,
 			Indent,
 			Italic,
 			Link,

@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
+import ImageEditing from './imageediting';
 
 /**
  * The image block plugin.
@@ -22,12 +23,19 @@ import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './ut
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageBlock extends Plugin {
+export default class ImageBlockEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageEditing ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ImageBlock';
+		return 'ImageBlockEditing';
 	}
 
 	/**
@@ -39,7 +47,7 @@ export default class ImageBlock extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 
-		// Configure schema.
+		// 'alt' and 'srcset' converters are added in 'ImageEditing' plugin
 		schema.register( 'image', {
 			isObject: true,
 			isBlock: true,
@@ -66,6 +74,7 @@ export default class ImageBlock extends Plugin {
 			.add( modelToViewAttributeConverter( 'alt', 'image' ) )
 			.add( srcsetAttributeConverter( 'image' ) );
 
+		// more upcasts are in 'ImageEditing' plugin
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'image', editor ),

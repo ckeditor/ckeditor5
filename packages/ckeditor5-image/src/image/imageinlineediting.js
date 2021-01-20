@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
 import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
+import ImageEditing from './imageediting';
 
 /**
  * The image inline plugin.
@@ -22,12 +23,19 @@ import { modelToViewAttributeConverter, srcsetAttributeConverter } from './conve
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageInline extends Plugin {
+export default class ImageInlineEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageEditing ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ImageInline';
+		return 'ImageInlineEditing';
 	}
 
 	/**
@@ -66,6 +74,7 @@ export default class ImageInline extends Plugin {
 			.add( modelToViewAttributeConverter( 'alt', 'imageInline' ) )
 			.add( srcsetAttributeConverter( 'imageInline' ) );
 
+		// more upcasts are in 'ImageEditing' plugin
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'imageInline', editor ),

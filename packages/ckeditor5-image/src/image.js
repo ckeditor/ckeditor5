@@ -8,13 +8,11 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import ImageTextAlternative from './imagetextalternative';
+
+import ImageBlock from './imageblock';
+import ImageInline from './imageinline';
 
 import '../theme/image.css';
-import ImageBlock from './image/imageblock';
-import ImageInline from './image/imageinline';
-import ImageEditing from './image/imageediting';
 
 /**
  * The image plugin.
@@ -38,7 +36,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, ImageBlock, ImageInline, Widget, ImageTextAlternative ];
+		return [ ImageBlock, ImageInline ];
 	}
 
 	/**
