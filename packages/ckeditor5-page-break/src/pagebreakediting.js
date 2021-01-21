@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -66,16 +66,19 @@ export default class PageBreakEditing extends Plugin {
 			view: ( modelElement, { writer } ) => {
 				const label = t( 'Page break' );
 				const viewWrapper = writer.createContainerElement( 'div' );
-				const viewLabelElement = writer.createContainerElement( 'span' );
-				const innerText = writer.createText( t( 'Page break' ) );
+				const viewLabelElement = writer.createUIElement(
+					'span',
+					{ class: 'page-break__label' },
+					function( domDocument ) {
+						const domElement = this.toDomElement( domDocument );
+						domElement.innerText = t( 'Page break' );
+
+						return domElement;
+					}
+				);
 
 				writer.addClass( 'page-break', viewWrapper );
-				writer.setCustomProperty( 'pageBreak', true, viewWrapper );
-
-				writer.addClass( 'page-break__label', viewLabelElement );
-
 				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewLabelElement );
-				writer.insert( writer.createPositionAt( viewLabelElement, 0 ), innerText );
 
 				return toPageBreakWidget( viewWrapper, writer, label );
 			}

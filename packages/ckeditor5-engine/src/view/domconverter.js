@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -949,8 +949,8 @@ export default class DomConverter {
 	 * The raw data can be later accessed by a
 	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching view element whose content should
-	 * be treated as a raw data.
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching a view element whose content should
+	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
 		this._rawContentElementMatcher.add( pattern );
