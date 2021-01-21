@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1510,7 +1510,7 @@ export class SchemaContext {
  *		schema.checkAttribute( textNode, 'bold' );
  *
  * But sometimes you want to check whether a text at a given position might've had some attribute,
- * in which case you can create a context by missing an array of elements with a `'$text'` string:
+ * in which case you can create a context by mixing in an array of elements with a `'$text'` string:
  *
  *		// Check in [ rootElement, paragraphElement, textNode ].
  *		schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );

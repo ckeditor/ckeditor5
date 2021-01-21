@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -80,14 +80,14 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
-	 * and not processed during conversion from DOM to view elements.
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
+	 * and not processed during the conversion from the DOM to the view elements.
 	 *
-	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
-	 * `"$rawContent"`.
+	 * The raw data can be later accessed by a
+	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as a raw data.
+	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
 		this._domConverter.registerRawContentMatcher( pattern );

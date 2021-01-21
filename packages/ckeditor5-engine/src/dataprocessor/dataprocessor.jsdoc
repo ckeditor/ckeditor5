@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -40,9 +40,10 @@
  */
 
 /**
- * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
- * and it's content should be converted to {@link module:engine/view/element~Element#getCustomProperty view element custom property}
- * `"$rawContent"` while converting {@link #toView to view}.
+ * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
+ * and its content should be converted to a
+ * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"` while
+ * converting {@link #toView to view}.
  *
  * @method #registerRawContentMatcher
  * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should

@@ -1,15 +1,17 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import HorizontalLine from '../src/horizontalline';
 import HorizontalLineEditing from '../src/horizontallineediting';
 import HorizontalLineUI from '../src/horizontallineui';
 
 describe( 'HorizontalLine', () => {
-	it( 'should require HorizontalLineEditing and HorizontalLineUI', () => {
-		expect( HorizontalLine.requires ).to.deep.equal( [ HorizontalLineEditing, HorizontalLineUI ] );
+	it( 'should require HorizontalLineEditing, HorizontalLineUI and Widget', () => {
+		expect( HorizontalLine.requires ).to.deep.equal( [ HorizontalLineEditing, HorizontalLineUI, Widget ] );
 	} );
 
 	it( 'should be named', () => {

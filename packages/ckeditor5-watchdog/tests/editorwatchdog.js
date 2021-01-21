@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,6 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
 // The error handling testing with mocha & chai is quite broken and hard to test.
 // sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -936,8 +935,6 @@ describe( 'EditorWatchdog', () => {
 			class MultiRootEditor extends Editor {
 				constructor( sourceElements, config ) {
 					super( config );
-
-					this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 					// Create a root for each source element.
 					for ( const rootName of Object.keys( sourceElements ) ) {

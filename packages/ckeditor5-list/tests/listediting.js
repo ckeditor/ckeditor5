@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -285,6 +285,21 @@ describe( 'ListEditing', () => {
 			setModelData(
 				model,
 				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]foo</listItem></blockQuote>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should outdent empty list when list is nested in block quote', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData(
+				model,
+				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]</listItem></blockQuote>'
 			);
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
