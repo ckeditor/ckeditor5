@@ -36,12 +36,27 @@ describe( 'Image converters', () => {
 					isBlock: true
 				} );
 
-				const editingElementCreator = ( modelElement, { writer } ) =>
+				schema.register( 'imageInline', {
+					allowWhere: '$inline',
+					allowAttributes: [ 'alt', 'src' ],
+					isObject: true,
+					isInline: true
+				} );
+
+				const imageEditingElementCreator = ( modelElement, { writer } ) =>
 					toImageWidget( createImageViewElement( writer, 'image' ), writer, '' );
+
+				const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
+					toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
 
 				editor.conversion.for( 'editingDowncast' ).elementToElement( {
 					model: 'image',
-					view: editingElementCreator
+					view: imageEditingElementCreator
+				} );
+
+				editor.conversion.for( 'editingDowncast' ).elementToElement( {
+					model: 'imageInline',
+					view: imageInlineEditingElementCreator
 				} );
 
 				editor.conversion.for( 'downcast' )
