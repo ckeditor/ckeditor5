@@ -239,11 +239,9 @@ export default class PluginCollection {
 					/**
 					 * It was not possible to load the plugin.
 					 *
-					 * This is a generic error logged to the console when a JavaScript error is thrown during the initialization
-					 * of one of the plugins.
-					 *
 					 * If you correctly handled the promise returned by the editor's `create()` method (as shown below),
-					 * you will find the original error logged to the console, too:
+					 * you will find the error details (i.e. the required plugin's name and the plugin's name that was
+					 * requiring the failed one) logged to the console:
 					 *
 					 *		ClassicEditor.create( document.getElementById( 'editor' ) )
 					 *			.then( editor => {
@@ -252,11 +250,7 @@ export default class PluginCollection {
 					 *			.catch( error => {
 					 *				console.error( error );
 					 *			} );
-					 *
-					 * @error plugincollection-load
-					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					logError( 'plugincollection-load', { plugin: PluginConstructor } );
 
 					throw err;
 				} );

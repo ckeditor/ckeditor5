@@ -241,8 +241,6 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject on broken plugins (forward the error thrown in a plugin)', () => {
-			const consoleErrorStub = sinon.stub( console, 'error' );
-
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginA, PluginX, PluginB ] )
@@ -253,9 +251,6 @@ describe( 'PluginCollection', () => {
 				.catch( err => {
 					expect( err ).to.be.an.instanceof( TestError );
 					expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
-
-					sinon.assert.calledOnce( consoleErrorStub );
-					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load/ );
 				} );
 		} );
 
@@ -345,7 +340,6 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, [ FooContextPlugin, PluginA ] );
 
-			const consoleErrorStub = sinon.stub( console, 'error' );
 			let error;
 
 			try {
@@ -355,7 +349,6 @@ describe( 'PluginCollection', () => {
 			}
 
 			assertCKEditorError( error, /^plugincollection-context-required/ );
-			sinon.assert.calledOnce( consoleErrorStub );
 		} );
 
 		it( 'should not throw when non context plugin requires context plugin', async () => {
@@ -385,7 +378,6 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject when loaded plugin requires not allowed plugins', () => {
-			const consoleErrorStub = sinon.stub( console, 'error' );
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
@@ -395,14 +387,11 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-required/, editor );
-
-					sinon.assert.calledTwice( consoleErrorStub );
 				} );
 		} );
 
 		it( 'should reject when loading more than one plugin with the same name', () => {
 			const plugins = new PluginCollection( editor );
-			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ PluginFoo, AnotherPluginFoo ] )
 				.then( () => {
@@ -414,7 +403,6 @@ describe( 'PluginCollection', () => {
 						plugin1: PluginFoo,
 						plugin2: AnotherPluginFoo
 					} );
-					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
@@ -422,7 +410,6 @@ describe( 'PluginCollection', () => {
 			PluginFoo.requires = [ AnotherPluginFoo ];
 
 			const plugins = new PluginCollection( editor );
-			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ PluginFoo ] )
 				.then( () => {
@@ -430,17 +417,14 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
-
-					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
-		it( 'should reject when loading more than one plugin with the same name' +
+		it( 'should reject when loading more than one plugin with the same name ' +
 			'(plugin with the same name is built-in the PluginCollection)', () => {
 			availablePlugins = [ PluginFoo ];
 
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ 'Foo', AnotherPluginFoo ] )
 				.then( () => {
@@ -448,7 +432,6 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
-					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
@@ -503,7 +486,6 @@ describe( 'PluginCollection', () => {
 
 		it( 'should reject dependency plugins using soft requirement when plugin is unavailable', () => {
 			PluginFoo.requires = [ 'A', 'Baz' ];
-			const consoleErrorStub = sinon.stub( console, 'error' );
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginFoo ] )
@@ -513,8 +495,6 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-soft-required/, null, { plugin: 'Baz', requiredBy: 'P' } );
-
-					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
