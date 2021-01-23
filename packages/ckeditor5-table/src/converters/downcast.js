@@ -378,6 +378,11 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 
 	conversionApi.mapper.bindElements( tableCell, cellElement );
 
+	// Skip processing empty cell.
+	if ( !asWidget && !firstChild ) {
+		return;
+	}
+	
 	// Additional requirement for data pipeline to have backward compatible data tables.
 	if ( !asWidget && !hasAnyAttribute( firstChild ) && isSingleParagraph ) {
 		const innerParagraph = tableCell.getChild( 0 );
