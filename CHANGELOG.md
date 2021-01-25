@@ -154,7 +154,7 @@ There were also some important bug fixes:
 
 Please note that there are some **major breaking changes** in this release. Be sure to review them before upgrading.
 
-<!-- TODO: Add a link to the blog post. -->
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v24.0.0-with-multiline-toolbar-and-accessible-input-labels/
 
 ### Collaboration features
 
