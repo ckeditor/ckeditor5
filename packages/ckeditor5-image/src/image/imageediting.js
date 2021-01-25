@@ -13,12 +13,14 @@ import ImageInsertCommand from './imageinsertcommand';
 import ImageTypeToggleCommand from './imagetypetogglecommand';
 
 /**
- * The image engine plugin.
+ * The image engine plugin. This module loads common code shared between
+ * {@link module:image/image/imageinlineediting~ImageInlineEditing} and
+ * {@link module:image/image/imageblockediting~ImageBlockEditing} plugins.
  *
- * It registers:
+ * The commands registered by this plugin are:
  *
- * * `'imageInsert'` command.
- * * `'imageTypeToggle'` command.
+ * * {@link module:image/image/imageinsertcommand~ImageInsertCommand 'imageInsert'},
+ * * {@link module:image/image/imagetypetogglecommand~ImageTypeToggleCommand 'imageTypeToggle'}.
  *
  * @extends module:core/plugin~Plugin
  */
