@@ -521,14 +521,14 @@ describe( 'widget utils', () => {
 				inheritAllFrom: '$block'
 			} );
 
-			model.schema.register( 'softBreak', {
-				allowWhere: '$text',
-				isInline: true
+			model.schema.register( 'element', {
+				allowIn: '$root',
+				isSelectable: true
 			} );
 		} );
 
 		it( 'should return false if no element is selected', () => {
-			setData( model, '<paragraph>[]</paragraph><image></image>' );
+			setData( model, '<paragraph>[]</paragraph>' );
 
 			const selection = model.document.selection;
 			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
@@ -537,7 +537,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should return false if the selection is not on the object', () => {
-			setData( model, '<paragraph>Fo[<softBreak></softBreak>]o</paragraph><image></image>' );
+			setData( model, '[<element></element>]' );
 
 			const selection = model.document.selection;
 			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );

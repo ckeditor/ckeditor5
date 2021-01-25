@@ -32,7 +32,7 @@ describe( 'InsertTableCommand', () => {
 		return editor.destroy();
 	} );
 
-	describe.only( 'isEnabled', () => {
+	describe( 'isEnabled', () => {
 		describe( 'when selection is collapsed', () => {
 			it( 'should be true if in a root', () => {
 				setData( model, '[]' );
@@ -64,9 +64,9 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should be true if a non-object element is selected', () => {
-				model.schema.register( 'softBreak', { allowWhere: '$text', isInline: true } );
+				model.schema.register( 'element', { allowIn: '$root', isSelectable: true } );
 
-				setData( model, '<paragraph>Fo[<softBreak></softBreak>]o</paragraph>' );
+				setData( model, '[<element></element>]' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
