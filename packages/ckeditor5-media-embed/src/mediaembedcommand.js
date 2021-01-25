@@ -34,7 +34,7 @@ export default class MediaEmbedCommand extends Command {
 
 		this.value = selectedMedia ? selectedMedia.getAttribute( 'url' ) : null;
 
-		this.isEnabled = isMedia( selection ) ||
+		this.isEnabled = isMediaSelected( selection ) ||
 			isAllowedInParent( selection, model ) &&
 			!checkSelectionOnObject( selection, schema );
 	}
@@ -86,7 +86,7 @@ function isAllowedInParent( selection, model ) {
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @returns {Boolean}
-function isMedia( selection ) {
+function isMediaSelected( selection ) {
 	const element = selection.getSelectedElement();
 	return element && element.name === 'media' || false;
 }
