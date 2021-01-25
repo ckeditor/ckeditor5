@@ -29,6 +29,9 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
+import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting';
+import ImageResizeHandles from '@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -56,7 +59,10 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	Base64UploadAdapter,
+	ImageResizeEditing,
+	ImageResizeHandles
 ];
 
 // Editor configuration.
@@ -78,17 +84,51 @@ ClassicEditor.defaultConfig = {
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
+			"mode",
+			'clipboard',
+			"styles",
+
+
+
+
 			'undo',
-			'redo'
+			'redo',
+
 		]
 	},
 	image: {
 		toolbar: [
-			'imageStyle:full',
-			'imageStyle:side',
-			'|',
-			'imageTextAlternative'
-		]
+			'imageStyle:alignLeft',
+			'imageStyle:alignCenter', 
+			'imageStyle:alignRight',
+			'imageResize',
+			"imageResize:original",
+			'imageResize:50',
+			'imageResize:75'
+
+
+			
+		],
+		resizeOptions: [
+			{
+				name: 'imageResize:original',
+				label: 'Original',
+				value: null
+			},
+			{
+				name: 'imageResize:50',
+				label: '50%',
+				value: '50'
+			},
+			{
+				name: 'imageResize:75',
+				label: '75%',
+				value: '75'
+			}
+		],
+		styles: [
+			'alignLeft', 'alignCenter', 'alignRight'
+		],
 	},
 	table: {
 		contentToolbar: [
