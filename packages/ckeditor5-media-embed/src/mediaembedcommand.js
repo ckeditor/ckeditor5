@@ -88,5 +88,5 @@ function isAllowedInParent( selection, model ) {
 // @returns {Boolean}
 function isMediaSelected( selection ) {
 	const element = selection.getSelectedElement();
-	return element && element.name === 'media' || false;
+	return !!element && element.name === 'media';
 }

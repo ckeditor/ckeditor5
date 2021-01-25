@@ -525,6 +525,10 @@ describe( 'widget utils', () => {
 				allowIn: '$root',
 				isSelectable: true
 			} );
+
+			model.schema.extend( '$text', {
+				allowIn: 'image'
+			} );
 		} );
 
 		it( 'should return false if no element is selected', () => {
@@ -536,7 +540,7 @@ describe( 'widget utils', () => {
 			expect( isSelectionOnObject ).to.be.false;
 		} );
 
-		it( 'should return false if the selection is not on the object', () => {
+		it( 'should return false if the selection is not on an object', () => {
 			setData( model, '[<element></element>]' );
 
 			const selection = model.document.selection;
@@ -545,13 +549,31 @@ describe( 'widget utils', () => {
 			expect( isSelectionOnObject ).to.be.false;
 		} );
 
-		it( 'should return true if the selection is on the object', () => {
+		it( 'should return true if the selection is on an object', () => {
 			setData( model, '<paragraph></paragraph>[<image></image>]' );
 
 			const selection = model.document.selection;
 			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
 
 			expect( isSelectionOnObject ).to.be.true;
+		} );
+
+		it( 'should return false if the selection contains an object', () => {
+			setData( model, '<paragraph>fo[o</paragraph><image></image><paragraph>ba]r</paragraph>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+
+		it( 'should return false if the selection is nested in an object', () => {
+			setData( model, '<image>[foo]</image>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
 		} );
 	} );
 

@@ -305,7 +305,7 @@ export function findOptimalInsertionPosition( selection, model ) {
 }
 
 /**
- * Checks if the selection is on object.
+ * Checks if the selection is on an object.
  *
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * @param {module:engine/model/schema~Schema} schema
@@ -314,7 +314,7 @@ export function findOptimalInsertionPosition( selection, model ) {
 export function checkSelectionOnObject( selection, schema ) {
 	const selectedElement = selection.getSelectedElement();
 
-	return selectedElement && schema.isObject( selectedElement ) || false;
+	return !!selectedElement && schema.isObject( selectedElement );
 }
 
 /**
