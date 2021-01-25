@@ -17,15 +17,17 @@ import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+class HtmlEditor extends ClassicEditorBase {}
+class MarkdownEditor extends ClassicEditorBase {}
 
 // Plugins to include in the build.
-ClassicEditor.builtinPlugins = [
+const htmlPlugins = [
 	Alignment,
 	Autoformat,
 	Autolink,
@@ -43,8 +45,13 @@ ClassicEditor.builtinPlugins = [
 	Underline,
 ];
 
+const markdownPlugins = [
+	Markdown,
+	...htmlPlugins
+];
+
 // Editor configuration.
-ClassicEditor.defaultConfig = {
+const defaultConfig = {
 	toolbar: {
 		items: [
 			'fontFamily',
@@ -74,3 +81,12 @@ ClassicEditor.defaultConfig = {
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
+
+HtmlEditor.plugins = htmlPlugins;
+MarkdownEditor.plugins = markdownPlugins;
+
+HtmlEditor.defaultConfig = defaultConfig;
+MarkdownEditor.defaultConfig = defaultConfig;
+
+
+export default { HtmlEditor, MarkdownEditor };

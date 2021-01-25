@@ -36,6 +36,7 @@
     "@ckeditor/ckeditor5-font": "^24.0.0",
     "@ckeditor/ckeditor5-link": "^24.0.0",
     "@ckeditor/ckeditor5-list": "^24.0.0",
+    "@ckeditor/ckeditor5-markdown-gfm": "^24.0.0",
     "@ckeditor/ckeditor5-remove-format": "^24.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^24.0.0",
     "@ckeditor/ckeditor5-typing": "^24.0.0",
@@ -56,11 +57,13 @@
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "url": "https://github.com/artvelf/ckeditor5.git",
     "directory": "packages/ckeditor5-build-classic"
   },
   "scripts": {
     "build": "webpack --mode production",
     "preversion": "npm run build"
+  },
+  "dependencies": {
   }
 }
