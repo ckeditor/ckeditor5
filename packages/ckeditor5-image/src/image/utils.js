@@ -25,7 +25,7 @@ export function toImageWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
-		const imgElement = getViewImgFromWidget( viewElement );
+		const imgElement = getViewImageFromWidget( viewElement );
 		const altText = imgElement.getAttribute( 'alt' );
 
 		return altText ? `${ altText } ${ label }` : label;
@@ -66,6 +66,16 @@ export function getSelectedImageWidget( selection ) {
  */
 export function isImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'image' );
+}
+
+/**
+ * Checks if the provided model element is an `imageInline`.
+ *
+ * @param {module:engine/model/element~Element} modelElement
+ * @returns {Boolean}
+ */
+export function isImageInline( modelElement ) {
+	return !!modelElement && modelElement.is( 'element', 'imageInline' );
 }
 
 /**
@@ -119,7 +129,11 @@ export function isImageAllowed( model ) {
  * @param {module:engine/view/element~Element} figureView
  * @returns {module:engine/view/element~Element}
  */
-export function getViewImgFromWidget( figureView ) {
+export function getViewImageFromWidget( figureView ) {
+	if ( figureView.is( 'element', 'img' ) ) {
+		return figureView;
+	}
+
 	const figureChildren = [];
 
 	for ( const figureChild of figureView.getChildren() ) {
@@ -131,6 +145,68 @@ export function getViewImgFromWidget( figureView ) {
 	}
 
 	return figureChildren.find( viewChild => viewChild.is( 'element', 'img' ) );
+}
+
+/**
+ * Creates a view element representing the image of provided image type.
+ *
+ * An 'image' type (block image):
+ *
+ * 		<figure class="image"><img></img></figure>
+ *
+ * An 'imageInline' type (inline image):
+ *
+ * 		<span class="image-inline"><img></img></span>
+ *
+ * Note that `alt` and `src` attributes are converted separately, so they are not included.
+ *
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {'image'|'imageInline'} imageType The type of created image.
+ * @returns {module:engine/view/containerelement~ContainerElement}
+ */
+export function createImageViewElement( writer, imageType ) {
+	const emptyElement = writer.createEmptyElement( 'img' );
+
+	const container = imageType === 'image' ?
+		writer.createContainerElement( 'figure', { class: 'image' } ) :
+		writer.createContainerElement( 'span', { class: 'image-inline' } );
+
+	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
+
+	return container;
+}
+
+/**
+ * A function returning a `MatcherPattern` for a particular type of View images.
+ *
+ * @param {'image'|'imageInline'} matchImageType The type of created image.
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @returns {module:engine/view/matcher~MatcherPattern}
+ */
+export function getImageTypeMatcher( matchImageType, editor ) {
+	if ( editor.plugins.has( 'ImageInlineEditing' ) !== editor.plugins.has( 'ImageBlockEditing' ) ) {
+		return {
+			name: 'img',
+			attributes: {
+				src: true
+			}
+		};
+	}
+
+	return element => {
+		// Convert only images with src attribute.
+		if ( !element.is( 'element', 'img' ) || !element.hasAttribute( 'src' ) ) {
+			return null;
+		}
+
+		const imageType = element.findAncestor( 'figure' ) ? 'image' : 'imageInline';
+
+		if ( imageType !== matchImageType ) {
+			return null;
+		}
+
+		return { name: true, attributes: [ 'src' ] };
+	};
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.

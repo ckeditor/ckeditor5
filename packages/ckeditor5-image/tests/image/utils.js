@@ -12,15 +12,17 @@ import {
 	isImageWidget,
 	getSelectedImageWidget,
 	isImage,
+	isImageInline,
 	isImageAllowed,
 	insertImage,
-	getViewImgFromWidget
+	getViewImageFromWidget
 } from '../../src/image/utils';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Image from '../../src/image/imageediting';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'image widget utils', () => {
@@ -108,15 +110,34 @@ describe( 'image widget utils', () => {
 			expect( isImage( image ) ).to.be.true;
 		} );
 
-		it( 'should return true false for different elements', () => {
+		it( 'should return false for different elements', () => {
 			const image = new ModelElement( 'foo' );
 
 			expect( isImage( image ) ).to.be.false;
 		} );
 
-		it( 'should return true false for null and undefined', () => {
+		it( 'should return false for null and undefined', () => {
 			expect( isImage( null ) ).to.be.false;
 			expect( isImage( undefined ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isInlineImage()', () => {
+		it( 'should return true for inline image element', () => {
+			const image = new ModelElement( 'imageInline' );
+
+			expect( isImageInline( image ) ).to.be.true;
+		} );
+
+		it( 'should return false for different elements', () => {
+			const image = new ModelElement( 'foo' );
+
+			expect( isImageInline( image ) ).to.be.false;
+		} );
+
+		it( 'should return false for null and undefined', () => {
+			expect( isImageInline( null ) ).to.be.false;
+			expect( isImageInline( undefined ) ).to.be.false;
 		} );
 	} );
 
@@ -126,7 +147,7 @@ describe( 'image widget utils', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Image, Paragraph ]
+					plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -226,7 +247,7 @@ describe( 'image widget utils', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Image, Paragraph ]
+					plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -270,11 +291,11 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'getViewImgFromWidget()', () => {
+	describe( 'getViewImageFromWidget()', () => {
 		// figure
 		//   img
 		it( 'returns the the img element from widget if the img is the first children', () => {
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -282,7 +303,7 @@ describe( 'image widget utils', () => {
 		//   img
 		it( 'returns the the img element from widget if the img is not the first children', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), writer.createContainerElement( 'div' ) );
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -294,7 +315,7 @@ describe( 'image widget utils', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), divElement );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 0 ) );
 
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -310,7 +331,7 @@ describe( 'image widget utils', () => {
 			writer.insert( writer.createPositionAt( divElement, 0 ), writer.createText( 'Bar' ) );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
 
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 	} );
 } );

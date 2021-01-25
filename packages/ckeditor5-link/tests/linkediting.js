@@ -14,7 +14,7 @@ import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicedi
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
@@ -1118,7 +1118,7 @@ describe( 'LinkEditing', () => {
 
 		beforeEach( async () => {
 			editor = await ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ItalicEditing, ImageEditing ],
+				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ItalicEditing, ImageBlockEditing ],
 				link: {
 					decorators: {
 						isFoo: {

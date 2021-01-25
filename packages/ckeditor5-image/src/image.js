@@ -8,9 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEditing from '../src/image/imageediting';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import ImageTextAlternative from './imagetextalternative';
+
+import ImageBlock from './imageblock';
+import ImageInline from './imageinline';
 
 import '../theme/image.css';
 
@@ -21,10 +21,10 @@ import '../theme/image.css';
  *
  * This is a "glue" plugin which loads the following plugins:
  *
- * * {@link module:image/image/imageediting~ImageEditing},
- * * {@link module:image/imagetextalternative~ImageTextAlternative}.
+ * * {@link module:image/imageblock~ImageBlock},
+ * * {@link module:image/imageinline~ImageInline},
  *
- * Usually, it is used in conjuction with other plugins from this package. See the {@glink api/image package page}
+ * Usually, it is used in conjunction with other plugins from this package. See the {@glink api/image package page}
  * for more information.
  *
  * @extends module:core/plugin~Plugin
@@ -34,7 +34,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, Widget, ImageTextAlternative ];
+		return [ ImageBlock, ImageInline ];
 	}
 
 	/**

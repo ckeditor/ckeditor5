@@ -10,6 +10,8 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -17,7 +19,7 @@ describe( 'LinkImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, LinkImageEditing ]
+				plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -38,8 +40,16 @@ describe( 'LinkImageEditing', () => {
 		expect( editor.plugins.get( LinkImageEditing ) ).to.be.instanceOf( LinkImageEditing );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, LinkImageEditing ] } );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+		await newEditor.destroy();
+	} );
+
+	it( 'should set proper schema rules for image style when ImageInline plugin is enabled', async () => {
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, LinkImageEditing ] } );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
+		await newEditor.destroy();
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -245,7 +255,7 @@ describe( 'LinkImageEditing', () => {
 				it( 'should convert a link and the caption element', () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+							plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing, ImageCaptionEditing ]
 						} )
 						.then( editor => {
 							editor.setData(
@@ -327,7 +337,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert a link and the caption element', () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing, ImageCaptionEditing ]
 					} )
 					.then( editor => {
 						setModelData( editor.model,
@@ -396,7 +406,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false
 						}
@@ -441,7 +451,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: true
 						}
@@ -517,7 +527,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false,
 							decorators: {
@@ -592,7 +602,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {
@@ -628,6 +638,38 @@ describe( 'LinkImageEditing', () => {
 
 			afterEach( () => {
 				return editor.destroy();
+			} );
+
+			it( 'should register manual decorators for block images', async () => {
+				const newEditor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+					link: {
+						decorators: {
+							isGallery: {
+								mode: 'manual'
+							}
+						}
+					}
+				} );
+
+				expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkIsGallery' ) ).to.be.true;
+				await newEditor.destroy();
+			} );
+
+			it( 'should register manual decorators for inline images', async () => {
+				const newEditor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageInlineEditing, LinkImageEditing ],
+					link: {
+						decorators: {
+							isGallery: {
+								mode: 'manual'
+							}
+						}
+					}
+				} );
+
+				expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkIsGallery' ) ).to.be.true;
+				await newEditor.destroy();
 			} );
 
 			it( 'should upcast attributes', async () => {
@@ -751,7 +793,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {

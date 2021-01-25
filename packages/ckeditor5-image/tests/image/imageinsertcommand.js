@@ -4,12 +4,11 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-
-import ImageInsertCommand from '../../src/image/imageinsertcommand';
-import Image from '../../src/image/imageediting';
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import ImageInsertCommand from '../../src/image/imageinsertcommand';
+import ImageBlockEditing from '../../src/image/imageblockediting';
 
 describe( 'ImageInsertCommand', () => {
 	let editor, command, model;
@@ -17,7 +16,7 @@ describe( 'ImageInsertCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Image, Paragraph ]
+				plugins: [ ImageBlockEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

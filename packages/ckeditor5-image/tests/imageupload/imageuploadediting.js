@@ -9,7 +9,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ImageEditing from '../../src/image/imageediting';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -58,7 +59,7 @@ describe( 'ImageUploadEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageBlockEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -83,6 +84,20 @@ describe( 'ImageUploadEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
 	} );
 
+	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, ImageUploadEditing ] } );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		await newEditor.destroy();
+	} );
+
+	it( 'should register proper schema rules for image style when ImageInline plugin is enabled', async () => {
+		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, ImageUploadEditing ] } );
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
+		await newEditor.destroy();
+	} );
+
 	it( 'should register imageUpload command', () => {
 		expect( editor.commands.get( 'imageUpload' ) ).to.be.instanceOf( ImageUploadCommand );
 	} );
@@ -90,7 +105,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should load Clipboard plugin', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+				plugins: [ ImageBlockEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
 			} )
 			.then( editor => {
 				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
@@ -177,7 +192,7 @@ describe( 'ImageUploadEditing', () => {
 		// Clipboard plugin is required for this test.
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageBlockEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( editor => {
 				const fileMock = createNativeFileMock();

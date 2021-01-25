@@ -14,6 +14,8 @@ import Image from '../../src/image';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeCommand from '../../src/imageresize/imageresizecommand';
 import ImageStyle from '../../src/imagestyle';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -139,8 +141,16 @@ describe( 'ImageResizeEditing', () => {
 			editor = await createEditor();
 		} );
 
-		it( 'allows the width attribute', () => {
-			expect( editor.model.schema.checkAttribute( 'image', 'width' ) ).to.be.true;
+		it( 'allows the width attribute when ImageBlock plugin is enabled', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageBlockEditing, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'width' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the width attribute when ImageInline plugin is enabled', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageInlineEditing, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'width' ) ).to.be.true;
+			await newEditor.destroy();
 		} );
 
 		it( 'defines width as a formatting attribute', () => {

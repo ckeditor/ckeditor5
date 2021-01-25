@@ -8,7 +8,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEditing from '../../src/image/imageediting';
+import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -51,7 +51,7 @@ describe( 'ImageUploadProgress', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageBlockEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

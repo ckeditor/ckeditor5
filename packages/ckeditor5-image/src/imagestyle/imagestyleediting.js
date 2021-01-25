@@ -41,9 +41,15 @@ export default class ImageStyleEditing extends Plugin {
 		// Get configuration.
 		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ) );
 
-		// Allow imageStyle attribute in image.
+		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
-		schema.extend( 'image', { allowAttributes: 'imageStyle' } );
+		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
+			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
+		}
+
+		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
+			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
+		}
 
 		// Converters for imageStyle attribute from model to view.
 		const modelToViewConverter = modelToViewStyleAttribute( styles );

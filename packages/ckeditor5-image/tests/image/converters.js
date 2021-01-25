@@ -7,8 +7,7 @@ import {
 	viewFigureToModel,
 	modelToViewAttributeConverter
 } from '../../src/image/converters';
-import { toImageWidget } from '../../src/image/utils';
-import { createImageViewElement } from '../../src/image/imageediting';
+import { toImageWidget, createImageViewElement } from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -37,17 +36,34 @@ describe( 'Image converters', () => {
 					isBlock: true
 				} );
 
-				const editingElementCreator = ( modelElement, { writer } ) =>
-					toImageWidget( createImageViewElement( writer ), writer, '' );
+				schema.register( 'imageInline', {
+					allowWhere: '$inline',
+					allowAttributes: [ 'alt', 'src' ],
+					isObject: true,
+					isInline: true
+				} );
+
+				const imageEditingElementCreator = ( modelElement, { writer } ) =>
+					toImageWidget( createImageViewElement( writer, 'image' ), writer, '' );
+
+				const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
+					toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
 
 				editor.conversion.for( 'editingDowncast' ).elementToElement( {
 					model: 'image',
-					view: editingElementCreator
+					view: imageEditingElementCreator
+				} );
+
+				editor.conversion.for( 'editingDowncast' ).elementToElement( {
+					model: 'imageInline',
+					view: imageInlineEditingElementCreator
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.add( modelToViewAttributeConverter( 'src' ) )
-					.add( modelToViewAttributeConverter( 'alt' ) );
+					.add( modelToViewAttributeConverter( 'image', 'src' ) )
+					.add( modelToViewAttributeConverter( 'imageInline', 'src' ) )
+					.add( modelToViewAttributeConverter( 'image', 'alt' ) )
+					.add( modelToViewAttributeConverter( 'imageInline', 'alt' ) );
 			} );
 	} );
 

@@ -40,8 +40,15 @@ export default class LinkImageEditing extends Plugin {
 
 	init() {
 		const editor = this.editor;
+		const schema = editor.model.schema;
 
-		editor.model.schema.extend( 'image', { allowAttributes: [ 'linkHref' ] } );
+		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
+			schema.extend( 'image', { allowAttributes: [ 'linkHref' ] } );
+		}
+
+		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
+			schema.extend( 'imageInline', { allowAttributes: [ 'linkHref' ] } );
+		}
 
 		editor.conversion.for( 'upcast' ).add( upcastLink() );
 		editor.conversion.for( 'editingDowncast' ).add( downcastImageLink( { attachIconIndicator: true } ) );
@@ -80,7 +87,14 @@ export default class LinkImageEditing extends Plugin {
 		const manualDecorators = command.manualDecorators;
 
 		for ( const decorator of command.manualDecorators ) {
-			editor.model.schema.extend( 'image', { allowAttributes: decorator.id } );
+			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
+				editor.model.schema.extend( 'image', { allowAttributes: decorator.id } );
+			}
+
+			if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
+				editor.model.schema.extend( 'imageInline', { allowAttributes: decorator.id } );
+			}
+
 			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( manualDecorators, decorator ) );
 			editor.conversion.for( 'upcast' ).add( upcastImageLinkManualDecorator( manualDecorators, decorator ) );
 		}

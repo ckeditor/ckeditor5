@@ -6,7 +6,7 @@
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 
 import TableEditing from '../src/tableediting';
 import { modelTable } from './_utils/utils';
@@ -30,7 +30,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph, ImageEditing, MediaEmbedEditing ]
+				plugins: [ TableEditing, Paragraph, ImageBlockEditing, MediaEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

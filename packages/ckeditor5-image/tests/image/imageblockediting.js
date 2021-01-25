@@ -7,21 +7,17 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import ImageEditing from '../../src/image/imageediting';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInsertCommand from '../../src/image/imageinsertcommand';
-import ImageTypeToggleCommand from '../../src/image/imagetypetogglecommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { isImageWidget } from '../../src/image/utils';
 
-describe( 'ImageEditing', () => {
+describe( 'ImageBlockEditing', () => {
 	let editor, model, doc, view, viewDocument;
 
 	testUtils.createSinonSandbox();
@@ -29,7 +25,7 @@ describe( 'ImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
+				plugins: [ ImageBlockEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -41,11 +37,11 @@ describe( 'ImageEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ImageEditing.pluginName ).to.equal( 'ImageEditing' );
+		expect( ImageBlockEditing.pluginName ).to.equal( 'ImageBlockEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageEditing ) ).to.be.instanceOf( ImageEditing );
+		expect( editor.plugins.get( ImageBlockEditing ) ).to.be.instanceOf( ImageBlockEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -60,27 +56,14 @@ describe( 'ImageEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'image' ], 'image' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'image' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
-
-		expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
-		expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
-		expect( model.schema.isObject( 'imageInline' ) ).to.be.true;
-
-		expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
-
-		expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'image' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
 	} );
 
 	it( 'should register ImageLoadObserver', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
-	it( 'should register imageInsert, imageTypeToggle', () => {
+	it( 'should register imageInsert command', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
-		expect( editor.commands.get( 'imageTypeToggle' ) ).to.be.instanceOf( ImageTypeToggleCommand );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.
@@ -107,49 +90,18 @@ describe( 'ImageEditing', () => {
 		await element.remove();
 	} );
 
-	it( 'should update the ui after inline image has been loaded in the DOM', async () => {
-		const element = document.createElement( 'div' );
-		document.body.appendChild( element );
-
-		const editor = await ClassicTestEditor.create( element, {
-			plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
-		} );
-
-		editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );
-
-		const spy = sinon.spy();
-
-		editor.ui.on( 'update', spy );
-
-		const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
-		htmlImageElement.dispatchEvent( new Event( 'load' ) );
-
-		sinon.assert.calledOnce( spy );
-
-		await editor.destroy();
-		await element.remove();
-	} );
-
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img alt="alt text" src="/assets/sample.png"></figure>' );
-
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
-
-				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
 				setModelData( model, '<image src="/assets/sample.png"></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
-
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
-
-				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
@@ -161,16 +113,6 @@ describe( 'ImageEditing', () => {
 					'<figure class="image">' +
 						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
-				);
-
-				setModelData( model,
-					'<paragraph>' +
-						'<imageInline src="/assets/sample.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
-					'</imageInline></paragraph>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<p><img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img></p>'
 				);
 			} );
 
@@ -194,26 +136,6 @@ describe( 'ImageEditing', () => {
 						'</img>' +
 					'</figure>'
 				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<p>' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</p>'
-				);
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
@@ -236,22 +158,6 @@ describe( 'ImageEditing', () => {
 						'<img alt="alt text" src="/assets/sample.png">' +
 					'</figure>'
 				);
-
-				editor.data.downcastDispatcher.on( 'attribute:srcset:imageInline', ( evt, data, conversionApi ) => {
-					const modelImage = data.item;
-
-					conversionApi.consumable.consume( modelImage, evt.name );
-				}, { priority: 'high' } );
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-
-				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
 			} );
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
@@ -272,20 +178,6 @@ describe( 'ImageEditing', () => {
 						'<img alt="alt text" src="/assets/sample.png">' +
 					'</figure>'
 				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
-					'</imageInline></paragraph>' );
-
-				const imageInline = doc.getRoot().getChild( 0 );
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', imageInline );
-				} );
-
-				expect( editor.getData() ).to.equal( '<p><img alt="alt text" src="/assets/sample.png"></p>' );
 			} );
 		} );
 
@@ -297,32 +189,25 @@ describe( 'ImageEditing', () => {
 					.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
 			} );
 
-			it( 'should convert image inline', () => {
-				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
-			} );
-
-			it( 'should not convert if there is no image class in figure', () => {
+			it( 'should not convert if there is no image class', () => {
 				editor.setData( '<figure class="quote">My quote</figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph>My quote</paragraph>' );
+					.to.equal( '' );
 			} );
 
-			it( 'should not convert if there is no img inside figure #1', () => {
+			it( 'should not convert if there is no img inside #1', () => {
 				editor.setData( '<figure class="image"></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
+					.to.equal( '' );
 			} );
 
-			it( 'should not convert if there is no img inside figure #2', () => {
+			it( 'should not convert if there is no img inside #2', () => {
 				editor.setData( '<figure class="image">test</figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph>test</paragraph>' );
+					.to.equal( '' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
@@ -330,23 +215,13 @@ describe( 'ImageEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="/assets/sample.png"></image>' );
-
-				editor.setData( '<p><img src="/assets/sample.png" /></p>' );
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should not convert without src attribute', () => {
 				editor.setData( '<figure class="image"><img alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
-
-				editor.setData( '<p><img alt="alt text" /></p>' );
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
+					.to.equal( '' );
 			} );
 
 			it( 'should not convert in wrong context', () => {
@@ -363,19 +238,6 @@ describe( 'ImageEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
-
-				model.schema.addChildCheck( ( ctx, childDef ) => {
-					if ( childDef.name == 'imageInline' ) {
-						return false;
-					}
-				} );
-
-				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
-
-				editor.setData( '<div><img src="/assets/sample.png" alt="alt text" /></div>' );
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<div></div>' );
 			} );
 
 			it( 'should not convert if img is already consumed', () => {
@@ -387,17 +249,7 @@ describe( 'ImageEditing', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
-
-				editor.data.upcastDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
-					const img = data.viewItem.getChild( 0 );
-					conversionApi.consumable.consume( img, { name: true } );
-				}, { priority: 'high' } );
-
-				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
+					.to.equal( '' );
 			} );
 
 			it( 'should not convert if figure is already consumed', () => {
@@ -408,7 +260,7 @@ describe( 'ImageEditing', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
+					.to.equal( '' );
 			} );
 
 			it( 'should dispatch conversion for nested elements', () => {
@@ -417,18 +269,14 @@ describe( 'ImageEditing', () => {
 
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /><figcaption></figcaption></figure>' );
 
-				editor.data.upcastDispatcher.on( 'element:img', conversionSpy );
-
-				editor.setData( '<span class="image"><img src="/assets/sample.png" alt="alt text" /></span>' );
-
-				sinon.assert.calledTwice( conversionSpy );
+				sinon.assert.calledOnce( conversionSpy );
 			} );
 
 			it( 'should convert bare img element', () => {
 				editor.setData( '<img src="/assets/sample.png" alt="alt text" />' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
+					.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
 			} );
 
 			it( 'should not convert alt attribute on non-img element', () => {
@@ -455,18 +303,6 @@ describe( 'ImageEditing', () => {
 					.to.equal(
 						'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>'
 					);
-
-				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" /></p>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal(
-						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
-							'</imageInline>' +
-						'</paragraph>'
-					);
 			} );
 
 			it( 'should convert image with srcset and width attributes', () => {
@@ -483,18 +319,6 @@ describe( 'ImageEditing', () => {
 						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
 					'</image>'
 				);
-
-				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" /></p>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><imageInline ' +
-						'alt="alt text" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</imageInline></paragraph>'
-				);
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -508,31 +332,6 @@ describe( 'ImageEditing', () => {
 					.to.equal(
 						'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>'
 					);
-
-				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" sizes="50vw" /></p>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal(
-						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
-							'</imageInline>' +
-						'</paragraph>'
-					);
-			} );
-
-			it( 'should not convert a link on an inline image', () => {
-				editor.setData(
-					'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal(
-						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
-						'</paragraph>'
-					);
 			} );
 
 			describe( 'should autohoist images', () => {
@@ -543,28 +342,17 @@ describe( 'ImageEditing', () => {
 				} );
 
 				it( 'image between non-hoisted elements', () => {
-					editor.setData( '<div>foo<figure class="image"><img src="foo.jpg" alt="foo" /></figure>bar</div>' );
+					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />bar</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>bar</div>'
 					);
-
-					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />bar</div>' );
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>foo<imageInline alt="foo" src="foo.jpg"></imageInline>bar</div>'
-					);
 				} );
 
 				it( 'multiple images', () => {
-					editor.setData(
-						'<div>foo' +
-							'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>ba' +
-							'<figure class="image"><img src="foo.jpg" alt="foo" /></figure>r' +
-						'</div>'
-					);
+					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />ba<img src="foo.jpg" alt="foo" />r</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
@@ -573,59 +361,31 @@ describe( 'ImageEditing', () => {
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>r</div>'
 					);
-
-					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />ba<img src="foo.jpg" alt="foo" />r</div>' );
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>foo' +
-						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
-						'ba' +
-						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
-						'r</div>'
-					);
 				} );
 
 				it( 'images on borders of parent', () => {
-					editor.setData( '<div><figure class="image"><img src="foo.jpg" alt="foo" /></figure>foobar' +
-						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>' );
+					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>foobar</div>' +
 						'<image alt="foo" src="foo.jpg"></image>'
 					);
-
-					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>' +
-						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
-						'foobar' +
-						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
-						'</div>'
-					);
 				} );
 
 				it( 'images are only content of parent', () => {
-					editor.setData( '<div><figure class="image"><img src="foo.jpg" alt="foo" /></figure>' +
-						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>' );
+					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<image alt="foo" src="foo.jpg"></image>'
-					);
-
-					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div><imageInline alt="foo" src="foo.jpg"></imageInline><imageInline alt="foo" src="foo.jpg"></imageInline></div>'
 					);
 				} );
 
 				it( 'deep autohoisting #1', () => {
 					model.schema.extend( 'div', { allowIn: 'div' } );
 
-					editor.setData( '<div>foo<div>xx<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>bar</div>' );
+					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>' +
@@ -637,26 +397,10 @@ describe( 'ImageEditing', () => {
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>bar</div>'
 					);
-
-					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>foo<div>xx<imageInline alt="foo" src="foo.jpg"></imageInline></div>bar</div>'
-					);
 				} );
 
 				it( 'deep autohoisting #2', () => {
 					model.schema.extend( 'div', { allowIn: 'div' } );
-
-					editor.setData(
-						'<div>x</div>' +
-						'<div><div><div><figure class="image"><img src="foo.jpg" alt="foo" /></figure></div></div></div>' +
-						'<div>y</div>'
-					);
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
-					);
 
 					editor.setData(
 						'<div>x</div>' +
@@ -665,9 +409,7 @@ describe( 'ImageEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>x</div><div><div><div>' +
-							'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
-						'</div></div></div><div>y</div>'
+						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
 					);
 				} );
 
@@ -680,17 +422,10 @@ describe( 'ImageEditing', () => {
 
 					editor.conversion.elementToElement( { model: 'limit', view: 'limit' } );
 
-					editor.setData( '<limit><div>foo<figure class="image"><img src="foo.jpg" alt="foo" /></figure>bar</div></limit>' );
-
-					// <limit> element does not have converters so it is not converted.
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
-
 					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
 
 					// <limit> element does not have converters so it is not converted.
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<limit><div>foo<imageInline alt="foo" src="foo.jpg"></imageInline>bar</div></limit>'
-					);
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
 				} );
 
 				it( 'should not convert and autohoist image element without src attribute (which is not allowed by schema)', () => {
@@ -710,14 +445,6 @@ describe( 'ImageEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="/assets/sample.png"></img></figure>'
 				);
-
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'</span></p>'
-				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
@@ -726,17 +453,11 @@ describe( 'ImageEditing', () => {
 
 				expect( figure.name ).to.equal( 'figure' );
 				expect( isImageWidget( figure ) ).to.be.true;
-
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
-				const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-
-				expect( element.name ).to.equal( 'span' );
-				expect( isImageWidget( element ) ).to.be.true;
 			} );
 
 			it( 'should convert attribute change', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
-				let image = doc.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.setAttribute( 'alt', 'new text', image );
@@ -745,24 +466,11 @@ describe( 'ImageEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="new text" src="/assets/sample.png"></img></figure>'
 				);
-
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
-				image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'alt', 'new text', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="new text" src="/assets/sample.png"></img>' +
-					'</span></p>'
-				);
 			} );
 
 			it( 'should convert attribute removal (but keeps an empty "alt" to the data)', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
-				let image = doc.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'alt', image );
@@ -771,22 +479,11 @@ describe( 'ImageEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="" src="/assets/sample.png"></img></figure>'
 				);
-
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
-				image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'alt', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false"><img alt="" src="/assets/sample.png"></img></span></p>'
-				);
 			} );
 
 			it( 'should not convert change if is already consumed', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
-				let image = doc.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'attribute:alt' );
@@ -798,23 +495,6 @@ describe( 'ImageEditing', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="/assets/sample.png"></img></figure>'
-				);
-
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
-				image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				editor.editing.downcastDispatcher.on( 'attribute:alt:imageInline', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'attribute:alt' );
-				}, { priority: 'high' } );
-
-				model.change( writer => {
-					writer.removeAttribute( 'alt', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'</span></p>'
 				);
 			} );
 
@@ -831,19 +511,6 @@ describe( 'ImageEditing', () => {
 						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
 				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
-					'</imageInline></paragraph>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
-					'</span></p>'
-				);
 			} );
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
@@ -854,7 +521,7 @@ describe( 'ImageEditing', () => {
 						'srcset=\'{ "foo":"bar" }\'>' +
 					'</image>' );
 
-				let image = doc.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 				model.change( writer => {
 					writer.removeAttribute( 'srcset', image );
 				} );
@@ -863,24 +530,6 @@ describe( 'ImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
-				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
-					'</imageInline></paragraph>' );
-
-				image = doc.getRoot().getChild( 0 ).getChild( 0 );
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'</span></p>'
 				);
 			} );
 
@@ -903,30 +552,11 @@ describe( 'ImageEditing', () => {
 						'</img>' +
 					'</figure>'
 				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</imageInline></paragraph>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img ' +
-						'alt="alt text" ' +
-						'sizes="100vw" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="small.png 148w, big.png 1024w" ' +
-						'width="1024">' +
-					'</img>' +
-					'</span></p>'
-				);
 			} );
 
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model, '<image src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>' );
-				let image = doc.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'srcset', image );
@@ -937,23 +567,6 @@ describe( 'ImageEditing', () => {
 						'<img src="/assets/sample.png"></img>' +
 					'</figure>'
 				);
-
-				setModelData( model,
-					'<paragraph>' +
-						'<imageInline src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></imageInline>' +
-					'</paragraph>'
-				);
-				image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
-					'</span></p>'
-				);
 			} );
 
 			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
@@ -963,7 +576,7 @@ describe( 'ImageEditing', () => {
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</image>'
 				);
-				let image = doc.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'srcset', image );
@@ -973,24 +586,6 @@ describe( 'ImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src="/assets/sample.png"></img>' +
 					'</figure>'
-				);
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-				image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
-					'</span></p>'
 				);
 			} );
 
@@ -1013,26 +608,6 @@ describe( 'ImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
-				);
-
-				editor.editing.downcastDispatcher.on( 'attribute:srcset:imageInline', ( evt, data, conversionApi ) => {
-					const modelImage = data.item;
-
-					conversionApi.consumable.consume( modelImage, evt.name );
-				}, { priority: 'high' } );
-
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'</span></p>'
 				);
 			} );
 		} );
