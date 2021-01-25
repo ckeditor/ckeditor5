@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -56,8 +56,8 @@ export default class ImageResizeHandles extends Plugin {
 		editingView.addObserver( ImageLoadObserver );
 
 		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
-			// The resizer must be attached only to images loaded by the `ImageInsert` or `ImageUpload` plugins.
-			if ( !domEvent.target.matches( 'figure.image.ck-widget > img' ) ) {
+			// The resizer must be attached only to images loaded by the `ImageInsert`, `ImageUpload` or `LinkImage` plugins.
+			if ( !domEvent.target.matches( 'figure.image.ck-widget > img, figure.image.ck-widget > a > img' ) ) {
 				return;
 			}
 
@@ -66,8 +66,8 @@ export default class ImageResizeHandles extends Plugin {
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 
 			if ( resizer ) {
-				// There are rare cases when image will be triggered multiple times for the same widget, e.g. when
-				// image's src was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
+				// There are rare cases when the image will be triggered multiple times for the same widget, e.g. when
+				// the image's source was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
 				resizer.redraw();
 
 				return;

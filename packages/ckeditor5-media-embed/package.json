@@ -13,7 +13,6 @@
     "@ckeditor/ckeditor5-clipboard": "^24.0.0",
     "@ckeditor/ckeditor5-core": "^24.0.0",
     "@ckeditor/ckeditor5-engine": "^24.0.0",
-    "@ckeditor/ckeditor5-image": "^24.0.0",
     "@ckeditor/ckeditor5-ui": "^24.0.0",
     "@ckeditor/ckeditor5-undo": "^24.0.0",
     "@ckeditor/ckeditor5-utils": "^24.0.0",
@@ -23,8 +22,8 @@
     "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "^24.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
+    "@ckeditor/ckeditor5-image": "^24.0.0",
     "@ckeditor/ckeditor5-link": "^24.0.0",
-    "@ckeditor/ckeditor5-list": "^24.0.0",
     "@ckeditor/ckeditor5-paragraph": "^24.0.0",
     "@ckeditor/ckeditor5-typing": "^24.0.0",
     "@ckeditor/ckeditor5-table": "^24.0.0"

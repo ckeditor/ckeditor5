@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -121,8 +121,8 @@ export default class DomConverter {
 		this._fakeSelectionMapping = new WeakMap();
 
 		/**
-		 * Matcher for view elements whose content should be treated as a raw data
-		 * and not processed during conversion from DOM nodes to view elements.
+		 * Matcher for view elements whose content should be treated as raw data
+		 * and not processed during the conversion from DOM nodes to view elements.
 		 *
 		 * @private
 		 * @type {module:engine/view/matcher~Matcher}
@@ -130,7 +130,7 @@ export default class DomConverter {
 		this._rawContentElementMatcher = new Matcher();
 
 		/**
-		 * Set of encountered raw content DOM nodes. It is used for preventing left trimming of the following text node.
+		 * A set of encountered raw content DOM nodes. It is used for preventing left trimming of the following text node.
 		 *
 		 * @private
 		 * @type {WeakSet.<Node>}
@@ -139,9 +139,9 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Binds given DOM element that represents fake selection to a **position** of a
+	 * Binds a given DOM element that represents fake selection to a **position** of a
 	 * {@link module:engine/view/documentselection~DocumentSelection document selection}.
-	 * Document selection copy is stored and can be retrieved by
+	 * Document selection copy is stored and can be retrieved by the
 	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
 	 *
 	 * @param {HTMLElement} domElement
@@ -152,8 +152,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns {@link module:engine/view/selection~Selection view selection} instance corresponding to
-	 * given DOM element that represents fake selection. Returns `undefined` if binding to given DOM element does not exists.
+	 * Returns a {@link module:engine/view/selection~Selection view selection} instance corresponding to a given
+	 * DOM element that represents fake selection. Returns `undefined` if binding to the given DOM element does not exist.
 	 *
 	 * @param {HTMLElement} domElement
 	 * @returns {module:engine/view/selection~Selection|undefined}
@@ -163,12 +163,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Binds DOM and View elements, so it will be possible to get corresponding elements using
+	 * Binds DOM and view elements, so it will be possible to get corresponding elements using
 	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
 	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
 	 *
-	 * @param {HTMLElement} domElement DOM element to bind.
-	 * @param {module:engine/view/element~Element} viewElement View element to bind.
+	 * @param {HTMLElement} domElement The DOM element to bind.
+	 * @param {module:engine/view/element~Element} viewElement The view element to bind.
 	 */
 	bindElements( domElement, viewElement ) {
 		this._domToViewMapping.set( domElement, viewElement );
@@ -176,10 +176,10 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Unbinds given `domElement` from the view element it was bound to. Unbinding is deep, meaning that all children of
-	 * `domElement` will be unbound too.
+	 * Unbinds a given DOM element from the view element it was bound to. Unbinding is deep, meaning that all children of
+	 * the DOM element will be unbound too.
 	 *
-	 * @param {HTMLElement} domElement DOM element to unbind.
+	 * @param {HTMLElement} domElement The DOM element to unbind.
 	 */
 	unbindDomElement( domElement ) {
 		const viewElement = this._domToViewMapping.get( domElement );
@@ -195,12 +195,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
+	 * Binds DOM and view document fragments, so it will be possible to get corresponding document fragments using
 	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
 	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
 	 *
-	 * @param {DocumentFragment} domFragment DOM document fragment to bind.
-	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment View document fragment to bind.
+	 * @param {DocumentFragment} domFragment The DOM document fragment to bind.
+	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment The view document fragment to bind.
 	 */
 	bindDocumentFragments( domFragment, viewFragment ) {
 		this._domToViewMapping.set( domFragment, viewFragment );
@@ -208,8 +208,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts view to DOM. For all text nodes, not bound elements and document fragments new items will
-	 * be created. For bound elements and document fragments function will return corresponding items.
+	 * Converts the view to the DOM. For all text nodes, not bound elements and document fragments new items will
+	 * be created. For bound elements and document fragments the method will return corresponding items.
 	 *
 	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode
 	 * View node or document fragment to transform.
@@ -940,17 +940,17 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
-	 * and not processed during conversion from DOM nodes to view elements.
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
+	 * and not processed during the conversion from DOM nodes to view elements.
 	 *
 	 * This is affecting how {@link module:engine/view/domconverter~DomConverter#domToView} and
-	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} processes DOM nodes.
+	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} process DOM nodes.
 	 *
-	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
-	 * `"$rawContent"`.
+	 * The raw data can be later accessed by a
+	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching view element which content should
-	 * be treated as a raw data.
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching a view element whose content should
+	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
 		this._rawContentElementMatcher.add( pattern );

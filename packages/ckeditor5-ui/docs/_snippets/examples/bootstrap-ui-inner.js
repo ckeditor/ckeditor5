@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,6 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 // Interfaces to extend basic Editor API.
@@ -50,9 +49,6 @@ export default class BootstrapEditor extends Editor {
 
 		// Remember the element the editor is created with.
 		this.sourceElement = element;
-
-		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();

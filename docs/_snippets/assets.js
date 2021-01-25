@@ -1,9 +1,15 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console, window, document */
+
+import tippy from 'tippy.js';
+
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/themes/light-border.css';
+import './tour-balloon.css';
 
 /**
  * Attaches a tour balloon with a description to any DOM node element.
@@ -51,7 +57,6 @@ window.attachTourBalloon = function( { target, text, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	// eslint-disable-next-line no-undef
 	const tooltip = tippy( target, {
 		content,
 		theme: 'light-border',
@@ -68,7 +73,6 @@ window.attachTourBalloon = function( { target, text, tippyOptions } ) {
 		...tippyOptions
 	} );
 
-	// eslint-disable-next-line no-undef
 	const closeButton = tooltip.popper.querySelector( '.tippy-content__close-button' );
 
 	closeButton.addEventListener( 'click', () => {

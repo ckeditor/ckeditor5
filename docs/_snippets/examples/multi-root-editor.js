@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,6 @@
 // Multiroot editor dependencies.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -65,8 +64,6 @@ class MultirootEditor extends Editor {
 	 */
 	constructor( sourceElements, config ) {
 		super( config );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
