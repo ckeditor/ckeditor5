@@ -41,3 +41,7 @@ elements or attributes may be not rendered in the editing view. However, they st
 You can disable the preview mode and have the `textarea` element that will be blocked or enabled (depends on feature state).
 
 For toggling the state (edit source / see preview), click the icon in the right-top corner.
+
+---
+
+If the HTML snippet is selected none of the commands for inserting an object should be enabled (media, html-embed, table).

@@ -9,6 +9,8 @@ import sanitizeHtml from 'sanitize-html';
 import { clone } from 'lodash-es';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import HtmlEmbed from '../../src/htmlembed';
 
@@ -73,11 +75,11 @@ async function reloadEditor( config = {} ) {
 
 	config = {
 		...config,
-		plugins: [ ArticlePluginSet, HtmlEmbed, Code ],
+		plugins: [ ArticlePluginSet, HtmlEmbed, Code, MediaEmbed, Table ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
-			'undo', 'redo', '|', 'htmlEmbed'
+			'undo', 'redo', '|', 'htmlEmbed', 'mediaEmbed'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
