@@ -11,6 +11,8 @@ import { getFillerOffset } from '@ckeditor/ckeditor5-engine/src/view/containerel
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
+import { isEqual } from 'lodash-es';
+
 /**
  * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
  *
@@ -177,11 +179,16 @@ export function mergeViewLists( viewWriter, firstList, secondList ) {
 	}
 
 	// Both parameters are list elements, so compare types now.
-	if ( firstList.name != secondList.name || firstList.getAttribute( 'class' ) !== secondList.getAttribute( 'class' ) ) {
+	if ( !listsAreSame( firstList, secondList ) ) {
 		return null;
 	}
 
 	return viewWriter.mergeContainers( viewWriter.createPositionAfter( firstList ) );
+
+	function listsAreSame( listA, listB ) {
+		return listA.name == listB.name &&
+			isEqual( Object.fromEntries( listA.getAttributes() ), Object.fromEntries( listB.getAttributes() ) );
+	}
 }
 
 /**
