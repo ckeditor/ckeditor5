@@ -17,7 +17,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
-import { getViewImgFromWidget } from '../image/utils';
+import { getViewImageFromWidget } from '../image/utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'imageUpload'` command.
@@ -226,7 +226,7 @@ export default class ImageUploadEditing extends Plugin {
 				/* istanbul ignore next */
 				if ( env.isSafari ) {
 					const viewFigure = editor.editing.mapper.toViewElement( imageElement );
-					const viewImg = getViewImgFromWidget( viewFigure );
+					const viewImg = getViewImageFromWidget( viewFigure );
 
 					editor.editing.view.once( 'render', () => {
 						// Early returns just to be safe. There might be some code ran

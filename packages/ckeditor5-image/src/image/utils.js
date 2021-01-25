@@ -25,7 +25,7 @@ export function toImageWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
-		const imgElement = getViewImgFromWidget( viewElement );
+		const imgElement = getViewImageFromWidget( viewElement );
 		const altText = imgElement.getAttribute( 'alt' );
 
 		return altText ? `${ altText } ${ label }` : label;
@@ -129,7 +129,7 @@ export function isImageAllowed( model ) {
  * @param {module:engine/view/element~Element} figureView
  * @returns {module:engine/view/element~Element}
  */
-export function getViewImgFromWidget( figureView ) {
+export function getViewImageFromWidget( figureView ) {
 	if ( figureView.is( 'element', 'img' ) ) {
 		return figureView;
 	}

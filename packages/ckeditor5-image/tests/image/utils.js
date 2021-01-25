@@ -15,7 +15,7 @@ import {
 	isImageInline,
 	isImageAllowed,
 	insertImage,
-	getViewImgFromWidget
+	getViewImageFromWidget
 } from '../../src/image/utils';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -291,11 +291,11 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'getViewImgFromWidget()', () => {
+	describe( 'getViewImageFromWidget()', () => {
 		// figure
 		//   img
 		it( 'returns the the img element from widget if the img is the first children', () => {
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -303,7 +303,7 @@ describe( 'image widget utils', () => {
 		//   img
 		it( 'returns the the img element from widget if the img is not the first children', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), writer.createContainerElement( 'div' ) );
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -315,7 +315,7 @@ describe( 'image widget utils', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), divElement );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 0 ) );
 
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -331,7 +331,7 @@ describe( 'image widget utils', () => {
 			writer.insert( writer.createPositionAt( divElement, 0 ), writer.createText( 'Bar' ) );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
 
-			expect( getViewImgFromWidget( element ) ).to.equal( image );
+			expect( getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 	} );
 } );
