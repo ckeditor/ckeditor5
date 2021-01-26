@@ -38,3 +38,5 @@ export { default as toMap } from './tomap';
 export { default as priorities } from './priorities';
 
 export { default as uid } from './uid';
+
+export { default as version } from './version';
