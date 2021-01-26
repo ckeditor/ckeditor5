@@ -125,7 +125,7 @@ export default class FontSizeEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_SIZE,
 				value: viewElement => viewElement.getStyle( 'font-size' )
