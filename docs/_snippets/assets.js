@@ -85,7 +85,7 @@ window.attachTourBalloon = function( { target, text, tippyOptions } ) {
 		tooltip.hide();
 	} );
 
-	target.addEventListener( 'click', () => {
+	target.offsetParent.addEventListener( 'click', () => {
 		tooltip.hide();
 	} );
 };
