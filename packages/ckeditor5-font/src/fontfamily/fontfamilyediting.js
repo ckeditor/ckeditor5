@@ -97,7 +97,7 @@ export default class FontFamilyEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_FAMILY,
 				value: viewElement => viewElement.getStyle( 'font-family' )
