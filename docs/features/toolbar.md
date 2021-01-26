@@ -134,7 +134,8 @@ toolbar: {
 		'alignment', '|',
 		'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
 		'link', '|',
-		'bulletedList', 'numberedList', 'todoList', '-',
+		'bulletedList', 'numberedList', 'todoList',
+		'-', // break point
 		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
 		'code', 'codeBlock', '|',
 		'insertTable', '|',

@@ -85,7 +85,7 @@
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^24.0.0",
     "@ckeditor/ckeditor5-export-pdf": ">=1.0.0",
     "@ckeditor/ckeditor5-export-word": ">=1.0.0",
-    "@ckeditor/ckeditor5-inspector": "^2.2.1",
+    "@ckeditor/ckeditor5-inspector": "^2.2.2",
     "@ckeditor/ckeditor5-pagination": ">=1.0.0",
     "@ckeditor/ckeditor5-react": "^3.0.0",
     "@ckeditor/ckeditor5-real-time-collaboration": ">=24.0.0",
@@ -158,7 +158,7 @@
     "release:publish": "node ./scripts/release/publish.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
-    "check-dependencies": "node node_modules/@ckeditor/ckeditor5-dev-tests/bin/check-dependencies.js"
+    "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
   },
   "lint-staged": {
     "**/*.js": [
@@ -168,7 +168,7 @@
       "stylelint --quiet --allow-empty-input"
     ],
     "**/(*.{js,css}|package.json)": [
-      "yarn run check-dependencies"
+      "ckeditor5-dev-tests-check-dependencies --quiet"
     ]
   },
   "eslintIgnore": [
