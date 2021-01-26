@@ -52,6 +52,12 @@ window.attachTourBalloon = function( { target, text, tippyOptions } ) {
 		return;
 	}
 
+	if ( !target.offsetParent ) {
+		console.warn( '[attachTourBalloon] The target DOM node is invisible and the balloon could not be attached.', { target, text } );
+
+		return;
+	}
+
 	const content = `
 		<div class="tippy-content__message">${ text }</div>
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
