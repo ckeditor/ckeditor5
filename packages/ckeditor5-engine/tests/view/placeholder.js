@@ -399,6 +399,15 @@ describe( 'placeholder', () => {
 			expect( needsPlaceholder( element ) ).to.be.true;
 		} );
 
+		it( 'should return false if element has content other than UI elements', () => {
+			setData( view, '<p>{moo}<ui:span></ui:span></p>' );
+			viewDocument.isFocused = true;
+
+			const element = viewRoot.getChild( 0 );
+
+			expect( needsPlaceholder( element ) ).to.be.false;
+		} );
+
 		it( 'should return true if element hosts UI elements only and document is blurred', () => {
 			setData( view, '<p><ui:span></ui:span></p>' );
 			viewDocument.isFocused = false;
@@ -415,6 +424,15 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			expect( needsPlaceholder( element ) ).to.be.true;
+		} );
+
+		it( 'should return true if we want to keep placeholder when element is focused', () => {
+			setData( view, '<p><ui:span></ui:span></p>' );
+			viewDocument.isFocused = true;
+
+			const element = viewRoot.getChild( 0 );
+
+			expect( needsPlaceholder( element, false ) ).to.be.true;
 		} );
 	} );
 } );

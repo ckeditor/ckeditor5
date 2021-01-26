@@ -151,11 +151,11 @@ export function needsPlaceholder( element, hideOnFocus ) {
 		return false;
 	}
 
-	// The element is empty only as long as it contains nothing but uiElements.
-	const isEmptyish = !Array.from( element.getChildren() )
+	// Anything but uiElement(s) count as content.
+	const hasContent = Array.from( element.getChildren() )
 		.some( element => !element.is( 'uiElement' ) );
 
-	if ( !isEmptyish ) {
+	if ( hasContent ) {
 		return false;
 	}
 
@@ -165,7 +165,7 @@ export function needsPlaceholder( element, hideOnFocus ) {
 
 	const doc = element.document;
 
-	// If the element is empty and the document is blurred.
+	// If the document is blurred.
 	if ( !doc.isFocused ) {
 		return true;
 	}
