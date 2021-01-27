@@ -369,6 +369,7 @@ export default class Title extends Plugin {
 			}
 
 			// Then we need to display placeholder if it is needed.
+			// See: https://github.com/ckeditor/ckeditor5/issues/8689.
 			if ( needsPlaceholder( body, true ) && viewRoot.childCount === 2 && body.name === 'p' ) {
 				hasChanged = showPlaceholder( writer, body ) ? true : hasChanged;
 			// Or hide if it is not needed.
