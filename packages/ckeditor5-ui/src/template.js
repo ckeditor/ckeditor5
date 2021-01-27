@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,6 +16,7 @@ import View from './view';
 import ViewCollection from './viewcollection';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import { isObject, cloneDeepWith } from 'lodash-es';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
@@ -1225,7 +1226,7 @@ function normalize( def ) {
 function normalizeAttributes( attributes ) {
 	for ( const a in attributes ) {
 		if ( attributes[ a ].value ) {
-			attributes[ a ].value = [].concat( attributes[ a ].value );
+			attributes[ a ].value = toArray( attributes[ a ].value );
 		}
 
 		arrayify( attributes, a );
@@ -1290,9 +1291,7 @@ function normalizePlainTextDefinition( def ) {
 //
 // @param {module:ui/template~TemplateDefinition} def
 function normalizeTextDefinition( def ) {
-	if ( !Array.isArray( def.text ) ) {
-		def.text = [ def.text ];
-	}
+	def.text = toArray( def.text );
 }
 
 // Wraps an entry in Object in an Array, if not already one.
@@ -1312,9 +1311,7 @@ function normalizeTextDefinition( def ) {
 // @param {Object} obj
 // @param {String} key
 function arrayify( obj, key ) {
-	if ( !Array.isArray( obj[ key ] ) ) {
-		obj[ key ] = [ obj[ key ] ];
-	}
+	obj[ key ] = toArray( obj[ key ] );
 }
 
 // A helper which concatenates the value avoiding unwanted

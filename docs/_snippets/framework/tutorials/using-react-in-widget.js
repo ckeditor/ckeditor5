@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,7 +12,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // The official <CKEditor> component for React.
-import CKEditor from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // The base editor class and features required to run the editor.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';

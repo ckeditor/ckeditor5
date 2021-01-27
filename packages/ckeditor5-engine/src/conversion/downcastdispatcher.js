@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,8 +15,8 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting to changes
- * in the model and firing a set of events. Callbacks listening to these events are called converters. The
+ * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
+ * to changes in the model and firing a set of events. Callbacks listening to these events are called converters. The
  * converters' role is to convert the model changes to changes in view (for example, adding view nodes or
  * changing attributes on view elements).
  *
@@ -52,7 +52,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} &ndash; If a marker was added.
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} &ndash; If a marker was removed.
  *
- * Note that changing a marker is done through removing the marker from the old range and adding it on the new range,
+ * Note that changing a marker is done through removing the marker from the old range and adding it to the new range,
  * so both events are fired.
  *
  * Finally, downcast dispatcher also handles firing events for the {@link module:engine/model/selection model selection}
@@ -65,9 +65,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}
  * &ndash; Fired for every marker that contains a selection.
  *
- * Unlike model tree and markers, events for selection are not fired for changes but for selection state.
+ * Unlike the model tree and the markers, the events for selection are not fired for changes but for a selection state.
  *
- * When providing custom listeners for downcast dispatcher, remember to check whether a given change has not been
+ * When providing custom listeners for a downcast dispatcher, remember to check whether a given change has not been
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} yet.
  *
  * When providing custom listeners for downcast dispatcher, keep in mind that any callback that has
@@ -125,7 +125,7 @@ export default class DowncastDispatcher {
 		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
 
 		/**
-		 * Maps conversion event names that will trigger element reconversion for given element name.
+		 * Maps conversion event names that will trigger element reconversion for a given element name.
 		 *
 		 * @type {Map<String, String>}
 		 * @private
@@ -217,7 +217,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts conversion of attribute change on given `range`.
+	 * Starts a conversion of an attribute change on a given `range`.
 	 *
 	 * For each node in the given `range`, {@link #event:attribute attribute event} is fired with the passed data.
 	 *
@@ -253,15 +253,15 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts a reconversion of an element. It will:
+	 * Starts the reconversion of an element. It will:
 	 *
-	 * * Fire a {@link #event:insert `insert` event} for the element to reconvert.
+	 * * Fire an {@link #event:insert `insert` event} for the element to reconvert.
 	 * * Fire an {@link #event:attribute `attribute` event} for element attributes.
 	 *
 	 * This will not reconvert children of the element if they have existing (already converted) views. For newly inserted child elements
 	 * it will behave the same as {@link #convertInsert}.
 	 *
-	 * Element reconversion is defined by a `triggerBy` configuration for
+	 * Element reconversion is defined by the `triggerBy` configuration for the
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
 	 * @fires insert
@@ -321,16 +321,16 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts model selection conversion.
+	 * Starts the model selection conversion.
 	 *
-	 * Fires events for given {@link module:engine/model/selection~Selection selection} to start selection conversion.
+	 * Fires events for a given {@link module:engine/model/selection~Selection selection} to start the selection conversion.
 	 *
 	 * @fires selection
 	 * @fires addMarker
 	 * @fires attribute
-	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
-	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with converted model.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
+	 * @param {module:engine/model/selection~Selection} selection The selection to convert.
+	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with the converted model.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
 	 */
 	convertSelection( selection, markers, writer ) {
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
@@ -381,13 +381,13 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Converts added marker. Fires {@link #event:addMarker addMarker} event for each item
-	 * in marker's range. If range is collapsed single event is dispatched. See event description for more details.
+	 * Converts the added marker. Fires the {@link #event:addMarker `addMarker`} event for each item
+	 * in the marker's range. If the range is collapsed, a single event is dispatched. See the event description for more details.
 	 *
 	 * @fires addMarker
 	 * @param {String} markerName Marker name.
-	 * @param {module:engine/model/range~Range} markerRange Marker range.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
+	 * @param {module:engine/model/range~Range} markerRange The marker range.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
 	 */
 	convertMarkerAdd( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
@@ -437,12 +437,12 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Fires conversion of marker removal. Fires {@link #event:removeMarker removeMarker} event with provided data.
+	 * Fires the conversion of the marker removal. Fires the {@link #event:removeMarker `removeMarker`} event with the provided data.
 	 *
 	 * @fires removeMarker
 	 * @param {String} markerName Marker name.
-	 * @param {module:engine/model/range~Range} markerRange Marker range.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
+	 * @param {module:engine/model/range~Range} markerRange The marker range.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
 	 */
 	convertMarkerRemove( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
@@ -458,31 +458,31 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Maps model element "insert" reconversion for given event names. The event names must be fully specified:
+	 * Maps the model element "insert" reconversion for given event names. The event names must be fully specified:
 	 *
-	 * * For "attribute" change event it should include main element name, ie: `'attribute:attributeName:elementName'`.
-	 * * For child nodes change events, those should use child event name as well, ie:
+	 * * For "attribute" change event, it should include the main element name, i.e: `'attribute:attributeName:elementName'`.
+	 * * For child node change events, these should use the child event name as well, i.e:
 	 *     * For adding a node: `'insert:childElementName'`.
 	 *     * For removing a node: `'remove:childElementName'`.
 	 *
-	 * **Note**: This method should not be used directly. A reconversion is defined by `triggerBy` configuration of the `elementToElement()`
-	 * conversion helper.
+	 * **Note**: This method should not be used directly. The reconversion is defined by the `triggerBy()` configuration of the
+	 * `elementToElement()` conversion helper.
 	 *
 	 * @protected
-	 * @param {String} modelName Main model element name for which events will trigger reconversion.
-	 * @param {String} eventName Name of an event that would trigger conversion for given model element.
+	 * @param {String} modelName The name of the main model element for which the events will trigger the reconversion.
+	 * @param {String} eventName The name of an event that would trigger conversion for a given model element.
 	 */
 	_mapReconversionTriggerEvent( modelName, eventName ) {
 		this._reconversionEventsMapping.set( eventName, modelName );
 	}
 
 	/**
-	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from given range,
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from a given range,
 	 * assuming that the range has just been inserted to the model.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range Inserted range.
-	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
+	 * @param {module:engine/model/range~Range} range The inserted range.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
 	 */
 	_createInsertConsumable( range ) {
 		const consumable = new Consumable();
@@ -501,12 +501,12 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume for given range.
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume for a given range.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range Affected range.
+	 * @param {module:engine/model/range~Range} range The affected range.
 	 * @param {String} type Consumable type.
-	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
 	 */
 	_createConsumableForRange( range, type ) {
 		const consumable = new Consumable();
@@ -522,9 +522,9 @@ export default class DowncastDispatcher {
 	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with selection consumable values.
 	 *
 	 * @private
-	 * @param {module:engine/model/selection~Selection} selection Selection to create consumable from.
-	 * @param {Iterable.<module:engine/model/markercollection~Marker>} markers Markers which contains selection.
-	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
+	 * @param {module:engine/model/selection~Selection} selection The selection to create the consumable from.
+	 * @param {Iterable.<module:engine/model/markercollection~Marker>} markers Markers that contain the selection.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
 	 */
 	_createSelectionConsumable( selection, markers ) {
 		const consumable = new Consumable();
@@ -561,7 +561,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Clears conversion API object.
+	 * Clears the conversion API object.
 	 *
 	 * @private
 	 */
@@ -571,7 +571,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Internal method for converting element insert. It will fire events for the inserted element and events for its attributes.
+	 * Internal method for converting element insertion. It will fire events for the inserted element and events for its attributes.
 	 *
 	 * @private
 	 * @fires insert
@@ -594,13 +594,13 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Returns differ changes together with added "reconvert" type changes for {@link #reconvertElement}. Those are defined by
-	 * a `triggerBy` configuration for
+	 * Returns differ changes together with added "reconvert" type changes for {@link #reconvertElement}. These are defined by
+	 * a the `triggerBy()` configuration for the
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
-	 * This method will remove every mapped insert or remove change with a single "reconvert" changes.
+	 * This method will remove every mapped insert or remove change with a single "reconvert" change.
 	 *
-	 * For instance: Having a `triggerBy` configuration defined for `<complex>` element that issues this element reconversion on
+	 * For instance: Having a `triggerBy()` configuration defined for the `<complex>` element that issues this element reconversion on
 	 * `foo` and `bar` attributes change, and a set of changes for this element:
 	 *
 	 *		const differChanges = [
@@ -616,7 +616,7 @@ export default class DowncastDispatcher {
 	 *			{ type: 'attribute', attributeKey: 'baz', ... }
 	 *		];
 	 *
-	 * In the example above the `'baz'` attribute change will fire an {@link #event:attribute attribute event}
+	 * In the example above, the `'baz'` attribute change will fire an {@link #event:attribute attribute event}
 	 *
 	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
 	 * @returns {Array.<Object>} Updated set of changes.
@@ -676,14 +676,14 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Checks if resulting change should trigger element reconversion.
+	 * Checks if the resulting change should trigger element reconversion.
 	 *
-	 * Those are defined by a `triggerBy` configuration for
+	 * These are defined by a `triggerBy()` configuration for the
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
 	 * @private
-	 * @param {String} eventName Event name to check.
-	 * @param {String} elementName Element name to check.
+	 * @param {String} eventName The event name to check.
+	 * @param {String} elementName The element name to check.
 	 * @returns {Boolean}
 	 */
 	_isReconvertTriggerEvent( eventName, elementName ) {
@@ -760,7 +760,7 @@ export default class DowncastDispatcher {
 	 */
 
 	/**
-	 * Fired when a new marker is added to the model. Also fired when collapsed model selection that is inside a marker is converted.
+	 * Fired when a new marker is added to the model. Also fired when a collapsed model selection that is inside a marker is converted.
 	 *
 	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `addMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -770,17 +770,17 @@ export default class DowncastDispatcher {
 	 * If the marker range is not collapsed:
 	 *
 	 * * the event is fired for each item in the marker range one by one,
-	 * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as event name.
+	 * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as the event name.
 	 *
 	 * If the marker range is collapsed:
 	 *
 	 * * there is only one event,
-	 * * `conversionApi.consumable` includes marker range with event name.
+	 * * `conversionApi.consumable` includes marker range with the event name.
 	 *
-	 * If selection inside a marker is converted:
+	 * If the selection inside a marker is converted:
 	 *
 	 * * there is only one event,
-	 * * `conversionApi.consumable` includes selection instance with event name.
+	 * * `conversionApi.consumable` includes the selection instance with the event name.
 	 *
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
@@ -795,7 +795,7 @@ export default class DowncastDispatcher {
 	 */
 
 	/**
-	 * Fired when marker is removed from the model.
+	 * Fired when a marker is removed from the model.
 	 *
 	 * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `removeMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -879,8 +879,8 @@ function elementOrTextProxyToView( item, mapper ) {
  */
 
 /**
- * Stores information about what parts of processed model item are still waiting to be handled. After a piece of model item
- * was converted, appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
+ * Stores the information about what parts of a processed model item are still waiting to be handled. After a piece of a model item was
+ * converted, an appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
  *
  * @member {module:engine/conversion/modelconsumable~ModelConsumable} #consumable
  */
@@ -898,13 +898,13 @@ function elementOrTextProxyToView( item, mapper ) {
  */
 
 /**
- * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate data during conversion.
+ * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate the data during conversion.
  *
  * @member {module:engine/view/downcastwriter~DowncastWriter} #writer
  */
 
 /**
- * An object with an additional configuration which can be used during conversion process. Available only for data downcast conversion.
+ * An object with an additional configuration which can be used during the conversion process. Available only for data downcast conversion.
  *
  * @member {Object} #options
  */

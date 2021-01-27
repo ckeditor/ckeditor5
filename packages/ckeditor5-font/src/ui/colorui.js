@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -126,7 +126,7 @@ export default class ColorUI extends Plugin {
 
 			dropdownView.on( 'execute', ( evt, data ) => {
 				editor.execute( this.commandName, data );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {

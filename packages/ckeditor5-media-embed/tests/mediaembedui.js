@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -126,6 +126,16 @@ describe( 'MediaEmbedUI', () => {
 
 					button.fire( 'open' );
 					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
+					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
+					const selectSpy = sinon.spy( form.urlInputView.fieldView, 'select' );
+
+					button.fire( 'open' );
+
+					sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
 				} );
 			} );
 		} );

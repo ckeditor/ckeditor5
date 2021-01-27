@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -165,6 +165,8 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const command = editor.commands.get( 'imageTextAlternative' );
 		const labeledInput = this._form.labeledInput;
 
+		this._form.disableCssTransitions();
+
 		if ( !this._isInBalloon ) {
 			this._balloon.add( {
 				view: this._form,
@@ -180,6 +182,8 @@ export default class ImageTextAlternativeUI extends Plugin {
 		labeledInput.fieldView.value = labeledInput.fieldView.element.value = command.value || '';
 
 		this._form.labeledInput.fieldView.select();
+
+		this._form.enableCssTransitions();
 	}
 
 	/**
@@ -202,7 +206,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		this._balloon.remove( this._form );
 
 		if ( focusEditable ) {
-			this.editor.focus();
+			this.editor.editing.view.focus();
 		}
 	}
 

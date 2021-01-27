@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -126,6 +127,8 @@ export default class TextAlternativeFormView extends View {
 				this.cancelButtonView
 			]
 		} );
+
+		injectCssTransitionDisabler( this );
 	}
 
 	/**
@@ -191,7 +194,6 @@ export default class TextAlternativeFormView extends View {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Text alternative' );
-		labeledInput.fieldView.placeholder = t( 'Text alternative' );
 
 		return labeledInput;
 	}

@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, document */
+/* global console, document, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import HtmlEmbedEditing from '../src/htmlembedediting';
@@ -12,6 +12,7 @@ import UpdateHtmlEmbedCommand from '../src/updatehtmlembedcommand';
 import InsertHtmlEmbedCommand from '../src/inserthtmlembedcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 describe( 'HtmlEmbedEditing', () => {
 	let element, editor, model, view, viewDocument;
@@ -24,7 +25,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ HtmlEmbedEditing ]
+				plugins: [ HtmlEmbedEditing, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -225,6 +226,55 @@ describe( 'HtmlEmbedEditing', () => {
 					'</div>'
 				);
 			} );
+
+			it( 'should convert innerHTML (and preserve comments and raw data formatting) of div.raw-html-embed', () => {
+				const rawContent = [
+					'	<!-- foo -->',
+					'	<p>',
+					'		<b>Foo B.</b>',
+					'		<!-- abc -->',
+					'		<i>Foo I.</i>',
+					'	</p>',
+					'	<!-- bar -->'
+				].join( '\n' );
+
+				editor.setData(
+					'<div class="raw-html-embed">' +
+						rawContent +
+					'</div>'
+				);
+
+				const rawHtml = model.document.getRoot().getChild( 0 );
+
+				expect( rawHtml.getAttribute( 'value' ) ).to.equal( rawContent );
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5/issues/8789.
+			it( 'should convert content from clipboard', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html':
+						'<div class="raw-html-embed">' +
+							'<b>Foo B.</b>' +
+							'<i>Foo I.</i>' +
+							'<u>Foo U.</u>' +
+						'</div>',
+					'text/plain': 'plain text'
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation: sinon.spy(),
+					preventDefault: sinon.spy()
+				} );
+
+				const rawHtml = model.document.getRoot().getChild( 0 );
+
+				expect( rawHtml.getAttribute( 'value' ) ).to.equal(
+					'<b>Foo B.</b>' +
+					'<i>Foo I.</i>' +
+					'<u>Foo U.</u>'
+				);
+			} );
 		} );
 	} );
 
@@ -316,6 +366,22 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__cancel-button' ) ).to.have.lengthOf( 1 );
 			} );
 
+			it( 'disable save button when update command is disabled', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const updateHtmlEmbedCommand = editor.commands.get( 'updateHtmlEmbed' );
+				updateHtmlEmbedCommand.isEnabled = false;
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				const button = domContentWrapper.querySelector( '.raw-html-embed__save-button' );
+
+				expect( button.classList.contains( 'ck-disabled' ) ).to.be.true;
+			} );
+
 			it( 'updates the model state after clicking the "save changes" button', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
@@ -350,6 +416,42 @@ describe( 'HtmlEmbedEditing', () => {
 				// There's exactly this button, and nothing else.
 				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
 				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+			} );
+
+			it( 'switches to "preview mode" after clicking save button when there are no changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+
+				let widget = viewDocument.getRoot().getChild( 0 );
+				let contentWrapper = widget.getChild( 1 );
+				let domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				// The entire DOM has rendered once again. The references were invalid.
+				widget = viewDocument.getRoot().getChild( 0 );
+				contentWrapper = widget.getChild( 1 );
+				domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				// There's exactly this button, and nothing else.
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+			} );
+
+			it( 'does not lose editor focus after saving changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( 'textarea' ).value = 'Foo Bar.';
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				sinon.assert.calledOnce( spy );
 			} );
 
 			it( 'does not update the model state after saving the same changes', () => {
@@ -392,6 +494,95 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
 			} );
 
+			it( 'does not lose editor focus after canceling editing', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'does not select the unselected `rawHtml` element, if it is not in the editable mode', () => {
+				setModelData( model, '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+
+				// Get the second widget.
+				const widget = viewDocument.getRoot().getChild( 1 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				domContentWrapper.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+			} );
+
+			it( 'does not unnecessarily select an already selected `rawHtml` element in the editable mode', () => {
+				setModelData( model, '[<rawHtml value="foo"></rawHtml>]' );
+
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change:range', spy );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
+
+				expect( spy.notCalled ).to.be.true;
+			} );
+
+			it( 'selects the unselected `rawHtml` element in editable mode after clicking on its textarea', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml><rawHtml value="bar"></rawHtml>' );
+
+				const widgetFoo = viewDocument.getRoot().getChild( 0 );
+				const widgetBar = viewDocument.getRoot().getChild( 1 );
+
+				const contentWrapperFoo = widgetFoo.getChild( 1 );
+				const contentWrapperBar = widgetBar.getChild( 1 );
+
+				const domContentWrapperFoo = editor.editing.view.domConverter.mapViewToDom( contentWrapperFoo );
+				const domContentWrapperBar = editor.editing.view.domConverter.mapViewToDom( contentWrapperBar );
+
+				widgetFoo.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+				widgetBar.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapperFoo.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]<rawHtml value="bar"></rawHtml>' );
+
+				domContentWrapperBar.querySelector( 'textarea' ).dispatchEvent( new Event( 'mousedown' ) );
+
+				expect( getModelData( model ) ).to.equal( '<rawHtml value="foo"></rawHtml>[<rawHtml value="bar"></rawHtml>]' );
+			} );
+
+			describe( 'different setting of ui language', () => {
+				it( 'the widget should have the dir attribute for LTR language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				} );
+
+				it( 'the widget should have the dir attribute for RTL language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+				} );
+			} );
+
 			describe( 'rawHtmlApi.makeEditable()', () => {
 				it( 'makes the textarea editable', () => {
 					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
@@ -415,6 +606,42 @@ describe( 'HtmlEmbedEditing', () => {
 					widget.getCustomProperty( 'rawHtmlApi' ).save( 'bar' );
 
 					expect( getModelData( model ) ).to.equal( '[<rawHtml value="bar"></rawHtml>]' );
+				} );
+
+				it( 'saves the new value to the model if given `rawHtml` element is not selected', () => {
+					setModelData( model, '<rawHtml value="foo"></rawHtml><rawHtml value="bar"></rawHtml>' );
+
+					const widgetFoo = viewDocument.getRoot().getChild( 0 );
+					const widgetBar = viewDocument.getRoot().getChild( 1 );
+
+					const contentWrapperFoo = widgetFoo.getChild( 1 );
+					const contentWrapperBar = widgetBar.getChild( 1 );
+
+					const domContentWrapperFoo = editor.editing.view.domConverter.mapViewToDom( contentWrapperFoo );
+					const domContentWrapperBar = editor.editing.view.domConverter.mapViewToDom( contentWrapperBar );
+
+					widgetFoo.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+					widgetBar.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+					domContentWrapperFoo.querySelector( 'textarea' ).value = 'FOO';
+
+					const domSaveButtonFoo = domContentWrapperFoo.querySelector( '.raw-html-embed__save-button' );
+
+					// Simulate the click event on the Save button from the first widget.
+					domSaveButtonFoo.dispatchEvent( new Event( 'mousedown' ) );
+					domSaveButtonFoo.dispatchEvent( new Event( 'mouseup' ) );
+					domSaveButtonFoo.dispatchEvent( new Event( 'click' ) );
+
+					domContentWrapperBar.querySelector( 'textarea' ).value = 'BAR';
+
+					const domSaveButtonBar = domContentWrapperBar.querySelector( '.raw-html-embed__save-button' );
+
+					// Simulate the click event on the Save button from the second widget.
+					domSaveButtonBar.dispatchEvent( new Event( 'mousedown' ) );
+					domSaveButtonBar.dispatchEvent( new Event( 'mouseup' ) );
+					domSaveButtonBar.dispatchEvent( new Event( 'click' ) );
+
+					expect( getModelData( model ) ).to.equal( '<rawHtml value="FOO"></rawHtml>[<rawHtml value="BAR"></rawHtml>]' );
 				} );
 
 				it( 'turns back to the non-editable mode and updates the textarea value', () => {
@@ -468,16 +695,20 @@ describe( 'HtmlEmbedEditing', () => {
 					} );
 			} );
 
-			it( 'renders a div with a preview', () => {
+			it( 'should render a div with a preview and placeholder', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'foo' );
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML )
+					.to.equal( 'foo' );
+
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-placeholder' ) )
+					.to.not.equal( null );
 			} );
 
-			it( 'updates the preview once the model changes', () => {
+			it( 'should update the preview once the model changes', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 
 				editor.model.change( writer => writer.setAttribute( 'value', 'bar', editor.model.document.getRoot().getChild( 0 ) ) );
@@ -486,7 +717,95 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'bar' );
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML ).to.equal( 'bar' );
+			} );
+
+			describe( 'placeholder', () => {
+				function getPlaceholder() {
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const contentWrapper = widget.getChild( 1 );
+					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+					return domContentWrapper.querySelector( 'div.raw-html-embed__preview-placeholder' );
+				}
+
+				it( 'should inherit the styles from the editor', () => {
+					setModelData( model, '<rawHtml value=""></rawHtml>' );
+					const placeholder = getPlaceholder();
+
+					expect( placeholder.classList.value ).to.contain( 'ck ck-reset_all' );
+				} );
+
+				it( 'should display the proper information if the snippet is empty', () => {
+					setModelData( model, '<rawHtml value=""></rawHtml>' );
+					const placeholder = getPlaceholder();
+
+					expect( placeholder.innerHTML ).to.equal( 'Empty snippet content' );
+				} );
+
+				it( 'should display the proper information if the snippet is not empty', () => {
+					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+					const placeholder = getPlaceholder();
+
+					expect( placeholder.innerHTML ).to.equal( 'No preview available' );
+				} );
+			} );
+
+			describe( 'different setting of ui and content language', () => {
+				it( 'the widget and preview should have the dir attribute for LTR language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'ltr' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				} );
+
+				it( 'the widget and preview should have the dir attribute for RTL language', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'rtl' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+				} );
+
+				it( 'the widget should have the dir attribute for LTR language, but preview for RTL', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'ltr' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'rtl' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+				} );
+
+				it( 'the widget should have the dir attribute for RTL language, butPreview for LTR', () => {
+					sinon.stub( editor.locale, 'uiLanguageDirection' ).value( 'rtl' );
+					sinon.stub( editor.locale, 'contentLanguageDirection' ).value( 'ltr' );
+
+					setModelData( model, '<rawHtml></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+
+					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				} );
+
+				function getDomPreview( widget ) {
+					const contentWrapper = widget.getChild( 1 );
+					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+					return domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' );
+				}
 			} );
 		} );
 	} );
@@ -494,4 +813,12 @@ describe( 'HtmlEmbedEditing', () => {
 
 function isRawHtmlWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( 'rawHtml' ) && isWidget( viewElement );
+}
+
+function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
 }

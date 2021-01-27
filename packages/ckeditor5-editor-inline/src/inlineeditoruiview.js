@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -45,7 +45,8 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbar = new ToolbarView( locale, {
-			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
+			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull,
+			isFloating: true
 		} );
 
 		/**
@@ -62,15 +63,6 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {Number} #viewportTopOffset
 		 */
 		this.set( 'viewportTopOffset', 0 );
-
-		this.toolbar.extendTemplate( {
-			attributes: {
-				class: [
-					// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
-					'ck-toolbar_floating'
-				]
-			}
-		} );
 
 		/**
 		 * A balloon panel view instance.

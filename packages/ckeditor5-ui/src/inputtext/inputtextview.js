@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,7 @@
  */
 
 import View from '../view';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import '../../theme/components/inputtext/inputtext.css';
 
 /**
@@ -72,6 +73,37 @@ export default class InputTextView extends View {
 		 */
 		this.set( 'ariaDescribedById' );
 
+		/**
+		 * Stores information about the editor UI focus and propagates it so various plugins and components
+		 * are unified as a focus group.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An observable flag set to `true` when the input is currently focused by the user.
+		 * Set to `false` otherwise.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isFocused
+		 * @default false
+		 */
+		this.bind( 'isFocused' ).to( this.focusTracker );
+
+		/**
+		 * An observable flag set to `true` when the input contains no text, i.e.
+		 * when {@link #value} is `''`, `null`, or `false`.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isEmpty
+		 * @default true
+		 */
+		this.set( 'isEmpty', true );
+
 		const bind = this.bindTemplate;
 
 		this.setTemplate( {
@@ -82,6 +114,8 @@ export default class InputTextView extends View {
 					'ck',
 					'ck-input',
 					'ck-input-text',
+					bind.if( 'isFocused', 'ck-input_focused' ),
+					bind.if( 'isEmpty', 'ck-input-text_empty' ),
 					bind.if( 'hasError', 'ck-error' )
 				],
 				id: bind.to( 'id' ),
@@ -91,7 +125,8 @@ export default class InputTextView extends View {
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			on: {
-				input: bind.to( 'input' )
+				input: bind.to( 'input' ),
+				change: bind.to( this._updateIsEmpty.bind( this ) )
 			}
 		} );
 
@@ -109,16 +144,16 @@ export default class InputTextView extends View {
 	render() {
 		super.render();
 
-		const setValue = value => {
-			this.element.value = ( !value && value !== 0 ) ? '' : value;
-		};
+		this.focusTracker.add( this.element );
 
-		setValue( this.value );
+		this._setDomElementValue( this.value );
+		this._updateIsEmpty();
 
 		// Bind `this.value` to the DOM element's value.
 		// We cannot use `value` DOM attribute because removing it on Edge does not clear the DOM element's value property.
 		this.on( 'change:value', ( evt, name, value ) => {
-			setValue( value );
+			this._setDomElementValue( value );
+			this._updateIsEmpty();
 		} );
 	}
 
@@ -135,4 +170,26 @@ export default class InputTextView extends View {
 	focus() {
 		this.element.focus();
 	}
+
+	/**
+	 * Updates the {@link #isEmpty} property value on demand.
+	 *
+	 * @private
+	 */
+	_updateIsEmpty() {
+		this.isEmpty = isInputElementEmpty( this.element );
+	}
+
+	/**
+	 * Sets the `value` property of the {@link #element DOM element} on demand.
+	 *
+	 * @private
+	 */
+	_setDomElementValue( value ) {
+		this.element.value = ( !value && value !== 0 ) ? '' : value;
+	}
+}
+
+function isInputElementEmpty( domElement ) {
+	return !domElement.value;
 }

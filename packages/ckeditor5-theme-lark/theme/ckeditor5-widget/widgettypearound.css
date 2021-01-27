@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -191,6 +191,16 @@
 			opacity: 0
 		}
 	}
+}
+
+/*
+ * Styles for the "before" button when the widget has a selection handle in an RTL environment.
+ * The selection handler is aligned to the right side of the widget so there is no need to create
+ * additional space for it next to the "before" button.
+ */
+.ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handle .ck-widget__type-around > .ck-widget__type-around__button_before {
+	margin-left: 0;
+	margin-right: 20px;
 }
 
 /*

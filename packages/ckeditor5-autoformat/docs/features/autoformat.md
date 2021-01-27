@@ -3,7 +3,9 @@ title: Autoformatting
 category: features
 ---
 
-The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing.
+The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing with the use of shortcodes.
+
+Employ Markdown-like inline codes as you type for a faster and more efficient editing workflow. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting features with these easy to memorize options listed below.
 
 <info-box info>
 	This feature is enabled by default in all builds.
@@ -13,15 +15,16 @@ The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickl
 
 The following block formatting options are available:
 
-* Bulleted list &ndash; Start a line with `*` or `-` followed by a space.
-* Numbered list &ndash; Start a line with `1.` or `1)` followed by a space.
-* Headings &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
-* Block quote &ndash; Start a line with `>` followed by a space.
-* Code block &ndash; Start a line with `` ``` ``.
+* {@link features/lists Bulleted list} &ndash; Start a line with `*` or `-` followed by a space.
+* {@link features/lists Numbered list} &ndash; Start a line with `1.` or `1)` followed by a space.
+* {@link features/headings Headings} &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
+* {@link features/block-quote Block quote} &ndash; Start a line with `>` followed by a space.
+* {@link features/code-blocks Code block} &ndash; Start a line with `` ``` ``.
+* {@link features/horizontal-line Horizontal line} &ndash; Start a line with `---`.
 
 ## Inline formatting
 
-The following inline formatting options are available:
+The following {@link features/basic-styles basic styles} inline formatting options are available:
 
 * Bold &ndash; Type `**text**` or `__text__`,
 * Italic &ndash; Type `*text*` or `_text_`,
@@ -45,6 +48,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 * {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
+* {@link features/markdown Markdown output} &ndash; Output your content as Markdown instead of HTML and use CKEditor 5 as a WYSIWYG Markdown editor.
 
 ## Installation
 
@@ -85,6 +89,12 @@ ClassicEditor
 The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatediting~blockAutoformatEditing} and {@link module:autoformat/inlineautoformatediting~inlineAutoformatEditing} tools to create the autoformatters mentioned above.
 
 You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/src/autoformat.js) as an example.
+
+## Known issues
+
+While the autoformatting feature is stable and ready to use, some issues were reported for it. Feel free to upvote 👍&nbsp; them on GitHub if they are important for you:
+* Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+* Setting a specific code block language is not supprted yet (it defaults to plain text on insertion). GitHub issue: [#8598](https://github.com/ckeditor/ckeditor5/issues/8598).
 
 ## Contribute
 

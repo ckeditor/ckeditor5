@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@
 	min-width: var(--ck-input-text-width);
 
 	& .ck-labeled-field-view {
-		margin: var(--ck-spacing-standard) var(--ck-spacing-standard) var(--ck-spacing-small);
+		margin: var(--ck-spacing-large) var(--ck-spacing-large) var(--ck-spacing-small);
 
 		& .ck-input-text {
 			min-width: 0;
@@ -45,10 +45,11 @@
 
 	/* Using additional `.ck` class for stronger CSS specificity than `.ck.ck-link-form > :not(:first-child)`. */
 	& .ck.ck-list {
-		margin-left: 0;
+		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 
 		& .ck-button.ck-switchbutton {
 			border: 0;
+			padding: 0;
 			width: 100%;
 
 			&:hover {

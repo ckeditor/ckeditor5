@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,15 +9,17 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Image from '../../src/image';
+import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
 import ImageTextAlternative from '../../src/imagetextalternative';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageStyle from '../../src/imagestyle';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -30,12 +32,9 @@ import {
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils';
 
 describe( 'ImageResizeHandles', () => {
-	// 100x50 black png image
-	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
-		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
-
 	let widget, editor, view, viewDocument, editorElement;
 
 	beforeEach( () => {
@@ -62,7 +61,7 @@ describe( 'ImageResizeHandles', () => {
 
 		const attachToSpy = sinon.spy( localEditor.plugins.get( WidgetResize ), 'attachTo' );
 
-		setData( localEditor.model, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+		await setModelAndWaitForImages( localEditor, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 		expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.a.property( 'unit', '%' );
 
@@ -79,7 +78,7 @@ describe( 'ImageResizeHandles', () => {
 		it( 'uses the command on commit', async () => {
 			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 			widget = viewDocument.getRoot().getChild( 1 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 
@@ -92,7 +91,7 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		it( 'disables the resizer if the command is disabled', async () => {
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			const resizer = getSelectedImageResizer( editor );
 
@@ -124,6 +123,8 @@ describe( 'ImageResizeHandles', () => {
 				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );
 			} );
 
+			await waitForAllImagesLoaded( editor );
+
 			const resizer = getSelectedImageResizer( editor );
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
@@ -136,7 +137,8 @@ describe( 'ImageResizeHandles', () => {
 		beforeEach( async () => {
 			editor = await createEditor();
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor,
+				`<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 		} );
@@ -178,7 +180,7 @@ describe( 'ImageResizeHandles', () => {
 		beforeEach( async () => {
 			editor = await createEditor();
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 		} );
@@ -200,9 +202,9 @@ describe( 'ImageResizeHandles', () => {
 
 			// Toggle _visibleResizer to force synchronous redraw. Otherwise you'd need to wait ~200ms for
 			// throttled redraw to take place, making tests slower.
-			const visibleResizer = plugin._visibleResizer;
-			plugin._visibleResizer = null;
-			plugin._visibleResizer = visibleResizer;
+			for ( const [ , resizer ] of plugin._resizers.entries() ) {
+				resizer.redraw();
+			}
 
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
@@ -210,13 +212,37 @@ describe( 'ImageResizeHandles', () => {
 			expect( shadowBoundingRect.width ).to.equal( 100 );
 			expect( shadowBoundingRect.height ).to.equal( 50 );
 		} );
+
+		it( 'doesn\'t show resizers when undoing to multiple images', async () => {
+			// Based on https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-695949745.
+			await setModelAndWaitForImages( editor,
+				`[<image src="${ IMAGE_SRC_FIXTURE }"></image><image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			const paragraph = editor.model.change( writer => {
+				return writer.createElement( 'paragraph' );
+			} );
+			editor.model.insertContent( paragraph );
+
+			// Undo to go back to two, selected images.
+			editor.commands.get( 'undo' ).execute();
+
+			for ( let i = 0; i < 2; i++ ) {
+				widget = viewDocument.getRoot().getChild( i );
+				const domImage = getWidgetDomParts( editor, widget, 'bottom-right' ).widget.querySelector( 'img' );
+				viewDocument.fire( 'imageLoaded', { target: domImage } );
+
+				const domResizeWrapper = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeWrapper;
+
+				expect( domResizeWrapper.getBoundingClientRect().height ).to.equal( 0 );
+			}
+		} );
 	} );
 
 	describe( 'table integration', () => {
 		it( 'works when resizing in a table', async () => {
 			editor = await createEditor();
 
-			setData( editor.model,
+			await setModelAndWaitForImages( editor,
 				'<table>' +
 					`<tableRow><tableCell>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]</tableCell></tableRow>` +
 				'</table>'
@@ -236,6 +262,36 @@ describe( 'ImageResizeHandles', () => {
 
 			expect( model.getAttribute( 'width' ) ).to.equal( '60px' );
 		} );
+	} );
+
+	it( 'doesn\'t create multiple resizers for a single image widget', async () => {
+		// https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992
+		editor = await createEditor();
+		await setModelAndWaitForImages( editor, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+		widget = viewDocument.getRoot().getChild( 0 );
+
+		const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+		const alternativeImageFixture =
+			'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+		// Change the image so that load event triggers for the same img element again.
+		domParts.widget.querySelector( 'img' ).src = alternativeImageFixture;
+		await waitForAllImagesLoaded( editor );
+
+		expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
+	} );
+
+	it( 'only creates a resizer after the image is loaded', async () => {
+		// https://github.com/ckeditor/ckeditor5/issues/8088
+		editor = await createEditor();
+		setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+		widget = viewDocument.getRoot().getChild( 0 );
+		const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+
+		expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 0 );
+
+		await waitForAllImagesLoaded( editor );
+		expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
 	} );
 
 	describe( 'srcset integration', () => {
@@ -272,11 +328,13 @@ describe( 'ImageResizeHandles', () => {
 				</figure>`
 			);
 
+			await waitForAllImagesLoaded( editor );
+
 			widget = viewDocument.getRoot().getChild( 0 );
 			model = editor.model.document.getRoot().getChild( 0 );
 		} );
 
-		it( 'works with images containing srcset', () => {
+		it( 'works with images containing srcset', async () => {
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
 			const finalPointerPosition = initialPosition.clone().moveBy( -20, -20 );
@@ -289,7 +347,7 @@ describe( 'ImageResizeHandles', () => {
 			expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
 		} );
 
-		it( 'retains width after removing srcset', () => {
+		it( 'retains width after removing srcset', async () => {
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
 			const finalPointerPosition = initialPosition.clone().moveBy( -16, -16 );
@@ -339,7 +397,7 @@ describe( 'ImageResizeHandles', () => {
 				}
 			} );
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 
@@ -390,12 +448,56 @@ describe( 'ImageResizeHandles', () => {
 		} );
 	} );
 
+	describe( 'HTML embed integration', () => {
+		it( 'does not attach the resizer to the image inside the HTML embed preview', async () => {
+			editor = await createEditor( {
+				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, HtmlEmbedEditing ],
+				htmlEmbed: {
+					showPreviews: true,
+					sanitizeHtml: input => ( { html: input, hasChanged: false } )
+				}
+			} );
+
+			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+
+			setData( editor.model, '[<rawHtml></rawHtml>]' );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'value', `<img src="${ IMAGE_SRC_FIXTURE }">`, editor.model.document.getRoot().getChild( 0 ) );
+			} );
+
+			await waitForAllImagesLoaded( editor );
+
+			expect( attachToSpy ).not.called;
+
+			attachToSpy.restore();
+		} );
+	} );
+
+	describe( 'Link image integration', () => {
+		it( 'should attach the resizer to the image inside the link', async () => {
+			editor = await createEditor( {
+				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing ]
+			} );
+
+			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+
+			setData( editor.model, `[<image linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></image>]` );
+
+			await waitForAllImagesLoaded( editor );
+
+			expect( attachToSpy ).calledOnce;
+
+			attachToSpy.restore();
+		} );
+	} );
+
 	function getDomWidth( domElement ) {
 		return new Rect( domElement ).width;
 	}
 
 	function getSelectedImageResizer( editor ) {
-		return editor.plugins.get( 'WidgetResize' )._getResizerByViewElement(
+		return editor.plugins.get( 'WidgetResize' ).getResizerByViewElement(
 			editor.editing.view.document.selection.getSelectedElement()
 		);
 	}
@@ -414,5 +516,10 @@ describe( 'ImageResizeHandles', () => {
 
 			return newEditor;
 		} );
+	}
+
+	async function setModelAndWaitForImages( editor, data ) {
+		setData( editor.model, data );
+		return waitForAllImagesLoaded( editor );
 	}
 } );

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -86,11 +86,11 @@ msgstr "向左合并单元格"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "垂直拆分单元格"
+msgstr "纵向拆分单元格"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "水平分割单元格"
+msgstr "横向拆分单元格"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"

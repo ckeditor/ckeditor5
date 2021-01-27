@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1013,6 +1013,8 @@ function filterOutFakeSelectionContainer( domChildList, fakeSelectionContainer )
 // @returns {HTMLElement}
 function createFakeSelectionContainer( domDocument ) {
 	const container = domDocument.createElement( 'div' );
+
+	container.className = 'ck-fake-selection-container';
 
 	Object.assign( container.style, {
 		position: 'fixed',

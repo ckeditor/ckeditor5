@@ -11,6 +11,12 @@ The {@link api/basic-styles basic styles} feature allows you to apply the most f
 	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
 </info-box>
 
+Basic formatting options may be applied with the toolbar buttons or thanks to the {@link features/autoformat autoformatting feature} with Markdown code as you type. Use one these to format text on the go:
+* Bold &ndash; Type `**text**` or `__text__`,
+* Italic &ndash; Type `*text*` or `_text_`,
+* Code &ndash; Type ``` `text` ```,
+* Strikethrough &ndash; Type `~~text~~`.
+
 ## Demo
 
 {@snippet features/basic-styles}
@@ -22,11 +28,12 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
 * {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
+* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Available text styles
 
-| Style feature | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | {@link builds/guides/integration/configuration#toolbar-setup Toolbar} component name | Output element |
+| Style feature | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | {@link features/toolbar Toolbar} component name | Output element |
 |-----|---|-----|-----|
 | {@link module:basic-styles/bold~Bold} | `'bold'` | `'bold'` | `<strong>bold</strong>` |
 | {@link module:basic-styles/italic~Italic} | `'italic'` | `'italic'` | `<i>italic</i>` |

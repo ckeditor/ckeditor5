@@ -1,20 +1,16 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 .ck.ck-input-color {
 	width: 100%;
 	display: flex;
+	flex-direction: row-reverse;
 
 	& > input.ck.ck-input-text {
 		min-width: auto;
 		flex-grow: 1;
-
-		&:active,
-		&:focus {
-			z-index: var(--ck-z-default);
-		}
 	}
 
 	& > div.ck.ck-dropdown {

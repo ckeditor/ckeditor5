@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -36,8 +36,8 @@ import DomEventData from './domeventdata';
  */
 export default class DomEventObserver extends Observer {
 	/**
-	 * Type of the DOM event the observer should listen on. Array of types can be defined
-	 * if the obsever should listen to multiple DOM events.
+	 * Type of the DOM event the observer should listen to. Array of types can be defined
+	 * if the observer should listen to multiple DOM events.
 	 *
 	 * @readonly
 	 * @member {String|Array.<String>} #domEventType

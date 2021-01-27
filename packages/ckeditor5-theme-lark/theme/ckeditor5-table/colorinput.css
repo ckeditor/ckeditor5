@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,19 +20,19 @@
 	}
 
 	& > .ck.ck-dropdown {
-		& > .ck.ck-input-color__button {
+		& > .ck.ck-button.ck-input-color__button {
 			padding: 0;
 
 			@mixin ck-dir ltr {
+				border-left-width: 0;
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
-				margin-left: -1px;
 			}
 
 			@mixin ck-dir rtl {
+				border-right-width: 0;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
-				margin-right: -1px;
 			}
 
 			&.ck-disabled {

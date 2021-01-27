@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -233,16 +233,44 @@ function renderButton() {
 
 	ui.buttonTooltip.add( toolbar( [
 		button( {
-			label: 'This button has a tooltip (south)',
+			label: 'This button has a tooltip when hovered (south)',
 			withText: true,
 			tooltip: 'The content of the tooltip'
 		} ),
 		button( {
-			label: 'This one too – north',
+			label: 'North',
 			withText: true,
 			keystroke: 'Ctrl+N',
 			tooltip: true,
 			tooltipPosition: 'n'
+		} ),
+		button( {
+			label: 'West',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'w'
+		} ),
+		button( {
+			label: 'East',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'e'
+		} ),
+		button( {
+			label: 'South East',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'se'
+		} ),
+		button( {
+			label: 'South West',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'sw'
 		} )
 	] ) );
 }
@@ -515,7 +543,7 @@ function renderInput() {
 	ui.inputLabeled.add( input() );
 	ui.inputReadOnly.add( input( {
 		label: 'A read–only input',
-		isReadOnly: true,
+		isEnabled: false,
 		value: 'Read–only input value'
 	} ) );
 }
@@ -634,14 +662,14 @@ function toolbarNewLine() {
 
 function input( {
 	label = 'Labeled input',
-	isReadOnly = false,
+	isEnabled = true,
 	value = 'The value of the input'
 } = {} ) {
-	const labeledInput = new LabeledFieldView( {}, createLabeledInputText );
+	const labeledField = new LabeledFieldView( {}, createLabeledInputText );
 
-	labeledInput.fieldView.set( { isReadOnly, label, value } );
+	labeledField.set( { isEnabled, label, value } );
 
-	return labeledInput;
+	return labeledField;
 }
 
 function setManualTestDirection( direction ) {

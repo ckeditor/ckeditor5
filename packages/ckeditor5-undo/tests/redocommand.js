@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,7 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoCommand from '../src/undocommand';
 import RedoCommand from '../src/redocommand';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 describe( 'RedoCommand', () => {
 	let editor, model, root, redo, undo;
@@ -28,7 +29,7 @@ describe( 'RedoCommand', () => {
 
 	describe( 'RedoCommand', () => {
 		describe( 'execute()', () => {
-			const p = pos => model.createPositionFromPath( root, [].concat( pos ) );
+			const p = pos => model.createPositionFromPath( root, toArray( pos ) );
 			const r = ( a, b ) => model.createRange( p( a ), p( b ) );
 
 			let batch0, batch1, batch2;

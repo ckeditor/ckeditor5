@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,7 @@
 }
 
 .ck.ck-responsive-form {
-	padding: var(--ck-spacing-standard);
+	padding: var(--ck-spacing-large);
 
 	&:focus {
 		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
@@ -35,7 +35,7 @@
 		width: calc(.8 * var(--ck-input-text-width));
 
 		& .ck-labeled-field-view {
-			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
+			margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
 
 			& .ck-input-text {
 				min-width: 0;
@@ -52,7 +52,7 @@
 		& > .ck-button:nth-last-child(1),
 		& > .ck-button:nth-last-child(2) {
 			padding: var(--ck-spacing-standard);
-			margin-top: var(--ck-spacing-standard);
+			margin-top: var(--ck-spacing-large);
 
 			border-radius: 0;
 			border: 0;

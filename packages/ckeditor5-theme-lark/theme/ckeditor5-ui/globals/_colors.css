@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -70,7 +70,7 @@
 	--ck-color-input-text: 										var(--ck-color-base-text);
 	--ck-color-input-disabled-background: 						hsl(0, 0%, 95%);
 	--ck-color-input-disabled-border: 							hsl(0, 0%, 78%);
-	--ck-color-input-disabled-text: 							hsl(0, 0%, 36%);
+	--ck-color-input-disabled-text: 							hsl(0, 0%, 46%);
 
 	/* -- List ---------------------------------------------------------------------------------- */
 

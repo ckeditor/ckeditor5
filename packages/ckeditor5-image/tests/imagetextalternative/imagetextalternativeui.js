@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -95,6 +95,19 @@ describe( 'ImageTextAlternativeUI', () => {
 			button.fire( 'execute' );
 			sinon.assert.calledOnce( spy );
 			expect( form.labeledInput.fieldView.value ).equals( '' );
+		} );
+
+		it( 'should disable CSS transitions before showing the form to avoid unnecessary animations (and then enable them again)', () => {
+			const addSpy = sinon.spy( balloon, 'add' );
+			const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+			const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
+			const selectSpy = sinon.spy( form.labeledInput.fieldView, 'select' );
+
+			setData( model, '[<image src="" alt="foo bar"></image>]' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, selectSpy, enableCssTransitionsSpy );
 		} );
 	} );
 

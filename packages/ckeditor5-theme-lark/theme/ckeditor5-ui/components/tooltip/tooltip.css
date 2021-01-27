@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -58,7 +58,8 @@
 	 *     +-----------+
 	 */
 	&.ck-tooltip_s,
-	&.ck-tooltip_sw {
+	&.ck-tooltip_sw,
+	&.ck-tooltip_se {
 		bottom: calc(-1 * var(--ck-tooltip-arrow-size));
 		transform: translateY( 100% );
 
@@ -97,6 +98,31 @@
 	}
 
 	/**
+	 * A class that displays the tooltip south-east of the element.
+	 *
+	 *  [element]
+	 *      ^
+	 *    +-----------+
+	 *    |  Tooltip  |
+	 *    +-----------+
+	 */
+	&.ck-tooltip_se {
+		left: 50%;
+		right: auto;
+
+		& .ck-tooltip__text {
+			right: auto;
+			left: calc( -2 * var(--ck-tooltip-arrow-size));
+		}
+
+		& .ck-tooltip__text::after {
+			right: auto;
+			left: 0;
+			transform: translateX( 50% );
+		}
+	}
+
+	/**
 	 * A class that displays the tooltip north of the element.
 	 *
 	 *     +-----------+
@@ -114,6 +140,55 @@
 			transform: translateX( -50% );
 			border-color: var(--ck-color-tooltip-background) transparent transparent transparent;
 			border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size);
+		}
+	}
+
+	/**
+	 * A class that displays the tooltip east of the element.
+	 *
+	 *                +----------+
+	 *    [element] < |   east   |
+	 *                +----------+
+	 */
+	&.ck-tooltip_e {
+		left: calc(100% + var(--ck-tooltip-arrow-size));
+		top: 50%;
+
+		& .ck-tooltip__text {
+			left: 0;
+			transform: translateY( -50% );
+
+			&::after {
+				left: calc(-1 * var(--ck-tooltip-arrow-size));
+				top: calc(50% - 1 * var(--ck-tooltip-arrow-size));
+				border-color: transparent var(--ck-color-tooltip-background) transparent transparent;
+				border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0;
+			}
+		}
+	}
+
+	/**
+	 * A class that displays the tooltip west of the element.
+	 *
+	 *    +----------+
+	 *    |   west   | > [element]
+	 *    +----------+
+	 */
+	&.ck-tooltip_w {
+		right: calc(100% + var(--ck-tooltip-arrow-size));
+		left: auto;
+		top: 50%;
+
+		& .ck-tooltip__text {
+			left: 0;
+			transform: translateY( -50% );
+
+			&::after {
+				left: 100%;
+				top: calc(50% - 1 * var(--ck-tooltip-arrow-size));
+				border-color: transparent transparent transparent var(--ck-color-tooltip-background);
+				border-width: var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size);
+			}
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,19 @@
 			flex-wrap: wrap;
 
 			& .ck.ck-toolbar {
-				flex-grow: 0;
+				&:first-of-type {
+					/* 4 buttons out of 7 (h-alignment + v-alignment) = 0.57 */
+					flex-grow: 0.57;
+				}
+
+				&:last-of-type {
+					/* 3 buttons out of 7 (h-alignment + v-alignment) = 0.43 */
+					flex-grow: 0.43;
+				}
+
+				& .ck-button {
+					flex-grow: 1;
+				}
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -50,7 +50,7 @@ msgstr "نوارابزار کشویی"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr ""
+msgstr "نمایش گزینه‌های بیشتر"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

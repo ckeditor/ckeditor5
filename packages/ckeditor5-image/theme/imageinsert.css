@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 .ck.ck-image-insert__panel {
-	padding: var(--ck-spacing-standard);
+	padding: var(--ck-spacing-large);
 }
 
 .ck.ck-image-insert__ck-finder-button {

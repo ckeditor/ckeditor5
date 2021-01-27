@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -104,6 +104,16 @@ describe( 'FontSizeEditing', () => {
 			describe( 'data pipeline conversions', () => {
 				it( 'should convert from an element with defined style when with other styles', () => {
 					const data = '<p>f<span style="font-family: Other;font-size: 18px">o</span>o</p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
+				} );
+
+				it( 'should convert from a nested element', () => {
+					const data = '<p>f<span><span><span><span style="font-size: 18px">o</span></span></span></span>o</p>';
 
 					editor.setData( data );
 

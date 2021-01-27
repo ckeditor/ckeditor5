@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import { waitForAllImagesLoaded } from '@ckeditor/ckeditor5-image/tests/imageresize/_utils/utils';
 
 describe( 'WidgetResize - integration', () => {
 	let editor, model, view, viewDocument, editorElement;
@@ -36,10 +37,12 @@ describe( 'WidgetResize - integration', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should not fire viewDocument#mousedown events after starting resizing', () => {
+	it( 'should not fire viewDocument#mousedown events after starting resizing', async () => {
 		const eventSpy = sinon.spy().named( 'ViewDocument#mousedown' );
 
 		setModelData( model, '[<image src="/assets/sample.png"></image>]' );
+
+		await waitForAllImagesLoaded( editor );
 
 		const resizeSquareUI = [ ...viewDocument.getRoot().getChild( 0 ).getChildren() ]
 			.find( element => element.hasClass( 'ck-widget__resizer' ) );

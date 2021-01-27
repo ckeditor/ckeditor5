@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -2221,7 +2221,7 @@ describe( 'TableKeyboard', () => {
 
 					// The editing view must be focused because otherwise in Chrome the DOM selection will not contain
 					// any ranges and jumpOverUiElement will crash (for the right arrow when shift is pressed).
-					editor.focus();
+					editor.editing.view.focus();
 				} );
 
 				afterEach( async () => {

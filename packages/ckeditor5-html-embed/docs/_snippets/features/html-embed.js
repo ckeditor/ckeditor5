@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -88,16 +88,16 @@ ClassicEditor
 				'bulletedList',
 				'numberedList',
 				'|',
-				'outdent',
-				'indent',
-				'|',
+				'htmlEmbed',
+				'codeBlock',
 				'blockQuote',
 				'link',
 				'imageUpload',
 				'mediaEmbed',
 				'insertTable',
-				'codeBlock',
-				'htmlEmbed',
+				'|',
+				'outdent',
+				'indent',
 				'|',
 				'undo',
 				'redo'
@@ -162,6 +162,12 @@ ClassicEditor
 			iframeElement.contentWindow.document.open();
 			iframeElement.contentWindow.document.write( html );
 			iframeElement.contentWindow.document.close();
+		} );
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
+			text: 'Click here to insert new HTML snippet.',
+			editor
 		} );
 	} )
 	.catch( err => {

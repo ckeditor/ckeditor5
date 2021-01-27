@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -424,7 +424,7 @@ export default class ContextualBalloon extends Plugin {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
-				this.editor.focus();
+				this.editor.editing.view.focus();
 			}
 
 			this._showNextStack();
@@ -434,7 +434,7 @@ export default class ContextualBalloon extends Plugin {
 			// When current view has a focus then move focus to the editable before removing it,
 			// otherwise editor will lost focus.
 			if ( view.focusTracker.isFocused ) {
-				this.editor.focus();
+				this.editor.editing.view.focus();
 			}
 
 			this._showPrevStack();

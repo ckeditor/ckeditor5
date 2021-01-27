@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -140,7 +140,7 @@ export default class CKEditorError extends Error {
  * See also {@link module:utils/ckeditorerror~CKEditorError} for an explanation when to throw an error and when to log
  * a warning or an error to the console.
  *
- * @param {String} errorName Error name to be logged.
+ * @param {String} errorName The error name to be logged.
  * @param {Object} [data] Additional data to be logged.
  * @returns {String}
  */
@@ -149,8 +149,8 @@ export function logWarning( errorName, data ) {
 }
 
 /**
- * Logs an error to the console with properly formatted message and adds a link to the documentation.
- * Use whenever you want to log a error to the console.
+ * Logs an error to the console with a properly formatted message and adds a link to the documentation.
+ * Use whenever you want to log an error to the console.
  *
  *		/**
  *		 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -165,7 +165,7 @@ export function logWarning( errorName, data ) {
  *
  * See also {@link module:utils/ckeditorerror~CKEditorError} for an explanation when to use each method.
  *
- * @param {String} errorName Error name to be logged.
+ * @param {String} errorName The error name to be logged.
  * @param {Object} [data] Additional data to be logged.
  * @returns {String}
  */

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -240,9 +240,7 @@ describe( 'image widget utils', () => {
 		it( 'should insert image at selection position as other widgets', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			model.change( writer => {
-				insertImage( writer, model );
-			} );
+			insertImage( model );
 
 			expect( getModelData( model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
 		} );
@@ -250,9 +248,7 @@ describe( 'image widget utils', () => {
 		it( 'should insert image with given attributes', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			model.change( writer => {
-				insertImage( writer, model, { src: 'bar' } );
-			} );
+			insertImage( model, { src: 'bar' } );
 
 			expect( getModelData( model ) ).to.equal( '[<image src="bar"></image>]<paragraph>foo</paragraph>' );
 		} );
@@ -268,9 +264,7 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			model.change( writer => {
-				insertImage( writer, model );
-			} );
+			insertImage( model );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );

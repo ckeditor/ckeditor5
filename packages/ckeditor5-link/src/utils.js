@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,7 +35,7 @@ export function isLinkElement( node ) {
 }
 
 /**
- * Creates link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
  *
  * @param {String} href
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
@@ -154,11 +154,11 @@ export function isEmail( value ) {
 }
 
 /**
- * Adds protocol prefix to the specified `link` when:
+ * Adds the protocol prefix to the specified `link` when:
  *
- * * it doesn't contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
- * config value provided
- * * or the link is an email address
+ * * it does not contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
+ * configuration value provided,
+ * * or the link is an email address.
  *
  *
  * @params {String} link

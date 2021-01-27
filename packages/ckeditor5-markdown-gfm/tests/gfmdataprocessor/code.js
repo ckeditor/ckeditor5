@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -310,6 +310,37 @@ describe( 'GFMDataProcessor', () => {
 				'```\n' +
 				'````' +
 				'</code></pre>'
+			);
+		} );
+
+		it( 'should support #registerRawContentMatcher()', () => {
+			const viewFragment = testDataProcessor(
+				[
+					'```raw',
+					'var a = \'hello\';',
+					'console.log(a + \' world\');',
+					'```'
+				].join( '\n' ),
+
+				'<pre><code class="language-raw"></code></pre>',
+
+				'',
+
+				{
+					setup( processor ) {
+						processor.registerRawContentMatcher( {
+							name: 'code',
+							classes: 'language-raw'
+						} );
+					}
+				}
+			);
+
+			expect( viewFragment.getChild( 0 ).getChild( 0 ).getCustomProperty( '$rawContent' ) ).to.equal(
+				[
+					'var a = \'hello\';',
+					'console.log(a + \' world\');'
+				].join( '\n' )
 			);
 		} );
 	} );

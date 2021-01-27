@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -130,12 +130,7 @@ describe( 'Upload utils', () => {
 		describe( 'image URL input view', () => {
 			it( 'should have placeholder', () => {
 				const view = createLabeledInputView( { t: val => val } );
-				expect( view.fieldView.placeholder ).to.equal( 'https://example.com/src/image.png' );
-			} );
-
-			it( 'should have info text', () => {
-				const view = createLabeledInputView( { t: val => val } );
-				expect( view.infoText ).to.match( /^Paste the image source URL/ );
+				expect( view.fieldView.placeholder ).to.equal( 'https://example.com/image.png' );
 			} );
 		} );
 	} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -149,7 +149,7 @@ export default class HighlightUI extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				editor.execute( 'highlight', { value } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			// Add additional behavior for buttonView.
@@ -228,7 +228,7 @@ export default class HighlightUI extends Plugin {
 			// Execute current action from dropdown's split button action button.
 			splitButtonView.on( 'execute', () => {
 				editor.execute( 'highlight', { value: splitButtonView.commandValue } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			// Returns active highlighter option depending on current command value.

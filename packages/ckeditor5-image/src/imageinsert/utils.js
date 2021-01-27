@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -70,8 +70,7 @@ export function createLabeledInputView( locale ) {
 	labeledInputView.set( {
 		label: t( 'Insert image via URL' )
 	} );
-	labeledInputView.fieldView.placeholder = 'https://example.com/src/image.png';
-	labeledInputView.infoText = t( 'Paste the image source URL.' );
+	labeledInputView.fieldView.placeholder = 'https://example.com/image.png';
 
 	return labeledInputView;
 }

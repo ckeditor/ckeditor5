@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -507,7 +507,31 @@ describe( 'table properties', () => {
 				expect( firstBatch ).to.not.equal( secondBatch );
 			} );
 
+			it( 'should start listening to EditorUI#update', () => {
+				const spy = sinon.spy( tablePropertiesUI, 'listenTo' );
+
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWith( spy, editor.ui, 'update' );
+			} );
+
 			describe( 'initial data', () => {
+				it( 'should be set before adding the form to the the balloon to avoid unnecessary input animations', () => {
+					const balloonAddSpy = testUtils.sinon.spy( editor.plugins.get( ContextualBalloon ), 'add' );
+					const borderStyleChangeSpy = testUtils.sinon.spy();
+
+					tablePropertiesView.on( 'change:borderStyle', borderStyleChangeSpy );
+
+					editor.commands.get( 'tableBorderStyle' ).value = 'a';
+					tablePropertiesButton.fire( 'execute' );
+
+					sinon.assert.calledOnce( borderStyleChangeSpy );
+					sinon.assert.calledOnce( balloonAddSpy );
+					sinon.assert.callOrder( borderStyleChangeSpy, balloonAddSpy );
+				} );
+
 				it( 'should be set from the command values', () => {
 					editor.commands.get( 'tableBorderStyle' ).value = 'a';
 					editor.commands.get( 'tableBorderColor' ).value = 'b';
@@ -593,6 +617,36 @@ describe( 'table properties', () => {
 				tablePropertiesView.fire( 'submit' );
 
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'Updating the #view', () => {
+			beforeEach( () => {
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+				} );
+
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+			} );
+
+			it( 'should reposition the baloon if table is selected', () => {
+				const spy = sinon.spy( contextualBalloon, 'updatePosition' );
+
+				editor.ui.fire( 'update' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should hide the view and not reposition the balloon if table is no longer selected', () => {
+				const positionSpy = sinon.spy( contextualBalloon, 'updatePosition' );
+				const hideSpy = sinon.spy( tablePropertiesUI, '_hideView' );
+
+				tablePropertiesView.fire( 'submit' );
+				expect( contextualBalloon.visibleView ).to.be.null;
+
+				sinon.assert.calledOnce( hideSpy );
+				sinon.assert.notCalled( positionSpy );
 			} );
 		} );
 	} );

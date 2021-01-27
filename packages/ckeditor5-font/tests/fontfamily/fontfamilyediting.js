@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -129,6 +129,16 @@ describe( 'FontFamilyEditing', () => {
 					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial,sans-serif">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( data );
+				} );
+
+				it( 'should convert from a nested element', () => {
+					const data = '<p>f<span><span><span><span style="font-family: Arial, sans-serif">o</span></span></span></span>o</p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial, sans-serif">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
 				} );
 			} );
 		} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -163,7 +163,7 @@ export default class LinkUI extends Plugin {
 		const linkCommand = editor.commands.get( 'link' );
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-		const formView = new LinkFormView( editor.locale, linkCommand, defaultProtocol );
+		const formView = new LinkFormView( editor.locale, linkCommand );
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
@@ -314,6 +314,8 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 
+		this.formView.disableCssTransitions();
+
 		this._balloon.add( {
 			view: this.formView,
 			position: this._getBalloonPositionData()
@@ -323,6 +325,8 @@ export default class LinkUI extends Plugin {
 		if ( this._balloon.visibleView === this.formView ) {
 			this.formView.urlInputView.fieldView.select();
 		}
+
+		this.formView.enableCssTransitions();
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView.fieldView#value` stays
@@ -371,7 +375,7 @@ export default class LinkUI extends Plugin {
 
 			// Because the form has an input which has focus, the focus must be brought back
 			// to the editor. Otherwise, it would be lost.
-			this.editor.focus();
+			this.editor.editing.view.focus();
 
 			this._hideFakeVisualSelection();
 		}
@@ -439,7 +443,7 @@ export default class LinkUI extends Plugin {
 
 		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
-		editor.focus();
+		editor.editing.view.focus();
 
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();
@@ -660,13 +664,15 @@ export default class LinkUI extends Plugin {
 				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
 			} else {
 				if ( range.start.isAtEnd ) {
-					const focus = model.document.selection.focus;
-					const nextValidRange = getNextValidRange( range, focus, writer );
+					const startPosition = range.start.getLastMatchingPosition(
+						( { item } ) => !model.schema.isContent( item ),
+						{ boundaries: range }
+					);
 
 					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
 						usingOperation: false,
 						affectsData: false,
-						range: nextValidRange
+						range: writer.createRange( startPosition, range.end )
 					} );
 				} else {
 					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
@@ -702,28 +708,4 @@ export default class LinkUI extends Plugin {
 // @returns {module:engine/view/attributeelement~AttributeElement|null} Link element at the position or null.
 function findLinkElementAncestor( position ) {
 	return position.getAncestors().find( ancestor => isLinkElement( ancestor ) );
-}
-
-// Returns next valid range for the fake visual selection marker.
-//
-// @private
-// @param {module:engine/model/range~Range} range Current range.
-// @param {module:engine/model/position~Position} focus Selection focus.
-// @param {module:engine/model/writer~Writer} writer Writer.
-// @returns {module:engine/model/range~Range} New valid range for the fake visual selection marker.
-function getNextValidRange( range, focus, writer ) {
-	const nextStartPath = [ range.start.path[ 0 ] + 1, 0 ];
-	const nextStartPosition = writer.createPositionFromPath( range.start.root, nextStartPath, 'toNext' );
-	const nextRange = writer.createRange( nextStartPosition, range.end );
-
-	// Block creating a potential next valid range over the current range end.
-	if ( nextRange.start.path[ 0 ] > range.end.path[ 0 ] ) {
-		return writer.createRange( focus );
-	}
-
-	if ( nextStartPosition.isAtStart && nextStartPosition.isAtEnd ) {
-		return getNextValidRange( nextRange, focus, writer );
-	}
-
-	return nextRange;
 }

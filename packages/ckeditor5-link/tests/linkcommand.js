@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -400,6 +400,17 @@ describe( 'LinkCommand', () => {
 				command.execute( '' );
 
 				expect( getData( model ) ).to.equal( '<p>foo[]bar</p>' );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/8210
+			it( 'should insert text with `linkHref` attribute just after text node with the same `linkHref` attribute', () => {
+				setData( model, '<$text linkHref="url">foo</$text>[]bar' );
+
+				model.change( writer => writer.overrideSelectionGravity() );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) ).to.equal( '<$text linkHref="url">foourl</$text>[]bar' );
 			} );
 		} );
 	} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -90,7 +90,7 @@ export default class SpecialCharacters extends Plugin {
 			// Insert a special character when a tile was clicked.
 			dropdownView.on( 'execute', ( evt, data ) => {
 				editor.execute( 'input', { text: data.character } );
-				editor.focus();
+				editor.editing.view.focus();
 			} );
 
 			dropdownView.on( 'change:isOpen', () => {

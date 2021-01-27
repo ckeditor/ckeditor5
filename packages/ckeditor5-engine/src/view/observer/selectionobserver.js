@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,11 +14,11 @@ import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
 
 /**
- * Selection observer class observes selection changes in the document. If selection changes on the document this
- * observer checks if there are any mutations and if DOM selection is different than the
- * {@link module:engine/view/document~Document#selection view selection}. Selection observer fires
- * {@link module:engine/view/document~Document#event:selectionChange} event only if selection change was the only change in the document
- * and DOM selection is different then the view selection.
+ * Selection observer class observes selection changes in the document. If a selection changes on the document this
+ * observer checks if there are any mutations and if the DOM selection is different from the
+ * {@link module:engine/view/document~Document#selection view selection}. The selection observer fires
+ * {@link module:engine/view/document~Document#event:selectionChange} event only if a selection change was the only change in the document
+ * and the DOM selection is different then the view selection.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
@@ -61,7 +61,7 @@ export default class SelectionObserver extends Observer {
 		this.domConverter = view.domConverter;
 
 		/**
-		 * Set of documents which have added "selectionchange" listener to avoid adding listener twice to the same
+		 * A set of documents which have added `selectionchange` listener to avoid adding a listener twice to the same
 		 * document.
 		 *
 		 * @private
@@ -119,8 +119,8 @@ export default class SelectionObserver extends Observer {
 
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
-	 * selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
-	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when selection stop changing.
+	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
+	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @private
 	 * @param {Event} domEvent DOM event.
@@ -140,8 +140,8 @@ export default class SelectionObserver extends Observer {
 		// Ensure the mutation event will be before selection event on all browsers.
 		this.mutationObserver.flush();
 
-		// If there were mutations then the view will be re-rendered by the mutation observer and selection
-		// will be updated, so selections will equal and event will not be fired, as expected.
+		// If there were mutations then the view will be re-rendered by the mutation observer and the selection
+		// will be updated, so the selections will equal and the event will not be fired, as expected.
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.
@@ -188,7 +188,7 @@ export default class SelectionObserver extends Observer {
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire( 'selectionChange', data );
 
-			// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
+			// Call `#_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 			// This function is debounced what means that `selectionChangeDone` event will be fired only when
 			// defined int the function time will elapse since the last time the function was called.
 			// So `selectionChangeDone` will be fired when selection will stop changing.
@@ -207,8 +207,8 @@ export default class SelectionObserver extends Observer {
 }
 
 /**
- * Fired when selection has changed. This event is fired only when the selection change was the only change that happened
- * in the document, and old selection is different then the new selection.
+ * Fired when a selection has changed. This event is fired only when the selection change was the only change that happened
+ * in the document, and the old selection is different then the new selection.
  *
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *

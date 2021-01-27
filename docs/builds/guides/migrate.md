@@ -337,7 +337,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_fileName">exportPdf_fileName</a> <br><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_options">exportPdf_options</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_service">exportPdf_service</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_stylesheets">exportPdf_stylesheets</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_tokenUrl">exportPdf_tokenUrl</a> <br>
 			</td>
 			<td>
-				Refer to the [Export to PDF feature](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) guide to learn more about about configuring the HTML to PDF converter in CKEditor 5.
+				Refer to the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html">Export to PDF feature</a> guide to learn more about about configuring the HTML to PDF converter in CKEditor 5.
 			</td>
 		</tr>
 		<tr>
@@ -648,7 +648,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroupCycling">toolbarGroupCycling</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroups">toolbarGroups</a></td>
-			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar Toolbar buttons can be grouped} by using <code>'|'</code> as a separator.</td>
+			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into multiple lines by using <code>'-'</code>.</td>
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarLocation">toolbarLocation</a></td>

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -177,6 +177,10 @@ describe( 'BalloonToolbar', () => {
 		clock.tick( 110 );
 		// And here it is.
 		sinon.assert.calledOnce( spy );
+	} );
+
+	it( 'should have the isFloating option set to true', () => {
+		expect( balloonToolbar.toolbarView.options.isFloating ).to.be.true;
 	} );
 
 	describe( 'pluginName', () => {

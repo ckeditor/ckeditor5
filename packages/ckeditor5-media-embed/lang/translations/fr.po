@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Label for the media widget."
 msgid "media widget"
-msgstr "widget média"
+msgstr "Widget média"
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"

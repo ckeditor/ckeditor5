@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -291,6 +291,18 @@ describe( 'DataController utils', () => {
 				'removes first element when it\'s empty but second element is not empty (different name)',
 				'<paragraph>x</paragraph><heading1>[foo</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
+				'should not merge if the end position of the selection is directly in a common ancestor',
+				'<paragraph><pchild>[foo</pchild>]<widget></widget></paragraph>',
+				'<paragraph><pchild>[]</pchild><widget></widget></paragraph>'
+			);
+
+			test(
+				'should not merge if the start position of the selection is directly in a common ancestor',
+				'<paragraph><widget></widget>[<pchild>foo]</pchild></paragraph>',
+				'<paragraph><widget></widget>[]<pchild></pchild></paragraph>'
 			);
 
 			// Note: in all these cases we ignore the direction of merge.

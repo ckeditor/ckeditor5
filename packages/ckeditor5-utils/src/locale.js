@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,7 @@
 
 /* globals console */
 
+import toArray from './toarray';
 import { _translate } from './translation-service';
 
 const RTL_LANGUAGE_CODES = [ 'ar', 'fa', 'he', 'ku', 'ug' ];
@@ -153,9 +154,7 @@ export default class Locale {
 	 * @returns {String}
 	 */
 	_t( message, values = [] ) {
-		if ( !Array.isArray( values ) ) {
-			values = [ values ];
-		}
+		values = toArray( values );
 
 		if ( typeof message === 'string' ) {
 			message = { string: message };

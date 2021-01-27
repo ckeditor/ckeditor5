@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -151,11 +151,13 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * A collection of selection markers.
+	 * A collection of selection {@link module:engine/model/markercollection~Marker markers}.
 	 * Marker is a selection marker when selection range is inside the marker range.
 	 *
+	 * **Note**: Only markers from {@link ~DocumentSelection#observeMarkers observed markers groups} are collected.
+	 *
 	 * @readonly
-	 * @type {module:utils/collection~Collection.<module:engine/model/markercollection~Marker>}
+	 * @type {module:utils/collection~Collection}
 	 */
 	get markers() {
 		return this._selection.markers;
@@ -362,6 +364,18 @@ export default class DocumentSelection {
 	refresh() {
 		this._selection._updateMarkers();
 		this._selection._updateAttributes( false );
+	}
+
+	/**
+	 * Registers a marker group prefix or a marker name to be collected in the
+	 * {@link ~DocumentSelection#markers selection markers collection}.
+	 *
+	 * See also {@link module:engine/model/markercollection~MarkerCollection#getMarkersGroup `MarkerCollection#getMarkersGroup()`}.
+	 *
+	 * @param {String} prefixOrName The marker group prefix or marker name.
+	 */
+	observeMarkers( prefixOrName ) {
+		this._selection.observeMarkers( prefixOrName );
 	}
 
 	/**
@@ -619,6 +633,11 @@ class LiveSelection extends Selection {
 		// @type {Set}
 		this._overriddenGravityRegister = new Set();
 
+		// Prefixes of marker names that should affect `LiveSelection#markers` collection.
+		// @private
+		// @type {Set}
+		this._observedMarkers = new Set();
+
 		// Ensure selection is correct after each operation.
 		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
@@ -662,7 +681,10 @@ class LiveSelection extends Selection {
 		} );
 
 		// Update markers data stored by the selection after each marker change.
-		this.listenTo( this._model.markers, 'update', () => this._updateMarkers() );
+		// This handles only marker changes done through marker operations (not model tree changes).
+		this.listenTo( this._model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
+			this._updateMarker( marker, newRange );
+		} );
 
 		// Ensure selection is up to date after each change block.
 		this.listenTo( this._document, 'change', ( evt, batch ) => {
@@ -798,6 +820,11 @@ class LiveSelection extends Selection {
 		}
 	}
 
+	observeMarkers( prefixOrName ) {
+		this._observedMarkers.add( prefixOrName );
+		this._updateMarkers();
+	}
+
 	_popRange() {
 		this._ranges.pop().detach();
 	}
@@ -846,10 +873,20 @@ class LiveSelection extends Selection {
 	}
 
 	_updateMarkers() {
+		if ( !this._observedMarkers.size ) {
+			return;
+		}
+
 		const markers = [];
 		let changed = false;
 
 		for ( const marker of this._model.markers ) {
+			const markerGroup = marker.name.split( ':', 1 )[ 0 ];
+
+			if ( !this._observedMarkers.has( markerGroup ) ) {
+				continue;
+			}
+
 			const markerRange = marker.getRange();
 
 			for ( const selectionRange of this.getRanges() ) {
@@ -871,6 +908,50 @@ class LiveSelection extends Selection {
 
 		for ( const marker of Array.from( this.markers ) ) {
 			if ( !markers.includes( marker ) ) {
+				this.markers.remove( marker );
+
+				changed = true;
+			}
+		}
+
+		if ( changed ) {
+			this.fire( 'change:marker', { oldMarkers, directChange: false } );
+		}
+	}
+
+	_updateMarker( marker, markerRange ) {
+		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
+
+		if ( !this._observedMarkers.has( markerGroup ) ) {
+			return;
+		}
+
+		let changed = false;
+
+		const oldMarkers = Array.from( this.markers );
+		const hasMarker = this.markers.has( marker );
+
+		if ( !markerRange ) {
+			if ( hasMarker ) {
+				this.markers.remove( marker );
+				changed = true;
+			}
+		} else {
+			let contained = false;
+
+			for ( const selectionRange of this.getRanges() ) {
+				if ( markerRange.containsRange( selectionRange, !selectionRange.isCollapsed ) ) {
+					contained = true;
+
+					break;
+				}
+			}
+
+			if ( contained && !hasMarker ) {
+				this.markers.add( marker );
+
+				changed = true;
+			} else if ( !contained && hasMarker ) {
 				this.markers.remove( marker );
 
 				changed = true;

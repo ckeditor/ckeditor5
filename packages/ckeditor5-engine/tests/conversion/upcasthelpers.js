@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -30,6 +30,8 @@ import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 import { StylesProcessor } from '../../src/view/stylesmap';
 import Writer from '../../src/model/writer';
+
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /* globals console */
 
@@ -899,7 +901,7 @@ describe( 'UpcastHelpers', () => {
 		const conversionResult = model.change( writer => upcastDispatcher.convert( viewToConvert, writer ) );
 
 		if ( markers ) {
-			markers = Array.isArray( markers ) ? markers : [ markers ];
+			markers = toArray( markers );
 
 			for ( const marker of markers ) {
 				expect( conversionResult.markers.has( marker.name ) ).to.be.true;
