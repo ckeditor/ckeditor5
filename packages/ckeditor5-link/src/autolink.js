@@ -27,10 +27,20 @@ const URL_REG_EXP = new RegExp(
 			// BasicAuth using user:pass (optional)
 			'(?:\\S+(?::\\S*)?@)?' +
 			'(?:' +
-				// Host & domain names.
-				'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
-				// TLD identifier name.
-				'(?:[a-z\\u00a1-\\uffff]{2,})' +
+				// IP address
+				'(' +
+					'(' +
+						'(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|0)\\.' + // a value between 0 and 255
+					'){3}' +
+					'(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|0)' +
+				')' +
+				'|' +
+				'(' +
+					// Host & domain names.
+					'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
+					// TLD identifier name.
+					'(?:[a-z\\u00a1-\\uffff]{2,})' +
+				')' +
 			')' +
 			// port number (optional)
 			'(?::\\d{2,5})?' +

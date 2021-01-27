@@ -271,7 +271,11 @@ describe( 'AutoLink', () => {
 				'http://例子.测试',
 				'http://उदाहरण.परीक्षा',
 				'http://1337.net',
-				'http://a.b-c.de'
+				'http://a.b-c.de',
+				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
+				'http://127.0.0.1/ckeditor5/latest/features/link.html',
+				'http://255.127.13.40',
+				'http://userid@255.127.13.40'
 			];
 
 			for ( const supportedURL of supportedURLs ) {
@@ -311,7 +315,8 @@ describe( 'AutoLink', () => {
 				'http://localhost',
 				'http:/cksource.com',
 				'cksource.com',
-				'ww.cksource.com'
+				'ww.cksource.com',
+				'www.cksource'
 			];
 
 			for ( const unsupportedURL of unsupportedOrInvalid ) {
