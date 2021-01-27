@@ -20,7 +20,7 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert media' ),
-			text: 'Click to insert media.',
+			text: 'Click to embed media.',
 			editor
 		} );
 	} )
