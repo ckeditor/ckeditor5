@@ -28,7 +28,7 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert image or file' ),
-			text: 'Click to insert an image.',
+			text: 'Click to open a file manager.',
 			editor
 		} );
 	} )
