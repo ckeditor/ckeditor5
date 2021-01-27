@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -95,7 +95,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 		// Register div.raw-html-embed as a raw content element so all of it's content will be provided
 		// as a view element's custom property while data upcasting.
-		editor.data.processor.registerRawContentMatcher( {
+		editor.data.registerRawContentMatcher( {
 			name: 'div',
 			classes: 'raw-html-embed'
 		} );
@@ -183,6 +183,8 @@ export default class HtmlEmbedEditing extends Plugin {
 						if ( newValue !== state.getRawHtmlValue() ) {
 							editor.execute( 'updateHtmlEmbed', newValue );
 							editor.editing.view.focus();
+						} else {
+							this.cancel();
 						}
 					},
 					cancel() {
@@ -325,13 +327,27 @@ export default class HtmlEmbedEditing extends Plugin {
 		}
 
 		function createPreviewContainer( { domDocument, state, props, editor } ) {
-			const domPreviewContainer = createElement( domDocument, 'div', {
-				class: 'raw-html-embed__preview',
+			const sanitizedOutput = props.sanitizeHtml( state.getRawHtmlValue() );
+			const placeholderText = state.getRawHtmlValue().length > 0 ?
+				t( 'No preview available' ) :
+				t( 'Empty snippet content' );
+
+			const domPreviewPlaceholder = createElement( domDocument, 'div', {
+				class: 'ck ck-reset_all raw-html-embed__preview-placeholder'
+			}, placeholderText );
+
+			const domPreviewContent = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview-content',
 				dir: editor.locale.contentLanguageDirection
 			} );
 
-			const sanitizeOutput = props.sanitizeHtml( state.getRawHtmlValue() );
-			domPreviewContainer.innerHTML = sanitizeOutput.html;
+			domPreviewContent.innerHTML = sanitizedOutput.html;
+
+			const domPreviewContainer = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview'
+			}, [
+				domPreviewPlaceholder, domPreviewContent
+			] );
 
 			return domPreviewContainer;
 		}

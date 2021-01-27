@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -115,7 +115,7 @@ export default class ImageCaptionEditing extends Plugin {
 		}
 
 		// Is currently any caption selected?
-		if ( viewCaption ) {
+		if ( viewCaption && !this.editor.isReadOnly ) {
 			// Was any caption selected before?
 			if ( lastCaption ) {
 				// Same caption as before?

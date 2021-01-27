@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -179,7 +179,7 @@ export default class BlockToolbar extends Plugin {
 		const factory = this.editor.ui.componentFactory;
 		const config = this._blockToolbarConfig;
 
-		this.toolbarView.fillFromConfig( config.items, factory );
+		this.toolbarView.fillFromConfig( config, factory );
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
