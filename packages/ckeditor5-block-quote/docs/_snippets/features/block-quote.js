@@ -36,7 +36,8 @@ ClassicEditor
 		// eslint-disable-next-line no-undef
 		setTimeout( () => window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Block quote' ),
-			text: 'Click to insert a block quote.'
+			text: 'Click to insert a block quote.',
+			editor
 		} ) );
 	} )
 	.catch( err => {
