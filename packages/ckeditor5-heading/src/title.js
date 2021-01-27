@@ -369,7 +369,7 @@ export default class Title extends Plugin {
 			}
 
 			// Then we need to display placeholder if it is needed.
-			if ( needsPlaceholder( body ) && viewRoot.childCount === 2 && body.name === 'p' ) {
+			if ( needsPlaceholder( body, true ) && viewRoot.childCount === 2 && body.name === 'p' ) {
 				hasChanged = showPlaceholder( writer, body ) ? true : hasChanged;
 			// Or hide if it is not needed.
 			} else {
