@@ -25,7 +25,8 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert table' ),
-			text: 'Click to create a table.'
+			text: 'Click to create a table.',
+			editor
 		} );
 	} )
 	.catch( err => {

@@ -36,7 +36,8 @@ ClassicEditor
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert code block'
 			),
-			text: 'Click to insert a code block.'
+			text: 'Click to insert a code block.',
+			editor
 		} );
 	} )
 	.catch( err => {

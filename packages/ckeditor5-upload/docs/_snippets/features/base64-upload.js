@@ -23,7 +23,8 @@ ClassicEditor
 			target: window.findToolbarItem(
 				editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert image'
 			),
-			text: 'Click to insert an image.'
+			text: 'Click to insert an image.',
+			editor
 		} ) );
 	} )
 	.catch( err => {

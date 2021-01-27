@@ -33,7 +33,8 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Text alignment' ),
-			text: 'Click to change text alignment.'
+			text: 'Click to change text alignment.',
+			editor
 		} );
 	} )
 	.catch( err => {

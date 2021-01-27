@@ -34,7 +34,8 @@ ClassicEditor
 			target: window.findToolbarItem(
 				editor.ui.view.toolbar, item => item.buttonView && item.buttonView.tooltip && item.buttonView.tooltip === 'Highlight'
 			),
-			text: 'Click to add highlight.'
+			text: 'Click to add highlight.',
+			editor
 		} );
 	} )
 	.catch( err => {

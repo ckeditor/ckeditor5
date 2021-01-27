@@ -69,7 +69,8 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Insert a math equation - MathType' ),
-			text: 'Click to insert math or chemical symbols.'
+			text: 'Click to insert math or chemical symbols.',
+			editor
 		} );
 	} )
 	.catch( err => {

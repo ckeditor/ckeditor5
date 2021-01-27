@@ -31,7 +31,8 @@ ClassicEditor
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Increase indent' ),
-			text: 'Click to indent or outdent a block.'
+			text: 'Click to indent or outdent a block.',
+			editor
 		} );
 	} )
 	.catch( err => {

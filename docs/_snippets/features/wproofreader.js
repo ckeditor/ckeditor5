@@ -69,7 +69,8 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'WProofreader' ),
-			text: 'Click for spellcheck options.'
+			text: 'Click for spellcheck options.',
+			editor
 		} );
 	} )
 	.catch( err => {

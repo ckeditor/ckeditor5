@@ -30,7 +30,8 @@ ClassicEditor
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Select all' ),
-			text: 'Click to select everything.'
+			text: 'Click to select everything.',
+			editor
 		} );
 	} )
 	.catch( err => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console */
+/* globals window, document, console, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
@@ -33,10 +33,10 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		// eslint-disable-next-line no-undef
 		setTimeout( () => window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Block quote' ),
-			text: 'Click to insert a block quote.'
+			text: 'Click to insert a block quote.',
+			editor
 		} ) );
 	} )
 	.catch( err => {

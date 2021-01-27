@@ -22,7 +22,8 @@ ClassicEditor
 			target: window.findToolbarItem(
 				editor.ui.view.toolbar, item => item.label && item.label === 'Heading 1'
 			),
-			text: 'Click to choose heading level.'
+			text: 'Click to choose heading level.',
+			editor
 		} );
 	} )
 	.catch( err => {
