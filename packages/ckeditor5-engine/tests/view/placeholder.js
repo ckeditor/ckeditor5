@@ -432,7 +432,7 @@ describe( 'placeholder', () => {
 
 			const element = viewRoot.getChild( 0 );
 
-			expect( needsPlaceholder( element, false ) ).to.be.true;
+			expect( needsPlaceholder( element, true ) ).to.be.true;
 		} );
 	} );
 } );
