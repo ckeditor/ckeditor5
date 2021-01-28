@@ -273,7 +273,7 @@ describe( 'AutoLink', () => {
 				'http://1337.net',
 				'http://a.b-c.de',
 				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
-				'http://127.0.0.1/ckeditor5/latest/features/link.html',
+				'http://192.168.43.58/ckeditor5/latest/features/link.html',
 				'http://83.127.13.40',
 				'http://userid@83.127.13.40'
 			];
