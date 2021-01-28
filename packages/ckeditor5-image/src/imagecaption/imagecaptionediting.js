@@ -14,6 +14,8 @@ import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placehold
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 import { isImage } from '../image/utils';
 import { matchImageCaptionViewElement } from './utils';
+import ImageInlineEditing from '../image/imageinlineediting';
+import ImageBlockEditing from '../image/imageblockediting';
 
 /**
  * The image caption engine plugin.
@@ -40,14 +42,6 @@ export default class ImageCaptionEditing extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.t;
 
-		/**
-		 * The last selected caption editable.
-		 * It is used for hiding the editable when it is empty and the image widget is no longer selected.
-		 *
-		 * @private
-		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
-		 */
-
 		// Schema configuration.
 		schema.register( 'caption', {
 			allowIn: 'image',
@@ -55,13 +49,17 @@ export default class ImageCaptionEditing extends Plugin {
 			isLimit: true
 		} );
 
-		schema.extend( 'image', {
-			allowAttributes: [ 'caption' ]
-		} );
+		if ( editor.plugins.get( ImageBlockEditing ) ) {
+			schema.extend( 'image', {
+				allowAttributes: [ 'caption' ]
+			} );
+		}
 
-		schema.extend( 'imageInline', {
-			allowAttributes: [ 'caption' ]
-		} );
+		if ( editor.plugins.get( ImageInlineEditing ) ) {
+			schema.extend( 'imageInline', {
+				allowAttributes: [ 'caption' ]
+			} );
+		}
 
 		editor.commands.add( 'imageCaptionToggle', new ImageCaptionToggleCommand( this.editor ) );
 
@@ -72,36 +70,78 @@ export default class ImageCaptionEditing extends Plugin {
 		} );
 
 		// Model -> view converter for the data pipeline.
-		editor.conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'caption',
-			view: ( modelElement, { writer } ) => {
-				if ( !isImage( modelElement.parent ) ) {
-					return null;
-				}
+		editor.data.downcastDispatcher.on( 'insert:caption', captionModelToView( writer => {
+			return writer.createContainerElement( 'figcaption' );
+		} ) );
 
-				return writer.createContainerElement( 'figcaption' );
-			}
-		} );
+		// editor.conversion.for( 'dataDowncast' ).elementToElement( {
+		// 	model: 'caption',
+		// 	view: ( modelElement, { writer } ) => {
+		// 		if ( !isImage( modelElement.parent ) ) {
+		// 			return null;
+		// 		}
+
+		// 		return writer.createContainerElement( 'figcaption' );
+		// 	}
+		// } );
 
 		// Model -> view converter for the editing pipeline.
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'caption',
-			view: ( modelElement, { writer } ) => {
-				if ( !isImage( modelElement.parent ) ) {
-					return null;
-				}
+		editor.editing.downcastDispatcher.on( 'insert:caption', captionModelToView( writer => {
+			const figcaptionElement = writer.createEditableElement( 'figcaption' );
+			writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
 
-				const figcaptionElement = writer.createEditableElement( 'figcaption' );
-				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
+			enablePlaceholder( {
+				view,
+				element: figcaptionElement,
+				text: t( 'Enter image caption' )
+			} );
 
-				enablePlaceholder( {
-					view,
-					element: figcaptionElement,
-					text: t( 'Enter image caption' )
-				} );
+			return toWidgetEditable( figcaptionElement, writer );
+		} ) );
 
-				return toWidgetEditable( figcaptionElement, writer );
-			}
-		} );
+		// editor.conversion.for( 'editingDowncast' ).elementToElement( {
+		// 	model: 'caption',
+		// 	view: ( modelElement, { writer } ) => {
+		// 		if ( !isImage( modelElement.parent ) ) {
+		// 			return null;
+		// 		}
+
+		// 		const figcaptionElement = writer.createEditableElement( 'figcaption' );
+		// 		writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
+
+		// 		enablePlaceholder( {
+		// 			view,
+		// 			element: figcaptionElement,
+		// 			text: t( 'Enter image caption' )
+		// 		} );
+
+		// 		return toWidgetEditable( figcaptionElement, writer );
+		// 	}
+		// } );
 	}
+}
+
+// Creates a converter that converts image caption model element to view element.
+//
+// @private
+// @param {Function} elementCreator
+// @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
+// @returns {Function}
+function captionModelToView( elementCreator ) {
+	return ( evt, data, { consumable, mapper, writer } ) => {
+		const captionElement = data.item;
+
+		if ( isImage( captionElement.parent ) ) {
+			if ( !consumable.consume( captionElement, 'insert' ) ) {
+				return;
+			}
+
+			const viewImage = mapper.toViewElement( data.range.start.parent );
+			const viewCaption = elementCreator( writer );
+			const viewPosition = writer.createPositionAt( viewImage, 'end' );
+
+			writer.insert( viewPosition, viewCaption );
+			mapper.bindElements( captionElement, viewCaption );
+		}
+	};
 }
