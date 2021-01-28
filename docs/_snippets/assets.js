@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,13 +21,15 @@ import './tour-balloon.css';
  *		// Using a comparison callback to search for an item.
  *		window.attachTourBalloon( {
  *			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
- *			text: 'Tour text to help users discover the feature.'
+ *			text: 'Tour text to help users discover the feature.',
+ *			editor
  *		} );
  *
  *		// Using a toolbar item index.
  *		window.attachTourBalloon( {
  *			target: window.findToolbarItem( editor.ui.view.toolbar, 5 ),
- *			text: 'Tour text to help users discover the feature.'
+ *			text: 'Tour text to help users discover the feature.',
+ *			editor
  *		} );
  *
  *		// Specifying options of tippy.js, e.g. to customize the placement of the balloon.
@@ -35,6 +37,7 @@ import './tour-balloon.css';
  *		window.attachTourBalloon( {
  *			target: window.findToolbarItem( editor.ui.view.toolbar, 5 ),
  *			text: 'Tour text to help users discover the feature.',
+ *			editor,
  *			tippyOptions: {
  *				placement: 'bottom-start'
  *			}
@@ -43,11 +46,18 @@ import './tour-balloon.css';
  * @param {Object} options Balloon options.
  * @param {HTMLElement} options.target A DOM node the balloon will point to.
  * @param {String} options.text The description to be shown in the tooltip.
+ * @param {module:core/editor/editor~Editor} options.editor The editor instance.
  * @param {Object} [options.tippyOptions] Additional [configuration of tippy.js](https://atomiks.github.io/tippyjs/v6/all-props/).
  */
-window.attachTourBalloon = function( { target, text, tippyOptions } ) {
+window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 	if ( !target ) {
 		console.warn( '[attachTourBalloon] The target DOM node for the feature tour balloon does not exist.', { text } );
+
+		return;
+	}
+
+	if ( !target.offsetParent ) {
+		console.warn( '[attachTourBalloon] The target DOM node is invisible and the balloon could not be attached.', { target, text } );
 
 		return;
 	}
@@ -82,6 +92,14 @@ window.attachTourBalloon = function( { target, text, tippyOptions } ) {
 	target.addEventListener( 'click', () => {
 		tooltip.hide();
 	} );
+
+	for ( const root of editor.editing.view.document.roots ) {
+		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
+			if ( isFocused ) {
+				tooltip.hide();
+			}
+		} );
+	}
 };
 
 /**
