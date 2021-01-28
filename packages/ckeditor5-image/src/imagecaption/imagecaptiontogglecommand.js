@@ -9,6 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
+
+import ImageBlockEditing from '../image/imageblockediting';
 import { isImage, isImageInline } from '../image/utils';
 import { getCaptionFromImageModelElement } from './utils';
 
@@ -22,7 +24,16 @@ export default class ImageCaptionToggleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selectedElement = this.editor.model.document.selection.getSelectedElement();
+		const editor = this.editor;
+
+		// Only block images can get captions.
+		if ( !editor.plugins.get( ImageBlockEditing ) ) {
+			this.isEnabled = this.value = false;
+
+			return;
+		}
+
+		const selectedElement = editor.model.document.selection.getSelectedElement();
 
 		if ( !selectedElement ) {
 			this.isEnabled = this.value = false;
@@ -47,12 +58,12 @@ export default class ImageCaptionToggleCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	execute( { focusCaptionOnShow } ) {
 		this.editor.model.change( writer => {
 			if ( this.value ) {
 				this._hideImageCaption( writer );
 			} else {
-				this._showImageCaption( writer );
+				this._showImageCaption( writer, focusCaptionOnShow );
 			}
 		} );
 	}
@@ -62,7 +73,7 @@ export default class ImageCaptionToggleCommand extends Command {
 	 * @private
 	 * @param {TODO} writer
 	 */
-	_showImageCaption( writer ) {
+	_showImageCaption( writer, focusCaptionOnShow ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
@@ -88,6 +99,10 @@ export default class ImageCaptionToggleCommand extends Command {
 		}
 
 		writer.append( newCaptionElement, selectedImage );
+
+		if ( focusCaptionOnShow ) {
+			writer.setSelection( newCaptionElement, 'end' );
+		}
 	}
 
 	/**

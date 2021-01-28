@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { getCaptionFromImageModelElement } from './utils';
 
 import captionIcon from '../../theme/icons/imagecaption.svg';
 
@@ -47,17 +46,7 @@ export default class ImageCaptionUI extends Plugin {
 			view.bind( 'label' ).to( command, 'value', value => value ? t( 'Toggle caption off' ) : t( 'Toggle caption on' ) );
 
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'imageCaptionToggle' );
-
-				// TODO: This is a questionable UX decision but maybe we'll like it.
-				if ( command.value ) {
-					editor.model.change( writer => {
-						const selectedElement = this.editor.model.document.selection.getSelectedElement();
-						const modelCaption = getCaptionFromImageModelElement( selectedElement );
-
-						writer.setSelection( modelCaption, 'end' );
-					} );
-				}
+				editor.execute( 'imageCaptionToggle', { focusCaptionOnShow: true } );
 			} );
 
 			return view;
