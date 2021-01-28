@@ -8,9 +8,9 @@ import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableele
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import {
 	captionElementCreator,
-	isCaption,
-	getCaptionFromImage,
-	matchImageCaption
+	isViewCaption,
+	getCaptionFromImageModelElement,
+	matchImageCaptionViewElement
 } from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
@@ -31,7 +31,7 @@ describe( 'image captioning utils', () => {
 		it( 'should create figcatpion editable element', () => {
 			expect( element ).to.be.instanceOf( ViewEditableElement );
 			expect( element.name ).to.equal( 'figcaption' );
-			expect( isCaption( element ) ).to.be.true;
+			expect( isViewCaption( element ) ).to.be.true;
 		} );
 
 		it( 'should attach placeholder', () => {
@@ -39,66 +39,66 @@ describe( 'image captioning utils', () => {
 		} );
 	} );
 
-	describe( 'isCaptionEditable', () => {
+	describe( 'isViewCaptionEditable', () => {
 		it( 'should return true for elements created with creator', () => {
-			expect( isCaption( element ) ).to.be.true;
+			expect( isViewCaption( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for other elements', () => {
 			const editable = new ViewEditableElement( document, 'figcaption', { contenteditable: true } );
 
-			expect( isCaption( editable ) ).to.be.false;
+			expect( isViewCaption( editable ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'getCaptionFromImage', () => {
+	describe( 'getCaptionFromImageModelElement', () => {
 		it( 'should return caption element from image element', () => {
 			const dummy = new ModelElement( 'dummy' );
 			const caption = new ModelElement( 'caption' );
 			const image = new ModelElement( 'image', null, [ dummy, caption ] );
 
-			expect( getCaptionFromImage( image ) ).to.equal( caption );
+			expect( getCaptionFromImageModelElement( image ) ).to.equal( caption );
 		} );
 
 		it( 'should return null when caption element is not present', () => {
 			const image = new ModelElement( 'image' );
 
-			expect( getCaptionFromImage( image ) ).to.be.null;
+			expect( getCaptionFromImageModelElement( image ) ).to.be.null;
 		} );
 	} );
 
-	describe( 'matchImageCaption', () => {
+	describe( 'matchImageCaptionViewElement', () => {
 		it( 'should return null for element that is not a figcaption', () => {
 			const element = new ViewElement( document, 'div' );
 
-			expect( matchImageCaption( element ) ).to.be.null;
+			expect( matchImageCaptionViewElement( element ) ).to.be.null;
 		} );
 
 		it( 'should return null if figcaption has no parent', () => {
 			const element = new ViewElement( document, 'figcaption' );
 
-			expect( matchImageCaption( element ) ).to.be.null;
+			expect( matchImageCaptionViewElement( element ) ).to.be.null;
 		} );
 
 		it( 'should return null if figcaption\'s parent is not a figure', () => {
 			const element = new ViewElement( document, 'figcaption' );
 			new ViewElement( document, 'div', null, element ); // eslint-disable-line no-new
 
-			expect( matchImageCaption( element ) ).to.be.null;
+			expect( matchImageCaptionViewElement( element ) ).to.be.null;
 		} );
 
 		it( 'should return null if parent has no image class', () => {
 			const element = new ViewElement( document, 'figcaption' );
 			new ViewElement( document, 'figure', null, element ); // eslint-disable-line no-new
 
-			expect( matchImageCaption( element ) ).to.be.null;
+			expect( matchImageCaptionViewElement( element ) ).to.be.null;
 		} );
 
 		it( 'should return object if element is a valid caption', () => {
 			const element = new ViewElement( document, 'figcaption' );
 			new ViewElement( document, 'figure', { class: 'image' }, element ); // eslint-disable-line no-new
 
-			expect( matchImageCaption( element ) ).to.deep.equal( { name: true } );
+			expect( matchImageCaptionViewElement( element ) ).to.deep.equal( { name: true } );
 		} );
 	} );
 } );

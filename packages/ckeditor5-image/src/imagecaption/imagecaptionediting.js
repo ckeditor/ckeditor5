@@ -8,9 +8,12 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { isImage } from '../image/utils';
 import ImageCaptionToggleCommand from './imagecaptiontogglecommand';
-import { createCaptionElement, matchImageCaption } from './utils';
+
+import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isImage } from '../image/utils';
+import { matchImageCaptionViewElement } from './utils';
 
 /**
  * The image caption engine plugin.
@@ -62,12 +65,13 @@ export default class ImageCaptionEditing extends Plugin {
 
 		editor.commands.add( 'imageCaptionToggle', new ImageCaptionToggleCommand( this.editor ) );
 
-		// View to model converter for the data pipeline.
+		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
-			view: matchImageCaption,
+			view: matchImageCaptionViewElement,
 			model: 'caption'
 		} );
 
+		// Model -> view converter for the data pipeline.
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
@@ -79,6 +83,7 @@ export default class ImageCaptionEditing extends Plugin {
 			}
 		} );
 
+		// Model -> view converter for the editing pipeline.
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
@@ -86,7 +91,16 @@ export default class ImageCaptionEditing extends Plugin {
 					return null;
 				}
 
-				return createCaptionElement( view, writer, t( 'Enter image caption' ) );
+				const figcaptionElement = writer.createEditableElement( 'figcaption' );
+				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
+
+				enablePlaceholder( {
+					view,
+					element: figcaptionElement,
+					text: t( 'Enter image caption' )
+				} );
+
+				return toWidgetEditable( figcaptionElement, writer );
 			}
 		} );
 	}

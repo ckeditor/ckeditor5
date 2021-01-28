@@ -9,9 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import { isImage, isImageInline } from '../image/utils';
-import { getCaptionFromImage } from './utils';
+import { getCaptionFromImageModelElement } from './utils';
 
 /**
  * TODO
@@ -32,12 +31,12 @@ export default class ImageCaptionToggleCommand extends Command {
 		}
 
 		// Only block images have captions.
-		this.isEnabled = isImage( selectedElement );
+		this.isEnabled = isImage( selectedElement ) || isImageInline( selectedElement );
 
 		if ( !this.isEnabled ) {
 			this.value = false;
 		} else {
-			this.value = !!getCaptionFromImage( selectedElement );
+			this.value = !!getCaptionFromImageModelElement( selectedElement );
 		}
 	}
 
@@ -49,41 +48,64 @@ export default class ImageCaptionToggleCommand extends Command {
 	 * @fires execute
 	 */
 	execute() {
-		const model = this.editor.model;
-		const selectedImage = model.document.selection.getSelectedElement();
-
-		model.change( writer => {
-			// Hiding the caption.
+		this.editor.model.change( writer => {
 			if ( this.value ) {
-				const captionElement = getCaptionFromImage( selectedImage );
-
-				// Store the caption content so it can be restored quickly if the user changes their mind
-				// even if they toggle image<->imageInline.
-
-				if ( captionElement.childCount ) {
-					writer.setAttribute( 'caption', captionElement.toJSON(), selectedImage );
-				}
-
-				writer.remove( captionElement );
-			}
-			// Showing a caption.
-			else {
-				let newCaptionElement;
-
-				if ( isImageInline( selectedImage ) ) {
-					// Convert imageInline -> image first.
-				}
-
-				// Try restoring the caption from the attribute.
-				if ( selectedImage.hasAttribute( 'caption' ) ) {
-					newCaptionElement = Element.fromJSON( selectedImage.getAttribute( 'caption' ) );
-					writer.removeAttribute( 'caption', selectedImage );
-				} else {
-					newCaptionElement = writer.createElement( 'caption' );
-				}
-
-				writer.append( newCaptionElement, selectedImage );
+				this._hideImageCaption( writer );
+			} else {
+				this._showImageCaption( writer );
 			}
 		} );
+	}
+
+	/**
+	 *
+	 * @private
+	 * @param {TODO} writer
+	 */
+	_showImageCaption( writer ) {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+
+		let selectedImage = selection.getSelectedElement();
+		let newCaptionElement;
+
+		// Convert imageInline -> image first.
+		if ( isImageInline( selectedImage ) ) {
+			this.editor.execute( 'imageTypeToggle' );
+
+			// Executing the command created a new model element. Let's pick it again.
+			selectedImage = selection.getSelectedElement();
+		}
+
+		// Try restoring the caption from the attribute.
+		if ( selectedImage.hasAttribute( 'caption' ) ) {
+			newCaptionElement = Element.fromJSON( selectedImage.getAttribute( 'caption' ) );
+
+			// The model attribute is no longer needed if the caption was is created.
+			writer.removeAttribute( 'caption', selectedImage );
+		} else {
+			newCaptionElement = writer.createElement( 'caption' );
+		}
+
+		writer.append( newCaptionElement, selectedImage );
+	}
+
+	/**
+	 *
+	 * @private
+	 * @param {TODO} writer
+	 */
+	_hideImageCaption( writer ) {
+		const model = this.editor.model;
+		const selectedImage = model.document.selection.getSelectedElement();
+		const captionElement = getCaptionFromImageModelElement( selectedImage );
+
+		// Store the caption content so it can be restored quickly if the user changes their mind
+		// even if they toggle image<->imageInline.
+		if ( captionElement.childCount ) {
+			writer.setAttribute( 'caption', captionElement.toJSON(), selectedImage );
+		}
+
+		writer.remove( captionElement );
 	}
 }
