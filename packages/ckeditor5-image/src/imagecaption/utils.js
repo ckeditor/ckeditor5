@@ -13,23 +13,24 @@ import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 /**
  * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.
  *
+ * TODO
+ *
  * @param {module:engine/view/view~View} view
+ * @param TODO
  * @param {String} placeholderText The text to be displayed when the caption is empty.
- * @returns {Function}
+ * @returns {TODO}
  */
-export function captionElementCreator( view, placeholderText ) {
-	return writer => {
-		const editable = writer.createEditableElement( 'figcaption' );
-		writer.setCustomProperty( 'imageCaption', true, editable );
+export function createCaptionElement( view, writer, placeholderText ) {
+	const editable = writer.createEditableElement( 'figcaption' );
+	writer.setCustomProperty( 'imageCaption', true, editable );
 
-		enablePlaceholder( {
-			view,
-			element: editable,
-			text: placeholderText
-		} );
+	enablePlaceholder( {
+		view,
+		element: editable,
+		text: placeholderText
+	} );
 
-		return toWidgetEditable( editable, writer );
-	};
+	return toWidgetEditable( editable, writer );
 }
 
 /**

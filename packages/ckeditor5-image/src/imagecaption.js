@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageCaptionEditing from './imagecaption/imagecaptionediting';
+import ImageCaptionUI from './imagecaption/imagecaptionui';
 
 import '../theme/imagecaption.css';
 
@@ -24,7 +25,7 @@ export default class ImageCaption extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageCaptionEditing ];
+		return [ ImageCaptionEditing, ImageCaptionUI ];
 	}
 
 	/**

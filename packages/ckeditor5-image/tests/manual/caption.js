@@ -28,7 +28,7 @@ ClassicEditor
 		],
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageCaptionToggle', '|', 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
 	} )
 	.then( editor => {
