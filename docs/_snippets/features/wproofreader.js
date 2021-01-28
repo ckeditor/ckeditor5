@@ -65,6 +65,13 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'WProofreader' ),
+			text: 'Click for spell and grammar checking.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
