@@ -5,7 +5,7 @@ Changelog
 
 ### Release highlights
 
-We are happy to announce the release of CKEditor 5 v25.0.0.
+We are happy to announce the release of CKEditor 5 v25.0.0 that contains a security fix for the [Markdown-GFM package](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm). Even though this is a low impact issue and only affects the victim’s browser with no risk of data leakage, an upgrade is highly recommended! You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-hgmg-hhc8-g5wr) and [contact us](https://ckeditor.com/contact/) if you have more questions.
 
 This release brings a few improvements and bug fixes:
 
@@ -14,7 +14,7 @@ This release brings a few improvements and bug fixes:
 * [Uploading Base64 images will no longer cause a CSP violation](https://github.com/ckeditor/ckeditor5/issues/7957).
 * [Unlinking an image will not crash the editor anymore](https://github.com/ckeditor/ckeditor5/issues/8401).
 
-<!-- TODO: Add a link to the blog post. -->
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v25.0.0-with-flexible-annotations-improved-text-blocks-handling-and-performance-fixes/
 
 ### Collaboration features
 
