@@ -7,8 +7,7 @@
  * @module core/plugincollection
  */
 
-import CKEditorError, { logError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
@@ -163,8 +162,7 @@ export default class PluginCollection {
 	 * Initializes a set of plugins and adds them to the collection.
 	 *
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
-	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}. The second option (names) works only if
-	 * `availablePlugins` were passed to the {@link #constructor}.
+	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}.
 	 * @param {Array.<String|Function>} [removePlugins] Names of the plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
@@ -173,214 +171,207 @@ export default class PluginCollection {
 	init( plugins, removePlugins = [] ) {
 		const that = this;
 		const context = this._context;
-		const loading = new Set();
-		const loaded = [];
-		const loadedPluginsNames = new Set();
 
-		const pluginsMap = new Map();
+		addPluginConstructors( plugins, { withDependencies: false } );
 
-		for ( const pluginOrName of plugins ) {
-			if ( typeof pluginOrName == 'function' && pluginOrName.pluginName ) {
-				pluginsMap.set( pluginOrName.pluginName, pluginOrName );
-			}
+		validatePlugins( plugins );
+
+		addPluginConstructors( plugins, { withDependencies: true } );
+
+		const pluginsToLoad = [ ...getPluginsToLoad( plugins ) ];
+
+		return Promise
+			.all( loadPlugins( pluginsToLoad ) )
+			.then( loadedPlugins => initPlugins( loadedPlugins, 'init' ) )
+			.then( loadedPlugins => initPlugins( loadedPlugins, 'afterInit' ) );
+
+		function isPluginConstructor( pluginNameOrConstructor ) {
+			return typeof pluginNameOrConstructor === 'function';
 		}
 
-		const pluginConstructors = mapToAvailableConstructors( plugins );
-		const removePluginConstructors = mapToAvailableConstructors( removePlugins );
-		const missingPlugins = getMissingPluginNames( plugins );
-
-		if ( missingPlugins ) {
-			/**
-			 * Some plugins are not available and could not be loaded.
-			 *
-			 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
-			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
-			 * property.
-			 *
-			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
-			 * that you try to enable a plugin which was not included in that build. This may be due to a typo
-			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
-			 * read more about {@glink builds/guides/development/custom-builds custom builds}.
-			 *
-			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
-			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
-			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
-			 * provide each plugin through a reference (as a constructor function). Check out the examples in
-			 * {@glink builds/guides/integration/advanced-setup#scenario-2-building-from-source "Building from source"}.
-			 *
-			 * @error plugincollection-plugin-not-found
-			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
-			 */
-			const errorId = 'plugincollection-plugin-not-found';
-
-			// Log the error, so it's more visible on the console. Hopefully, for a better DX.
-			logError( errorId, { plugins: missingPlugins } );
-
-			return Promise.reject( new CKEditorError( errorId, context, { plugins: missingPlugins } ) );
+		function getPluginName( pluginNameOrConstructor ) {
+			return isPluginConstructor( pluginNameOrConstructor ) ?
+				pluginNameOrConstructor.pluginName || pluginNameOrConstructor.name :
+				pluginNameOrConstructor;
 		}
 
-		return Promise.all( pluginConstructors.map( loadPlugin ) )
-			.then( () => initPlugins( loaded, 'init' ) )
-			.then( () => initPlugins( loaded, 'afterInit' ) )
-			.then( () => loaded );
-
-		function loadPlugin( PluginConstructor ) {
-			if ( removePluginConstructors.includes( PluginConstructor ) ) {
-				return;
-			}
-
-			// The plugin is already loaded or being loaded - do nothing.
-			if ( that._plugins.has( PluginConstructor ) || loading.has( PluginConstructor ) ) {
-				return;
-			}
-
-			return instantiatePlugin( PluginConstructor )
-				.catch( err => {
-					/**
-					 * It was not possible to load the plugin.
-					 *
-					 * If you correctly handled the promise returned by the editor's `create()` method (as shown below),
-					 * you will find the error details (i.e. the required plugin's name and the plugin's name that was
-					 * requiring the failed one) logged to the console:
-					 *
-					 *		ClassicEditor.create( document.getElementById( 'editor' ) )
-					 *			.then( editor => {
-					 *				// ...
-					 * 			} )
-					 *			.catch( error => {
-					 *				console.error( error );
-					 *			} );
-					 */
-
-					throw err;
-				} );
-		}
-
-		function initPlugins( loadedPlugins, method ) {
-			return loadedPlugins.reduce( ( promise, plugin ) => {
-				if ( !plugin[ method ] ) {
-					return promise;
+		function addPluginConstructors( pluginNamesOrConstructors, { withDependencies }, processed = new Set() ) {
+			pluginNamesOrConstructors.forEach( pluginNameOrConstructor => {
+				if ( processed.has( pluginNameOrConstructor ) ) {
+					return;
 				}
 
-				if ( that._contextPlugins.has( plugin ) ) {
-					return promise;
+				if ( isPluginConstructor( pluginNameOrConstructor ) ) {
+					processed.add( pluginNameOrConstructor );
+
+					if ( pluginNameOrConstructor.pluginName ) {
+						that._availablePlugins.set( pluginNameOrConstructor.pluginName, pluginNameOrConstructor );
+					}
+
+					if ( withDependencies && pluginNameOrConstructor.requries ) {
+						addPluginConstructors( pluginNameOrConstructor.requries, { withDependencies }, processed );
+					}
 				}
-
-				return promise.then( plugin[ method ].bind( plugin ) );
-			}, Promise.resolve() );
-		}
-
-		function instantiatePlugin( PluginConstructor ) {
-			return new Promise( resolve => {
-				loading.add( PluginConstructor );
-
-				if ( PluginConstructor.requires ) {
-					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
-						if ( loadedPluginsNames.has( RequiredPluginConstructorOrName ) ) {
-							return;
-						}
-
-						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
-
-						if ( !RequiredPluginConstructor ) {
-							/**
-							 * A required "soft" dependency was not found on plugin list.
-							 *
-							 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
-							 * This is usually done in CKEditor 5 builds by setting the
-							 * {@link module:core/editor/editor~Editor.builtinPlugins} property. Alternatively they can be provided using
-							 * {@link module:core/editor/editorconfig~EditorConfig#plugins} or
-							 * {@link module:core/editor/editorconfig~EditorConfig#extraPlugins} configuration.
-							 *
-							 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
-							 * that you didn't add the required plugin to the plugins list when loading the editor.
-							 *
-							 * @error plugincollection-soft-required
-							 * @param {String} plugin The name of the required plugin.
-							 * @param {String} requiredBy The name of the plugin that was requiring other plugin.
-							 */
-							throw new CKEditorError(
-								'plugincollection-soft-required',
-								null,
-								{ plugin: RequiredPluginConstructorOrName, requiredBy: PluginConstructor.name }
-							);
-						}
-
-						if ( PluginConstructor.isContextPlugin && !RequiredPluginConstructor.isContextPlugin ) {
-							/**
-							 * If a plugin is a context plugin, all plugins it requires should also be context plugins
-							 * instead of plugins. In other words, if one plugin can be used in the context,
-							 * all its requirements should also be ready to be used in the context. Note that the context
-							 * provides only a part of the API provided by the editor. If one plugin needs a full
-							 * editor API, all plugins which require it are considered as plugins that need a full
-							 * editor API.
-							 *
-							 * @error plugincollection-context-required
-							 * @param {String} plugin The name of the required plugin.
-							 * @param {String} requiredBy The name of the parent plugin.
-							 */
-							throw new CKEditorError(
-								'plugincollection-context-required',
-								null,
-								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
-							);
-						}
-
-						if ( removePlugins.includes( RequiredPluginConstructor ) ) {
-							/**
-							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
-							 *
-							 * @error plugincollection-required
-							 * @param {String} plugin The name of the required plugin.
-							 * @param {String} requiredBy The name of the parent plugin.
-							 */
-							throw new CKEditorError(
-								'plugincollection-required',
-								context,
-								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
-							);
-						}
-
-						loadPlugin( RequiredPluginConstructor );
-					} );
-				}
-
-				const plugin = that._contextPlugins.get( PluginConstructor ) || new PluginConstructor( context );
-				that._add( PluginConstructor, plugin );
-				loaded.push( plugin );
-
-				if ( PluginConstructor.pluginName ) {
-					loadedPluginsNames.add( PluginConstructor.pluginName );
-				}
-
-				resolve();
 			} );
 		}
 
-		function getPluginConstructor( PluginConstructorOrName ) {
-			if ( typeof PluginConstructorOrName == 'function' ) {
-				return PluginConstructorOrName;
-			}
+		function getPluginsToLoad( pluginNamesOrConstructors ) {
+			return pluginNamesOrConstructors
+				.map( pluginNameOrConstructor => {
+					return isPluginConstructor( pluginNameOrConstructor ) ?
+						pluginNameOrConstructor :
+						( that._availablePlugins.get( pluginNameOrConstructor ) || pluginNameOrConstructor );
+				} )
+				.reduce( ( result, pluginNameOrConstructor ) => {
+					if ( isPluginConstructor( pluginNameOrConstructor ) ) {
+						if ( result.has( pluginNameOrConstructor ) ) {
+							return result;
+						}
 
-			return that._availablePlugins.get( PluginConstructorOrName ) || pluginsMap.get( PluginConstructorOrName );
+						if ( pluginNameOrConstructor.requires ) {
+							const dependencies = pluginNameOrConstructor.requires
+								.map( pluginNameOrConstructor => {
+									return that._availablePlugins.get( pluginNameOrConstructor ) || pluginNameOrConstructor;
+								} );
+
+							validatePluginsFromDependencies( pluginNameOrConstructor, dependencies );
+
+							getPluginsToLoad( dependencies )
+								.forEach( pluginConstructor => result.add( pluginConstructor ) );
+						}
+
+						result.add( pluginNameOrConstructor );
+					}
+
+					return result;
+				}, new Set() );
 		}
 
-		function getMissingPluginNames( plugins ) {
-			const missingPlugins = [];
+		function validatePlugins( pluginNamesOrConstructors ) {
+			const missingPluginNames = pluginNamesOrConstructors
+				.filter( pluginNameOrConstructor => !isPluginConstructor( pluginNameOrConstructor ) )
+				.filter( pluginName => !that._availablePlugins.has( pluginName ) );
 
-			for ( const pluginNameOrConstructor of plugins ) {
-				if ( !getPluginConstructor( pluginNameOrConstructor ) ) {
-					missingPlugins.push( pluginNameOrConstructor );
+			if ( missingPluginNames.length ) {
+				/**
+				 * Some plugins are not available and could not be loaded.
+				 *
+				 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
+				 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
+				 * property.
+				 *
+				 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
+				 * that you try to enable a plugin which was not included in that build. This may be due to a typo
+				 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
+				 * read more about {@glink builds/guides/development/custom-builds custom builds}.
+				 *
+				 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
+				 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
+				 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
+				 * provide each plugin through a reference (as a constructor function). Check out the examples in
+				 * {@glink builds/guides/integration/advanced-setup#scenario-2-building-from-source "Building from source"}.
+				 *
+				 * @error plugincollection-plugin-not-found
+				 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
+				 */
+				throw new CKEditorError(
+					'plugincollection-plugin-not-found',
+					context,
+					{ plugins: missingPluginNames }
+				);
+			}
+		}
+
+		function validatePluginsFromDependencies( pluginConstructor, dependencies ) {
+			dependencies.forEach( pluginNameOrConstructor => {
+				const pluginName = getPluginName( pluginNameOrConstructor );
+				const requiringPluginName = getPluginName( pluginConstructor );
+
+				if ( !isPluginConstructor( pluginNameOrConstructor ) ) {
+					/**
+					 * A required "soft" dependency was not found on plugin list.
+					 *
+					 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
+					 * This is usually done in CKEditor 5 builds by setting the
+					 * {@link module:core/editor/editor~Editor.builtinPlugins} property. Alternatively they can be provided using
+					 * {@link module:core/editor/editorconfig~EditorConfig#plugins} or
+					 * {@link module:core/editor/editorconfig~EditorConfig#extraPlugins} configuration.
+					 *
+					 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
+					 * that you didn't add the required plugin to the plugins list when loading the editor.
+					 *
+					 * @error plugincollection-soft-required
+					 * @param {String} plugin The name of the required plugin.
+					 * @param {String} requiredBy The name of the plugin that was requiring other plugin.
+					 */
+					throw new CKEditorError(
+						'plugincollection-soft-required',
+						context,
+						{ plugin: pluginName, requiredBy: requiringPluginName }
+					);
 				}
-			}
 
-			return missingPlugins.length ? missingPlugins : null;
+				if ( pluginConstructor.isContextPlugin && !pluginNameOrConstructor.isContextPlugin ) {
+					/**
+					 * If a plugin is a context plugin, all plugins it requires should also be context plugins
+					 * instead of plugins. In other words, if one plugin can be used in the context,
+					 * all its requirements should also be ready to be used in the context. Note that the context
+					 * provides only a part of the API provided by the editor. If one plugin needs a full
+					 * editor API, all plugins which require it are considered as plugins that need a full
+					 * editor API.
+					 *
+					 * @error plugincollection-context-required
+					 * @param {String} plugin The name of the required plugin.
+					 * @param {String} requiredBy The name of the parent plugin.
+					 */
+					throw new CKEditorError(
+						'plugincollection-context-required',
+						context,
+						{ plugin: pluginName, requiredBy: requiringPluginName }
+					);
+				}
+
+				if ( removePlugins.includes( pluginNameOrConstructor ) || removePlugins.includes( pluginName ) ) {
+					/**
+					 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
+					 *
+					 * @error plugincollection-required
+					 * @param {String} plugin The name of the required plugin.
+					 * @param {String} requiredBy The name of the parent plugin.
+					 */
+					throw new CKEditorError(
+						'plugincollection-required',
+						context,
+						{ plugin: pluginName, requiredBy: requiringPluginName }
+					);
+				}
+			} );
 		}
 
-		function mapToAvailableConstructors( plugins ) {
-			return plugins
-				.map( pluginNameOrConstructor => getPluginConstructor( pluginNameOrConstructor ) )
-				.filter( PluginConstructor => !!PluginConstructor );
+		function loadPlugins( pluginConstructors ) {
+			return pluginConstructors.map( PluginConstructor => {
+				const plugin = that._contextPlugins.get( PluginConstructor ) || new PluginConstructor( context );
+
+				that._add( PluginConstructor, plugin );
+
+				return plugin;
+			} );
+		}
+
+		function initPlugins( loadedPlugins, method ) {
+			return loadedPlugins
+				.reduce( ( promise, plugin ) => {
+					if ( !plugin[ method ] ) {
+						return promise;
+					}
+
+					if ( that._contextPlugins.has( plugin ) ) {
+						return promise;
+					}
+
+					return promise.then( plugin[ method ].bind( plugin ) );
+				}, Promise.resolve() )
+				.then( () => loadedPlugins );
 		}
 	}
 
