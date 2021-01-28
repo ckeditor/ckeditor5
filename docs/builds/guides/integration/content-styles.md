@@ -48,8 +48,8 @@ Below there is a full list of content styles used by the editor features. You ca
 
 ```css
 /*
- * CKEditor 5 (v24.0.0) content styles.
- * Generated on Thu, 10 Dec 2020 08:15:26 GMT.
+ * CKEditor 5 (v25.0.0) content styles.
+ * Generated on Wed, 27 Jan 2021 08:22:01 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -66,20 +66,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	--ck-todo-list-checkmark-size: 16px;
 }
 
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized {
-	max-width: 100%;
-	display: block;
-	box-sizing: border-box;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized img {
-	width: 100%;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized > figcaption {
-	display: block;
-}
 /* ckeditor5-image/theme/imagestyle.css */
 .ck-content .image-style-side {
 	float: right;
@@ -101,6 +87,31 @@ Below there is a full list of content styles used by the editor features. You ca
 	float: right;
 	margin-left: var(--ck-image-style-spacing);
 }
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized > figcaption {
+	display: block;
+}
+/* ckeditor5-image/theme/imagecaption.css */
+.ck-content .image > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: break-word;
+	color: hsl(0, 0%, 20%);
+	background-color: hsl(0, 0%, 97%);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+}
 /* ckeditor5-image/theme/image.css */
 .ck-content .image {
 	display: table;
@@ -114,17 +125,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	margin: 0 auto;
 	max-width: 100%;
 	min-width: 50px;
-}
-/* ckeditor5-image/theme/imagecaption.css */
-.ck-content .image > figcaption {
-	display: table-caption;
-	caption-side: bottom;
-	word-break: break-word;
-	color: hsl(0, 0%, 20%);
-	background-color: hsl(0, 0%, 97%);
-	padding: .6em;
-	font-size: .75em;
-	outline-offset: -1px;
 }
 /* ckeditor5-highlight/theme/highlight.css */
 .ck-content .marker-yellow {
@@ -258,13 +258,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	-ms-user-select: none;
 	user-select: none;
 }
-/* ckeditor5-media-embed/theme/mediaembed.css */
-.ck-content .media {
-	clear: both;
-	margin: 1em 0;
-	display: block;
-	min-width: 15em;
-}
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list {
 	list-style: none;
@@ -331,6 +324,13 @@ Below there is a full list of content styles used by the editor features. You ca
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list .todo-list__label .todo-list__label__description {
 	vertical-align: middle;
+}
+/* ckeditor5-media-embed/theme/mediaembed.css */
+.ck-content .media {
+	clear: both;
+	margin: 1em 0;
+	display: block;
+	min-width: 15em;
 }
 /* ckeditor5-html-embed/theme/htmlembed.css */
 .ck-content .raw-html-embed {

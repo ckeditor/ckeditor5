@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -37,7 +37,7 @@ export default class GFMDataProcessor {
 
 	/**
 	 * Keeps the specified element in the output as HTML. This is useful if the editor contains
-	 * features that produce HTML that are not part of the markdon standards.
+	 * features producing HTML that is not a part of the Markdown standard.
 	 *
 	 * By default, all HTML tags are removed.
 	 *
@@ -48,7 +48,7 @@ export default class GFMDataProcessor {
 	}
 
 	/**
-	 * Converts the provided Markdown string to view tree.
+	 * Converts the provided Markdown string to a view tree.
 	 *
 	 * @param {String} data A Markdown string.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The converted view element.

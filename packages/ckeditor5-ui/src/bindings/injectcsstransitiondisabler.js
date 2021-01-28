@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,9 +8,9 @@
  */
 
 /**
- * A decorator that brings possibility to temporarily disable CSS transitions using
+ * A decorator that brings the possibility to temporarily disable CSS transitions using
  * {@link module:ui/view~View} methods. It is helpful when, for instance, the transitions should not happen
- * when the view is first displayed but they should work normally in other cases.
+ * when the view is first displayed but they should work normal in other cases.
  *
  * The methods to control the CSS transitions are:
  * * `disableCssTransitions()` – Adds the `.ck-transitions-disabled` class to the
