@@ -27,13 +27,14 @@ const URL_REG_EXP = new RegExp(
 			// BasicAuth using user:pass (optional)
 			'(?:\\S+(?::\\S*)?@)?' +
 			'(?:' +
-				// IP address
-				'(' +
-					'(' +
-						'(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|0)\\.' + // a value between 0 and 255
-					'){3}' +
-					'(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|0)' +
-				')' +
+				// IP address dotted notation octets
+				// excludes loopback network 0.0.0.0
+				// excludes reserved space >= 224.0.0.0
+				// excludes network & broadcast addresses
+				// (first & last IP address of each class)
+				'(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])' +
+				'(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}' +
+				'(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))' +
 				'|' +
 				'(' +
 					// Host & domain names.

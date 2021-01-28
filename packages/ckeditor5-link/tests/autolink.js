@@ -274,8 +274,8 @@ describe( 'AutoLink', () => {
 				'http://a.b-c.de',
 				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
 				'http://127.0.0.1/ckeditor5/latest/features/link.html',
-				'http://255.127.13.40',
-				'http://userid@255.127.13.40'
+				'http://83.127.13.40',
+				'http://userid@83.127.13.40'
 			];
 
 			for ( const supportedURL of supportedURLs ) {
