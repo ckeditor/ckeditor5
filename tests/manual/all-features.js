@@ -40,7 +40,6 @@ import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
@@ -56,7 +55,7 @@ ClassicEditor
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			Image, ImageUpload, CloudServices
+			ImageUpload, CloudServices
 		],
 		toolbar: [
 			'heading',
