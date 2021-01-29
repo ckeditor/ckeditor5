@@ -178,7 +178,7 @@ export default class PluginCollection {
 
 		const pluginsToLoad = plugins.filter( plugin => !isPluginRemoved( plugin, removedPlugins ) );
 
-		const pluginConstructors = [ ...getPluginsConstructors( pluginsToLoad ) ];
+		const pluginConstructors = [ ...getPluginConstructors( pluginsToLoad ) ];
 
 		const pluginInstances = loadPlugins( pluginConstructors );
 
@@ -196,7 +196,9 @@ export default class PluginCollection {
 
 		function isPluginRemoved( plugin, removedPlugins ) {
 			return removedPlugins.some( removedPlugin => {
-				return removedPlugin === plugin || removedPlugin === getPluginName( plugin ) || getPluginName( removedPlugin ) === plugin;
+				return removedPlugin === plugin ||
+					removedPlugin === getPluginName( plugin ) ||
+					getPluginName( removedPlugin ) === plugin;
 			} );
 		}
 
@@ -207,29 +209,28 @@ export default class PluginCollection {
 		}
 
 		function findAvailablePluginConstructors( plugins, processed = new Set() ) {
-			plugins
-				.forEach( plugin => {
-					if ( !isPluginConstructor( plugin ) ) {
-						return;
-					}
+			plugins.forEach( plugin => {
+				if ( !isPluginConstructor( plugin ) ) {
+					return;
+				}
 
-					if ( processed.has( plugin ) ) {
-						return;
-					}
+				if ( processed.has( plugin ) ) {
+					return;
+				}
 
-					processed.add( plugin );
+				processed.add( plugin );
 
-					if ( plugin.pluginName && !that._availablePlugins.has( plugin.pluginName ) ) {
-						that._availablePlugins.set( plugin.pluginName, plugin );
-					}
+				if ( plugin.pluginName && !that._availablePlugins.has( plugin.pluginName ) ) {
+					that._availablePlugins.set( plugin.pluginName, plugin );
+				}
 
-					if ( plugin.requires ) {
-						findAvailablePluginConstructors( plugin.requires, processed );
-					}
-				} );
+				if ( plugin.requires ) {
+					findAvailablePluginConstructors( plugin.requires, processed );
+				}
+			} );
 		}
 
-		function getPluginsConstructors( plugins, processed = new Set() ) {
+		function getPluginConstructors( plugins, processed = new Set() ) {
 			return plugins
 				.map( plugin => {
 					return isPluginConstructor( plugin ) ?
@@ -246,8 +247,7 @@ export default class PluginCollection {
 					if ( plugin.requires ) {
 						validatePlugins( plugin.requires, plugin );
 
-						getPluginsConstructors( plugin.requires, processed )
-							.forEach( plugin => result.add( plugin ) );
+						getPluginConstructors( plugin.requires, processed ).forEach( plugin => result.add( plugin ) );
 					}
 
 					return result.add( plugin );
@@ -326,7 +326,11 @@ export default class PluginCollection {
 		}
 
 		function checkContextPlugin( plugin, parentPluginConstructor ) {
-			if ( !isContextPlugin( parentPluginConstructor ) || isContextPlugin( plugin ) ) {
+			if ( !isContextPlugin( parentPluginConstructor ) ) {
+				return;
+			}
+
+			if ( isContextPlugin( plugin ) ) {
 				return;
 			}
 
@@ -354,9 +358,6 @@ export default class PluginCollection {
 				return;
 			}
 
-			const pluginName = getPluginName( plugin );
-			const parentPluginName = getPluginName( parentPluginConstructor );
-
 			if ( !isPluginRemoved( plugin, removedPlugins ) ) {
 				return;
 			}
@@ -371,7 +372,7 @@ export default class PluginCollection {
 			throw new CKEditorError(
 				'plugincollection-required',
 				context,
-				{ plugin: pluginName, requiredBy: parentPluginName }
+				{ plugin: getPluginName( plugin ), requiredBy: getPluginName( parentPluginConstructor ) }
 			);
 		}
 
@@ -386,18 +387,17 @@ export default class PluginCollection {
 		}
 
 		function initPlugins( pluginInstances, method ) {
-			return pluginInstances
-				.reduce( ( promise, plugin ) => {
-					if ( !plugin[ method ] ) {
-						return promise;
-					}
+			return pluginInstances.reduce( ( promise, plugin ) => {
+				if ( !plugin[ method ] ) {
+					return promise;
+				}
 
-					if ( that._contextPlugins.has( plugin ) ) {
-						return promise;
-					}
+				if ( that._contextPlugins.has( plugin ) ) {
+					return promise;
+				}
 
-					return promise.then( plugin[ method ].bind( plugin ) );
-				}, Promise.resolve() );
+				return promise.then( plugin[ method ].bind( plugin ) );
+			}, Promise.resolve() );
 		}
 	}
 
