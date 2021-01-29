@@ -223,9 +223,9 @@
 							"order": 300
 						},
 						{
-							"name": "Annotation customization",
-							"id": "features-annotation-customization",
-							"slug": "annotation-customization",
+							"name": "Annotations",
+							"id": "features-annotations",
+							"slug": "annotations",
 							"order": 400
 						}
 					]
