@@ -8,6 +8,8 @@ order: 20
 
 The {@link module:list/todolist~TodoList to-do list} feature lets you create a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with {@link features/lists bulleted and numbered lists} in any combination.
 
+To-do lists can be introduced using the dedicated toolbar button. Thanks to the integration with the {@link features/autoformat autoformatting feature}, they can also be added with Markdown code &mdash; simply start a line with `[ ]` followed by a space.
+
 ## Demo
 
 {@snippet features/todo-list}
