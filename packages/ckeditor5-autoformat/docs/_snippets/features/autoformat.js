@@ -34,6 +34,7 @@ ClassicEditor
 				'|',
 				'bulletedList',
 				'numberedList',
+				'todolist',
 				'|',
 				'outdent',
 				'indent',
@@ -41,7 +42,6 @@ ClassicEditor
 				'blockQuote',
 				'codeBlock',
 				'horizontalLine',
-				'todolist',
 				'|',
 				'undo',
 				'redo'
