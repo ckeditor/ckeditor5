@@ -522,9 +522,9 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load dependency plugins using soft requirement when plugin is available further in the plugin list', () => {
+		it( 'should load dependency plugins using soft requirement if non-built-in plugin is available further in the plugin list', () => {
 			PluginFoo.requires = [ 'A', 'B' ];
-			const plugins = new PluginCollection( editor, availablePlugins );
+			const plugins = new PluginCollection( editor, [] );
 			const spy = sinon.spy( plugins, '_add' );
 
 			return plugins.init( [ PluginFoo, PluginA, PluginB ] )
@@ -538,9 +538,9 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load dependency plugins using soft requirement when plugin is available further as dependency of other plugin', () => {
+		it( 'should load dependency plugins using soft requirement if non-built-in plugin is available further as other dependency', () => {
 			PluginFoo.requires = [ 'A', 'B' ];
-			const plugins = new PluginCollection( editor, availablePlugins );
+			const plugins = new PluginCollection( editor, [] );
 			const spy = sinon.spy( plugins, '_add' );
 
 			return plugins.init( [ PluginFoo, PluginD ] )
