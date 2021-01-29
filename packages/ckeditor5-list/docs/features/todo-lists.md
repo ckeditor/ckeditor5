@@ -1,5 +1,7 @@
 ---
-category: features
+menu-title: To-do lists
+category: features-lists
+order: 20
 ---
 
 # To-do lists

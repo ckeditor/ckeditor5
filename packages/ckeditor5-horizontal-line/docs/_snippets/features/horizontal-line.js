@@ -62,6 +62,12 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Horizontal line' ),
+			text: 'Click to insert horizontal line.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

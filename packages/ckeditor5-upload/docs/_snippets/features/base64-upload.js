@@ -18,6 +18,14 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem(
+				editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert image'
+			),
+			text: 'Click to insert an image.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

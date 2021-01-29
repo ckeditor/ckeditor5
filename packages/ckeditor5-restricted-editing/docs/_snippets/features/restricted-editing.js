@@ -69,4 +69,13 @@ async function reloadEditor( config ) {
 	}
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#restricted-editing-editor' ), config );
+
+	window.attachTourBalloon( {
+		target: window.findToolbarItem(
+			window.editor.ui.view.toolbar,
+			item => item.label && [ 'Enable editing', 'Disable editing' ].includes( item.label )
+		),
+		text: 'Click to switch restricted editing mode.',
+		editor: window.editor
+	} );
 }
