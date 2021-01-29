@@ -502,7 +502,7 @@ describe( 'PluginCollection', () => {
 						throw new Error( 'Test error: this promise should not be resolved successfully' );
 					} );
 			} catch ( err ) {
-				assertCKEditorError( err, /^plugincollection-soft-required/, null, { plugin: 'Baz', requiredBy: 'Foo' } );
+				assertCKEditorError( err, /^plugincollection-soft-required/, editor, { plugin: 'Baz', requiredBy: 'Foo' } );
 			}
 		} );
 

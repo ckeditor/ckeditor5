@@ -292,7 +292,7 @@ export default class PluginCollection {
 				 */
 				throw new CKEditorError(
 					'plugincollection-soft-required',
-					null,
+					context,
 					{ plugin, requiredBy: getPluginName( parentPluginConstructor ) }
 				);
 			}
