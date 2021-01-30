@@ -1313,8 +1313,7 @@ describe( 'transform', () => {
 
 				expectClients(
 					'<paragraph>' +
-						'<$text bold="true">Fo</$text><m1:start></m1:start>' +
-						'<$text bold="true">o B</$text><m1:end></m1:end><$text bold="true">ar</$text>' +
+						'<$text bold="true">Fo<m1:start></m1:start>o B<m1:end></m1:end>ar</$text>' +
 					'</paragraph>'
 				);
 			} );
@@ -1330,7 +1329,7 @@ describe( 'transform', () => {
 
 				expectClients(
 					'<paragraph>' +
-						'F<$text bold="true">oo </$text><m1:start></m1:start><$text bold="true">Ba</$text>r<m1:end></m1:end>' +
+						'F<$text bold="true">oo <m1:start></m1:start>Ba</$text>r<m1:end></m1:end>' +
 					'</paragraph>'
 				);
 			} );

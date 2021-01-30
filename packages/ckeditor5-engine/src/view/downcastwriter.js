@@ -674,9 +674,17 @@ export default class DowncastWriter {
 		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
-		const container = getParentContainer( position );
+		const isUIElement = nodes.length == 1 && nodes[ 0 ].is( 'uiElement' );
+		let parentElement;
 
-		if ( !container ) {
+		// UIElement can be inside the AttributeElement so use the closest ancestor element instead of container element.
+		if ( isUIElement ) {
+			parentElement = position.parent.is( '$text' ) ? position.parent.parent : position.parent;
+		} else {
+			parentElement = getParentContainer( position );
+		}
+
+		if ( !parentElement ) {
 			/**
 			 * Position's parent container cannot be found.
 			 *
@@ -688,15 +696,22 @@ export default class DowncastWriter {
 			);
 		}
 
-		const insertionPosition = this._breakAttributes( position, true );
-		const length = container._insertChild( insertionPosition.offset, nodes );
+		let insertionPosition;
+
+		if ( isUIElement ) {
+			insertionPosition = position.parent.is( '$text' ) ? breakTextNode( position ) : position;
+		} else {
+			insertionPosition = this._breakAttributes( position, true );
+		}
+
+		const length = parentElement._insertChild( insertionPosition.offset, nodes );
 
 		for ( const node of nodes ) {
 			this._addToClonedElementsGroup( node );
 		}
 
 		const endPosition = insertionPosition.getShiftedBy( length );
-		const start = this.mergeAttributes( insertionPosition );
+		const start = isUIElement ? insertionPosition : this.mergeAttributes( insertionPosition );
 
 		// When no nodes were inserted - return collapsed range.
 		if ( length === 0 ) {
@@ -707,7 +722,7 @@ export default class DowncastWriter {
 				endPosition.offset--;
 			}
 
-			const end = this.mergeAttributes( endPosition );
+			const end = isUIElement ? endPosition : this.mergeAttributes( endPosition );
 
 			return new Range( start, end );
 		}
