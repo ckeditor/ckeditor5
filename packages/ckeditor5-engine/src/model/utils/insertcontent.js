@@ -257,15 +257,7 @@ class Insertion {
 			if ( this.position.parent != node || !this.position.isAtEnd ) {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 				// At this point the insertion position should be at the end of the last auto paragraph.
-				/**
-				 * An internal error occurred when merging inserted content with its siblings.
-				 * The insertion position should equal the merge position.
-				 *
-				 * If you encountered this error, report it back to the CKEditor 5 team
-				 * with as many details as possible regarding the content being inserted and the insertion position.
-				 *
-				 * @error insertcontent-invalid-insertion-position
-				 */
+				// Note: This error is documented in other place in this file.
 				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
 			}
 
