@@ -95,7 +95,7 @@ describe( 'placeholder', () => {
 			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'if element has selection inside but document is blurred should contain placeholder CSS class', () => {
@@ -132,7 +132,7 @@ describe( 'placeholder', () => {
 				writer.setSelection( ViewRange._createIn( element ) );
 			} );
 
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'should change placeholder settings when called twice', () => {
@@ -208,10 +208,10 @@ describe( 'placeholder', () => {
 			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 
 			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
-			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'should update placeholder before rendering', () => {
@@ -233,7 +233,7 @@ describe( 'placeholder', () => {
 			} );
 
 			// After rendering - placeholder should be invisible since selection is moved there.
-			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'should not set attributes/class when multiple children (isDirectHost=false)', () => {
@@ -266,7 +266,7 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
-		it( 'should not show the placeholder when the host element is focused (hideOnFocus = true)', () => {
+		it( 'should keep the placeholder visible when the host element is focused (keepOnFocus = true)', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
@@ -274,7 +274,33 @@ describe( 'placeholder', () => {
 				view,
 				element,
 				text: 'foo bar baz',
-				hideOnFocus: true
+				keepOnFocus: true
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			view.change( writer => {
+				writer.setSelection( ViewRange._createIn( element ) );
+
+				// Here we are before rendering - placeholder is visible in first element;
+				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
+		it( 'should hide the placeholder when the host element is focused (keepOnFocus = false)', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			enablePlaceholder( {
+				view,
+				element,
+				text: 'foo bar baz'
+				// Defaults: keepOnFocus = false
 			} );
 
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
@@ -290,32 +316,6 @@ describe( 'placeholder', () => {
 
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
-		} );
-
-		it( 'should show the placeholder even when the host element is focused (hideOnFocus = false)', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
-			const element = viewRoot.getChild( 0 );
-
-			enablePlaceholder( {
-				view,
-				element,
-				text: 'foo bar baz'
-				// Defaults: hideOnFocus = false
-			} );
-
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
-
-			view.change( writer => {
-				writer.setSelection( ViewRange._createIn( element ) );
-
-				// Here we are before rendering - placeholder is visible in first element;
-				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
-			} );
-
-			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
-			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 	} );
 

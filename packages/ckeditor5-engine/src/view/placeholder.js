@@ -29,10 +29,10 @@ const documentPlaceholders = new WeakMap();
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
- * @param {Boolean} [options.hideOnFocus=false] If set `true`, the placeholder will be hidden when the host element is focused.
+ * @param {Boolean} [options.keepOnFocus=false] If set `true`, the placeholder stay visible when the host element is focused.
  */
 export function enablePlaceholder( options ) {
-	const { view, element, text, isDirectHost = true, hideOnFocus = false } = options;
+	const { view, element, text, isDirectHost = true, keepOnFocus = false } = options;
 	const doc = view.document;
 
 	// Use a single a single post fixer per—document to update all placeholders.
@@ -48,7 +48,7 @@ export function enablePlaceholder( options ) {
 	documentPlaceholders.get( doc ).set( element, {
 		text,
 		isDirectHost,
-		hideOnFocus
+		keepOnFocus
 	} );
 
 	// Update the placeholders right away.
@@ -143,10 +143,10 @@ export function hidePlaceholder( writer, element ) {
  * sure the correct element is passed to the helper.
  *
  * @param {module:engine/view/element~Element} element Element that holds the placeholder.
- * @param {Boolean} ignoreDocumentFocus Focusing the element will keep the placeholder visible.
+ * @param {Boolean} keepOnFocus Focusing the element will keep the placeholder visible.
  * @returns {Boolean}
  */
-export function needsPlaceholder( element, ignoreDocumentFocus ) {
+export function needsPlaceholder( element, keepOnFocus ) {
 	if ( !element.isAttached() ) {
 		return false;
 	}
@@ -160,7 +160,7 @@ export function needsPlaceholder( element, ignoreDocumentFocus ) {
 	}
 
 	// Skip the focus check and make the placeholder visible already regardless of document focus state.
-	if ( ignoreDocumentFocus ) {
+	if ( keepOnFocus ) {
 		return true;
 	}
 
@@ -229,7 +229,7 @@ function updatePlaceholder( writer, element, config ) {
 		wasViewModified = true;
 	}
 
-	if ( needsPlaceholder( hostElement, !config.hideOnFocus ) ) {
+	if ( needsPlaceholder( hostElement, config.keepOnFocus ) ) {
 		if ( showPlaceholder( writer, hostElement ) ) {
 			wasViewModified = true;
 		}

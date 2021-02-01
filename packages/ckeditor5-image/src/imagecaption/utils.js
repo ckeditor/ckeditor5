@@ -26,7 +26,7 @@ export function captionElementCreator( view, placeholderText ) {
 			view,
 			element: editable,
 			text: placeholderText,
-			hideOnFocus: true
+			keepOnFocus: true
 		} );
 
 		return toWidgetEditable( editable, writer );
