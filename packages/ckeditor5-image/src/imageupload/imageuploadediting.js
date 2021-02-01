@@ -348,6 +348,6 @@ export function isHtmlIncluded( dataTransfer ) {
 
 function getImagesFromChangeItem( editor, item ) {
 	return Array.from( editor.model.createRangeOn( item ) )
-		.filter( value => value.item.is( 'element', 'image' ) )
+		.filter( value => value.item.is( 'element', 'image' ) || value.item.is( 'element', 'imageInline' ) )
 		.map( value => value.item );
 }

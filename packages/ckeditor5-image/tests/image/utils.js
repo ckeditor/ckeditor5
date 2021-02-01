@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global console */
+
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
@@ -162,19 +164,19 @@ describe( 'image widget utils', () => {
 			model.enqueueChange( 'transparent', () => {
 				setModelData( model, '[]' );
 
-				expect( isImageAllowed( model ) ).to.be.true;
+				expect( isImageAllowed( editor ) ).to.be.true;
 			} );
 		} );
 
 		it( 'should return true when the selection is in empty block', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( editor ) ).to.be.true;
 		} );
 
 		it( 'should return true when the selection directly in a paragraph', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( editor ) ).to.be.true;
 		} );
 
 		it( 'should return true when the selection directly in a block', () => {
@@ -183,12 +185,12 @@ describe( 'image widget utils', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( editor ) ).to.be.true;
 		} );
 
 		it( 'should return false when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( editor ) ).to.be.false;
 		} );
 
 		it( 'should return false when the selection is inside other image', () => {
@@ -199,7 +201,7 @@ describe( 'image widget utils', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			setModelData( model, '<image><caption>[]</caption></image>' );
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( editor ) ).to.be.false;
 		} );
 
 		it( 'should return false when the selection is on other object', () => {
@@ -207,7 +209,7 @@ describe( 'image widget utils', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( editor ) ).to.be.false;
 		} );
 
 		it( 'should be true when the selection is inside isLimit element which allows image', () => {
@@ -221,7 +223,7 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( editor ) ).to.be.true;
 		} );
 
 		it( 'should return false when schema disallows image', () => {
@@ -229,7 +231,10 @@ describe( 'image widget utils', () => {
 			model.schema.extend( 'paragraph', { allowIn: 'block' } );
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name.startsWith( 'image' ) && context.last.name === 'block' ) {
+					return false;
+				}
+				if ( childDefinition.name.startsWith( 'imageInline' ) && context.last.name === 'paragraph' ) {
 					return false;
 				}
 			} );
@@ -237,7 +242,7 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( editor ) ).to.be.false;
 		} );
 	} );
 
@@ -261,17 +266,17 @@ describe( 'image widget utils', () => {
 		it( 'should insert image at selection position as other widgets', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( model );
+			insertImage( editor );
 
-			expect( getModelData( model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 		} );
 
 		it( 'should insert image with given attributes', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( model, { src: 'bar' } );
+			insertImage( editor, { src: 'bar' } );
 
-			expect( getModelData( model ) ).to.equal( '[<image src="bar"></image>]<paragraph>foo</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="bar"></imageInline>]o</paragraph>' );
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
@@ -285,9 +290,79 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			insertImage( model );
+			insertImage( editor );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+		} );
+
+		it( 'Use block image type if image.insert.type="block" option is set', async () => {
+			const newEditor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
+				image: { insert: { type: 'block' } }
+			} );
+
+			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
+
+			insertImage( newEditor );
+
+			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
+
+			await newEditor.destroy();
+		} );
+
+		it( 'Use inline image type if image.insert.type="inline" option is set', async () => {
+			const newEditor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
+				image: { insert: { type: 'inline' } }
+			} );
+
+			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
+
+			insertImage( newEditor );
+
+			expect( getModelData( newEditor.model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+
+			await newEditor.destroy();
+		} );
+
+		it( 'Determine image type when image.insert.type="inline" option is set ' +
+			'but ImageInlineEditing plugin is not enabled', async () => {
+			const newEditor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, Paragraph ],
+				image: { insert: { type: 'inline' } }
+			} );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
+
+			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
+
+			insertImage( newEditor );
+
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'provide-image-inline-plugin' );
+			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
+
+			console.warn.restore();
+			await newEditor.destroy();
+		} );
+
+		it( 'Determine image type when image.insert.type="block" option is set ' +
+			'but ImageBlockEditing plugin is not enabled', async () => {
+			const newEditor = await VirtualTestEditor.create( {
+				plugins: [ ImageInlineEditing, Paragraph ],
+				image: { insert: { type: 'block' } }
+			} );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
+
+			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
+
+			insertImage( newEditor );
+
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'provide-image-block-plugin' );
+			expect( getModelData( newEditor.model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+
+			console.warn.restore();
+			await newEditor.destroy();
 		} );
 	} );
 

@@ -39,7 +39,7 @@ export default class ImageInsertCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isImageAllowed( this.editor.model );
+		this.isEnabled = isImageAllowed( this.editor );
 	}
 
 	/**
@@ -50,10 +50,18 @@ export default class ImageInsertCommand extends Command {
 	 * @param {String|Array.<String>} options.source The image source or an array of image sources to insert.
 	 */
 	execute( options ) {
-		const model = this.editor.model;
+		const sources = toArray( options.source );
+		const selection = this.editor.model.document.selection;
 
-		for ( const src of toArray( options.source ) ) {
-			insertImage( model, { src } );
+		for ( const src of sources ) {
+			// Inserting of an inline image replace the selected element.
+			// Therefore inserting multiple inline images requires creating position after each element.
+			if ( sources.length > 1 && selection.getSelectedElement() && selection.getSelectedElement().name === 'imageInline' ) {
+				const position = this.editor.model.createPositionAfter( selection.getSelectedElement() );
+				insertImage( this.editor, { src }, position );
+			} else {
+				insertImage( this.editor, { src } );
+			}
 		}
 	}
 }

@@ -9,6 +9,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 
 import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
 
 describe( 'ImageInsertCommand', () => {
 	let editor, command, model;
@@ -16,7 +17,7 @@ describe( 'ImageInsertCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageBlockEditing, Paragraph ]
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -106,7 +107,7 @@ describe( 'ImageInsertCommand', () => {
 			model.schema.extend( 'paragraph', { allowIn: 'block' } );
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageInline' && context.last.name === 'paragraph' ) {
 					return false;
 				}
 			} );
@@ -126,7 +127,7 @@ describe( 'ImageInsertCommand', () => {
 
 			command.execute( { source: imgSrc } );
 
-			expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]<paragraph>foo</paragraph>` );
+			expect( getModelData( model ) ).to.equal( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
 		} );
 
 		it( 'should insert multiple images at selection position as other widgets', () => {
@@ -138,7 +139,11 @@ describe( 'ImageInsertCommand', () => {
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
 			expect( getModelData( model ) )
-				.to.equal( `<image src="${ imgSrc1 }"></image>[<image src="${ imgSrc2 }"></image>]<paragraph>foo</paragraph>` );
+				.to.equal(
+					'<paragraph>f' +
+						`<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]` +
+					'o</paragraph>'
+				);
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
