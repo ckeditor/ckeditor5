@@ -169,6 +169,20 @@ export default class PluginCollection {
 	 * and available in the collection.
 	 */
 	init( plugins, removedPlugins = [] ) {
+		// Plugin initialization procedure consists of 2 main steps:
+		// 1) collecting all available plugin constructors,
+		// 2) verification whether all required plugins can be instantiated.
+
+		// In the first step, all plugin constructors, available in the provided `plugins` array and inside
+		// plugin's dependencies (from the `requires` array), are recursively collected and added to the existing
+		// `this._availablePlugins` map, but without any verification at the given moment. Performing the verification
+		// at this point (during the plugin constructor searching) would cause false errors to occur, that some plugin
+		// is missing but in fact it may be defined further in the array as the dependency of other plugin. After
+		// traversing the entire dependency tree, it will be checked if all required "top level" plugins are available.
+
+		// In the second step, the list of plugins that have not been explicitly removed is traversed to get all the
+		// plugin constructors to be instantiated in the correct order and to validate against some rules. Finally, if
+		// no plugin is missing and no other error has been found, they all will be instantiated.
 		const that = this;
 		const context = this._context;
 
