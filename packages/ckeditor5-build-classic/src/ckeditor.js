@@ -29,10 +29,12 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
+// import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting';
 import ImageResizeHandles from '@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles';
+import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
+// import Font from '@ckeditor/ckeditor5-font/src/font';
 export default class ClassicEditor extends ClassicEditorBase {}
 
 // Plugins to include in the build.
@@ -60,9 +62,11 @@ ClassicEditor.builtinPlugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-	Base64UploadAdapter,
+	EasyImage,
 	ImageResizeEditing,
-	ImageResizeHandles
+	ImageResizeHandles,
+	SimpleUploadAdapter,
+	// Font
 ];
 
 // Editor configuration.
@@ -87,6 +91,9 @@ ClassicEditor.defaultConfig = {
 			"mode",
 			'clipboard',
 			"styles",
+			"|",
+			// 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+			"|",
 
 
 
@@ -95,6 +102,19 @@ ClassicEditor.defaultConfig = {
 			'redo',
 
 		]
+	},
+	simpleUpload: {
+		// The URL that the images are uploaded to.
+		uploadUrl: 'https://media.9code.vn/media/images',
+
+		// Enable the XMLHttpRequest.withCredentials property.
+		// withCredentials: true,
+
+		// Headers sent along with the XMLHttpRequest to the upload server.
+		headers: {
+			// 'X-CSRF-TOKEN': 'CSRF-Token',
+			// Authorization: 'Bearer <JSON Web Token>'
+		}
 	},
 	image: {
 		toolbar: [
