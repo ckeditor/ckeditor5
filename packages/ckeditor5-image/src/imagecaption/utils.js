@@ -26,7 +26,6 @@ export function captionElementCreator( view, placeholderText ) {
 			view,
 			element: editable,
 			text: placeholderText,
-			// See: https://github.com/ckeditor/ckeditor5/issues/8689.
 			hideOnFocus: true
 		} );
 
