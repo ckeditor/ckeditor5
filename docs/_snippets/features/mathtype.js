@@ -66,6 +66,15 @@ ClassicEditor
 		},
 		cloudServices: CS_CONFIG
 	} )
+
+	.then( editor => {
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.label && item.label === 'Insert a math equation - MathType' ),
+			text: 'Click to insert mathematical or chemical formulas.',
+			editor
+		} );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );

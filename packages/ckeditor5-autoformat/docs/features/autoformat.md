@@ -17,6 +17,7 @@ The following block formatting options are available:
 
 * {@link features/lists Bulleted list} &ndash; Start a line with `*` or `-` followed by a space.
 * {@link features/lists Numbered list} &ndash; Start a line with `1.` or `1)` followed by a space.
+* {@link features/todo-lists To-do list} &ndash; Start a line with `[ ]` followed by a space.
 * {@link features/headings Headings} &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
 * {@link features/block-quote Block quote} &ndash; Start a line with `>` followed by a space.
 * {@link features/code-blocks Code block} &ndash; Start a line with `` ``` ``.
@@ -94,7 +95,7 @@ You can use these tools to create your own autoformatters. Check the [`Autoforma
 
 While the autoformatting feature is stable and ready to use, some issues were reported for it. Feel free to upvote 👍&nbsp; them on GitHub if they are important for you:
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
-* Setting a specific code block language is not supprted yet (it defaults to plain text on insertion). GitHub issue: [#8598](https://github.com/ckeditor/ckeditor5/issues/8598).
+* Setting a specific code block language is not supported yet (it defaults to plain text on insertion). GitHub issue: [#8598](https://github.com/ckeditor/ckeditor5/issues/8598).
 
 ## Contribute
 
