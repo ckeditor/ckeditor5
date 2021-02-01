@@ -88,6 +88,20 @@ describe( 'MediaEmbedCommand', () => {
 			setData( model, '<block><limit>foo[]</limit></block>' );
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be true if a non-object element is selected', () => {
+			model.schema.register( 'element', { allowIn: '$root', isSelectable: true } );
+
+			setData( model, '[<element></element>]' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be false if a non-media object is selected', () => {
+			model.schema.register( 'image', { isObject: true, isBlock: true, allowWhere: '$block' } );
+
+			setData( model, '[<image src="http://ckeditor.com"></image>]' );
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'value', () => {
