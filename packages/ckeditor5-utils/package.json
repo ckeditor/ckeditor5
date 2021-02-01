@@ -6,8 +6,10 @@
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib"
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.js",
   "dependencies": {
     "lodash-es": "^4.17.15"
   },

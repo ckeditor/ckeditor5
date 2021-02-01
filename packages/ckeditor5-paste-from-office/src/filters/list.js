@@ -7,8 +7,7 @@
  * @module paste-from-office/filters/list
  */
 
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import { Matcher, UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
  * Transforms Word specific list-like elements to the semantic HTML lists.

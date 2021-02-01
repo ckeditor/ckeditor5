@@ -7,11 +7,11 @@
  * @module heading/headingediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import HeadingCommand from './headingcommand';
+import { Plugin } from 'ckeditor5/src/core';
+import { Paragraph } from 'ckeditor5/src/paragraph';
+import { priorities } from 'ckeditor5/src/utils';
 
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import HeadingCommand from './headingcommand';
 
 const defaultModelElement = 'paragraph';
 

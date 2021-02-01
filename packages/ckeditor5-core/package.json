@@ -3,10 +3,6 @@
   "version": "25.0.0",
   "description": "The core architecture of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
-    "ckeditor5-lib",
-    "ckeditor",
-    "ckeditor5",
-    "ckeditor 5",
     "wysiwyg",
     "rich text",
     "editor",
@@ -18,8 +14,14 @@
     "collaboration",
     "collaborative",
     "real-time",
-    "framework"
+    "framework",
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.js",
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^25.0.0",
     "@ckeditor/ckeditor5-ui": "^25.0.0",

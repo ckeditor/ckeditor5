@@ -7,10 +7,9 @@
  * @module editor-inline/inlineeditorui
  */
 
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { EditorUI } from 'ckeditor5/src/core';
+import { enableToolbarKeyboardFocus, normalizeToolbarConfig } from 'ckeditor5/src/ui';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 /**
  * The inline editor UI class.

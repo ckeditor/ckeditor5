@@ -7,13 +7,14 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, CKFinder ],
+		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, CKFinderUploadAdapter, CKFinder ],
 		toolbar: [
 			'heading',
 			'|',
