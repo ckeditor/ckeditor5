@@ -341,7 +341,8 @@ export default class Title extends Plugin {
 			enablePlaceholder( {
 				view,
 				element: conversionApi.mapper.toViewElement( data.item ),
-				text: titlePlaceholder
+				text: titlePlaceholder,
+				keepOnFocus: true
 			} );
 		} );
 
