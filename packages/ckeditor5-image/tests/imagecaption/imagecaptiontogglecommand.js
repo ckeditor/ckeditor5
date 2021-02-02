@@ -29,6 +29,15 @@ describe( 'ImageCaptionToggleCommand', () => {
 			]
 		} );
 
+		model.schema.register( 'nonImage' );
+		model.schema.extend( 'nonImage', { allowIn: '$root' } );
+		model.schema.extend( 'caption', { allowIn: 'nonImage' } );
+
+		editor.conversion.elementToElement( {
+			model: 'nonImage',
+			view: 'nonImage'
+		} );
+
 		model = editor.model;
 		command = editor.commands.get( 'imageCaptionToggle' );
 	} );
@@ -80,6 +89,12 @@ describe( 'ImageCaptionToggleCommand', () => {
 			setModelData( model, '<image src="test.png"><caption>[]</caption></image>' );
 
 			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be false when the selection is in the caption of a non-image', () => {
+			setModelData( model, '<nonImage><caption>[]</caption></nonImage>' );
+
+			expect( command.isEnabled ).to.be.false;
 		} );
 
 		it( 'should be false when there is more than an image or imageInline selected', () => {
@@ -136,6 +151,18 @@ describe( 'ImageCaptionToggleCommand', () => {
 			setModelData( model, '[<image src="test.png"><caption></caption></image>]' );
 
 			expect( command.value ).to.be.true;
+		} );
+
+		it( 'should be true when the selection is in the caption of an image', () => {
+			setModelData( model, '<image src="test.png"><caption>[]</caption></image>' );
+
+			expect( command.value ).to.be.true;
+		} );
+
+		it( 'should be false when the selection is in the caption of a non-image', () => {
+			setModelData( model, '<nonImage><caption>[]</caption></nonImage>' );
+
+			expect( command.value ).to.be.false;
 		} );
 
 		it( 'should be true when image with a non-empty caption is selected', () => {
