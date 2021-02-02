@@ -90,7 +90,7 @@ export function isImageInline( modelElement ) {
  * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied for the block images
  * and model.document.selection for the inline images.
  * @param {'image'|'imageInline'} [imageElementName] Image type of inserted image. If not specified,
- * the {@link determineImageElementName} logic will be applied.
+ * it will be determined automatically depending of editor config or place of insert.
  */
 export function insertImage( editor, attributes = {}, insertPlace = null, imageElementName = null ) {
 	const model = editor.model;
@@ -263,7 +263,7 @@ function getInsertImageParent( selection, model ) {
 	return parent;
 }
 
-// Determine image element type name depending of config option, insert position or enabled plugins
+// Determine image element type name depending of editor config or place of insert.
 //
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/model/selection~Selection} selection
