@@ -338,4 +338,46 @@ describe( 'ImageUploadProgress', () => {
 			'</figure>]'
 		);
 	} );
+
+	it( 'should work correctly when there is no ImageBlockEditing plugin enabled', async () => {
+		const newEditor = await VirtualTestEditor.create( {
+			plugins: [
+				ImageInlineEditing, Paragraph, ImageUploadEditing,
+				ImageUploadProgress, UploadAdapterPluginMock, Clipboard
+			]
+		} );
+
+		setModelData( newEditor.model, '<paragraph>[]foo</paragraph>' );
+		newEditor.execute( 'imageUpload', { file: createNativeFileMock() } );
+
+		expect( getViewData( newEditor.editing.view ) ).to.equal(
+			'<p>[<span class="ck-appear ck-image-upload-placeholder ck-widget image-inline" contenteditable="false">' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				'<div class="ck-upload-placeholder-loader"></div>' +
+			'</span>}foo</p>'
+		);
+
+		await newEditor.destroy();
+	} );
+
+	it( 'should work correctly when there is no ImageInlineEditing plugin enabled', async () => {
+		const newEditor = await VirtualTestEditor.create( {
+			plugins: [
+				ImageBlockEditing, Paragraph, ImageUploadEditing,
+				ImageUploadProgress, UploadAdapterPluginMock, Clipboard
+			]
+		} );
+
+		setModelData( newEditor.model, '<paragraph>[]foo</paragraph>' );
+		newEditor.execute( 'imageUpload', { file: createNativeFileMock() } );
+
+		expect( getViewData( newEditor.editing.view ) ).to.equal(
+			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				'<div class="ck-upload-placeholder-loader"></div>' +
+			'</figure>]<p>foo</p>'
+		);
+
+		await newEditor.destroy();
+	} );
 } );

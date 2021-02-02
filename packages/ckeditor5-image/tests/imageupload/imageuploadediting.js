@@ -163,8 +163,8 @@ describe( 'ImageUploadEditing', () => {
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
-			'<paragraph>foo' +
-				`<imageInline uploadId="${ id1 }" uploadStatus="reading"></imageInline>` +
+			'<paragraph>' +
+				`foo<imageInline uploadId="${ id1 }" uploadStatus="reading"></imageInline>` +
 				`[<imageInline uploadId="${ id2 }" uploadStatus="reading"></imageInline>]` +
 			'</paragraph>'
 		);

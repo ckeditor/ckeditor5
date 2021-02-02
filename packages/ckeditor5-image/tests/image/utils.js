@@ -231,10 +231,10 @@ describe( 'image widget utils', () => {
 			model.schema.extend( 'paragraph', { allowIn: 'block' } );
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name.startsWith( 'image' ) && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
 					return false;
 				}
-				if ( childDefinition.name.startsWith( 'imageInline' ) && context.last.name === 'paragraph' ) {
+				if ( childDefinition.name === 'imageInline' && context.last.name === 'paragraph' ) {
 					return false;
 				}
 			} );
@@ -295,7 +295,7 @@ describe( 'image widget utils', () => {
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
-		it( 'Use block image type if image.insert.type="block" option is set', async () => {
+		it( 'should use block image type if image.insert.type="block" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'block' } }
@@ -310,7 +310,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'Use inline image type if image.insert.type="inline" option is set', async () => {
+		it( 'should use inline image type if image.insert.type="inline" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'inline' } }
@@ -325,7 +325,35 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'Determine image type when image.insert.type="inline" option is set ' +
+		it( 'should use inline image type when there is only ImageInlineEditing plugin enabled', async () => {
+			const newEditor = await VirtualTestEditor.create( {
+				plugins: [ ImageInlineEditing, Paragraph ]
+			} );
+
+			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
+
+			insertImage( newEditor );
+
+			expect( getModelData( newEditor.model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+
+			await newEditor.destroy();
+		} );
+
+		it( 'should use block image type when there is only ImageBlockEditing plugin enabled', async () => {
+			const newEditor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, Paragraph ]
+			} );
+
+			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
+
+			insertImage( newEditor );
+
+			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
+
+			await newEditor.destroy();
+		} );
+
+		it( 'should determine image type when image.insert.type="inline" option is set ' +
 			'but ImageInlineEditing plugin is not enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, Paragraph ],
@@ -345,7 +373,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'Determine image type when image.insert.type="block" option is set ' +
+		it( 'should determine image type when image.insert.type="block" option is set ' +
 			'but ImageBlockEditing plugin is not enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageInlineEditing, Paragraph ],

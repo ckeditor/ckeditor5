@@ -197,9 +197,9 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>Fo' +
-				'[<imageInline src="http://example.com/image.png"></imageInline>]' +
-				'r</paragraph>'
+				'<paragraph>' +
+					'Fo[<imageInline src="http://example.com/image.png"></imageInline>]r' +
+				'</paragraph>'
 			);
 		} );
 
@@ -210,9 +210,9 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>Foo ' +
-				'[<imageInline src="http://example.com/image.png"></imageInline>]' +
-				'Bar</paragraph>'
+				'<paragraph>' +
+					'Foo [<imageInline src="http://example.com/image.png"></imageInline>]Bar' +
+				'</paragraph>'
 			);
 		} );
 
@@ -223,9 +223,9 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>Foo ' +
-				'[<imageInline src="http://example.com/image.png"></imageInline>]' +
-				' Baz</paragraph>'
+				'<paragraph>' +
+					'Foo [<imageInline src="http://example.com/image.png"></imageInline>] Baz' +
+				'</paragraph>'
 			);
 		} );
 
@@ -453,7 +453,8 @@ describe( 'AutoImage - integration', () => {
 					'<paragraph>Foo.</paragraph>' +
 					'<paragraph>ABCDEFGHIJ</paragraph>' +
 					'<paragraph>Bar.' +
-					'[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
+						'[<imageInline src="http://example.com/image.png"></imageInline>]' +
+					'</paragraph>'
 				);
 
 				done();

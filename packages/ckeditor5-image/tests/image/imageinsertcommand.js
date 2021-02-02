@@ -140,9 +140,9 @@ describe( 'ImageInsertCommand', () => {
 
 			expect( getModelData( model ) )
 				.to.equal(
-					'<paragraph>f' +
-						`<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]` +
-					'o</paragraph>'
+					'<paragraph>' +
+						`f<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]o` +
+					'</paragraph>'
 				);
 		} );
 
