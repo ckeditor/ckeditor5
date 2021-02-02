@@ -22,6 +22,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 /* global Event, document */
 
@@ -31,7 +32,7 @@ describe( 'TodoListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
+				plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1022,7 +1023,7 @@ describe( 'TodoListEditing', () => {
 				return VirtualTestEditor
 					.create( {
 						language: 'en',
-						plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
@@ -1065,7 +1066,7 @@ describe( 'TodoListEditing', () => {
 				return VirtualTestEditor
 					.create( {
 						language: 'ar',
-						plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
@@ -1189,7 +1190,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ TodoListEditing ]
+				plugins: [ Paragraph, TodoListEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

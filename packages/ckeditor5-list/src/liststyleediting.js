@@ -7,7 +7,7 @@
  * @module list/liststyleediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ListEditing from './listediting';
 import ListStyleCommand from './liststylecommand';
 import { getSiblingListItem, getSiblingNodes } from './utils';

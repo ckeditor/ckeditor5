@@ -6,7 +6,11 @@
     "ckeditor5",
     "ckeditor5-lib"
   ],
+  "main": "src/index.js",
   "dependencies": {
+    "ckeditor5": "^25.0.0"
+  },
+  "devDependencies": {
     "@ckeditor/ckeditor5-utils": "^25.0.0"
   },
   "engines": {
@@ -25,6 +29,7 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "build"
   ]
 }

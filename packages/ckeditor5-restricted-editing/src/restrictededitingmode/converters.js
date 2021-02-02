@@ -7,7 +7,8 @@
  * @module restricted-editing/restrictededitingmode/converters
  */
 
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
+import { Matcher } from 'ckeditor5/src/engine';
+
 import { getMarkerAtPosition } from './utils';
 
 const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';

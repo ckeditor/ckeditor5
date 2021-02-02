@@ -7,10 +7,11 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView, ContextualBalloon, clickOutsideHandler, getLocalizedColorOptions, normalizeColorOptions } from 'ckeditor5/src/ui';
+
+import { debounce } from 'lodash-es';
+
 import TablePropertiesView from './ui/tablepropertiesview';
 import tableProperties from './../../theme/icons/table-properties.svg';
 import {
@@ -21,11 +22,6 @@ import {
 	lineWidthFieldValidator,
 	defaultColors
 } from '../utils/ui/table-properties';
-import {
-	getLocalizedColorOptions,
-	normalizeColorOptions
-} from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
-import { debounce } from 'lodash-es';
 import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
 

@@ -7,20 +7,23 @@
  * @module table/tablecellproperties/ui/tablecellpropertiesview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
+import {
+	LabeledFieldView,
+	createLabeledDropdown,
+	createLabeledInputText,
+	LabelView,
+	addListToDropdown,
+	ToolbarView,
+	ButtonView,
+	FocusCycler,
+	View,
+	ViewCollection,
+	FormHeaderView,
+	submitHandler
+} from 'ckeditor5/src/ui';
+import { KeystrokeHandler, FocusTracker } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
-import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
@@ -29,30 +32,18 @@ import {
 } from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
 
-import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
-
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
-import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
-import alignJustifyIcon from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
-import alignTopIcon from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
-import alignMiddleIcon from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
-import alignBottomIcon from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
-
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
 
 const ALIGNMENT_ICONS = {
-	left: alignLeftIcon,
-	center: alignCenterIcon,
-	right: alignRightIcon,
-	justify: alignJustifyIcon,
-	top: alignTopIcon,
-	middle: alignMiddleIcon,
-	bottom: alignBottomIcon
+	left: icons.alignLeft,
+	center: icons.alignCenter,
+	right: icons.alignRight,
+	justify: icons.alignJustify,
+	top: icons.alignTop,
+	middle: icons.alignMiddle,
+	bottom: icons.alignBottom
 };
 
 /**
@@ -768,7 +759,7 @@ export default class TableCellPropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: checkIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -780,7 +771,7 @@ export default class TableCellPropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			type: 'cancel',
 			withText: true
