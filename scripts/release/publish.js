@@ -27,8 +27,8 @@ const path = require( 'path' );
 require( '@ckeditor/ckeditor5-dev-env' )
 	.releaseSubRepositories( {
 		cwd: process.cwd(),
-		packages: 'packages',
-		releaseBranch: 'release',
+		packages: null,
+		releaseBranch: 'i/8904',
 		customReleases: [
 			'ckeditor5'
 		],

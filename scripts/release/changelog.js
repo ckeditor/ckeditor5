@@ -23,7 +23,7 @@ Promise.resolve()
 	.then( () => devEnv.generateChangelogForMonoRepository( {
 		cwd: process.cwd(),
 		packages: 'packages',
-		releaseBranch: 'release',
+		releaseBranch: 'i/8904',
 		highlightsPlaceholder: true,
 		collaborationFeatures: true,
 		transformScope: name => {
@@ -45,7 +45,8 @@ Promise.resolve()
 			{
 				cwd: CKEDITOR5_INTERNAL_PATH,
 				packages: 'packages',
-				skipLinks: true
+				skipLinks: true,
+				releaseBranch: 'master'
 			}
 		]
 	} ) )
