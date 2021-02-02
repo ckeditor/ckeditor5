@@ -22,26 +22,33 @@ describe( 'ImageCaptionEditing', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageCaptionEditing, UndoEditing, Paragraph ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-				view = editor.editing.view;
-				model.schema.register( 'widget' );
-				model.schema.extend( 'widget', { allowIn: '$root' } );
-				model.schema.extend( 'caption', { allowIn: 'widget' } );
-				model.schema.extend( '$text', { allowIn: 'widget' } );
+	beforeEach( async () => {
+		editor = VirtualTestEditor.create( {
+			plugins: [
+				ImageBlockEditing,
+				ImageInlineEditing,
+				ImageCaptionEditing,
+				UndoEditing,
+				Paragraph
+			]
+		} );
 
-				editor.conversion.elementToElement( {
-					model: 'widget',
-					view: 'widget'
-				} );
-			} );
+		model = editor.model;
+		doc = model.document;
+		view = editor.editing.view;
+		model.schema.register( 'widget' );
+		model.schema.extend( 'widget', { allowIn: '$root' } );
+		model.schema.extend( 'caption', { allowIn: 'widget' } );
+		model.schema.extend( '$text', { allowIn: 'widget' } );
+
+		editor.conversion.elementToElement( {
+			model: 'widget',
+			view: 'widget'
+		} );
+	} );
+
+	afterEach( async () => {
+		return editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -67,6 +74,26 @@ describe( 'ImageCaptionEditing', () => {
 		it( 'should set proper schema rules for image and imageInline', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'image' ], 'caption' ) ).to.be.true;
 			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'caption' ) ).to.be.true;
+		} );
+
+		it( 'should not set rules for image when ImageBlockEditing is not loaded', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageInlineEditing, ImageCaptionEditing ]
+			} );
+
+			expect( model.schema.checkAttribute( [ '$root', 'image' ], 'caption' ) ).to.be.false;
+
+			return editor.destroy();
+		} );
+
+		it( 'should not set rules for imageInline when ImageInlineEditing is not loaded', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageCaptionEditing ]
+			} );
+
+			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'caption' ) ).to.be.false;
+
+			return editor.destroy();
 		} );
 	} );
 
