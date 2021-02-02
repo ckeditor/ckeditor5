@@ -7,8 +7,8 @@
  * @module horizontal-line/horizontallinecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Command } from 'ckeditor5/src/core';
+import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
 
 /**
  * The horizontal line command.

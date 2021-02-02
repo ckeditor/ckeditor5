@@ -32,6 +32,8 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -49,7 +51,7 @@ function initEditor() {
 				TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
 				Code, Underline, Strikethrough, Superscript, Subscript,
 				Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
-				IndentBlock, WordCount, EasyImage,
+				IndentBlock, WordCount, ImageUpload, CloudServices, EasyImage,
 				TodoList, PageBreak, HorizontalLine, Mention, RemoveFormat, TextTransformation
 			],
 			toolbar: [

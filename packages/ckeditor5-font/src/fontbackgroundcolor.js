@@ -7,7 +7,7 @@
  * @module font/fontbackgroundcolor
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import FontBackgroundColorEditing from './fontbackgroundcolor/fontbackgroundcolorediting';
 import FontBackgroundColorUI from './fontbackgroundcolor/fontbackgroundcolorui';
 

@@ -7,7 +7,7 @@
  * @module image/imagestyle
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageStyleEditing from './imagestyle/imagestyleediting';
 import ImageStyleUI from './imagestyle/imagestyleui';
 
@@ -75,8 +75,10 @@ export default class ImageStyle extends Plugin {
  *
  * If none of the default styles is good enough, it is possible to define independent custom styles, too:
  *
- *		import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
- *		import sideIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+ *		import { icons } from 'ckeditor5/src/core';
+ *
+ *		const fullSizeIcon = icons.objectCenter';
+ *		const sideIcon = icons.objectRight';
  *
  *		// ...
  *

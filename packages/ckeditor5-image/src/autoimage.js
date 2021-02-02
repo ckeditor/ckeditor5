@@ -7,12 +7,12 @@
  * @module image/autoimage
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { Plugin } from 'ckeditor5/src/core';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
+import { Undo } from 'ckeditor5/src/undo';
+import { global } from 'ckeditor5/src/utils';
+
 import { insertImage } from './image/utils';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.

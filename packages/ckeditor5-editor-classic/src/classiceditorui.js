@@ -7,11 +7,10 @@
  * @module editor-classic/classiceditorui
  */
 
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+import { EditorUI } from 'ckeditor5/src/core';
+import { enableToolbarKeyboardFocus, normalizeToolbarConfig } from 'ckeditor5/src/ui';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { ElementReplacer } from 'ckeditor5/src/utils';
 
 /**
  * The classic editor UI class.
@@ -177,7 +176,8 @@ export default class ClassicEditorUI extends EditorUI {
 				view: editingView,
 				element: editingRoot,
 				text: placeholderText,
-				isDirectHost: false
+				isDirectHost: false,
+				keepOnFocus: true
 			} );
 		}
 	}

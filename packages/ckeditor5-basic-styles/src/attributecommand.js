@@ -7,7 +7,7 @@
  * @module basic-styles/attributecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * An extension of the base {@link module:core/command~Command} class, which provides utilities for a command

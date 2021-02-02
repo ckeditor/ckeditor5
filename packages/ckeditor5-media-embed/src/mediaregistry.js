@@ -7,12 +7,10 @@
  * @module media-embed/mediaregistry
  */
 
+import { TooltipView, IconView, Template } from 'ckeditor5/src/ui';
+import { logWarning, toArray } from 'ckeditor5/src/utils';
+
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
-import TooltipView from '@ckeditor/ckeditor5-ui/src/tooltip/tooltipview';
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 const mediaPlaceholderIconViewBox = '0 0 64 42';
 

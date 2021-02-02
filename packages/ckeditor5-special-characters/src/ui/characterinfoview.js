@@ -7,7 +7,7 @@
  * @module special-characters/ui/characterinfoview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { View } from 'ckeditor5/src/ui';
 
 import '../../theme/characterinfo.css';
 

@@ -1,5 +1,7 @@
 ---
-category: features
+menu-title: Ordered and unordered lists
+category: features-lists
+order: 10
 ---
 
 # Lists
