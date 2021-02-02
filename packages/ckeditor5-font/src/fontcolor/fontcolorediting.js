@@ -122,6 +122,20 @@ export default class FontColorEditing extends Plugin {
 
 		editor.commands.add( FONT_COLOR, new FontColorCommand( editor ) );
 
+		// Support `<font color="..">` formatting.
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'font',
+				attributes: {
+					'color': /.*/
+				}
+			},
+			model: {
+				key: FONT_COLOR,
+				value: viewElement => viewElement.getAttribute( 'color' )
+			}
+		} );
+
 		// Allow the font color attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_COLOR } );
 

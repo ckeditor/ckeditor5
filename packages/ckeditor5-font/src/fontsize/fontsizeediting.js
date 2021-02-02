@@ -14,6 +14,18 @@ import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_SIZE } from '../utils';
 
+// Mapping of `<font size="..">` styling to CSS's `font-size` values.
+const styleFontSize = [
+	'x-small', // Size "0" equal to "1".
+	'x-small',
+	'small',
+	'medium',
+	'large',
+	'x-large',
+	'xx-large',
+	'xxx-large'
+];
+
 /**
  * The font size editing feature.
  *
@@ -77,6 +89,7 @@ export default class FontSizeEditing extends Plugin {
 		// Set-up the two-way conversion.
 		if ( supportAllValues ) {
 			this._prepareAnyValueConverters( definition );
+			this._prepareCompatibilityConverter();
 		} else {
 			editor.conversion.attributeToElement( definition );
 		}
@@ -134,6 +147,33 @@ export default class FontSizeEditing extends Plugin {
 				name: 'span',
 				styles: {
 					'font-size': /.*/
+				}
+			}
+		} );
+	}
+
+	/**
+	 * Support `<font size="..">` formatting.
+	 *
+	 * @private
+	 */
+	_prepareCompatibilityConverter() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'font',
+				attributes: {
+					// Size from 0 to 7.
+					'size': /^[0-7]$/
+				}
+			},
+			model: {
+				key: FONT_SIZE,
+				value: viewElement => {
+					const value = viewElement.getAttribute( 'size' );
+
+					return styleFontSize[ Number( value ) ];
 				}
 			}
 		} );

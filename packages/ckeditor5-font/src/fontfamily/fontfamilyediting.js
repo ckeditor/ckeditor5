@@ -74,6 +74,7 @@ export default class FontFamilyEditing extends Plugin {
 		// Set-up the two-way conversion.
 		if ( editor.config.get( 'fontFamily.supportAllValues' ) ) {
 			this._prepareAnyValueConverters();
+			this._prepareCompatibilityConverter();
 		} else {
 			editor.conversion.attributeToElement( definition );
 		}
@@ -107,6 +108,28 @@ export default class FontFamilyEditing extends Plugin {
 				styles: {
 					'font-family': /.*/
 				}
+			}
+		} );
+	}
+
+	/**
+	 * Support `<font size="..">` formatting.
+	 *
+	 * @private
+	 */
+	_prepareCompatibilityConverter() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'font',
+				attributes: {
+					'face': /.*/
+				}
+			},
+			model: {
+				key: FONT_FAMILY,
+				value: viewElement => viewElement.getAttribute( 'face' )
 			}
 		} );
 	}
