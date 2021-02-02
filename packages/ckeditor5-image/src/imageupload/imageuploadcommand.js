@@ -1,12 +1,13 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { FileRepository } from 'ckeditor5/src/upload';
+import { Command } from 'ckeditor5/src/core';
+import { toArray } from 'ckeditor5/src/utils';
+
 import { insertImage, isImageAllowed } from '../image/utils';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * @module image/imageupload/imageuploadcommand

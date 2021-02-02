@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,18 +7,13 @@
  * @module html-embed/htmlembedediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
+import { toWidget } from 'ckeditor5/src/widget';
+import { logWarning, createElement } from 'ckeditor5/src/utils';
+
 import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
 import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-
-import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../theme/htmlembed.css';
 
@@ -327,13 +322,27 @@ export default class HtmlEmbedEditing extends Plugin {
 		}
 
 		function createPreviewContainer( { domDocument, state, props, editor } ) {
-			const domPreviewContainer = createElement( domDocument, 'div', {
-				class: 'raw-html-embed__preview',
+			const sanitizedOutput = props.sanitizeHtml( state.getRawHtmlValue() );
+			const placeholderText = state.getRawHtmlValue().length > 0 ?
+				t( 'No preview available' ) :
+				t( 'Empty snippet content' );
+
+			const domPreviewPlaceholder = createElement( domDocument, 'div', {
+				class: 'ck ck-reset_all raw-html-embed__preview-placeholder'
+			}, placeholderText );
+
+			const domPreviewContent = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview-content',
 				dir: editor.locale.contentLanguageDirection
 			} );
 
-			const sanitizeOutput = props.sanitizeHtml( state.getRawHtmlValue() );
-			domPreviewContainer.innerHTML = sanitizeOutput.html;
+			domPreviewContent.innerHTML = sanitizedOutput.html;
+
+			const domPreviewContainer = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview'
+			}, [
+				domPreviewPlaceholder, domPreviewContent
+			] );
 
 			return domPreviewContainer;
 		}
@@ -352,7 +361,7 @@ function createDomButton( editor, type ) {
 
 	buttonView.set( {
 		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w',
-		icon: pencilIcon,
+		icon: icons.pencil,
 		tooltip: true
 	} );
 
@@ -360,20 +369,20 @@ function createDomButton( editor, type ) {
 
 	if ( type === 'edit' ) {
 		buttonView.set( {
-			icon: pencilIcon,
+			icon: icons.pencil,
 			label: t( 'Edit source' ),
 			class: 'raw-html-embed__edit-button'
 		} );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
-			icon: checkIcon,
+			icon: icons.check,
 			label: t( 'Save changes' ),
 			class: 'raw-html-embed__save-button'
 		} );
 		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 	} else {
 		buttonView.set( {
-			icon: cancelIcon,
+			icon: icons.cancel,
 			label: t( 'Cancel' ),
 			class: 'raw-html-embed__cancel-button'
 		} );

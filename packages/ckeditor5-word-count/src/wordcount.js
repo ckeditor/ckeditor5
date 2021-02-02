@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,11 @@
  * @module word-count/wordcount
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { modelElementToPlainText } from './utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { View, Template } from 'ckeditor5/src/ui';
+import { env } from 'ckeditor5/src/utils';
 import { throttle, isElement } from 'lodash-es';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { modelElementToPlainText } from './utils';
 
 /**
  * The word count plugin.

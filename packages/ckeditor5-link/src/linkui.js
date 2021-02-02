@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,17 +7,13 @@
  * @module link/linkui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { ClickObserver } from 'ckeditor5/src/engine';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
 
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';
+import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
 
 import linkIcon from '../theme/icons/link.svg';
 
@@ -664,13 +660,15 @@ export default class LinkUI extends Plugin {
 				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
 			} else {
 				if ( range.start.isAtEnd ) {
-					const focus = model.document.selection.focus;
-					const nextValidRange = getNextValidRange( range, focus, writer );
+					const startPosition = range.start.getLastMatchingPosition(
+						( { item } ) => !model.schema.isContent( item ),
+						{ boundaries: range }
+					);
 
 					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
 						usingOperation: false,
 						affectsData: false,
-						range: nextValidRange
+						range: writer.createRange( startPosition, range.end )
 					} );
 				} else {
 					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
@@ -706,28 +704,4 @@ export default class LinkUI extends Plugin {
 // @returns {module:engine/view/attributeelement~AttributeElement|null} Link element at the position or null.
 function findLinkElementAncestor( position ) {
 	return position.getAncestors().find( ancestor => isLinkElement( ancestor ) );
-}
-
-// Returns next valid range for the fake visual selection marker.
-//
-// @private
-// @param {module:engine/model/range~Range} range Current range.
-// @param {module:engine/model/position~Position} focus Selection focus.
-// @param {module:engine/model/writer~Writer} writer Writer.
-// @returns {module:engine/model/range~Range} New valid range for the fake visual selection marker.
-function getNextValidRange( range, focus, writer ) {
-	const nextStartPath = [ range.start.path[ 0 ] + 1, 0 ];
-	const nextStartPosition = writer.createPositionFromPath( range.start.root, nextStartPath, 'toNext' );
-	const nextRange = writer.createRange( nextStartPosition, range.end );
-
-	// Block creating a potential next valid range over the current range end.
-	if ( nextRange.start.path[ 0 ] > range.end.path[ 0 ] ) {
-		return writer.createRange( focus );
-	}
-
-	if ( nextStartPosition.isAtStart && nextStartPosition.isAtEnd ) {
-		return getNextValidRange( nextRange, focus, writer );
-	}
-
-	return nextRange;
 }

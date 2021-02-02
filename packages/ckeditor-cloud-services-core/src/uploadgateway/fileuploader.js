@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,7 @@
 
 /* globals XMLHttpRequest, FormData, Blob, atob */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { mix, EmitterMixin, CKEditorError } from 'ckeditor5/src/utils';
 
 const BASE64_HEADER_REG_EXP = /^data:(\S*?);base64,/;
 

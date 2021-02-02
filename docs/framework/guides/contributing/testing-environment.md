@@ -130,6 +130,18 @@ ClassicEditor
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+### Verifying all manual tests
+
+To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and it visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
+
+To check manual tests, start the server (`yarn manual --files=XYZ`), and then run the crawler:
+
+```
+yarn run manual:verify
+```
+
+Read more about the crawler in {@link framework/guides/contributing/development-environment#verifying-documentation Verifying documentation}.
+
 ## Test suite and CI
 
 To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of September 2019, this means over 11000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.

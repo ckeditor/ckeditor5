@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,6 +29,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 export default class InlineEditor extends InlineEditorBase {}
 
@@ -41,6 +42,7 @@ InlineEditor.builtinPlugins = [
 	Italic,
 	BlockQuote,
 	CKFinder,
+	CloudServices,
 	EasyImage,
 	Heading,
 	Image,

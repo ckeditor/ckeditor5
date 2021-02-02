@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClipboardObserver from './clipboardobserver';
 
 /**
- * The plugin detects user intentions for pasting plain text.
+ * The plugin detects the user's intention to paste plain text.
  *
  * For example, it detects <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke.
  *

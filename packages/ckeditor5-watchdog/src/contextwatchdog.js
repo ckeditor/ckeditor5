@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,11 +9,11 @@
 
 /* globals console */
 
+import { toArray } from 'ckeditor5/src/utils';
 import Watchdog from './watchdog';
 import EditorWatchdog from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import getSubNodes from './utils/getsubnodes';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * A watchdog for the {@link module:core/context~Context} class.

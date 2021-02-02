@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -122,20 +122,32 @@ describe( 'Image', () => {
 
 			expect( getViewData( view ) ).to.equal(
 				'<figure class="' +
-					'ck-widget ' +
-					'image" contenteditable="false"' +
+				'ck-widget ' +
+				'image" contenteditable="false"' +
 				'>' +
-					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<img alt="alt text" src="/assets/sample.png"></img>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>' +
 				'[<figure class="' +
-					'ck-widget ' +
-					'ck-widget_selected image" contenteditable="false"' +
+				'ck-widget ' +
+				'ck-widget_selected image" contenteditable="false"' +
 				'>' +
-					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'<img alt="alt text" src="/assets/sample.png"></img>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>]'
 			);
+		} );
+	} );
+
+	describe( 'isImageWidget()', () => {
+		it( 'should expose isImageWidget() utility', () => {
+			expect( editor.plugins.get( 'Image' ) ).to.respondTo( 'isImageWidget' );
+		} );
+
+		it( 'should return true for elements marked with toImageWidget()', () => {
+			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
+			const element = viewDocument.getRoot().getChild( 0 );
+			expect( editor.plugins.get( 'Image' ).isImageWidget( element ) ).to.be.true;
 		} );
 	} );
 } );

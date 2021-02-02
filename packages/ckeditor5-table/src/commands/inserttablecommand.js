@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module table/commands/inserttablecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Command } from 'ckeditor5/src/core';
+import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
 
 /**
  * The insert table command.
@@ -30,9 +30,8 @@ export default class InsertTableCommand extends Command {
 		const selection = model.document.selection;
 		const schema = model.schema;
 
-		const validParent = getInsertTableParent( selection.getFirstPosition() );
-
-		this.isEnabled = schema.checkChild( validParent, 'table' );
+		this.isEnabled = isAllowedInParent( selection, schema ) &&
+			!checkSelectionOnObject( selection, schema );
 	}
 
 	/**
@@ -64,11 +63,14 @@ export default class InsertTableCommand extends Command {
 	}
 }
 
-// Returns valid parent to insert table
+// Checks if the table is allowed in the parent.
 //
-// @param {module:engine/model/position} position
-function getInsertTableParent( position ) {
-	const parent = position.parent;
+// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+// @param {module:engine/model/schema~Schema} schema
+// @returns {Boolean}
+function isAllowedInParent( selection, schema ) {
+	const positionParent = selection.getFirstPosition().parent;
+	const validParent = positionParent === positionParent.root ? positionParent : positionParent.parent;
 
-	return parent === parent.root ? parent : parent.parent;
+	return schema.checkChild( validParent, 'table' );
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -93,7 +93,7 @@ export default class LabeledFieldView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
-		 * An observable flag set `true` when {@link #fieldView} is empty (`false` otherwise).
+		 * An observable flag set to `true` when {@link #fieldView} is empty (`false` otherwise).
 		 *
 		 * @readonly
 		 * @observable
@@ -103,7 +103,7 @@ export default class LabeledFieldView extends View {
 		this.set( 'isEmpty', true );
 
 		/**
-		 * An observable flag set `true` when {@link #fieldView} is currently focused by
+		 * An observable flag set to `true` when {@link #fieldView} is currently focused by
 		 * the user (`false` otherwise).
 		 *
 		 * @readonly
