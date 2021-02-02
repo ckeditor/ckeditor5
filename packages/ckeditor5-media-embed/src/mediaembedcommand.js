@@ -7,8 +7,8 @@
  * @module media-embed/mediaembedcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Command } from 'ckeditor5/src/core';
+import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
 import { getSelectedMediaModelWidget, insertMedia } from './utils';
 
 /**

@@ -6,12 +6,14 @@
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib"
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.js",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^25.0.0",
-    "@ckeditor/ckeditor5-ui": "^25.0.0",
-    "@ckeditor/ckeditor5-utils": "^25.0.0"
+    "@ckeditor/ckeditor5-utils": "^25.0.0",
+    "@ckeditor/ckeditor5-ui": "^25.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

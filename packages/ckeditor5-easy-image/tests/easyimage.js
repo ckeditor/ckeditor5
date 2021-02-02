@@ -32,11 +32,15 @@ describe( 'EasyImage', () => {
 	} );
 
 	it( 'should require other plugins', () => {
-		const plugins = EasyImage.requires;
+		expect( EasyImage.requires ).to.include( CloudServicesUploadAdapter );
+	} );
 
-		expect( plugins ).to.include( CloudServicesUploadAdapter );
-		expect( plugins ).to.include( Image );
-		expect( plugins ).to.include( ImageUpload );
+	it( 'should require Image by name', () => {
+		expect( EasyImage.requires ).to.include( 'Image' );
+	} );
+
+	it( 'should require ImageUpload by name', () => {
+		expect( EasyImage.requires ).to.include( 'ImageUpload' );
 	} );
 
 	it( 'should be able to initialize editor with itself', () => {
@@ -45,7 +49,7 @@ describe( 'EasyImage', () => {
 
 		return ClassicTestEditor
 			.create( div, {
-				plugins: [ Clipboard, EasyImage ],
+				plugins: [ Clipboard, Image, ImageUpload, CloudServices, EasyImage ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'def'
@@ -99,7 +103,7 @@ describe( 'EasyImage', () => {
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [
-						Clipboard, Paragraph, EasyImage
+						Clipboard, Image, ImageUpload, CloudServices, Paragraph, EasyImage
 					],
 					cloudServices: {
 						tokenUrl: 'abc',

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DLL sample</title>
+	<style>
+		body {
+			margin-bottom: 50px;
+		}
+
+		.sample-main {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.sample-editor {
+			flex: 1 1 calc(50% - 3em - 2px);
+			padding: 1em;
+			margin: 0.5em;
+			box-shadow: hsl(0, 0%, 80%) 2px 2px 6px;
+		}
+	</style>
+</head>
+<body>
+
+<div class="sample-main">
+	<div class="sample-editor">
+		<h2>Classic Editor</h2>
+
+		<div id="editor-classic">
+			<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
+
+			<img src="./sample.jpg" alt="Autumn fields">
+		</div>
+	</div>
+	<div class="sample-editor">
+		<h2>Inline Editor</h2>
+
+		<div id="editor-inline">
+			<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
+
+			<img src="./sample.jpg" alt="Autumn fields">
+		</div>
+	</div>
+	<div class="sample-editor">
+		<h2>Balloon Editor</h2>
+
+		<div id="editor-balloon">
+			<p>Pastry powder dragée sweet donut jelly-o carrot cake. Icing jelly cotton candy. Tart dessert carrot cake dragée tootsie roll gummi bears cake. Tiramisu cookie jelly jelly beans bear claw brownie cookie cake biscuit. Carrot cake lollipop chocolate liquorice tart oat cake. Cupcake sesame snaps liquorice icing pie cake wafer dragée. Chocolate carrot cake brownie chocolate tootsie roll. Wafer chocolate pie cake gingerbread. Pudding jelly-o jelly-o danish. Donut lollipop jelly beans danish pie candy. Dessert tiramisu jelly. Pastry candy canes marzipan dragée candy. Apple pie cake jelly beans ice cream liquorice fruitcake.</p>
+
+			<img src="./sample.jpg" alt="Autumn fields">
+		</div>
+	</div>
+	<div class="sample-editor">
+		<h2>Decoupled Document Editor</h2>
+
+		<h3>The toolbar</h3>
+		<div class="toolbar-container"></div>
+
+		<h3>The editable</h3>
+		<div class="editable-container"></div>
+	</div>
+</div>
+
+<script src="https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
+
+<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
+<script src="../build/ckeditor5-dll.js"></script>
+
+<!-- Editor creators exposed under CKEditor5[packageName] -->
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-inline/build/editor-inline.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-balloon/build/editor-balloon.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled.js"></script>
+
+<!-- Non-essential features exposed under CKEditor5[packageName] -->
+<script src="./../node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-adapter-ckfinder/build/adapter-ckfinder.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-alignment/build/alignment.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-autosave/build/autosave.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-ckfinder/build/ckfinder.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-cloud-services/build/cloud-services.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-code-block/build/code-block.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-easy-image/build/easy-image.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-font/build/font.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-highlight/build/highlight.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-horizontal-line/build/horizontal-line.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-html-embed/build/html-embed.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-markdown-gfm/build/markdown-gfm.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-mention/build/mention.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-page-break/build/page-break.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-remove-format/build/remove-format.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-restricted-editing/build/restricted-editing.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-special-characters/build/special-characters.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-watchdog/build/watchdog.js"></script>
+<script src="./../node_modules/@ckeditor/ckeditor5-word-count/build/word-count.js"></script>
+
+<!-- Finally, this is a end-user plugin that uses DLL -->
+<script src="../build/dll-consumer-plugin.js"></script>
+
+<script>
+	const {
+		editorBalloon, editorClassic, editorDecoupled, editorInline,
+		essentials, paragraph, basicStyles, htmlEmbed, image, table
+	} = CKEditor5;
+	const BalloonEditor = editorBalloon.BalloonEditor;
+	const ClassicEditor = editorClassic.ClassicEditor;
+	const DecoupledEditor = editorDecoupled.DecoupledEditor;
+	const InlineEditor = editorInline.InlineEditor;
+
+	// Create ad-hoc plugin.
+	const Plugin = CKEditor5.core.Plugin;
+	const ButtonView = CKEditor5.ui.ButtonView;
+
+	class AdHocPlugin extends Plugin {
+		constructor( editor ) {
+			super( editor );
+
+			editor.ui.componentFactory.add( 'ad-hoc-button', locale => {
+				const button = new ButtonView( locale );
+
+				button.set( {
+					icon: false,
+					withText: true,
+					label: 'Ad-hoc'
+				} );
+
+				button.on( 'execute', () => console.log( 'It Works!' ) );
+
+				return button;
+			} );
+		}
+	}
+
+	const config = {
+		extraPlugins: [
+			essentials.Essentials,
+			paragraph.Paragraph,
+			basicStyles.Bold,
+			basicStyles.Italic,
+			image.Image,
+			htmlEmbed.HtmlEmbed,
+			table.Table,
+			table.TableToolbar,
+			table.TableCellProperties,
+			table.TableProperties,
+
+			DLLConsumerPlugin, // exposed by the dll-consumer-plugin.js
+			AdHocPlugin
+		],
+		toolbar: [
+			'bold',
+			'italic',
+			'|',
+			'insertTable',
+			'htmlEmbed',
+			'|',
+			'a-button',
+			'ad-hoc-button',
+			'|',
+			'undo',
+			'redo'
+		],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		}
+	};
+
+	// ClassicEditor is exposed by the ckeditor5-dll-classic:
+	ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
+		.then( editor => {
+			window.editor = editor;
+
+			CKEditorInspector.attach( { 'dll-classic': editor } );
+		} );
+
+	// InlineEditor is exposed by the ckeditor5-dll-inline:
+	InlineEditor.create( document.querySelector( '#editor-inline' ), config )
+		.then( editor => {
+			window.editor = editor;
+
+			CKEditorInspector.attach( { 'dll-inline': editor } );
+		} );
+
+	// BalloonEditor is exposed by the ckeditor5-dll-balloon:
+	BalloonEditor.create( document.querySelector( '#editor-balloon' ), config )
+		.then( editor => {
+			window.editor = editor;
+
+			CKEditorInspector.attach( { 'dll-balloon': editor } );
+		} );
+
+	const editorData = `<h2>Sample</h2>
+		<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor">document editor build</a>.</p>
+		<figure class="image">
+			<img src="./sample.jpg" alt="Autumn fields" />
+		</figure>
+		<p>You can use this sample to validate whether your <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.</p>`;
+
+	// DecoupledEditor is exposed by the ckeditor5-dll-decoupled-document:
+	DecoupledEditor.create( editorData, config )
+		.then( editor => {
+			window.editor = editor;
+
+			document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+			document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
+
+			CKEditorInspector.attach( { 'dll-decoupled': editor } );
+		} );
+</script>
+</body>
+</html>

@@ -119,6 +119,28 @@ After building documentation, you can quickly start an HTTP server to serve them
 yarn run docs:serve
 ```
 
+### Verifying documentation
+
+To verify that all pages in our documentation can be opened without any errors, you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and it visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
+
+To check pages in the documentation, build it (`yarn run docs`), serve it (`yarn run docs:serve`), and then run the crawler:
+
+```
+yarn run docs:verify
+```
+
+<info-box>
+	By default, the crawler scans `http://fake.ckeditor.com:8080`, so you need to adjust your hosts file first.
+</info-box>
+
+This script collects and opens all links from the documentation, except the API and assets.
+
+The web crawler accepts the following arguments:
+
+* `--url`, `-u` &ndash; The URL to start crawling. This argument is required. Thanks to it you can verify e.g. a deployed documentation.
+* `--depth`, `-d` &ndash; Defines how many nested page levels should be examined. Infinity by default.
+* `--exclude`, `-e` &ndash; A comma-separated string with URL exclusions &ndash; links that match the excluded part are skipped. Nothing is excluded by default.
+
 ## Generating content styles
 
 It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. In order to do that, execute:

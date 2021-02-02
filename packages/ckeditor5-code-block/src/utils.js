@@ -7,7 +7,7 @@
  * @module code-block/utils
  */
 
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * Returns code block languages as defined in `config.codeBlock.languages` but processed:

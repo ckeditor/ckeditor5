@@ -12,6 +12,7 @@ import ListEditing from '../src/listediting';
 import ListStyleEditing from '../src/liststyleediting';
 
 import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'utils', () => {
 	let writer;
@@ -270,7 +271,7 @@ describe( 'utils', () => {
 		let editor, model, document;
 
 		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ ListStyleEditing ] } )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, ListStyleEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;

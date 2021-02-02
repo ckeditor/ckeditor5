@@ -7,7 +7,7 @@
  * @module image/imagestyle/imagestyleediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageStyleCommand from './imagestylecommand';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
 import { normalizeImageStyles } from './utils';

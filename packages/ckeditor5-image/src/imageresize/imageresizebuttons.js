@@ -7,27 +7,17 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView, DropdownButtonView, Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { CKEditorError, Collection } from 'ckeditor5/src/utils';
+
 import ImageResizeEditing from './imageresizeediting';
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
-
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
-import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
-import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
-import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
-import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
 
 const RESIZE_ICONS = {
-	small: iconSmall,
-	medium: iconMedium,
-	large: iconLarge,
-	original: iconFull
+	small: icons.objectSizeSmall,
+	medium: icons.objectSizeMedium,
+	large: icons.objectSizeLarge,
+	original: icons.objectSizeFull
 };
 
 /**
@@ -161,7 +151,7 @@ export default class ImageResizeButtons extends Plugin {
 			dropdownButton.set( {
 				tooltip: t( 'Resize image' ),
 				commandValue: originalSizeOption.value,
-				icon: iconMedium,
+				icon: RESIZE_ICONS.medium,
 				isToggleable: true,
 				label: this._getOptionLabelValue( originalSizeOption ),
 				withText: true,

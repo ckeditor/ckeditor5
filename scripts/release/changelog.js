@@ -9,7 +9,15 @@
 
 'use strict';
 
+const path = require( 'path' );
+const fs = require( 'fs' );
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
+
+const CKEDITOR5_INTERNAL_PATH = path.resolve( __dirname, '..', '..', 'external', 'ckeditor5-internal' );
+
+if ( !fs.existsSync( CKEDITOR5_INTERNAL_PATH ) ) {
+	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
+}
 
 Promise.resolve()
 	.then( () => devEnv.generateChangelogForMonoRepository( {
@@ -32,7 +40,14 @@ Promise.resolve()
 			}
 
 			return 'https://www.npmjs.com/package/@ckeditor/ckeditor5-' + name;
-		}
+		},
+		externalRepositories: [
+			{
+				cwd: CKEDITOR5_INTERNAL_PATH,
+				packages: 'packages',
+				skipLinks: true
+			}
+		]
 	} ) )
 	.then( () => {
 		console.log( 'Done!' );
