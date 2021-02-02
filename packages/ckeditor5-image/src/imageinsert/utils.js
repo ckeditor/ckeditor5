@@ -7,8 +7,7 @@
  * @module image/imageinsert/utils
  */
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import { LabeledFieldView, createLabeledInputText } from 'ckeditor5/src/ui';
 
 /**
  * Creates integrations object that will be passed to the

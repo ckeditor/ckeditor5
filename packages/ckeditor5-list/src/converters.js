@@ -7,6 +7,8 @@
  * @module list/converters
  */
 
+import { TreeWalker } from 'ckeditor5/src/engine';
+
 import {
 	generateLiInUl,
 	injectViewList,
@@ -14,7 +16,6 @@ import {
 	getSiblingListItem,
 	positionAfterUiElements
 } from './utils';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.

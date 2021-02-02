@@ -9,10 +9,11 @@
 
 /* globals setTimeout */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
+import { Plugin } from 'ckeditor5/src/core';
+import { FileRepository } from 'ckeditor5/src/upload';
 import { getViewImgFromWidget } from '../image/utils';
+
+import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';

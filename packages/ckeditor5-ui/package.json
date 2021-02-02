@@ -1,35 +1,38 @@
 {
   "name": "@ckeditor/ckeditor5-ui",
-  "version": "24.0.0",
+  "version": "25.0.0",
   "description": "The UI framework and standard UI library of CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib"
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-utils": "^24.0.0",
+    "@ckeditor/ckeditor5-utils": "^25.0.0",
+    "ckeditor5": "^25.0.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^24.0.0",
-    "@ckeditor/ckeditor5-editor-balloon": "^24.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
-    "@ckeditor/ckeditor5-engine": "^24.0.0",
-    "@ckeditor/ckeditor5-enter": "^24.0.0",
-    "@ckeditor/ckeditor5-essentials": "^24.0.0",
-    "@ckeditor/ckeditor5-heading": "^24.0.0",
-    "@ckeditor/ckeditor5-image": "^24.0.0",
-    "@ckeditor/ckeditor5-link": "^24.0.0",
-    "@ckeditor/ckeditor5-list": "^24.0.0",
-    "@ckeditor/ckeditor5-mention": "^24.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^24.0.0",
-    "@ckeditor/ckeditor5-horizontal-line": "^24.0.0",
-    "@ckeditor/ckeditor5-table": "^24.0.0",
-    "@ckeditor/ckeditor5-typing": "^24.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^25.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^25.0.0",
+    "@ckeditor/ckeditor5-core": "^25.0.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^25.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^25.0.0",
+    "@ckeditor/ckeditor5-engine": "^25.0.0",
+    "@ckeditor/ckeditor5-enter": "^25.0.0",
+    "@ckeditor/ckeditor5-essentials": "^25.0.0",
+    "@ckeditor/ckeditor5-heading": "^25.0.0",
+    "@ckeditor/ckeditor5-image": "^25.0.0",
+    "@ckeditor/ckeditor5-link": "^25.0.0",
+    "@ckeditor/ckeditor5-list": "^25.0.0",
+    "@ckeditor/ckeditor5-mention": "^25.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^25.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^25.0.0",
+    "@ckeditor/ckeditor5-table": "^25.0.0",
+    "@ckeditor/ckeditor5-typing": "^25.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

@@ -7,11 +7,11 @@
  * @module table/utils/ui/table-properties
  */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { ButtonView, Model } from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
+import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine';
+
 import ColorInputView from '../../ui/colorinputview';
-import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 
 const isEmpty = val => val === '';
 

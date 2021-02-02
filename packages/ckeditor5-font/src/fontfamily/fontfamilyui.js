@@ -7,13 +7,13 @@
  * @module font/fontfamily/fontfamilyui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { Plugin } from 'ckeditor5/src/core';
+import { Collection } from 'ckeditor5/src/utils';
+import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import { normalizeOptions } from './utils';
 import { FONT_FAMILY } from '../utils';
+
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
 /**

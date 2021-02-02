@@ -7,7 +7,7 @@
  * @module link/linkimage
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import LinkImageEditing from './linkimageediting';
 import LinkImageUI from './linkimageui';
 
