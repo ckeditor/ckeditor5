@@ -28,7 +28,7 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+			toolbar: [ 'imageStyle:blockFull', 'imageStyle:blockSide' ]
 		}
 	} )
 	.then( editor => {
@@ -58,8 +58,27 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			styles: [ 'alignLeft', 'alignCenter', 'alignRight' ],
-			toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight' ]
+			styles: {
+				arrangements: [
+					'blockFull',
+					'blockSide',
+					'inlineLeft',
+					'inlineRight',
+					'inline',
+					'blockCenter',
+					'blockLeft',
+					'blockRight'
+				],
+				groups: [ 'inParagraph', 'betweenParagraphs' ]
+			},
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:inParagraph:inlineLeft',
+				'imageStyle:inParagraph:inlineRight',
+				'imageStyle:betweenParagraphs:blockCenter',
+				'imageStyle:betweenParagraphs:blockLeft',
+				'imageStyle:betweenParagraphs:blockRight'
+			]
 		}
 	} )
 	.then( editor => {

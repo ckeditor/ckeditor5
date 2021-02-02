@@ -1,5 +1,8 @@
 {
 	"image widget": "The label for the image widget.",
+	"Image in paragraph": "The label for the \"Image placed inside the paragraph\" option",
+	"Image between paragraphs": "The label for the \"Image placed between the paragraphs\" option",
+	"Image in text line": "The label for the \"Image placed inside the line of text\" option",
 	"Side image": "The label for the Side image option.",
 	"Full size image": "The label for the Full size image option.",
 	"Left aligned image": "The label for the Left aligned image option.",

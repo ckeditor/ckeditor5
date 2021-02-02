@@ -36,10 +36,10 @@ export default class ImageStyleEditing extends Plugin {
 		const editing = editor.editing;
 
 		// Define default configuration.
-		editor.config.define( 'image.styles', [ 'full', 'side' ] );
+		editor.config.define( 'image.styles', { arrangements: [ 'blockFull', 'blockSide' ] } ); // !!!default configuration
 
 		// Get configuration.
-		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ) );
+		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ), 'arrangements' );
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.

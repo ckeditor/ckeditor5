@@ -46,12 +46,31 @@ export default class ImageToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+		const configuredToolbar = editor.config.get( 'image.toolbar' ) || [];
 
 		widgetToolbarRepository.register( 'image', {
 			ariaLabel: t( 'Image toolbar' ),
-			items: editor.config.get( 'image.toolbar' ) || [],
+			items: this._getUniqueItems( configuredToolbar ),
 			getRelatedElement: getSelectedImageWidget
 		} );
+	}
+
+	// jaka jest konwencja, kiedy ta funkcja powinna być w tej klasie, a kiedy powinna być helperem poza nią?
+	_getUniqueItems( items ) {
+		const uniqueItems = [];
+
+		for ( const item of items ) {
+			const itemName = item
+				.split( ':' )
+				.slice( 0, 2 )
+				.join( ':' );
+
+			if ( uniqueItems.indexOf( itemName ) === -1 ) {
+				uniqueItems.push( itemName );
+			}
+		}
+
+		return uniqueItems;
 	}
 }
 

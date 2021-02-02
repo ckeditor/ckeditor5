@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { normalizeImageStyles } from './utils';
 
@@ -45,6 +46,9 @@ export default class ImageStyleUI extends Plugin {
 		const t = this.editor.t;
 
 		return {
+			'Image in paragraph': t( 'Image in paragraph' ),
+			'Image between paragraphs': t( 'Image between paragraphs' ),
+			'Image in text line': t( 'Image in text line' ),
 			'Full size image': t( 'Full size image' ),
 			'Side image': t( 'Side image' ),
 			'Left aligned image': t( 'Left aligned image' ),
@@ -59,12 +63,52 @@ export default class ImageStyleUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const configuredStyles = editor.config.get( 'image.styles' );
+		const configuredToolbar = editor.config.get( 'image.toolbar' );
 
-		const translatedStyles = translateStyles( normalizeImageStyles( configuredStyles ), this.localizedDefaultStylesTitles );
+		const normalizedArrangements = translateStyles(
+			normalizeImageStyles( configuredStyles, 'arrangements' ),
+			this.localizedDefaultStylesTitles );
 
-		for ( const style of translatedStyles ) {
-			this._createButton( style );
+		for ( const arrangement of normalizedArrangements ) {
+			this._createButton( arrangement );
 		}
+
+		const normalizedGroups = translateStyles(
+			normalizeImageStyles( configuredStyles, 'groups' ),
+			this.localizedDefaultStylesTitles );
+
+		for ( const group of normalizedGroups ) {
+			this._createDropdown(
+				group,
+				configuredToolbar.filter( item => isInDropdown( group.name, item ) )
+			);
+		}
+	}
+
+	_createDropdown( group, dropdownItems ) {
+		const componentName = getUIComponentName( group.name );
+		const itemElements = [];
+
+		this.editor.ui.componentFactory.add( componentName, locale => {
+			const dropdownView = createDropdown( locale );
+
+			dropdownView.buttonView.set( {
+				label: group.title,
+				icon: group.icon,
+				tooltip: true,
+				isToggleable: true
+			} );
+
+			for ( const item of dropdownItems ) {
+				const itemName = getUIComponentName( item.split( ':' )[ 2 ] );
+				const element = this.editor.ui.componentFactory.create( itemName );
+				itemElements.push( element );
+			}
+
+			addToolbarToDropdown( dropdownView, itemElements );
+
+			return dropdownView;
+		} );
 	}
 
 	/**
@@ -73,27 +117,27 @@ export default class ImageStyleUI extends Plugin {
 	 * @private
 	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} style
 	 */
-	_createButton( style ) {
+	_createButton( arrangement ) {
 		const editor = this.editor;
 
-		const componentName = `imageStyle:${ style.name }`;
+		const componentName = getUIComponentName( arrangement.name );
 
 		editor.ui.componentFactory.add( componentName, locale => {
 			const command = editor.commands.get( 'imageStyle' );
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: style.title,
-				icon: style.icon,
+				label: arrangement.title,
+				icon: arrangement.icon,
 				tooltip: true,
 				isToggleable: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			view.bind( 'isOn' ).to( command, 'value', value => value === style.name );
+			view.bind( 'isOn' ).to( command, 'value', value => value === arrangement.name );
 
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'imageStyle', { value: style.name } );
+				editor.execute( 'imageStyle', { value: arrangement.name } );
 				editor.editing.view.focus();
 			} );
 
@@ -119,4 +163,14 @@ function translateStyles( styles, titles ) {
 	}
 
 	return styles;
+}
+
+function isInDropdown( dropDownName, configuredItem ) {
+	const itemDropDown = configuredItem.split( ':' )[ 1 ];
+
+	return itemDropDown === dropDownName;
+}
+
+function getUIComponentName( name ) {
+	return `imageStyle:${ name }`;
 }

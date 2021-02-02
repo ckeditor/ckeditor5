@@ -11,6 +11,10 @@ import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-widt
 import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+import inlineIcon from '@ckeditor/ckeditor5-core/theme/icons/object-inline.svg';
+import inlineLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg';
+import inlineRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg';
+
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -31,44 +35,89 @@ import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * @member {Object.<String,Object>}
  */
 const defaultStyles = {
-	// This option is equal to the situation when no style is applied.
-	full: {
-		name: 'full',
-		title: 'Full size image',
-		icon: fullWidthIcon,
-		isDefault: true
+	arrangements: {
+		inline: {
+			name: 'inline',
+			title: 'Image in text line',
+			icon: inlineIcon,
+			modelElement: 'imageInline',
+			isDefault: true
+		},
+
+		inlineLeft: {
+			name: 'inlineLeft',
+			title: 'Left aligned image',
+			icon: inlineLeftIcon,
+			modelElement: 'imageInline',
+			className: 'image-style-align-left'
+		},
+
+		inlineRight: {
+			name: 'inlineRight',
+			title: 'Right aligned image',
+			icon: inlineRightIcon,
+			modelElement: 'imageInline',
+			className: 'image-style-align-right'
+		},
+
+		// This option is equal to the situation when no style is applied.
+		blockFull: {
+			name: 'blockFull',
+			title: 'Full size image',
+			icon: fullWidthIcon,
+			modelElement: 'image',
+			isDefault: true
+		},
+
+		// This represents a side image.
+		blockSide: {
+			name: 'blockSide',
+			title: 'Side image',
+			icon: rightIcon,
+			modelElement: 'image',
+			className: 'image-style-side'
+		},
+
+		// This style represents an image aligned to the left.
+		blockLeft: {
+			name: 'blockLeft',
+			title: 'Left aligned image',
+			icon: leftIcon,
+			modelElement: 'image',
+			className: 'image-style-align-left'
+		},
+
+		// This style represents a centered image.
+		blockCenter: {
+			name: 'blockCenter',
+			title: 'Centered image',
+			icon: centerIcon,
+			modelElement: 'image',
+			className: 'image-style-align-center'
+		},
+
+		// This style represents an image aligned to the right.
+		blockRight: {
+			name: 'blockRight',
+			title: 'Right aligned image',
+			icon: rightIcon,
+			modelElement: 'image',
+			className: 'image-style-align-right'
+		}
 	},
 
-	// This represents a side image.
-	side: {
-		name: 'side',
-		title: 'Side image',
-		icon: rightIcon,
-		className: 'image-style-side'
-	},
+	groups: {
+		inParagraph: {
+			name: 'inParagraph',
+			title: 'Image in paragraph',
+			icon: inlineLeftIcon
+		},
 
-	// This style represents an image aligned to the left.
-	alignLeft: {
-		name: 'alignLeft',
-		title: 'Left aligned image',
-		icon: leftIcon,
-		className: 'image-style-align-left'
-	},
-
-	// This style represents a centered image.
-	alignCenter: {
-		name: 'alignCenter',
-		title: 'Centered image',
-		icon: centerIcon,
-		className: 'image-style-align-center'
-	},
-
-	// This style represents an image aligned to the right.
-	alignRight: {
-		name: 'alignRight',
-		title: 'Right aligned image',
-		icon: rightIcon,
-		className: 'image-style-align-right'
+		betweenParagraphs: {
+			name: 'betweenParagraphs',
+			title: 'Image between paragraphs',
+			icon: centerIcon
+		}
 	}
 };
 
@@ -84,7 +133,10 @@ const defaultIcons = {
 	full: fullWidthIcon,
 	left: leftIcon,
 	right: rightIcon,
-	center: centerIcon
+	center: centerIcon,
+	inLineLeft: inlineLeftIcon,
+	inLineRight: inlineRightIcon,
+	inLine: inlineIcon
 };
 
 /**
@@ -93,8 +145,10 @@ const defaultIcons = {
  *
  * @returns {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
  */
-export function normalizeImageStyles( configuredStyles = [] ) {
-	return configuredStyles.map( _normalizeStyle );
+export function normalizeImageStyles( configuredStyles, type ) {
+	const configuredStylesType = configuredStyles[ type ] || [];
+
+	return configuredStylesType.map( _normalizeStyle.bind( null, type ) );
 }
 
 // Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}
@@ -102,15 +156,17 @@ export function normalizeImageStyles( configuredStyles = [] ) {
 //
 // @param {Object} style
 // @returns {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}
-function _normalizeStyle( style ) {
+function _normalizeStyle( type, style ) {
+	const defaultTypeStyles = defaultStyles[ type ];
+
 	// Just the name of the style has been passed.
 	if ( typeof style == 'string' ) {
 		const styleName = style;
 
 		// If it's one of the defaults, just use it.
-		if ( defaultStyles[ styleName ] ) {
+		if ( defaultTypeStyles[ styleName ] ) {
 			// Clone the style to avoid overriding defaults.
-			style = Object.assign( {}, defaultStyles[ styleName ] );
+			style = Object.assign( {}, defaultTypeStyles[ styleName ] );
 		}
 		// If it's just a name but none of the defaults, warn because probably it's a mistake.
 		else {
@@ -131,8 +187,8 @@ function _normalizeStyle( style ) {
 	// If an object style has been passed and if the name matches one of the defaults,
 	// extend it with defaults – the user wants to customize a default style.
 	// Note: Don't override the user–defined style object, clone it instead.
-	else if ( defaultStyles[ style.name ] ) {
-		const defaultStyle = defaultStyles[ style.name ];
+	else if ( defaultTypeStyles[ style.name ] ) {
+		const defaultStyle = defaultTypeStyles[ style.name ];
 		const extendedStyle = Object.assign( {}, style );
 
 		for ( const prop in defaultStyle ) {
