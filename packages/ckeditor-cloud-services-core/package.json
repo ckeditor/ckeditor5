@@ -1,13 +1,17 @@
 {
   "name": "@ckeditor/ckeditor-cloud-services-core",
-  "version": "24.0.0",
+  "version": "25.0.0",
   "description": "CKEditor Cloud Services Core API.",
   "keywords": [
     "ckeditor5",
     "ckeditor5-lib"
   ],
+  "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^24.0.0"
+    "ckeditor5": "^25.0.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-utils": "^25.0.0"
   },
   "engines": {
     "node": ">=12.0.0",
@@ -25,6 +29,7 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "build"
   ]
 }

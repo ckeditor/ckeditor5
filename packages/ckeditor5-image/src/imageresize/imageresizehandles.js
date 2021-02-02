@@ -7,8 +7,9 @@
  * @module image/imageresize/imageresizehandles
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import { Plugin } from 'ckeditor5/src/core';
+import { WidgetResize } from 'ckeditor5/src/widget';
+
 import ImageLoadObserver from '../image/imageloadobserver';
 
 /**

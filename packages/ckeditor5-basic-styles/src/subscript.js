@@ -7,7 +7,7 @@
  * @module basic-styles/subscript
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import SubscriptEditing from './subscript/subscriptediting';
 import SubscriptUI from './subscript/subscriptui';
 

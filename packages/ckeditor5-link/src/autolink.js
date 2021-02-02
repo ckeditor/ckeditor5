@@ -7,9 +7,9 @@
  * @module link/autolink
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
-import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
+import { Plugin } from 'ckeditor5/src/core';
+import { TextWatcher, getLastTextLine } from 'ckeditor5/src/typing';
+
 import { addLinkProtocolIfApplicable } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).

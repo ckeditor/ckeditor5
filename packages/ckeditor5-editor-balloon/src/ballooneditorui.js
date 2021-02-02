@@ -7,9 +7,9 @@
  * @module editor-balloon/ballooneditorui
  */
 
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { EditorUI } from 'ckeditor5/src/core';
+import { enableToolbarKeyboardFocus } from 'ckeditor5/src/ui';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 /**
  * The balloon editor UI class.

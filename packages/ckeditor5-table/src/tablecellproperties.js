@@ -7,7 +7,7 @@
  * @module table/tablecellproperties
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
 
