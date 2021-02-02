@@ -8,6 +8,7 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
+const WrapperPlugin = require( 'wrapper-webpack-plugin' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
@@ -17,10 +18,48 @@ if ( ROOT_DIRECTORY !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
 }
 
+/**
+ * Attaches exported modules to the global (`window`) scope.
+ * The function assumes that `window.CKEditor5.dll()` is a webpack require function.
+ * See #8521, and #8803.
+ *
+ * @param {Object} global
+ */
+function loadCKEditor5modules( global ) {
+	const eventHandler = () => {
+		global.CKEditor5 = global.CKEditor5 || {};
+		global.removeEventListener( 'DOMContentLoaded', eventHandler );
+
+		const dllPackages = [
+			'utils',
+			'core',
+			'engine',
+			'ui',
+			'cloud-services-core',
+			'clipboard',
+			'enter',
+			'paragraph',
+			'select-all',
+			'typing',
+			'undo',
+			'upload',
+			'widget'
+		];
+
+		for ( const item of dllPackages ) {
+			const windowScope = item.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
+			global.CKEditor5[ windowScope ] = global.CKEditor5.dll( `./src/${ item }.js` );
+		}
+	};
+
+	global.addEventListener( 'DOMContentLoaded', eventHandler );
+}
+
 const webpackConfig = {
 	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	performance: { hints: false },
 	entry: [
+		// This list must be synced with the `loadCKEditor5modules()` function.
 		// The base of the CKEditor 5 framework, in order of appearance:
 		'./src/utils.js',
 		'./src/core.js',
@@ -50,7 +89,7 @@ const webpackConfig = {
 		path: path.join( ROOT_DIRECTORY, 'build' ),
 		filename: 'ckeditor5-dll.js',
 		library: [ 'CKEditor5', 'dll' ],
-		libraryTarget: 'umd'
+		libraryTarget: 'var'
 	},
 	plugins: [
 		new webpack.BannerPlugin( {
@@ -63,6 +102,9 @@ const webpackConfig = {
 			path: path.join( ROOT_DIRECTORY, 'build', 'ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: true
+		} ),
+		new WrapperPlugin( {
+			footer: `( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
 		} )
 	],
 	module: {
@@ -93,10 +135,6 @@ const webpackConfig = {
 						} )
 					}
 				]
-			},
-			{
-				test: /\.js$/,
-				loader: require.resolve( './dll-loader' )
 			}
 		]
 	}
