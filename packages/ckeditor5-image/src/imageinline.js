@@ -7,8 +7,8 @@
  * @module image/imageinline
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
 
 import ImageTextAlternative from './imagetextalternative';
 import ImageInlineEditing from './image/imageinlineediting';

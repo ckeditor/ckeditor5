@@ -7,7 +7,7 @@
  * @module image/image/imageblockediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';

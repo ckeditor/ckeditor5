@@ -59,7 +59,6 @@ export default class SplitOperation extends Operation {
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/splitoperation~SplitOperation#insertionPosition
 		 */
 		this.insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
-		this.insertionPosition.stickiness = 'toNone';
 
 		/**
 		 * Position in the graveyard root before the element which should be used as a parent of the nodes after `position`.
@@ -230,7 +229,7 @@ export default class SplitOperation extends Operation {
 		const path = splitPosition.path.slice( 0, -1 );
 		path[ path.length - 1 ]++;
 
-		return new Position( splitPosition.root, path );
+		return new Position( splitPosition.root, path, 'toPrevious' );
 	}
 
 	/**

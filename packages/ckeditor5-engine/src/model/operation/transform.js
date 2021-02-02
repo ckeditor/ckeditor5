@@ -1981,7 +1981,7 @@ setTransformation( SplitOperation, InsertOperation, ( a, b ) => {
 	}
 
 	a.splitPosition = a.splitPosition._getTransformedByInsertOperation( b );
-	a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
+	a.insertionPosition = a.insertionPosition._getTransformedByInsertOperation( b );
 
 	return [ a ];
 } );

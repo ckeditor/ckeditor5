@@ -340,7 +340,8 @@ export default class Title extends Plugin {
 			enablePlaceholder( {
 				view,
 				element: conversionApi.mapper.toViewElement( data.item ),
-				text: titlePlaceholder
+				text: titlePlaceholder,
+				keepOnFocus: true
 			} );
 		} );
 
@@ -368,7 +369,8 @@ export default class Title extends Plugin {
 			}
 
 			// Then we need to display placeholder if it is needed.
-			if ( needsPlaceholder( body ) && viewRoot.childCount === 2 && body.name === 'p' ) {
+			// See: https://github.com/ckeditor/ckeditor5/issues/8689.
+			if ( needsPlaceholder( body, true ) && viewRoot.childCount === 2 && body.name === 'p' ) {
 				hasChanged = showPlaceholder( writer, body ) ? true : hasChanged;
 			// Or hide if it is not needed.
 			} else {

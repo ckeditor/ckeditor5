@@ -134,7 +134,8 @@ export default class BalloonEditorUI extends EditorUI {
 				view: editingView,
 				element: editingRoot,
 				text: placeholderText,
-				isDirectHost: false
+				isDirectHost: false,
+				keepOnFocus: true
 			} );
 		}
 	}
