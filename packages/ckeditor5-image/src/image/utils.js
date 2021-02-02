@@ -86,11 +86,13 @@ export function isImageInline( modelElement ) {
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {Object} [attributes={}] Attributes of inserted image
- * @param {module:engine/model/position~Position} [insertPosition] Position to insert the image. If not specified,
- * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied.
- * @param {'image'|'imageInline'} [imageElementName] Image element type name to be inserted.
+ * @param {module:engine/model/selection~Selectable} [insertPlace] Place to insert the image. If not specified,
+ * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied for the block images
+ * and model.document.selection for the inline images.
+ * @param {'image'|'imageInline'} [imageElementName] Image type of inserted image. If not specified,
+ * the {@link determineImageElementName} logic will be applied.
  */
-export function insertImage( editor, attributes = {}, insertPosition = null, imageElementName = null ) {
+export function insertImage( editor, attributes = {}, insertPlace = null, imageElementName = null ) {
 	const model = editor.model;
 	const selection = model.document.selection;
 
@@ -99,11 +101,11 @@ export function insertImage( editor, attributes = {}, insertPosition = null, ima
 	model.change( writer => {
 		const imageElement = writer.createElement( imageElementName, attributes );
 
-		if ( !insertPosition ) {
-			insertPosition = ( imageElementName === 'imageInline' ) ? selection : findOptimalInsertionPosition( selection, model );
+		if ( !insertPlace ) {
+			insertPlace = ( imageElementName === 'imageInline' ) ? selection : findOptimalInsertionPosition( selection, model );
 		}
 
-		model.insertContent( imageElement, insertPosition );
+		model.insertContent( imageElement, insertPlace );
 
 		// Inserting an image might've failed due to schema regulations.
 		if ( imageElement.parent ) {
@@ -265,7 +267,7 @@ function getInsertImageParent( selection, model ) {
 //
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/model/selection~Selection} selection
-// @param {'image'|'imageInline'} [imageElementName] Image element type name. Used to force return of provided type name,
+// @param {'image'|'imageInline'} [imageElementName] Image element type name. Used to force return of provided element name,
 // but only if there is proper plugin enabled.
 // @returns {'image'|'imageInline'} imageElementName
 function determineImageElementName( editor, selection, imageElementName ) {
@@ -275,8 +277,8 @@ function determineImageElementName( editor, selection, imageElementName ) {
 		if ( configImageInsertType === 'block' ) {
 			/**
 			 * When using the Image feature with the `image.insert.type="block"` option,
-			 * the ImageBlockEditing plugin should be enabled to allow inserting of inline images.
-			 * Otherwise block type image will be inserted despite the `block` option set.
+			 * the ImageBlockEditing plugin should be enabled to allow inserting of block images.
+			 * Otherwise inline type image will be used despite the `block` option set.
 			 *
 			 * @error provide-image-block-plugin
 			 */
@@ -291,7 +293,7 @@ function determineImageElementName( editor, selection, imageElementName ) {
 			/**
 			 * When using the Image feature with the `image.insert.type="inline"` option,
 			 * the ImageInlineEditing plugin should be enabled to allow inserting of inline images.
-			 * Otherwise block type image will be inserted despite the `inline` option set.
+			 * Otherwise block type image will be used despite the `inline` option set.
 			 *
 			 * @error provide-image-inline-plugin
 			 */

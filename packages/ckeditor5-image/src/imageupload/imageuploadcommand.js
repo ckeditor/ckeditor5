@@ -67,7 +67,7 @@ export default class ImageUploadCommand extends Command {
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		for ( const file of files ) {
-			// Inserting of an inline image replace the selected element.
+			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore uploading multiple inline images requires creating position after each element.
 			if ( files.length > 1 && selection.getSelectedElement() && selection.getSelectedElement().name === 'imageInline' ) {
 				const position = this.editor.model.createPositionAfter( selection.getSelectedElement() );

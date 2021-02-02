@@ -54,7 +54,7 @@ export default class ImageInsertCommand extends Command {
 		const selection = this.editor.model.document.selection;
 
 		for ( const src of sources ) {
-			// Inserting of an inline image replace the selected element.
+			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
 			if ( sources.length > 1 && selection.getSelectedElement() && selection.getSelectedElement().name === 'imageInline' ) {
 				const position = this.editor.model.createPositionAfter( selection.getSelectedElement() );
