@@ -61,7 +61,7 @@ describe( 'ImageCaptionUI', () => {
 			buttonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'imageCaptionToggle' );
+			sinon.assert.calledWithExactly( executeSpy, 'imageCaptionToggle', { focusCaptionOnShow: true } );
 		} );
 
 		it( 'should have #isEnabled and #isOn bound to the imageCaptionToggle command', () => {

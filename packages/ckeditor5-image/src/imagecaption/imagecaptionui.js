@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import captionIcon from '../../theme/icons/imagecaption.svg';
 
 /**
- * TODO
+ * The image caption UI plugin. It introduces the `'imageCaptionToggle'` UI button.
  *
  * @extends module:core/plugin~Plugin
  */

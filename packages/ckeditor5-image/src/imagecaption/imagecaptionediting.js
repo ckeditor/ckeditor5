@@ -18,10 +18,11 @@ import ImageInlineEditing from '../image/imageinlineediting';
 import ImageBlockEditing from '../image/imageblockediting';
 
 /**
- * The image caption engine plugin.
+ * The image caption engine plugin. It is responsible for:
  *
- * It registers proper converters. It takes care of adding a caption element if the image without it is inserted
- * to the model document.
+ * * registering converters for the caption element,
+ * * registering converters for the caption model attribute,
+ * * registering the {@link model:image/imagecaption/imagecaptioncommand~ImageCaptionCommand `imageCaptionToggle`} command.
  *
  * @extends module:core/plugin~Plugin
  */

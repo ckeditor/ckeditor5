@@ -194,6 +194,16 @@ describe( 'ImageCaptionToggleCommand', () => {
 					'[<image src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></image>]'
 				);
 			} );
+
+			it( 'should not store the caption content in the caption attribute if empty', () => {
+				setModelData( model, '[<image src="test.png"><caption></caption></image>]' );
+
+				editor.execute( 'imageCaptionToggle' );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<image src="test.png"></image>]'
+				);
+			} );
 		} );
 
 		describe( 'for an imageInline being selected', () => {

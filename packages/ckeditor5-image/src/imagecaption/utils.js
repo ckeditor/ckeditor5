@@ -7,6 +7,8 @@
  * @module image/imagecaption/utils
  */
 
+import { isImage, isImageInline } from '../image/utils';
+
 /**
  * Returns the caption model element from a given image element. Returns `null` if no caption is found.
  *
@@ -21,6 +23,22 @@ export function getCaptionFromImageModelElement( imageModelElement ) {
 	}
 
 	return null;
+}
+
+/**
+ * Returns the caption model element a model selection. Returns `null` if the selection has no caption element ancestor.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {module:engine/model/element~Element|null}
+ */
+export function getCaptionFromModelSelection( selection ) {
+	const captionElement = selection.getFirstPosition().findAncestor( 'caption' );
+
+	if ( !captionElement ) {
+		return null;
+	}
+
+	return isImage( captionElement.parent ) || isImageInline( captionElement.parent );
 }
 
 /**
