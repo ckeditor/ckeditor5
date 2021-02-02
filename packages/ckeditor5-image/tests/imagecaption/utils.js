@@ -4,51 +4,19 @@
  */
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import {
-	captionElementCreator,
-	isViewCaption,
 	getCaptionFromImageModelElement,
 	matchImageCaptionViewElement
 } from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'image captioning utils', () => {
-	let element, view, document;
+	let view, document;
 
 	beforeEach( () => {
 		view = new View();
 		document = view.document;
-		const creator = captionElementCreator( view, 'placeholder text' );
-
-		view.change( writer => {
-			element = creator( writer );
-		} );
-	} );
-
-	describe( 'captionElementCreator', () => {
-		it( 'should create figcatpion editable element', () => {
-			expect( element ).to.be.instanceOf( ViewEditableElement );
-			expect( element.name ).to.equal( 'figcaption' );
-			expect( isViewCaption( element ) ).to.be.true;
-		} );
-
-		it( 'should attach placeholder', () => {
-			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder text' );
-		} );
-	} );
-
-	describe( 'isViewCaptionEditable', () => {
-		it( 'should return true for elements created with creator', () => {
-			expect( isViewCaption( element ) ).to.be.true;
-		} );
-
-		it( 'should return false for other elements', () => {
-			const editable = new ViewEditableElement( document, 'figcaption', { contenteditable: true } );
-
-			expect( isViewCaption( editable ) ).to.be.false;
-		} );
 	} );
 
 	describe( 'getCaptionFromImageModelElement', () => {

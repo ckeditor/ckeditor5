@@ -27,7 +27,7 @@ export default class ImageCaptionToggleCommand extends Command {
 		const editor = this.editor;
 
 		// Only block images can get captions.
-		if ( !editor.plugins.get( ImageBlockEditing ) ) {
+		if ( !editor.plugins.has( ImageBlockEditing ) ) {
 			this.isEnabled = this.value = false;
 
 			return;

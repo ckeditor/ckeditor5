@@ -49,13 +49,13 @@ export default class ImageCaptionEditing extends Plugin {
 			isLimit: true
 		} );
 
-		if ( editor.plugins.get( ImageBlockEditing ) ) {
+		if ( editor.plugins.has( ImageBlockEditing ) ) {
 			schema.extend( 'image', {
 				allowAttributes: [ 'caption' ]
 			} );
 		}
 
-		if ( editor.plugins.get( ImageInlineEditing ) ) {
+		if ( editor.plugins.has( ImageInlineEditing ) ) {
 			schema.extend( 'imageInline', {
 				allowAttributes: [ 'caption' ]
 			} );
