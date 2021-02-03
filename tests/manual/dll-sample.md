@@ -7,5 +7,6 @@ To build the DLL core and packages, run `yarn run build:dll` and then refresh th
 Expected results:
 * There should be no errors in the console.
 * Four editors should be initialized correctly: Classic, Decoupled, Inline, and Balloon.
-* Each editor should have the following features enabled and working: Bold, Italic, Insert table, Insert HTML, custom Ad-hoc button, Undo and Redo.
+* Each editor should contain as many features as we developed.
 * Clicking the `Ad-hoc` button logs `It works!` in the console.
+* The `WordCount` plugin logs into the console number of characters and words in the editor's data.
