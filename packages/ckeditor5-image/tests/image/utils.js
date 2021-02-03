@@ -263,12 +263,28 @@ describe( 'image widget utils', () => {
 				} );
 		} );
 
-		it( 'should insert image at selection position as other widgets', () => {
+		it( 'should insert inline image in a paragraph with text', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			insertImage( editor );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+		} );
+
+		it( 'should insert block image when selection is inside an empty paragraph', () => {
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			insertImage( editor );
+
+			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+		} );
+
+		it( 'should insert block image in the document root', () => {
+			setModelData( model, '[]' );
+
+			insertImage( editor );
+
+			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
 		} );
 
 		it( 'should insert image with given attributes', () => {
