@@ -23,15 +23,10 @@ if ( ROOT_DIRECTORY !== process.cwd() ) {
  * The function assumes that `window.CKEditor5.dll()` is a webpack require function.
  * See #8521, and #8803.
  *
- * @param {Object} global
+ * @param {Object} window
  */
-function loadCKEditor5modules( global ) {
-	global.CKEditor5 = global.CKEditor5 || {};
-
-	if ( typeof global.CKEditor5.dll !== 'function' ) {
-		console.warn( 'CKEditor5.dll() must be a function.' );
-		return;
-	}
+function loadCKEditor5modules( window ) {
+	window.CKEditor5 = window.CKEditor5 || {};
 
 	const dllPackages = [
 		'utils',
@@ -51,7 +46,7 @@ function loadCKEditor5modules( global ) {
 
 	for ( const item of dllPackages ) {
 		const windowScope = item.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
-		global.CKEditor5[ windowScope ] = global.CKEditor5.dll( `./src/${ item }.js` );
+		window.CKEditor5[ windowScope ] = window.CKEditor5.dll( `./src/${ item }.js` );
 	}
 }
 
@@ -89,7 +84,7 @@ const webpackConfig = {
 		path: path.join( ROOT_DIRECTORY, 'build' ),
 		filename: 'ckeditor5-dll.js',
 		library: [ 'CKEditor5', 'dll' ],
-		libraryTarget: 'umd'
+		libraryTarget: 'window'
 	},
 	plugins: [
 		new webpack.BannerPlugin( {
