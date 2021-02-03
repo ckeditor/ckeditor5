@@ -75,7 +75,7 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com/image.png"><caption></caption></image>]'
+				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
 
@@ -122,7 +122,7 @@ describe( 'AutoImage - integration', () => {
 					clock.tick( 100 );
 
 					expect( getData( editor.model ) ).to.equal(
-						`[<image src="${ supportedURL }"><caption></caption></image>]`
+						`<paragraph>[<imageInline src="${ supportedURL }"></imageInline>]</paragraph>`
 					);
 				} );
 			}
@@ -164,7 +164,7 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com/image.png"><caption></caption></image>]'
+				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
 
@@ -175,7 +175,7 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com/image.png"><caption></caption></image>]'
+				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
 
@@ -186,7 +186,7 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com/image.png"><caption></caption></image>]'
+				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
 
@@ -294,7 +294,7 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<image src="http://example.com/image2.png"><caption></caption></image>]'
+				'<paragraph>[<imageInline src="http://example.com/image2.png"></imageInline>]</paragraph>'
 			);
 		} );
 
@@ -312,7 +312,7 @@ describe( 'AutoImage - integration', () => {
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
-				'[<image src="http://example.com/image2.png"><caption></caption></image>]' +
+				'<paragraph>[<imageInline src="http://example.com/image2.png"></imageInline>]</paragraph>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 		} );

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console */
-
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
@@ -375,17 +373,13 @@ describe( 'image widget utils', () => {
 				plugins: [ ImageBlockEditing, Paragraph ],
 				image: { insert: { type: 'inline' } }
 			} );
-			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
 			insertImage( newEditor );
 
-			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'provide-image-inline-plugin' );
 			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
 
-			console.warn.restore();
 			await newEditor.destroy();
 		} );
 
@@ -395,17 +389,13 @@ describe( 'image widget utils', () => {
 				plugins: [ ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'block' } }
 			} );
-			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
 			insertImage( newEditor );
 
-			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'provide-image-block-plugin' );
 			expect( getModelData( newEditor.model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
-			console.warn.restore();
 			await newEditor.destroy();
 		} );
 	} );
