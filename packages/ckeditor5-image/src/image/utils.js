@@ -8,7 +8,7 @@
  */
 
 import { findOptimalInsertionPosition, checkSelectionOnObject, isWidget, toWidget } from 'ckeditor5/src/widget';
-import { logWarning } from 'ckeditor5/src/utils';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
@@ -86,26 +86,26 @@ export function isImageInline( modelElement ) {
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {Object} [attributes={}] Attributes of inserted image
- * @param {module:engine/model/selection~Selectable} [insertPlace] Place to insert the image. If not specified,
+ * @param {module:engine/model/selection~Selectable} [selectable] Place to insert the image. If not specified,
  * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied for the block images
  * and model.document.selection for the inline images.
- * @param {'image'|'imageInline'} [imageElementName] Image type of inserted image. If not specified,
+ * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
  * it will be determined automatically depending of editor config or place of insert.
  */
-export function insertImage( editor, attributes = {}, insertPlace = null, imageElementName = null ) {
+export function insertImage( editor, attributes = {}, selectable = null, imageType = null ) {
 	const model = editor.model;
 	const selection = model.document.selection;
 
-	imageElementName = determineImageElementName( editor, selection, imageElementName );
+	imageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
 
 	model.change( writer => {
-		const imageElement = writer.createElement( imageElementName, attributes );
+		const imageElement = writer.createElement( imageType, attributes );
 
-		if ( !insertPlace ) {
-			insertPlace = ( imageElementName === 'imageInline' ) ? selection : findOptimalInsertionPosition( selection, model );
+		if ( !selectable && imageType != 'imageInline' ) {
+			selectable = findOptimalInsertionPosition( selection, model );
 		}
 
-		model.insertContent( imageElement, insertPlace );
+		model.insertContent( imageElement, selectable );
 
 		// Inserting an image might've failed due to schema regulations.
 		if ( imageElement.parent ) {
@@ -263,56 +263,41 @@ function getInsertImageParent( selection, model ) {
 	return parent;
 }
 
-// Determine image element type name depending of editor config or place of insert.
+// Determine image element type name depending on editor config or place of insertion.
 //
 // @param {module:core/editor/editor~Editor} editor
-// @param {module:engine/model/selection~Selection} selection
-// @param {'image'|'imageInline'} [imageElementName] Image element type name. Used to force return of provided element name,
+// @param {module:engine/model/selection~Selectable} selection
+// @param {'image'|'imageInline'} [imageType] Image element type name. Used to force return of provided element name,
 // but only if there is proper plugin enabled.
 // @returns {'image'|'imageInline'} imageElementName
-function determineImageElementName( editor, selection, imageElementName ) {
+function determineImageTypeForInsertion( editor, selectable, imageType ) {
 	const configImageInsertType = editor.config.get( 'image.insert.type' );
 
 	if ( !editor.plugins.has( 'ImageBlockEditing' ) ) {
-		if ( configImageInsertType === 'block' ) {
-			/**
-			 * When using the Image feature with the `image.insert.type="block"` option,
-			 * the ImageBlockEditing plugin should be enabled to allow inserting of block images.
-			 * Otherwise inline type image will be used despite the `block` option set.
-			 *
-			 * @error provide-image-block-plugin
-			 */
-			logWarning( 'provide-image-block-plugin' );
-		}
-
 		return 'imageInline';
 	}
 
 	if ( !editor.plugins.has( 'ImageInlineEditing' ) ) {
-		if ( configImageInsertType === 'inline' ) {
-			/**
-			 * When using the Image feature with the `image.insert.type="inline"` option,
-			 * the ImageInlineEditing plugin should be enabled to allow inserting of inline images.
-			 * Otherwise block type image will be used despite the `inline` option set.
-			 *
-			 * @error provide-image-inline-plugin
-			 */
-			logWarning( 'provide-image-inline-plugin' );
-		}
-
 		return 'image';
 	}
 
-	if ( imageElementName ) {
-		return imageElementName;
+	if ( imageType ) {
+		return imageType;
 	}
 
 	if ( configImageInsertType === 'inline' ) {
 		return 'imageInline';
-	} else if ( configImageInsertType === 'block' ) {
+	}
+
+	if ( configImageInsertType === 'block' ) {
 		return 'image';
 	}
 
-	const firstBlock = selection.getSelectedBlocks().next().value;
-	return ( firstBlock === undefined || firstBlock.isEmpty ) ? 'image' : 'imageInline';
+	if ( selectable.is( 'selection' ) ) {
+		const firstBlock = first( selectable.getSelectedBlocks() );
+
+		return ( !firstBlock || firstBlock.isEmpty ) ? 'image' : 'imageInline';
+	}
+
+	return editor.model.schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';
 }
