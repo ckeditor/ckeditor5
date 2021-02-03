@@ -7,8 +7,8 @@
  * @module image/imagecaption/imagecaptiontogglecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
+import { Command } from 'ckeditor5/src/core';
+import { Element } from 'ckeditor5/src/engine';
 
 import ImageBlockEditing from '../image/imageblockediting';
 import { isImage, isImageInline } from '../image/utils';
