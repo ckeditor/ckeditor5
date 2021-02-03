@@ -18,8 +18,8 @@
     "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^25.0.0",
     "@ckeditor/ckeditor5-paragraph": "^25.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "24.0.0",
-    "@ckeditor/ckeditor5-utils": "24.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^25.0.0",
+    "@ckeditor/ckeditor5-utils": "^25.0.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
