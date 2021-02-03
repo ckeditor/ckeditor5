@@ -6,7 +6,6 @@
 /* globals window, document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -26,7 +25,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import ImageBlock from '../../src/imageblock';
 import ImageCaption from '../../src/imagecaption';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -49,9 +47,7 @@ ClassicEditor
 			Table,
 			TableToolbar,
 			ImageInsert,
-			AutoImage,
-			CKFinder,
-			CKFinderUploadAdapter
+			AutoImage
 		],
 		toolbar: [
 			'heading',
