@@ -140,6 +140,22 @@ describe( 'FontFamilyEditing', () => {
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
 				} );
+
+				it( 'should support <font size=".."> styling', () => {
+					const data = '<p><font face="Arial,Verdana">foo</font><span style="font-family: Arial, sans-serif">bar</span></p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal(
+						'<paragraph>' +
+							'<$text fontFamily="Arial,Verdana">[]foo</$text><$text fontFamily="Arial, sans-serif">bar</$text>' +
+						'</paragraph>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<p><span style="font-family:Arial,Verdana;">foo</span><span style="font-family:Arial, sans-serif;">bar</span></p>'
+					);
+				} );
 			} );
 		} );
 	} );
@@ -287,6 +303,20 @@ describe( 'FontFamilyEditing', () => {
 				'<p>f<span class="text-complex">o</span>o</p>' +
 				'<p>b<span class="text-complex">a</span>r</p>' +
 				'<p>b<span class="text-complex">a</span>z</p>'
+			);
+		} );
+
+		it( 'should strip <font size=".."> styling when supportAllValues = false', () => {
+			const data = '<p><font face="Arial,Verdana">foo</font><span style="font-family: Arial">bar</span></p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>[]foo<$text fontFamily="complex">bar</$text></paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p>foo<span class="text-complex">bar</span></p>'
 			);
 		} );
 	} );

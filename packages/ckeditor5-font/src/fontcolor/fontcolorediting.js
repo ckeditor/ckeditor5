@@ -127,7 +127,7 @@ export default class FontColorEditing extends Plugin {
 			view: {
 				name: 'font',
 				attributes: {
-					'color': /.*/
+					'color': /^#[0-9A-Fa-f]{6}|\w+$/
 				}
 			},
 			model: {

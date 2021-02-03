@@ -265,5 +265,44 @@ describe( 'FontColorEditing', () => {
 				'<p>b<span style="color:#fff;">a</span>z</p>'
 			);
 		} );
+
+		it( 'should support <font color=".."> styling - #RRGGBB color', () => {
+			const data = '<p><font color="#ACABAA">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="#ACABAA">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:#ACABAA;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - named color', () => {
+			const data = '<p><font color="lightgreen">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="lightgreen">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:lightgreen;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - strip styling when color is incorrect', () => {
+			const data = '<p><font color="rgb(11, 22, 33)">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>[]foo<$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p>foo<span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
 	} );
 } );
