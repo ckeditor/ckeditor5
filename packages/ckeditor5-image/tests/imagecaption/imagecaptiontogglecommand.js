@@ -20,7 +20,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = VirtualTestEditor.create( {
+		editor = await VirtualTestEditor.create( {
 			plugins: [
 				ImageBlockEditing,
 				ImageInlineEditing,
@@ -48,7 +48,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 
 	describe( '#isEnabled', () => {
 		it( 'should be false if the ImageBlockEditing is not loaded', async () => {
-			const editor = VirtualTestEditor.create( {
+			const editor = await VirtualTestEditor.create( {
 				plugins: [
 					ImageInlineEditing,
 					ImageCaptionEditing,
@@ -109,8 +109,8 @@ describe( 'ImageCaptionToggleCommand', () => {
 	} );
 
 	describe( '#value', () => {
-		it( 'should be false if the ImageBlockEditing is not loaded', () => {
-			const editor = VirtualTestEditor.create( {
+		it( 'should be false if the ImageBlockEditing is not loaded', async () => {
+			const editor = await VirtualTestEditor.create( {
 				plugins: [
 					ImageInlineEditing,
 					ImageCaptionEditing,

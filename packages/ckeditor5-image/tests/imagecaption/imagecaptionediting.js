@@ -23,7 +23,7 @@ describe( 'ImageCaptionEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = VirtualTestEditor.create( {
+		editor = await VirtualTestEditor.create( {
 			plugins: [
 				ImageBlockEditing,
 				ImageInlineEditing,
