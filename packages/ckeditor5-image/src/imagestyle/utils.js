@@ -110,13 +110,15 @@ const defaultStyles = {
 		inParagraph: {
 			name: 'inParagraph',
 			title: 'Image in paragraph',
-			icon: inlineLeftIcon
+			icon: inlineLeftIcon,
+			arrangement: 'inlineLeft'
 		},
 
 		betweenParagraphs: {
 			name: 'betweenParagraphs',
 			title: 'Image between paragraphs',
-			icon: centerIcon
+			icon: centerIcon,
+			arrangement: 'blockCenter'
 		}
 	}
 };

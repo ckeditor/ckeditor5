@@ -80,60 +80,85 @@ export default class ImageStyleUI extends Plugin {
 			const itemValue = UIModel[ itemKey ];
 
 			if ( typeof itemValue === 'object' ) {
-				this._createDropdown( itemKey, itemValue );
+				this._createDropdown( this._getDropdownConfig( itemKey ), itemValue );
 			} else {
-				this._createButton( itemKey );
+				this._createButton( this._getButtonConfig( itemKey ) );
 			}
 		}
 	}
 
-	_createDropdown( dropdownName, buttons ) {
-		const groupConfig = this._definedGroups.find( group => group.name === dropdownName );
-		const componentName = getUIComponentName( { dropdownName } );
+	/**
+	 * Creates a dropdown and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+	 *
+	 * @private
+	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} dropdownConfig uwaga! tutaj format będzie się trochę róznił
+	 * @param {Array<String>} buttonNames
+	 */
+	_createDropdown( dropdownConfig, buttonNames ) {
+		const editor = this.editor;
+		const dropdownName = dropdownConfig.name;
+		const componentName = getUIComponentName( dropdownName );
 
 		this.editor.ui.componentFactory.add( componentName, locale => {
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const buttonComponents = [];
 
 			dropdownView.buttonView.set( {
-				label: groupConfig.title,
-				icon: groupConfig.icon,
+				label: dropdownConfig.title,
+				icon: dropdownConfig.icon,
 				tooltip: true,
 				isToggleable: true,
 				isSelectable: true
 			} );
 
-			for ( const button of buttons ) {
-				const buttonName = this._createButton( button, dropdownName );
-				buttonComponents.push( this.editor.ui.componentFactory.create( buttonName ) );
+			for ( const buttonName of buttonNames ) {
+				const buttonComponentName = getUIComponentName( dropdownName, buttonName );
+
+				this._createButton( this._getButtonConfig( buttonName ), dropdownName );
+				buttonComponents.push( this.editor.ui.componentFactory.create( buttonComponentName ) );
 			}
 
 			addToolbarToDropdown( dropdownView, buttonComponents );
 
-			dropdownView.buttonView.bind( 'isSelected' ).toMany( buttonComponents, 'isOn', ( ...areActive ) => {
-				for ( const isActive of areActive ) {
-					if ( isActive ) {
-						return true;
-					}
-				}
+			dropdownView.buttonView.on( 'execute', () => {
+				const arrangementConfig = this._getButtonConfig( dropdownConfig.arrangement );
 
-				return false;
+				editor.execute( 'imageTypeSwitch', arrangementConfig.modelElement );
+				editor.execute( 'imageStyle', { value: arrangementConfig.name } );
+				editor.editing.view.focus();
 			} );
+
+			dropdownView.buttonView
+				.bind( 'isSelected' )
+				.toMany(
+					buttonComponents,
+					'isOn',
+					( ...areOn ) => areOn.find( isOn => isOn )
+				);
+
+			// dropdownView.buttonView
+			// 	.bind( 'isEnabled' )
+			// 	.toMany(
+			// 		buttonComponents,
+			// 		'isEnabled',
+			// 		( ...areEnabled ) => areEnabled.find( isEnabled => isEnabled )
+			// 	);
 
 			return dropdownView;
 		} );
 	}
 
 	/**
-	 * Creates a button for each style and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+	 * Creates a button and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} style
+	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} buttonConfig
+	 * @param {String} parentDropDownName
 	 */
-	_createButton( buttonName, dropdownName ) {
+	_createButton( buttonConfig, parentDropdownName ) {
 		const editor = this.editor;
-		const buttonConfig = this._definedArrangements.find( arrangment => arrangment.name === buttonName );
-		const componentName = getUIComponentName( { buttonName, dropdownName } );
+		const buttonName = buttonConfig.name;
+		const componentName = getUIComponentName( parentDropdownName, buttonName );
 
 		editor.ui.componentFactory.add( componentName, locale => {
 			const command = editor.commands.get( 'imageStyle' );
@@ -157,8 +182,30 @@ export default class ImageStyleUI extends Plugin {
 
 			return view;
 		} );
+	}
 
-		return componentName;
+	/**
+	 * Returns requested image style group configuration
+	 * provided in the {@link module:image/image~ImageConfig#styles image plugin configuration}.
+	 *
+	 * @private
+	 * @param {String} dropDownName
+	 * @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat}
+	 */
+	_getDropdownConfig( dropdownName ) {
+		return this._definedGroups.find( group => group.name === dropdownName );
+	}
+
+	/**
+	 * Returns requested image style arrangement configuration
+	 * provided in the {@link module:image/image~ImageConfig#styles image plugin configuration}.
+	 *
+	 * @private
+	 * @param {String} dropDownName
+	 * @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat}
+	 */
+	_getButtonConfig( buttonName ) {
+		return this._definedArrangements.find( arrangement => arrangement.name === buttonName );
 	}
 }
 
@@ -181,7 +228,7 @@ function translateStyles( styles, titles ) {
 	return styles;
 }
 
-function getUIComponentName( { buttonName, dropdownName } ) {
+function getUIComponentName( dropdownName, buttonName ) {
 	return 'imageStyle' +
 		( dropdownName ? ':' + dropdownName : '' ) +
 		( buttonName ? ':' + buttonName : '' );
