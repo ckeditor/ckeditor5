@@ -26,33 +26,33 @@ if ( ROOT_DIRECTORY !== process.cwd() ) {
  * @param {Object} global
  */
 function loadCKEditor5modules( global ) {
-	const eventHandler = () => {
-		global.CKEditor5 = global.CKEditor5 || {};
-		global.removeEventListener( 'DOMContentLoaded', eventHandler );
+	global.CKEditor5 = global.CKEditor5 || {};
 
-		const dllPackages = [
-			'utils',
-			'core',
-			'engine',
-			'ui',
-			'cloud-services-core',
-			'clipboard',
-			'enter',
-			'paragraph',
-			'select-all',
-			'typing',
-			'undo',
-			'upload',
-			'widget'
-		];
+	if ( typeof global.CKEditor5.dll !== 'function' ) {
+		console.warn( 'CKEditor5.dll() msut be a function.' );
+		return;
+	}
 
-		for ( const item of dllPackages ) {
-			const windowScope = item.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
-			global.CKEditor5[ windowScope ] = global.CKEditor5.dll( `./src/${ item }.js` );
-		}
-	};
+	const dllPackages = [
+		'utils',
+		'core',
+		'engine',
+		'ui',
+		'cloud-services-core',
+		'clipboard',
+		'enter',
+		'paragraph',
+		'select-all',
+		'typing',
+		'undo',
+		'upload',
+		'widget'
+	];
 
-	global.addEventListener( 'DOMContentLoaded', eventHandler );
+	for ( const item of dllPackages ) {
+		const windowScope = item.replace( /-([a-z])/g, ( match, p1 ) => p1.toUpperCase() );
+		global.CKEditor5[ windowScope ] = global.CKEditor5.dll( `./src/${ item }.js` );
+	}
 }
 
 const webpackConfig = {
@@ -89,7 +89,7 @@ const webpackConfig = {
 		path: path.join( ROOT_DIRECTORY, 'build' ),
 		filename: 'ckeditor5-dll.js',
 		library: [ 'CKEditor5', 'dll' ],
-		libraryTarget: 'var'
+		libraryTarget: 'umd'
 	},
 	plugins: [
 		new webpack.BannerPlugin( {
