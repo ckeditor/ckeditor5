@@ -29,7 +29,7 @@ function loadCKEditor5modules( global ) {
 	global.CKEditor5 = global.CKEditor5 || {};
 
 	if ( typeof global.CKEditor5.dll !== 'function' ) {
-		console.warn( 'CKEditor5.dll() msut be a function.' );
+		console.warn( 'CKEditor5.dll() must be a function.' );
 		return;
 	}
 
