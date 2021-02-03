@@ -10,8 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 
-import { normalizeImageStyles } from './utils';
+import { normalizeImageStyles, structurizeStyleToolbar } from './utils';
 
 import '../../theme/imagestyle.css';
 
@@ -65,47 +66,59 @@ export default class ImageStyleUI extends Plugin {
 		const configuredStyles = editor.config.get( 'image.styles' );
 		const configuredToolbar = editor.config.get( 'image.toolbar' );
 
-		const normalizedArrangements = translateStyles(
+		this._definedArrangements = translateStyles(
 			normalizeImageStyles( configuredStyles, 'arrangements' ),
 			this.localizedDefaultStylesTitles );
 
-		for ( const arrangement of normalizedArrangements ) {
-			this._createButton( arrangement );
-		}
-
-		const normalizedGroups = translateStyles(
+		this._definedGroups = translateStyles(
 			normalizeImageStyles( configuredStyles, 'groups' ),
 			this.localizedDefaultStylesTitles );
 
-		for ( const group of normalizedGroups ) {
-			this._createDropdown(
-				group,
-				configuredToolbar.filter( item => isInDropdown( group.name, item ) )
-			);
+		const UIModel = structurizeStyleToolbar( configuredToolbar );
+
+		for ( const itemKey in UIModel ) {
+			const itemValue = UIModel[ itemKey ];
+
+			if ( typeof itemValue === 'object' ) {
+				this._createDropdown( itemKey, itemValue );
+			} else {
+				this._createButton( itemKey );
+			}
 		}
 	}
 
-	_createDropdown( group, dropdownItems ) {
-		const componentName = getUIComponentName( group.name );
-		const itemElements = [];
+	_createDropdown( dropdownName, buttons ) {
+		const groupConfig = this._definedGroups.find( group => group.name === dropdownName );
+		const componentName = getUIComponentName( { dropdownName } );
 
 		this.editor.ui.componentFactory.add( componentName, locale => {
-			const dropdownView = createDropdown( locale );
+			const dropdownView = createDropdown( locale, SplitButtonView );
+			const buttonComponents = [];
 
 			dropdownView.buttonView.set( {
-				label: group.title,
-				icon: group.icon,
+				label: groupConfig.title,
+				icon: groupConfig.icon,
 				tooltip: true,
-				isToggleable: true
+				isToggleable: true,
+				isSelectable: true
 			} );
 
-			for ( const item of dropdownItems ) {
-				const itemName = getUIComponentName( item.split( ':' )[ 2 ] );
-				const element = this.editor.ui.componentFactory.create( itemName );
-				itemElements.push( element );
+			for ( const button of buttons ) {
+				const buttonName = this._createButton( button, dropdownName );
+				buttonComponents.push( this.editor.ui.componentFactory.create( buttonName ) );
 			}
 
-			addToolbarToDropdown( dropdownView, itemElements );
+			addToolbarToDropdown( dropdownView, buttonComponents );
+
+			dropdownView.buttonView.bind( 'isSelected' ).toMany( buttonComponents, 'isOn', ( ...areActive ) => {
+				for ( const isActive of areActive ) {
+					if ( isActive ) {
+						return true;
+					}
+				}
+
+				return false;
+			} );
 
 			return dropdownView;
 		} );
@@ -117,33 +130,35 @@ export default class ImageStyleUI extends Plugin {
 	 * @private
 	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} style
 	 */
-	_createButton( arrangement ) {
+	_createButton( buttonName, dropdownName ) {
 		const editor = this.editor;
-
-		const componentName = getUIComponentName( arrangement.name );
+		const buttonConfig = this._definedArrangements.find( arrangment => arrangment.name === buttonName );
+		const componentName = getUIComponentName( { buttonName, dropdownName } );
 
 		editor.ui.componentFactory.add( componentName, locale => {
 			const command = editor.commands.get( 'imageStyle' );
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: arrangement.title,
-				icon: arrangement.icon,
+				label: buttonConfig.title,
+				icon: buttonConfig.icon,
 				tooltip: true,
 				isToggleable: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			view.bind( 'isOn' ).to( command, 'value', value => value === arrangement.name );
+			view.bind( 'isOn' ).to( command, 'value', value => value === buttonConfig.name );
 
 			view.on( 'execute', () => {
-				editor.execute( 'imageTypeSwitch', arrangement.modelElement );
-				editor.execute( 'imageStyle', { value: arrangement.name } );
+				editor.execute( 'imageTypeSwitch', buttonConfig.modelElement );
+				editor.execute( 'imageStyle', { value: buttonConfig.name } );
 				editor.editing.view.focus();
 			} );
 
 			return view;
 		} );
+
+		return componentName;
 	}
 }
 
@@ -166,12 +181,8 @@ function translateStyles( styles, titles ) {
 	return styles;
 }
 
-function isInDropdown( dropDownName, configuredItem ) {
-	const itemDropDown = configuredItem.split( ':' )[ 1 ];
-
-	return itemDropDown === dropDownName;
-}
-
-function getUIComponentName( name ) {
-	return `imageStyle:${ name }`;
+function getUIComponentName( { buttonName, dropdownName } ) {
+	return 'imageStyle' +
+		( dropdownName ? ':' + dropdownName : '' ) +
+		( buttonName ? ':' + buttonName : '' );
 }

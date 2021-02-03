@@ -7,36 +7,37 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
-ClassicEditor
-	.create( document.querySelector( '#editor-semantic' ), {
-		plugins: [
-			ArticlePluginSet
-		],
-		toolbar: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'blockQuote',
-			'insertTable',
-			'mediaEmbed',
-			'undo',
-			'redo'
-		],
-		image: {
-			toolbar: [ 'imageStyle:blockFull', 'imageStyle:blockSide' ]
-		}
-	} )
-	.then( editor => {
-		window.editorSemantic = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+// ClassicEditor
+// 	.create( document.querySelector( '#editor-semantic' ), {
+// 		plugins: [
+// 			ArticlePluginSet
+// 		],
+// 		toolbar: [
+// 			'heading',
+// 			'|',
+// 			'bold',
+// 			'italic',
+// 			'link',
+// 			'bulletedList',
+// 			'numberedList',
+// 			'blockQuote',
+// 			'insertTable',
+// 			'mediaEmbed',
+// 			'undo',
+// 			'redo'
+// 		],
+// 		image: {
+// 			toolbar: [ 'imageStyle:blockFull', 'imageStyle:blockSide' ]
+// 		}
+// 	} )
+// 	.then( editor => {
+// 		window.editorSemantic = editor;
+// 	} )
+// 	.catch( err => {
+// 		console.error( err.stack );
+// 	} );
 
 ClassicEditor
 	.create( document.querySelector( '#editor-formatting' ), {
@@ -83,6 +84,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;
+		CKEditorInspector.attach( editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );

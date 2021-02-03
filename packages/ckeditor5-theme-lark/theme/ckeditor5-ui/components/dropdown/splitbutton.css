@@ -88,4 +88,8 @@
 			}
 		}
 	}
+
+	&.ck-selected .ck-splitbutton__action {
+		background: #dedede;
+	}
 }

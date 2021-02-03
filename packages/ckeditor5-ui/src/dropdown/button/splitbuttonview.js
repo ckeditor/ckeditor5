@@ -59,6 +59,7 @@ export default class SplitButtonView extends View {
 		this.set( 'tooltipPosition', 's' );
 		this.set( 'type', 'button' );
 		this.set( 'withText', false );
+		this.set( 'isSelectable', false );
 
 		/**
 		 * Collection of the child views inside of the split button {@link #element}.
@@ -112,7 +113,8 @@ export default class SplitButtonView extends View {
 					'ck',
 					'ck-splitbutton',
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
-					this.arrowView.bindTemplate.if( 'isOn', 'ck-splitbutton_open' )
+					this.arrowView.bindTemplate.if( 'isOn', 'ck-splitbutton_open' ),
+					bind.to( 'isSelected', value => this.isSelectable && value ? 'ck-selected' : false )
 				]
 			},
 

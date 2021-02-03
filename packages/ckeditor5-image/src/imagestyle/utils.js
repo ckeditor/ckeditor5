@@ -151,6 +151,31 @@ export function normalizeImageStyles( configuredStyles, type ) {
 	return configuredStylesType.map( _normalizeStyle.bind( null, type ) );
 }
 
+export function structurizeStyleToolbar( toolbar ) {
+	const toolbarStructure = {};
+
+	for ( const item of toolbar ) {
+		const itemContents = item.split( ':' );
+		const isDropdown = itemContents.length === 3;
+
+		if ( isDropdown ) {
+			const dropdownName = itemContents[ 1 ];
+			const itemName = itemContents[ 2 ];
+
+			toolbarStructure[ dropdownName ] = [
+				...toolbarStructure[ dropdownName ] || [],
+				itemName
+			];
+		} else {
+			const itemName = itemContents[ 1 ];
+
+			toolbarStructure[ itemName ] = itemName;
+		}
+	}
+
+	return toolbarStructure;
+}
+
 // Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}
 // and returns it in a {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}.
 //
