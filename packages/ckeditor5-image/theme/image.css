@@ -25,3 +25,8 @@
 		min-width: 50px;
 	}
 }
+
+.ck-content .image-inline {
+	display: inline-block;
+	line-height: 0;
+}

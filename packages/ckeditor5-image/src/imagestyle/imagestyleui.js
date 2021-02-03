@@ -136,7 +136,8 @@ export default class ImageStyleUI extends Plugin {
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			view.bind( 'isOn' ).to( command, 'value', value => value === arrangement.name );
 
-			this.listenTo( view, 'execute', () => {
+			view.on( 'execute', () => {
+				editor.execute( 'imageTypeSwitch', arrangement.modelElement );
 				editor.execute( 'imageStyle', { value: arrangement.name } );
 				editor.editing.view.focus();
 			} );

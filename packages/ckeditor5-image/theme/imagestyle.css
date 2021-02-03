@@ -29,3 +29,11 @@
 		margin-left: var(--ck-image-style-spacing);
 	}
 }
+
+.ck-content .image-inline {
+	&.image-style-align-left,
+	&.image-style-align-right {
+		margin-top: var(--ck-image-style-spacing);
+		margin-bottom: var(--ck-image-style-spacing);
+	}
+}

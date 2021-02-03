@@ -45,19 +45,23 @@ export default class ImageStyleEditing extends Plugin {
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
 			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
+
+			// Converters for imageStyle attribute from model to view.
+			const modelToViewConverter = modelToViewStyleAttribute( styles );
+			editing.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
+			data.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
+
+			// Converter for figure element from view to model.
+			data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
+
+			const modelToViewConverter = modelToViewStyleAttribute( styles );
+			editing.downcastDispatcher.on( 'attribute:imageStyle:imageInline', modelToViewConverter );
+			data.downcastDispatcher.on( 'attribute:imageStyle:imageInline', modelToViewConverter );
 		}
-
-		// Converters for imageStyle attribute from model to view.
-		const modelToViewConverter = modelToViewStyleAttribute( styles );
-		editing.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
-		data.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
-
-		// Converter for figure element from view to model.
-		data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
 
 		// Register imageStyle command.
 		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );

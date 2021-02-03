@@ -15,7 +15,7 @@ import { insertImage, isImage, isImageInline } from './utils';
  *
  * @extends module:core/command~Command
  */
-export default class ImageTypeToggleCommand extends Command {
+export default class ImageTypeSwitchCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -32,10 +32,15 @@ export default class ImageTypeToggleCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	execute( requestedType ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const imageElement = selection.getSelectedElement();
+
+		if ( imageElement.name === requestedType ) {
+			return;
+		}
+
 		const src = imageElement.getAttribute( 'src' );
 		const alt = imageElement.getAttribute( 'alt' );
 		const srcset = imageElement.getAttribute( 'srcset' );

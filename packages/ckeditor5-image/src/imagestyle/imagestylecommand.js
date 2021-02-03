@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { isImage } from '../image/utils';
+import { isImage, isImageInline } from '../image/utils';
 
 /**
  * The image style command. It is used to apply different image styles.
@@ -26,14 +26,6 @@ export default class ImageStyleCommand extends Command {
 		super( editor );
 
 		/**
-		 * The name of the default style, if it is present. If there is no default style, it defaults to `false`.
-		 *
-		 * @readonly
-		 * @type {Boolean|String}
-		 */
-		this.defaultStyle = false;
-
-		/**
 		 * A style handled by this command.
 		 *
 		 * @readonly
@@ -41,11 +33,6 @@ export default class ImageStyleCommand extends Command {
 		 */
 		this.styles = styles.reduce( ( styles, style ) => {
 			styles[ style.name ] = style;
-
-			if ( style.isDefault ) {
-				this.defaultStyle = style.name;
-			}
-
 			return styles;
 		}, {} );
 	}
@@ -56,7 +43,7 @@ export default class ImageStyleCommand extends Command {
 	refresh() {
 		const element = this.editor.model.document.selection.getSelectedElement();
 
-		this.isEnabled = isImage( element );
+		this.isEnabled = isImage( element ) || isImageInline( element );
 
 		if ( !element ) {
 			this.value = false;
@@ -64,7 +51,7 @@ export default class ImageStyleCommand extends Command {
 			const attributeValue = element.getAttribute( 'imageStyle' );
 			this.value = this.styles[ attributeValue ] ? attributeValue : false;
 		} else {
-			this.value = this.defaultStyle;
+			this.value = this._getDefaultStyle( element.name );
 		}
 	}
 
@@ -93,5 +80,17 @@ export default class ImageStyleCommand extends Command {
 				writer.setAttribute( 'imageStyle', styleName, imageElement );
 			}
 		} );
+	}
+
+	_getDefaultStyle( imageType ) {
+		for ( const s in this.styles ) {
+			const style = this.styles[ s ];
+
+			if ( style.isDefault && style.modelElement === imageType ) {
+				return style.name;
+			}
+		}
+
+		return false;
 	}
 }
