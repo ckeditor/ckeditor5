@@ -7,11 +7,11 @@
  * @module image/imagecaption/imagecaptionediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/core';
 import ImageCaptionToggleCommand from './imagecaptiontogglecommand';
 
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { toWidgetEditable } from 'ckeditor5/src/widget';
 import { isImage } from '../image/utils';
 import { matchImageCaptionViewElement } from './utils';
 import ImageInlineEditing from '../image/imageinlineediting';

@@ -7,17 +7,11 @@
  * @module highlight/highlightui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView, SplitButtonView, ToolbarSeparatorView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
-import eraserIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-
-import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import './../theme/highlight.css';
 
@@ -101,7 +95,7 @@ export default class HighlightUI extends Plugin {
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
 
-		this._addButton( 'removeHighlight', t( 'Remove highlight' ), eraserIcon );
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser );
 	}
 
 	/**

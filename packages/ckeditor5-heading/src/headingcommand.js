@@ -7,8 +7,8 @@
  * @module heading/headingcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.

@@ -7,7 +7,7 @@
  * @module mention/ui/domwrapperview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { View } from 'ckeditor5/src/ui';
 
 /**
  * This class wraps DOM element as a CKEditor5 UI View.

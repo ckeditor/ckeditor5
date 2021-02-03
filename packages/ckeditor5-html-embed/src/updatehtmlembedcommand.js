@@ -7,7 +7,7 @@
  * @module html-embed/updatehtmlembedcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The update HTML embed value command.

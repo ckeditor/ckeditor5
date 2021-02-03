@@ -5,13 +5,14 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LinkImageEditing from '../src/linkimageediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
+
+import LinkImageEditing from '../src/linkimageediting';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -50,6 +51,10 @@ describe( 'LinkImageEditing', () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, LinkImageEditing ] } );
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
 		await newEditor.destroy();
+	} );
+
+	it( 'should require ImageEditing by name', () => {
+		expect( LinkImageEditing.requires ).to.include( 'ImageEditing' );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
