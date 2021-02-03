@@ -6,6 +6,7 @@
 import FontFamilyEditing from './../../src/fontfamily/fontfamilyediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -77,7 +78,7 @@ describe( 'FontFamilyEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ FontFamilyEditing, Paragraph ],
+						plugins: [ FontFamilyEditing, Paragraph, TableEditing ],
 						fontFamily: {
 							options: [
 								'Arial'
@@ -139,6 +140,22 @@ describe( 'FontFamilyEditing', () => {
 					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial, sans-serif">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
+				} );
+
+				it( 'should convert from a nested block element', () => {
+					const data = '<figure class="table"><table><tbody><tr><td>' +
+						'f<span style="font-family:Arial, sans-serif;">o</span>o' +
+						'</td></tr></tbody></table></figure>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal(
+						'[<table><tableRow><tableCell><paragraph>' +
+						'f<$text fontFamily="Arial, sans-serif">o</$text>o' +
+						'</paragraph></tableCell></tableRow></table>]'
+					);
+
+					expect( editor.getData() ).to.equal( data );
 				} );
 			} );
 		} );
