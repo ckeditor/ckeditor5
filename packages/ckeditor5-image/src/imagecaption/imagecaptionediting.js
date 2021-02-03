@@ -7,7 +7,7 @@
  * @module image/imagecaption/imagecaptionediting
  */
 
-import { Plugin } from 'ckeditor5/core';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageCaptionToggleCommand from './imagecaptiontogglecommand';
 
 import { enablePlaceholder } from 'ckeditor5/src/engine';
