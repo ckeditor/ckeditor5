@@ -228,21 +228,21 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Boolean}
 function isImageAllowedInParent( selection, schema, editor ) {
-	let element;
-	let isBlockImageAllowed = false;
-	let isInlineImageAllowed = false;
-
 	if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
-		element = getInsertImageParent( selection, editor.model );
-		isBlockImageAllowed = schema.checkChild( element, 'image' );
+		const parent = getInsertImageParent( selection, editor.model );
+
+		if ( schema.checkChild( parent, 'image' ) ) {
+			return true;
+		}
 	}
 
 	if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
-		element = selection.focus;
-		isInlineImageAllowed = schema.checkChild( element, 'imageInline' );
+		if ( schema.checkChild( selection.focus, 'imageInline' ) ) {
+			return true;
+		}
 	}
 
-	return isBlockImageAllowed || isInlineImageAllowed;
+	return false;
 }
 
 // Checks if selection is placed in other image (ie. in caption).

@@ -353,7 +353,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'should determine image type when image.insert.type="inline" option is set ' +
+		it( 'should use block image type when image.insert.type="inline" option is set ' +
 			'but ImageInlineEditing plugin is not enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, Paragraph ],
@@ -373,7 +373,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'should determine image type when image.insert.type="block" option is set ' +
+		it( 'should use inline image type when image.insert.type="block" option is set ' +
 			'but ImageBlockEditing plugin is not enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageInlineEditing, Paragraph ],
