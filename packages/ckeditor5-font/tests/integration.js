@@ -101,6 +101,94 @@ describe( 'Integration test Font', () => {
 					element.remove();
 				} );
 		} );
+
+		it( 'should convert font family and font size from a single element', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Font, ArticlePluginSet ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					}
+				} )
+				.then( editor => {
+					editor.setData(
+						'<p><span class="text-tiny" style="font-family:Arial, Helvetica, sans-serif">Font Arial text-tiny</span></p>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<p><span class="text-tiny" style="font-family:Arial, Helvetica, sans-serif;">Font Arial text-tiny</span></p>'
+					);
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					element.remove();
+				} );
+		} );
+
+		it( 'should convert font family and font size from a single element (fontSize as numbers)', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Font, ArticlePluginSet ],
+					fontSize: {
+						options: [ 10, 12, 14 ]
+					},
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					}
+				} )
+				.then( editor => {
+					editor.setData( '<p><span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span></p>' );
+
+					expect( editor.getData() ).to.equal(
+						'<p><span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span></p>'
+					);
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					element.remove();
+				} );
+		} );
+
+		it(
+			'should convert font family and font size from a single element (fontFamily.supportAllValues: true, fontSize as numbers)',
+			() => {
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				return ClassicTestEditor
+					.create( element, {
+						plugins: [ Font, ArticlePluginSet ],
+						fontFamily: {
+							supportAllValues: true
+						},
+						fontSize: {
+							options: [ 10, 12, 14 ]
+						},
+						image: {
+							toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+						}
+					} )
+					.then( editor => {
+						editor.setData( '<p><span style="font-family:Arial;font-size:14px;">Font Arial 14</span></p>' );
+
+						expect( editor.getData() ).to.equal(
+							'<p><span style="font-family:Arial;font-size:14px;">Font Arial 14</span></p>'
+						);
+
+						return editor.destroy();
+					} )
+					.then( () => {
+						element.remove();
+					} );
+			} );
 	} );
 
 	describe( 'between font plugin and other', () => {
