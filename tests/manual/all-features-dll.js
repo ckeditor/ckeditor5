@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, CKEditorInspector */
 import 'ckeditor5/build/ckeditor5-dll.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/build/editor-classic';
@@ -199,37 +199,46 @@ const config = {
 	}
 };
 
-ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
+const classicEditorPromise = ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
 	.then( editor => {
 		window.classicEditor = editor;
 
-		logWordCountStats( 'Classic Editor', editor );
+		return {
+			name: 'Classic Editor',
+			instance: editor
+		};
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
-InlineEditor.create( document.querySelector( '#editor-inline' ), config )
+const inlineEditorPromise = InlineEditor.create( document.querySelector( '#editor-inline' ), config )
 	.then( editor => {
 		window.inlineEditor = editor;
 
-		logWordCountStats( 'Inline Editor', editor );
+		return {
+			name: 'Inline Editor',
+			instance: editor
+		};
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
-BalloonEditor.create( document.querySelector( '#editor-balloon' ), config )
+const balloonEditorPromise = BalloonEditor.create( document.querySelector( '#editor-balloon' ), config )
 	.then( editor => {
 		window.balloonEditor = editor;
 
-		logWordCountStats( 'Balloon Editor', editor );
+		return {
+			name: 'Balloon Editor',
+			instance: editor
+		};
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
-const editorData = '<h2>Sample</h2>' +
+const decoupledEditorData = '<h2>Sample</h2>' +
 	'<p>This is an instance of the ' +
 		'<a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor">document editor build</a>.' +
 	'</p>' +
@@ -240,21 +249,39 @@ const editorData = '<h2>Sample</h2>' +
 		'<a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.' +
 	'</p>';
 
-DecoupledEditor.create( editorData, config )
+const decoupledEditorPromise = DecoupledEditor.create( decoupledEditorData, config )
 	.then( editor => {
 		window.decoupledEditor = editor;
 
 		document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 		document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
 
-		logWordCountStats( 'Decoupled Editor', editor );
+		return {
+			name: 'Decoupled Editor',
+			instance: editor
+		};
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
-function logWordCountStats( editorType, editor ) {
-	editor.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {
-		console.log( `${ editorType } = characters: ${ stats.characters }, words: ${ stats.words }.` );
+Promise.all( [
+	classicEditorPromise,
+	inlineEditorPromise,
+	balloonEditorPromise,
+	decoupledEditorPromise
+] ).then( editors => {
+	editors
+		.filter( editor => !!editor )
+		.forEach( editor => {
+			CKEditorInspector.attach( { [ editor.name ]: editor.instance } );
+
+			logWordCountStats( editor.name, editor.instance );
+		} );
+} );
+
+function logWordCountStats( editorName, editorInstance ) {
+	editorInstance.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {
+		console.log( `${ editorName } = characters: ${ stats.characters }, words: ${ stats.words }.` );
 	} );
 }
