@@ -22,7 +22,7 @@ import ImageBlockEditing from '../image/imageblockediting';
  *
  * * registering converters for the caption element,
  * * registering converters for the caption model attribute,
- * * registering the {@link model:image/imagecaption/imagecaptioncommand~ImageCaptionCommand `imageCaptionToggle`} command.
+ * * registering the {@link model:image/imagecaption/imagecaptiontogglecommand~ImageCaptionToggleCommand `imageCaptionToggle`} command.
  *
  * @extends module:core/plugin~Plugin
  */
