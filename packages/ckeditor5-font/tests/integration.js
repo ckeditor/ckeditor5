@@ -124,7 +124,7 @@ describe( 'Integration test Font', () => {
 				.then( editor => {
 					editor.setData(
 						'<table><tr><td>' +
-							'<span class="tiny" style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span>' +
+							'<span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span>' +
 						'</td></tr></table>'
 					);
 
