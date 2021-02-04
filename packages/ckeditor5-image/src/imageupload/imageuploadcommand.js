@@ -7,7 +7,7 @@ import { FileRepository } from 'ckeditor5/src/upload';
 import { Command } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 
-import { insertImage, isImageAllowed } from '../image/utils';
+import { insertImage, isImage, isImageAllowed, isImageInline } from '../image/utils';
 
 /**
  * @module image/imageupload/imageuploadcommand
@@ -60,23 +60,23 @@ export default class ImageUploadCommand extends Command {
 	 * @param {File|Array.<File>} options.file The image file or an array of image files to upload.
 	 */
 	execute( options ) {
-		const editor = this.editor;
-		const model = editor.model;
-		const selection = model.document.selection;
 		const files = toArray( options.file );
+		const selection = this.editor.model.document.selection;
+		const fileRepository = this.editor.plugins.get( FileRepository );
 
-		const fileRepository = editor.plugins.get( FileRepository );
+		files.forEach( ( file, idx ) => {
+			const selectedElement = selection.getSelectedElement();
 
-		for ( const file of files ) {
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
-			// Therefore uploading multiple inline images requires creating position after each element.
-			if ( files.length > 1 && selection.getSelectedElement() && selection.getSelectedElement().name === 'imageInline' ) {
-				const position = this.editor.model.createPositionAfter( selection.getSelectedElement() );
-				uploadImage( editor, fileRepository, file, position );
+			// Therefore inserting multiple inline images requires creating position after each element.
+			if ( idx && selectedElement && ( isImageInline( selectedElement ) || isImage( selectedElement ) ) ) {
+				const position = this.editor.model.createPositionAfter( selectedElement );
+
+				uploadImage( this.editor, fileRepository, file, position );
 			} else {
-				uploadImage( editor, fileRepository, file );
+				uploadImage( this.editor, fileRepository, file );
 			}
-		}
+		} );
 	}
 }
 
