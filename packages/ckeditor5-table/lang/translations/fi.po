@@ -38,7 +38,7 @@ msgstr "Poista sarake"
 
 msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "Valitse sarake"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -62,7 +62,7 @@ msgstr "Poista rivi"
 
 msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "Valitse rivi"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"

@@ -5,11 +5,13 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LinkImageEditing from '../src/linkimageediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+
+import LinkImageEditing from '../src/linkimageediting';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -17,7 +19,7 @@ describe( 'LinkImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, LinkImageEditing ]
+				plugins: [ Paragraph, ImageEditing, LinkImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -36,6 +38,10 @@ describe( 'LinkImageEditing', () => {
 
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( LinkImageEditing ) ).to.be.instanceOf( LinkImageEditing );
+	} );
+
+	it( 'should require ImageEditing by name', () => {
+		expect( LinkImageEditing.requires ).to.include( 'ImageEditing' );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -245,7 +251,7 @@ describe( 'LinkImageEditing', () => {
 				it( 'should convert a link and the caption element', () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+							plugins: [ Paragraph, ImageEditing, LinkImageEditing, ImageCaptionEditing ]
 						} )
 						.then( editor => {
 							editor.setData(
@@ -327,7 +333,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert a link and the caption element', () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing, ImageCaptionEditing ]
 					} )
 					.then( editor => {
 						setModelData( editor.model,
@@ -396,7 +402,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false
 						}
@@ -441,7 +447,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: true
 						}
@@ -517,7 +523,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false,
 							decorators: {
@@ -592,7 +598,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {
@@ -751,7 +757,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {

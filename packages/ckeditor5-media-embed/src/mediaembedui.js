@@ -7,8 +7,9 @@
  * @module media-embed/mediaembedui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { createDropdown } from 'ckeditor5/src/ui';
+
 import MediaFormView from './ui/mediaformview';
 import MediaEmbedEditing from './mediaembedediting';
 import mediaIcon from '../theme/icons/media.svg';

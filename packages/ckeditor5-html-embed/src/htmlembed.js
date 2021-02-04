@@ -7,10 +7,11 @@
  * @module html-embed/htmlembed
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
+
 import HtmlEmbedEditing from './htmlembedediting';
 import HtmlEmbedUI from './htmlembedui';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 /**
  * The HTML embed feature.
