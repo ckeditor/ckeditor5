@@ -497,11 +497,7 @@ The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers
 
 The {@link module:font/font~Font} plugin provides basic support for deprecated `<font>` tag styling.
 
-<info-box>
-	Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in modern format, i.e. one-way transformation.
-</info-box>
-
-More details on the `<font>` can be found in the [documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/font).
+Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in modern format, i.e. one-way transformation.
 
 
 ## Contribute
