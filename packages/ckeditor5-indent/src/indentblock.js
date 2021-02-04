@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,14 @@
  * @module indent/indentblock
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { addMarginRules } from 'ckeditor5/src/engine';
 
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
 import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
-import { addMarginRules } from '@ckeditor/ckeditor5-engine/src/view/styles/margin';
+
+const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
 
 /**
  * The block indentation feature.
@@ -79,8 +81,10 @@ export default class IndentBlock extends Plugin {
 		const indentCommand = editor.commands.get( 'indent' );
 		const outdentCommand = editor.commands.get( 'outdent' );
 
-		// Enable block indentation by default in paragraph and default headings.
-		const knownElements = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
+		// Enable block indentation to heading configuration options. If it is not defined enable in paragraph and default headings.
+		const options = editor.config.get( 'heading.options' );
+		const configuredElements = options && options.map( option => option.model );
+		const knownElements = configuredElements || DEFAULT_ELEMENTS;
 
 		knownElements.forEach( elementName => {
 			if ( schema.isRegistered( elementName ) ) {

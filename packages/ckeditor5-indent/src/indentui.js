@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module indent/indentui
  */
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core';
 
 import indentIcon from '../theme/icons/indent.svg';
 import outdentIcon from '../theme/icons/outdent.svg';

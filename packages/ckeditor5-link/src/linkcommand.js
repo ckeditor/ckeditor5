@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,10 @@
  * @module link/linkcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from 'ckeditor5/src/core';
+import { findAttributeRange } from 'ckeditor5/src/typing';
+import { Collection, toMap, first } from 'ckeditor5/src/utils';
+
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isImageAllowed } from './utils';
 
@@ -187,7 +186,7 @@ export default class LinkCommand extends Command {
 					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
-				// However, since selection in collapsed, attribute value will be used as data for text node.
+				// However, since selection is collapsed, attribute value will be used as data for text node.
 				// So, if `href` is empty, do not create text node.
 				else if ( href !== '' ) {
 					const attributes = toMap( selection.getAttributes() );
@@ -198,12 +197,11 @@ export default class LinkCommand extends Command {
 						attributes.set( item, true );
 					} );
 
-					const node = writer.createText( href, attributes );
-
-					model.insertContent( node, position );
+					const { end: positionAfter } = model.insertContent( writer.createText( href, attributes ), position );
 
 					// Put the selection at the end of the inserted link.
-					writer.setSelection( writer.createPositionAfter( node ) );
+					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
+					writer.setSelection( positionAfter );
 				}
 
 				// Remove the `linkHref` attribute and all link decorators from the selection.

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -135,7 +135,7 @@ function runSubprocess( binaryName, cliArguments, packageName, checkName, failMe
 	}
 
 	if ( subprocess.status !== 0 ) {
-		failedChecks.unitTests.add( packageName );
+		failedChecks[ checkName ].add( packageName );
 		console.log( `💥 ${ RED }${ packageName }${ NO_COLOR } ` + failMessage + ' 💥' );
 	}
 }

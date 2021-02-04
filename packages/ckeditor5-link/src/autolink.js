@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module link/autolink
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
-import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
+import { Plugin } from 'ckeditor5/src/core';
+import { TextWatcher, getLastTextLine } from 'ckeditor5/src/typing';
+
 import { addLinkProtocolIfApplicable } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
@@ -27,10 +27,21 @@ const URL_REG_EXP = new RegExp(
 			// BasicAuth using user:pass (optional)
 			'(?:\\S+(?::\\S*)?@)?' +
 			'(?:' +
-				// Host & domain names.
-				'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
-				// TLD identifier name.
-				'(?:[a-z\\u00a1-\\uffff]{2,})' +
+				// IP address dotted notation octets
+				// excludes loopback network 0.0.0.0
+				// excludes reserved space >= 224.0.0.0
+				// excludes network & broadcast addresses
+				// (first & last IP address of each class)
+				'(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])' +
+				'(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}' +
+				'(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))' +
+				'|' +
+				'(' +
+					// Host & domain names.
+					'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
+					// TLD identifier name.
+					'(?:[a-z\\u00a1-\\uffff]{2,})' +
+				')' +
 			')' +
 			// port number (optional)
 			'(?::\\d{2,5})?' +

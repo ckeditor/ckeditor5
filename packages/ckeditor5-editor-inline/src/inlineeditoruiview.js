@@ -1,19 +1,13 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module editor-inline/inlineeditoruiview
  */
-
-import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import { BalloonPanelView, EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
+import { Rect, ResizeObserver, toUnit } from 'ckeditor5/src/utils';
 
 const toPx = toUnit( 'px' );
 
@@ -45,7 +39,8 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbar = new ToolbarView( locale, {
-			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
+			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull,
+			isFloating: true
 		} );
 
 		/**
@@ -62,15 +57,6 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {Number} #viewportTopOffset
 		 */
 		this.set( 'viewportTopOffset', 0 );
-
-		this.toolbar.extendTemplate( {
-			attributes: {
-				class: [
-					// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
-					'ck-toolbar_floating'
-				]
-			}
-		} );
 
 		/**
 		 * A balloon panel view instance.

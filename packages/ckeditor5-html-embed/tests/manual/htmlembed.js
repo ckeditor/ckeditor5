@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,8 @@ import sanitizeHtml from 'sanitize-html';
 import { clone } from 'lodash-es';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import HtmlEmbed from '../../src/htmlembed';
 
@@ -18,22 +20,35 @@ const noPreviewsModeButton = document.getElementById( 'raw-html-previews-disable
 previewsModeButton.addEventListener( 'change', handleModeChange );
 noPreviewsModeButton.addEventListener( 'change', handleModeChange );
 
-startMode( document.querySelector( 'input[name="mode"]:checked' ).value );
-
-async function handleModeChange( evt ) {
-	await startMode( evt.target.value );
+for ( const input of document.querySelectorAll( 'input[name="language"]' ) ) {
+	input.addEventListener( 'change', handleModeChange );
 }
 
-async function startMode( selectedMode ) {
+startMode();
+
+async function handleModeChange() {
+	await startMode();
+}
+
+async function startMode() {
+	const selectedMode = document.querySelector( 'input[name="mode"]:checked' ).value;
+	const [ uiLanguage, contentLanguage ] = document.querySelector( 'input[name="language"]:checked' ).value.split( '-' );
+
+	const language = {
+		ui: uiLanguage,
+		content: contentLanguage || uiLanguage
+	};
+
 	if ( selectedMode === 'enabled' ) {
-		await startEnabledPreviewsMode();
+		await startEnabledPreviewsMode( { language } );
 	} else {
-		await startDisabledPreviewsMode();
+		await startDisabledPreviewsMode( { language } );
 	}
 }
 
-async function startEnabledPreviewsMode() {
+async function startEnabledPreviewsMode( config ) {
 	await reloadEditor( {
+		...config,
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml( rawHtml ) {
@@ -49,8 +64,8 @@ async function startEnabledPreviewsMode() {
 	} );
 }
 
-async function startDisabledPreviewsMode() {
-	await reloadEditor();
+async function startDisabledPreviewsMode( config ) {
+	await reloadEditor( config );
 }
 
 async function reloadEditor( config = {} ) {
@@ -58,17 +73,18 @@ async function reloadEditor( config = {} ) {
 		await window.editor.destroy();
 	}
 
-	config = Object.assign( config, {
-		plugins: [ ArticlePluginSet, HtmlEmbed, Code ],
+	config = {
+		...config,
+		plugins: [ ArticlePluginSet, HtmlEmbed, Code, MediaEmbed, Table ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
-			'undo', 'redo', '|', 'htmlEmbed'
+			'undo', 'redo', '|', 'htmlEmbed', 'mediaEmbed'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
-	} );
+	};
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
 }

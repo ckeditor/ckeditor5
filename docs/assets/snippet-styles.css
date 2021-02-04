@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  */
 
 :root {
@@ -28,7 +28,7 @@
 	margin-top: 0;
 }
 
-.ck.ck-content > :last-child {
+.ck.ck-content > :not(.ck-fake-selection-container):last-of-type {
 	margin-bottom: 0;
 }
 

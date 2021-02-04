@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,9 @@
  * @module code-block/codeblockediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import { Plugin } from 'ckeditor5/src/core';
+import { ShiftEnter } from 'ckeditor5/src/enter';
+
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
 import OutdentCodeBlockCommand from './outdentcodeblockcommand';

@@ -141,6 +141,10 @@ The HTML code of the application is listed below:
 		border-top-right-radius: 0;
 	}
 
+	.chat .chat__editor + .ck.ck-editor .ck-content.highlighted {
+		animation: highlight 600ms ease-out;
+	}
+
 	/* ---- In–editor mention list --------------------------------------------------------------- */
 
 	.ck-mentions .mention__item {
@@ -249,11 +253,31 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
+		const editingView = editor.editing.view;
+		const rootElement = editingView.document.getRoot();
+
 		window.editor = editor;
 
 		// Clone the first message in the chat when "Send" is clicked, fill it with new data
 		// and append to the chat list.
 		document.querySelector( '.chat-send' ).addEventListener( 'click', () => {
+			const message = editor.getData();
+
+			if ( !message ) {
+				editingView.change( writer => {
+					writer.addClass( 'highlighted', rootElement );
+					editingView.focus();
+				} );
+
+				setTimeout( () => {
+					editingView.change( writer => {
+						writer.removeClass( 'highlighted', rootElement );
+					} );
+				}, 650 );
+
+				return;
+			}
+
 			const clone = document.querySelector( '.chat__posts li' ).cloneNode( true );
 
 			clone.classList.add( 'new-post' );
@@ -266,9 +290,12 @@ ClassicEditor
 			mailtoUser.href = 'mailto:info@cksource.com';
 
 			clone.querySelector( '.chat__posts__post__time' ).textContent = 'just now';
-			clone.querySelector( '.chat__posts__post__content' ).innerHTML = editor.getData();
+			clone.querySelector( '.chat__posts__post__content' ).innerHTML = message;
 
 			document.querySelector( '.chat__posts' ).appendChild( clone );
+
+			editor.setData( '' );
+			editingView.focus();
 		} );
 	} )
 	.catch( err => {

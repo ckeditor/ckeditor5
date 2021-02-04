@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,9 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
+import ImageUpload from '../../src/imageupload';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 
@@ -21,6 +23,8 @@ const commonConfig = {
 		ArticlePluginSet,
 		Indent,
 		IndentBlock,
+		ImageUpload,
+		CloudServices,
 		EasyImage,
 		ImageResizeEditing,
 		ImageResizeButtons

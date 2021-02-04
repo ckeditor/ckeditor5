@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module list/converters
  */
+
+import { TreeWalker } from 'ckeditor5/src/engine';
 
 import {
 	generateLiInUl,
@@ -14,7 +16,6 @@ import {
 	getSiblingListItem,
 	positionAfterUiElements
 } from './utils';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.

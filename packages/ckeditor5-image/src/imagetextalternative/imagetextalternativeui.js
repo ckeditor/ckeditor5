@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,10 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+
 import TextAlternativeFormView from './ui/textalternativeformview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
 import { getSelectedImageWidget } from '../image/utils';
 
@@ -72,7 +70,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: textAlternativeIcon,
+				icon: icons.lowVision,
 				tooltip: true
 			} );
 

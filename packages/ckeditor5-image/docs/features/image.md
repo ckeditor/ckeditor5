@@ -14,7 +14,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
 * {@link module:image/imageupload~ImageUpload} adds support for {@link features/image-upload uploading dropped or pasted images}.
 * {@link module:image/imageinsert~ImageInsert} adds support for [inserting images via URL](#inserting-images-via-source-url) and other custom integrations.
-* {@link module:image/autoimage~AutoImage} adds support for [inserting images via pasting URL into editor](#inserting-images-via-pasting-url-into-editor).
+* {@link module:image/autoimage~AutoImage} adds support for [inserting images via pasting a URL into the editor](#inserting-images-via-pasting-url-into-editor).
 * {@link module:image/imageresize~ImageResize} adds support for [resizing images](#resizing-images).
 * {@link module:link/linkimage~LinkImage} adds support for [linking images](#linking-images).
 
@@ -108,7 +108,7 @@ This will add a new **Insert image** dropdown in the toolbar. To open the panel 
 
 ## Inserting images via pasting URL into editor
 
-The {@link module:image/autoimage~AutoImage} plugin recognizes image links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Accepted image extensions: jpg, jpeg, png, gif, ico.
+The {@link module:image/autoimage~AutoImage} plugin recognizes image links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Accepted image extensions are: `jpg`, `jpeg`, `png`, `gif`, `ico`.
 
 <info-box>
 	The image URL must be the only content pasted to be properly embedded. Multiple links (`"http://image.url http://another.image.url"`) as well as bigger chunks of content (`"This link http://image.url will not be auto–embedded when pasted."`) are ignored.

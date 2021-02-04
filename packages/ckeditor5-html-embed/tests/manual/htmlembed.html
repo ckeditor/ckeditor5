@@ -8,6 +8,14 @@
 	<input type="radio" id="raw-html-previews-disabled" name="mode" value="disabled"><label for="raw-html-previews-disabled"><code>false</code></label>
 </p>
 
+<p>
+	<b>Language direction</b>:
+	<input type="radio" id="language-en" name="language" value="en" checked><label for="language-en">↦</label>
+	<input type="radio" id="language-ar" name="language" value="ar"><label for="language-ar">↤</label>
+	<input type="radio" id="language-en-ar" name="language" value="en-ar"><label for="language-en-ar">UI: ↦, Content: ↤</label>
+	<input type="radio" id="language-ar-en" name="language" value="ar-en"><label for="language-ar-en">UI: ↤, Content: ↦</label>
+</p>
+
 <div id="editor">
 	<h3><code>&lt;video&gt;</code> tag as HTML snippet</h3>
 		<div class="raw-html-embed">
@@ -154,4 +162,19 @@
 			</tbody>
 		</table>
 	</div>
+
+	<h3>HTML comments in HTML snippet</h3>
+	<div class="raw-html-embed">
+		<!-- comment -->
+		<div id="aaaa">fooo</div>
+		<!-- end -->
+	</div>
+
+	<h3>Not previewable content in HTML snippet</h3>
+	<div class="raw-html-embed">
+		<!-- Example comment, should not be displayed -->
+	</div>
+
+	<h3>Empty HTML snippet</h3>
+	<div class="raw-html-embed"></div>
 </div>

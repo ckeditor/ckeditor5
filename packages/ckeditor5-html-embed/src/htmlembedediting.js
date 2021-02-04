@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,13 @@
  * @module html-embed/htmlembedediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
+import { toWidget } from 'ckeditor5/src/widget';
+import { logWarning, createElement } from 'ckeditor5/src/utils';
+
 import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
 import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-
-import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../theme/htmlembed.css';
 
@@ -94,8 +87,13 @@ export default class HtmlEmbedEditing extends Plugin {
 		const view = editor.editing.view;
 
 		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
-		const upcastWriter = new UpcastWriter( view.document );
-		const htmlProcessor = new HtmlDataProcessor( view.document );
+
+		// Register div.raw-html-embed as a raw content element so all of it's content will be provided
+		// as a view element's custom property while data upcasting.
+		editor.data.registerRawContentMatcher( {
+			name: 'div',
+			classes: 'raw-html-embed'
+		} );
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: {
@@ -103,13 +101,10 @@ export default class HtmlEmbedEditing extends Plugin {
 				classes: 'raw-html-embed'
 			},
 			model: ( viewElement, { writer } ) => {
-				// Note: The below line has a side-effect – the children are *moved* to the DF so
-				// viewElement becomes empty. It's fine here.
-				const fragment = upcastWriter.createDocumentFragment( viewElement.getChildren() );
-				const innerHtml = htmlProcessor.toData( fragment );
-
+				// The div.raw-html-embed is registered as a raw content element,
+				// so all it's content is available in a custom property.
 				return writer.createElement( 'rawHtml', {
-					value: innerHtml
+					value: viewElement.getCustomProperty( '$rawContent' )
 				} );
 			}
 		} );
@@ -133,7 +128,8 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				const viewContainer = writer.createContainerElement( 'div', {
 					class: 'raw-html-embed',
-					'data-html-embed-label': t( 'HTML snippet' )
+					'data-html-embed-label': t( 'HTML snippet' ),
+					dir: editor.locale.uiLanguageDirection
 				} );
 				// Widget cannot be a raw element because the widget system would not be able
 				// to add its UI to it. Thus, we need this wrapper.
@@ -143,6 +139,21 @@ export default class HtmlEmbedEditing extends Plugin {
 					domContentWrapper = domElement;
 
 					renderContent( { domElement, editor, state, props } );
+
+					// Since there is a `data-cke-ignore-events` attribute set on the wrapper element in the editable mode,
+					// the explicit `mousedown` handler on the `capture` phase is needed to move the selection onto the whole
+					// HTML embed widget.
+					domContentWrapper.addEventListener( 'mousedown', () => {
+						if ( state.isEditable ) {
+							const model = editor.model;
+							const selectedElement = model.document.selection.getSelectedElement();
+
+							// Move the selection onto the whole HTML embed widget if it's currently not selected.
+							if ( selectedElement !== modelElement ) {
+								model.change( writer => writer.setSelection( modelElement, 'on' ) );
+							}
+						}
+					}, true );
 				} );
 
 				// API exposed on each raw HTML embed widget so other features can control a particular widget.
@@ -239,7 +250,7 @@ export default class HtmlEmbedEditing extends Plugin {
 					sanitizeHtml: props.sanitizeHtml
 				};
 
-				domElement.append( createPreviewContainer( { domDocument, state, props: previewContainerProps } ) );
+				domElement.append( createPreviewContainer( { domDocument, state, props: previewContainerProps, editor } ) );
 			} else {
 				const textareaProps = {
 					isDisabled: true,
@@ -264,9 +275,9 @@ export default class HtmlEmbedEditing extends Plugin {
 				class: 'raw-html-embed__buttons-wrapper'
 			} );
 			// TODO these should be cached and we should only clone here these cached nodes!
-			const domEditButton = createDomButton( editor.locale, 'edit' );
-			const domSaveButton = createDomButton( editor.locale, 'save' );
-			const domCancelButton = createDomButton( editor.locale, 'cancel' );
+			const domEditButton = createDomButton( editor, 'edit' );
+			const domSaveButton = createDomButton( editor, 'save' );
+			const domCancelButton = createDomButton( editor, 'cancel' );
 
 			if ( state.isEditable ) {
 				const clonedDomSaveButton = domSaveButton.cloneNode( true );
@@ -310,13 +321,28 @@ export default class HtmlEmbedEditing extends Plugin {
 			return domTextarea;
 		}
 
-		function createPreviewContainer( { domDocument, state, props } ) {
-			const domPreviewContainer = createElement( domDocument, 'div', {
-				class: 'raw-html-embed__preview'
+		function createPreviewContainer( { domDocument, state, props, editor } ) {
+			const sanitizedOutput = props.sanitizeHtml( state.getRawHtmlValue() );
+			const placeholderText = state.getRawHtmlValue().length > 0 ?
+				t( 'No preview available' ) :
+				t( 'Empty snippet content' );
+
+			const domPreviewPlaceholder = createElement( domDocument, 'div', {
+				class: 'ck ck-reset_all raw-html-embed__preview-placeholder'
+			}, placeholderText );
+
+			const domPreviewContent = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview-content',
+				dir: editor.locale.contentLanguageDirection
 			} );
 
-			const sanitizeOutput = props.sanitizeHtml( state.getRawHtmlValue() );
-			domPreviewContainer.innerHTML = sanitizeOutput.html;
+			domPreviewContent.innerHTML = sanitizedOutput.html;
+
+			const domPreviewContainer = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview'
+			}, [
+				domPreviewPlaceholder, domPreviewContent
+			] );
 
 			return domPreviewContainer;
 		}
@@ -328,13 +354,14 @@ export default class HtmlEmbedEditing extends Plugin {
 //  @param {module:utils/locale~Locale} locale Editor locale.
 //  @param {'edit'|'save'|'cancel'} type Type of button to create.
 //  @returns {HTMLElement}
-function createDomButton( locale, type ) {
-	const t = locale.t;
-	const buttonView = new ButtonView( locale );
+function createDomButton( editor, type ) {
+	const t = editor.locale.t;
+	const buttonView = new ButtonView( editor.locale );
+	const command = editor.commands.get( 'updateHtmlEmbed' );
 
 	buttonView.set( {
-		tooltipPosition: 'sw',
-		icon: pencilIcon,
+		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w',
+		icon: icons.pencil,
 		tooltip: true
 	} );
 
@@ -342,19 +369,20 @@ function createDomButton( locale, type ) {
 
 	if ( type === 'edit' ) {
 		buttonView.set( {
-			icon: pencilIcon,
+			icon: icons.pencil,
 			label: t( 'Edit source' ),
 			class: 'raw-html-embed__edit-button'
 		} );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
-			icon: checkIcon,
+			icon: icons.check,
 			label: t( 'Save changes' ),
 			class: 'raw-html-embed__save-button'
 		} );
+		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 	} else {
 		buttonView.set( {
-			icon: cancelIcon,
+			icon: icons.cancel,
 			label: t( 'Cancel' ),
 			class: 'raw-html-embed__cancel-button'
 		} );

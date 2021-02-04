@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -99,7 +99,3 @@ msgstr "通过URL地址插入图片"
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
 msgstr "更新图片URL地址"
-
-msgctxt "The content of the tip below the Insert image via URL form."
-msgid "Paste the image source URL."
-msgstr "将图片的URL地址粘贴在这里"

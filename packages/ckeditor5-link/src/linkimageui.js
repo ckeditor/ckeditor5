@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module link/linkimageui
  */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core';
+
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
-import { isImageWidget } from '@ckeditor/ckeditor5-image/src/image/utils';
+
 import { LINK_KEYSTROKE } from './utils';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -30,7 +30,7 @@ export default class LinkImageUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Image, LinkEditing, LinkUI ];
+		return [ LinkEditing, LinkUI, 'Image' ];
 	}
 
 	/**
@@ -48,7 +48,7 @@ export default class LinkImageUI extends Plugin {
 		const viewDocument = editor.editing.view.document;
 
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
-			const hasLink = isImageLinked( viewDocument.selection.getSelectedElement() );
+			const hasLink = isImageLinked( viewDocument.selection.getSelectedElement(), editor.plugins.get( 'Image' ) );
 
 			if ( hasLink ) {
 				data.preventDefault();
@@ -91,7 +91,7 @@ export default class LinkImageUI extends Plugin {
 
 			// Show the actionsView or formView (both from LinkUI) on button click depending on whether the image is linked already.
 			this.listenTo( button, 'execute', () => {
-				const hasLink = isImageLinked( editor.editing.view.document.selection.getSelectedElement() );
+				const hasLink = isImageLinked( editor.editing.view.document.selection.getSelectedElement(), editor.plugins.get( 'Image' ) );
 
 				if ( hasLink ) {
 					plugin._addActionsView();
@@ -109,8 +109,8 @@ export default class LinkImageUI extends Plugin {
 //
 // @param {module:engine/model/element~Element} element
 // @returns {Boolean}
-function isImageLinked( element ) {
-	const isImage = element && isImageWidget( element );
+function isImageLinked( element, image ) {
+	const isImage = element && image.isImageWidget( element );
 
 	if ( !isImage ) {
 		return false;

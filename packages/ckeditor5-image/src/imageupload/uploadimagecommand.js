@@ -1,10 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { FileRepository } from 'ckeditor5/src/upload';
+import { Command } from 'ckeditor5/src/core';
+import { toArray } from 'ckeditor5/src/utils';
+
 import { insertImage, isImageAllowed } from '../image/utils';
 
 /**
@@ -64,9 +66,7 @@ export default class UploadImageCommand extends Command {
 
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		const filesToUpload = Array.isArray( options.file ) ? options.file : [ options.file ];
-
-		for ( const file of filesToUpload ) {
+		for ( const file of toArray( options.file ) ) {
 			uploadImage( model, fileRepository, file );
 		}
 	}

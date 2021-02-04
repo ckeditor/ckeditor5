@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,9 @@
  * @module image/imageresize/imageresizehandles
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import { Plugin } from 'ckeditor5/src/core';
+import { WidgetResize } from 'ckeditor5/src/widget';
+
 import ImageLoadObserver from '../image/imageloadobserver';
 
 /**
@@ -45,7 +46,7 @@ export default class ImageResizeHandles extends Plugin {
 	}
 
 	/**
-	 * Attaches the listeners responsible for creating a resizer for each image.
+	 * Attaches the listeners responsible for creating a resizer for each image, except for images inside the HTML embed preview.
 	 *
 	 * @private
 	 */
@@ -56,13 +57,18 @@ export default class ImageResizeHandles extends Plugin {
 		editingView.addObserver( ImageLoadObserver );
 
 		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
+			// The resizer must be attached only to images loaded by the `ImageInsert`, `ImageUpload` or `LinkImage` plugins.
+			if ( !domEvent.target.matches( 'figure.image.ck-widget > img, figure.image.ck-widget > a > img' ) ) {
+				return;
+			}
+
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
 			const widgetView = imageView.findAncestor( 'figure' );
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 
 			if ( resizer ) {
-				// There are rare cases when image will be triggered multiple times for the same widget, e.g. when
-				// image's src was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
+				// There are rare cases when the image will be triggered multiple times for the same widget, e.g. when
+				// the image's source was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
 				resizer.redraw();
 
 				return;

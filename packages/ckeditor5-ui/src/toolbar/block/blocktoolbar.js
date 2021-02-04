@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
 
 /* global window */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, icons } from 'ckeditor5/src/core';
 
 import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
@@ -24,7 +24,6 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import iconPilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 
 const toPx = toUnit( 'px' );
 
@@ -179,7 +178,7 @@ export default class BlockToolbar extends Plugin {
 		const factory = this.editor.ui.componentFactory;
 		const config = this._blockToolbarConfig;
 
-		this.toolbarView.fillFromConfig( config.items, factory );
+		this.toolbarView.fillFromConfig( config, factory );
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
@@ -223,14 +222,8 @@ export default class BlockToolbar extends Plugin {
 	_createToolbarView() {
 		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
-			shouldGroupWhenFull
-		} );
-
-		toolbarView.extendTemplate( {
-			attributes: {
-				// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
-				class: [ 'ck-toolbar_floating' ]
-			}
+			shouldGroupWhenFull,
+			isFloating: true
 		} );
 
 		// When toolbar lost focus then panel should hide.
@@ -280,7 +273,7 @@ export default class BlockToolbar extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Edit block' ),
-			icon: iconPilcrow,
+			icon: icons.pilcrow,
 			withText: false
 		} );
 

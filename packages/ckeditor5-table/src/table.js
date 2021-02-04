@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module table/table
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
 
 import TableEditing from './tableediting';
 import TableUI from './tableui';
@@ -15,7 +16,6 @@ import TableSelection from './tableselection';
 import TableClipboard from './tableclipboard';
 import TableKeyboard from './tablekeyboard';
 import TableMouse from './tablemouse';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import '../theme/table.css';
 

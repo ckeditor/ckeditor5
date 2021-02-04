@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -142,6 +142,22 @@ describe( 'UnlinkCommand', () => {
 				command.execute();
 
 				expect( getData( model ) ).to.equal( '[foobar]' );
+			} );
+
+			it( 'should remove `linkHref` attribute from multiple blocks', () => {
+				setData( model,
+					'<p><$text linkHref="url">fo[oo</$text></p>' +
+					'<p><$text linkHref="url">123</$text></p>' +
+					'<p><$text linkHref="url">baa]ar</$text></p>'
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equal(
+					'<p><$text linkHref="url">fo</$text>[oo</p>' +
+					'<p>123</p>' +
+					'<p>baa]<$text linkHref="url">ar</$text></p>'
+				);
 			} );
 
 			it( 'should remove `linkHref` attribute from selection', () => {

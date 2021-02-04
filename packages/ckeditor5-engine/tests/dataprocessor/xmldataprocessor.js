@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -101,6 +101,25 @@ describe( 'XmlDataProcessor', () => {
 			const fragment = parse( '<p>foo</p><p>bar</p>' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+	} );
+
+	describe( 'registerRawContentMatcher()', () => {
+		it( 'should handle elements matching to MatcherPattern as elements with raw content', () => {
+			dataProcessor.registerRawContentMatcher( { name: 'div', classes: 'raw' } );
+
+			const fragment = dataProcessor.toView(
+				'<p>foo</p>' +
+				'<div class="raw">' +
+					'<!-- 123 -->' +
+					' abc ' +
+					'<!-- 456 -->' +
+				'</div>' +
+				'<p>bar</p>'
+			);
+
+			expect( stringify( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
+			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
 		} );
 	} );
 } );

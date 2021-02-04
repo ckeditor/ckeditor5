@@ -1,9 +1,10 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
 import ImageEditing from '../../src/image/imageediting';
 import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
@@ -248,6 +249,24 @@ describe( 'ImageStyleEditing', () => {
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/8270.
+		it( 'should stop conversion when model element is not found', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ ImageEditing, ImageResizeEditing, ImageStyleEditing ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					expect(
+						() => editor.setData( '<figure class="image image_resized" style="width:331px;"></figure>' )
+					).not.to.throw();
+
+					// No conversion has been done.
+					expect( editor.getData() ).to.equal( '' );
+				} );
 		} );
 	} );
 

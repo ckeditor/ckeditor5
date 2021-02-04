@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -150,7 +150,7 @@ export default class DropdownView extends View {
 		 *
 		 * @observable
 		 * @default 'auto'
-		 * @member {'auto'|'se'|'sw'|'ne'|'nw'} #panelPosition
+		 * @member {'auto'|'s'|'se'|'sw'|'sme'|'smw'|'n'|'ne'|'nw'|'nme'|'nmw'} #panelPosition
 		 */
 		this.set( 'panelPosition', 'auto' );
 
@@ -313,12 +313,24 @@ export default class DropdownView extends View {
 	 * @private
 	 */
 	get _panelPositions() {
-		const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
+		const {
+			south, north,
+			southEast, southWest,
+			northEast, northWest,
+			southMiddleEast, southMiddleWest,
+			northMiddleEast, northMiddleWest
+		} = DropdownView.defaultPanelPositions;
 
-		if ( this.locale.uiLanguageDirection === 'ltr' ) {
-			return [ southEast, southWest, northEast, northWest ];
+		if ( this.locale.uiLanguageDirection !== 'rtl' ) {
+			return [
+				southEast, southWest, southMiddleEast, southMiddleWest, south,
+				northEast, northWest, northMiddleEast, northMiddleWest, north
+			];
 		} else {
-			return [ southWest, southEast, northWest, northEast ];
+			return [
+				southWest, southEast, southMiddleWest, southMiddleEast, south,
+				northWest, northEast, northMiddleWest, northMiddleEast, north
+			];
 		}
 	}
 }
@@ -332,6 +344,13 @@ export default class DropdownView extends View {
  * The available positioning functions are as follow:
  *
  * **South**
+ *
+ * * `south`
+ *
+ *			[ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
  *
  * * `southEast`
  *
@@ -347,7 +366,28 @@ export default class DropdownView extends View {
  *		|      Panel      |
  *		+-----------------+
  *
+ * * `southMiddleEast`
+ *
+ *		  [ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *
+ * * `southMiddleWest`
+ *
+ *		       [ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *
  * **North**
+ *
+ * * `north`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		    [ Button ]
  *
  * * `northEast`
  *
@@ -363,6 +403,20 @@ export default class DropdownView extends View {
  *		+-----------------+
  *		         [ Button ]
  *
+ * * `northMiddleEast`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		  [ Button ]
+ *
+ * * `northMiddleWest`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		       [ Button ]
+ *
  * Positioning functions are compatible with {@link module:utils/dom/position~Position}.
  *
  * The name that position function returns will be reflected in dropdown panel's class that
@@ -372,6 +426,13 @@ export default class DropdownView extends View {
  * @member {Object} module:ui/dropdown/dropdownview~DropdownView.defaultPanelPositions
  */
 DropdownView.defaultPanelPositions = {
+	south: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 2,
+			name: 's'
+		};
+	},
 	southEast: buttonRect => {
 		return {
 			top: buttonRect.bottom,
@@ -386,6 +447,27 @@ DropdownView.defaultPanelPositions = {
 			name: 'sw'
 		};
 	},
+	southMiddleEast: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 4,
+			name: 'sme'
+		};
+	},
+	southMiddleWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) * 3 / 4,
+			name: 'smw'
+		};
+	},
+	north: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 2,
+			name: 'n'
+		};
+	},
 	northEast: ( buttonRect, panelRect ) => {
 		return {
 			top: buttonRect.top - panelRect.height,
@@ -395,9 +477,23 @@ DropdownView.defaultPanelPositions = {
 	},
 	northWest: ( buttonRect, panelRect ) => {
 		return {
-			top: buttonRect.bottom - panelRect.height,
+			top: buttonRect.top - panelRect.height,
 			left: buttonRect.left - panelRect.width + buttonRect.width,
 			name: 'nw'
+		};
+	},
+	northMiddleEast: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) / 4,
+			name: 'nme'
+		};
+	},
+	northMiddleWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left - ( panelRect.width - buttonRect.width ) * 3 / 4,
+			name: 'nmw'
 		};
 	}
 };

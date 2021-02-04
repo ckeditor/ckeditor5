@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,10 @@
  * @module link/unlinkcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from 'ckeditor5/src/core';
+import { findAttributeRange } from 'ckeditor5/src/typing';
+import { first } from 'ckeditor5/src/utils';
+
 import { isImageAllowed } from './utils';
 
 /**
@@ -64,7 +65,7 @@ export default class UnlinkCommand extends Command {
 					selection.getAttribute( 'linkHref' ),
 					model
 				) ] :
-				selection.getRanges();
+				model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {

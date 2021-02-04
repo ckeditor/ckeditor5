@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -27,12 +27,12 @@
 		margin-bottom: var(--ck-spacing-small);
 	}
 
-	& > .ck-toolbar__items {
-		& > * {
-			/* Make sure items wrapped to the next line have v-spacing */
-			margin-top: var(--ck-spacing-small);
-			margin-bottom: var(--ck-spacing-small);
+	& .ck-toolbar__line-break {
+		height: 0;
+	}
 
+	& > .ck-toolbar__items {
+		& > *:not(.ck-toolbar__line-break) {
 			/* (#11) Separate toolbar items. */
 			margin-right: var(--ck-spacing-small);
 		}
@@ -44,7 +44,7 @@
 		}
 	}
 
-	& > .ck-toolbar__items > *,
+	& > .ck-toolbar__items > *:not(.ck-toolbar__line-break),
 	& > .ck.ck-toolbar__grouped-dropdown {
 		/* Make sure items wrapped to the next line have v-spacing */
 		margin-top: var(--ck-spacing-small);

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,7 @@
 
 /* globals console */
 
+import { toArray } from 'ckeditor5/src/utils';
 import Watchdog from './watchdog';
 import EditorWatchdog from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
@@ -234,9 +235,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	add( itemConfigurationOrItemConfigurations ) {
-		const itemConfigurations = Array.isArray( itemConfigurationOrItemConfigurations ) ?
-			itemConfigurationOrItemConfigurations :
-			[ itemConfigurationOrItemConfigurations ];
+		const itemConfigurations = toArray( itemConfigurationOrItemConfigurations );
 
 		return this._actionQueue.enqueue( () => {
 			if ( this.state === 'destroyed' ) {
@@ -310,9 +309,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	remove( itemIdOrItemIds ) {
-		const itemIds = Array.isArray( itemIdOrItemIds ) ?
-			itemIdOrItemIds :
-			[ itemIdOrItemIds ];
+		const itemIds = toArray( itemIdOrItemIds );
 
 		return this._actionQueue.enqueue( () => {
 			return Promise.all( itemIds.map( itemId => {
