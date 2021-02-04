@@ -42,6 +42,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 const { Plugin } = window.CKEditor5.core;
 const { ButtonView } = window.CKEditor5.ui;
 const { Paragraph } = window.CKEditor5.paragraph;
+const { TextTransformation } = window.CKEditor5.typing;
 
 // Create ad-hoc plugin.
 class AdHocPlugin extends Plugin {
@@ -66,8 +67,7 @@ class AdHocPlugin extends Plugin {
 
 const config = {
 	plugins: [
-		AdHocPlugin,
-		Paragraph,
+		AdHocPlugin, Paragraph, TextTransformation,
 		Alignment,
 		Autoformat,
 		AutoImage, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload,
