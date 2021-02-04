@@ -10,9 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import { normalizeImageStyles, structurizeStyleToolbar } from './utils';
+import { normalizeImageStyles } from './utils';
 
 import '../../theme/imagestyle.css';
 
@@ -64,7 +64,8 @@ export default class ImageStyleUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const configuredStyles = editor.config.get( 'image.styles' );
-		const configuredToolbar = editor.config.get( 'image.toolbar' );
+		const configuredToolbar = editor.config.get( 'image.toolbar' )
+			.filter( item => item.split( ':' )[ 0 ] === 'imageStyle' );
 
 		this._definedArrangements = translateStyles(
 			normalizeImageStyles( configuredStyles, 'arrangements' ),
@@ -74,10 +75,12 @@ export default class ImageStyleUI extends Plugin {
 			normalizeImageStyles( configuredStyles, 'groups' ),
 			this.localizedDefaultStylesTitles );
 
-		const UIModel = structurizeStyleToolbar( configuredToolbar );
+		this._createUIElements( this._getToolbarStructure( configuredToolbar ) );
+	}
 
-		for ( const itemKey in UIModel ) {
-			const itemValue = UIModel[ itemKey ];
+	_createUIElements( UIStructure ) {
+		for ( const itemKey in UIStructure ) {
+			const itemValue = UIStructure[ itemKey ];
 
 			if ( typeof itemValue === 'object' ) {
 				this._createDropdown( this._getDropdownConfig( itemKey ), itemValue );
@@ -95,20 +98,21 @@ export default class ImageStyleUI extends Plugin {
 	 * @param {Array<String>} buttonNames
 	 */
 	_createDropdown( dropdownConfig, buttonNames ) {
-		const editor = this.editor;
+		if ( !dropdownConfig ) {
+			return;
+		}
+
 		const dropdownName = dropdownConfig.name;
 		const componentName = getUIComponentName( dropdownName );
 
 		this.editor.ui.componentFactory.add( componentName, locale => {
-			const dropdownView = createDropdown( locale, SplitButtonView );
+			const dropdownView = createDropdown( locale );
 			const buttonComponents = [];
 
 			dropdownView.buttonView.set( {
 				label: dropdownConfig.title,
 				icon: dropdownConfig.icon,
-				tooltip: true,
-				isToggleable: true,
-				isSelectable: true
+				tooltip: true
 			} );
 
 			for ( const buttonName of buttonNames ) {
@@ -119,14 +123,6 @@ export default class ImageStyleUI extends Plugin {
 			}
 
 			addToolbarToDropdown( dropdownView, buttonComponents );
-
-			dropdownView.buttonView.on( 'execute', () => {
-				const arrangementConfig = this._getButtonConfig( dropdownConfig.arrangement );
-
-				editor.execute( 'imageTypeSwitch', arrangementConfig.modelElement );
-				editor.execute( 'imageStyle', { value: arrangementConfig.name } );
-				editor.editing.view.focus();
-			} );
 
 			dropdownView.buttonView
 				.bind( 'isSelected' )
@@ -156,6 +152,10 @@ export default class ImageStyleUI extends Plugin {
 	 * @param {String} parentDropDownName
 	 */
 	_createButton( buttonConfig, parentDropdownName ) {
+		if ( !buttonConfig ) {
+			return;
+		}
+
 		const editor = this.editor;
 		const buttonName = buttonConfig.name;
 		const componentName = getUIComponentName( parentDropdownName, buttonName );
@@ -193,7 +193,14 @@ export default class ImageStyleUI extends Plugin {
 	 * @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat}
 	 */
 	_getDropdownConfig( dropdownName ) {
-		return this._definedGroups.find( group => group.name === dropdownName );
+		const config = this._definedGroups.find( group => group.name === dropdownName );
+
+		if ( !config ) {
+			// describe the warning
+			logWarning( 'image-style-toolbarview-item-unavailable', { dropdownName } );
+		}
+
+		return config;
 	}
 
 	/**
@@ -205,7 +212,39 @@ export default class ImageStyleUI extends Plugin {
 	 * @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat}
 	 */
 	_getButtonConfig( buttonName ) {
-		return this._definedArrangements.find( arrangement => arrangement.name === buttonName );
+		const config = this._definedArrangements.find( arrangement => arrangement.name === buttonName );
+
+		if ( !config ) {
+			// describe the warning
+			logWarning( 'image-style-toolbarview-item-unavailable', { buttonName } );
+		}
+
+		return config;
+	}
+
+	_getToolbarStructure( toolbar ) {
+		const toolbarStructure = {};
+
+		for ( const item of toolbar ) {
+			const itemContents = item.split( ':' );
+			const isDropdown = itemContents.length === 3;
+
+			if ( isDropdown ) {
+				const dropdownName = itemContents[ 1 ];
+				const itemName = itemContents[ 2 ];
+
+				toolbarStructure[ dropdownName ] = [
+					...toolbarStructure[ dropdownName ] || [],
+					itemName
+				];
+			} else {
+				const itemName = itemContents[ 1 ];
+
+				toolbarStructure[ itemName ] = itemName;
+			}
+		}
+
+		return toolbarStructure;
 	}
 }
 

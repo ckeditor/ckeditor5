@@ -61,7 +61,10 @@ ClassicEditor
 		image: {
 			styles: {
 				arrangements: [
-					'blockFull',
+					{
+						name: 'blockCenter',
+						title: 'dupadupadupa'
+					},
 					'blockSide',
 					'inlineLeft',
 					'inlineRight',
@@ -70,7 +73,17 @@ ClassicEditor
 					'blockLeft',
 					'blockRight'
 				],
-				groups: [ 'inParagraph', 'betweenParagraphs' ]
+				groups: [
+					{
+						name: 'inParagraph',
+						title: 'dupadupadupa1'
+					},
+					'betweenParagraphs',
+					{
+						name: 'grupaMagdy',
+						title: 'grupa Magdy'
+					}
+				]
 			},
 			toolbar: [
 				'imageStyle:inline',
@@ -78,7 +91,9 @@ ClassicEditor
 				'imageStyle:inParagraph:inlineRight',
 				'imageStyle:betweenParagraphs:blockCenter',
 				'imageStyle:betweenParagraphs:blockLeft',
-				'imageStyle:betweenParagraphs:blockRight'
+				'imageStyle:betweenParagraphs:blockRight',
+				'|',
+				'imageTextAlternative'
 			]
 		}
 	} )

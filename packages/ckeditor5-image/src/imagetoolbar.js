@@ -50,13 +50,13 @@ export default class ImageToolbar extends Plugin {
 
 		widgetToolbarRepository.register( 'image', {
 			ariaLabel: t( 'Image toolbar' ),
-			items: this._getUniqueItems( configuredToolbar ),
+			items: this._excludeNestedButtons( configuredToolbar ),
 			getRelatedElement: getSelectedImageWidget
 		} );
 	}
 
 	// jaka jest konwencja, kiedy ta funkcja powinna być w tej klasie, a kiedy powinna być helperem poza nią?
-	_getUniqueItems( items ) {
+	_excludeNestedButtons( items ) {
 		const uniqueItems = [];
 
 		for ( const item of items ) {
