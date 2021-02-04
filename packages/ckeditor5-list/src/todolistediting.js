@@ -12,7 +12,7 @@ import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
 
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
-import CheckTodoListCommand from './todolistcheckcommand';
+import CheckTodoListCommand from './checktodolistcommand';
 import {
 	dataModelViewInsertion,
 	dataViewModelCheckmarkInsertion,
