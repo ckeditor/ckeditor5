@@ -267,6 +267,7 @@ function getInsertImageParent( selection, model ) {
 // but only if there is proper plugin enabled.
 // @returns {'image'|'imageInline'} imageType
 function determineImageTypeForInsertion( editor, selectable, imageType ) {
+	const schema = editor.model.schema;
 	const configImageInsertType = editor.config.get( 'image.insert.type' );
 
 	if ( !editor.plugins.has( 'ImageBlockEditing' ) ) {
@@ -292,8 +293,8 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 	if ( selectable.is( 'selection' ) ) {
 		const firstBlock = first( selectable.getSelectedBlocks() );
 
-		return ( !firstBlock || firstBlock.isEmpty || isImage( firstBlock ) ) ? 'image' : 'imageInline';
+		return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
 	}
 
-	return editor.model.schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';
+	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';
 }
