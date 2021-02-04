@@ -39,6 +39,7 @@ export default class ImageTypeToggleCommand extends Command {
 		const src = imageElement.getAttribute( 'src' );
 		const alt = imageElement.getAttribute( 'alt' );
 		const srcset = imageElement.getAttribute( 'srcset' );
+		const caption = imageElement.getAttribute( 'caption' );
 
 		if ( !src ) {
 			return;
@@ -52,6 +53,10 @@ export default class ImageTypeToggleCommand extends Command {
 
 		if ( srcset ) {
 			attrs.srcset = srcset;
+		}
+
+		if ( caption ) {
+			attrs.caption = caption;
 		}
 
 		if ( isImage( imageElement ) ) {
