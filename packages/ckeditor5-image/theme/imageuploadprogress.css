@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-editor__editable .image, .ck.ck-editor__editable .image-inline {
+.ck.ck-editor__editable .image {
+	position: relative;
+}
+
+.ck.ck-editor__editable .image-inline {
 	display: inline-block;
 	position: relative;
 }
