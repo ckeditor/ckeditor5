@@ -7,7 +7,7 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, checkSelectionOnObject, isWidget, toWidget } from 'ckeditor5/src/widget';
+import { findOptimalInsertionPosition, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { first } from 'ckeditor5/src/utils';
 
 /**
@@ -101,7 +101,7 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 	model.change( writer => {
 		const imageElement = writer.createElement( imageType, attributes );
 
-		if ( !selectable && imageType != 'imageInline' ) {
+		if ( !selectable && imageType != 'imageInline' && !selection.getSelectedElement() ) {
 			selectable = findOptimalInsertionPosition( selection, model );
 		}
 
@@ -125,9 +125,7 @@ export function isImageAllowed( editor ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isImageAllowedInParent( selection, schema, editor ) &&
-		!checkSelectionOnObject( selection, schema ) &&
-		isInOtherImage( selection );
+	return isImageAllowedInParent( selection, schema, editor ) && isNotInsideImage( selection );
 }
 
 /**
@@ -228,25 +226,23 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Boolean}
 function isImageAllowedInParent( selection, schema, editor ) {
-	if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
+	const imageType = determineImageTypeForInsertion( editor, selection );
+
+	if ( imageType == 'image' ) {
 		const parent = getInsertImageParent( selection, editor.model );
 
 		if ( schema.checkChild( parent, 'image' ) ) {
 			return true;
 		}
-	}
-
-	if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
-		if ( schema.checkChild( selection.focus, 'imageInline' ) ) {
-			return true;
-		}
+	} else if ( schema.checkChild( selection.focus, 'imageInline' ) ) {
+		return true;
 	}
 
 	return false;
 }
 
 // Checks if selection is placed in other image (ie. in caption).
-function isInOtherImage( selection ) {
+function isNotInsideImage( selection ) {
 	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'image' ) );
 }
 
@@ -269,7 +265,7 @@ function getInsertImageParent( selection, model ) {
 // @param {module:engine/model/selection~Selectable} selection
 // @param {'image'|'imageInline'} [imageType] Image element type name. Used to force return of provided element name,
 // but only if there is proper plugin enabled.
-// @returns {'image'|'imageInline'} imageElementName
+// @returns {'image'|'imageInline'} imageType
 function determineImageTypeForInsertion( editor, selectable, imageType ) {
 	const configImageInsertType = editor.config.get( 'image.insert.type' );
 
@@ -296,7 +292,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 	if ( selectable.is( 'selection' ) ) {
 		const firstBlock = first( selectable.getSelectedBlocks() );
 
-		return ( !firstBlock || firstBlock.isEmpty ) ? 'image' : 'imageInline';
+		return ( !firstBlock || firstBlock.isEmpty || isImage( firstBlock ) ) ? 'image' : 'imageInline';
 	}
 
 	return editor.model.schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';
