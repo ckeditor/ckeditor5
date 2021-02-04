@@ -201,9 +201,9 @@ const config = {
 
 ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
 	.then( editor => {
-		window.editor = editor;
+		window.classicEditor = editor;
 
-		logWordCountStats( editor );
+		logWordCountStats( 'Classic Editor', editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -211,9 +211,9 @@ ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
 
 InlineEditor.create( document.querySelector( '#editor-inline' ), config )
 	.then( editor => {
-		window.editor = editor;
+		window.inlineEditor = editor;
 
-		logWordCountStats( editor );
+		logWordCountStats( 'Inline Editor', editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -221,9 +221,9 @@ InlineEditor.create( document.querySelector( '#editor-inline' ), config )
 
 BalloonEditor.create( document.querySelector( '#editor-balloon' ), config )
 	.then( editor => {
-		window.editor = editor;
+		window.balloonEditor = editor;
 
-		logWordCountStats( editor );
+		logWordCountStats( 'Balloon Editor', editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -242,19 +242,19 @@ const editorData = '<h2>Sample</h2>' +
 
 DecoupledEditor.create( editorData, config )
 	.then( editor => {
-		window.editor = editor;
+		window.decoupledEditor = editor;
 
 		document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 		document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
 
-		logWordCountStats( editor );
+		logWordCountStats( 'Decoupled Editor', editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
-function logWordCountStats( editor ) {
+function logWordCountStats( editorType, editor ) {
 	editor.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {
-		console.log( `Characters: ${ stats.characters }, words: ${ stats.words }.` );
+		console.log( `${ editorType } = characters: ${ stats.characters }, words: ${ stats.words }.` );
 	} );
 }

@@ -1,4 +1,4 @@
-# DLL sample test
+# All features with DLL build
 
 **This DLL sample test requires that the DLL core and DLL packages are built.**
 
@@ -9,4 +9,4 @@ Expected results:
 * Four editors should be initialized correctly: Classic, Decoupled, Inline, and Balloon.
 * Each editor should contain as many features as we developed.
 * Clicking the `Ad-hoc` button logs `It works!` in the console.
-* The `WordCount` plugin logs into the console number of characters and words in the editor's data.
+* The `WordCount` plugin logs into the console number of characters and words for each editor.
