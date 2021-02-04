@@ -8,7 +8,8 @@
 import Font from '../src/font';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 describe( 'Integration test Font', () => {
 	let element, editor, model;
@@ -102,52 +103,41 @@ describe( 'Integration test Font', () => {
 				} );
 		} );
 
-		it( 'should convert font family and font size from a single element', () => {
+		it( 'should convert font features in the table (supportAllValues: true)', () => {
 			const element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
 			return ClassicTestEditor
 				.create( element, {
-					plugins: [ Font, ArticlePluginSet ],
-					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
-					}
-				} )
-				.then( editor => {
-					editor.setData(
-						'<p><span class="text-tiny" style="font-family:Arial, Helvetica, sans-serif">Font Arial text-tiny</span></p>'
-					);
-
-					expect( editor.getData() ).to.equal(
-						'<p><span class="text-tiny" style="font-family:Arial, Helvetica, sans-serif;">Font Arial text-tiny</span></p>'
-					);
-
-					return editor.destroy();
-				} )
-				.then( () => {
-					element.remove();
-				} );
-		} );
-
-		it( 'should convert font family and font size from a single element (fontSize as numbers)', () => {
-			const element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ Font, ArticlePluginSet ],
+					plugins: [ Font, ArticlePluginSet, Table ],
 					fontSize: {
+						supportAllValues: true,
 						options: [ 10, 12, 14 ]
+					},
+					fontFamily: {
+						supportAllValues: true
 					},
 					image: {
 						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {
-					editor.setData( '<p><span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span></p>' );
+					editor.setData(
+						'<table><tr><td>' +
+							'<span class="tiny" style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span>' +
+						'</td></tr></table>'
+					);
 
-					expect( editor.getData() ).to.equal(
-						'<p><span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span></p>'
+					expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>' +
+										'<$text fontFamily="Arial, Helvetica, sans-serif" fontSize="14px">Font Arial 14</$text>' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
 					);
 
 					return editor.destroy();
@@ -156,39 +146,6 @@ describe( 'Integration test Font', () => {
 					element.remove();
 				} );
 		} );
-
-		it(
-			'should convert font family and font size from a single element (fontFamily.supportAllValues: true, fontSize as numbers)',
-			() => {
-				const element = document.createElement( 'div' );
-				document.body.appendChild( element );
-
-				return ClassicTestEditor
-					.create( element, {
-						plugins: [ Font, ArticlePluginSet ],
-						fontFamily: {
-							supportAllValues: true
-						},
-						fontSize: {
-							options: [ 10, 12, 14 ]
-						},
-						image: {
-							toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
-						}
-					} )
-					.then( editor => {
-						editor.setData( '<p><span style="font-family:Arial;font-size:14px;">Font Arial 14</span></p>' );
-
-						expect( editor.getData() ).to.equal(
-							'<p><span style="font-family:Arial;font-size:14px;">Font Arial 14</span></p>'
-						);
-
-						return editor.destroy();
-					} )
-					.then( () => {
-						element.remove();
-					} );
-			} );
 	} );
 
 	describe( 'between font plugin and other', () => {
