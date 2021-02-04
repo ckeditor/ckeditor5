@@ -71,78 +71,62 @@ export default class ImageCaptionEditing extends Plugin {
 		} );
 
 		// Model -> view converter for the data pipeline.
-		editor.data.downcastDispatcher.on( 'insert:caption', captionModelToView( writer => {
-			return writer.createContainerElement( 'figcaption' );
-		} ) );
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'caption',
+			view: ( modelElement, { writer } ) => {
+				if ( !isImage( modelElement.parent ) ) {
+					return null;
+				}
 
-		// editor.conversion.for( 'dataDowncast' ).elementToElement( {
-		// 	model: 'caption',
-		// 	view: ( modelElement, { writer } ) => {
-		// 		if ( !isImage( modelElement.parent ) ) {
-		// 			return null;
-		// 		}
-
-		// 		return writer.createContainerElement( 'figcaption' );
-		// 	}
-		// } );
+				return writer.createContainerElement( 'figcaption' );
+			}
+		} );
 
 		// Model -> view converter for the editing pipeline.
-		editor.editing.downcastDispatcher.on( 'insert:caption', captionModelToView( writer => {
-			const figcaptionElement = writer.createEditableElement( 'figcaption' );
-			writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'caption',
+			view: ( modelElement, { writer } ) => {
+				if ( !isImage( modelElement.parent ) ) {
+					return null;
+				}
 
-			enablePlaceholder( {
-				view,
-				element: figcaptionElement,
-				text: t( 'Enter image caption' )
-			} );
+				const figcaptionElement = writer.createEditableElement( 'figcaption' );
+				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
 
-			return toWidgetEditable( figcaptionElement, writer );
-		} ) );
+				enablePlaceholder( {
+					view,
+					element: figcaptionElement,
+					text: t( 'Enter image caption' )
+				} );
 
-		// editor.conversion.for( 'editingDowncast' ).elementToElement( {
-		// 	model: 'caption',
-		// 	view: ( modelElement, { writer } ) => {
-		// 		if ( !isImage( modelElement.parent ) ) {
-		// 			return null;
-		// 		}
+				return toWidgetEditable( figcaptionElement, writer );
+			}
+		} );
 
-		// 		const figcaptionElement = writer.createEditableElement( 'figcaption' );
-		// 		writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
-
-		// 		enablePlaceholder( {
-		// 			view,
-		// 			element: figcaptionElement,
-		// 			text: t( 'Enter image caption' )
-		// 		} );
-
-		// 		return toWidgetEditable( figcaptionElement, writer );
-		// 	}
-		// } );
+		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
+		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
 	}
 }
 
-// Creates a converter that converts image caption model element to view element.
+// Creates a mapper callback that reverses the order of `<img>` and `<figcaption>` in the image.
+// Without it, `<figcaption>` would precede the `<img>` in the conversion.
 //
 // @private
-// @param {Function} elementCreator
-// @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
+// @param {module:engine/view/view~View} editingView
 // @returns {Function}
-function captionModelToView( elementCreator ) {
-	return ( evt, data, { consumable, mapper, writer } ) => {
-		const captionElement = data.item;
+function mapModelPositionToView( editingView ) {
+	return ( evt, data ) => {
+		const modelPosition = data.modelPosition;
+		const parent = modelPosition.parent;
 
-		if ( isImage( captionElement.parent ) ) {
-			if ( !consumable.consume( captionElement, 'insert' ) ) {
-				return;
-			}
+		if ( !parent.is( 'element', 'image' ) ) {
+			return;
+		}
 
-			const viewImage = mapper.toViewElement( data.range.start.parent );
-			const viewCaption = elementCreator( writer );
-			const viewPosition = writer.createPositionAt( viewImage, 'end' );
+		const viewElement = data.mapper.toViewElement( parent );
 
-			writer.insert( viewPosition, viewCaption );
-			mapper.bindElements( captionElement, viewCaption );
+		if ( viewElement.childCount && viewElement.getChild( 0 ).is( 'element', 'img' ) ) {
+			data.viewPosition = editingView.createPositionAt( viewElement, modelPosition.offset + 1 );
 		}
 	};
 }

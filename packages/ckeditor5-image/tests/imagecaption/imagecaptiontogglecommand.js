@@ -29,8 +29,14 @@ describe( 'ImageCaptionToggleCommand', () => {
 			]
 		} );
 
-		model.schema.register( 'nonImage' );
-		model.schema.extend( 'nonImage', { allowIn: '$root' } );
+		model = editor.model;
+
+		model.schema.register( 'nonImage', {
+			inheritAllFrom: '$block',
+			isObject: true,
+			allowIn: '$root'
+		} );
+
 		model.schema.extend( 'caption', { allowIn: 'nonImage' } );
 
 		editor.conversion.elementToElement( {
@@ -38,7 +44,17 @@ describe( 'ImageCaptionToggleCommand', () => {
 			view: 'nonImage'
 		} );
 
-		model = editor.model;
+		editor.conversion.elementToElement( {
+			model: 'caption',
+			view: ( modelItem, { writer } ) => {
+				if ( !modelItem.parent.is( 'element', 'nonImage' ) ) {
+					return null;
+				}
+
+				return writer.createContainerElement( 'figcaption' );
+			}
+		} );
+
 		command = editor.commands.get( 'imageCaptionToggle' );
 	} );
 
@@ -80,7 +96,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 		} );
 
 		it( 'should be true when imageInline is selected', () => {
-			setModelData( model, '[<imageInline src="test.png"></imageInline>]' );
+			setModelData( model, '<paragraph>[<imageInline src="test.png"></imageInline>]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -92,7 +108,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 		} );
 
 		it( 'should be false when the selection is in the caption of a non-image', () => {
-			setModelData( model, '<nonImage><caption>[]</caption></nonImage>' );
+			setModelData( model, '<nonImage><caption>z[]xc</caption></nonImage>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -102,7 +118,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 
-			setModelData( model, '<paragraph>f[oo</paragraph><imageInline src="test.png"></imageInline><paragraph>b]ar</paragraph>' );
+			setModelData( model, '<paragraph>f[oo<imageInline src="test.png"></imageInline>b]ar</paragraph>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -142,7 +158,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 		} );
 
 		it( 'should be false when imageInline is selected', () => {
-			setModelData( model, '[<imageInline src="test.png"></imageInline>]' );
+			setModelData( model, '<paragraph>[<imageInline src="test.png"></imageInline>]</paragraph>' );
 
 			expect( command.value ).to.be.false;
 		} );
@@ -183,7 +199,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 			} );
 
 			it( 'should add the caption element to the image and attempt to restore its content from the attribute', () => {
-				setModelData( model, '[<image src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></image>]' );
+				setModelData( model, '[<image caption=\'{"name":"caption","children":[{"data":"foo"}]}\' src="test.png"></image>]' );
 
 				editor.execute( 'imageCaptionToggle' );
 
@@ -198,7 +214,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 				editor.execute( 'imageCaptionToggle' );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<image src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></image>]'
+					'[<image caption="{"name":"caption","children":[{"data":"foo"}]}" src="test.png"></image>]'
 				);
 			} );
 
@@ -208,7 +224,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 				editor.execute( 'imageCaptionToggle' );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<image src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></image>]'
+					'[<image caption="{"name":"caption","children":[{"data":"foo"}]}" src="test.png"></image>]'
 				);
 			} );
 
@@ -218,7 +234,10 @@ describe( 'ImageCaptionToggleCommand', () => {
 				editor.execute( 'imageCaptionToggle' );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<image src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></image>]'
+					'[<image ' +
+						'caption="{"name":"caption","children":[{"data":"foo"},{"attributes":{"bold":true},"data":"bar"}]}"' +
+						' src="test.png">' +
+					'</image>]'
 				);
 			} );
 
@@ -237,25 +256,29 @@ describe( 'ImageCaptionToggleCommand', () => {
 			it( 'should execute the imageTypeToggle command and convert imageInline->image in the model', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				setModelData( model, '[<imageInline src="test.png"></imageInline>]' );
+				setModelData( model, '<paragraph>[<imageInline src="test.png"></imageInline>]</paragraph>' );
 
 				editor.execute( 'imageCaptionToggle' );
 
 				sinon.assert.calledTwice( spy );
-				sinon.assert.calledWithExactly( spy.firstCall, editor, 'imageCaptionToggle' );
-				sinon.assert.calledWithExactly( spy.secondCall, editor, 'imageTypeToggle' );
+				sinon.assert.calledWithExactly( spy.firstCall, 'imageCaptionToggle' );
+				sinon.assert.calledWithExactly( spy.secondCall, 'imageTypeToggle' );
 			} );
 
 			it( 'should add an empty caption element to the image', () => {
-				setModelData( model, '[<imageInline src="test.png"></imageInline>]' );
+				setModelData( model, '<paragraph>[<imageInline src="test.png"></imageInline>]</paragraph>' );
 
 				editor.execute( 'imageCaptionToggle' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption>foo</caption></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption></caption></image>]' );
 			} );
 
 			it( 'should add the caption element to the image and attempt to restore its content from the caption attribute', () => {
-				setModelData( model, '[<imageInline src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></imageInline>]' );
+				setModelData( model,
+					'<paragraph>' +
+						'[<imageInline caption=\'{"name":"caption","children":[{"data":"foo"}]}\' src="test.png"></imageInline>]' +
+					'</paragraph>'
+				);
 
 				editor.execute( 'imageCaptionToggle' );
 
@@ -278,7 +301,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 				editor.execute( 'imageCaptionToggle', { focusCaptionOnShow: true } );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<image src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></image>]'
+					'[<image caption="{"name":"caption","children":[{"data":"foo"}]}" src="test.png"></image>]'
 				);
 			} );
 
@@ -288,7 +311,7 @@ describe( 'ImageCaptionToggleCommand', () => {
 				editor.execute( 'imageCaptionToggle', { focusCaptionOnShow: true } );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<image src="test.png" caption="{name:"caption",children:[{data:"foo"}]}"></image>]'
+					'[<image caption="{"name":"caption","children":[{"data":"foo"}]}" src="test.png"></image>]'
 				);
 			} );
 		} );

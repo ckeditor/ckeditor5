@@ -80,7 +80,9 @@ export default class ImageCaptionToggleCommand extends Command {
 	 * @param {String} [options.focusCaptionOnShow] When true and the caption shows up, the selection will be moved into it straight away.
 	 * @fires execute
 	 */
-	execute( { focusCaptionOnShow } ) {
+	execute( options = {} ) {
+		const { focusCaptionOnShow } = options;
+
 		this.editor.model.change( writer => {
 			if ( this.value ) {
 				this._hideImageCaption( writer );
@@ -119,7 +121,7 @@ export default class ImageCaptionToggleCommand extends Command {
 		if ( selectedImage.hasAttribute( 'caption' ) ) {
 			newCaptionElement = Element.fromJSON( selectedImage.getAttribute( 'caption' ) );
 
-			// The model attribute is no longer needed if the caption was is created.
+			// The model attribute is no longer needed if the caption was created out of it.
 			writer.removeAttribute( 'caption', selectedImage );
 		} else {
 			newCaptionElement = writer.createElement( 'caption' );
