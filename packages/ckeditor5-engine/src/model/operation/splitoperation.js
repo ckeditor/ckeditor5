@@ -28,12 +28,14 @@ export default class SplitOperation extends Operation {
 	 *
 	 * @param {module:engine/model/position~Position} splitPosition Position at which an element should be split.
 	 * @param {Number} howMany Total offset size of elements that are in the split element after `position`.
+	 * @param {module:engine/model/position~Position} insertionPosition Position at which the clone of split element
+	 * (or element from graveyard) will be inserted.
 	 * @param {module:engine/model/position~Position|null} graveyardPosition Position in the graveyard root before the element which
 	 * should be used as a parent of the nodes after `position`. If it is not set, a copy of the the `position` parent will be used.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( splitPosition, howMany, graveyardPosition, baseVersion ) {
+	constructor( splitPosition, howMany, insertionPosition, graveyardPosition, baseVersion ) {
 		super( baseVersion );
 
 		/**
@@ -58,7 +60,7 @@ export default class SplitOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/splitoperation~SplitOperation#insertionPosition
 		 */
-		this.insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+		this.insertionPosition = insertionPosition;
 
 		/**
 		 * Position in the graveyard root before the element which should be used as a parent of the nodes after `position`.
@@ -116,10 +118,7 @@ export default class SplitOperation extends Operation {
 	 * @returns {module:engine/model/operation/splitoperation~SplitOperation} Clone of this operation.
 	 */
 	clone() {
-		const split = new this.constructor( this.splitPosition, this.howMany, this.graveyardPosition, this.baseVersion );
-		split.insertionPosition = this.insertionPosition;
-
-		return split;
+		return new this.constructor( this.splitPosition, this.howMany, this.insertionPosition, this.graveyardPosition, this.baseVersion );
 	}
 
 	/**
@@ -244,10 +243,7 @@ export default class SplitOperation extends Operation {
 		const insertionPosition = Position.fromJSON( json.insertionPosition, document );
 		const graveyardPosition = json.graveyardPosition ? Position.fromJSON( json.graveyardPosition, document ) : null;
 
-		const split = new this( splitPosition, json.howMany, graveyardPosition, json.baseVersion );
-		split.insertionPosition = insertionPosition;
-
-		return split;
+		return new this( splitPosition, json.howMany, insertionPosition, graveyardPosition, json.baseVersion );
 	}
 
 	// @if CK_DEBUG_ENGINE // toString() {

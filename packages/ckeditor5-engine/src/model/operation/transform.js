@@ -86,301 +86,306 @@ function noUpdateTransformation( a ) {
 }
 
 /**
- * Transforms operation `a` by operation `b`.
- *
- * @param {module:engine/model/operation/operation~Operation} a Operation to be transformed.
- * @param {module:engine/model/operation/operation~Operation} b Operation to transform by.
- * @param {module:engine/model/operation/transform~TransformationContext} context Transformation context for this transformation.
- * @returns {Array.<module:engine/model/operation/operation~Operation>} Transformation result.
+ * Operational Transformation main transformation entry point.
  */
-export function transform( a, b, context = {} ) {
-	const transformationFunction = getTransformation( a.constructor, b.constructor );
+export default class OperationTransform {
+	/**
+	 * Transforms operation `a` by operation `b`.
+	 *
+	 * @param {module:engine/model/operation/operation~Operation} a Operation to be transformed.
+	 * @param {module:engine/model/operation/operation~Operation} b Operation to transform by.
+	 * @param {module:engine/model/operation/transform~TransformationContext} context Transformation context for this transformation.
+	 * @returns {Array.<module:engine/model/operation/operation~Operation>} Transformation result.
+	 */
+	static transform( a, b, context = {} ) {
+		const transformationFunction = getTransformation( a.constructor, b.constructor );
 
-	/* eslint-disable no-useless-catch */
-	try {
-		a = a.clone();
+		/* eslint-disable no-useless-catch */
+		try {
+			a = a.clone();
 
-		return transformationFunction( a, b, context );
-	} catch ( e ) {
-		// @if CK_DEBUG // console.warn( 'Error during operation transformation!', e.message );
-		// @if CK_DEBUG // console.warn( 'Transformed operation', a );
-		// @if CK_DEBUG // console.warn( 'Operation transformed by', b );
-		// @if CK_DEBUG // console.warn( 'context.aIsStrong', context.aIsStrong );
-		// @if CK_DEBUG // console.warn( 'context.aWasUndone', context.aWasUndone );
-		// @if CK_DEBUG // console.warn( 'context.bWasUndone', context.bWasUndone );
-		// @if CK_DEBUG // console.warn( 'context.abRelation', context.abRelation );
-		// @if CK_DEBUG // console.warn( 'context.baRelation', context.baRelation );
+			return transformationFunction( a, b, context );
+		} catch ( e ) {
+			// @if CK_DEBUG // console.warn( 'Error during operation transformation!', e.message );
+			// @if CK_DEBUG // console.warn( 'Transformed operation', a );
+			// @if CK_DEBUG // console.warn( 'Operation transformed by', b );
+			// @if CK_DEBUG // console.warn( 'context.aIsStrong', context.aIsStrong );
+			// @if CK_DEBUG // console.warn( 'context.aWasUndone', context.aWasUndone );
+			// @if CK_DEBUG // console.warn( 'context.bWasUndone', context.bWasUndone );
+			// @if CK_DEBUG // console.warn( 'context.abRelation', context.abRelation );
+			// @if CK_DEBUG // console.warn( 'context.baRelation', context.baRelation );
 
-		throw e;
+			throw e;
+		}
+		/* eslint-enable no-useless-catch */
 	}
-	/* eslint-enable no-useless-catch */
-}
 
-/**
- * Performs a transformation of two sets of operations - `operationsA` and `operationsB`. The transformation is two-way -
- * both transformed `operationsA` and transformed `operationsB` are returned.
- *
- * Note, that the first operation in each set should base on the same document state (
- * {@link module:engine/model/document~Document#version document version}).
- *
- * It is assumed that `operationsA` are "more important" during conflict resolution between two operations.
- *
- * New copies of both passed arrays and operations inside them are returned. Passed arguments are not altered.
- *
- * Base versions of the transformed operations sets are updated accordingly. For example, assume that base versions are `4`
- * and there are `3` operations in `operationsA` and `5` operations in `operationsB`. Then:
- *
- * * transformed `operationsA` will start from base version `9` (`4` base version + `5` operations B),
- * * transformed `operationsB` will start from base version `7` (`4` base version + `3` operations A).
- *
- * If no operation was broken into two during transformation, then both sets will end up with an operation that bases on version `11`:
- *
- * * transformed `operationsA` start from `9` and there are `3` of them, so the last will have `baseVersion` equal to `11`,
- * * transformed `operationsB` start from `7` and there are `5` of them, so the last will have `baseVersion` equal to `11`.
- *
- * @param {Array.<module:engine/model/operation/operation~Operation>} operationsA
- * @param {Array.<module:engine/model/operation/operation~Operation>} operationsB
- * @param {Object} options Additional transformation options.
- * @param {module:engine/model/document~Document|null} options.document Document which the operations change.
- * @param {Boolean} [options.useRelations=false] Whether during transformation relations should be used (used during undo for
- * better conflict resolution).
- * @param {Boolean} [options.padWithNoOps=false] Whether additional {@link module:engine/model/operation/nooperation~NoOperation}s
- * should be added to the transformation results to force the same last base version for both transformed sets (in case
- * if some operations got broken into multiple operations during transformation).
- * @returns {Object} Transformation result.
- * @returns {Array.<module:engine/model/operation/operation~Operation>} return.operationsA Transformed `operationsA`.
- * @returns {Array.<module:engine/model/operation/operation~Operation>} return.operationsB Transformed `operationsB`.
- * @returns {Map} return.originalOperations A map that links transformed operations to original operations. The keys are the transformed
- * operations and the values are the original operations from the input (`operationsA` and `operationsB`).
- */
-export function transformSets( operationsA, operationsB, options ) {
-	// Create new arrays so the originally passed arguments are not changed.
-	// No need to clone operations, they are cloned as they are transformed.
-	operationsA = operationsA.slice();
-	operationsB = operationsB.slice();
+	/**
+	 * Performs a transformation of two sets of operations - `operationsA` and `operationsB`. The transformation is two-way -
+	 * both transformed `operationsA` and transformed `operationsB` are returned.
+	 *
+	 * Note, that the first operation in each set should base on the same document state (
+	 * {@link module:engine/model/document~Document#version document version}).
+	 *
+	 * It is assumed that `operationsA` are "more important" during conflict resolution between two operations.
+	 *
+	 * New copies of both passed arrays and operations inside them are returned. Passed arguments are not altered.
+	 *
+	 * Base versions of the transformed operations sets are updated accordingly. For example, assume that base versions are `4`
+	 * and there are `3` operations in `operationsA` and `5` operations in `operationsB`. Then:
+	 *
+	 * * transformed `operationsA` will start from base version `9` (`4` base version + `5` operations B),
+	 * * transformed `operationsB` will start from base version `7` (`4` base version + `3` operations A).
+	 *
+	 * If no operation was broken into two during transformation, then both sets will end up with an operation that bases on version `11`:
+	 *
+	 * * transformed `operationsA` start from `9` and there are `3` of them, so the last will have `baseVersion` equal to `11`,
+	 * * transformed `operationsB` start from `7` and there are `5` of them, so the last will have `baseVersion` equal to `11`.
+	 *
+	 * @param {Array.<module:engine/model/operation/operation~Operation>} operationsA
+	 * @param {Array.<module:engine/model/operation/operation~Operation>} operationsB
+	 * @param {Object} options Additional transformation options.
+	 * @param {module:engine/model/document~Document|null} options.document Document which the operations change.
+	 * @param {Boolean} [options.useRelations=false] Whether during transformation relations should be used (used during undo for
+	 * better conflict resolution).
+	 * @param {Boolean} [options.padWithNoOps=false] Whether additional {@link module:engine/model/operation/nooperation~NoOperation}s
+	 * should be added to the transformation results to force the same last base version for both transformed sets (in case
+	 * if some operations got broken into multiple operations during transformation).
+	 * @returns {Object} Transformation result.
+	 * @returns {Array.<module:engine/model/operation/operation~Operation>} return.operationsA Transformed `operationsA`.
+	 * @returns {Array.<module:engine/model/operation/operation~Operation>} return.operationsB Transformed `operationsB`.
+	 * @returns {Map} return.originalOperations A map that links transformed operations to original operations. The keys are the transformed
+	 * operations and the values are the original operations from the input (`operationsA` and `operationsB`).
+	 */
+	static transformSets( operationsA, operationsB, options ) {
+		// Create new arrays so the originally passed arguments are not changed.
+		// No need to clone operations, they are cloned as they are transformed.
+		operationsA = operationsA.slice();
+		operationsB = operationsB.slice();
 
-	const contextFactory = new ContextFactory( options.document, options.useRelations, options.forceWeakRemove );
-	contextFactory.setOriginalOperations( operationsA );
-	contextFactory.setOriginalOperations( operationsB );
+		const contextFactory = new ContextFactory( options.document, options.useRelations, options.forceWeakRemove );
+		contextFactory.setOriginalOperations( operationsA );
+		contextFactory.setOriginalOperations( operationsB );
 
-	const originalOperations = contextFactory.originalOperations;
+		const originalOperations = contextFactory.originalOperations;
 
-	// If one of sets is empty there is simply nothing to transform, so return sets as they are.
-	if ( operationsA.length == 0 || operationsB.length == 0 ) {
+		// If one of sets is empty there is simply nothing to transform, so return sets as they are.
+		if ( operationsA.length == 0 || operationsB.length == 0 ) {
+			return { operationsA, operationsB, originalOperations };
+		}
+		//
+		// Following is a description of transformation process:
+		//
+		// There are `operationsA` and `operationsB` to be transformed, both by both.
+		//
+		// So, suppose we have sets of two operations each: `operationsA` = `[ a1, a2 ]`, `operationsB` = `[ b1, b2 ]`.
+		//
+		// Remember, that we can only transform operations that base on the same context. We assert that `a1` and `b1` base on
+		// the same context and we transform them. Then, we get `a1'` and `b1'`. `a2` bases on a context with `a1` -- `a2`
+		// is an operation that followed `a1`. Similarly, `b2` bases on a context with `b1`.
+		//
+		// However, since `a1'` is a result of transformation by `b1`, `a1'` now also has a context with `b1`. This means that
+		// we can safely transform `a1'` by `b2`. As we finish transforming `a1`, we also transformed all `operationsB`.
+		// All `operationsB` also have context including `a1`. Now, we can properly transform `a2` by those operations.
+		//
+		// The transformation process can be visualized on a transformation diagram ("diamond diagram"):
+		//
+		//          [the initial state]
+		//         [common for a1 and b1]
+		//
+		//                   *
+		//                  / \
+		//                 /   \
+		//               b1     a1
+		//               /       \
+		//              /         \
+		//             *           *
+		//            / \         / \
+		//           /   \       /   \
+		//         b2    a1'   b1'    a2
+		//         /       \   /       \
+		//        /         \ /         \
+		//       *           *           *
+		//        \         / \         /
+		//         \       /   \       /
+		//        a1''   b2'   a2'   b1''
+		//           \   /       \   /
+		//            \ /         \ /
+		//             *           *
+		//              \         /
+		//               \       /
+		//              a2''   b2''
+		//                 \   /
+		//                  \ /
+		//                   *
+		//
+		//           [the final state]
+		//
+		// The final state can be reached from the initial state by applying `a1`, `a2`, `b1''` and `b2''`, as well as by
+		// applying `b1`, `b2`, `a1''`, `a2''`. Note how the operations get to a proper common state before each pair is
+		// transformed.
+		//
+		// Another thing to consider is that an operation during transformation can be broken into multiple operations.
+		// Suppose that `a1` * `b1` = `[ a11', a12' ]` (instead of `a1'` that we considered previously).
+		//
+		// In that case, we leave `a12'` for later and we continue transforming `a11'` until it is transformed by all `operationsB`
+		// (in our case it is just `b2`). At this point, `b1` is transformed by "whole" `a1`, while `b2` is only transformed
+		// by `a11'`. Similarly, `a12'` is only transformed by `b1`. This leads to a conclusion that we need to start transforming `a12'`
+		// from the moment just after it was broken. So, `a12'` is transformed by `b2`. Now, "the whole" `a1` is transformed
+		// by `operationsB`, while all `operationsB` are transformed by "the whole" `a1`. This means that we can continue with
+		// following `operationsA` (in our case it is just `a2`).
+		//
+		// Of course, also `operationsB` can be broken. However, since we focus on transforming operation `a` to the end,
+		// the only thing to do is to store both pieces of operation `b`, so that the next transformed operation `a` will
+		// be transformed by both of them.
+		//
+		//                       *
+		//                      / \
+		//                     /   \
+		//                    /     \
+		//                  b1       a1
+		//                  /         \
+		//                 /           \
+		//                /             \
+		//               *               *
+		//              / \             / \
+		//             /  a11'         /   \
+		//            /     \         /     \
+		//          b2       *      b1'      a2
+		//          /       / \     /         \
+		//         /       /  a12' /           \
+		//        /       /     \ /             \
+		//       *       b2'     *               *
+		//        \     /       / \             /
+		//       a11'' /     b21'' \           /
+		//          \ /       /     \         /
+		//           *       *      a2'     b1''
+		//            \     / \       \     /
+		//          a12'' b22''\       \   /
+		//              \ /     \       \ /
+		//               *      a2''     *
+		//                \       \     /
+		//                 \       \  b21'''
+		//                  \       \ /
+		//                a2'''      *
+		//                    \     /
+		//                     \  b22'''
+		//                      \ /
+		//                       *
+		//
+		// Note, how `a1` is broken and transformed into `a11'` and `a12'`, while `b2'` got broken and transformed into `b21''` and `b22''`.
+		//
+		// Having all that on mind, here is an outline for the transformation process algorithm:
+		//
+		// 1. We have `operationsA` and `operationsB` array, which we dynamically update as the transformation process goes.
+		//
+		// 2. We take next (or first) operation from `operationsA` and check from which operation `b` we need to start transforming it.
+		// All original `operationsA` are set to be transformed starting from the first operation `b`.
+		//
+		// 3. We take operations from `operationsB`, one by one, starting from the correct one, and transform operation `a`
+		// by operation `b` (and vice versa). We update `operationsA` and `operationsB` by replacing the original operations
+		// with the transformation results.
+		//
+		// 4. If operation is broken into multiple operations, we save all the new operations in the place of the
+		// original operation.
+		//
+		// 5. Additionally, if operation `a` was broken, for the "new" operation, we remember from which operation `b` it should
+		// be transformed by.
+		//
+		// 6. We continue transforming "current" operation `a` until it is transformed by all `operationsB`. Then, go to 2.
+		// unless the last operation `a` was transformed.
+		//
+		// The actual implementation of the above algorithm is slightly different, as only one loop (while) is used.
+		// The difference is that we have "current" `a` operation to transform and we store the index of the next `b` operation
+		// to transform by. Each loop operates on two indexes then: index pointing to currently processed `a` operation and
+		// index pointing to next `b` operation. Each loop is just one `a * b` + `b * a` transformation. After each loop
+		// operation `b` index is updated. If all `b` operations were visited for the current `a` operation, we change
+		// current `a` operation index to the next one.
+		//
+
+		// For each operation `a`, keeps information what is the index in `operationsB` from which the transformation should start.
+		const nextTransformIndex = new WeakMap();
+
+		// For all the original `operationsA`, set that they should be transformed starting from the first of `operationsB`.
+		for ( const op of operationsA ) {
+			nextTransformIndex.set( op, 0 );
+		}
+
+		// Additional data that is used for some postprocessing after the main transformation process is done.
+		const data = {
+			nextBaseVersionA: operationsA[ operationsA.length - 1 ].baseVersion + 1,
+			nextBaseVersionB: operationsB[ operationsB.length - 1 ].baseVersion + 1,
+			originalOperationsACount: operationsA.length,
+			originalOperationsBCount: operationsB.length
+		};
+
+		// Index of currently transformed operation `a`.
+		let i = 0;
+
+		// While not all `operationsA` are transformed...
+		while ( i < operationsA.length ) {
+			// Get "current" operation `a`.
+			const opA = operationsA[ i ];
+
+			// For the "current" operation `a`, get the index of the next operation `b` to transform by.
+			const indexB = nextTransformIndex.get( opA );
+
+			// If operation `a` was already transformed by every operation `b`, change "current" operation `a` to the next one.
+			if ( indexB == operationsB.length ) {
+				i++;
+				continue;
+			}
+
+			const opB = operationsB[ indexB ];
+
+			// Transform `a` by `b` and `b` by `a`.
+			const newOpsA = OperationTransform.transform( opA, opB, contextFactory.getContext( opA, opB, true ) );
+			const newOpsB = OperationTransform.transform( opB, opA, contextFactory.getContext( opB, opA, false ) );
+			// As a result we get one or more `newOpsA` and one or more `newOpsB` operations.
+
+			// Update contextual information about operations.
+			contextFactory.updateRelation( opA, opB );
+
+			contextFactory.setOriginalOperations( newOpsA, opA );
+			contextFactory.setOriginalOperations( newOpsB, opB );
+
+			// For new `a` operations, update their index of the next operation `b` to transform them by.
+			//
+			// This is needed even if there was only one result (`a` was not broken) because that information is used
+			// at the beginning of this loop every time.
+			for ( const newOpA of newOpsA ) {
+				// Acknowledge, that operation `b` also might be broken into multiple operations.
+				//
+				// This is why we raise `indexB` not just by 1. If `newOpsB` are multiple operations, they will be
+				// spliced in the place of `opB`. So we need to change `transformBy` accordingly, so that an operation won't
+				// be transformed by the same operation (part of it) again.
+				nextTransformIndex.set( newOpA, indexB + newOpsB.length );
+			}
+
+			// Update `operationsA` and `operationsB` with the transformed versions.
+			operationsA.splice( i, 1, ...newOpsA );
+			operationsB.splice( indexB, 1, ...newOpsB );
+		}
+
+		if ( options.padWithNoOps ) {
+			// If no-operations padding is enabled, count how many extra `a` and `b` operations were generated.
+			const brokenOperationsACount = operationsA.length - data.originalOperationsACount;
+			const brokenOperationsBCount = operationsB.length - data.originalOperationsBCount;
+
+			// Then, if that number is not the same, pad `operationsA` or `operationsB` with correct number of no-ops so
+			// that the base versions are equalled.
+			//
+			// Note that only one array will be updated, as only one of those subtractions can be greater than zero.
+			padWithNoOps( operationsA, brokenOperationsBCount - brokenOperationsACount );
+			padWithNoOps( operationsB, brokenOperationsACount - brokenOperationsBCount );
+		}
+
+		// Finally, update base versions of transformed operations.
+		updateBaseVersions( operationsA, data.nextBaseVersionB );
+		updateBaseVersions( operationsB, data.nextBaseVersionA );
+
 		return { operationsA, operationsB, originalOperations };
 	}
-	//
-	// Following is a description of transformation process:
-	//
-	// There are `operationsA` and `operationsB` to be transformed, both by both.
-	//
-	// So, suppose we have sets of two operations each: `operationsA` = `[ a1, a2 ]`, `operationsB` = `[ b1, b2 ]`.
-	//
-	// Remember, that we can only transform operations that base on the same context. We assert that `a1` and `b1` base on
-	// the same context and we transform them. Then, we get `a1'` and `b1'`. `a2` bases on a context with `a1` -- `a2`
-	// is an operation that followed `a1`. Similarly, `b2` bases on a context with `b1`.
-	//
-	// However, since `a1'` is a result of transformation by `b1`, `a1'` now also has a context with `b1`. This means that
-	// we can safely transform `a1'` by `b2`. As we finish transforming `a1`, we also transformed all `operationsB`.
-	// All `operationsB` also have context including `a1`. Now, we can properly transform `a2` by those operations.
-	//
-	// The transformation process can be visualized on a transformation diagram ("diamond diagram"):
-	//
-	//          [the initial state]
-	//         [common for a1 and b1]
-	//
-	//                   *
-	//                  / \
-	//                 /   \
-	//               b1     a1
-	//               /       \
-	//              /         \
-	//             *           *
-	//            / \         / \
-	//           /   \       /   \
-	//         b2    a1'   b1'    a2
-	//         /       \   /       \
-	//        /         \ /         \
-	//       *           *           *
-	//        \         / \         /
-	//         \       /   \       /
-	//        a1''   b2'   a2'   b1''
-	//           \   /       \   /
-	//            \ /         \ /
-	//             *           *
-	//              \         /
-	//               \       /
-	//              a2''   b2''
-	//                 \   /
-	//                  \ /
-	//                   *
-	//
-	//           [the final state]
-	//
-	// The final state can be reached from the initial state by applying `a1`, `a2`, `b1''` and `b2''`, as well as by
-	// applying `b1`, `b2`, `a1''`, `a2''`. Note how the operations get to a proper common state before each pair is
-	// transformed.
-	//
-	// Another thing to consider is that an operation during transformation can be broken into multiple operations.
-	// Suppose that `a1` * `b1` = `[ a11', a12' ]` (instead of `a1'` that we considered previously).
-	//
-	// In that case, we leave `a12'` for later and we continue transforming `a11'` until it is transformed by all `operationsB`
-	// (in our case it is just `b2`). At this point, `b1` is transformed by "whole" `a1`, while `b2` is only transformed
-	// by `a11'`. Similarly, `a12'` is only transformed by `b1`. This leads to a conclusion that we need to start transforming `a12'`
-	// from the moment just after it was broken. So, `a12'` is transformed by `b2`. Now, "the whole" `a1` is transformed
-	// by `operationsB`, while all `operationsB` are transformed by "the whole" `a1`. This means that we can continue with
-	// following `operationsA` (in our case it is just `a2`).
-	//
-	// Of course, also `operationsB` can be broken. However, since we focus on transforming operation `a` to the end,
-	// the only thing to do is to store both pieces of operation `b`, so that the next transformed operation `a` will
-	// be transformed by both of them.
-	//
-	//                       *
-	//                      / \
-	//                     /   \
-	//                    /     \
-	//                  b1       a1
-	//                  /         \
-	//                 /           \
-	//                /             \
-	//               *               *
-	//              / \             / \
-	//             /  a11'         /   \
-	//            /     \         /     \
-	//          b2       *      b1'      a2
-	//          /       / \     /         \
-	//         /       /  a12' /           \
-	//        /       /     \ /             \
-	//       *       b2'     *               *
-	//        \     /       / \             /
-	//       a11'' /     b21'' \           /
-	//          \ /       /     \         /
-	//           *       *      a2'     b1''
-	//            \     / \       \     /
-	//          a12'' b22''\       \   /
-	//              \ /     \       \ /
-	//               *      a2''     *
-	//                \       \     /
-	//                 \       \  b21'''
-	//                  \       \ /
-	//                a2'''      *
-	//                    \     /
-	//                     \  b22'''
-	//                      \ /
-	//                       *
-	//
-	// Note, how `a1` is broken and transformed into `a11'` and `a12'`, while `b2'` got broken and transformed into `b21''` and `b22''`.
-	//
-	// Having all that on mind, here is an outline for the transformation process algorithm:
-	//
-	// 1. We have `operationsA` and `operationsB` array, which we dynamically update as the transformation process goes.
-	//
-	// 2. We take next (or first) operation from `operationsA` and check from which operation `b` we need to start transforming it.
-	// All original `operationsA` are set to be transformed starting from the first operation `b`.
-	//
-	// 3. We take operations from `operationsB`, one by one, starting from the correct one, and transform operation `a`
-	// by operation `b` (and vice versa). We update `operationsA` and `operationsB` by replacing the original operations
-	// with the transformation results.
-	//
-	// 4. If operation is broken into multiple operations, we save all the new operations in the place of the
-	// original operation.
-	//
-	// 5. Additionally, if operation `a` was broken, for the "new" operation, we remember from which operation `b` it should
-	// be transformed by.
-	//
-	// 6. We continue transforming "current" operation `a` until it is transformed by all `operationsB`. Then, go to 2.
-	// unless the last operation `a` was transformed.
-	//
-	// The actual implementation of the above algorithm is slightly different, as only one loop (while) is used.
-	// The difference is that we have "current" `a` operation to transform and we store the index of the next `b` operation
-	// to transform by. Each loop operates on two indexes then: index pointing to currently processed `a` operation and
-	// index pointing to next `b` operation. Each loop is just one `a * b` + `b * a` transformation. After each loop
-	// operation `b` index is updated. If all `b` operations were visited for the current `a` operation, we change
-	// current `a` operation index to the next one.
-	//
-
-	// For each operation `a`, keeps information what is the index in `operationsB` from which the transformation should start.
-	const nextTransformIndex = new WeakMap();
-
-	// For all the original `operationsA`, set that they should be transformed starting from the first of `operationsB`.
-	for ( const op of operationsA ) {
-		nextTransformIndex.set( op, 0 );
-	}
-
-	// Additional data that is used for some postprocessing after the main transformation process is done.
-	const data = {
-		nextBaseVersionA: operationsA[ operationsA.length - 1 ].baseVersion + 1,
-		nextBaseVersionB: operationsB[ operationsB.length - 1 ].baseVersion + 1,
-		originalOperationsACount: operationsA.length,
-		originalOperationsBCount: operationsB.length
-	};
-
-	// Index of currently transformed operation `a`.
-	let i = 0;
-
-	// While not all `operationsA` are transformed...
-	while ( i < operationsA.length ) {
-		// Get "current" operation `a`.
-		const opA = operationsA[ i ];
-
-		// For the "current" operation `a`, get the index of the next operation `b` to transform by.
-		const indexB = nextTransformIndex.get( opA );
-
-		// If operation `a` was already transformed by every operation `b`, change "current" operation `a` to the next one.
-		if ( indexB == operationsB.length ) {
-			i++;
-			continue;
-		}
-
-		const opB = operationsB[ indexB ];
-
-		// Transform `a` by `b` and `b` by `a`.
-		const newOpsA = transform( opA, opB, contextFactory.getContext( opA, opB, true ) );
-		const newOpsB = transform( opB, opA, contextFactory.getContext( opB, opA, false ) );
-		// As a result we get one or more `newOpsA` and one or more `newOpsB` operations.
-
-		// Update contextual information about operations.
-		contextFactory.updateRelation( opA, opB );
-
-		contextFactory.setOriginalOperations( newOpsA, opA );
-		contextFactory.setOriginalOperations( newOpsB, opB );
-
-		// For new `a` operations, update their index of the next operation `b` to transform them by.
-		//
-		// This is needed even if there was only one result (`a` was not broken) because that information is used
-		// at the beginning of this loop every time.
-		for ( const newOpA of newOpsA ) {
-			// Acknowledge, that operation `b` also might be broken into multiple operations.
-			//
-			// This is why we raise `indexB` not just by 1. If `newOpsB` are multiple operations, they will be
-			// spliced in the place of `opB`. So we need to change `transformBy` accordingly, so that an operation won't
-			// be transformed by the same operation (part of it) again.
-			nextTransformIndex.set( newOpA, indexB + newOpsB.length );
-		}
-
-		// Update `operationsA` and `operationsB` with the transformed versions.
-		operationsA.splice( i, 1, ...newOpsA );
-		operationsB.splice( indexB, 1, ...newOpsB );
-	}
-
-	if ( options.padWithNoOps ) {
-		// If no-operations padding is enabled, count how many extra `a` and `b` operations were generated.
-		const brokenOperationsACount = operationsA.length - data.originalOperationsACount;
-		const brokenOperationsBCount = operationsB.length - data.originalOperationsBCount;
-
-		// Then, if that number is not the same, pad `operationsA` or `operationsB` with correct number of no-ops so
-		// that the base versions are equalled.
-		//
-		// Note that only one array will be updated, as only one of those subtractions can be greater than zero.
-		padWithNoOps( operationsA, brokenOperationsBCount - brokenOperationsACount );
-		padWithNoOps( operationsB, brokenOperationsACount - brokenOperationsBCount );
-	}
-
-	// Finally, update base versions of transformed operations.
-	updateBaseVersions( operationsA, data.nextBaseVersionB );
-	updateBaseVersions( operationsB, data.nextBaseVersionA );
-
-	return { operationsA, operationsB, originalOperations };
 }
 
 // Gathers additional data about operations processed during transformation. Can be used to obtain contextual information
@@ -2046,8 +2051,7 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 		const splitPosition = new Position( b.graveyardPosition.root, splitPath );
 		const insertionPosition = SplitOperation.getInsertionPosition( new Position( b.graveyardPosition.root, splitPath ) );
 
-		const additionalSplit = new SplitOperation( splitPosition, 0, null, 0 );
-		additionalSplit.insertionPosition = insertionPosition;
+		const additionalSplit = new SplitOperation( splitPosition, 0, insertionPosition, null, 0 );
 
 		a.splitPosition = a.splitPosition._getTransformedByMergeOperation( b );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
