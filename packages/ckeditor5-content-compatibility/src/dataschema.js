@@ -52,18 +52,19 @@ export default class DataSchema {
 
 		const matchElement = getElementNameMatchingRegExp( config.name );
 
-		for ( const elementName in dtd ) {
-			if ( !matchElement.test( elementName ) ) {
+		for ( const viewName in dtd ) {
+			if ( !matchElement.test( viewName ) ) {
 				continue;
 			}
 
-			this._defineSchema( elementName );
-			this._defineConverters( elementName );
-			this._getOrCreateMatcher( elementName ).add( config );
+			this._defineModel( viewName );
+
+			const matcher = this._getMatcher( viewName );
+			matcher.add( config );
 		}
 	}
 
-	_getOrCreateMatcher( elementName ) {
+	_getMatcher( elementName ) {
 		if ( !this.allowedContent[ elementName ] ) {
 			this.allowedContent[ elementName ] = new Matcher();
 		}
@@ -71,21 +72,26 @@ export default class DataSchema {
 		return this.allowedContent[ elementName ];
 	}
 
-	_defineSchema( viewName ) {
+	_defineModel( viewName ) {
 		const schema = this.editor.model.schema;
 		const modelName = encodeView( viewName );
 
+		if ( schema.isRegistered( modelName ) ) {
+			return;
+		}
+
 		schema.register( modelName, dtd[ viewName ] );
+
+		this._defineConverters( viewName, modelName );
 	}
 
-	_defineConverters( viewName ) {
+	_defineConverters( viewName, modelName ) {
 		const conversion = this.editor.conversion;
-		const modelName = encodeView( viewName );
 
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
 			model: ( viewElement, conversionApi ) => {
-				const match = this._getOrCreateMatcher( viewName ).match( viewElement );
+				const match = this._getMatcher( viewName ).match( viewElement );
 				const attributeMatch = match.match.attributes || [];
 
 				const originalAttributes = attributeMatch.map( attributeName => {
