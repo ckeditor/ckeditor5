@@ -125,6 +125,20 @@ export default class ImageStyleUI extends Plugin {
 			addToolbarToDropdown( dropdownView, buttonComponents );
 
 			dropdownView.buttonView
+				.bind( 'icon' )
+				.toMany(
+					buttonComponents,
+					'isOn',
+					( ...areOn ) => {
+						const index = areOn.findIndex( isOn => isOn );
+						if ( index < 0 ) {
+							return dropdownConfig.icon;
+						}
+						return buttonComponents[ index ].icon;
+					}
+				);
+
+			dropdownView.buttonView
 				.bind( 'isSelected' )
 				.toMany(
 					buttonComponents,

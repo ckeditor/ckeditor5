@@ -61,10 +61,7 @@ ClassicEditor
 		image: {
 			styles: {
 				arrangements: [
-					{
-						name: 'blockCenter',
-						title: 'dupadupadupa'
-					},
+					'blockCenter',
 					'blockSide',
 					'inlineLeft',
 					'inlineRight',
@@ -74,15 +71,8 @@ ClassicEditor
 					'blockRight'
 				],
 				groups: [
-					{
-						name: 'inParagraph',
-						title: 'dupadupadupa1'
-					},
-					'betweenParagraphs',
-					{
-						name: 'grupaMagdy',
-						title: 'grupa Magdy'
-					}
+					'inParagraph',
+					'betweenParagraphs'
 				]
 			},
 			toolbar: [
