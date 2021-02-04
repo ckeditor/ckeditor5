@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global console */
+
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
@@ -369,6 +371,7 @@ describe( 'image widget utils', () => {
 
 		it( 'should use block image type when image.insert.type="inline" option is set ' +
 			'but ImageInlineEditing plugin is not enabled', async () => {
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, Paragraph ],
 				image: { insert: { type: 'inline' } }
@@ -378,13 +381,17 @@ describe( 'image widget utils', () => {
 
 			insertImage( newEditor );
 
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'image-inline-plugin-required' );
 			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
 
 			await newEditor.destroy();
+			console.warn.restore();
 		} );
 
 		it( 'should use inline image type when image.insert.type="block" option is set ' +
 			'but ImageBlockEditing plugin is not enabled', async () => {
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'block' } }
@@ -394,9 +401,12 @@ describe( 'image widget utils', () => {
 
 			insertImage( newEditor );
 
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'image-block-plugin-required' );
 			expect( getModelData( newEditor.model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
 			await newEditor.destroy();
+			console.warn.restore();
 		} );
 	} );
 
