@@ -493,6 +493,17 @@ The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+## Content compatibility
+
+The {@link module:font/font~Font} plugin provides basic support for deprecated `<font>` tag styling.
+
+<info-box>
+	Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in modern format, i.e. one-way transformation.
+</info-box>
+
+More details on the `<font>` can be found in the [documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/font).
+
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font.
