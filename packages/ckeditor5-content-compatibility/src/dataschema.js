@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,88 +8,96 @@
  */
 
 import { capitalize, escapeRegExp } from 'lodash-es';
+import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 
 const DATA_SCHEMA_PREFIX = 'ghs';
+const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
+
+// "h1", "h2", "h3", "h4", "h5", "h6", "legend", "pre", "rp", "rt", "summary", "p"
+// legend, rp, rt, summary
+
+// Phrasing elements.
+const P = encodeView( [ 'a', 'em', 'strong', 'small', 'abbr', 'dfn', 'i', 'b', 's', 'u', 'code',
+	'var', 'samp', 'kbd', 'sup', 'sub', 'q', 'cite', 'span', 'bdo', 'bdi', 'br',
+	'wbr', 'ins', 'del', 'img', 'embed', 'object', 'iframe', 'map', 'area', 'script',
+	'noscript', 'ruby', 'video', 'audio', 'input', 'textarea', 'select', 'button',
+	'label', 'output', 'keygen', 'progress', 'command', 'canvas', 'time', 'meter', 'detalist' ] );
+
+// Flow elements.
+const F = encodeView( [ 'a', 'p', 'hr', 'pre', 'ul', 'ol', 'dl', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+	'hgroup', 'address', 'blockquote', 'ins', 'del', 'object', 'map', 'noscript', 'section',
+	'nav', 'article', 'aside', 'header', 'footer', 'video', 'audio', 'figure', 'table',
+	'form', 'fieldset', 'menu', 'canvas', 'details' ] );
 
 const dtd = {
-	'div': {
-		inheritAllFrom: '$block'
-	}
+	section: { inheritAllFrom: '$block', allowContentOf: P, allowIn: F, allowAttributes: [ DATA_SCHEMA_ATTRIBUTE_KEY ] },
+	article: { inheritAllFrom: '$block', allowContentOf: P, allowIn: F, allowAttributes: [ DATA_SCHEMA_ATTRIBUTE_KEY ] }
 };
+
+function remove( source, toRemove ) {
+	return source.filter( item => !toRemove.includes( item ) );
+}
 
 export default class DataSchema {
 	constructor( editor ) {
 		this.editor = editor;
-		this.attributeFilter = new AttributeFilter();
+
+		this.allowedContent = {};
 	}
 
-	allowElement( { name: viewName, attributes = [] } ) {
-		this._defineSchema( viewName );
-		this._defineConverters( viewName );
-
-		if ( !Array.isArray( attributes ) ) {
-			attributes = [ attributes ];
+	allow( config ) {
+		if ( !config.name ) {
+			return;
 		}
 
-		for ( const attribute of attributes ) {
-			this.allowAttribute( {
-				name: attribute,
-				elements: viewName
-			} );
-		}
-	}
+		const matchElement = getElementNameMatchingRegExp( config.name );
 
-	allowAttribute( { name: attributeName, elements = [] } ) {
-		if ( !Array.isArray( elements ) ) {
-			elements = [ elements ];
-		}
-
-		elements.forEach( element => this.attributeFilter.allow( element, attributeName ) );
-	}
-
-	disallowAttribute( { name: attributeName, elements = [] } ) {
-		if ( !Array.isArray( elements ) ) {
-			elements = [ elements ];
-		}
-
-		elements.forEach( element => this.attributeFilter.disallow( element, attributeName ) );
-	}
-
-	* _filterAttributes( elementName, attributes ) {
-		for ( const attribute of attributes ) {
-			const attributeName = attribute[ 0 ];
-
-			if ( this.attributeFilter.isAllowed( elementName, attributeName ) ) {
-				yield attribute;
+		for ( const elementName in dtd ) {
+			if ( !matchElement.test( elementName ) ) {
+				continue;
 			}
+
+			this._defineSchema( elementName );
+			this._defineConverters( elementName );
+			this._getOrCreateMatcher( elementName ).add( config );
 		}
+	}
+
+	_getOrCreateMatcher( elementName ) {
+		if ( !this.allowedContent[ elementName ] ) {
+			this.allowedContent[ elementName ] = new Matcher();
+		}
+
+		return this.allowedContent[ elementName ];
 	}
 
 	_defineSchema( viewName ) {
 		const schema = this.editor.model.schema;
+		const modelName = encodeView( viewName );
 
-		schema.register( encodeView( viewName ), dtd[ viewName ] );
+		schema.register( modelName, dtd[ viewName ] );
 	}
 
 	_defineConverters( viewName ) {
 		const conversion = this.editor.conversion;
-		const filterAttributes = this._filterAttributes.bind( this );
 		const modelName = encodeView( viewName );
 
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
-			model: ( viewElement, { writer: modelWriter } ) => {
-				const attributes = filterAttributes( viewName, viewElement.getAttributes() );
+			model: ( viewElement, conversionApi ) => {
+				const match = this._getOrCreateMatcher( viewName ).match( viewElement );
+				const attributeMatch = match.match.attributes || [];
 
-				const encodedAttributes = [];
-				for ( const attribute of attributes ) {
-					encodedAttributes.push( [
-						encodeAttributeKey( attribute[ 0 ] ),
-						attribute[ 1 ]
-					] );
+				const originalAttributes = attributeMatch.map( attributeName => {
+					return [ attributeName, viewElement.getAttribute( attributeName ) ];
+				} );
+
+				let attributesToAdd;
+				if ( originalAttributes.length ) {
+					attributesToAdd = [ [ DATA_SCHEMA_ATTRIBUTE_KEY, originalAttributes ] ];
 				}
 
-				return modelWriter.createElement( modelName, encodedAttributes );
+				return conversionApi.writer.createElement( modelName, attributesToAdd );
 			}
 		} );
 
@@ -99,7 +107,7 @@ export default class DataSchema {
 		} );
 
 		conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }`, ( evt, data, conversionApi ) => {
 				if ( data.item.name != modelName ) {
 					return;
 				}
@@ -110,88 +118,31 @@ export default class DataSchema {
 
 				const viewWriter = conversionApi.writer;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
-				const attributeKey = decodeAttributeKey( data.attributeKey );
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setAttribute( attributeKey, data.attributeNewValue, viewElement );
-				} else {
-					viewWriter.removeAttribute( attributeKey, viewElement );
+					data.attributeNewValue.forEach( ( [ key, value ] ) => {
+						viewWriter.setAttribute( key, value, viewElement );
+					} );
 				}
+
+				viewWriter.removeAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewElement );
 			} );
 		} );
 	}
 }
 
-class AttributeFilter {
-	constructor() {
-		this._allowedRules = {};
-		this._disallowedRules = {};
-	}
-
-	allow( elementRule, attributeRule ) {
-		this._register( this._allowedRules, elementRule, attributeRule );
-	}
-
-	disallow( elementRule, attributeRule ) {
-		this._register( this._disallowedRules, elementRule, attributeRule );
-	}
-
-	isAllowed( elementName, attributeName ) {
-		const isDisallowed = this._match( this._disallowedRules, elementName, attributeName );
-
-		if ( isDisallowed ) {
-			return false;
-		}
-
-		return this._match( this._allowedRules, elementName, attributeName );
-	}
-
-	_register( rules, elementRule, attributeRule ) {
-		if ( !rules[ elementRule ] ) {
-			rules[ elementRule ] = [];
-		}
-
-		if ( typeof attributeRule === 'string' ) {
-			attributeRule = createWildcardMatcher( attributeRule );
-		}
-
-		rules[ elementRule ].push( attributeRule );
-	}
-
-	_match( rules, elementName, attributeName ) {
-		for ( const rule of this._getMatchingRules( rules, elementName ) ) {
-			if ( rule( attributeName ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	* _getMatchingRules( rules, elementName ) {
-		for ( const ruleName in rules ) {
-			const matcher = createWildcardMatcher( ruleName );
-
-			if ( matcher( elementName ) ) {
-				yield* rules[ ruleName ];
-			}
-		}
-	}
-}
-
-function createWildcardMatcher( rule ) {
-	const matcher = new RegExp( '^' + rule.split( '*' ).map( escapeRegExp ).join( '.*' ) + '$' );
-	return value => matcher.test( value );
-}
-
 function encodeView( name ) {
+	if ( Array.isArray( name ) ) {
+		return name.map( encodeView );
+	}
+
 	return DATA_SCHEMA_PREFIX + capitalize( name );
 }
 
-function encodeAttributeKey( name ) {
-	return DATA_SCHEMA_PREFIX + '-' + name;
-}
+function getElementNameMatchingRegExp( value ) {
+	if ( value instanceof RegExp ) {
+		return value;
+	}
 
-function decodeAttributeKey( name ) {
-	return name.replace( DATA_SCHEMA_PREFIX + '-', '' );
+	return new RegExp( escapeRegExp( value ) );
 }
