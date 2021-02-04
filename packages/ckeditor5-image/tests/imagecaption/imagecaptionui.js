@@ -67,14 +67,20 @@ describe( 'ImageCaptionUI', () => {
 		it( 'should have #isEnabled and #isOn bound to the imageCaptionToggle command', () => {
 			const command = editor.commands.get( 'imageCaptionToggle' );
 
+			command.isEnabled = command.value = false;
+
 			expect( buttonView.isOn ).to.be.false;
+			expect( buttonView.isEnabled ).to.be.false;
+
+			command.isEnabled = command.value = true;
+
+			expect( buttonView.isOn ).to.be.true;
 			expect( buttonView.isEnabled ).to.be.true;
 
-			command.value = true;
-			expect( buttonView.isOn ).to.be.true;
+			command.value = false;
 
-			command.isEnabled = false;
-			expect( buttonView.isEnabled ).to.be.false;
+			expect( buttonView.isOn ).to.be.false;
+			expect( buttonView.isEnabled ).to.be.true;
 		} );
 
 		it( 'should have #label bound to the imageCaptionToggle command', () => {

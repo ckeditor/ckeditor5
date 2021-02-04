@@ -81,7 +81,7 @@ describe( 'ImageCaptionEditing', () => {
 				plugins: [ ImageInlineEditing, ImageCaptionEditing ]
 			} );
 
-			expect( model.schema.checkAttribute( [ '$root', 'image' ], 'caption' ) ).to.be.false;
+			expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'caption' ) ).to.be.false;
 
 			return editor.destroy();
 		} );
@@ -91,7 +91,7 @@ describe( 'ImageCaptionEditing', () => {
 				plugins: [ ImageBlockEditing, ImageCaptionEditing ]
 			} );
 
-			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'caption' ) ).to.be.false;
+			expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'caption' ) ).to.be.false;
 
 			return editor.destroy();
 		} );
