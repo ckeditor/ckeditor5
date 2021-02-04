@@ -241,8 +241,6 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject on broken plugins (forward the error thrown in a plugin)', () => {
-			const consoleErrorStub = sinon.stub( console, 'error' );
-
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginA, PluginX, PluginB ] )
@@ -253,9 +251,6 @@ describe( 'PluginCollection', () => {
 				.catch( err => {
 					expect( err ).to.be.an.instanceof( TestError );
 					expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
-
-					sinon.assert.calledOnce( consoleErrorStub );
-					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load/ );
 				} );
 		} );
 
@@ -345,7 +340,6 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, [ FooContextPlugin, PluginA ] );
 
-			const consoleErrorStub = sinon.stub( console, 'error' );
 			let error;
 
 			try {
@@ -355,7 +349,6 @@ describe( 'PluginCollection', () => {
 			}
 
 			assertCKEditorError( error, /^plugincollection-context-required/ );
-			sinon.assert.calledOnce( consoleErrorStub );
 		} );
 
 		it( 'should not throw when non context plugin requires context plugin', async () => {
@@ -385,7 +378,6 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject when loaded plugin requires not allowed plugins', () => {
-			const consoleErrorStub = sinon.stub( console, 'error' );
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
@@ -395,14 +387,11 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-required/, editor );
-
-					sinon.assert.calledTwice( consoleErrorStub );
 				} );
 		} );
 
 		it( 'should reject when loading more than one plugin with the same name', () => {
 			const plugins = new PluginCollection( editor );
-			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ PluginFoo, AnotherPluginFoo ] )
 				.then( () => {
@@ -414,7 +403,6 @@ describe( 'PluginCollection', () => {
 						plugin1: PluginFoo,
 						plugin2: AnotherPluginFoo
 					} );
-					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
@@ -422,7 +410,6 @@ describe( 'PluginCollection', () => {
 			PluginFoo.requires = [ AnotherPluginFoo ];
 
 			const plugins = new PluginCollection( editor );
-			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ PluginFoo ] )
 				.then( () => {
@@ -430,17 +417,14 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
-
-					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
-		it( 'should reject when loading more than one plugin with the same name' +
+		it( 'should reject when loading more than one plugin with the same name ' +
 			'(plugin with the same name is built-in the PluginCollection)', () => {
 			availablePlugins = [ PluginFoo ];
 
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ 'Foo', AnotherPluginFoo ] )
 				.then( () => {
@@ -448,7 +432,6 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
-					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
@@ -484,6 +467,51 @@ describe( 'PluginCollection', () => {
 			expect( getPlugins( plugins ) ).to.length( 2 );
 			expect( plugins.get( PluginB ) ).to.equal( externalPlugins.get( PluginB ) ).to.instanceof( PluginB );
 			expect( plugins.get( PluginC ) ).to.instanceof( PluginC );
+		} );
+
+		it( 'should load dependency plugins using soft requirement', () => {
+			const plugins = new PluginCollection( editor, availablePlugins );
+			const spy = sinon.spy( plugins, '_add' );
+
+			return plugins.init( [ PluginJ ] )
+				.then( loadedPlugins => {
+					expect( getPlugins( plugins ).length ).to.equal( 3 );
+
+					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by plugins._add()' );
+					expect( getPluginNames( loadedPlugins ) )
+						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by returned value' );
+				} );
+		} );
+
+		it( 'should reject dependency plugins using soft requirement when plugin is unavailable', () => {
+			PluginFoo.requires = [ 'A', 'Baz' ];
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.init( [ PluginFoo ] )
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be still executed.
+				.then( () => {
+					throw new Error( 'Test error: this promise should not be resolved successfully' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-soft-required/, null, { plugin: 'Baz', requiredBy: 'P' } );
+				} );
+		} );
+
+		it( 'should not reject dependency plugins using soft requirement when plugin was loaded as dependency of other plugin', () => {
+			PluginFoo.requires = [ 'A' ];
+			const plugins = new PluginCollection( editor, availablePlugins );
+			const spy = sinon.spy( plugins, '_add' );
+
+			return plugins.init( [ PluginD, PluginFoo ] )
+				.then( loadedPlugins => {
+					expect( getPlugins( plugins ).length ).to.equal( 5 );
+
+					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+						.to.deep.equal( [ 'A', 'B', 'C', 'D', 'Foo' ], 'order by plugins._add()' );
+					expect( getPluginNames( loadedPlugins ) )
+						.to.deep.equal( [ 'A', 'B', 'C', 'D', 'Foo' ], 'order by returned value' );
+				} );
 		} );
 	} );
 

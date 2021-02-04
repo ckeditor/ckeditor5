@@ -7,9 +7,10 @@
  * @module heading/heading
  */
 
+import { Plugin } from 'ckeditor5/src/core';
+
 import HeadingEditing from './headingediting';
 import HeadingUI from './headingui';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import '../theme/heading.css';
 

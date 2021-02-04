@@ -7,15 +7,8 @@
  * @module image/imagestyle/utils
  */
 
-import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
-import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-import inlineIcon from '@ckeditor/ckeditor5-core/theme/icons/object-inline.svg';
-import inlineLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg';
-import inlineRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg';
-
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
 /**
  * Default image styles provided by the plugin that can be referred in the
@@ -39,7 +32,7 @@ const defaultStyles = {
 		inline: {
 			name: 'inline',
 			title: 'Image in text line',
-			icon: inlineIcon,
+			icon: icons.inlineIcon,
 			modelElement: 'imageInline',
 			isDefault: true
 		},
@@ -47,7 +40,7 @@ const defaultStyles = {
 		inlineLeft: {
 			name: 'inlineLeft',
 			title: 'Left aligned image',
-			icon: inlineLeftIcon,
+			icon: icons.inlineLeftIcon,
 			modelElement: 'imageInline',
 			className: 'image-style-align-left'
 		},
@@ -55,7 +48,7 @@ const defaultStyles = {
 		inlineRight: {
 			name: 'inlineRight',
 			title: 'Right aligned image',
-			icon: inlineRightIcon,
+			icon: icons.inlineRightIcon,
 			modelElement: 'imageInline',
 			className: 'image-style-align-right'
 		},
@@ -64,7 +57,7 @@ const defaultStyles = {
 		blockFull: {
 			name: 'blockFull',
 			title: 'Full size image',
-			icon: fullWidthIcon,
+			icon: icons.fullWidthIcon,
 			modelElement: 'image',
 			isDefault: true
 		},
@@ -73,7 +66,7 @@ const defaultStyles = {
 		blockSide: {
 			name: 'blockSide',
 			title: 'Side image',
-			icon: rightIcon,
+			icon: icons.rightIcon,
 			modelElement: 'image',
 			className: 'image-style-side'
 		},
@@ -82,7 +75,7 @@ const defaultStyles = {
 		blockLeft: {
 			name: 'blockLeft',
 			title: 'Left aligned image',
-			icon: leftIcon,
+			icon: icons.leftIcon,
 			modelElement: 'image',
 			className: 'image-style-align-left'
 		},
@@ -91,7 +84,7 @@ const defaultStyles = {
 		blockCenter: {
 			name: 'blockCenter',
 			title: 'Centered image',
-			icon: centerIcon,
+			icon: icons.centerIcon,
 			modelElement: 'image',
 			className: 'image-style-align-center'
 		},
@@ -100,7 +93,7 @@ const defaultStyles = {
 		blockRight: {
 			name: 'blockRight',
 			title: 'Right aligned image',
-			icon: rightIcon,
+			icon: icons.rightIcon,
 			modelElement: 'image',
 			className: 'image-style-align-right'
 		}
@@ -110,13 +103,13 @@ const defaultStyles = {
 		inParagraph: {
 			name: 'inParagraph',
 			title: 'Image in paragraph',
-			icon: inlineLeftIcon
+			icon: icons.inlineLeftIcon
 		},
 
 		betweenParagraphs: {
 			name: 'betweenParagraphs',
 			title: 'Image between paragraphs',
-			icon: centerIcon
+			icon: icons.centerIcon
 		}
 	}
 };
@@ -130,13 +123,13 @@ const defaultStyles = {
  * @member {Object.<String, String>}
  */
 const defaultIcons = {
-	full: fullWidthIcon,
-	left: leftIcon,
-	right: rightIcon,
-	center: centerIcon,
-	inLineLeft: inlineLeftIcon,
-	inLineRight: inlineRightIcon,
-	inLine: inlineIcon
+	full: icons.fullWidthIcon,
+	left: icons.leftIcon,
+	right: icons.rightIcon,
+	center: icons.centerIcon,
+	inLineLeft: icons.inlineLeftIcon,
+	inLineRight: icons.inlineRightIcon,
+	inLine: icons.inlineIcon
 };
 
 /**

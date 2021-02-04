@@ -7,7 +7,7 @@
  * @module image/image/imageinlineediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
 import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';

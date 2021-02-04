@@ -27,7 +27,7 @@ describe( 'image captioning utils', () => {
 		} );
 	} );
 
-	describe( 'captionElementCreator', () => {
+	describe( 'captionElementCreator()', () => {
 		it( 'should create figcatpion editable element', () => {
 			expect( element ).to.be.instanceOf( ViewEditableElement );
 			expect( element.name ).to.equal( 'figcaption' );
@@ -39,7 +39,7 @@ describe( 'image captioning utils', () => {
 		} );
 	} );
 
-	describe( 'isCaptionEditable', () => {
+	describe( 'isCaption()', () => {
 		it( 'should return true for elements created with creator', () => {
 			expect( isCaption( element ) ).to.be.true;
 		} );
@@ -51,7 +51,7 @@ describe( 'image captioning utils', () => {
 		} );
 	} );
 
-	describe( 'getCaptionFromImage', () => {
+	describe( 'getCaptionFromImage()', () => {
 		it( 'should return caption element from image element', () => {
 			const dummy = new ModelElement( 'dummy' );
 			const caption = new ModelElement( 'caption' );
@@ -67,7 +67,7 @@ describe( 'image captioning utils', () => {
 		} );
 	} );
 
-	describe( 'matchImageCaption', () => {
+	describe( 'matchImageCaption()', () => {
 		it( 'should return null for element that is not a figcaption', () => {
 			const element = new ViewElement( document, 'div' );
 

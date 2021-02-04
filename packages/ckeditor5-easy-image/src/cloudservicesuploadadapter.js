@@ -7,10 +7,9 @@
 * @module easy-image/cloudservicesuploadadapter
 */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import UploadGateway from '@ckeditor/ckeditor-cloud-services-core/src/uploadgateway/uploadgateway';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import { Plugin } from 'ckeditor5/src/core';
+import { FileRepository } from 'ckeditor5/src/upload';
+import { UploadGateway } from 'ckeditor5/src/cloud-services-core';
 
 /**
  * A plugin that enables upload to [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
@@ -27,7 +26,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FileRepository, CloudServices ];
+		return [ 'CloudServices', FileRepository ];
 	}
 
 	/**
@@ -36,7 +35,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		const cloudServices = editor.plugins.get( CloudServices );
+		const cloudServices = editor.plugins.get( 'CloudServices' );
 
 		const token = cloudServices.token;
 		const uploadUrl = cloudServices.uploadUrl;

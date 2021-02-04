@@ -430,6 +430,39 @@ describe( 'ImageCaptionEditing', () => {
 			);
 		} );
 
+		it( 'should hide placeholder when figcaption is focused', () => {
+			setModelData( model, '<paragraph>[]foo</paragraph><image src=""><caption></caption></image>' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>{}foo</p>' +
+				'<figure class="ck-widget image" contenteditable="false">' +
+					'<img src=""></img>' +
+					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-hidden ck-placeholder" ' +
+						'contenteditable="true" data-placeholder="Enter image caption">' +
+					'</figcaption>' +
+				'</figure>'
+			);
+
+			const caption = doc.getRoot().getNodeByPath( [ 1, 0 ] );
+
+			editor.editing.view.document.isFocused = true;
+			editor.focus();
+
+			model.change( writer => {
+				writer.setSelection( writer.createRangeIn( caption ) );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo</p>' +
+				'<figure class="ck-widget image" contenteditable="false">' +
+					'<img src=""></img>' +
+					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused" ' +
+						'contenteditable="true" data-placeholder="Enter image caption">[]' +
+					'</figcaption>' +
+				'</figure>'
+			);
+		} );
+
 		it( 'should not add additional figcaption if one is already present', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption>foo bar</caption></image>]' );
 
