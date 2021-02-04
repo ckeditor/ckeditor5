@@ -61,6 +61,7 @@ export default class ButtonView extends View {
 		this.set( 'type', 'button' );
 		this.set( 'withText', false );
 		this.set( 'withKeystroke', false );
+		this.set( 'isSelected', false );
 
 		/**
 		 * Collection of the child views inside of the button {@link #element}.
@@ -138,6 +139,7 @@ export default class ButtonView extends View {
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
+					bind.to( 'isSelected', value => value ? 'ck-selected' : '' ),
 					bind.if( 'withText', 'ck-button_with-text' ),
 					bind.if( 'withKeystroke', 'ck-button_with-keystroke' )
 				],
