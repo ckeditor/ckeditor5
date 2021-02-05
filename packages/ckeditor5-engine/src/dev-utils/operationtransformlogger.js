@@ -1,12 +1,31 @@
-import { stringify as stringifyModel } from './model';
-import OperationTransform from '../model/operation/transform';
+/**
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
 /* globals console */
+
+/**
+ * @module engine/dev-utils/operationtransformlogger
+ */
+
+/**
+ * Logger of the applied and transformed operations.
+ */
+
+import { stringify as stringifyModel } from './model';
+import OperationTransform from '../model/operation/transform';
 
 const ACTION_UNKNOWN = '(unknown)';
 const ACTION_TRANSFORM = '(transform)';
 
-export default function otDebug( editor, label = '' ) {
+/**
+ * Binds into the provided editor instance to executed commands and applied and transformed operations.
+ *
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @param {String} [label=''] Additional label placed at the beginning of every logged line.
+ */
+export default function operationTransformLogger( editor, label = '' ) {
 	let currentAction = ACTION_UNKNOWN;
 	let lastAction = currentAction;
 
@@ -36,36 +55,37 @@ export default function otDebug( editor, label = '' ) {
 	// Binding into operation transform.
 	//
 
-	const origTransform = OperationTransform.transform;
-
-	OperationTransform.transform = function( ...args ) {
+	function transform( ...args ) {
 		const [ opA, opB, context ] = args;
 
-		if ( !context.aIsStrong ) {
-			return origTransform( ...args );
-		}
+		if ( context.aIsStrong ) {
+			if ( currentAction != lastAction && currentAction != ACTION_TRANSFORM ) {
+				printLine( stringifyModel( editor.model.document.getRoot() ), 0, label );
 
-		if ( currentAction != lastAction && currentAction != ACTION_TRANSFORM ) {
-			printLine( stringifyModel( editor.model.document.getRoot() ), 0, label );
+				if ( [ 'undo', 'redo' ].includes( currentAction ) ) {
+					printLine( currentAction, 1, label );
+				} else {
+					printLine( 'transform remote', 1, label );
+				}
 
-			if ( [ 'undo', 'redo' ].includes( currentAction ) ) {
-				printLine( currentAction, 1, label );
-			} else {
-				printLine( 'transform remote', 1, label );
+				lastAction = currentAction;
+				currentAction = ACTION_TRANSFORM;
 			}
 
-			lastAction = currentAction;
-			currentAction = ACTION_TRANSFORM;
+			printLine( `transform ${ opA.type }`, 2, label );
+			printOperation( opA, 3, label );
+
+			printLine( `by ${ opB.type }`, 2, label );
+			printOperation( opB, 3, label );
 		}
 
-		printLine( `transform ${ opA.type }`, 2, label );
-		printOperation( opA, 3, label );
+		return transform[ Symbol.for( 'original' ) ]( ...args );
+	}
 
-		printLine( `by ${ opB.type }`, 2, label );
-		printOperation( opB, 3, label );
-
-		return origTransform( ...args );
-	};
+	// Inject the wrapper but don't allow multiple wrapping.
+	OperationTransform.transform = Object.assign( transform, {
+		[ Symbol.for( 'original' ) ]: OperationTransform.transform[ Symbol.for( 'original' ) ] || OperationTransform.transform
+	} );
 
 	//
 	// Binding into operation apply.
