@@ -301,6 +301,13 @@ describe( 'AlignmentEditing', () => {
 				} );
 			} );
 		} );
+
+		// TODO:
+		// * Can work without class names (backwards-compatible).
+		// * Incorrect length of params.
+		// * Not an array.
+		// * Limited options should map to limited set of classes.
+		describe( 'classNames', () => {} );
 	} );
 } );
 

@@ -22,6 +22,8 @@ There are more CKEditor 5 features that can help you organize your content:
 
 ## Configuring alignment options
 
+TODO: Update docs
+
 It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
 
 <info-box>
