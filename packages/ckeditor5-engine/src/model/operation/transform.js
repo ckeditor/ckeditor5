@@ -2126,11 +2126,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// After split:
 	// <paragraph>A</paragraph><paragraph>d</paragraph><paragraph>Xbcyz</paragraph>
 	//
-	if (
-		a.splitPosition.hasSameParentAs( b.sourcePosition ) &&
-		rangeToMove.containsPosition( a.splitPosition ) &&
-		!a.graveyardPosition
-	) {
+	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) && !a.graveyardPosition ) {
 		const howManyRemoved = b.howMany - ( a.splitPosition.offset - b.sourcePosition.offset );
 		a.howMany -= howManyRemoved;
 
