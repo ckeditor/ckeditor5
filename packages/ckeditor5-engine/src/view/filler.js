@@ -63,12 +63,12 @@ export const BR_FILLER = domDocument => {
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
- * Inline filler which is a sequence of the zero-width non-breaking spaces.
+ * Inline filler which is a sequence of the word joiners.
  *
  * @type {String}
  */
 export const INLINE_FILLER = ( () => {
-	return '\ufeff'.repeat( INLINE_FILLER_LENGTH );
+	return '\u2060'.repeat( INLINE_FILLER_LENGTH );
 } )(); // Usu IIF so the INLINE_FILLER appears as a constant in the docs.
 
 /**
