@@ -259,6 +259,24 @@ describe( 'transform', () => {
 				syncClients();
 				expectClients( '<paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph>' );
 			} );
+
+			it( 'remove merged element then undo #5', () => {
+				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
+
+				john.merge();
+				john.setSelection( [ 0, 0 ], [ 0, 6 ] );
+				john.remove();
+
+				syncClients();
+				expectClients( '<paragraph></paragraph>' );
+
+				john.undo();
+				john.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			} );
 		} );
 
 		describe( 'by delete', () => {
