@@ -686,10 +686,11 @@ export default class DowncastWriter {
 		// Group nodes in batches of the same isAllowedInAttribute property value.
 		const nodeGroups = nodes.reduce( ( groups, node ) => {
 			const lastGroup = groups[ groups.length - 1 ];
+			const breakAttributes = node.is( '$text' ) || !node.isAllowedInAttribute;
 
-			if ( !lastGroup || lastGroup.isAllowedInAttribute != node.isAllowedInAttribute ) {
+			if ( !lastGroup || lastGroup.breakAttributes != breakAttributes ) {
 				groups.push( {
-					isAllowedInAttribute: node.isAllowedInAttribute,
+					breakAttributes,
 					nodes: [ node ]
 				} );
 			} else {
@@ -703,8 +704,8 @@ export default class DowncastWriter {
 		let start = null;
 		let end = position;
 
-		for ( const { nodes, isAllowedInAttribute } of nodeGroups ) {
-			const range = this._insertNodes( end, nodes, !isAllowedInAttribute );
+		for ( const { nodes, breakAttributes } of nodeGroups ) {
+			const range = this._insertNodes( end, nodes, breakAttributes );
 
 			if ( !start ) {
 				start = range.start;

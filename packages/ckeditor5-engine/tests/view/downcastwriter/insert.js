@@ -164,6 +164,17 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
+		it( 'should break attribute on multiple different nodes insertion', () => {
+			testInsert(
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
+				[ '<ui:span></ui:span>', 'baz' ],
+				'<container:p>' +
+					'<attribute:b view-priority="1">foo[<ui:span></ui:span></attribute:b>baz]' +
+					'<attribute:b view-priority="1">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
 		it( 'should not break attribute on inline ContainerElement insertion', () => {
 			const { view, selection } = parse(
 				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
