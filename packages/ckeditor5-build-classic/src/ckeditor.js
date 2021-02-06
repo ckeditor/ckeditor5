@@ -16,9 +16,11 @@ import FontSize from "@ckeditor/ckeditor5-font/src/fontsize.js";
 import FontColor from "@ckeditor/ckeditor5-font/src/fontcolor.js";
 import FontBackgroundColor from "@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js";
 import FontFamily from "@ckeditor/ckeditor5-font/src/fontfamily.js";
+import Highlight from "@ckeditor/ckeditor5-highlight/src/highlight.js";
 import BlockQuote from "@ckeditor/ckeditor5-block-quote/src/blockquote";
 import CKFinder from "@ckeditor/ckeditor5-ckfinder/src/ckfinder";
 import EasyImage from "@ckeditor/ckeditor5-easy-image/src/easyimage.js";
+import ImageInsert from "@ckeditor/ckeditor5-image/src/imageinsert.js";
 import Heading from "@ckeditor/ckeditor5-heading/src/heading";
 import Image from "@ckeditor/ckeditor5-image/src/image";
 import ImageCaption from "@ckeditor/ckeditor5-image/src/imagecaption";
@@ -52,10 +54,12 @@ ClassicEditor.builtinPlugins = [
 	FontColor,
 	FontBackgroundColor,
 	FontFamily,
+	Highlight,
 	BlockQuote,
 	CKFinder,
 	CloudServices,
 	EasyImage,
+	ImageInsert,
 	Heading,
 	Image,
 	ImageCaption,
@@ -87,9 +91,10 @@ ClassicEditor.defaultConfig = {
 			"numberedList",
 			"|",
 			"FontSize",
+			"fontFamily",
 			"fontColor",
 			"fontBackgroundColor",
-			"fontFamily",
+			"highlight",
 			"|",
 			"alignment",
 			"indent",
