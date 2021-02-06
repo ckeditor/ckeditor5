@@ -203,10 +203,19 @@ export default class DowncastWriter {
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
+	 * @param {Object} [options] Element's options.
+	 * @param {Boolean} [options.isAllowedInAttribute] Whether an element is
+	 * {@link module:engine/view/element~Element#isAllowedInAttribute allowed inside attribute elements}.
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
-	createContainerElement( name, attributes ) {
-		return new ContainerElement( this.document, name, attributes );
+	createContainerElement( name, attributes, options = {} ) {
+		const containerElement = new ContainerElement( this.document, name, attributes );
+
+		if ( options.isAllowedInAttribute ) {
+			containerElement._isAllowedInAttribute = true;
+		}
+
+		return containerElement;
 	}
 
 	/**
@@ -674,58 +683,42 @@ export default class DowncastWriter {
 		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
-		const isUIElement = nodes.length == 1 && nodes[ 0 ].is( 'uiElement' );
-		let parentElement;
+		// Group nodes in batches of the same isAllowedInAttribute property value.
+		const nodeGroups = nodes.reduce( ( groups, node ) => {
+			const lastGroup = groups[ groups.length - 1 ];
 
-		// UIElement can be inside the AttributeElement so use the closest ancestor element instead of container element.
-		if ( isUIElement ) {
-			parentElement = position.parent.is( '$text' ) ? position.parent.parent : position.parent;
-		} else {
-			parentElement = getParentContainer( position );
-		}
-
-		if ( !parentElement ) {
-			/**
-			 * Position's parent container cannot be found.
-			 *
-			 * @error view-writer-invalid-position-container
-			 */
-			throw new CKEditorError(
-				'view-writer-invalid-position-container',
-				this.document
-			);
-		}
-
-		let insertionPosition;
-
-		if ( isUIElement ) {
-			insertionPosition = position.parent.is( '$text' ) ? breakTextNode( position ) : position;
-		} else {
-			insertionPosition = this._breakAttributes( position, true );
-		}
-
-		const length = parentElement._insertChild( insertionPosition.offset, nodes );
-
-		for ( const node of nodes ) {
-			this._addToClonedElementsGroup( node );
-		}
-
-		const endPosition = insertionPosition.getShiftedBy( length );
-		const start = isUIElement ? insertionPosition : this.mergeAttributes( insertionPosition );
-
-		// When no nodes were inserted - return collapsed range.
-		if ( length === 0 ) {
-			return new Range( start, start );
-		} else {
-			// If start position was merged - move end position.
-			if ( !start.isEqual( insertionPosition ) ) {
-				endPosition.offset--;
+			if ( !lastGroup || lastGroup.isAllowedInAttribute != node.isAllowedInAttribute ) {
+				groups.push( {
+					isAllowedInAttribute: node.isAllowedInAttribute,
+					nodes: [ node ]
+				} );
+			} else {
+				lastGroup.nodes.push( node );
 			}
 
-			const end = isUIElement ? endPosition : this.mergeAttributes( endPosition );
+			return groups;
+		}, [] );
 
-			return new Range( start, end );
+		// Insert nodes in batches.
+		let start = null;
+		let end = position;
+
+		for ( const { nodes, isAllowedInAttribute } of nodeGroups ) {
+			const range = this._insertNodes( end, nodes, !isAllowedInAttribute );
+
+			if ( !start ) {
+				start = range.start;
+			}
+
+			end = range.end;
 		}
+
+		// When no nodes were inserted - return collapsed range.
+		if ( !start ) {
+			return new Range( position );
+		}
+
+		return new Range( start, end );
 	}
 
 	/**
@@ -1150,6 +1143,72 @@ export default class DowncastWriter {
 	}
 
 	/**
+	 * Inserts a node or nodes at specified position. Takes care about breaking attributes before insertion
+	 * and merging them afterwards if requested by the breakAttributes param.
+	 *
+	 * @private
+	 * @param {module:engine/view/position~Position} position Insertion position.
+	 * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
+	 * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
+	 * module:engine/view/rawelement~RawElement|module:engine/view/uielement~UIElement|
+	 * Iterable.<module:engine/view/text~Text|
+	 * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
+	 * module:engine/view/emptyelement~EmptyElement|module:engine/view/rawelement~RawElement|
+	 * module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
+	 * @param {Boolean} breakAttributes Whether attributes should be broken.
+	 * @returns {module:engine/view/range~Range} Range around inserted nodes.
+	 */
+	_insertNodes( position, nodes, breakAttributes ) {
+		let parentElement;
+
+		// Elements can be inside the AttributeElement if they have isAllowedInAttribute flag set so use the closest ancestor
+		// element instead of container element.
+		if ( breakAttributes ) {
+			parentElement = getParentContainer( position );
+		} else {
+			parentElement = position.parent.is( '$text' ) ? position.parent.parent : position.parent;
+		}
+
+		if ( !parentElement ) {
+			/**
+			 * Position's parent container cannot be found.
+			 *
+			 * @error view-writer-invalid-position-container
+			 */
+			throw new CKEditorError(
+				'view-writer-invalid-position-container',
+				this.document
+			);
+		}
+
+		let insertionPosition;
+
+		if ( breakAttributes ) {
+			insertionPosition = this._breakAttributes( position, true );
+		} else {
+			insertionPosition = position.parent.is( '$text' ) ? breakTextNode( position ) : position;
+		}
+
+		const length = parentElement._insertChild( insertionPosition.offset, nodes );
+
+		for ( const node of nodes ) {
+			this._addToClonedElementsGroup( node );
+		}
+
+		const endPosition = insertionPosition.getShiftedBy( length );
+		const start = this.mergeAttributes( insertionPosition );
+
+		// If start position was merged - move end position.
+		if ( !start.isEqual( insertionPosition ) ) {
+			endPosition.offset--;
+		}
+
+		const end = this.mergeAttributes( endPosition );
+
+		return new Range( start, end );
+	}
+
+	/**
 	 * Wraps children with provided `wrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 *
@@ -1167,9 +1226,7 @@ export default class DowncastWriter {
 			const child = parent.getChild( i );
 			const isText = child.is( '$text' );
 			const isAttribute = child.is( 'attributeElement' );
-			const isEmpty = child.is( 'emptyElement' );
-			const isUI = child.is( 'uiElement' );
-			const isRaw = child.is( 'rawElement' );
+			const isAllowedInAttribute = child.isAllowedInAttribute;
 
 			//
 			// (In all examples, assume that `wrapElement` is `<span class="foo">` element.)
@@ -1188,7 +1245,7 @@ export default class DowncastWriter {
 			//
 			// <p>abc</p>                   -->  <p><span class="foo">abc</span></p>
 			// <p><strong>abc</strong></p>  -->  <p><span class="foo"><strong>abc</strong></span></p>
-			else if ( isText || isEmpty || isUI || isRaw || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
+			else if ( isText || isAllowedInAttribute || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
 				// Clone attribute.
 				const newAttribute = wrapElement._clone();
 

@@ -50,6 +50,9 @@ export default class UIElement extends Element {
 	constructor( document, name, attributes, children ) {
 		super( document, name, attributes, children );
 
+		// Override the default of a base class.
+		this._isAllowedInAttribute = true;
+
 		/**
 		 * Returns `null` because filler is not needed for UIElements.
 		 *

@@ -129,6 +129,15 @@ export default class Element extends Node {
 		 * @member {Map}
 		 */
 		this._customProperties = new Map();
+
+		/**
+		 * Whether an element is allowed inside an attribute element. Decides whether element can be wrapped with
+		 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
+		 *
+		 * @protected
+		 * @member {Boolean}
+		 */
+		this._isAllowedInAttribute = false;
 	}
 
 	/**
@@ -149,6 +158,17 @@ export default class Element extends Node {
 	 */
 	get isEmpty() {
 		return this._children.length === 0;
+	}
+
+	/**
+	 * Whether an element is allowed inside an attribute element. Decides whether element can be wrapped with
+	 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isAllowedInAttribute() {
+		return this._isAllowedInAttribute;
 	}
 
 	/**

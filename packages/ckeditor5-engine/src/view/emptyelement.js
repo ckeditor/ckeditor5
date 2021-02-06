@@ -37,6 +37,9 @@ export default class EmptyElement extends Element {
 	constructor( document, name, attrs, children ) {
 		super( document, name, attrs, children );
 
+		// Override the default of a base class.
+		this._isAllowedInAttribute = true;
+
 		/**
 		 * Returns `null` because filler is not needed for EmptyElements.
 		 *
