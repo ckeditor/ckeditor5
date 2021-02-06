@@ -16,19 +16,22 @@ import FontSize from "@ckeditor/ckeditor5-font/src/fontsize.js";
 import FontColor from "@ckeditor/ckeditor5-font/src/fontcolor.js";
 import FontBackgroundColor from "@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js";
 import FontFamily from "@ckeditor/ckeditor5-font/src/fontfamily.js";
+import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock.js";
 import Highlight from "@ckeditor/ckeditor5-highlight/src/highlight.js";
 import BlockQuote from "@ckeditor/ckeditor5-block-quote/src/blockquote";
 import CKFinder from "@ckeditor/ckeditor5-ckfinder/src/ckfinder";
 import EasyImage from "@ckeditor/ckeditor5-easy-image/src/easyimage.js";
 import ImageInsert from "@ckeditor/ckeditor5-image/src/imageinsert.js";
+import ImageResize from "@ckeditor/ckeditor5-image/src/imageresize.js";
 import Heading from "@ckeditor/ckeditor5-heading/src/heading";
-import Image from "@ckeditor/ckeditor5-image/src/image";
+import Image from "@ckeditor/ckeditor5-image/src/image.js";
 import ImageCaption from "@ckeditor/ckeditor5-image/src/imagecaption";
 import ImageStyle from "@ckeditor/ckeditor5-image/src/imagestyle";
-import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar";
+import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar.js";
 import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload";
 import Indent from "@ckeditor/ckeditor5-indent/src/indent";
 import Link from "@ckeditor/ckeditor5-link/src/link";
+import LinkImage from "@ckeditor/ckeditor5-link/src/linkimage.js";
 import List from "@ckeditor/ckeditor5-list/src/list";
 import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed";
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
@@ -54,12 +57,14 @@ ClassicEditor.builtinPlugins = [
 	FontColor,
 	FontBackgroundColor,
 	FontFamily,
+	IndentBlock,
 	Highlight,
 	BlockQuote,
 	CKFinder,
 	CloudServices,
 	EasyImage,
 	ImageInsert,
+	ImageResize,
 	Heading,
 	Image,
 	ImageCaption,
@@ -68,6 +73,7 @@ ClassicEditor.builtinPlugins = [
 	ImageUpload,
 	Indent,
 	Link,
+	LinkImage,
 	List,
 	MediaEmbed,
 	Paragraph,
@@ -97,10 +103,12 @@ ClassicEditor.defaultConfig = {
 			"highlight",
 			"|",
 			"alignment",
+			"indentBlock",
 			"indent",
 			"outdent",
 			"|",
 			"imageUpload",
+			"linkImage",
 			"blockQuote",
 			"insertTable",
 			"mediaEmbed",
