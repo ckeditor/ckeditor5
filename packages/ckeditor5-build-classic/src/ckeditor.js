@@ -16,6 +16,7 @@ import FontSize from "@ckeditor/ckeditor5-font/src/fontsize.js";
 import FontColor from "@ckeditor/ckeditor5-font/src/fontcolor.js";
 import FontBackgroundColor from "@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js";
 import FontFamily from "@ckeditor/ckeditor5-font/src/fontfamily.js";
+import RemoveFormat from "@ckeditor/ckeditor5-remove-format/src/removeformat.js";
 import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock.js";
 import Highlight from "@ckeditor/ckeditor5-highlight/src/highlight.js";
 import BlockQuote from "@ckeditor/ckeditor5-block-quote/src/blockquote";
@@ -35,8 +36,16 @@ import LinkImage from "@ckeditor/ckeditor5-link/src/linkimage.js";
 import List from "@ckeditor/ckeditor5-list/src/list";
 import ListStyle from "@ckeditor/ckeditor5-list/src/liststyle.js";
 import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed";
+import MediaEmbedToolbar from "@ckeditor/ckeditor5-media-embed/src/mediaembedtoolbar.js";
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import PasteFromOffice from "@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice";
+import SpecialCharacters from "@ckeditor/ckeditor5-special-characters/src/specialcharacters.js";
+import SpecialCharactersArrows from "@ckeditor/ckeditor5-special-characters/src/specialcharactersarrows.js";
+import SpecialCharactersCurrency from "@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency.js";
+import SpecialCharactersEssentials from "@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js";
+import SpecialCharactersLatin from "@ckeditor/ckeditor5-special-characters/src/specialcharacterslatin.js";
+import SpecialCharactersMathematical from "@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical.js";
+import SpecialCharactersText from "@ckeditor/ckeditor5-special-characters/src/specialcharacterstext.js";
 import Table from "@ckeditor/ckeditor5-table/src/table";
 import TableToolbar from "@ckeditor/ckeditor5-table/src/tabletoolbar";
 import HorizontalLine from "@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js";
@@ -58,6 +67,7 @@ ClassicEditor.builtinPlugins = [
 	FontColor,
 	FontBackgroundColor,
 	FontFamily,
+	RemoveFormat,
 	IndentBlock,
 	Highlight,
 	BlockQuote,
@@ -78,8 +88,16 @@ ClassicEditor.builtinPlugins = [
 	List,
 	ListStyle,
 	MediaEmbed,
+	MediaEmbedToolbar,
 	Paragraph,
 	PasteFromOffice,
+	SpecialCharacters,
+	SpecialCharactersArrows,
+	SpecialCharactersCurrency,
+	SpecialCharactersEssentials,
+	SpecialCharactersLatin,
+	SpecialCharactersMathematical,
+	SpecialCharactersText,
 	Table,
 	TableToolbar,
 	HorizontalLine,
@@ -95,6 +113,8 @@ ClassicEditor.defaultConfig = {
 			"bold",
 			"italic",
 			"link",
+			"alignment",
+			"|",
 			"bulletedList",
 			"numberedList",
 			"|",
@@ -103,17 +123,20 @@ ClassicEditor.defaultConfig = {
 			"fontColor",
 			"fontBackgroundColor",
 			"highlight",
+			"removeFormat",
 			"|",
-			"alignment",
 			"indentBlock",
 			"indent",
 			"outdent",
+			"specialCharacters",
+			"blockQuote",
 			"|",
 			"imageUpload",
 			"linkImage",
-			"blockQuote",
 			"insertTable",
 			"mediaEmbed",
+			"mediaEmbedToolbar",
+			"|",
 			"undo",
 			"redo",
 		],
