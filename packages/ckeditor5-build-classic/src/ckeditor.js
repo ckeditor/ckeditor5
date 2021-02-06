@@ -47,10 +47,13 @@ import SpecialCharactersLatin from "@ckeditor/ckeditor5-special-characters/src/s
 import SpecialCharactersMathematical from "@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical.js";
 import SpecialCharactersText from "@ckeditor/ckeditor5-special-characters/src/specialcharacterstext.js";
 import Table from "@ckeditor/ckeditor5-table/src/table";
+import TableCellProperties from "@ckeditor/ckeditor5-table/src/tablecellproperties";
+import TableProperties from "@ckeditor/ckeditor5-table/src/tableproperties";
 import TableToolbar from "@ckeditor/ckeditor5-table/src/tabletoolbar";
 import HorizontalLine from "@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js";
 import TextTransformation from "@ckeditor/ckeditor5-typing/src/texttransformation";
 import CloudServices from "@ckeditor/ckeditor5-cloud-services/src/cloudservices";
+import Underline from "@ckeditor/ckeditor5-basic-styles/src/underline.js";
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -63,6 +66,7 @@ ClassicEditor.builtinPlugins = [
 	Autoformat,
 	Bold,
 	Italic,
+	Underline,
 	FontSize,
 	FontColor,
 	FontBackgroundColor,
@@ -99,6 +103,8 @@ ClassicEditor.builtinPlugins = [
 	SpecialCharactersMathematical,
 	SpecialCharactersText,
 	Table,
+	TableCellProperties,
+	TableProperties,
 	TableToolbar,
 	HorizontalLine,
 	TextTransformation,
@@ -112,6 +118,7 @@ ClassicEditor.defaultConfig = {
 			"|",
 			"bold",
 			"italic",
+			"underline",
 			"link",
 			"alignment",
 			"|",
