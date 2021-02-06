@@ -67,9 +67,7 @@ export const INLINE_FILLER_LENGTH = 7;
  *
  * @type {String}
  */
-export const INLINE_FILLER = ( () => {
-	return '\u2060'.repeat( INLINE_FILLER_LENGTH );
-} )(); // Usu IIF so the INLINE_FILLER appears as a constant in the docs.
+export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
