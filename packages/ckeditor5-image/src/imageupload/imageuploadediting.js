@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,14 @@
  * @module image/imageupload/imageuploadediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { Plugin } from 'ckeditor5/src/core';
+
+import { UpcastWriter } from 'ckeditor5/src/engine';
+
+import { Notification } from 'ckeditor5/src/ui';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { FileRepository } from 'ckeditor5/src/upload';
+import { env } from 'ckeditor5/src/utils';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';

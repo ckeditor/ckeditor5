@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,11 +9,19 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autoformat' ), {
-		plugins: ClassicEditor.builtinPlugins.concat( [ Code, CodeBlock, Strikethrough ] ),
+		plugins: ClassicEditor.builtinPlugins.concat( [
+			Code,
+			CodeBlock,
+			HorizontalLine,
+			Strikethrough,
+			TodoList
+		] ),
 		toolbar: {
 			items: [
 				'heading',
@@ -23,14 +31,17 @@ ClassicEditor
 				'strikethrough',
 				'code',
 				'link',
+				'|',
 				'bulletedList',
 				'numberedList',
+				'todolist',
 				'|',
 				'outdent',
 				'indent',
 				'|',
 				'blockQuote',
 				'codeBlock',
+				'horizontalLine',
 				'|',
 				'undo',
 				'redo'

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,8 +11,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
 import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
@@ -68,7 +66,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Enter, Delete ];
+		return [ 'Enter', 'Delete' ];
 	}
 
 	/**

@@ -11,7 +11,7 @@ Often known as the horizontal rule, it provides a visual way to separate the con
 
 ## Demo
 
-Use the editor below to see the horizontal line feature in action.
+To insert horizontal line, use the toolbar button. Alternatively, start the line with `---` to insert horizontal line thanks to the {@link features/autoformat autoformatting feature}.
 
 {@snippet features/horizontal-line}
 
@@ -22,12 +22,13 @@ There are more CKEditor 5 features that can help you organize your document cont
 * {@link features/page-break Page break} &ndash; Divide your document into pages.
 * {@link features/title Document title} &ndash; Clearly separate the title from the body.
 * {@link features/lists Lists} &ndash;  Create ordered (numbered) and unordered (bulleted) lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
 
 ## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-horizontal-line`](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line) package:
 
-```nohighlight
+```plaintext
 npm install --save @ckeditor/ckeditor5-horizontal-line
 ```
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import LinkImage from '../src/linkimage';
 import LinkImageUI from '../src/linkimageui';
+import Image from '@ckeditor/ckeditor5-image/src/image';
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;
@@ -27,7 +28,7 @@ describe( 'LinkImageUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ LinkImageUI, LinkImage, Paragraph ]
+				plugins: [ Image, LinkImageUI, LinkImage, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -46,6 +47,10 @@ describe( 'LinkImageUI', () => {
 
 	it( 'should be named"', () => {
 		expect( LinkImageUI.pluginName ).to.equal( 'LinkImageUI' );
+	} );
+
+	it( 'should require Image by name', () => {
+		expect( LinkImageUI.requires ).to.include( 'Image' );
 	} );
 
 	describe( 'init()', () => {

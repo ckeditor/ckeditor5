@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,8 +8,8 @@
  */
 
 import TableWalker from './../tablewalker';
-import { setHighlightHandling, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import { setHighlightHandling, toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
+import { toArray } from 'ckeditor5/src/utils';
 
 /**
  * Model table element to view table element conversion helper.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,7 +28,7 @@ describe( 'Title', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ]
+			plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ]
 		} ).then( _editor => {
 			editor = _editor;
 			model = editor.model;
@@ -40,7 +40,7 @@ describe( 'Title', () => {
 	} );
 
 	it( 'should requires Paragraph plugin', () => {
-		expect( Title.requires ).to.have.members( [ Paragraph ] );
+		expect( Title.requires ).to.have.members( [ 'Paragraph' ] );
 	} );
 
 	it( 'should have plugin name property', () => {
@@ -426,6 +426,31 @@ describe( 'Title', () => {
 				'F<comment></comment>oo Bar<comment></comment>'
 			);
 		} );
+
+		it( 'should pass options to downcast converters', () => {
+			let usedOptions = null;
+
+			editor.data.downcastDispatcher.on( 'addMarker:foobar', ( evt, data, conversionApi ) => {
+				usedOptions = conversionApi.options;
+			} );
+
+			setData( model, '<title><title-content>Foo Bar</title-content></title>' );
+
+			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'foobar', {
+					range: model.createRange( model.createPositionAt( title, 1 ), model.createPositionAt( title, 5 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			const options = { foo: 'bar' };
+
+			editor.plugins.get( 'Title' ).getTitle( options );
+
+			expect( usedOptions ).to.equal( options );
+		} );
 	} );
 
 	describe( 'getBody()', () => {
@@ -530,6 +555,34 @@ describe( 'Title', () => {
 			} );
 
 			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>Bar</p>' );
+		} );
+
+		it( 'should pass options to downcast converters', () => {
+			let usedOptions = null;
+
+			editor.data.downcastDispatcher.on( 'addMarker:foobar', ( evt, data, conversionApi ) => {
+				usedOptions = conversionApi.options;
+			} );
+
+			setData( model,
+				'<title><title-content></title-content></title>' +
+				'<paragraph>Foo Bar</paragraph>'
+			);
+
+			const body = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'foobar', {
+					range: model.createRange( model.createPositionAt( body, 1 ), model.createPositionAt( body, 5 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			const options = { foo: 'bar' };
+
+			editor.plugins.get( 'Title' ).getBody( options );
+
+			expect( usedOptions ).to.equal( options );
 		} );
 	} );
 
@@ -660,7 +713,7 @@ describe( 'Title', () => {
 				document.body.appendChild( element );
 
 				return ClassicTestEditor.create( element, {
-					plugins: [ Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
+					plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
 					title: {
 						placeholder: 'foo'
 					},
@@ -703,7 +756,7 @@ describe( 'Title', () => {
 				document.body.appendChild( element );
 
 				return ClassicTestEditor.create( element, {
-					plugins: [ Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
+					plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
 					title: {
 						placeholder: 'foo'
 					}

@@ -1,0 +1,45 @@
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Hungarian (https://www.transifex.com/ckeditor/teams/11143/hu/)\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Toolbar button tooltip for the HTML embed feature."
+msgid "Insert HTML"
+msgstr "HTML beillesztése"
+
+msgctxt "The HTML snippet."
+msgid "HTML snippet"
+msgstr "HTML kódrészlet"
+
+msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
+msgid "Paste raw HTML here..."
+msgstr "Másolja ide a HTML forrás szövegét..."
+
+msgctxt "A label of a button that switches the HTML embed to the source editing mode."
+msgid "Edit source"
+msgstr "Forrás szerkesztése"
+
+msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
+msgid "Save changes"
+msgstr "Változtatások mentése"
+
+msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
+msgid "No preview available"
+msgstr ""
+
+msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
+msgid "Empty snippet content"
+msgstr ""

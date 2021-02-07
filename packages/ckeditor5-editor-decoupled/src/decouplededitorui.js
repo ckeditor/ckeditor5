@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,9 @@
  * @module editor-decoupled/decouplededitorui
  */
 
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { EditorUI } from 'ckeditor5/src/core';
+import { enableToolbarKeyboardFocus } from 'ckeditor5/src/ui';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
 
 /**
  * The decoupled editor UI class.
@@ -34,14 +33,6 @@ export default class DecoupledEditorUI extends EditorUI {
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
 		 */
 		this.view = view;
-
-		/**
-		 * A normalized `config.toolbar` object.
-		 *
-		 * @type {Object}
-		 * @private
-		 */
-		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 	}
 
 	/**
@@ -114,7 +105,7 @@ export default class DecoupledEditorUI extends EditorUI {
 		const view = this.view;
 		const toolbar = view.toolbar;
 
-		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
@@ -143,7 +134,8 @@ export default class DecoupledEditorUI extends EditorUI {
 				view: editingView,
 				element: editingRoot,
 				text: placeholderText,
-				isDirectHost: false
+				isDirectHost: false,
+				keepOnFocus: true
 			} );
 		}
 	}

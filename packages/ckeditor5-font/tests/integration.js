@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,8 @@
 import Font from '../src/font';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 describe( 'Integration test Font', () => {
 	let element, editor, model;
@@ -93,6 +94,50 @@ describe( 'Integration test Font', () => {
 								'>foo' +
 							'</span>' +
 						'</p>'
+					);
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					element.remove();
+				} );
+		} );
+
+		it( 'should convert font features in the table (supportAllValues: true)', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Font, ArticlePluginSet, Table ],
+					fontSize: {
+						supportAllValues: true,
+						options: [ 10, 12, 14 ]
+					},
+					fontFamily: {
+						supportAllValues: true
+					},
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					}
+				} )
+				.then( editor => {
+					editor.setData(
+						'<table><tr><td>' +
+							'<span style="font-family:Arial, Helvetica, sans-serif;font-size:14px;">Font Arial 14</span>' +
+						'</td></tr></table>'
+					);
+
+					expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>' +
+										'<$text fontFamily="Arial, Helvetica, sans-serif" fontSize="14px">Font Arial 14</$text>' +
+									'</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
 					);
 
 					return editor.destroy();

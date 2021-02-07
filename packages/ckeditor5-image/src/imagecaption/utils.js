@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module image/imagecaption/utils
  */
 
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 /**
  * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module link/linkimageediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import { Plugin } from 'ckeditor5/src/core';
+import { Matcher } from 'ckeditor5/src/engine';
+import { toMap } from 'ckeditor5/src/utils';
+
 import LinkEditing from './linkediting';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -28,7 +28,7 @@ export default class LinkImageEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, LinkEditing ];
+		return [ 'ImageEditing', LinkEditing ];
 	}
 
 	/**
@@ -213,6 +213,13 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
+
+			// The <a> element was removed by the time this converter is executed.
+			// It may happen when the base `linkHref` and decorator attributes are removed
+			// at the same time (see #8401).
+			if ( !linkInImage ) {
+				return;
+			}
 
 			for ( const [ key, val ] of toMap( attributes ) ) {
 				conversionApi.writer.setAttribute( key, val, linkInImage );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,13 +7,11 @@
  * @module block-quote/blockquoteediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import BlockQuoteCommand from './blockquotecommand';
-import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import { EnterModelObserver } from 'ckeditor5/src/enter';
+import { DeleteModelObserver } from 'ckeditor5/src/typing';
 
 /**
  * The block quote editing.
@@ -34,7 +32,7 @@ export default class BlockQuoteEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Enter, Delete ];
+		return [ 'Enter', 'Delete' ];
 	}
 
 	/**

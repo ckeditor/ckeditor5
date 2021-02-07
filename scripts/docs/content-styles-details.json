@@ -68,6 +68,7 @@
     "packages/ckeditor5-html-embed/src/htmlembed.js": "Htmlembed",
     "packages/ckeditor5-html-embed/src/htmlembedediting.js": "Htmlembedediting",
     "packages/ckeditor5-html-embed/src/htmlembedui.js": "Htmlembedui",
+    "packages/ckeditor5-image/src/autoimage.js": "Autoimage",
     "packages/ckeditor5-image/src/image.js": "Image",
     "packages/ckeditor5-image/src/image/imageediting.js": "Imageediting",
     "packages/ckeditor5-image/src/imagecaption.js": "Imagecaption",

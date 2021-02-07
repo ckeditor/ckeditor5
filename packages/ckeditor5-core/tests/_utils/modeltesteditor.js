@@ -1,11 +1,10 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Editor from '../../src/editor/editor';
 import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -19,9 +18,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 export default class ModelTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
-
-		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Disable editing pipeline.
 		this.editing.destroy();

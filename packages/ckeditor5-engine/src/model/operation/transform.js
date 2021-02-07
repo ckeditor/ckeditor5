@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1981,7 +1981,7 @@ setTransformation( SplitOperation, InsertOperation, ( a, b ) => {
 	}
 
 	a.splitPosition = a.splitPosition._getTransformedByInsertOperation( b );
-	a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
+	a.insertionPosition = a.insertionPosition._getTransformedByInsertOperation( b );
 
 	return [ a ];
 } );

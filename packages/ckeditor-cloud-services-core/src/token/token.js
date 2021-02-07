@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,9 +9,7 @@
 
 /* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { mix, ObservableMixin, CKEditorError } from 'ckeditor5/src/utils';
 
 const DEFAULT_OPTIONS = { autoRefresh: true };
 const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;

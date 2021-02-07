@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module mention/mentioncommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { Command } from 'ckeditor5/src/core';
+import { CKEditorError, toMap } from 'ckeditor5/src/utils';
+
 import { _addMentionAttributes } from './mentionediting';
 
 /**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@ import {
 	toWidgetEditable,
 	setHighlightHandling,
 	findOptimalInsertionPosition,
+	checkSelectionOnObject,
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME,
 	centeredBalloonPositionForLongWidgets
@@ -499,6 +500,80 @@ describe( 'widget utils', () => {
 
 				expect( pos.path ).to.deep.equal( [ 2 ] );
 			} );
+		} );
+	} );
+
+	describe( 'checkSelectionOnObject()', () => {
+		let model;
+
+		beforeEach( () => {
+			model = new Model();
+
+			model.document.createRoot();
+
+			model.schema.register( 'image', {
+				allowIn: '$root',
+				isObject: true,
+				isBlock: true
+			} );
+
+			model.schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
+
+			model.schema.register( 'element', {
+				allowIn: '$root',
+				isSelectable: true
+			} );
+
+			model.schema.extend( '$text', {
+				allowIn: 'image'
+			} );
+		} );
+
+		it( 'should return false if no element is selected', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+
+		it( 'should return false if the selection is not on an object', () => {
+			setData( model, '[<element></element>]' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+
+		it( 'should return true if the selection is on an object', () => {
+			setData( model, '<paragraph></paragraph>[<image></image>]' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.true;
+		} );
+
+		it( 'should return false if the selection contains an object', () => {
+			setData( model, '<paragraph>fo[o</paragraph><image></image><paragraph>ba]r</paragraph>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+
+		it( 'should return false if the selection is nested in an object', () => {
+			setData( model, '<image>[foo]</image>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
 		} );
 	} );
 

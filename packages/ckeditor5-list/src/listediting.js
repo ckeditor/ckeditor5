@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,12 +10,9 @@
 import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
+import { Plugin } from 'ckeditor5/src/core';
+import { EnterModelObserver } from 'ckeditor5/src/enter';
+import { DeleteModelObserver } from 'ckeditor5/src/typing';
 
 import {
 	cleanList,
@@ -53,7 +50,7 @@ export default class ListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Paragraph, Enter, Delete ];
+		return [ 'Paragraph', 'Enter', 'Delete' ];
 	}
 
 	/**
