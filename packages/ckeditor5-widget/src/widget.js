@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import { isForwardArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -128,15 +127,13 @@ export default class Widget extends Plugin {
 
 		this.listenTo( arrowKeyObserver.for( '$text' ), 'arrowkey', verticalNavigationHandler( this.editor.editing ) );
 
-		const deleteObserver = this.editor.editing.getObserver( DeleteModelObserver );
-
 		// Handle custom delete behaviour.
-		this.listenTo( deleteObserver.for( '$root' ), 'delete', ( evt, data ) => {
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			if ( this._handleDelete( data.direction == 'forward' ) ) {
 				data.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { context: '$root' } );
 	}
 
 	/**

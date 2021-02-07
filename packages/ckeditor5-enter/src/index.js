@@ -9,4 +9,3 @@
 
 export { default as Enter } from './enter';
 export { default as ShiftEnter } from './shiftenter';
-export { default as EnterModelObserver } from './entermodelobserver';

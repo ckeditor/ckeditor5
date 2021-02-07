@@ -11,8 +11,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
-import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
-import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
@@ -33,6 +31,8 @@ import {
 import {
 	isNonTypingKeystroke
 } from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+
+import { isWidget } from '../utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
@@ -545,10 +545,9 @@ export default class WidgetTypeAround extends Plugin {
 	_enableInsertingParagraphsOnEnterKeypress() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
+		const editingView = editor.editing.view;
 
-		const enterObserver = editor.editing.getObserver( EnterModelObserver );
-
-		this._listenToIfEnabled( enterObserver.for( '$object' ), 'enter', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
 			const selectedModelElement = selection.getSelectedElement();
 
 			if ( !selectedModelElement ) {
@@ -577,7 +576,7 @@ export default class WidgetTypeAround extends Plugin {
 				domEventData.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { context: '$widget', contextMatcher: isWidget } );
 	}
 
 	/**
@@ -629,12 +628,11 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableDeleteIntegration() {
 		const editor = this.editor;
+		const editingView = editor.editing.view;
 		const model = editor.model;
 		const schema = model.schema;
 
-		const deleteObserver = editor.editing.getObserver( DeleteModelObserver );
-
-		this._listenToIfEnabled( deleteObserver.for( '$object' ), 'delete', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'delete', ( evt, domEventData ) => {
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 
 			if ( !selectedModelWidget ) {
@@ -702,7 +700,7 @@ export default class WidgetTypeAround extends Plugin {
 			// If nothing was deleted, then the default handler will have nothing to do anyway.
 			domEventData.preventDefault();
 			evt.stop();
-		} );
+		}, { context: '$widget', contextMatcher: isWidget } );
 	}
 
 	/**

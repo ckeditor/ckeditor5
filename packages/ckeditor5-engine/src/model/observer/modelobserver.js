@@ -124,7 +124,7 @@ export default class ModelObserver {
 
 			const eventInfo = new EventInfo( this, this.modelEventType );
 
-			const position = selection.focus.path.length < selection.anchor.path.length ? selection.anchor : selection.focus;
+			const position = selection.anchor.path.length > selection.focus.path.length ? selection.anchor : selection.focus;
 			const acceptsText = selection.isCollapsed && schema.checkChild( position, '$text' );
 
 			let node = selection.getSelectedElement() || position.textNode || position.parent;

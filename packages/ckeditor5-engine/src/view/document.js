@@ -11,6 +11,7 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import BubblingObserver from './observer/bubblingobserver';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -25,8 +26,9 @@ export default class Document {
 	 * Creates a Document instance.
 	 *
 	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
+	 * @param {Map} observers TODO
 	 */
-	constructor( stylesProcessor ) {
+	constructor( stylesProcessor, observers ) {
 		/**
 		 * Selection done on this document.
 		 *
@@ -97,6 +99,14 @@ export default class Document {
 		 * @member {Set}
 		 */
 		this._postFixers = new Set();
+
+		/**
+		 * TODO
+		 *
+		 * @private
+		 * @member {Map}
+		 */
+		this._observers = observers;
 	}
 
 	/**
@@ -188,6 +198,32 @@ export default class Document {
 				}
 			}
 		} while ( wasFixed );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @protected
+	 */
+	_addEventListener( event, callback, options = {} ) {
+		if ( options.context ) {
+			for ( const observer of this._observers.values() ) {
+				if ( observer instanceof BubblingObserver && observer.eventType == event ) {
+					observer._addListener( options.context, callback, options );
+				}
+			}
+		} else {
+			ObservableMixin._addEventListener.call( this, event, callback, options );
+		}
+	}
+
+	/**
+	 * TODO
+	 * @protected
+	 */
+	_removeEventListener( event, callback ) {
+		// TODO
+		return ObservableMixin._removeEventListener.call( this, event, callback );
 	}
 
 	/**

@@ -11,8 +11,8 @@ import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Enter, EnterModelObserver } from 'ckeditor5/src/enter';
-import { Delete, DeleteModelObserver } from 'ckeditor5/src/typing';
+import { Enter } from 'ckeditor5/src/enter';
+import { Delete } from 'ckeditor5/src/typing';
 
 import {
 	cleanList,
@@ -117,11 +117,11 @@ export default class ListEditing extends Plugin {
 		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
 
-		const enterObserver = editor.editing.getObserver( EnterModelObserver );
+		const viewDocument = editing.view.document;
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
-		this.listenTo( enterObserver.for( 'listItem' ), 'enter', ( evt, data ) => {
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
 			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
@@ -131,13 +131,11 @@ export default class ListEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		} );
-
-		const deleteObserver = editor.editing.getObserver( DeleteModelObserver );
+		}, { context: 'li' } );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		this.listenTo( deleteObserver.for( 'listItem' ), 'delete', ( evt, data ) => {
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			// Check conditions from those that require less computations like those immediately available.
 			if ( data.direction !== 'backward' ) {
 				return;
@@ -171,7 +169,7 @@ export default class ListEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		} );
+		}, { context: 'li' } );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
