@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { EnterModelObserver } from 'ckeditor5/src/enter';
+import { ShiftEnter, EnterModelObserver } from 'ckeditor5/src/enter';
 
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
@@ -45,7 +45,7 @@ export default class CodeBlockEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'ShiftEnter' ];
+		return [ ShiftEnter ];
 	}
 
 	/**

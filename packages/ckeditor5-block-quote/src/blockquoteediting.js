@@ -8,10 +8,10 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { Enter, EnterModelObserver } from 'ckeditor5/src/enter';
+import { Delete, DeleteModelObserver } from 'ckeditor5/src/typing';
 
 import BlockQuoteCommand from './blockquotecommand';
-import { EnterModelObserver } from 'ckeditor5/src/enter';
-import { DeleteModelObserver } from 'ckeditor5/src/typing';
 
 /**
  * The block quote editing.
@@ -32,7 +32,7 @@ export default class BlockQuoteEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'Enter', 'Delete' ];
+		return [ Enter, Delete ];
 	}
 
 	/**

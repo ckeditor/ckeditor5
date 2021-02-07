@@ -14,6 +14,8 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import EnterModelObserver from '@ckeditor/ckeditor5-enter/src/entermodelobserver';
 import DeleteModelObserver from '@ckeditor/ckeditor5-typing/src/deletemodelobserver';
 import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import {
 	isForwardArrowKeyCode,
 	keyCodes
@@ -66,7 +68,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'Enter', 'Delete' ];
+		return [ Enter, Delete ];
 	}
 
 	/**

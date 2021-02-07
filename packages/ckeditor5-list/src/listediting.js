@@ -11,8 +11,8 @@ import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 
 import { Plugin } from 'ckeditor5/src/core';
-import { EnterModelObserver } from 'ckeditor5/src/enter';
-import { DeleteModelObserver } from 'ckeditor5/src/typing';
+import { Enter, EnterModelObserver } from 'ckeditor5/src/enter';
+import { Delete, DeleteModelObserver } from 'ckeditor5/src/typing';
 
 import {
 	cleanList,
@@ -50,7 +50,7 @@ export default class ListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'Paragraph', 'Enter', 'Delete' ];
+		return [ Enter, Delete ];
 	}
 
 	/**
