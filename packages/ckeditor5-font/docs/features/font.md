@@ -180,7 +180,7 @@ ClassicEditor
 
 ### Accepting all font sizes
 
-By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontSize.supportAllValues`} option.
+By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} option.
 
 ```js
 ClassicEditor
@@ -496,6 +496,8 @@ The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers
 ## Content compatibility
 
 The {@link module:font/font~Font} plugin provides basic support for deprecated `<font>` tag styling.
+
+While `<font color>` is always supported, to use `<font face>` and `<font size>` you need enable {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} and {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} options respectively.
 
 Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in modern format, i.e. one-way transformation.
 
