@@ -31,7 +31,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 6;
+	const DEFAULT_OBSERVERS_COUNT = 7;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	beforeEach( () => {
