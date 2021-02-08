@@ -13,7 +13,6 @@ import TableWalker from './tablewalker';
 import { Plugin } from 'ckeditor5/src/core';
 import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
 import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
-import { ArrowKeysModelObserver } from 'ckeditor5/src/engine';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -40,14 +39,15 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
+
 		// Handle Tab key navigation.
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		const arrowKeyObserver = this.editor.editing.getObserver( ArrowKeysModelObserver );
-
-		this.listenTo( arrowKeyObserver.for( 'table' ), 'arrowkey', ( ...args ) => this._onArrowKey( ...args ) );
+		this.listenTo( viewDocument, 'arrowkey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
 	}
 
 	/**

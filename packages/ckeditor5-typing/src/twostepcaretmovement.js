@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 
 /**
  * This plugin enables the two-step caret (phantom) movement behavior for
@@ -141,13 +140,13 @@ export default class TwoStepCaretMovement extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
+		const view = editor.editing.view;
 		const locale = editor.locale;
 
 		const modelSelection = model.document.selection;
-		const arrowKeyObserver = editor.editing.getObserver( ArrowKeysModelObserver );
 
 		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
-		this.listenTo( arrowKeyObserver.for( '$text' ), 'arrowkey', ( evt, data ) => {
+		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
 			// This implementation works only for collapsed selection.
 			if ( !modelSelection.isCollapsed ) {
 				return;
@@ -181,7 +180,7 @@ export default class TwoStepCaretMovement extends Plugin {
 			if ( isMovementHandled === true ) {
 				evt.stop();
 			}
-		}, { priority: 'highest' } );
+		}, { context: '$text', priority: 'highest' } );
 
 		/**
 		 * A flag indicating that the automatic gravity restoration should not happen upon the next

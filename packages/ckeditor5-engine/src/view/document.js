@@ -208,7 +208,7 @@ export default class Document {
 	_addEventListener( event, callback, options = {} ) {
 		if ( options.context ) {
 			for ( const observer of this._observers.values() ) {
-				if ( observer instanceof BubblingObserver && observer.eventType == event ) {
+				if ( observer instanceof BubblingObserver && observer.newEventType == event ) {
 					observer._addListener( options.context, callback, options );
 				}
 			}

@@ -25,8 +25,9 @@ export default class BubblingObserver extends Observer {
 	 *
 	 * @param {module:engine/view/view~View} view
 	 * @param {String} eventType TODO
+	 * @param {String} [newEventType=eventType] TODO
 	 */
-	constructor( view, eventType ) {
+	constructor( view, eventType, newEventType = eventType ) {
 		super( view );
 
 		/**
@@ -36,6 +37,14 @@ export default class BubblingObserver extends Observer {
 		 * @member {String}
 		 */
 		this.eventType = eventType;
+
+		/**
+		 * Type of the event the observer will emit.
+		 *
+		 * @readonly
+		 * @member {String}
+		 */
+		this.newEventType = newEventType;
 
 		/**
 		 * TODO
@@ -87,7 +96,7 @@ export default class BubblingObserver extends Observer {
 			this._customContexts.set( options.context, options.contextMatcher );
 		}
 
-		listener._addEventListener( this.eventType, callback, options );
+		listener._addEventListener( this.newEventType, callback, options );
 	}
 
 	/**
@@ -95,7 +104,7 @@ export default class BubblingObserver extends Observer {
 	 *
 	 * @protected
 	 */
-	_removeListener( callback, options ) {
+	_removeListener( /* callback, options */ ) {
 		// TODO
 	}
 
@@ -107,8 +116,8 @@ export default class BubblingObserver extends Observer {
 	 * @param {...*} [args]
 	 * @returns {Array.<*>|Boolean} False if event should not be handled. TODO
 	 */
-	_translateEvent( eventName, ...args ) {
-		return [ new EventInfo( this, eventName ), ...args ];
+	_translateEvent( ...args ) {
+		return args;
 	}
 
 	/**
@@ -124,13 +133,12 @@ export default class BubblingObserver extends Observer {
 				return;
 			}
 
-			const translatedEvent = this._translateEvent( event.name, ...args );
+			const eventInfo = new EventInfo( this, this.newEventType );
+			let eventArgs = this._translateEvent( ...args );
 
-			if ( translatedEvent === false ) {
+			if ( eventArgs === false ) {
 				return;
 			}
-
-			let [ eventInfo, ...eventArgs ] = translatedEvent;
 
 			if ( !Array.isArray( eventArgs ) ) {
 				eventArgs = [ eventArgs ];

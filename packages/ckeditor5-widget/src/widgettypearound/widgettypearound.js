@@ -11,7 +11,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
-import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import {
@@ -264,19 +263,18 @@ export default class WidgetTypeAround extends Plugin {
 		const model = editor.model;
 		const modelSelection = model.document.selection;
 		const schema = model.schema;
-
-		const arrowKeyObserver = editor.editing.getObserver( ArrowKeysModelObserver );
+		const editingView = editor.editing.view;
 
 		// This is the main listener responsible for the fake caret.
 		// Note: The priority must precede the default Widget class keydown handler ("high").
 		// TODO split into 2 separate handlers
-		this._listenToIfEnabled( arrowKeyObserver.for( '$object' ), 'arrowkey', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'arrowkey', ( evt, domEventData ) => {
 			this._handleArrowKeyPress( evt, domEventData );
-		}, { priority: 'high' } );
+		}, { context: '$widget', contextMatcher: isWidget, priority: 'high' } );
 
-		this._listenToIfEnabled( arrowKeyObserver.for( '$text' ), 'arrowkey', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'arrowkey', ( evt, domEventData ) => {
 			this._handleArrowKeyPress( evt, domEventData );
-		}, { priority: 'high' } );
+		}, { context: '$text', priority: 'high' } );
 
 		// This listener makes sure the widget type around selection attribute will be gone from the model
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected

@@ -56,9 +56,7 @@ export default class Delete extends Plugin {
 
 			data.preventDefault();
 
-			if ( editor.ui ) {
-				view.scrollToTheSelection();
-			}
+			view.scrollToTheSelection();
 		} );
 
 		// Android IMEs have a quirk - they change DOM selection after the input changes were performed by the browser.
