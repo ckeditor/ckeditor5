@@ -12,6 +12,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import AlignmentCommand from '../src/alignmentcommand';
+import { CKEditorError } from '../../../src/utils';
 
 describe( 'AlignmentEditing', () => {
 	let editor, model;
@@ -302,12 +303,90 @@ describe( 'AlignmentEditing', () => {
 			} );
 		} );
 
-		// TODO:
-		// * Can work without class names (backwards-compatible).
-		// * Incorrect length of params.
-		// * Not an array.
-		// * Limited options should map to limited set of classes.
-		describe( 'classNames', () => {} );
+		describe( 'classNames', () => {
+			it( 'default value', () => {
+				expect( editor.config.get( 'alignment.classNames' ) ).to.deep.equal( [ ] );
+			} );
+
+			it( 'should throw when there are too many classes', async () => {
+				try {
+					await VirtualTestEditor
+						.create( {
+							language: {
+								content: 'ar'
+							},
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								classNames: [ 'foo-left', 'foo-right', 'foo-center', 'foo-justify', 'foo-extra' ]
+							}
+						} );
+				} catch ( error ) {
+					expect( error.constructor ).to.equal( CKEditorError );
+					expect( error ).to.match( /alignment-config-classnames-not-matching/ );
+				}
+			} );
+
+			it( 'should throw when there are fewer classes than alignment options', async () => {
+				try {
+					await VirtualTestEditor
+						.create( {
+							language: {
+								content: 'ar'
+							},
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								classNames: [ 'foo-left', 'foo-right', 'foo-center' ]
+							}
+						} );
+				} catch ( error ) {
+					expect( error.constructor ).to.equal( CKEditorError );
+					expect( error ).to.match( /alignment-config-classnames-not-matching/ );
+				}
+			} );
+
+			it( 'should throw when classNames are not an array', async () => {
+				try {
+					await VirtualTestEditor
+						.create( {
+							language: {
+								content: 'ar'
+							},
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								classNames: {}
+							}
+						} );
+				} catch ( error ) {
+					expect( error.constructor ).to.equal( CKEditorError );
+					expect( error ).to.match( /alignment-config-classnames-not-matching/ );
+				}
+			} );
+
+			it( 'should map limited options to limited set of classes', () => {
+				return VirtualTestEditor
+					.create( {
+						language: {
+							content: 'ar'
+						},
+						plugins: [ AlignmentEditing, Paragraph ],
+						alignment: {
+							options: [ 'left', 'center' ],
+							classNames: [ 'foo-left', 'foo-right' ]
+						}
+					} )
+					.then( newEditor => {
+						const model = newEditor.model;
+						const data = '<p style="text-align:left;">x</p>';
+
+						newEditor.setData( data );
+
+						expect( getModelData( model ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
+						expect( newEditor.getData() ).to.equal( '<p class="foo-left">x</p>' );
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
 	} );
 } );
 
