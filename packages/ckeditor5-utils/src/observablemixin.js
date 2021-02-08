@@ -15,6 +15,9 @@ const observablePropertiesSymbol = Symbol( 'observableProperties' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );
 const boundPropertiesSymbol = Symbol( 'boundProperties' );
 
+const _decoratedMethods = Symbol( 'decoratedMethods' );
+const _decoratedOriginal = Symbol( 'decoratedOriginal' );
+
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the
  * {@link ~Observable} interface.
@@ -258,10 +261,32 @@ const ObservableMixin = {
 		this[ methodName ] = function( ...args ) {
 			return this.fire( methodName, args );
 		};
+
+		this[ methodName ][ _decoratedOriginal ] = originalMethod;
+
+		if ( !this[ _decoratedMethods ] ) {
+			this[ _decoratedMethods ] = [];
+		}
+
+		this[ _decoratedMethods ].push( methodName );
 	}
 };
 
 extend( ObservableMixin, EmitterMixin );
+
+// Override the EmitterMixin stopListening method to be able to clean decorated methods.
+ObservableMixin.stopListening = function( emitter, event, callback ) {
+	// Removing all listeners so let's clean the decorated methods to the original state.
+	if ( !emitter && this[ _decoratedMethods ] ) {
+		for ( const methodName of this[ _decoratedMethods ] ) {
+			this[ methodName ] = this[ methodName ][ _decoratedOriginal ];
+		}
+
+		delete this[ _decoratedMethods ];
+	}
+
+	EmitterMixin.stopListening.call( this, emitter, event, callback );
+};
 
 export default ObservableMixin;
 
