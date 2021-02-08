@@ -36,6 +36,10 @@ import HtmlEmbed from "@ckeditor/ckeditor5-html-embed/src/htmlembed";
 import Font from "@ckeditor/ckeditor5-font/src/font";
 import WordCount from "@ckeditor/ckeditor5-word-count/src/wordcount";
 import SelectAll from "@ckeditor/ckeditor5-select-all/src/selectall";
+import FileUpload from "./ckeditor5-file-upload/fileupload";
+import SimpleFileUploadAdapter from "./ckeditor5-file-upload/src/simplefileuploadadapter";
+import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -71,6 +75,9 @@ ClassicEditor.builtinPlugins = [
 	Font,
 	WordCount,
 	SelectAll,
+	FileUpload,
+	SimpleFileUploadAdapter,
+	PasteFromOffice,
 ];
 
 // Editor configuration.
@@ -91,6 +98,7 @@ ClassicEditor.defaultConfig = {
 			"outdent",
 			"|",
 			"imageUpload",
+			"fileUpload",
 			"blockQuote",
 			"insertTable",
 			"htmlEmbed",
@@ -147,5 +155,8 @@ ClassicEditor.defaultConfig = {
 				class: "ck-heading_heading4",
 			},
 		],
+	},
+	simpleFileUpload: {
+		fileTypes: [".pdf", ".doc", ".docx", ".xls", ".xlsx"],
 	},
 };
