@@ -28,6 +28,16 @@
 		float: right;
 		margin-left: var(--ck-image-style-spacing);
 	}
+
+	& .image-style-align-right-x {
+		margin-right: 0;
+		margin-left: auto;
+	}
+
+	& .image-style-align-left-x {
+		margin-left: 0;
+		margin-right: auto;
+	}
 }
 
 .ck-content .image-inline {

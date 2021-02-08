@@ -63,8 +63,8 @@ ClassicEditor
 				arrangements: [
 					'blockCenter',
 					'blockSide',
-					'inlineLeft',
-					'inlineRight',
+					'left',
+					'right',
 					'inline',
 					'blockCenter',
 					'blockLeft',
@@ -77,8 +77,8 @@ ClassicEditor
 			},
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:inParagraph:inlineLeft',
-				'imageStyle:inParagraph:inlineRight',
+				'imageStyle:inParagraph:left',
+				'imageStyle:inParagraph:right',
 				'imageStyle:betweenParagraphs:blockCenter',
 				'imageStyle:betweenParagraphs:blockLeft',
 				'imageStyle:betweenParagraphs:blockRight',

@@ -37,19 +37,19 @@ const defaultStyles = {
 			isDefault: true
 		},
 
-		inlineLeft: {
-			name: 'inlineLeft',
+		left: {
+			name: 'left',
 			title: 'Left aligned image',
 			icon: icons.inlineLeftIcon,
-			modelElement: 'imageInline',
+			modelElement: 'inherit',
 			className: 'image-style-align-left'
 		},
 
-		inlineRight: {
-			name: 'inlineRight',
+		right: {
+			name: 'right',
 			title: 'Right aligned image',
 			icon: icons.inlineRightIcon,
-			modelElement: 'imageInline',
+			modelElement: 'inherit',
 			className: 'image-style-align-right'
 		},
 
@@ -77,7 +77,7 @@ const defaultStyles = {
 			title: 'Left aligned image',
 			icon: icons.leftIcon,
 			modelElement: 'image',
-			className: 'image-style-align-left'
+			className: 'image-style-align-left-x'
 		},
 
 		// This style represents a centered image.
@@ -95,7 +95,7 @@ const defaultStyles = {
 			title: 'Right aligned image',
 			icon: icons.rightIcon,
 			modelElement: 'image',
-			className: 'image-style-align-right'
+			className: 'image-style-align-right-x'
 		}
 	},
 

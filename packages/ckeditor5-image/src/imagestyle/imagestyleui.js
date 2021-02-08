@@ -188,7 +188,9 @@ export default class ImageStyleUI extends Plugin {
 			view.bind( 'isOn' ).to( command, 'value', value => value === buttonConfig.name );
 
 			view.on( 'execute', () => {
-				editor.execute( 'imageTypeSwitch', buttonConfig.modelElement );
+				if ( buttonConfig.modelElement !== 'inherit' ) {
+					editor.execute( 'imageTypeSwitch', buttonConfig.modelElement );
+				}
 				editor.execute( 'imageStyle', { value: buttonConfig.name } );
 				editor.editing.view.focus();
 			} );
