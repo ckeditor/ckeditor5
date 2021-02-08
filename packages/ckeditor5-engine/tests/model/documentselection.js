@@ -1808,10 +1808,7 @@ describe( 'DocumentSelection', () => {
 				} );
 
 				const batch = new Batch();
-				const splitPosition = new Position( root, [ 1, 2 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
-
-				const splitOperation = new SplitOperation( splitPosition, 4, insertionPosition, null, 0 );
+				const splitOperation = new SplitOperation( new Position( root, [ 1, 2 ] ), 4, null, 0 );
 
 				batch.addOperation( splitOperation );
 				model.applyOperation( splitOperation );

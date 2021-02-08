@@ -2051,7 +2051,8 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 		const splitPosition = new Position( b.graveyardPosition.root, splitPath );
 		const insertionPosition = SplitOperation.getInsertionPosition( new Position( b.graveyardPosition.root, splitPath ) );
 
-		const additionalSplit = new SplitOperation( splitPosition, 0, insertionPosition, null, 0 );
+		const additionalSplit = new SplitOperation( splitPosition, 0, null, 0 );
+		additionalSplit.insertionPosition = insertionPosition;
 
 		a.splitPosition = a.splitPosition._getTransformedByMergeOperation( b );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
@@ -2126,7 +2127,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// After split:
 	// <paragraph>A</paragraph><paragraph>d</paragraph><paragraph>Xbcyz</paragraph>
 	//
-	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) && !a.graveyardPosition ) {
+	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) ) {
 		const howManyRemoved = b.howMany - ( a.splitPosition.offset - b.sourcePosition.offset );
 		a.howMany -= howManyRemoved;
 
