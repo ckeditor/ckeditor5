@@ -10,7 +10,6 @@ import Enter from '../src/enter';
 import EnterCommand from '../src/entercommand';
 import EnterObserver from '../src/enterobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 describe( 'Enter feature', () => {
 	let element, editor, viewDocument;
@@ -85,22 +84,6 @@ describe( 'Enter feature', () => {
 		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		sinon.assert.calledOnce( domEvt.preventDefault );
-	} );
-
-	it( 'should not crash in virtual editor', async () => {
-		const editor = await VirtualTestEditor.create( {
-			plugins: [ Enter ]
-		} );
-
-		const domEvt = getDomEvent();
-		const commandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
-		const viewDocument = editor.editing.view.document;
-
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt ) );
-
-		sinon.assert.calledOnce( commandExecuteSpy );
-
-		await editor.destroy();
 	} );
 
 	function getDomEvent() {

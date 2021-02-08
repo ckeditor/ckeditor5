@@ -9,7 +9,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import ArrowKeysModelObserver from '@ckeditor/ckeditor5-engine/src/model/observer/arrowkeysmodelobserver';
 import TwoStepCaretMovement from '../src/twostepcaretmovement';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -746,12 +745,10 @@ describe( 'TwoStepCaretMovement()', () => {
 
 		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
-		const observer = editor.editing.getObserver( ArrowKeysModelObserver ).for( '$text' );
-
-		emitter.listenTo( observer, 'arrowkey', highestPlusPrioritySpy, { priority: priorities.highest + 1 } );
-		emitter.listenTo( observer, 'arrowkey', highestPrioritySpy, { priority: 'highest' } );
-		emitter.listenTo( observer, 'arrowkey', highPrioritySpy, { priority: 'high' } );
-		emitter.listenTo( observer, 'arrowkey', normalPrioritySpy, { priority: 'normal' } );
+		emitter.listenTo( view.document, 'arrowkey', highestPlusPrioritySpy, { context: '$text', priority: priorities.highest + 1 } );
+		emitter.listenTo( view.document, 'arrowkey', highestPrioritySpy, { context: '$text', priority: 'highest' } );
+		emitter.listenTo( view.document, 'arrowkey', highPrioritySpy, { context: '$text', priority: 'high' } );
+		emitter.listenTo( view.document, 'arrowkey', normalPrioritySpy, { context: '$text', priority: 'normal' } );
 
 		fireKeyDownEvent( {
 			keyCode: keyCodes.arrowright,

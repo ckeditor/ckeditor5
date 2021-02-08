@@ -160,7 +160,7 @@ export default class BubblingObserver extends Observer {
 		const selection = this.document.selection;
 
 		this.listenTo( this.document, this.eventType, ( event, ...args ) => {
-			if ( !this.isEnabled ) {
+			if ( !this.isEnabled || !this._listeners.size ) {
 				return;
 			}
 

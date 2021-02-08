@@ -7,7 +7,6 @@ import Delete from '../src/delete';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -102,21 +101,6 @@ describe( 'Delete feature', () => {
 
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( executeSpy, scrollSpy );
-	} );
-
-	it( 'should not crash in virtual editor', async () => {
-		const editor = await VirtualTestEditor.create( {
-			plugins: [ Delete ]
-		} );
-
-		const commandExecuteSpy = sinon.stub( editor.commands.get( 'delete' ), 'execute' );
-		const viewDocument = editor.editing.view.document;
-
-		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), { direction: 'backward' } ) );
-
-		sinon.assert.calledOnce( commandExecuteSpy );
-
-		await editor.destroy();
 	} );
 
 	function getDomEvent() {

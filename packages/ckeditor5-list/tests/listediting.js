@@ -24,9 +24,12 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -50,6 +53,9 @@ describe( 'ListEditing', () => {
 					isBlock: true,
 					isObject: true
 				} );
+
+				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
+				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
 			} );
 	} );
 
