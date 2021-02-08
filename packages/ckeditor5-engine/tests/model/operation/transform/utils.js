@@ -16,7 +16,7 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
 import { getData, parse } from '../../../../src/dev-utils/model';
-import OperationTransform from '../../../../src/model/operation/transform';
+import { transformSets } from '../../../../src/model/operation/transform';
 import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 import OperationFactory from '../../../../src/model/operation/operationfactory';
@@ -330,9 +330,9 @@ export function syncClients() {
 			};
 
 			if ( localClient.orderNumber < remoteClient.orderNumber ) {
-				remoteOperationsTransformed = OperationTransform.transformSets( localOperations, remoteOperations, options ).operationsB;
+				remoteOperationsTransformed = transformSets( localOperations, remoteOperations, options ).operationsB;
 			} else {
-				remoteOperationsTransformed = OperationTransform.transformSets( remoteOperations, localOperations, options ).operationsA;
+				remoteOperationsTransformed = transformSets( remoteOperations, localOperations, options ).operationsA;
 			}
 
 			localClient.editor.model.enqueueChange( 'transparent', writer => {
