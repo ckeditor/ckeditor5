@@ -18,6 +18,16 @@ import htmlEmbedIcon from '../theme/icons/html.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class HtmlEmbedUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'HtmlEmbedUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
