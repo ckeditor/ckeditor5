@@ -31,7 +31,7 @@ const defaultStyles = {
 	arrangements: {
 		inline: {
 			name: 'inline',
-			title: 'Image in text line',
+			title: 'In line',
 			icon: icons.inlineIcon,
 			modelElement: 'imageInline',
 			isDefault: true
@@ -102,13 +102,13 @@ const defaultStyles = {
 	groups: {
 		inParagraph: {
 			name: 'inParagraph',
-			title: 'Image in paragraph',
+			title: 'Wrap text',
 			icon: icons.inlineLeftIcon
 		},
 
 		betweenParagraphs: {
 			name: 'betweenParagraphs',
-			title: 'Image between paragraphs',
+			title: 'Break text',
 			icon: icons.centerIcon
 		}
 	}
