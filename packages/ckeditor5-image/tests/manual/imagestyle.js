@@ -79,8 +79,8 @@ ClassicEditor
 				'imageStyle:inline',
 				'imageStyle:inParagraph:left',
 				'imageStyle:inParagraph:right',
-				'imageStyle:betweenParagraphs:blockCenter',
 				'imageStyle:betweenParagraphs:blockLeft',
+				'imageStyle:betweenParagraphs:blockCenter',
 				'imageStyle:betweenParagraphs:blockRight',
 				'|',
 				'imageTextAlternative'
