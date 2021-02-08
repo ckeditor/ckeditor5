@@ -11,7 +11,6 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import BubblingObserver from './observer/bubblingobserver';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -26,9 +25,8 @@ export default class Document {
 	 * Creates a Document instance.
 	 *
 	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
-	 * @param {Map} observers TODO
 	 */
-	constructor( stylesProcessor, observers ) {
+	constructor( stylesProcessor ) {
 		/**
 		 * Selection done on this document.
 		 *
@@ -100,13 +98,9 @@ export default class Document {
 		 */
 		this._postFixers = new Set();
 
-		/**
-		 * TODO
-		 *
-		 * @private
-		 * @member {Map}
-		 */
-		this._observers = observers;
+		// Decorate emitter protected methods to allow BubblingObservers to intercept registering/removing listeners.
+		this.decorate( '_addEventListener' );
+		this.decorate( '_removeEventListener' );
 	}
 
 	/**
@@ -198,38 +192,6 @@ export default class Document {
 				}
 			}
 		} while ( wasFixed );
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @protected
-	 */
-	_addEventListener( event, callback, options = {} ) {
-		if ( options.context ) {
-			for ( const observer of this._observers.values() ) {
-				if ( observer instanceof BubblingObserver && observer.firedEventType == event ) {
-					this.listenTo( observer, event, callback, options );
-				}
-			}
-		} else {
-			ObservableMixin._addEventListener.call( this, event, callback, options );
-		}
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @protected
-	 */
-	_removeEventListener( event, callback ) {
-		for ( const observer of this._observers.values() ) {
-			if ( observer instanceof BubblingObserver && observer.firedEventType == event ) {
-				this.stopListening( observer, event, callback );
-			}
-		}
-
-		return ObservableMixin._removeEventListener.call( this, event, callback );
 	}
 
 	/**

@@ -61,7 +61,8 @@ export default class BubblingObserver extends Observer {
 		 */
 		this._customContexts = new Map();
 
-		this._setupListener();
+		this._setupListenerInterception();
+		this._setupEventListener();
 	}
 
 	/**
@@ -123,11 +124,39 @@ export default class BubblingObserver extends Observer {
 	}
 
 	/**
+	 * Intercept adding listeners for view document for bubbling observers.
+	 *
+	 * @private
+	 */
+	_setupListenerInterception() {
+		this.listenTo( this.document, '_addEventListener', ( evt, [ event, callback, options ] ) => {
+			if ( !options.context || event != this.firedEventType ) {
+				return;
+			}
+
+			// Prevent registering a default listener.
+			evt.stop();
+
+			this.document.listenTo( this, event, callback, options );
+		}, { priority: 'high' } );
+
+		this.listenTo( this.document, '_removeEventListener', ( evt, [ event, callback ] ) => {
+			if ( event != this.firedEventType ) {
+				return;
+			}
+
+			// We don't want to prevent removing a default listener - remove it if it's registered.
+
+			this.document.stopListening( this, event, callback );
+		}, { priority: 'high' } );
+	}
+
+	/**
 	 * TODO
 	 *
 	 * @private
 	 */
-	_setupListener() {
+	_setupEventListener() {
 		const selection = this.document.selection;
 
 		this.listenTo( this.document, this.eventType, ( event, ...args ) => {

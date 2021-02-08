@@ -68,20 +68,12 @@ export default class View {
 	 */
 	constructor( stylesProcessor ) {
 		/**
-		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
-		 *
-		 * @private
-		 * @type {Map.<Function, module:engine/view/observer/observer~Observer>}
-		 */
-		this._observers = new Map();
-
-		/**
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *
 		 * @readonly
 		 * @type {module:engine/view/document~Document}
 		 */
-		this.document = new Document( stylesProcessor, this._observers );
+		this.document = new Document( stylesProcessor );
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
@@ -136,6 +128,14 @@ export default class View {
 		 * @member {WeakMap.<HTMLElement,Object>}
 		 */
 		this._initialDomRootAttributes = new WeakMap();
+
+		/**
+		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
+		 *
+		 * @private
+		 * @type {Map.<Function, module:engine/view/observer/observer~Observer>}
+		 */
+		this._observers = new Map();
 
 		/**
 		 * Is set to `true` when {@link #change view changes} are currently in progress.
