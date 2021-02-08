@@ -25,6 +25,13 @@ export default class FontFamilyUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'FontFamilyUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
