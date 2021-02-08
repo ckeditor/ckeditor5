@@ -208,8 +208,8 @@ export default class Document {
 	_addEventListener( event, callback, options = {} ) {
 		if ( options.context ) {
 			for ( const observer of this._observers.values() ) {
-				if ( observer instanceof BubblingObserver && observer.newEventType == event ) {
-					observer._addListener( options.context, callback, options );
+				if ( observer instanceof BubblingObserver && observer.firedEventType == event ) {
+					this.listenTo( observer, event, callback, options );
 				}
 			}
 		} else {
@@ -219,10 +219,16 @@ export default class Document {
 
 	/**
 	 * TODO
+	 *
 	 * @protected
 	 */
 	_removeEventListener( event, callback ) {
-		// TODO
+		for ( const observer of this._observers.values() ) {
+			if ( observer instanceof BubblingObserver && observer.firedEventType == event ) {
+				this.stopListening( observer, event, callback );
+			}
+		}
+
 		return ObservableMixin._removeEventListener.call( this, event, callback );
 	}
 

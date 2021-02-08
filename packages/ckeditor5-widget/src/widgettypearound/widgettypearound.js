@@ -605,7 +605,7 @@ export default class WidgetTypeAround extends Plugin {
 			keyCodes.backspace
 		];
 
-		// Note: The priority must precede the default model observers.
+		// Note: The priority must precede the default observers.
 		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
 			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {

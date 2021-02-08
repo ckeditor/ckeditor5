@@ -17,6 +17,9 @@ import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
  * @extends module:engine/view/observer/bubblingobserver~BubblingObserver
  */
 export default class ArrowKeysObserver extends BubblingObserver {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( view ) {
 		super( view, 'keydown', 'arrowkey' );
 	}

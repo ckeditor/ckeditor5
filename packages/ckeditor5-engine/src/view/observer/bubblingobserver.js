@@ -25,9 +25,9 @@ export default class BubblingObserver extends Observer {
 	 *
 	 * @param {module:engine/view/view~View} view
 	 * @param {String} eventType TODO
-	 * @param {String} [newEventType=eventType] TODO
+	 * @param {String} [firedEventType=eventType] TODO
 	 */
-	constructor( view, eventType, newEventType = eventType ) {
+	constructor( view, eventType, firedEventType = eventType ) {
 		super( view );
 
 		/**
@@ -39,12 +39,12 @@ export default class BubblingObserver extends Observer {
 		this.eventType = eventType;
 
 		/**
-		 * Type of the event the observer will emit.
+		 * Type of the event the observer will fire.
 		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.newEventType = newEventType;
+		this.firedEventType = firedEventType;
 
 		/**
 		 * TODO
@@ -85,18 +85,18 @@ export default class BubblingObserver extends Observer {
 	 *
 	 * @protected
 	 */
-	_addListener( context, callback, options ) {
-		let listener = this._listeners.get( context );
+	_addEventListener( event, callback, options ) {
+		let listener = this._listeners.get( options.context );
 
 		if ( !listener ) {
-			this._listeners.set( context, listener = Object.create( EmitterMixin ) );
+			this._listeners.set( options.context, listener = Object.create( EmitterMixin ) );
 		}
 
 		if ( options.contextMatcher ) {
 			this._customContexts.set( options.context, options.contextMatcher );
 		}
 
-		listener._addEventListener( this.newEventType, callback, options );
+		this.listenTo( listener, event, callback, options );
 	}
 
 	/**
@@ -104,8 +104,10 @@ export default class BubblingObserver extends Observer {
 	 *
 	 * @protected
 	 */
-	_removeListener( /* callback, options */ ) {
-		// TODO
+	_removeEventListener( event, callback ) {
+		for ( const listener of this._listeners.values() ) {
+			this.stopListening( listener, event, callback );
+		}
 	}
 
 	/**
@@ -133,7 +135,7 @@ export default class BubblingObserver extends Observer {
 				return;
 			}
 
-			const eventInfo = new EventInfo( this, this.newEventType );
+			const eventInfo = new EventInfo( this, this.firedEventType );
 			let eventArgs = this._translateEvent( ...args );
 
 			if ( eventArgs === false ) {
@@ -145,11 +147,10 @@ export default class BubblingObserver extends Observer {
 			}
 
 			const selectedElement = selection.getSelectedElement();
+			const isCustomContext = this._isCustomContext( selectedElement );
 
-			// TODO selected element could be an attribute element.
-
-			// For the not yet bubbling event trigger for $text node if selection can be there and it's not a widget selected.
-			if ( !selectedElement && this._fireListenerFor( '$text', eventInfo, ...eventArgs ) ) {
+			// For the not yet bubbling event trigger for $text node if selection can be there and it's not a custom context selected.
+			if ( !isCustomContext && this._fireListenerFor( '$text', eventInfo, ...eventArgs ) ) {
 				// Stop the original event.
 				event.stop();
 
@@ -174,10 +175,8 @@ export default class BubblingObserver extends Observer {
 				}
 
 				// Check custom contexts (i.e., a widget).
-				for ( const [ context, matcher ] of this._customContexts ) {
-					if ( matcher( node ) && this._fireListenerFor( context, eventInfo, ...eventArgs ) ) {
-						break;
-					}
+				if ( this._fireListenerForCustomContext( node, eventInfo, ...eventArgs ) ) {
+					break;
 				}
 
 				node = node.parent;
@@ -196,18 +195,58 @@ export default class BubblingObserver extends Observer {
 	 * @private
 	 * @param {String} name
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo The `EventInfo` object.
-	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
+	 * @param {...*} [eventArgs] Additional arguments to be passed to the callbacks.
 	 * @returns {Boolean} True if event stop was called.
 	 */
-	_fireListenerFor( name, eventInfo, ...args ) {
+	_fireListenerFor( name, eventInfo, ...eventArgs ) {
 		const listener = this._listeners.get( name );
 
 		if ( !listener ) {
 			return false;
 		}
 
-		listener.fire( eventInfo, ...args );
+		listener.fire( eventInfo, ...eventArgs );
 
 		return eventInfo.stop.called;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {module:engine/view/element~Element} node
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo The `EventInfo` object.
+	 * @param {...*} [eventArgs] Additional arguments to be passed to the callbacks.
+	 * @returns {Boolean} True if event stop was called.
+	 */
+	_fireListenerForCustomContext( node, eventInfo, ...eventArgs ) {
+		for ( const [ context, matcher ] of this._customContexts ) {
+			if ( matcher( node ) && this._fireListenerFor( context, eventInfo, ...eventArgs ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {module:engine/view/element~Element} selectedElement
+	 * @returns {Boolean}
+	 * @private
+	 */
+	_isCustomContext( selectedElement ) {
+		if ( !selectedElement ) {
+			return false;
+		}
+
+		for ( const matcher of this._customContexts.values() ) {
+			if ( matcher( selectedElement ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
