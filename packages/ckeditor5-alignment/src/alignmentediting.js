@@ -57,7 +57,7 @@ export default class AlignmentEditing extends Plugin {
 			 * The number of items in `alignment.classNames` should match number of items in `alignment.options`.
 			 *
 			 * @error alignment-config-classnames-not-matching
-			 * // TODO Fix params
+			 * @param {Array.<String>} enabledOptions Available alignment options set in config.
 			 * @param {Array.<String>} classNameConfig Classes listed in the config.
 			 */
 			throw new CKEditorError( 'alignment-config-classnames-not-matching', null, { enabledOptions, classNameConfig } );

@@ -304,8 +304,10 @@ describe( 'AlignmentEditing', () => {
 		} );
 
 		describe( 'classNames', () => {
-			it( 'default value', () => {
-				expect( editor.config.get( 'alignment.classNames' ) ).to.deep.equal( [ ] );
+			describe( 'default value', () => {
+				it( 'should be set', () => {
+					expect( editor.config.get( 'alignment.classNames' ) ).to.deep.equal( [ ] );
+				} );
 			} );
 
 			it( 'should throw when there are too many classes', async () => {
