@@ -10,9 +10,8 @@
 import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { Plugin } from 'ckeditor5/src/core';
+import { priorities } from 'ckeditor5/src/utils';
 
 import {
 	cleanList,
@@ -44,13 +43,6 @@ export default class ListEditing extends Plugin {
 	 */
 	static get pluginName() {
 		return 'ListEditing';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ Paragraph ];
 	}
 
 	/**

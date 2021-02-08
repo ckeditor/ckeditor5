@@ -7,7 +7,7 @@
  * @module table/tablewalker
  */
 
-// @if CK_DEBUG // import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+// @if CK_DEBUG // import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * The table iterator class. It allows to iterate over table cells. For each cell the iterator yields

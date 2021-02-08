@@ -236,6 +236,11 @@
 					"slug": "image-upload"
 				},
 				{
+					"name": "Lists",
+					"id": "features-lists",
+					"slug": "lists"
+				},
+				{
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"

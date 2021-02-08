@@ -9,8 +9,9 @@
 
 /* global document */
 
+import { createElement } from 'ckeditor5/src/utils';
+
 import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from './utils';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.

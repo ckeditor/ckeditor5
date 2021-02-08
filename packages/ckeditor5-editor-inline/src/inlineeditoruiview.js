@@ -6,14 +6,8 @@
 /**
  * @module editor-inline/inlineeditoruiview
  */
-
-import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import { BalloonPanelView, EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
+import { Rect, ResizeObserver, toUnit } from 'ckeditor5/src/utils';
 
 const toPx = toUnit( 'px' );
 

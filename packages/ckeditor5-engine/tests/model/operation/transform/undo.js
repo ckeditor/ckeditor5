@@ -686,4 +686,28 @@ describe( 'transform', () => {
 
 		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Baryz</paragraph>' );
 	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/8870
+	it( 'object, p, p, p, remove, undo', () => {
+		john.setData( '<image></image><paragraph>A</paragraph><paragraph>B[]</paragraph>' );
+
+		// I couldn't use delete command because simply executing this command several times does not
+		// work correctly when selection reaches <image></image><p>[]</p>.
+		// At this point we have custom control for firing delete event on view and I didn't want to
+		// simulate that.
+		//
+		john.remove( [ 2, 0 ], [ 2, 1 ] );
+		john.merge( [ 2 ] );
+		john.remove( [ 1, 0 ], [ 1, 1 ] );
+		john.remove( [ 1 ], [ 2 ] );
+		john.remove( [ 0 ], [ 1 ] );
+
+		john.undo();
+		john.undo();
+		john.undo();
+		john.undo();
+		john.undo();
+
+		expectClients( '<image></image><paragraph>A</paragraph><paragraph>B</paragraph>' );
+	} );
 } );

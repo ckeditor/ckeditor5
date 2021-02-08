@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-alignment",
-  "version": "24.0.0",
+  "version": "25.0.0",
   "description": "Text alignment feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,21 +9,25 @@
     "ckeditor5-feature",
     "ckeditor5-plugin"
   ],
+  "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-ui": "^24.0.0",
-    "@ckeditor/ckeditor5-utils": "^24.0.0"
+    "ckeditor5": "^25.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-block-quote": "^24.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
-    "@ckeditor/ckeditor5-engine": "^24.0.0",
-    "@ckeditor/ckeditor5-enter": "^24.0.0",
-    "@ckeditor/ckeditor5-heading": "^24.0.0",
-    "@ckeditor/ckeditor5-image": "^24.0.0",
-    "@ckeditor/ckeditor5-list": "^24.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^24.0.0",
-    "@ckeditor/ckeditor5-typing": "^24.0.0"
+    "@ckeditor/ckeditor5-block-quote": "^25.0.0",
+    "@ckeditor/ckeditor5-core": "^25.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^25.0.0",
+    "@ckeditor/ckeditor5-engine": "^25.0.0",
+    "@ckeditor/ckeditor5-enter": "^25.0.0",
+    "@ckeditor/ckeditor5-heading": "^25.0.0",
+    "@ckeditor/ckeditor5-image": "^25.0.0",
+    "@ckeditor/ckeditor5-list": "^25.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^25.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^25.0.0",
+    "@ckeditor/ckeditor5-typing": "^25.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "engines": {
     "node": ">=12.0.0",
@@ -41,6 +45,10 @@
   "files": [
     "lang",
     "src",
-    "theme"
-  ]
+    "theme",
+    "build"
+  ],
+  "scripts": {
+    "build:dll": "webpack"
+  }
 }
