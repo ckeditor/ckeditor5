@@ -495,11 +495,11 @@ The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers
 
 ## Content compatibility
 
-The {@link module:font/font~Font} plugin provides basic support for deprecated `<font>` tag styling.
+The {@link module:font/font~Font} plugin provides basic support for the deprecated `<font>` tag.
 
-While `<font color>` is always supported, to use `<font face>` and `<font size>` you need to enable {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} and {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} options respectively.
+While `<font color>` is always supported, to use `<font face>` and `<font size>` you need to enable the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} and {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} options respectively.
 
-Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in modern format, i.e. one-way transformation.
+Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
 
 
 ## Contribute

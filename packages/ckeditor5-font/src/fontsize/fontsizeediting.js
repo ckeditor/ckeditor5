@@ -153,7 +153,7 @@ export default class FontSizeEditing extends Plugin {
 	}
 
 	/**
-	 * Support `<font size="..">` formatting.
+	 * Adds support for `<font size="..">` formatting.
 	 *
 	 * @private
 	 */

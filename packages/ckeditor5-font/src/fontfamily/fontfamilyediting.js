@@ -113,7 +113,7 @@ export default class FontFamilyEditing extends Plugin {
 	}
 
 	/**
-	 * Support `<font size="..">` formatting.
+	 * Adds support for `<font size="..">` formatting.
 	 *
 	 * @private
 	 */
