@@ -379,7 +379,7 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 	conversionApi.mapper.bindElements( tableCell, cellElement );
 
 	// Additional requirement for data pipeline to have backward compatible data tables.
-	if ( !asWidget && !hasAnyAttribute( firstChild ) && isSingleParagraph ) {
+	if ( !asWidget && isSingleParagraph && !hasAnyAttribute( firstChild ) ) {
 		const innerParagraph = tableCell.getChild( 0 );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
