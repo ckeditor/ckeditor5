@@ -186,7 +186,7 @@ export default class BubblingObserver extends Observer {
 				return;
 			}
 
-			let node = selectedElement || selection.focus.parent;
+			let node = selectedElement || getDeeperParent( selection );
 
 			while ( node ) {
 				// Root node handling.
@@ -278,4 +278,15 @@ export default class BubblingObserver extends Observer {
 
 		return false;
 	}
+}
+
+// TODO
+function getDeeperParent( selection ) {
+	const focusParent = selection.focus.parent;
+	const anchorParent = selection.anchor.parent;
+
+	const focusPath = focusParent.getPath();
+	const anchorPath = anchorParent.getPath();
+
+	return focusPath.length > anchorPath.length ? focusParent : anchorParent;
 }
