@@ -24,6 +24,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import ImageInline from '../../src/imageinline';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -45,6 +47,8 @@ ClassicEditor
 			Table,
 			TableToolbar,
 			ImageInsert,
+			CKFinder,
+			CKFinderUploadAdapter,
 			AutoImage
 		],
 		toolbar: [
