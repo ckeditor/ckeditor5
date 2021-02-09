@@ -141,7 +141,7 @@ describe( 'FontFamilyEditing', () => {
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
 				} );
 
-				it( 'should support <font size=".."> styling', () => {
+				it( 'should support <font face=".."> styling', () => {
 					const data = '<p><font face="Arial,Verdana">foo</font><span style="font-family: Arial, sans-serif">bar</span></p>';
 
 					editor.setData( data );
@@ -306,7 +306,7 @@ describe( 'FontFamilyEditing', () => {
 			);
 		} );
 
-		it( 'should strip <font size=".."> styling when supportAllValues = false', () => {
+		it( 'should strip <font face=".."> styling when supportAllValues = false', () => {
 			const data = '<p><font face="Arial,Verdana">foo</font><span style="font-family: Arial">bar</span></p>';
 
 			editor.setData( data );
