@@ -64,9 +64,9 @@ describe( 'ImageInsertCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other image', () => {
+		it( 'should be true when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
@@ -80,12 +80,12 @@ describe( 'ImageInsertCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be false when the selection is on other object', () => {
+		it( 'should be true when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows image', () => {
@@ -130,7 +130,7 @@ describe( 'ImageInsertCommand', () => {
 			expect( getModelData( model ) ).to.equal( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
 		} );
 
-		it( 'should insert multiple images at selection position as other widgets', () => {
+		it( 'should insert multiple images at selection position as other widgets for inline type images', () => {
 			const imgSrc1 = 'foo/bar.jpg';
 			const imgSrc2 = 'foo/baz.jpg';
 
@@ -144,6 +144,18 @@ describe( 'ImageInsertCommand', () => {
 						`f<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]o` +
 					'</paragraph>'
 				);
+		} );
+
+		it( 'should insert multiple images at selection position as other widgets for block type images', () => {
+			const imgSrc1 = 'foo/bar.jpg';
+			const imgSrc2 = 'foo/baz.jpg';
+
+			setModelData( model, '[]' );
+
+			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
+
+			expect( getModelData( model ) )
+				.to.equal( `<image src="${ imgSrc1 }"></image>[<image src="${ imgSrc2 }"></image>]` );
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {

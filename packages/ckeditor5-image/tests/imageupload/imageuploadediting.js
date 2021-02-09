@@ -153,7 +153,7 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
-	it( 'should insert multiple image files when are pasted', () => {
+	it( 'should insert multiple image files when are pasted (inline image type)', () => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -171,6 +171,25 @@ describe( 'ImageUploadEditing', () => {
 				`foo<imageInline uploadId="${ id1 }" uploadStatus="reading"></imageInline>` +
 				`[<imageInline uploadId="${ id2 }" uploadStatus="reading"></imageInline>]` +
 			'</paragraph>'
+		);
+	} );
+
+	it( 'should insert multiple image files when are pasted (block image type)', () => {
+		const files = [ createNativeFileMock(), createNativeFileMock() ];
+		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
+		setModelData( model, '[]' );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
+		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
+
+		expect( getModelData( model ) ).to.equal(
+			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
+			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]`
 		);
 	} );
 

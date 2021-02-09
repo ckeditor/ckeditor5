@@ -100,12 +100,12 @@ describe( 'ImageUploadCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be false when the selection is on other object', () => {
+		it( 'should be true when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows image', () => {

@@ -188,9 +188,9 @@ describe( 'image widget utils', () => {
 			expect( isImageAllowed( editor ) ).to.be.true;
 		} );
 
-		it( 'should return false when the selection is on other image', () => {
+		it( 'should return true when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( isImageAllowed( editor ) ).to.be.false;
+			expect( isImageAllowed( editor ) ).to.be.true;
 		} );
 
 		it( 'should return false when the selection is inside other image', () => {
@@ -204,12 +204,12 @@ describe( 'image widget utils', () => {
 			expect( isImageAllowed( editor ) ).to.be.false;
 		} );
 
-		it( 'should return false when the selection is on other object', () => {
+		it( 'should return true when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
-			expect( isImageAllowed( editor ) ).to.be.false;
+			expect( isImageAllowed( editor ) ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside isLimit element which allows image', () => {
@@ -271,7 +271,7 @@ describe( 'image widget utils', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 		} );
 
-        it( 'should insert a block image when the selection is inside an empty paragraph', () => {
+		it( 'should insert a block image when the selection is inside an empty paragraph', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			insertImage( editor );
@@ -311,7 +311,7 @@ describe( 'image widget utils', () => {
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
-        it( 'should use the block image type when the config.image.insert.type="block" option is set', async () => {
+		it( 'should use the block image type when the config.image.insert.type="block" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'block' } }
@@ -326,7 +326,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-        it( 'should use the inline image type if the config.image.insert.type="inline" option is set', async () => {
+		it( 'should use the inline image type if the config.image.insert.type="inline" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'inline' } }
