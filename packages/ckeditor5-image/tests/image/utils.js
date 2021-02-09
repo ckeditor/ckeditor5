@@ -271,7 +271,7 @@ describe( 'image widget utils', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 		} );
 
-		it( 'should insert block image when selection is inside an empty paragraph', () => {
+        it( 'should insert a block image when the selection is inside an empty paragraph', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			insertImage( editor );
