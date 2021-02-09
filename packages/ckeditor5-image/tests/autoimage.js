@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -133,7 +133,6 @@ describe( 'AutoImage - integration', () => {
 				'http://www.example.com',
 				'https://example.com',
 				'http://www.example.com/image.svg',
-				'http://www.example.com/image.webp',
 				'http://www.example.com/image.mp3',
 				'http://www.example.com/image.exe',
 				'http://www.example.com/image.txt',

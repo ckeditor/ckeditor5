@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module cloud-services/cloudservices
  */
 
-import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin';
-import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { ContextPlugin } from 'ckeditor5/src/core';
+import { Token } from 'ckeditor5/src/cloud-services-core';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * Plugin introducing the integration between CKEditor 5 and CKEditor Cloud Services .

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -82,6 +82,30 @@ export function skipEmptyTableRow() {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
+	};
+}
+
+/**
+ * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
+ *
+ * @returns {Function} Conversion helper.
+ */
+export function ensureParagraphInTableCell( elementName ) {
+	return dispatcher => {
+		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
+			// The default converter will create a model range on converted table cell.
+			if ( !data.modelRange ) {
+				return;
+			}
+
+			// Ensure a paragraph in the model for empty table cells for converted table cells.
+			if ( data.viewItem.isEmpty ) {
+				const tableCell = data.modelRange.start.nodeAfter;
+				const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
+
+				conversionApi.writer.insertElement( 'paragraph', modelCursor );
+			}
+		}, { priority: 'low' } );
 	};
 }
 

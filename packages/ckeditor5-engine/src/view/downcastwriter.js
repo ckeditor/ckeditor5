@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -140,6 +140,17 @@ export default class DowncastWriter {
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
 		this.document.selection._setFocus( itemOrPosition, offset );
+	}
+
+	/**
+	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
+	 *
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into the created document fragment.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
+	 */
+	createDocumentFragment( children ) {
+		return new DocumentFragment( this.document, children );
 	}
 
 	/**

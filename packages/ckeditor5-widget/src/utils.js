@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,18 @@
  * @module widget/utils
  */
 
-import HighlightStack from './highlightstack';
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
-import dragHandleIcon from '../theme/icons/drag-handle.svg';
+import HighlightStack from './highlightstack';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
+
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
 /**
  * CSS class added to each widget element.
@@ -302,6 +304,19 @@ export function findOptimalInsertionPosition( selection, model ) {
 	}
 
 	return selection.focus;
+}
+
+/**
+ * Checks if the selection is on an object.
+ *
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @param {module:engine/model/schema~Schema} schema
+ * @returns {Boolean}
+*/
+export function checkSelectionOnObject( selection, schema ) {
+	const selectedElement = selection.getSelectedElement();
+
+	return !!selectedElement && schema.isObject( selectedElement );
 }
 
 /**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,7 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
@@ -18,7 +19,8 @@ ClassicEditor
 			Code,
 			CodeBlock,
 			HorizontalLine,
-			Strikethrough
+			Strikethrough,
+			TodoList
 		] ),
 		toolbar: {
 			items: [
@@ -32,6 +34,7 @@ ClassicEditor
 				'|',
 				'bulletedList',
 				'numberedList',
+				'todolist',
 				'|',
 				'outdent',
 				'indent',

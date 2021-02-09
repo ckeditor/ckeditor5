@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
 
 /* global fetch, File */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { global } from 'ckeditor5/src/utils';
 
 /**
  * Creates a regular expression used to test for image files.

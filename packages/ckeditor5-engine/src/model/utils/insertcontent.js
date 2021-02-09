@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -180,6 +180,14 @@ class Insertion {
 		this._lastNode = null;
 
 		/**
+		 * The reference to the last auto paragraph node.
+		 *
+		 * @private
+		 * @type {module:engine/model/node~Node}
+		 */
+		this._lastAutoParagraph = null;
+
+		/**
 		 * The array of nodes that should be cleaned of not allowed attributes.
 		 *
 		 * @private
@@ -217,6 +225,11 @@ class Insertion {
 		// Insert nodes collected in temporary DocumentFragment.
 		this._insertPartialFragment();
 
+		// If there was an auto paragraph then we might need to adjust the end of insertion.
+		if ( this._lastAutoParagraph ) {
+			this._updateLastNodeFromAutoParagraph( this._lastAutoParagraph );
+		}
+
 		// After the content was inserted we may try to merge it with its next sibling if the selection was in it initially.
 		// Merging with the previous sibling was performed just after inserting the first node to the document.
 		this._mergeOnRight();
@@ -224,6 +237,33 @@ class Insertion {
 		// TMP this will become a post-fixer.
 		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
 		this._filterAttributesOf = [];
+	}
+
+	/**
+	 * Updates the last node after the auto paragraphing.
+	 *
+	 * @private
+	 * @param {module:engine/model/node~Node} node The last auto paragraphing node.
+	 */
+	_updateLastNodeFromAutoParagraph( node ) {
+		const positionAfterLastNode = this.writer.createPositionAfter( this._lastNode );
+		const positionAfterNode = this.writer.createPositionAfter( node );
+
+		// If the real end was after the last auto paragraph then update relevant properties.
+		if ( positionAfterNode.isAfter( positionAfterLastNode ) ) {
+			this._lastNode = node;
+
+			/* istanbul ignore if */
+			if ( this.position.parent != node || !this.position.isAtEnd ) {
+				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
+				// At this point the insertion position should be at the end of the last auto paragraph.
+				// Note: This error is documented in other place in this file.
+				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
+			}
+
+			this.position = positionAfterNode;
+			this._setAffectedBoundaries( this.position );
+		}
 	}
 
 	/**
@@ -284,14 +324,21 @@ class Insertion {
 		}
 
 		// Try to find a place for the given node.
-		// Split the position.parent's branch up to a point where the node can be inserted.
-		// If it isn't allowed in the whole branch, then of course don't split anything.
-		const isAllowed = this._checkAndSplitToAllowedPosition( node );
+
+		// Check if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
+		// Inserts the auto paragraph if it would allow for insertion.
+		let isAllowed = this._checkAndAutoParagraphToAllowedPosition( node );
 
 		if ( !isAllowed ) {
-			this._handleDisallowedNode( node );
+			// Split the position.parent's branch up to a point where the node can be inserted.
+			// If it isn't allowed in the whole branch, then of course don't split anything.
+			isAllowed = this._checkAndSplitToAllowedPosition( node );
 
-			return;
+			if ( !isAllowed ) {
+				this._handleDisallowedNode( node );
+
+				return;
+			}
 		}
 
 		// Add node to the current temporary DocumentFragment.
@@ -655,6 +702,42 @@ class Insertion {
 			paragraph._appendChild( node );
 			this._handleNode( paragraph );
 		}
+	}
+
+	/**
+	 * Checks if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
+	 * It also handles inserting the paragraph.
+	 *
+	 * @private
+	 * @param {module:engine/model/node~Node} node The node.
+	 * @returns {Boolean} Whether an allowed position was found.
+	 * `false` is returned if the node isn't allowed at the current position or in auto paragraph, `true` if was.
+	 */
+	_checkAndAutoParagraphToAllowedPosition( node ) {
+		if ( this.schema.checkChild( this.position.parent, node ) ) {
+			return true;
+		}
+
+		// Do not auto paragraph if the paragraph won't be allowed there,
+		// cause that would lead to an infinite loop. The paragraph would be rejected in
+		// the next _handleNode() call and we'd be here again.
+		if ( !this.schema.checkChild( this.position.parent, 'paragraph' ) || !this.schema.checkChild( 'paragraph', node ) ) {
+			return false;
+		}
+
+		// Insert nodes collected in temporary DocumentFragment if the position parent needs change to process further nodes.
+		this._insertPartialFragment();
+
+		// Insert a paragraph and move insertion position to it.
+		const paragraph = this.writer.createElement( 'paragraph' );
+
+		this.writer.insert( paragraph, this.position );
+		this._setAffectedBoundaries( this.position );
+
+		this._lastAutoParagraph = paragraph;
+		this.position = this.writer.createPositionAt( paragraph, 0 );
+
+		return true;
 	}
 
 	/**

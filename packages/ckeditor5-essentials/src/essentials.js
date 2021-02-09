@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,14 +7,13 @@
  * @module essentials/essentials
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
+import { SelectAll } from 'ckeditor5/src/select-all';
+import { Typing } from 'ckeditor5/src/typing';
+import { Undo } from 'ckeditor5/src/undo';
 
 /**
  * A plugin including all essential editing features. It represents a set of features that enables similar functionalities

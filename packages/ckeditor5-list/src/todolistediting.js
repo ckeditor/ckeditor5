@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,12 @@
  * @module list/todolistediting
  */
 
+import { Plugin } from 'ckeditor5/src/core';
+import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
 import TodoListCheckCommand from './todolistcheckcommand';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import {
 	dataModelViewInsertion,
 	dataViewModelCheckmarkInsertion,
@@ -21,7 +21,6 @@ import {
 	modelViewChangeType,
 	modelViewInsertion
 } from './todolistconverters';
-import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.

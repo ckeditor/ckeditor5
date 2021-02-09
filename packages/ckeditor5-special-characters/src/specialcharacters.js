@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module special-characters/specialcharacters
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { Plugin } from 'ckeditor5/src/core';
+import { Typing } from 'ckeditor5/src/typing';
+import { createDropdown } from 'ckeditor5/src/ui';
+import { CKEditorError } from 'ckeditor5/src/utils';
 import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 import CharacterGridView from './ui/charactergridview';
 import CharacterInfoView from './ui/characterinfoview';

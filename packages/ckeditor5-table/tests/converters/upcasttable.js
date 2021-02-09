@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -194,6 +194,28 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
+		);
+	} );
+
+	it( 'should create valid table model from table with empty cells', () => {
+		model.schema.register( 'block', {
+			allowWhere: '$block',
+			allowContentOf: '$root'
+		} );
+		editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+
+		editor.setData(
+			'<block>' +
+				'<table>' +
+					'<tr>' +
+						'<td></td>' +
+					'</tr>' +
+				'</table>' +
+			'</block>'
+		);
+
+		expectModel(
+			'<block><table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table></block>'
 		);
 	} );
 

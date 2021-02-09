@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,6 +23,7 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
@@ -30,7 +31,7 @@ describe( 'ListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing, TableEditing ]
+				plugins: [ Paragraph, IndentEditing, Clipboard, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -107,7 +108,7 @@ describe( 'ListEditing', () => {
 		it( 'should add indent list command to indent command', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ListEditing, IndentEditing ]
+					plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -128,7 +129,7 @@ describe( 'ListEditing', () => {
 		it( 'should add outdent list command to outdent command', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ListEditing, IndentEditing ]
+					plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;

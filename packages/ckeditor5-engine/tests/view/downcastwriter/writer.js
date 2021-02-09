@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,8 @@ import createViewRoot from '../_utils/createroot';
 import ViewElement from '../../../src/view/element';
 import ViewSelection from '../../../src/view/selection';
 import { StylesProcessor } from '../../../src/view/stylesmap';
+import DocumentFragment from '../../../src/view/documentfragment';
+import HtmlDataProcessor from '../../../src/dataprocessor/htmldataprocessor';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
@@ -54,6 +56,40 @@ describe( 'DowncastWriter', () => {
 
 			sinon.assert.calledWithExactly( spy, root, 0 );
 			spy.restore();
+		} );
+	} );
+
+	describe( 'createDocumentFragment', () => {
+		let view;
+
+		beforeEach( () => {
+			const dataProcessor = new HtmlDataProcessor( doc );
+
+			const html = '' +
+				'<h1 style="color:blue;position:fixed;">Heading <strong>1</strong></h1>' +
+				'<p class="foo1 bar2" style="text-align:left;" data-attr="abc">Foo <i>Bar</i> <strong>Bold</strong></p>' +
+				'<p><u>Some underlined</u> text</p>' +
+				'<ul>' +
+				'<li class="single">Item 1</li>' +
+				'<li><span>Item <s>1</s></span></li>' +
+				'<li><h2>Item 1</h2></li>' +
+				'</ul>';
+
+			view = dataProcessor.toView( html );
+		} );
+
+		it( 'should create empty document fragment', () => {
+			const df = writer.createDocumentFragment();
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create document fragment with children', () => {
+			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 2 );
 		} );
 	} );
 

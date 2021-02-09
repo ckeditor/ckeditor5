@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -265,6 +265,58 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
+
+		it( 'should keep the placeholder visible when the host element is focused (keepOnFocus = true)', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			enablePlaceholder( {
+				view,
+				element,
+				text: 'foo bar baz',
+				keepOnFocus: true
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			view.change( writer => {
+				writer.setSelection( ViewRange._createIn( element ) );
+
+				// Here we are before rendering - placeholder is visible in first element;
+				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
+		it( 'should hide the placeholder when the host element is focused (keepOnFocus = false)', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			enablePlaceholder( {
+				view,
+				element,
+				text: 'foo bar baz'
+				// Defaults: keepOnFocus = false
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			view.change( writer => {
+				writer.setSelection( ViewRange._createIn( element ) );
+
+				// Here we are before rendering - placeholder is visible in first element;
+				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'disablePlaceholder', () => {
@@ -399,6 +451,15 @@ describe( 'placeholder', () => {
 			expect( needsPlaceholder( element ) ).to.be.true;
 		} );
 
+		it( 'should return false if element has content other than UI elements', () => {
+			setData( view, '<p>{moo}<ui:span></ui:span></p>' );
+			viewDocument.isFocused = true;
+
+			const element = viewRoot.getChild( 0 );
+
+			expect( needsPlaceholder( element ) ).to.be.false;
+		} );
+
 		it( 'should return true if element hosts UI elements only and document is blurred', () => {
 			setData( view, '<p><ui:span></ui:span></p>' );
 			viewDocument.isFocused = false;
@@ -415,6 +476,15 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			expect( needsPlaceholder( element ) ).to.be.true;
+		} );
+
+		it( 'should return true if we want to keep placeholder when element is focused', () => {
+			setData( view, '<p><ui:span></ui:span></p>' );
+			viewDocument.isFocused = true;
+
+			const element = viewRoot.getChild( 0 );
+
+			expect( needsPlaceholder( element, true ) ).to.be.true;
 		} );
 	} );
 } );

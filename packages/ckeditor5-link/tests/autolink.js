@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -271,7 +271,11 @@ describe( 'AutoLink', () => {
 				'http://例子.测试',
 				'http://उदाहरण.परीक्षा',
 				'http://1337.net',
-				'http://a.b-c.de'
+				'http://a.b-c.de',
+				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
+				'http://192.168.43.58/ckeditor5/latest/features/link.html',
+				'http://83.127.13.40',
+				'http://userid@83.127.13.40'
 			];
 
 			for ( const supportedURL of supportedURLs ) {
@@ -311,7 +315,8 @@ describe( 'AutoLink', () => {
 				'http://localhost',
 				'http:/cksource.com',
 				'cksource.com',
-				'ww.cksource.com'
+				'ww.cksource.com',
+				'www.cksource'
 			];
 
 			for ( const unsupportedURL of unsupportedOrInvalid ) {

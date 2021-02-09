@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-paste-from-office",
-  "version": "24.0.0",
+  "version": "25.0.0",
   "description": "Paste from Office feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,26 +9,32 @@
     "ckeditor5-feature",
     "ckeditor5-plugin"
   ],
+  "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^24.0.0",
-    "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-engine": "^24.0.0"
+    "ckeditor5": "^25.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^24.0.0",
-    "@ckeditor/ckeditor5-easy-image": "^24.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
-    "@ckeditor/ckeditor5-enter": "^24.0.0",
-    "@ckeditor/ckeditor5-font": "^24.0.0",
-    "@ckeditor/ckeditor5-heading": "^24.0.0",
-    "@ckeditor/ckeditor5-image": "^24.0.0",
-    "@ckeditor/ckeditor5-link": "^24.0.0",
-    "@ckeditor/ckeditor5-list": "^24.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^24.0.0",
-    "@ckeditor/ckeditor5-page-break": "^24.0.0",
-    "@ckeditor/ckeditor5-table": "^24.0.0",
-    "@ckeditor/ckeditor5-utils": "^24.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^25.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^25.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "^25.0.0",
+    "@ckeditor/ckeditor5-core": "^25.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^25.0.0",
+    "@ckeditor/ckeditor5-engine": "^25.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^25.0.0",
+    "@ckeditor/ckeditor5-enter": "^25.0.0",
+    "@ckeditor/ckeditor5-font": "^25.0.0",
+    "@ckeditor/ckeditor5-heading": "^25.0.0",
+    "@ckeditor/ckeditor5-image": "^25.0.0",
+    "@ckeditor/ckeditor5-link": "^25.0.0",
+    "@ckeditor/ckeditor5-list": "^25.0.0",
+    "@ckeditor/ckeditor5-page-break": "^25.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^25.0.0",
+    "@ckeditor/ckeditor5-table": "^25.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^25.0.0",
+    "@ckeditor/ckeditor5-utils": "^25.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "engines": {
     "node": ">=12.0.0",
@@ -46,6 +52,10 @@
   "files": [
     "lang",
     "src",
-    "theme"
-  ]
+    "theme",
+    "build"
+  ],
+  "scripts": {
+    "build:dll": "webpack"
+  }
 }

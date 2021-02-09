@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module font/ui/colorui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { normalizeColorOptions, getLocalizedColorOptions } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { createDropdown, normalizeColorOptions, getLocalizedColorOptions } from 'ckeditor5/src/ui';
+
 import { addColorTableToDropdown } from '../utils';
 
 /**
