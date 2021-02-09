@@ -4,12 +4,8 @@
  */
 
 .ck.ck-editor__editable {
-	& .image {
-		position: relative;
-	}
-
+	& .image,
 	& .image-inline {
-		display: inline-block;
 		position: relative;
 	}
 
