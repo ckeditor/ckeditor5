@@ -279,7 +279,7 @@ describe( 'image widget utils', () => {
 			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
 		} );
 
-		it( 'should insert block image in the document root', () => {
+		it( 'should insert a block image in the document root', () => {
 			setModelData( model, '[]' );
 
 			insertImage( editor );
@@ -311,7 +311,7 @@ describe( 'image widget utils', () => {
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
-		it( 'should use block image type if image.insert.type="block" option is set', async () => {
+        it( 'should use the block image type when the config.image.insert.type="block" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'block' } }
@@ -326,7 +326,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'should use inline image type if image.insert.type="inline" option is set', async () => {
+        it( 'should use the inline image type if the config.image.insert.type="inline" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'inline' } }
@@ -341,7 +341,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'should use inline image type when there is only ImageInlineEditing plugin enabled', async () => {
+		it( 'should use the inline image type when there is only ImageInlineEditing plugin enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageInlineEditing, Paragraph ]
 			} );
@@ -355,7 +355,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'should use block image type when there is only ImageBlockEditing plugin enabled', async () => {
+		it( 'should use block the image type when there is only ImageBlockEditing plugin enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
 				plugins: [ ImageBlockEditing, Paragraph ]
 			} );
@@ -369,7 +369,7 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 		} );
 
-		it( 'should use block image type when image.insert.type="inline" option is set ' +
+		it( 'should use the block image type when the config.image.insert.type="inline" option is set ' +
 			'but ImageInlineEditing plugin is not enabled', async () => {
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const newEditor = await VirtualTestEditor.create( {
@@ -389,7 +389,7 @@ describe( 'image widget utils', () => {
 			console.warn.restore();
 		} );
 
-		it( 'should use inline image type when image.insert.type="block" option is set ' +
+		it( 'should use the inline image type when the image.insert.type="block" option is set ' +
 			'but ImageBlockEditing plugin is not enabled', async () => {
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const newEditor = await VirtualTestEditor.create( {
