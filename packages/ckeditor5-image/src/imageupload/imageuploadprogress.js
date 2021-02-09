@@ -29,6 +29,13 @@ export default class ImageUploadProgress extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ImageUploadProgress';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
