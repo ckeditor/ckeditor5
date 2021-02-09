@@ -158,18 +158,16 @@ describe( 'ImageResizeEditing', () => {
 		} );
 	} );
 
-	function createEditor( config ) {
-		return ClassicEditor
-			.create( editorElement, config || {
-				plugins: [ Paragraph, Image, ImageStyle, ImageResizeEditing ],
-				image: {
-					resizeUnit: 'px'
-				}
-			} )
-			.then( newEditor => {
-				focusEditor( newEditor );
+	async function createEditor( config ) {
+		const newEditor = await ClassicEditor.create( editorElement, config || {
+			plugins: [ Paragraph, Image, ImageStyle, ImageResizeEditing ],
+			image: {
+				resizeUnit: 'px'
+			}
+		} );
 
-				return newEditor;
-			} );
+		await focusEditor( newEditor );
+
+		return newEditor;
 	}
 } );
