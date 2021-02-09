@@ -60,7 +60,8 @@ describe( 'ImageUploadEditing', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [
-					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard
+					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing,
+					Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard
 				]
 			} )
 			.then( newEditor => {
@@ -107,7 +108,10 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should load Clipboard plugin', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+				plugins: [
+					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing,
+					Paragraph, UndoEditing, UploadAdapterPluginMock
+				]
 			} )
 			.then( editor => {
 				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
@@ -195,7 +199,10 @@ describe( 'ImageUploadEditing', () => {
 		// Clipboard plugin is required for this test.
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
+				plugins: [
+					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing,
+					Paragraph, UploadAdapterPluginMock, Clipboard
+				]
 			} )
 			.then( editor => {
 				const fileMock = createNativeFileMock();
@@ -754,9 +761,7 @@ describe( 'ImageUploadEditing', () => {
 			'<paragraph>bar</paragraph>' +
 			'<paragraph><imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline></paragraph>' +
 			'<paragraph><imageInline src="" uploadId="#loader2_id" uploadStatus="reading"></imageInline></paragraph>' +
-			'<paragraph>' +
-				'<imageInline src="" uploadId="#loader3_id" uploadStatus="reading"></imageInline>[]foo' +
-			'</paragraph>';
+			'<paragraph><imageInline src="" uploadId="#loader3_id" uploadStatus="reading"></imageInline>[]foo</paragraph>';
 		const expectedFinalModel =
 			'<paragraph>bar</paragraph>' +
 			'<paragraph><imageInline src="" uploadId="#loader1_id" uploadStatus="reading"></imageInline></paragraph>' +
