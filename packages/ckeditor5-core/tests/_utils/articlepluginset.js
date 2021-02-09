@@ -39,6 +39,10 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
  * @extends module:core/plugin~Plugin
  */
 export default class ArticlePluginSet extends Plugin {
+	static get pluginName() {
+		return 'ArticlePluginSet';
+	}
+
 	static get requires() {
 		return [
 			Essentials,

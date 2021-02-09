@@ -126,7 +126,7 @@
  * will become invalid. In such case you need to provide the updated
  * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
  *
- * @member {Array.<String>} module:core/editor/editorconfig~EditorConfig#removePlugins
+ * @member {Array.<String|Function>} module:core/editor/editorconfig~EditorConfig#removePlugins
  */
 
 /**

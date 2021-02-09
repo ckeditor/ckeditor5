@@ -24,6 +24,13 @@ export default class ListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ListUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const t = this.editor.t;
 
