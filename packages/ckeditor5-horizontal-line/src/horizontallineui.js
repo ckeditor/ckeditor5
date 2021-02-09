@@ -18,6 +18,16 @@ import horizontalLineIcon from '../theme/icons/horizontalline.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class HorizontalLineUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'HorizontalLineUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;

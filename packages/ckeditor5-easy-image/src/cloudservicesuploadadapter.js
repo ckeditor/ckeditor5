@@ -25,6 +25,13 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'CloudServicesUploadAdapter';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ 'CloudServices', FileRepository ];
 	}
