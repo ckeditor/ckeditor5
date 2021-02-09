@@ -46,10 +46,10 @@ export default class ImageUploadCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const imageElement = this.editor.model.document.selection.getSelectedElement();
-		const isImage = imageElement && [ 'image', 'imageInline' ].includes( imageElement.name ) || false;
+		const selectedElement = this.editor.model.document.selection.getSelectedElement();
 
-		this.isEnabled = isImageAllowed( this.editor ) || isImage;
+		// TODO: This needs refactoring.
+		this.isEnabled = isImageAllowed( this.editor ) || isImage( selectedElement ) || isImageInline( selectedElement );
 	}
 
 	/**
@@ -64,12 +64,12 @@ export default class ImageUploadCommand extends Command {
 		const selection = this.editor.model.document.selection;
 		const fileRepository = this.editor.plugins.get( FileRepository );
 
-		files.forEach( ( file, idx ) => {
+		files.forEach( ( file, index ) => {
 			const selectedElement = selection.getSelectedElement();
 
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
-			if ( idx && selectedElement && ( isImageInline( selectedElement ) || isImage( selectedElement ) ) ) {
+			if ( index && selectedElement && ( isImageInline( selectedElement ) || isImage( selectedElement ) ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
 				uploadImage( this.editor, fileRepository, file, position );

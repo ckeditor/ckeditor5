@@ -88,9 +88,9 @@ export function isImageInline( modelElement ) {
  * @param {Object} [attributes={}] Attributes of inserted image
  * @param {module:engine/model/selection~Selectable} [selectable] Place to insert the image. If not specified,
  * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied for the block images
- * and model.document.selection for the inline images.
+ * and `model.document.selection` for the inline images.
  * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
- * it will be determined automatically depending of editor config or place of insert.
+ * it will be determined automatically depending of editor config or place of the insertion.
  */
 export function insertImage( editor, attributes = {}, selectable = null, imageType = null ) {
 	const model = editor.model;
@@ -241,12 +241,19 @@ function isImageAllowedInParent( selection, schema, editor ) {
 	return false;
 }
 
-// Checks if selection is placed in other image (ie. in caption).
+// Checks if selection is not placed inside an image (e.g. its caption).
+//
+// @param {module:engine/model/selection~Selectable} selection
+// @returns {Boolean}
 function isNotInsideImage( selection ) {
 	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'image' ) );
 }
 
-// Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
+// Returns a node that will be used to insert image with `model.insertContent`.
+//
+// @param {module:engine/model/selection~Selectable} selection
+// @param {module:engine/model/model~Model} model
+// @returns {module:engine/model/element~Element}
 function getInsertImageParent( selection, model ) {
 	const insertAt = findOptimalInsertionPosition( selection, model );
 
@@ -262,7 +269,7 @@ function getInsertImageParent( selection, model ) {
 // Determine image element type name depending on editor config or place of insertion.
 //
 // @param {module:core/editor/editor~Editor} editor
-// @param {module:engine/model/selection~Selectable} selection
+// @param {module:engine/model/selection~Selectable} selectable
 // @param {'image'|'imageInline'} [imageType] Image element type name. Used to force return of provided element name,
 // but only if there is proper plugin enabled.
 // @returns {'image'|'imageInline'} imageType
@@ -290,6 +297,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 		return 'image';
 	}
 
+	// Try to replace the selected widget (e.g. another image).
 	if ( selectable.is( 'selection' ) ) {
 		const firstBlock = first( selectable.getSelectedBlocks() );
 

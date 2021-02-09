@@ -46,9 +46,8 @@ export default class ImageInsertCommand extends Command {
 		if ( !editor.plugins.has( 'ImageBlockEditing' ) ) {
 			if ( configImageInsertType === 'block' ) {
 				/**
-				 * When using the Image feature with the `image.insert.type="block"` option,
-				 * the ImageBlockEditing plugin should be enabled to allow inserting of block images.
-				 * Otherwise inline type image will be used despite the `block` option set.
+				 * The {@link module:image/imageblock~ImageBlock} plugin must be enabled to allow inserting block images. See
+				 * {@link module:image/imageinsert~ImageInsertConfig#type} to learn more.
 				 *
 				 * @error image-block-plugin-required
 				 */
@@ -59,9 +58,8 @@ export default class ImageInsertCommand extends Command {
 		if ( !editor.plugins.has( 'ImageInlineEditing' ) ) {
 			if ( configImageInsertType === 'inline' ) {
 				/**
-				 * When using the Image feature with the `image.insert.type="inline"` option,
-				 * the ImageInlineEditing plugin should be enabled to allow inserting of inline images.
-				 * Otherwise block type image will be used despite the `inline` option set.
+				 * The {@link module:image/imageinline~ImageInline} plugin must be enabled to allow inserting inline images. See
+				 * {@link module:image/imageinsert~ImageInsertConfig#type} to learn more.
 				 *
 				 * @error image-inline-plugin-required
 				 */
@@ -88,12 +86,12 @@ export default class ImageInsertCommand extends Command {
 		const sources = toArray( options.source );
 		const selection = this.editor.model.document.selection;
 
-		sources.forEach( ( src, idx ) => {
+		sources.forEach( ( src, index ) => {
 			const selectedElement = selection.getSelectedElement();
 
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
-			if ( idx && selectedElement && ( isImageInline( selectedElement ) || isImage( selectedElement ) ) ) {
+			if ( index && selectedElement && ( isImageInline( selectedElement ) || isImage( selectedElement ) ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
 				insertImage( this.editor, { src }, position );
