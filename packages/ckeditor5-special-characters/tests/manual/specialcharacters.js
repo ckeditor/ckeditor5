@@ -15,11 +15,20 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import SpecialCharacters from '../../src/specialcharacters';
 import SpecialCharactersEssentials from '../../src/specialcharactersessentials';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, SpecialCharacters, SpecialCharactersEssentials ],
+		plugins: [
+			ArticlePluginSet,
+			ImageUpload,
+			CloudServices,
+			EasyImage,
+			SpecialCharacters,
+			SpecialCharactersEssentials,
+			CloudServicesCore
+		],
 		toolbar: [
 			'heading',
 			'|',

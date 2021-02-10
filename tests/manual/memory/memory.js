@@ -36,6 +36,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 /*
  * Memory-leak safe version of balloon editor manual test does not:
@@ -51,7 +52,7 @@ function initEditor() {
 				TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
 				Code, Underline, Strikethrough, Superscript, Subscript,
 				Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
-				IndentBlock, WordCount, ImageUpload, CloudServices, EasyImage,
+				IndentBlock, WordCount, ImageUpload, CloudServices, EasyImage, CloudServicesCore,
 				TodoList, PageBreak, HorizontalLine, Mention, RemoveFormat, TextTransformation
 			],
 			toolbar: [

@@ -17,6 +17,7 @@ import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 const commonConfig = {
 	plugins: [
@@ -25,6 +26,7 @@ const commonConfig = {
 		IndentBlock,
 		ImageUpload,
 		CloudServices,
+		CloudServicesCore,
 		EasyImage,
 		ImageResizeEditing,
 		ImageResizeButtons

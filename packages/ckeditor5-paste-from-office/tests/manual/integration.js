@@ -26,6 +26,7 @@ import PasteFromOffice from '../../src/pastefromoffice';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 const htmlDiv = document.querySelector( '#html' );
 const textDiv = document.querySelector( '#text' );
@@ -33,8 +34,23 @@ const dataDiv = document.querySelector( '#data' );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, TableToolbar, PageBreak,
-			TableProperties, TableCellProperties, ImageUpload, CloudServices, EasyImage, PasteFromOffice, FontColor, FontBackgroundColor ],
+		plugins: [
+			ArticlePluginSet,
+			Strikethrough,
+			Underline,
+			Table,
+			TableToolbar,
+			PageBreak,
+			TableProperties,
+			TableCellProperties,
+			ImageUpload,
+			CloudServices,
+			CloudServicesCore,
+			EasyImage,
+			PasteFromOffice,
+			FontColor,
+			FontBackgroundColor
+		],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'pageBreak', 'undo', 'redo' ],
 		table: {

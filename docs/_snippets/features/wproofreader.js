@@ -13,10 +13,11 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-wproofreader' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, WProofreader ],
+		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, CloudServicesCore, WProofreader ],
 		wproofreader: {
 			serviceId: '1:Eebp63-lWHbt2-ASpHy4-AYUpy2-fo3mk4-sKrza1-NsuXy4-I1XZC2-0u2F54-aqYWd1-l3Qf14-umd',
 			lang: 'en_AI',

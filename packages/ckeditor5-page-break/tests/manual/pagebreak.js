@@ -12,11 +12,12 @@ import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import PageBreak from '../../src/pagebreak';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, PageBreak ],
+		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, PageBreak, CloudServicesCore ],
 		toolbar: [
 			'heading',
 			'|',
