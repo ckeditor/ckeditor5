@@ -7,9 +7,8 @@
  * @module list/utils
  */
 
-import { getFillerOffset } from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
+import { TreeWalker, getFillerOffset } from 'ckeditor5/src/engine';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 /**
  * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.

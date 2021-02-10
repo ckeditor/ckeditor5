@@ -7,7 +7,7 @@
  * @module font/fontfamily/fontfamilyediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
@@ -97,7 +97,7 @@ export default class FontFamilyEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_FAMILY,
 				value: viewElement => viewElement.getStyle( 'font-family' )

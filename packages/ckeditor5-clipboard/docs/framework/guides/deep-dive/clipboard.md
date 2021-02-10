@@ -139,7 +139,7 @@ class PastePlainText extends Plugin {
 
 			const dataTransfer = data.dataTransfer;
 			let content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
-			content = clipboardPlugin._htmlDataProcessor.toView( content );
+			content = this.editor.data.htmlProcessor.toView( content );
 			clipboardPlugin.fire( 'inputTransformation', { content, dataTransfer } );
 			editingView.scrollToTheSelection();
 

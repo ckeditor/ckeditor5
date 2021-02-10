@@ -9,8 +9,7 @@
 
 /* globals DOMParser */
 
-import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import { DomConverter, ViewDocument } from 'ckeditor5/src/engine';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 
