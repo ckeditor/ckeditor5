@@ -26,6 +26,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Image from '../../src/image';
 import ImageCaption from '../../src/imagecaption';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -49,7 +50,8 @@ ClassicEditor
 			TableToolbar,
 			ImageInsert,
 			AutoImage,
-			CKFinder
+			CKFinder,
+			CKFinderUploadAdapter
 		],
 		toolbar: [
 			'heading',

@@ -55,7 +55,13 @@ export default class ImageUploadProgress extends Plugin {
 		const editor = this.editor;
 
 		// Upload status change - update image's view according to that status.
-		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( ...args ) => this.uploadStatusChange( ...args ) );
+		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
+			editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( ...args ) => this.uploadStatusChange( ...args ) );
+		}
+
+		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
+			editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:imageInline', ( ...args ) => this.uploadStatusChange( ...args ) );
+		}
 	}
 
 	/**

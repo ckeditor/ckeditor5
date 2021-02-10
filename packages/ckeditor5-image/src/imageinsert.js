@@ -93,3 +93,16 @@ export default class ImageInsert extends Plugin {
  * @member {Array.<String>} module:image/imageinsert~ImageInsertConfig#integrations
  * @default [ 'insertImageViaUrl' ]
  */
+
+/**
+ * This options allows to override the image type used by the {@link module:image/image/imageinsertcommand~ImageInsertCommand} when the user
+ * inserts new images into the editor content. By default, this option is unset which means the editor will choose the optimal image type
+ * based on the context of the insertion (e.g. the current selection and availability of plugins)
+ *
+ * Available options are:
+ *
+ * * `'block'` – all images inserted into the editor will be block (requires the {@link module:image/imageblock~ImageBlock} plugin),
+ * * `'inline'` – all images inserted into the editor will be inline (requires the {@link module:image/imageinline~ImageInline} plugin).
+ *
+ * @member {'inline'|'block'|undefined} module:image/imageinsert~ImageInsertConfig#type
+ */
