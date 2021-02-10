@@ -131,13 +131,13 @@ export default class Element extends Node {
 		this._customProperties = new Map();
 
 		/**
-		 * Whether an element is allowed inside an attribute element. Decides whether element can be wrapped with
-		 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
+		 * Whether an element is inline and can be wrapped with {@link module:engine/view/attributeelement~AttributeElement}
+		 * by {@link module:engine/view/downcastwriter~DowncastWriter}.
 		 *
 		 * @protected
 		 * @member {Boolean}
 		 */
-		this._isAllowedInAttribute = false;
+		this._isInline = false;
 	}
 
 	/**
@@ -161,14 +161,14 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Whether an element is allowed inside an attribute element. Decides whether element can be wrapped with
-	 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * Whether an element is inline and can be wrapped with {@link module:engine/view/attributeelement~AttributeElement}
+	 * by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 *
 	 * @readonly
 	 * @type {Boolean}
 	 */
-	get isAllowedInAttribute() {
-		return this._isAllowedInAttribute;
+	get isInline() {
+		return this._isInline;
 	}
 
 	/**

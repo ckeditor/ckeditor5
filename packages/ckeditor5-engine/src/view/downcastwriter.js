@@ -204,15 +204,16 @@ export default class DowncastWriter {
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
 	 * @param {Object} [options] Element's options.
-	 * @param {Boolean} [options.isAllowedInAttribute] Whether an element is
-	 * {@link module:engine/view/element~Element#isAllowedInAttribute allowed inside attribute elements}.
+	 * @param {Boolean} [options.isInline] Whether an element is
+	 * {@link module:engine/view/element~Element#isInline inline } and can be wrapped with
+	 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
 	createContainerElement( name, attributes, options = {} ) {
 		const containerElement = new ContainerElement( this.document, name, attributes );
 
-		if ( options.isAllowedInAttribute ) {
-			containerElement._isAllowedInAttribute = true;
+		if ( options.isInline ) {
+			containerElement._isInline = true;
 		}
 
 		return containerElement;
@@ -683,10 +684,13 @@ export default class DowncastWriter {
 		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
-		// Group nodes in batches of the same isAllowedInAttribute property value.
+		// Group nodes in batches of nodes that require or do not require breaking an AttributeElements.
 		const nodeGroups = nodes.reduce( ( groups, node ) => {
 			const lastGroup = groups[ groups.length - 1 ];
-			const breakAttributes = node.is( '$text' ) || !node.isAllowedInAttribute;
+
+			// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
+			// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
+			const breakAttributes = !node.is( 'uiElement' );
 
 			if ( !lastGroup || lastGroup.breakAttributes != breakAttributes ) {
 				groups.push( {
@@ -1162,7 +1166,7 @@ export default class DowncastWriter {
 	_insertNodes( position, nodes, breakAttributes ) {
 		let parentElement;
 
-		// Elements can be inside the AttributeElement if they have isAllowedInAttribute flag set so use the closest ancestor
+		// Elements can be inside the AttributeElement if they have isInline flag set so use the closest ancestor
 		// element instead of container element.
 		if ( breakAttributes ) {
 			parentElement = getParentContainer( position );
@@ -1227,7 +1231,7 @@ export default class DowncastWriter {
 			const child = parent.getChild( i );
 			const isText = child.is( '$text' );
 			const isAttribute = child.is( 'attributeElement' );
-			const isAllowedInAttribute = child.isAllowedInAttribute;
+			const isInline = child.isInline;
 
 			//
 			// (In all examples, assume that `wrapElement` is `<span class="foo">` element.)
@@ -1246,7 +1250,7 @@ export default class DowncastWriter {
 			//
 			// <p>abc</p>                   -->  <p><span class="foo">abc</span></p>
 			// <p><strong>abc</strong></p>  -->  <p><span class="foo"><strong>abc</strong></span></p>
-			else if ( isText || isAllowedInAttribute || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
+			else if ( isText || isInline || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
 				// Clone attribute.
 				const newAttribute = wrapElement._clone();
 

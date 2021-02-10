@@ -51,7 +51,7 @@ export default class UIElement extends Element {
 		super( document, name, attributes, children );
 
 		// Override the default of a base class.
-		this._isAllowedInAttribute = true;
+		this._isInline = true;
 
 		/**
 		 * Returns `null` because filler is not needed for UIElements.

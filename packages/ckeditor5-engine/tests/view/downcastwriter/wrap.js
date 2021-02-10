@@ -445,7 +445,7 @@ describe( 'DowncastWriter', () => {
 				const element = new ContainerElement( document, 'span', {}, 'baz' );
 				const container = new ContainerElement( document, 'p', null, [ 'foo', element, 'bar' ] );
 
-				element._isAllowedInAttribute = true;
+				element._isInline = true;
 
 				const wrapAttribute = new AttributeElement( document, 'b' );
 				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
@@ -462,7 +462,7 @@ describe( 'DowncastWriter', () => {
 				const element = new ContainerElement( document, 'span', {}, 'baz' );
 				const container = new ContainerElement( document, 'p', null, [ 'foo', element, 'bar' ] );
 
-				element._isAllowedInAttribute = false;
+				element._isInline = false;
 
 				const wrapAttribute = new AttributeElement( document, 'b' );
 				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
