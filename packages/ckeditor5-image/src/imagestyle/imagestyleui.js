@@ -103,7 +103,8 @@ export default class ImageStyleUI extends Plugin {
 
 			// Configuring the toolbarView.
 			const buttonViews = dropdownConfig.items
-				.filter( ( buttonName => this.utils.isArrangementSupported( buttonName ) ) )
+				// Removing buttons that are not supported by the loaded plugins (Image, ImageInline).
+				.filter( ( buttonName => this.utils.isArrangementSupported( buttonName, true ) ) )
 				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
 
 			addToolbarToDropdown( dropdownView, buttonViews );
@@ -113,9 +114,12 @@ export default class ImageStyleUI extends Plugin {
 			// Configuring the buttonView.
 			dropdownView.buttonView.set( {
 				label: dropdownConfig.title,
+				ariaLabel: dropdownConfig.title,
 				icon: dropdownConfig.icon,
 				tooltip: true
 			} );
+
+			dropdownView.buttonView.set( 'isVisible', buttonViews.length > 0 );
 
 			dropdownView.buttonView
 				.bind( 'icon' )
@@ -167,6 +171,7 @@ export default class ImageStyleUI extends Plugin {
 
 			view.set( {
 				label: buttonConfig.title,
+				ariaLabel: buttonConfig.title,
 				icon: buttonConfig.icon,
 				tooltip: true,
 				isToggleable: true
@@ -186,7 +191,7 @@ export default class ImageStyleUI extends Plugin {
 
 		if ( config.modelElement ) {
 			editor.execute( 'imageTypeSwitch', config.modelElement );
-			// ASK: nie ma zadnego warna kiedy próbujemy wykonać zablokowaną komandę,
+			// ASK: nie ma zadnego warna kiedy próbujemy wykonać zablokowaną komendę,
 			// to jest ok? Czy ikonka powinna być disabled, jeśli tylko jedna z komend jest zablokowana?
 			// to jest przypadek kiedy nie mamy załadowanego którego plugina, a arrangement próbuje go wykonać.
 		}

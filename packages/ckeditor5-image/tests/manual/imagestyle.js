@@ -156,7 +156,7 @@ const unsupportedItemInGroup = {
 				name: 'custom',
 				title: 'Image in paragraph',
 				defaultIcon: 'inLineLeft',
-				items: [ 'blockSide', 'blockFull' ]
+				items: [ 'blockSide' ]
 			}
 		]
 	},
@@ -214,7 +214,7 @@ ClassicEditor
 			'undo',
 			'redo'
 		],
-		image: styleNotFound
+		image: unsupportedItemInGroup
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;

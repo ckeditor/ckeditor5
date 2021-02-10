@@ -156,14 +156,17 @@ export default class ImageStyleUtils {
 
 		if ( type === 'arrangements' ) {
 			if ( !this.normalizedArrangements ) {
-				this.normalizedArrangements = configuredStyles.map( this._normalizeArrangement.bind( this, displayWarnings ) );
-				this._stripUnsupportedArrangements( configuredStyles, displayWarnings );
+				this.normalizedArrangements = configuredStyles.map(
+					this._normalizeArrangement.bind( this, displayWarnings )
+				);
 			}
 
 			return this.normalizedArrangements;
 		} else if ( type === 'groups' ) {
 			if ( !this.normalizedGroups ) {
-				this.normalizedGroups = configuredStyles.map( this._normalizeGroup.bind( this, displayWarnings ) );
+				this.normalizedGroups = configuredStyles.map(
+					this._normalizeGroup.bind( this, displayWarnings )
+				);
 			}
 
 			return this.normalizedGroups;
@@ -190,18 +193,6 @@ export default class ImageStyleUtils {
 		} else {
 			return true;
 		}
-	}
-
-	_stripUnsupportedArrangements( arrangements, displayWarnings ) {
-		const strippedArrangements = arrangements.filter(
-			arrangement => {
-				const arrangementName = typeof arrangement === 'string' ? arrangement : arrangement.name;
-
-				return this.isArrangementSupported( arrangementName, displayWarnings );
-			}
-		);
-
-		return strippedArrangements;
 	}
 
 	_getArrangementConfig( name ) {
