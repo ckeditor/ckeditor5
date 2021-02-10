@@ -30,6 +30,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 export default class BalloonEditor extends BalloonEditorBase {}
 
@@ -43,6 +44,7 @@ BalloonEditor.builtinPlugins = [
 	BlockQuote,
 	CKFinder,
 	CloudServices,
+	CloudServicesCore,
 	EasyImage,
 	Heading,
 	Image,

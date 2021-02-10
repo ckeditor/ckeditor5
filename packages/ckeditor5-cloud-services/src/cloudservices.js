@@ -8,7 +8,6 @@
  */
 
 import { ContextPlugin } from 'ckeditor5/src/core';
-import { Token } from 'ckeditor5/src/cloud-services-core';
 import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
@@ -17,7 +16,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
  * It initializes the token provider based on
  * the {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudService`}.
  *
- * @extends module:core/plugin~Plugin
+ * @extends module:core/contextplugin~ContextPlugin
  */
 export default class CloudServices extends ContextPlugin {
 	/**
@@ -25,6 +24,13 @@ export default class CloudServices extends ContextPlugin {
 	 */
 	static get pluginName() {
 		return 'CloudServices';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ 'CloudServicesCore' ];
 	}
 
 	/**
@@ -76,7 +82,7 @@ export default class CloudServices extends ContextPlugin {
 			return;
 		}
 
-		this.token = new CloudServices.Token( this.tokenUrl );
+		this.token = this.context.plugins.get( 'CloudServicesCore' ).createToken( this.tokenUrl );
 
 		this._tokens.set( this.tokenUrl, this.token );
 
@@ -96,7 +102,7 @@ export default class CloudServices extends ContextPlugin {
 			return Promise.resolve( this.getTokenFor( tokenUrl ) );
 		}
 
-		const token = new CloudServices.Token( tokenUrl );
+		const token = this.context.plugins.get( 'CloudServicesCore' ).createToken( tokenUrl );
 
 		this._tokens.set( tokenUrl, token );
 
@@ -135,8 +141,6 @@ export default class CloudServices extends ContextPlugin {
 		}
 	}
 }
-
-CloudServices.Token = Token;
 
 /**
  * The configuration of CKEditor Cloud Services. Introduced by the {@link module:cloud-services/cloudservices~CloudServices} plugin.

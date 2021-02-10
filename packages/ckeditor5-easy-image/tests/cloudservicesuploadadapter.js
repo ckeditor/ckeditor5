@@ -13,23 +13,23 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
-// Store original uploader.
-const CSUploader = CloudServicesUploadAdapter._UploadGateway;
-const Token = CloudServices.Token;
+// EasyImage requires the `CloudServicesCore` plugin as a soft-requirement.
+// In order to mock the `Token` and `UploadGateway` classes, we create a new class that extend the `CloudServicesCore` plugin
+// and override their factory methods.
+class CloudServicesCoreMock extends CloudServicesCore {
+	createToken( tokenUrlOrRefreshToken ) {
+		return new TokenMock( tokenUrlOrRefreshToken );
+	}
+
+	createUploadGateway( token, apiAddress ) {
+		return new UploadGatewayMock( token, apiAddress );
+	}
+}
 
 describe( 'CloudServicesUploadAdapter', () => {
 	let div;
-
-	before( () => {
-		CloudServices.Token = TokenMock;
-		CloudServicesUploadAdapter._UploadGateway = UploadGatewayMock;
-	} );
-
-	after( () => {
-		CloudServices.Token = Token;
-		CloudServicesUploadAdapter._UploadGateway = CSUploader;
-	} );
 
 	beforeEach( () => {
 		div = window.document.createElement( 'div' );
@@ -47,7 +47,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ CloudServices, CloudServicesUploadAdapter ],
+					plugins: [ CloudServices, CloudServicesUploadAdapter, CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
@@ -65,7 +65,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ CloudServices, CloudServicesUploadAdapter ]
+					plugins: [ CloudServices, CloudServicesUploadAdapter, CloudServicesCoreMock ]
 				} )
 				.then( editor => {
 					expect( UploadGatewayMock.lastToken ).to.be.undefined;
@@ -80,7 +80,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor.create( div, {
-				plugins: [ CloudServices, CloudServicesUploadAdapter ],
+				plugins: [ CloudServices, CloudServicesUploadAdapter, CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'http://upload.mock.url/'
