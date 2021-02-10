@@ -23,12 +23,13 @@ class ExtendHTMLSupport extends Plugin {
 	init() {
 		const dataSchema = this.editor.plugins.get( 'GeneralHTMLSupport' ).dataSchema;
 
-		dataSchema.allowElement( { name: 'article' } );
-		dataSchema.allowElement( { name: 'section' } );
+		dataSchema.allowElement( { name: /article|section/ } );
 
 		dataSchema.allowAttributes( { name: 'section', attributes: { id: /[^]/ } } );
 		dataSchema.allowAttributes( { name: 'section', classes: /[^]/ } );
 		dataSchema.allowAttributes( { name: 'section', styles: { color: /[^]/ } } );
+
+		dataSchema.allowElement( { name: /details|summary/ } );
 	}
 }
 

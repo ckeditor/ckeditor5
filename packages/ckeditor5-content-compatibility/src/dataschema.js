@@ -167,7 +167,12 @@ export default class DataSchema {
 				allowAttributes: DATA_SCHEMA_ATTRIBUTE_KEY
 			} );
 		} else {
-			schema.register( definition.model, definition.schema );
+			const schemaDefinition = cloneDeep( definition.schema );
+
+			schemaDefinition.allowAttributes = toArray( schemaDefinition.allowAttributes || [] );
+			schemaDefinition.allowAttributes.push( DATA_SCHEMA_ATTRIBUTE_KEY );
+
+			schema.register( definition.model, schemaDefinition );
 		}
 	}
 
