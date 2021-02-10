@@ -112,7 +112,7 @@ export default class Widget extends Plugin {
 		// TODO split into 2 separate handlers
 		this.listenTo( viewDocument, 'arrowkey', ( ...args ) => {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );
-		}, { context: '$widget', contextMatcher: isWidget } );
+		}, { context: isWidget } );
 
 		this.listenTo( viewDocument, 'arrowkey', ( ...args ) => {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );

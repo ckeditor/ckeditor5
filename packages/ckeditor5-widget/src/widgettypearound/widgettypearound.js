@@ -270,7 +270,7 @@ export default class WidgetTypeAround extends Plugin {
 		// TODO split into 2 separate handlers
 		this._listenToIfEnabled( editingView.document, 'arrowkey', ( evt, domEventData ) => {
 			this._handleArrowKeyPress( evt, domEventData );
-		}, { context: '$widget', contextMatcher: isWidget, priority: 'high' } );
+		}, { context: isWidget, priority: 'high' } );
 
 		this._listenToIfEnabled( editingView.document, 'arrowkey', ( evt, domEventData ) => {
 			this._handleArrowKeyPress( evt, domEventData );
@@ -574,7 +574,7 @@ export default class WidgetTypeAround extends Plugin {
 				domEventData.preventDefault();
 				evt.stop();
 			}
-		}, { context: '$widget', contextMatcher: isWidget } );
+		}, { context: isWidget } );
 	}
 
 	/**
@@ -698,7 +698,7 @@ export default class WidgetTypeAround extends Plugin {
 			// If nothing was deleted, then the default handler will have nothing to do anyway.
 			domEventData.preventDefault();
 			evt.stop();
-		}, { context: '$widget', contextMatcher: isWidget } );
+		}, { context: isWidget } );
 	}
 
 	/**

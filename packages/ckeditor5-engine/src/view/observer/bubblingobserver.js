@@ -50,7 +50,7 @@ export default class BubblingObserver extends Observer {
 		 * TODO
 		 *
 		 * @private
-		 * @member {Map.<module:engine/view/matcher~Matcher, module:utils/emittermixin~Emitter>}
+		 * @member {Map.<String|Function, module:utils/emittermixin~Emitter>}
 		 */
 		this._listeners = new Map();
 
@@ -59,7 +59,7 @@ export default class BubblingObserver extends Observer {
 		 *
 		 * @private
 		 */
-		this._customContexts = new Map();
+		this._customContexts = new Set();
 
 		this._setupListenerInterception();
 		this._setupEventListener();
@@ -90,11 +90,12 @@ export default class BubblingObserver extends Observer {
 		let listener = this._listeners.get( options.context );
 
 		if ( !listener ) {
-			this._listeners.set( options.context, listener = Object.create( EmitterMixin ) );
+			listener = Object.create( EmitterMixin );
+			this._listeners.set( options.context, listener );
 		}
 
-		if ( options.contextMatcher ) {
-			this._customContexts.set( options.context, options.contextMatcher );
+		if ( typeof options.context != 'string' ) {
+			this._customContexts.add( options.context );
 		}
 
 		this.listenTo( listener, event, callback, options );
@@ -222,13 +223,13 @@ export default class BubblingObserver extends Observer {
 	 * TODO
 	 *
 	 * @private
-	 * @param {String} name
+	 * @param {String|Function} context
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo The `EventInfo` object.
 	 * @param {...*} [eventArgs] Additional arguments to be passed to the callbacks.
 	 * @returns {Boolean} True if event stop was called.
 	 */
-	_fireListenerFor( name, eventInfo, ...eventArgs ) {
-		const listener = this._listeners.get( name );
+	_fireListenerFor( context, eventInfo, ...eventArgs ) {
+		const listener = this._listeners.get( context );
 
 		if ( !listener ) {
 			return false;
@@ -249,8 +250,8 @@ export default class BubblingObserver extends Observer {
 	 * @returns {Boolean} True if event stop was called.
 	 */
 	_fireListenerForCustomContext( node, eventInfo, ...eventArgs ) {
-		for ( const [ context, matcher ] of this._customContexts ) {
-			if ( matcher( node ) && this._fireListenerFor( context, eventInfo, ...eventArgs ) ) {
+		for ( const contextMatcher of this._customContexts ) {
+			if ( contextMatcher( node ) && this._fireListenerFor( contextMatcher, eventInfo, ...eventArgs ) ) {
 				return true;
 			}
 		}
@@ -270,7 +271,7 @@ export default class BubblingObserver extends Observer {
 			return false;
 		}
 
-		for ( const matcher of this._customContexts.values() ) {
+		for ( const matcher of this._customContexts ) {
 			if ( matcher( selectedElement ) ) {
 				return true;
 			}
