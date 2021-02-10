@@ -34,37 +34,58 @@ export default class ImageStyleEditing extends Plugin {
 		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+		const loadedPlugins = editor.plugins;
 
-		// Define default configuration.
-		editor.config.define( 'image.styles', { arrangements: [ 'blockFull', 'blockSide' ] } ); // !!!default configuration
+		this._defineDefaultUI();
 
 		// Get configuration.
 		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ), 'arrangements' );
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
-		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
+		if ( loadedPlugins.has( 'ImageBlockEditing' ) ) {
 			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
-
-			// Converters for imageStyle attribute from model to view.
-			const modelToViewConverter = modelToViewStyleAttribute( styles );
-			editing.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
-			data.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
 
 			// Converter for figure element from view to model.
 			data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
 		}
 
-		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
+		if ( loadedPlugins.has( 'ImageInlineEditing' ) ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
-
-			const modelToViewConverter = modelToViewStyleAttribute( styles );
-			editing.downcastDispatcher.on( 'attribute:imageStyle:imageInline', modelToViewConverter );
-			data.downcastDispatcher.on( 'attribute:imageStyle:imageInline', modelToViewConverter );
 		}
+
+		const modelToViewConverter = modelToViewStyleAttribute( styles );
+		editing.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
+		data.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
 
 		// Register imageStyle command.
 		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );
+	}
+
+	_defineDefaultUI() {
+		const config = this.editor.config;
+		const loadedPlugins = this.editor.plugins;
+
+		const blockPluginLoaded = loadedPlugins.has( 'ImageBlockEditing' );
+		const inlinePluginLoaded = loadedPlugins.has( 'ImageInlineEditing' );
+
+		if ( inlinePluginLoaded && blockPluginLoaded ) {
+			config.define( 'image.styles', {
+				arrangements: [
+					'inline', 'left', 'right',
+					'blockLeft', 'blockCenter', 'blockRight'
+				],
+				groups: [ 'inParagraph', 'betweenParagraphs' ]
+			} );
+		} else if ( inlinePluginLoaded ) {
+			config.define( 'image.styles', {
+				arrangements: [ 'inline', 'left', 'right' ]
+			} );
+		} else if ( blockPluginLoaded ) {
+			config.define( 'image.styles', {
+				arrangements: [ 'blockFull', 'blockSide' ]
+			} );
+		}
 	}
 }
 
