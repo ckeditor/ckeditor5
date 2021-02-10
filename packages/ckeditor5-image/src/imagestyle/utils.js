@@ -103,7 +103,7 @@ const defaultStyles = {
 		inParagraph: {
 			name: 'inParagraph',
 			title: 'Image in paragraph',
-			defaultIcon: icons.inlineLeftIcon, // defaultIcon
+			defaultIcon: icons.inlineLeftIcon,
 			items: [ 'left', 'right' ]
 		},
 
@@ -143,7 +143,11 @@ const defaultIcons = {
 export function normalizeImageStyles( configuredStyles, type ) {
 	const configuredStylesType = configuredStyles[ type ] || [];
 
-	return configuredStylesType.map( _normalizeStyle.bind( null, type ) );
+	if ( type === 'arrangements' ) {
+		return configuredStylesType.map( _normalizeArrangement );
+	} else if ( type === 'groups' ) {
+		return configuredStylesType.map( _normalizeGroup );
+	}
 }
 
 // Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}
@@ -151,39 +155,38 @@ export function normalizeImageStyles( configuredStyles, type ) {
 //
 // @param {Object} style
 // @returns {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}
-function _normalizeStyle( type, style ) {
-	const defaultTypeStyles = defaultStyles[ type ];
+function _normalizeArrangement( style ) {
+	const defaultArrangements = defaultStyles.arrangements;
+	const isDefault = defaultArrangements[ style ];
 
-	// Just the name of the style has been passed.
-	if ( typeof style == 'string' ) {
-		const styleName = style;
+	const isOnlyName = typeof style === 'string' && !isDefault;
+	const isCallingDefault = typeof style === 'string' && isDefault;
+	const isExtendingDefault = defaultArrangements[ style.name ];
 
-		// If it's one of the defaults, just use it.
-		if ( defaultTypeStyles[ styleName ] ) {
-			// Clone the style to avoid overriding defaults.
-			style = Object.assign( {}, defaultTypeStyles[ styleName ] );
-		}
-		// If it's just a name but none of the defaults, warn because probably it's a mistake.
-		else {
-			/**
-			 * There is no such image style of given name.
-			 *
-			 * @error image-style-not-found
-			 * @param {String} name Name of a missing style name.
-			 */
-			logWarning( 'image-style-not-found', { name: styleName } );
+	// Just the name of the style has been passed, but none of the defaults.
+	// Warn because probably it's a mistake.
+	if ( isOnlyName ) {
+		/**
+		 * There is no such image style of given name.
+		 *
+		 * @error image-style-not-found
+		 * @param {String} name Name of a missing style name.
+		 */
+		logWarning( 'image-style-not-found', { name: style } );
 
-			// Normalize the style anyway to prevent errors.
-			style = {
-				name: styleName
-			};
-		}
+		// Normalize the style anyway to prevent errors.
+		style = { name: style };
+	}
+	// Just the name of the style has been passed and it's one of the defaults, just use it.
+	else if ( isCallingDefault ) {
+		// Clone the style to avoid overriding defaults.
+		style = Object.assign( {}, defaultArrangements[ style ] );
 	}
 	// If an object style has been passed and if the name matches one of the defaults,
 	// extend it with defaults – the user wants to customize a default style.
 	// Note: Don't override the user–defined style object, clone it instead.
-	else if ( defaultTypeStyles[ style.name ] ) {
-		const defaultStyle = defaultTypeStyles[ style.name ];
+	else if ( isExtendingDefault ) {
+		const defaultStyle = defaultArrangements[ style.name ];
 		const extendedStyle = Object.assign( {}, style );
 
 		for ( const prop in defaultStyle ) {
@@ -202,4 +205,46 @@ function _normalizeStyle( type, style ) {
 	}
 
 	return style;
+}
+
+function _normalizeGroup( group ) {
+	const defaultGroups = defaultStyles.groups;
+	const isDefault = defaultGroups[ group ];
+
+	const isOnlyName = typeof group === 'string' && !isDefault;
+	const isCallingDefault = typeof group === 'string' && isDefault;
+	const isExtendingDefault = defaultGroups[ group.name ];
+
+	if ( isOnlyName ) {
+		/**
+		 * There is no such image style of given name.
+		 *
+		 * @error image-style-not-found
+		 * @param {String} name Name of a missing style name.
+		 */
+		logWarning( 'image-style-not-found', { name: group } );
+
+		// Normalize the style anyway to prevent errors.
+		group = { name: group };
+	}
+	else if ( isCallingDefault ) {
+		// Clone the style to avoid overriding defaults.
+		group = Object.assign( {}, defaultGroups[ group ] );
+	}
+	else if ( isExtendingDefault ) {
+		const defaultStyle = defaultGroups[ group.name ];
+		const extendedStyle = Object.assign( {}, group );
+
+		for ( const prop in defaultStyle ) {
+			if ( !Object.prototype.hasOwnProperty.call( group, prop ) ) {
+				extendedStyle[ prop ] = defaultStyle[ prop ];
+			}
+			// ASK: nie nadpisujemy tych wartości?
+			// Nie chcemy ich nadpisywać jeśli ktoś na przykład chce tylko podmienić itemy?
+		}
+
+		group = extendedStyle;
+	}
+
+	return group;
 }
