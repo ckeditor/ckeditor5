@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
-import { normalizeImageStyles } from './utils';
+import ImageStyleUtils from './utils';
 
 import '../../theme/imagestyle.css';
 
@@ -62,23 +62,23 @@ export default class ImageStyleUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const configuredStyles = editor.config.get( 'image.styles' );
-		// const configuredToolbar = editor.config.get( 'image.toolbar' )
-		// 	.filter( item => item.split( ':' )[ 0 ] === 'imageStyle' );
+
+		this.utils = new ImageStyleUtils( editor.plugins, configuredStyles );
 
 		const definedArrangements = translateStyles(
-			normalizeImageStyles( configuredStyles, 'arrangements' ),
+			this.utils.normalizeImageStyles( 'arrangements' ),
 			this.localizedDefaultStylesTitles );
 
-		for ( const arrangement of definedArrangements ) {
-			this._createButton( arrangement );
+		for ( const arrangementConfig of definedArrangements ) {
+			this._createButton( arrangementConfig );
 		}
 
 		const definedGroups = translateStyles(
-			normalizeImageStyles( configuredStyles, 'groups' ),
+			this.utils.normalizeImageStyles( 'groups' ),
 			this.localizedDefaultStylesTitles );
 
-		for ( const group of definedGroups ) {
-			this._createDropdown( group );
+		for ( const groupConfig of definedGroups ) {
+			this._createDropdown( groupConfig );
 		}
 	}
 
@@ -102,11 +102,13 @@ export default class ImageStyleUI extends Plugin {
 			const factory = this.editor.ui.componentFactory;
 
 			// Configuring the toolbarView.
-			const buttons = dropdownConfig.items.map(
-				name => factory.create( getUIComponentName( name ) )
-			);
+			const buttonViews = dropdownConfig.items
+				.filter( ( buttonName => this.utils.isArrangementSupported( buttonName ) ) )
+				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
 
-			addToolbarToDropdown( dropdownView, buttons );
+			addToolbarToDropdown( dropdownView, buttonViews );
+			// ASK: Jeśli uzyję tutaj fillWithItems, to nadal jeśli czegoś brakuje to edytor się wywala.
+			// To jest błąd w przypadku kiedy developer ustawi w itemach grupy arrangement, który nie jest dostępny
 
 			// Configuring the buttonView.
 			dropdownView.buttonView.set( {
@@ -118,7 +120,7 @@ export default class ImageStyleUI extends Plugin {
 			dropdownView.buttonView
 				.bind( 'icon' )
 				.toMany(
-					buttons,
+					buttonViews,
 					'isOn',
 					( ...areOn ) => {
 						const index = areOn.findIndex( isOn => isOn );
@@ -127,14 +129,14 @@ export default class ImageStyleUI extends Plugin {
 							return dropdownConfig.defaultIcon;
 						}
 
-						return buttons[ index ].icon;
+						return buttonViews[ index ].icon;
 					}
 				);
 
 			dropdownView.buttonView
 				.bind( 'isSelected' )
 				.toMany(
-					buttons,
+					buttonViews,
 					'isOn',
 					( ...areOn ) => areOn.find( isOn => isOn )
 				);
@@ -186,6 +188,7 @@ export default class ImageStyleUI extends Plugin {
 			editor.execute( 'imageTypeSwitch', config.modelElement );
 			// ASK: nie ma zadnego warna kiedy próbujemy wykonać zablokowaną komandę,
 			// to jest ok? Czy ikonka powinna być disabled, jeśli tylko jedna z komend jest zablokowana?
+			// to jest przypadek kiedy nie mamy załadowanego którego plugina, a arrangement próbuje go wykonać.
 		}
 
 		editor.execute( 'imageStyle', { value: config.name } );

@@ -39,6 +39,162 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 // 		console.error( err.stack );
 // 	} );
 
+const validStyles = {
+	arrangements: [
+		{
+			name: 'blockSide',
+			title: 'Side image',
+			icon: 'inLineLeft',
+			modelElement: 'imageInline',
+			className: 'image-style-side'
+		},
+		'blockFull'
+	],
+	groups: [
+		{
+			name: 'custom',
+			title: 'Image in paragraph',
+			defaultIcon: 'inLineLeft',
+			items: [ 'blockSide', 'blockFull' ]
+		}
+	],
+	toolbar: [
+		'imageStyle:inLine',
+		'imageStyle:inParagraph',
+		'imageStyle:betweenParagraphs',
+		'|',
+		'imageTextAlternative'
+	]
+};
+
+const undeclaredItemInGroup = {
+	styles: {
+		arrangements: [
+			{
+				name: 'blockSide',
+				title: 'Side image',
+				icon: 'inLineLeft',
+				modelElement: 'imageInline',
+				className: 'image-style-side'
+			}
+		],
+		groups: [
+			{
+				name: 'custom',
+				title: 'Image in paragraph',
+				defaultIcon: 'inLineLeft',
+				items: [ 'blockSide', 'blockFull' ]
+			}
+		]
+	},
+	toolbar: [
+		'imageStyle:custom',
+		'imageStyle:blockFull',
+		'|',
+		'imageTextAlternative'
+	]
+};
+
+// expected result: toolbarview-item-unavailable
+const undeclaredItemButton = {
+	styles: {
+		arrangements: [
+			{
+				name: 'blockSide',
+				title: 'Side image',
+				icon: 'inLineLeft',
+				modelElement: 'imageInline',
+				className: 'image-style-side'
+			}
+		]
+	},
+	toolbar: [
+		'imageStyle:blockFull',
+		'|',
+		'imageTextAlternative'
+	]
+};
+
+// expected result: toolbarview-item-unavailable
+const undeclaredGroup = {
+	styles: {
+		arrangements: [
+			{
+				name: 'blockSide',
+				title: 'Side image',
+				icon: 'inLineLeft',
+				modelElement: 'imageInline',
+				className: 'image-style-side'
+			}
+		],
+		groups: [
+			'inParagraph'
+		]
+	},
+	toolbar: [
+		'imageStyle:inLine',
+		'|',
+		'imageTextAlternative'
+	]
+}
+
+// requires removing ImageInline plugin
+// expected result: image-style-not-supported
+const unsupportedItemInGroup = {
+	styles: {
+		arrangements: [
+			{
+				name: 'blockSide',
+				title: 'Side image',
+				icon: 'inLineLeft',
+				modelElement: 'imageInline',
+				className: 'image-style-side'
+			}
+		],
+		groups: [
+			{
+				name: 'custom',
+				title: 'Image in paragraph',
+				defaultIcon: 'inLineLeft',
+				items: [ 'blockSide', 'blockFull' ]
+			}
+		]
+	},
+	toolbar: [
+		'imageStyle:custom',
+		'|',
+		'imageTextAlternative'
+	]
+};
+
+// requires removing ImageInline plugin
+// expected result: image-style-not-supported
+const unsupportedItemButton = {
+	styles: {
+		arrangements: [
+			{
+				name: 'blockSide',
+				title: 'Side image',
+				icon: 'inLineLeft',
+				modelElement: 'imageInline',
+				className: 'image-style-side'
+			}
+		]
+	},
+	toolbar: [
+		'imageStyle:blockSide',
+		'|',
+		'imageTextAlternative'
+	]
+};
+
+const styleNotFound = {
+	styles: {
+		arrangements: [ 'custom' ]
+	},
+	toolbar: 'imageStyle:custom'
+};
+
 ClassicEditor
 	.create( document.querySelector( '#editor-formatting' ), {
 		plugins: [
@@ -58,15 +214,7 @@ ClassicEditor
 			'undo',
 			'redo'
 		],
-		image: {
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:inParagraph',
-				'imageStyle:betweenParagraphs',
-				'|',
-				'imageTextAlternative'
-			]
-		}
+		image: styleNotFound
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;

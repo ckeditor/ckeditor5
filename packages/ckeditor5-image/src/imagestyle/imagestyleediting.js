@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageStyleCommand from './imagestylecommand';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import { normalizeImageStyles } from './utils';
+import ImageStyleUtils from './utils';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -34,12 +34,15 @@ export default class ImageStyleEditing extends Plugin {
 		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+
 		const loadedPlugins = editor.plugins;
+		const toolbarConfiguration = editor.config.get( 'image.styles' );
+		const utils = new ImageStyleUtils( loadedPlugins, toolbarConfiguration );
 
 		this._defineDefaultUI();
 
 		// Get configuration.
-		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ), 'arrangements' );
+		const styles = utils.normalizeImageStyles( 'arrangements', true );
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
