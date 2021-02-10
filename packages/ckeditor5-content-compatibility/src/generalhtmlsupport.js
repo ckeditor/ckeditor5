@@ -54,5 +54,14 @@ export default class GeneralHTMLSupport extends Plugin {
 
 		dataSchema.register( { view: 'dt', model: 'ghsDt', schema: '$ghsDatalist' } );
 		dataSchema.register( { view: 'dd', model: 'ghsDd', schema: '$ghsDatalist' } );
+
+		// Register details elements.
+		dataSchema.register( { view: 'details', model: 'ghsDetails', schema: '$ghsBlock' } );
+
+		dataSchema.register( { view: 'summary', model: 'ghsSummary', schema: {
+			allowIn: 'ghsDetails'
+		} } );
+
+		editor.model.schema.extend( '$text', { allowIn: 'ghsSummary' } );
 	}
 }
