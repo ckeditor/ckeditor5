@@ -59,29 +59,10 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			styles: {
-				arrangements: [
-					'blockCenter',
-					'blockSide',
-					'left',
-					'right',
-					'inline',
-					'blockCenter',
-					'blockLeft',
-					'blockRight'
-				],
-				groups: [
-					'inParagraph',
-					'betweenParagraphs'
-				]
-			},
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:inParagraph:left',
-				'imageStyle:inParagraph:right',
-				'imageStyle:betweenParagraphs:blockLeft',
-				'imageStyle:betweenParagraphs:blockCenter',
-				'imageStyle:betweenParagraphs:blockRight',
+				'imageStyle:inParagraph',
+				'imageStyle:betweenParagraphs',
 				'|',
 				'imageTextAlternative'
 			]

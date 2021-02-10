@@ -31,7 +31,7 @@ const defaultStyles = {
 	arrangements: {
 		inline: {
 			name: 'inline',
-			title: 'In line',
+			title: 'Image in text line',
 			icon: icons.inlineIcon,
 			modelElement: 'imageInline',
 			isDefault: true
@@ -41,7 +41,7 @@ const defaultStyles = {
 			name: 'left',
 			title: 'Left aligned image',
 			icon: icons.inlineLeftIcon,
-			modelElement: 'inherit',
+			modelElement: false,
 			className: 'image-style-align-left'
 		},
 
@@ -49,7 +49,7 @@ const defaultStyles = {
 			name: 'right',
 			title: 'Right aligned image',
 			icon: icons.inlineRightIcon,
-			modelElement: 'inherit',
+			modelElement: false,
 			className: 'image-style-align-right'
 		},
 
@@ -77,7 +77,7 @@ const defaultStyles = {
 			title: 'Left aligned image',
 			icon: icons.leftIcon,
 			modelElement: 'image',
-			className: 'image-style-align-left-x'
+			className: 'image-style-align-left'
 		},
 
 		// This style represents a centered image.
@@ -95,21 +95,23 @@ const defaultStyles = {
 			title: 'Right aligned image',
 			icon: icons.rightIcon,
 			modelElement: 'image',
-			className: 'image-style-align-right-x'
+			className: 'image-style-align-right'
 		}
 	},
 
 	groups: {
 		inParagraph: {
 			name: 'inParagraph',
-			title: 'Wrap text',
-			icon: icons.inlineLeftIcon
+			title: 'Image in paragraph',
+			defaultIcon: icons.inlineLeftIcon, // defaultIcon
+			items: [ 'left', 'right' ]
 		},
 
 		betweenParagraphs: {
 			name: 'betweenParagraphs',
-			title: 'Break text',
-			icon: icons.centerIcon
+			title: 'Image between paragraphs',
+			defaultIcon: icons.centerIcon,
+			items: [ 'blockLeft', 'blockCenter', 'blockRight' ]
 		}
 	}
 };

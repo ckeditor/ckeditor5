@@ -26,6 +26,18 @@ export default class ImageStyleCommand extends Command {
 		super( editor );
 
 		/**
+		 * The name of the default styles for inline and block images,
+		 * if it is present. If there is no default style, it defaults to `false`.
+		 *
+		 * @readonly
+		 * @type {Boolean|String}
+		 */
+		this.defaultStyles = {
+			image: false,
+			imageInline: false
+		};
+
+		/**
 		 * A style handled by this command.
 		 *
 		 * @readonly
@@ -83,6 +95,12 @@ export default class ImageStyleCommand extends Command {
 	}
 
 	_getDefaultStyle( imageType ) {
+		const cachedStyle = this.defaultStyles[ imageType ];
+
+		if ( cachedStyle ) {
+			return cachedStyle;
+		}
+
 		for ( const s in this.styles ) {
 			const style = this.styles[ s ];
 

@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
-import { logWarning } from 'ckeditor5/src/utils';
 
 import { normalizeImageStyles } from './utils';
 
@@ -63,29 +62,23 @@ export default class ImageStyleUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const configuredStyles = editor.config.get( 'image.styles' );
-		const configuredToolbar = editor.config.get( 'image.toolbar' )
-			.filter( item => item.split( ':' )[ 0 ] === 'imageStyle' );
+		// const configuredToolbar = editor.config.get( 'image.toolbar' )
+		// 	.filter( item => item.split( ':' )[ 0 ] === 'imageStyle' );
 
-		this._definedArrangements = translateStyles(
+		const definedArrangements = translateStyles(
 			normalizeImageStyles( configuredStyles, 'arrangements' ),
 			this.localizedDefaultStylesTitles );
 
-		this._definedGroups = translateStyles(
+		for ( const arrangement of definedArrangements ) {
+			this._createButton( arrangement );
+		}
+
+		const definedGroups = translateStyles(
 			normalizeImageStyles( configuredStyles, 'groups' ),
 			this.localizedDefaultStylesTitles );
 
-		this._createUIElements( this._getToolbarStructure( configuredToolbar ) );
-	}
-
-	_createUIElements( UIStructure ) {
-		for ( const itemKey in UIStructure ) {
-			const itemValue = UIStructure[ itemKey ];
-
-			if ( typeof itemValue === 'object' ) {
-				this._createDropdown( this._getDropdownConfig( itemKey ), itemValue );
-			} else {
-				this._createButton( this._getButtonConfig( itemKey ) );
-			}
+		for ( const group of definedGroups ) {
+			this._createDropdown( group );
 		}
 	}
 
@@ -96,7 +89,7 @@ export default class ImageStyleUI extends Plugin {
 	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} dropdownConfig uwaga! tutaj format będzie się trochę róznił
 	 * @param {Array<String>} buttonNames
 	 */
-	_createDropdown( dropdownConfig, buttonNames ) {
+	_createDropdown( dropdownConfig ) {
 		if ( !dropdownConfig ) {
 			return;
 		}
@@ -106,52 +99,45 @@ export default class ImageStyleUI extends Plugin {
 
 		this.editor.ui.componentFactory.add( componentName, locale => {
 			const dropdownView = createDropdown( locale );
-			const buttonComponents = [];
+			const factory = this.editor.ui.componentFactory;
 
+			// Configuring the toolbarView.
+			const buttons = dropdownConfig.items.map(
+				name => factory.create( getUIComponentName( name ) )
+			);
+
+			addToolbarToDropdown( dropdownView, buttons );
+
+			// Configuring the buttonView.
 			dropdownView.buttonView.set( {
 				label: dropdownConfig.title,
 				icon: dropdownConfig.icon,
 				tooltip: true
 			} );
 
-			for ( const buttonName of buttonNames ) {
-				const buttonComponentName = getUIComponentName( dropdownName, buttonName );
-
-				this._createButton( this._getButtonConfig( buttonName ), dropdownName );
-				buttonComponents.push( this.editor.ui.componentFactory.create( buttonComponentName ) );
-			}
-
-			addToolbarToDropdown( dropdownView, buttonComponents );
-
 			dropdownView.buttonView
 				.bind( 'icon' )
 				.toMany(
-					buttonComponents,
+					buttons,
 					'isOn',
 					( ...areOn ) => {
 						const index = areOn.findIndex( isOn => isOn );
+
 						if ( index < 0 ) {
-							return dropdownConfig.icon;
+							return dropdownConfig.defaultIcon;
 						}
-						return buttonComponents[ index ].icon;
+
+						return buttons[ index ].icon;
 					}
 				);
 
 			dropdownView.buttonView
 				.bind( 'isSelected' )
 				.toMany(
-					buttonComponents,
+					buttons,
 					'isOn',
 					( ...areOn ) => areOn.find( isOn => isOn )
 				);
-
-			// dropdownView.buttonView
-			// 	.bind( 'isEnabled' )
-			// 	.toMany(
-			// 		buttonComponents,
-			// 		'isEnabled',
-			// 		( ...areEnabled ) => areEnabled.find( isEnabled => isEnabled )
-			// 	);
 
 			return dropdownView;
 		} );
@@ -164,14 +150,14 @@ export default class ImageStyleUI extends Plugin {
 	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} buttonConfig
 	 * @param {String} parentDropDownName
 	 */
-	_createButton( buttonConfig, parentDropdownName ) {
+	_createButton( buttonConfig ) {
 		if ( !buttonConfig ) {
 			return;
 		}
 
 		const editor = this.editor;
 		const buttonName = buttonConfig.name;
-		const componentName = getUIComponentName( parentDropdownName, buttonName );
+		const componentName = getUIComponentName( buttonName );
 
 		editor.ui.componentFactory.add( componentName, locale => {
 			const command = editor.commands.get( 'imageStyle' );
@@ -187,79 +173,23 @@ export default class ImageStyleUI extends Plugin {
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			view.bind( 'isOn' ).to( command, 'value', value => value === buttonConfig.name );
 
-			view.on( 'execute', () => {
-				if ( buttonConfig.modelElement !== 'inherit' ) {
-					editor.execute( 'imageTypeSwitch', buttonConfig.modelElement );
-				}
-				editor.execute( 'imageStyle', { value: buttonConfig.name } );
-				editor.editing.view.focus();
-			} );
+			view.on( 'execute', this._executeCommand.bind( this, buttonConfig ) );
 
 			return view;
 		} );
 	}
 
-	/**
-	 * Returns requested image style group configuration
-	 * provided in the {@link module:image/image~ImageConfig#styles image plugin configuration}.
-	 *
-	 * @private
-	 * @param {String} dropDownName
-	 * @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat}
-	 */
-	_getDropdownConfig( dropdownName ) {
-		const config = this._definedGroups.find( group => group.name === dropdownName );
+	_executeCommand( config ) {
+		const editor = this.editor;
 
-		if ( !config ) {
-			// describe the warning
-			logWarning( 'image-style-toolbarview-item-unavailable', { dropdownName } );
+		if ( config.modelElement ) {
+			editor.execute( 'imageTypeSwitch', config.modelElement );
+			// ASK: nie ma zadnego warna kiedy próbujemy wykonać zablokowaną komandę,
+			// to jest ok? Czy ikonka powinna być disabled, jeśli tylko jedna z komend jest zablokowana?
 		}
 
-		return config;
-	}
-
-	/**
-	 * Returns requested image style arrangement configuration
-	 * provided in the {@link module:image/image~ImageConfig#styles image plugin configuration}.
-	 *
-	 * @private
-	 * @param {String} dropDownName
-	 * @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat}
-	 */
-	_getButtonConfig( buttonName ) {
-		const config = this._definedArrangements.find( arrangement => arrangement.name === buttonName );
-
-		if ( !config ) {
-			// describe the warning
-			logWarning( 'image-style-toolbarview-item-unavailable', { buttonName } );
-		}
-
-		return config;
-	}
-
-	_getToolbarStructure( toolbar ) {
-		const toolbarStructure = {};
-
-		for ( const item of toolbar ) {
-			const itemContents = item.split( ':' );
-			const isDropdown = itemContents.length === 3;
-
-			if ( isDropdown ) {
-				const dropdownName = itemContents[ 1 ];
-				const itemName = itemContents[ 2 ];
-
-				toolbarStructure[ dropdownName ] = [
-					...toolbarStructure[ dropdownName ] || [],
-					itemName
-				];
-			} else {
-				const itemName = itemContents[ 1 ];
-
-				toolbarStructure[ itemName ] = itemName;
-			}
-		}
-
-		return toolbarStructure;
+		editor.execute( 'imageStyle', { value: config.name } );
+		editor.editing.view.focus();
 	}
 }
 
@@ -282,8 +212,6 @@ function translateStyles( styles, titles ) {
 	return styles;
 }
 
-function getUIComponentName( dropdownName, buttonName ) {
-	return 'imageStyle' +
-		( dropdownName ? ':' + dropdownName : '' ) +
-		( buttonName ? ':' + buttonName : '' );
+function getUIComponentName( name ) {
+	return 'imageStyle:' + name;
 }
