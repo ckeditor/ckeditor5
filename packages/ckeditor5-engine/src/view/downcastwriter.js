@@ -1177,8 +1177,8 @@ export default class DowncastWriter {
 	_insertNodes( position, nodes, breakAttributes ) {
 		let parentElement;
 
-		// Elements can be inside the AttributeElement if they have isInline flag set so use the closest ancestor
-		// element instead of container element.
+		// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
+		// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
 		if ( breakAttributes ) {
 			parentElement = getParentContainer( position );
 		} else {
