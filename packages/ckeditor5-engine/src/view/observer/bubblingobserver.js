@@ -54,13 +54,6 @@ export default class BubblingObserver extends Observer {
 		 */
 		this._listeners = new Map();
 
-		/**
-		 * TODO
-		 *
-		 * @private
-		 */
-		this._customContexts = new Set();
-
 		this._setupListenerInterception();
 		this._setupEventListener();
 	}
@@ -92,10 +85,6 @@ export default class BubblingObserver extends Observer {
 		if ( !listener ) {
 			listener = Object.create( EmitterMixin );
 			this._listeners.set( options.context, listener );
-		}
-
-		if ( typeof options.context != 'string' ) {
-			this._customContexts.add( options.context );
 		}
 
 		this.listenTo( listener, event, callback, options );
@@ -177,7 +166,7 @@ export default class BubblingObserver extends Observer {
 			}
 
 			const selectedElement = selection.getSelectedElement();
-			const isCustomContext = this._isCustomContext( selectedElement );
+			const isCustomContext = Boolean( selectedElement && this._getCustomContext( selectedElement ) );
 
 			// For the not yet bubbling event trigger for $text node if selection can be there and it's not a custom context selected.
 			if ( !isCustomContext && this._fireListenerFor( '$text', eventInfo, ...eventArgs ) ) {
@@ -187,7 +176,7 @@ export default class BubblingObserver extends Observer {
 				return;
 			}
 
-			let node = selectedElement || getDeeperParent( selection );
+			let node = selectedElement || getDeeperSelectionParent( selection );
 
 			while ( node ) {
 				// Root node handling.
@@ -205,7 +194,7 @@ export default class BubblingObserver extends Observer {
 				}
 
 				// Check custom contexts (i.e., a widget).
-				if ( this._fireListenerForCustomContext( node, eventInfo, ...eventArgs ) ) {
+				if ( this._fireListenerFor( node, eventInfo, ...eventArgs ) ) {
 					break;
 				}
 
@@ -223,13 +212,13 @@ export default class BubblingObserver extends Observer {
 	 * TODO
 	 *
 	 * @private
-	 * @param {String|Function} context
+	 * @param {String|module:engine/view/node~Node} context
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo The `EventInfo` object.
 	 * @param {...*} [eventArgs] Additional arguments to be passed to the callbacks.
 	 * @returns {Boolean} True if event stop was called.
 	 */
 	_fireListenerFor( context, eventInfo, ...eventArgs ) {
-		const listener = this._listeners.get( context );
+		const listener = typeof context == 'string' ? this._listeners.get( context ) : this._getCustomContext( context );
 
 		if ( !listener ) {
 			return false;
@@ -243,46 +232,23 @@ export default class BubblingObserver extends Observer {
 	/**
 	 * TODO
 	 *
+	 * @param {module:engine/view/node~Node} node
+	 * @returns {module:utils/emittermixin~Emitter|null}
 	 * @private
-	 * @param {module:engine/view/element~Element} node
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo The `EventInfo` object.
-	 * @param {...*} [eventArgs] Additional arguments to be passed to the callbacks.
-	 * @returns {Boolean} True if event stop was called.
 	 */
-	_fireListenerForCustomContext( node, eventInfo, ...eventArgs ) {
-		for ( const contextMatcher of this._customContexts ) {
-			if ( contextMatcher( node ) && this._fireListenerFor( contextMatcher, eventInfo, ...eventArgs ) ) {
-				return true;
+	_getCustomContext( node ) {
+		for ( const [ context, listener ] of this._listeners ) {
+			if ( typeof context == 'function' && context( node ) ) {
+				return listener;
 			}
 		}
 
-		return false;
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @param {module:engine/view/element~Element} selectedElement
-	 * @returns {Boolean}
-	 * @private
-	 */
-	_isCustomContext( selectedElement ) {
-		if ( !selectedElement ) {
-			return false;
-		}
-
-		for ( const matcher of this._customContexts ) {
-			if ( matcher( selectedElement ) ) {
-				return true;
-			}
-		}
-
-		return false;
+		return null;
 	}
 }
 
 // TODO
-function getDeeperParent( selection ) {
+function getDeeperSelectionParent( selection ) {
 	const focusParent = selection.focus.parent;
 	const anchorParent = selection.anchor.parent;
 
