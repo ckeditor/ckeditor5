@@ -29,12 +29,12 @@
 		margin-left: var(--ck-image-style-spacing);
 	}
 
-	& .image-style-align-right-x {
+	& .image-style-block-align-right {
 		margin-right: 0;
 		margin-left: auto;
 	}
 
-	& .image-style-align-left-x {
+	& .image-style-block-align-left {
 		margin-left: 0;
 		margin-right: auto;
 	}

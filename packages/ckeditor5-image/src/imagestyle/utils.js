@@ -94,7 +94,7 @@ export default class ImageStyleUtils {
 				title: 'Left aligned image',
 				icon: icons.leftIcon,
 				modelElement: 'image',
-				className: 'image-style-align-left'
+				className: 'image-style-block-align-left'
 			},
 
 			// This style represents a centered image.
@@ -112,7 +112,7 @@ export default class ImageStyleUtils {
 				title: 'Right aligned image',
 				icon: icons.rightIcon,
 				modelElement: 'image',
-				className: 'image-style-align-right'
+				className: 'image-style-block-align-right'
 			}
 		};
 
