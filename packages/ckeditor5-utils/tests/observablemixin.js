@@ -1028,7 +1028,7 @@ describe( 'Observable', () => {
 			foo.method( 1 );
 		} );
 
-		it( 'supports stopping the event (which prevents execution of the orignal method', () => {
+		it( 'supports stopping the event (which prevents execution of the original method)', () => {
 			class Foo extends Observable {
 				method() {
 					throw new Error( 'this should not be executed' );
@@ -1054,6 +1054,42 @@ describe( 'Observable', () => {
 			expectToThrowCKEditorError( () => {
 				foo.decorate( 'method' );
 			}, 'observablemixin-cannot-decorate-undefined' );
+		} );
+
+		it( 'should reverts decorated methods to the original method on stopListening for all events', () => {
+			class Foo extends Observable {
+				method() {
+				}
+			}
+
+			const foo = new Foo();
+			const originalMethod = foo.method;
+
+			foo.decorate( 'method' );
+
+			expect( foo.method ).to.not.equal( originalMethod );
+
+			foo.stopListening();
+
+			expect( foo.method ).to.equal( originalMethod );
+		} );
+
+		it( 'should not revert decorated methods to the original method on stopListening for specific emitter', () => {
+			class Foo extends Observable {
+				method() {
+				}
+			}
+
+			const foo = new Foo();
+			const originalMethod = foo.method;
+
+			foo.decorate( 'method' );
+
+			expect( foo.method ).to.not.equal( originalMethod );
+
+			foo.stopListening( Object.create( ObservableMixin ) );
+
+			expect( foo.method ).to.not.equal( originalMethod );
 		} );
 	} );
 } );
