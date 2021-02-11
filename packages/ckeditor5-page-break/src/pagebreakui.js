@@ -18,6 +18,16 @@ import pageBreakIcon from '../theme/icons/pagebreak.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class PageBreakUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'PageBreakUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;

@@ -137,7 +137,7 @@ export function assertCKEditorError( err, message, editorThatShouldBeFindableFro
 		expect( err.context ).to.equal( null, 'Error context was expected to be `null`' );
 	} else if ( editorThatShouldBeFindableFromContext !== undefined ) {
 		expect( areConnectedThroughProperties( editorThatShouldBeFindableFromContext, err.context ) )
-			.to.equal( true, 'Editor cannot be find from the error context' );
+			.to.equal( true, 'Editor cannot be found from the error context' );
 	}
 
 	if ( data ) {
