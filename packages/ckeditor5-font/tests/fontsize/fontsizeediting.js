@@ -359,5 +359,19 @@ describe( 'FontSizeEditing', () => {
 				'<p>b<span class="text-complex">a</span>z</p>'
 			);
 		} );
+
+		it( 'should not convert <font size=".."> styling when supportAllValues is disabled', () => {
+			const data = '<font size="5">foo</font><span style="font-size: 18px">bar</span>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>[]foo<$text fontSize="18px">bar</$text></paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p>foo<span style="font-size:18px;">bar</span></p>'
+			);
+		} );
 	} );
 } );
