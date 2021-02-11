@@ -65,6 +65,24 @@ export default class Alignment extends Plugin {
  */
 
 /**
+ * Class names to match {@link module:alignment/alignment~AlignmentConfig#options alignment options}.
+ *
+ * **Note:** The same number of classes should be provided as the number of `alignment.options`.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				alignment: {
+ *					options: [ 'left', 'right' ],
+ *					classNames: [ 'my-align-left', 'my-align-right' ]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {Array.<String>} module:alignment/alignment~AlignmentConfig#classNames
+ */
+
+/**
  * Available alignment options.
  *
  * The available options are: `'left'`, `'right'`, `'center'` and `'justify'`. Other values are ignored.
