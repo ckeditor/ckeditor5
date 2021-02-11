@@ -27,11 +27,6 @@ export default class ArrowKeysObserver extends BubblingObserver {
 	/**
 	 * @inheritDoc
 	 */
-	observe() {}
-
-	/**
-	 * @inheritDoc
-	 */
 	_translateEvent( data, ...args ) {
 		if ( !isArrowKeyCode( data.keyCode ) ) {
 			return false;

@@ -40,11 +40,6 @@ export default class EnterObserver extends BubblingObserver {
 			}
 		} );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	observe() {}
 }
 
 /**

@@ -93,11 +93,6 @@ export default class DeleteObserver extends BubblingObserver {
 			}
 		}
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	observe() {}
 }
 
 /**
