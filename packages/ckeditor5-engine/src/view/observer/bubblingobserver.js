@@ -7,15 +7,96 @@
  * @module engine/view/observer/bubblingobserver
  */
 
-import Observer from './observer';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+
+import Observer from './observer';
 
 /**
  * Abstract base bubbling observer class. Observers are classes which listen to events, do the preliminary
  * processing and fire events on the {@link module:engine/view/document~Document} objects.
  *
- * TODO
+ * Bubbling observers are triggering events in the context of specified {@link module:engine/view/element~Element view element} name,
+ * predefined `'$text'` and `'$root'` contexts, and context matchers provided as a function.
+ *
+ * The bubbling starts from the deeper selection position (by firing event on the `'$text'` context) and propagates
+ * the view document tree up to the `'$root'`.
+ *
+ * Examples:
+ *
+ *		// Listeners registered in the context of the view element names:
+ *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+ *			// ...
+ *		}, { context: 'blockquote' } );
+ *
+ *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+ *			// ...
+ *		}, { context: 'li' } );
+ *
+ *		// Listeners registered in the context of the '$text' and '$root' nodes.
+ *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: '$text', priority: 'high' } );
+ *
+ *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: '$root' } );
+ *
+ *		// Listeners registered in the context of custom callback function.
+ *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: isWidget } );
+ *
+ *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: isWidget, priority: 'high' } );
+ *
+ * The bubbling observer itself is listening on the `'high'` priority so there could be listeners that are triggered
+ * no matter the context on lower or higher priorities. For example `'enter'` and `'delete'` commands are triggered
+ * on the `'normal'` priority without checking the context.
+ *
+ * Example flow for selection in text:
+ *
+ *		<blockquote><p>Foo[]bar</p></blockquote>
+ *
+ * Fired events on contexts:
+ * * `'$text'`
+ * * `'p'`
+ * * `'blockquote'`
+ * * `'$root'`
+ *
+ * Example flow for selection on element (i.e., Widget):
+ *
+ *		<blockquote><p>Foo[<widget/>]bar</p></blockquote>
+ *
+ * Fired events on contexts:
+ * * *widget* (custom matcher)
+ * * `'p'`
+ * * `'blockquote'`
+ * * `'$root'`
+ *
+ * There could be multiple listeners registered for the same context and at different priority levels:
+ *
+ *		<p>Foo[]bar</p>
+ *
+ * * `'$text'` at priorities:
+ *   * `'highest'`
+ *   * `'high'`
+ *   * `'normal'`
+ *   * `'low'`
+ *   * `'lowest'`
+ * * `'p'` at priorities:
+ *   * `'highest'`
+ *   * `'high'`
+ *   * `'normal'`
+ *   * `'low'`
+ *   * `'lowest'`
+ * * `'$root'` at priorities:
+ *   * `'highest'`
+ *   * `'high'`
+ *   * `'normal'`
+ *   * `'low'`
+ *   * `'lowest'`
  *
  * @abstract
  */
@@ -24,14 +105,14 @@ export default class BubblingObserver extends Observer {
 	 * Creates an instance of the bubbling observer.
 	 *
 	 * @param {module:engine/view/view~View} view
-	 * @param {String} eventType TODO
-	 * @param {String} [firedEventType=eventType] TODO
+	 * @param {String} eventType The type of the event the observer should listen to.
+	 * @param {String} [firedEventType=eventType] The type of the event the observer will fire.
 	 */
 	constructor( view, eventType, firedEventType = eventType ) {
 		super( view );
 
 		/**
-		 * Type of the event the observer should listen to.
+		 * The type of the event the observer should listen to.
 		 *
 		 * @readonly
 		 * @member {String}
@@ -39,7 +120,7 @@ export default class BubblingObserver extends Observer {
 		this.eventType = eventType;
 
 		/**
-		 * Type of the event the observer will fire.
+		 * The type of the event the observer will fire.
 		 *
 		 * @readonly
 		 * @member {String}
@@ -47,7 +128,7 @@ export default class BubblingObserver extends Observer {
 		this.firedEventType = firedEventType;
 
 		/**
-		 * TODO
+		 * Map of context definitions to emitters.
 		 *
 		 * @private
 		 * @member {Map.<String|Function, module:utils/emittermixin~Emitter>}
@@ -105,7 +186,6 @@ export default class BubblingObserver extends Observer {
 	 * TODO
 	 *
 	 * @protected
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {...*} [args]
 	 * @returns {Array.<*>|Boolean} False if event should not be handled. TODO
 	 */
