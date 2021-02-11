@@ -60,43 +60,43 @@ import Observer from './observer';
  *		<blockquote><p>Foo[]bar</p></blockquote>
  *
  * Fired events on contexts:
- * * `'$text'`
- * * `'p'`
- * * `'blockquote'`
- * * `'$root'`
+ * 1. `'$text'`
+ * 2. `'p'`
+ * 3. `'blockquote'`
+ * 4. `'$root'`
  *
  * Example flow for selection on element (i.e., Widget):
  *
  *		<blockquote><p>Foo[<widget/>]bar</p></blockquote>
  *
  * Fired events on contexts:
- * * *widget* (custom matcher)
- * * `'p'`
- * * `'blockquote'`
- * * `'$root'`
+ * 1. *widget* (custom matcher)
+ * 2. `'p'`
+ * 3. `'blockquote'`
+ * 4. `'$root'`
  *
  * There could be multiple listeners registered for the same context and at different priority levels:
  *
  *		<p>Foo[]bar</p>
  *
- * * `'$text'` at priorities:
- *   * `'highest'`
- *   * `'high'`
- *   * `'normal'`
- *   * `'low'`
- *   * `'lowest'`
- * * `'p'` at priorities:
- *   * `'highest'`
- *   * `'high'`
- *   * `'normal'`
- *   * `'low'`
- *   * `'lowest'`
- * * `'$root'` at priorities:
- *   * `'highest'`
- *   * `'high'`
- *   * `'normal'`
- *   * `'low'`
- *   * `'lowest'`
+ * 1. `'$text'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
+ * 2. `'p'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
+ * 3. `'$root'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
  *
  * @abstract
  */
@@ -156,7 +156,8 @@ export default class BubblingObserver extends Observer {
 	observe() {}
 
 	/**
-	 * TODO
+	 * Overrides the default implementation of EmitterMixin to intercept event bindings
+	 * and redirect them to the emitter for a specified context.
 	 *
 	 * @protected
 	 */
@@ -172,7 +173,8 @@ export default class BubblingObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Overrides the default implementation of EmitterMixin to intercept event unbinding
+	 * and redirect them to emitters for all contexts.
 	 *
 	 * @protected
 	 */
@@ -183,11 +185,11 @@ export default class BubblingObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Translates event data. It could also disable event bubbling by returning `false`.
 	 *
 	 * @protected
 	 * @param {...*} [args]
-	 * @returns {Array.<*>|Boolean} False if event should not be handled. TODO
+	 * @returns {Array.<*>|Boolean} False if event should not be handled.
 	 */
 	_translateEvent( ...args ) {
 		return args;
@@ -222,7 +224,7 @@ export default class BubblingObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Sets main listener on the view document to intercept event and start bubbling it.
 	 *
 	 * @private
 	 */
@@ -289,7 +291,7 @@ export default class BubblingObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Fires the listener for the specified context. Returns `true` if event was stopped.
 	 *
 	 * @private
 	 * @param {String|module:engine/view/node~Node} context
@@ -310,7 +312,7 @@ export default class BubblingObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Returns an emitter for a specified view node.
 	 *
 	 * @param {module:engine/view/node~Node} node
 	 * @returns {module:utils/emittermixin~Emitter|null}
@@ -327,7 +329,7 @@ export default class BubblingObserver extends Observer {
 	}
 }
 
-// TODO
+// Returns the deeper parent element for the selection.
 function getDeeperSelectionParent( selection ) {
 	const focusParent = selection.focus.parent;
 	const anchorParent = selection.anchor.parent;
