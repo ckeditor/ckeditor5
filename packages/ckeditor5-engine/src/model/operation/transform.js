@@ -497,9 +497,16 @@ class ContextFactory {
 					case MoveOperation: {
 						if ( opA.splitPosition.isEqual( opB.sourcePosition ) || opA.splitPosition.isBefore( opB.sourcePosition ) ) {
 							this._setRelation( opA, opB, 'splitBefore' );
-						}
+						} else {
+							const range = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
 
-						break;
+							if ( opA.splitPosition.hasSameParentAs( opB.sourcePosition ) && range.containsPosition( opA.splitPosition ) ) {
+								const howMany = range.end.offset - opA.splitPosition.offset;
+								const offset = opA.splitPosition.offset - range.start.offset;
+
+								this._setRelation( opA, opB, { howMany, offset } );
+							}
+						}
 					}
 				}
 
@@ -2104,6 +2111,32 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
 	}
 
+	// Case 3:
+	//
+	// Split is at a position where nodes were moved.
+	//
+	// This is a scenario described in `MoveOperation` x `SplitOperation` transformation but from the
+	// "split operation point of view".
+	//
+	const splitAtTarget = a.splitPosition.isEqual( b.targetPosition );
+
+	if ( splitAtTarget && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
+		a.howMany += b.howMany;
+		a.splitPosition = a.splitPosition._getTransformedByDeletion( b.sourcePosition, b.howMany );
+		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
+
+		return [ a ];
+	}
+
+	if ( splitAtTarget && context.abRelation && context.abRelation.howMany ) {
+		const { howMany, offset } = context.abRelation;
+
+		a.howMany += howMany;
+		a.splitPosition = a.splitPosition.getShiftedBy( offset );
+
+		return [ a ];
+	}
+
 	// Case 2:
 	//
 	// If the split position is inside the moved range, we need to shift the split position to a proper place.
@@ -2121,7 +2154,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// After split:
 	// <paragraph>A</paragraph><paragraph>d</paragraph><paragraph>Xbcyz</paragraph>
 	//
-	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) && !a.graveyardPosition ) {
+	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) ) {
 		const howManyRemoved = b.howMany - ( a.splitPosition.offset - b.sourcePosition.offset );
 		a.howMany -= howManyRemoved;
 
@@ -2130,23 +2163,6 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		}
 
 		a.splitPosition = b.sourcePosition.clone();
-		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
-
-		return [ a ];
-	}
-
-	// Case 3:
-	//
-	// Split is at a position where nodes were moved.
-	//
-	// This is a scenario described in `MoveOperation` x `SplitOperation` transformation but from the
-	// "split operation point of view".
-	//
-	const splitAtTarget = a.splitPosition.isEqual( b.targetPosition );
-
-	if ( splitAtTarget && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
-		a.howMany += b.howMany;
-		a.splitPosition = a.splitPosition._getTransformedByDeletion( b.sourcePosition, b.howMany );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 
 		return [ a ];
