@@ -109,14 +109,9 @@ export default class Widget extends Plugin {
 		// * The second (late) listener makes sure the default browser action on arrow key press is
 		// prevented when a widget is selected. This prevents the selection from being moved
 		// from a fake selection container.
-		// TODO split into 2 separate handlers
 		this.listenTo( viewDocument, 'arrowkey', ( ...args ) => {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );
-		}, { context: isWidget } );
-
-		this.listenTo( viewDocument, 'arrowkey', ( ...args ) => {
-			this._handleSelectionChangeOnArrowKeyPress( ...args );
-		}, { context: '$text' } );
+		}, { context: [ isWidget, '$text' ] } );
 
 		this.listenTo( viewDocument, 'arrowkey', ( ...args ) => {
 			this._preventDefaultOnArrowKeyPress( ...args );

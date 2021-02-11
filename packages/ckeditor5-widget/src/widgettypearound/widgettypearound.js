@@ -267,14 +267,9 @@ export default class WidgetTypeAround extends Plugin {
 
 		// This is the main listener responsible for the fake caret.
 		// Note: The priority must precede the default Widget class keydown handler ("high").
-		// TODO split into 2 separate handlers
 		this._listenToIfEnabled( editingView.document, 'arrowkey', ( evt, domEventData ) => {
 			this._handleArrowKeyPress( evt, domEventData );
-		}, { context: isWidget, priority: 'high' } );
-
-		this._listenToIfEnabled( editingView.document, 'arrowkey', ( evt, domEventData ) => {
-			this._handleArrowKeyPress( evt, domEventData );
-		}, { context: '$text', priority: 'high' } );
+		}, { context: [ isWidget, '$text' ], priority: 'high' } );
 
 		// This listener makes sure the widget type around selection attribute will be gone from the model
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
@@ -548,6 +543,8 @@ export default class WidgetTypeAround extends Plugin {
 		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
 			const selectedModelElement = selection.getSelectedElement();
 
+			// This event could be triggered from inside the widget but we are interested
+			// only when the widget is selected itself.
 			if ( !selectedModelElement ) {
 				return;
 			}
@@ -633,6 +630,8 @@ export default class WidgetTypeAround extends Plugin {
 		this._listenToIfEnabled( editingView.document, 'delete', ( evt, domEventData ) => {
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 
+			// This event could be triggered from inside the widget but we are interested
+			// only when the widget is selected itself.
 			if ( !selectedModelWidget ) {
 				return;
 			}

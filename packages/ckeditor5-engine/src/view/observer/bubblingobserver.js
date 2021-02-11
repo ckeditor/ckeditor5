@@ -162,14 +162,18 @@ export default class BubblingObserver extends Observer {
 	 * @protected
 	 */
 	_addEventListener( event, callback, options ) {
-		let listener = this._listeners.get( options.context );
+		const contexts = Array.isArray( options.context ) ? options.context : [ options.context ];
 
-		if ( !listener ) {
-			listener = Object.create( EmitterMixin );
-			this._listeners.set( options.context, listener );
+		for ( const context of contexts ) {
+			let listener = this._listeners.get( context );
+
+			if ( !listener ) {
+				listener = Object.create( EmitterMixin );
+				this._listeners.set( context, listener );
+			}
+
+			this.listenTo( listener, event, callback, options );
 		}
-
-		this.listenTo( listener, event, callback, options );
 	}
 
 	/**
