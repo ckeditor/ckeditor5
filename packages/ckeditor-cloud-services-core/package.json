@@ -11,6 +11,7 @@
     "ckeditor5": "^25.0.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-core": "^25.0.0",
     "@ckeditor/ckeditor5-utils": "^25.0.0"
   },
   "engines": {
