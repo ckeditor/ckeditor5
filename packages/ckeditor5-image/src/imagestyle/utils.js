@@ -12,6 +12,12 @@ import { icons } from 'ckeditor5/src/core';
 
 export default class ImageStyleUtils {
 	constructor( loadedPlugins, toolbarConfiguration ) {
+		if ( ImageStyleUtils._instance ) {
+			return ImageStyleUtils._instance;
+		}
+
+		ImageStyleUtils._instance = this;
+
 		this.loadedPlugins = {
 			'image': loadedPlugins.has( 'Image' ),
 			'imageInline': loadedPlugins.has( 'ImageInline' )
@@ -151,56 +157,31 @@ export default class ImageStyleUtils {
 	 *
 	 * @returns {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
 	 */
-	normalizeImageStyles( type, displayWarnings ) {
+	normalizeImageStyles( type ) {
 		const configuredStyles = this.toolbarConfiguration[ type ] || [];
 
 		if ( type === 'arrangements' ) {
 			if ( !this.normalizedArrangements ) {
-				this.normalizedArrangements = configuredStyles.map(
-					this._normalizeArrangement.bind( this, displayWarnings )
-				);
+				this.normalizedArrangements = configuredStyles
+					.map( arrangement => this._normalizeArrangement( arrangement ) )
+					.filter( arrangement => this._validateArrangement( arrangement, true ) );
 			}
-
 			return this.normalizedArrangements;
-		} else if ( type === 'groups' ) {
-			if ( !this.normalizedGroups ) {
-				this.normalizedGroups = configuredStyles.map(
-					this._normalizeGroup.bind( this, displayWarnings )
-				);
-			}
+		}
 
+		if ( type === 'groups' ) {
+			if ( !this.normalizedGroups ) {
+				this.normalizedGroups = configuredStyles
+					.map( group => this._normalizeGroup( group ) )
+					.map( group => {
+						group.items = group.items
+							.filter( item => this._validateArrangement( item ) );
+
+						return group;
+					} );
+			}
 			return this.normalizedGroups;
 		}
-	}
-
-	isArrangementSupported( arrangementName, displayWarnings = false ) {
-		const config = this._getArrangementConfig( arrangementName );
-
-		// if ( !config ) {
-		// 	console.log( 'NIE MA TAKIEJ KONFIGURACJI!' );
-		// 	return false;
-		// }
-
-		if ( config.modelElement && !this.loadedPlugins[ config.modelElement ] ) {
-			if ( displayWarnings ) {
-				logWarning( 'image-style-not-supported', {
-					missingPlugin: config.modelElement,
-					unsupportedStyle: config.name
-				} );
-				// to jest case gdzie dostępne pluginy nie obsługują wybranych styli.
-			}
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	_getArrangementConfig( name ) {
-		if ( !this.normalizedArrangements ) {
-			this.normalizedArrangements = this.normalizeImageStyles( 'arrangements' );
-		}
-
-		return this.normalizedArrangements.find( arrangement => arrangement.name === name );
 	}
 
 	// Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}
@@ -208,7 +189,7 @@ export default class ImageStyleUtils {
 	//
 	// @param {Object} style
 	// @returns {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}
-	_normalizeArrangement( displayWarnings, arrangement ) {
+	_normalizeArrangement( arrangement ) {
 		const defaultArrangements = this.defaultArrangements;
 		const isDefault = defaultArrangements[ arrangement ];
 
@@ -219,9 +200,7 @@ export default class ImageStyleUtils {
 		// Just the name of the style has been passed, but none of the defaults.
 		// Warn because probably it's a mistake.
 		if ( isOnlyName ) {
-			if ( displayWarnings ) {
-				this._warnUnavailableStyle( arrangement, 'group' );
-			}
+			warnUnavailableStyle( arrangement, 'group' );
 
 			// Normalize the style anyway to prevent errors.
 			const arrangementName = arrangement;
@@ -237,7 +216,7 @@ export default class ImageStyleUtils {
 		// extend it with defaults – the user wants to customize a default style.
 		// Note: Don't override the user–defined style object, clone it instead.
 		else if ( isExtendingDefault ) {
-			arrangement = this._extendStyle( defaultArrangements[ arrangement.name ], arrangement );
+			arrangement = extendStyle( defaultArrangements[ arrangement.name ], arrangement );
 		}
 
 		// If an icon is defined as a string and correspond with a name
@@ -249,7 +228,7 @@ export default class ImageStyleUtils {
 		return arrangement;
 	}
 
-	_normalizeGroup( displayWarnings, group ) {
+	_normalizeGroup( group ) {
 		const defaultGroups = this.defaultGroups;
 		const isDefault = defaultGroups[ group ];
 
@@ -258,9 +237,7 @@ export default class ImageStyleUtils {
 		const isExtendingDefault = defaultGroups[ group.name ];
 
 		if ( isOnlyName ) {
-			if ( displayWarnings ) {
-				this._warnUnavailableStyle( group, 'group' );
-			}
+			warnUnavailableStyle( group, 'group' );
 
 			// Normalize the style anyway to prevent errors.
 			const groupName = group;
@@ -272,7 +249,7 @@ export default class ImageStyleUtils {
 			group = Object.assign( {}, defaultGroups[ groupName ] );
 		}
 		else if ( isExtendingDefault ) {
-			group = this._extendStyle( defaultGroups[ group.name ], group );
+			group = extendStyle( defaultGroups[ group.name ], group );
 		}
 
 		if ( typeof group.defaultIcon === 'string' && this.defaultIcons[ group.defaultIcon ] ) {
@@ -282,28 +259,61 @@ export default class ImageStyleUtils {
 		return group;
 	}
 
-	_extendStyle( source, style ) {
-		const extendedStyle = Object.assign( {}, style );
+	_validateArrangement( arrangement, displayWarnings = false ) {
+		const config = typeof arrangement === 'string' ? this._getArrangementConfig( arrangement ) : arrangement;
+		const modelElement = config.modelElement;
 
-		for ( const prop in source ) {
-			if ( !Object.prototype.hasOwnProperty.call( style, prop ) ) {
-				extendedStyle[ prop ] = source[ prop ];
+		if ( !config ) {
+			if ( displayWarnings ) {
+				logWarning( 'image-style-not-available', {
+					name: arrangement
+				} );
 			}
-			// ASK: nie nadpisujemy tych wartości?
-			// Nie chcemy ich nadpisywać jeśli ktoś na przykład chce tylko podmienić itemy?
+			return false;
 		}
-
-		return extendedStyle;
+		else if ( modelElement && !this.loadedPlugins[ modelElement ] ) {
+			if ( displayWarnings ) {
+				logWarning( 'image-style-not-supported', {
+					missingPlugin: modelElement,
+					unsupportedStyle: config.name
+				} );
+				// to jest case gdzie dostępne pluginy nie obsługują wybranych styli.
+			}
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
-	_warnUnavailableStyle( name, type ) {
-		/**
-		 * There is no such image arrangement or group of given name.
-		 *
-		 * @error image-style-not-found
-		 * @param {String} name Name of a missing style.
-		 * @param {String} type Type of a missing style (an arrangement or a group).
-		 */
-		logWarning( 'image-style-not-found', { name, type } );
+	_getArrangementConfig( name ) {
+		const arrangements = this.normalizedArrangements || this.normalizeImageStyles( 'arrangements' );
+
+		return arrangements.find( arrangement => arrangement.name === name );
 	}
+}
+
+function warnUnavailableStyle( name, type ) {
+	/**
+	 * There is no such image arrangement or group of given name.
+	 *
+	 * @error image-style-not-found
+	 * @param {String} name Name of a missing style.
+	 * @param {String} type Type of a missing style (an arrangement or a group).
+	 */
+	logWarning( 'image-style-not-found', { name, type } );
+}
+
+function extendStyle( source, style ) {
+	const extendedStyle = Object.assign( {}, style );
+
+	for ( const prop in source ) {
+		if ( !Object.prototype.hasOwnProperty.call( style, prop ) ) {
+			extendedStyle[ prop ] = source[ prop ];
+		}
+		// ASK: nie nadpisujemy tych wartości?
+		// Nie chcemy ich nadpisywać jeśli ktoś na przykład chce tylko podmienić itemy?
+	}
+
+	return extendedStyle;
 }

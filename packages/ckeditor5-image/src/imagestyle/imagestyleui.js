@@ -101,25 +101,26 @@ export default class ImageStyleUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 			const factory = this.editor.ui.componentFactory;
 
-			// Configuring the toolbarView.
 			const buttonViews = dropdownConfig.items
-				// Removing buttons that are not supported by the loaded plugins (Image, ImageInline).
-				.filter( ( buttonName => this.utils.isArrangementSupported( buttonName, true ) ) )
 				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
+
+			// Hides the button if all of the nested buttons are unsupported by the loaded plugins
+			// or there are no items added the group.
+			if ( buttonViews.length === 0 ) {
+				dropdownView.buttonView.set( 'isVisible', false );
+				//return false;
+			}
 
 			addToolbarToDropdown( dropdownView, buttonViews );
 			// ASK: Jeśli uzyję tutaj fillWithItems, to nadal jeśli czegoś brakuje to edytor się wywala.
 			// To jest błąd w przypadku kiedy developer ustawi w itemach grupy arrangement, który nie jest dostępny
 
-			// Configuring the buttonView.
 			dropdownView.buttonView.set( {
 				label: dropdownConfig.title,
 				ariaLabel: dropdownConfig.title,
 				icon: dropdownConfig.icon,
 				tooltip: true
 			} );
-
-			dropdownView.buttonView.set( 'isVisible', buttonViews.length > 0 );
 
 			dropdownView.buttonView
 				.bind( 'icon' )
@@ -190,10 +191,10 @@ export default class ImageStyleUI extends Plugin {
 		const editor = this.editor;
 
 		if ( config.modelElement ) {
-			editor.execute( 'imageTypeSwitch', config.modelElement );
+			editor.execute( 'imageTypeToggle', config.modelElement );
 			// ASK: nie ma zadnego warna kiedy próbujemy wykonać zablokowaną komendę,
 			// to jest ok? Czy ikonka powinna być disabled, jeśli tylko jedna z komend jest zablokowana?
-			// to jest przypadek kiedy nie mamy załadowanego którego plugina, a arrangement próbuje go wykonać.
+			// to jest przypadek kiedy nie mamy załadowanego któregoś plugina, a arrangement próbuje go wykonać.
 		}
 
 		editor.execute( 'imageStyle', { value: config.name } );

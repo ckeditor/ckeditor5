@@ -39,6 +39,16 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 // 		console.error( err.stack );
 // 	} );
 
+const onlyToolbar = {
+	toolbar: [
+		'imageStyle:inLine',
+		'imageStyle:inParagraph',
+		'imageStyle:betweenParagraphs',
+		'|',
+		'imageTextAlternative'
+	]
+};
+
 const validStyles = {
 	arrangements: [
 		{
@@ -136,7 +146,7 @@ const undeclaredGroup = {
 		'|',
 		'imageTextAlternative'
 	]
-}
+};
 
 // requires removing ImageInline plugin
 // expected result: image-style-not-supported
@@ -169,6 +179,7 @@ const unsupportedItemInGroup = {
 
 // requires removing ImageInline plugin
 // expected result: image-style-not-supported
+// expected result: toolbar-item-unavailable
 const unsupportedItemButton = {
 	styles: {
 		arrangements: [
@@ -214,7 +225,7 @@ ClassicEditor
 			'undo',
 			'redo'
 		],
-		image: unsupportedItemInGroup
+		image: onlyToolbar
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;

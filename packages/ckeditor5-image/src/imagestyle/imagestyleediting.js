@@ -34,15 +34,15 @@ export default class ImageStyleEditing extends Plugin {
 		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
-
 		const loadedPlugins = editor.plugins;
-		const toolbarConfiguration = editor.config.get( 'image.styles' );
-		const utils = new ImageStyleUtils( loadedPlugins, toolbarConfiguration );
 
+		// Aet default configuration.
 		this._defineDefaultUI();
 
 		// Get configuration.
-		const styles = utils.normalizeImageStyles( 'arrangements', true );
+		const configuredStyles = editor.config.get( 'image.styles' );
+		const styles = new ImageStyleUtils( loadedPlugins, configuredStyles || [] )
+			.normalizeImageStyles( 'arrangements', true );
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
@@ -55,6 +55,7 @@ export default class ImageStyleEditing extends Plugin {
 
 		if ( loadedPlugins.has( 'ImageInlineEditing' ) ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
+			// ASK: Additional converter needed?
 		}
 
 		const modelToViewConverter = modelToViewStyleAttribute( styles );
@@ -68,27 +69,27 @@ export default class ImageStyleEditing extends Plugin {
 	_defineDefaultUI() {
 		const config = this.editor.config;
 		const loadedPlugins = this.editor.plugins;
+		let styles;
 
 		const blockPluginLoaded = loadedPlugins.has( 'ImageBlockEditing' );
 		const inlinePluginLoaded = loadedPlugins.has( 'ImageInlineEditing' );
 
 		if ( inlinePluginLoaded && blockPluginLoaded ) {
-			config.define( 'image.styles', {
-				arrangements: [
-					'inline', 'left', 'right',
-					'blockLeft', 'blockCenter', 'blockRight'
-				],
+			styles = {
+				arrangements: [ 'inline', 'left', 'right', 'blockLeft', 'blockCenter', 'blockRight' ],
 				groups: [ 'inParagraph', 'betweenParagraphs' ]
-			} );
-		} else if ( inlinePluginLoaded ) {
-			config.define( 'image.styles', {
-				arrangements: [ 'inline', 'left', 'right' ]
-			} );
+			};
 		} else if ( blockPluginLoaded ) {
-			config.define( 'image.styles', {
+			styles = {
 				arrangements: [ 'blockFull', 'blockSide' ]
-			} );
+			};
+		} else if ( inlinePluginLoaded ) {
+			styles = {
+				arrangements: [ 'inline', 'left', 'right' ]
+			};
 		}
+
+		config.define( 'image.styles', styles );
 	}
 }
 
