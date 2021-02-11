@@ -16,7 +16,6 @@ ClassicEditor
 			'heading', '|', 'alignment', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		alignment: {
-			// classNames: [ 'ckx-align-left', 'ckx-align-right' ], // , 'ckx-align-center', 'ckx-align-justify' ],
 			options: [ 'left', 'center' ]
 		}
 	} )
