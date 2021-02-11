@@ -41,7 +41,7 @@ import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 const onlyToolbar = {
 	toolbar: [
-		'imageStyle:inLine',
+		'imageStyle:alignInline',
 		'imageStyle:inParagraph',
 		'imageStyle:betweenParagraphs',
 		'|',
@@ -52,20 +52,20 @@ const onlyToolbar = {
 const validStyles = {
 	arrangements: [
 		{
-			name: 'blockSide',
+			name: 'side',
 			title: 'Side image',
 			icon: 'inLineLeft',
 			modelElement: 'imageInline',
 			className: 'image-style-side'
 		},
-		'blockFull'
+		'full'
 	],
 	groups: [
 		{
 			name: 'custom',
 			title: 'Image in paragraph',
 			defaultIcon: 'inLineLeft',
-			items: [ 'blockSide', 'blockFull' ]
+			items: [ 'side', 'full' ]
 		}
 	],
 	toolbar: [
@@ -77,7 +77,7 @@ const validStyles = {
 	]
 };
 
-const undeclaredItemInGroup = {
+const undeclaredItemInGroup = { // 1
 	styles: {
 		arrangements: [
 			{
@@ -106,7 +106,7 @@ const undeclaredItemInGroup = {
 };
 
 // expected result: toolbarview-item-unavailable
-const undeclaredItemButton = {
+const undeclaredItemButton = { // 2
 	styles: {
 		arrangements: [
 			{
@@ -126,7 +126,7 @@ const undeclaredItemButton = {
 };
 
 // expected result: toolbarview-item-unavailable
-const undeclaredGroup = {
+const undeclaredGroup = { // 3
 	styles: {
 		arrangements: [
 			{
@@ -150,7 +150,7 @@ const undeclaredGroup = {
 
 // requires removing ImageInline plugin
 // expected result: image-style-not-supported
-const unsupportedItemInGroup = {
+const unsupportedItemInGroup = { // 4
 	styles: {
 		arrangements: [
 			{
@@ -180,7 +180,7 @@ const unsupportedItemInGroup = {
 // requires removing ImageInline plugin
 // expected result: image-style-not-supported
 // expected result: toolbar-item-unavailable
-const unsupportedItemButton = {
+const arrangementUnsupported = { // 4
 	styles: {
 		arrangements: [
 			{
@@ -190,6 +190,8 @@ const unsupportedItemButton = {
 				modelElement: 'imageInline',
 				className: 'image-style-side'
 			}
+		], groups: [
+
 		]
 	},
 	toolbar: [
@@ -225,7 +227,7 @@ ClassicEditor
 			'undo',
 			'redo'
 		],
-		image: onlyToolbar
+		image: validStyles
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;

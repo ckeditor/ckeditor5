@@ -104,11 +104,11 @@ export default class ImageStyleUI extends Plugin {
 			const buttonViews = dropdownConfig.items
 				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
 
-			// Hides the button if all of the nested buttons are unsupported by the loaded plugins
-			// or there are no items added the group.
+			// Hides the button if all of the nested buttons are unsupported by the loaded plugins or there are no items added the group.
+			// ASK: Maybe the group shouldn't be crated at all if there is no items?
 			if ( buttonViews.length === 0 ) {
 				dropdownView.buttonView.set( 'isVisible', false );
-				//return false;
+				// return false;
 			}
 
 			addToolbarToDropdown( dropdownView, buttonViews );
@@ -178,6 +178,7 @@ export default class ImageStyleUI extends Plugin {
 				isToggleable: true
 			} );
 
+			// ASK: faktycznie powinny być tylko zdisablowane? Jaki to jest przypadek? Czy dropdown tez powinien być disabled?
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			view.bind( 'isOn' ).to( command, 'value', value => value === buttonConfig.name );
 
@@ -192,9 +193,6 @@ export default class ImageStyleUI extends Plugin {
 
 		if ( config.modelElement ) {
 			editor.execute( 'imageTypeToggle', config.modelElement );
-			// ASK: nie ma zadnego warna kiedy próbujemy wykonać zablokowaną komendę,
-			// to jest ok? Czy ikonka powinna być disabled, jeśli tylko jedna z komend jest zablokowana?
-			// to jest przypadek kiedy nie mamy załadowanego któregoś plugina, a arrangement próbuje go wykonać.
 		}
 
 		editor.execute( 'imageStyle', { value: config.name } );

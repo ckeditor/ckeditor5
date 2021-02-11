@@ -76,16 +76,19 @@ export default class ImageStyleEditing extends Plugin {
 
 		if ( inlinePluginLoaded && blockPluginLoaded ) {
 			styles = {
-				arrangements: [ 'inline', 'left', 'right', 'blockLeft', 'blockCenter', 'blockRight' ],
+				arrangements: [
+					'alignInline', 'alignInlineLeft', 'alignInlineRight',
+					'alignCenter', 'alignLeft', 'alignRight'
+				],
 				groups: [ 'inParagraph', 'betweenParagraphs' ]
 			};
 		} else if ( blockPluginLoaded ) {
 			styles = {
-				arrangements: [ 'blockFull', 'blockSide' ]
+				arrangements: [ 'full', 'side' ]
 			};
 		} else if ( inlinePluginLoaded ) {
 			styles = {
-				arrangements: [ 'inline', 'left', 'right' ]
+				arrangements: [ 'alignInline', 'alignInlineLeft', 'alignInlineRight' ]
 			};
 		}
 

@@ -11,7 +11,7 @@ import { logWarning } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
 
 export default class ImageStyleUtils {
-	constructor( loadedPlugins, toolbarConfiguration ) {
+	constructor( loadedPlugins, configuredStyles ) {
 		if ( ImageStyleUtils._instance ) {
 			return ImageStyleUtils._instance;
 		}
@@ -23,7 +23,7 @@ export default class ImageStyleUtils {
 			'imageInline': loadedPlugins.has( 'ImageInline' )
 		};
 
-		this.toolbarConfiguration = toolbarConfiguration;
+		this.configuredStyles = configuredStyles;
 
 		this.normalizedStyles = null;
 		this.normalizedGroups = null;
@@ -46,71 +46,71 @@ export default class ImageStyleUtils {
 		 * @member {Object.<String,Object>}
 		 */
 		this.defaultArrangements = {
-			inline: {
-				name: 'inline',
+			alignInline: {
+				name: 'alignInline',
 				title: 'Image in text line',
-				icon: icons.inlineIcon,
+				icon: icons.objectInline,
 				modelElement: 'imageInline',
 				isDefault: true
 			},
 
-			left: {
-				name: 'left',
+			alignInlineLeft: {
+				name: 'alignInlineLeft',
 				title: 'Left aligned image',
-				icon: icons.inlineLeftIcon,
+				icon: icons.objectInlineLeft,
 				modelElement: false,
 				className: 'image-style-align-left'
 			},
 
-			right: {
-				name: 'right',
+			alignInlineRight: {
+				name: 'alignInlineRight',
 				title: 'Right aligned image',
-				icon: icons.inlineRightIcon,
+				icon: icons.objectInlineRight,
 				modelElement: false,
 				className: 'image-style-align-right'
 			},
 
 			// This option is equal to the situation when no style is applied.
-			blockFull: {
+			full: {
 				name: 'blockFull',
 				title: 'Full size image',
-				icon: icons.fullWidthIcon,
+				icon: icons.objectFullWidth,
 				modelElement: 'image',
 				isDefault: true
 			},
 
 			// This represents a side image.
-			blockSide: {
+			side: {
 				name: 'blockSide',
 				title: 'Side image',
-				icon: icons.rightIcon,
+				icon: icons.objectRight,
 				modelElement: 'image',
 				className: 'image-style-side'
 			},
 
 			// This style represents an image aligned to the left.
-			blockLeft: {
-				name: 'blockLeft',
+			alignLeft: {
+				name: 'alignLeft',
 				title: 'Left aligned image',
-				icon: icons.leftIcon,
+				icon: icons.objectLeft,
 				modelElement: 'image',
 				className: 'image-style-block-align-left'
 			},
 
 			// This style represents a centered image.
-			blockCenter: {
-				name: 'blockCenter',
+			alignCenter: {
+				name: 'alignCenter',
 				title: 'Centered image',
-				icon: icons.centerIcon,
+				icon: icons.objectCenter,
 				modelElement: 'image',
 				className: 'image-style-align-center'
 			},
 
 			// This style represents an image aligned to the right.
-			blockRight: {
-				name: 'blockRight',
+			alignRight: {
+				name: 'alignRight',
 				title: 'Right aligned image',
-				icon: icons.rightIcon,
+				icon: icons.objectRight,
 				modelElement: 'image',
 				className: 'image-style-block-align-right'
 			}
@@ -120,15 +120,15 @@ export default class ImageStyleUtils {
 			inParagraph: {
 				name: 'inParagraph',
 				title: 'Image in paragraph',
-				defaultIcon: icons.inlineLeftIcon,
-				items: [ 'left', 'right' ]
+				defaultIcon: icons.objectInlineLeft,
+				items: [ 'alignInlineLeft', 'alignInlineRight' ]
 			},
 
 			betweenParagraphs: {
 				name: 'betweenParagraphs',
 				title: 'Image between paragraphs',
-				defaultIcon: icons.centerIcon,
-				items: [ 'blockLeft', 'blockCenter', 'blockRight' ]
+				defaultIcon: icons.objectCenter,
+				items: [ 'alignLeft', 'alignCenter', 'alignRight' ]
 			}
 		};
 
@@ -141,13 +141,13 @@ export default class ImageStyleUtils {
 		 * @member {Object.<String, String>}
 		 */
 		this.defaultIcons = {
-			full: icons.fullWidthIcon,
-			left: icons.leftIcon,
-			right: icons.rightIcon,
-			center: icons.centerIcon,
-			inLineLeft: icons.inlineLeftIcon,
-			inLineRight: icons.inlineRightIcon,
-			inLine: icons.inlineIcon
+			full: icons.objectFullWidth,
+			left: icons.objectLeft,
+			right: icons.objectRight,
+			center: icons.objectCenter,
+			inLineLeft: icons.objectInlineLeft,
+			inLineRight: icons.objectInlineRight,
+			inLine: icons.objectInline
 		};
 	}
 
@@ -158,13 +158,13 @@ export default class ImageStyleUtils {
 	 * @returns {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
 	 */
 	normalizeImageStyles( type ) {
-		const configuredStyles = this.toolbarConfiguration[ type ] || [];
+		const configuredStyles = this.configuredStyles[ type ] || [];
 
 		if ( type === 'arrangements' ) {
 			if ( !this.normalizedArrangements ) {
 				this.normalizedArrangements = configuredStyles
 					.map( arrangement => this._normalizeArrangement( arrangement ) )
-					.filter( arrangement => this._validateArrangement( arrangement, true ) );
+					.filter( arrangement => this._validateArrangement( arrangement ) );
 			}
 			return this.normalizedArrangements;
 		}
@@ -175,7 +175,7 @@ export default class ImageStyleUtils {
 					.map( group => this._normalizeGroup( group ) )
 					.map( group => {
 						group.items = group.items
-							.filter( item => this._validateArrangement( item ) );
+							.filter( item => this._validateGroupItem( item ) );
 
 						return group;
 					} );
@@ -259,31 +259,28 @@ export default class ImageStyleUtils {
 		return group;
 	}
 
-	_validateArrangement( arrangement, displayWarnings = false ) {
+	_validateArrangement( arrangement ) {
 		const config = typeof arrangement === 'string' ? this._getArrangementConfig( arrangement ) : arrangement;
+
 		const modelElement = config.modelElement;
 
-		if ( !config ) {
-			if ( displayWarnings ) {
-				logWarning( 'image-style-not-available', {
-					name: arrangement
-				} );
-			}
-			return false;
-		}
-		else if ( modelElement && !this.loadedPlugins[ modelElement ] ) {
-			if ( displayWarnings ) {
-				logWarning( 'image-style-not-supported', {
-					missingPlugin: modelElement,
-					unsupportedStyle: config.name
-				} );
-				// to jest case gdzie dostępne pluginy nie obsługują wybranych styli.
-			}
+		if ( modelElement && !this.loadedPlugins[ modelElement ] ) {
+			logWarning( 'image-style-unsupported', {
+				missingPlugin: modelElement,
+				unsupportedStyle: config.name
+			} );
+			// to jest case gdzie dostępne pluginy nie obsługują wybranych styli.
 			return false;
 		}
 		else {
 			return true;
 		}
+	}
+
+	_validateGroupItem( item ) {
+		const isItemDefined = this._getArrangementConfig( item );
+
+		return !!isItemDefined;
 	}
 
 	_getArrangementConfig( name ) {
