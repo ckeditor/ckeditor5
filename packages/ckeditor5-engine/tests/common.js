@@ -13,7 +13,7 @@ before( () => {
 	const originalWarn = console.warn;
 
 	console.warn = function( ...args ) {
-		if ( args[ 0 ] == 'Selection change observer detected an infinite rendering loop.' ) {
+		if ( args[ 0 ].endsWith( 'Selection change observer detected an infinite rendering loop.' ) ) {
 			throw new Error( 'Detected unwelcome "Selection change observer detected an infinite rendering loop." warning.' );
 		}
 
