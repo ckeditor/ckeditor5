@@ -30,6 +30,8 @@ class ExtendHTMLSupport extends Plugin {
 		dataSchema.allowAttributes( { name: 'section', styles: { color: /[^]/ } } );
 
 		dataSchema.allowElement( { name: /details|summary/ } );
+
+		dataSchema.allowElement( { name: /dl|dt|dd/ } );
 	}
 }
 

@@ -42,9 +42,13 @@ export default class GeneralHTMLSupport extends Plugin {
 
 		dataSchema.register( { view: 'article', model: 'ghsArticle', schema: '$ghsBlock' } );
 		dataSchema.register( { view: 'section', model: 'ghsSection', schema: '$ghsBlock' } );
-		dataSchema.register( { view: 'dl', model: 'ghsDl', schema: '$ghsBlock' } );
 
 		// Register data list elements.
+		dataSchema.register( { view: 'dl', model: 'ghsDl', schema: {
+			allowIn: [ '$ghsBlock', '$root' ],
+			isBlock: true
+		} } );
+
 		editor.model.schema.register( '$ghsDatalist', {
 			allowIn: 'ghsDl',
 			isBlock: true,
