@@ -77,8 +77,8 @@ export default class ImageStyleEditing extends Plugin {
 		if ( inlinePluginLoaded && blockPluginLoaded ) {
 			styles = {
 				arrangements: [
-					'alignInline', 'alignInlineLeft', 'alignInlineRight',
-					'alignCenter', 'alignLeft', 'alignRight'
+					'alignInline', 'alignLeft', 'alignRight',
+					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
 				],
 				groups: [ 'inParagraph', 'betweenParagraphs' ]
 			};
@@ -88,7 +88,7 @@ export default class ImageStyleEditing extends Plugin {
 			};
 		} else if ( inlinePluginLoaded ) {
 			styles = {
-				arrangements: [ 'alignInline', 'alignInlineLeft', 'alignInlineRight' ]
+				arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
 			};
 		}
 

@@ -19,7 +19,7 @@ export default class ImageStyleUtils {
 		ImageStyleUtils._instance = this;
 
 		this.loadedPlugins = {
-			'image': loadedPlugins.has( 'Image' ),
+			'imageBlock': loadedPlugins.has( 'ImageBlock' ),
 			'imageInline': loadedPlugins.has( 'ImageInline' )
 		};
 
@@ -54,46 +54,29 @@ export default class ImageStyleUtils {
 				isDefault: true
 			},
 
-			alignInlineLeft: {
-				name: 'alignInlineLeft',
+			// This style represents an image aligned to the left.
+			alignLeft: {
+				name: 'alignLeft',
 				title: 'Left aligned image',
 				icon: icons.objectInlineLeft,
 				modelElement: false,
 				className: 'image-style-align-left'
 			},
 
-			alignInlineRight: {
-				name: 'alignInlineRight',
+			// This style represents an image aligned to the right.
+			alignRight: {
+				name: 'alignRight',
 				title: 'Right aligned image',
 				icon: icons.objectInlineRight,
 				modelElement: false,
 				className: 'image-style-align-right'
 			},
 
-			// This option is equal to the situation when no style is applied.
-			full: {
-				name: 'blockFull',
-				title: 'Full size image',
-				icon: icons.objectFullWidth,
-				modelElement: 'image',
-				isDefault: true
-			},
-
-			// This represents a side image.
-			side: {
-				name: 'blockSide',
-				title: 'Side image',
-				icon: icons.objectRight,
-				modelElement: 'image',
-				className: 'image-style-side'
-			},
-
-			// This style represents an image aligned to the left.
-			alignLeft: {
-				name: 'alignLeft',
+			alignBlockLeft: {
+				name: 'alignBlockLeft',
 				title: 'Left aligned image',
 				icon: icons.objectLeft,
-				modelElement: 'image',
+				modelElement: 'imageBlock',
 				className: 'image-style-block-align-left'
 			},
 
@@ -102,17 +85,34 @@ export default class ImageStyleUtils {
 				name: 'alignCenter',
 				title: 'Centered image',
 				icon: icons.objectCenter,
-				modelElement: 'image',
+				modelElement: 'imageBlock',
 				className: 'image-style-align-center'
 			},
 
-			// This style represents an image aligned to the right.
-			alignRight: {
-				name: 'alignRight',
+			alignBlockRight: {
+				name: 'alignBlockRight',
 				title: 'Right aligned image',
 				icon: icons.objectRight,
-				modelElement: 'image',
+				modelElement: 'imageBlock',
 				className: 'image-style-block-align-right'
+			},
+
+			// This option is equal to the situation when no style is applied.
+			full: {
+				name: 'full',
+				title: 'Full size image',
+				icon: icons.objectFullWidth,
+				modelElement: 'imageBlock',
+				isDefault: true
+			},
+
+			// This represents a side image.
+			side: {
+				name: 'side',
+				title: 'Side image',
+				icon: icons.objectRight,
+				modelElement: 'imageBlock',
+				className: 'image-style-side'
 			}
 		};
 
@@ -120,15 +120,15 @@ export default class ImageStyleUtils {
 			inParagraph: {
 				name: 'inParagraph',
 				title: 'Image in paragraph',
-				defaultIcon: icons.objectInlineLeft,
-				items: [ 'alignInlineLeft', 'alignInlineRight' ]
+				defaultItem: 'alignLeft',
+				items: [ 'alignLeft', 'alignRight' ]
 			},
 
 			betweenParagraphs: {
 				name: 'betweenParagraphs',
 				title: 'Image between paragraphs',
-				defaultIcon: icons.objectCenter,
-				items: [ 'alignLeft', 'alignCenter', 'alignRight' ]
+				defaultItem: 'alignCenter',
+				items: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
 			}
 		};
 

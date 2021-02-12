@@ -8,36 +8,39 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+import ImageBlock from '../../src/imageblock';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import ImageStyle from '../../src/imagestyle';
+import ImageToolbar from '../../src/imagetoolbar';
+import ImageCaption from '../../src/imagecaption';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ImageInsert from '../../src/imageinsert';
 
-// ClassicEditor
-// 	.create( document.querySelector( '#editor-semantic' ), {
-// 		plugins: [
-// 			ArticlePluginSet
-// 		],
-// 		toolbar: [
-// 			'heading',
-// 			'|',
-// 			'bold',
-// 			'italic',
-// 			'link',
-// 			'bulletedList',
-// 			'numberedList',
-// 			'blockQuote',
-// 			'insertTable',
-// 			'mediaEmbed',
-// 			'undo',
-// 			'redo'
-// 		],
-// 		image: {
-// 			toolbar: [ 'imageStyle:blockFull', 'imageStyle:blockSide' ]
-// 		}
-// 	} )
-// 	.then( editor => {
-// 		window.editorSemantic = editor;
-// 	} )
-// 	.catch( err => {
-// 		console.error( err.stack );
-// 	} );
+ClassicEditor
+	.create( document.querySelector( '#editor-semantic' ), {
+		plugins: [
+			Essentials,
+			ImageBlock,
+			ImageStyle,
+			ImageToolbar,
+			ImageCaption,
+			Paragraph,
+			ImageInsert
+		],
+		toolbar: [
+			'undo',
+			'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+		}
+	} )
+	.then( editor => {
+		window.editorSemantic = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
 const onlyToolbar = {
 	toolbar: [
@@ -227,7 +230,7 @@ ClassicEditor
 			'undo',
 			'redo'
 		],
-		image: validStyles
+		image: onlyToolbar
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;
