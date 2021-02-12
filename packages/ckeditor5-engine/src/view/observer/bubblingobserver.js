@@ -241,14 +241,10 @@ export default class BubblingObserver extends Observer {
 			}
 
 			const eventInfo = new EventInfo( this, this.firedEventType );
-			let eventArgs = this._translateEvent( ...args );
+			const eventArgs = this._translateEvent( ...args );
 
 			if ( eventArgs === false ) {
 				return;
-			}
-
-			if ( !Array.isArray( eventArgs ) ) {
-				eventArgs = [ eventArgs ];
 			}
 
 			const selectedElement = selection.getSelectedElement();

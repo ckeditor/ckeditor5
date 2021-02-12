@@ -3,18 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver';
+import BubblingObserver from '../../../src/view/observer/bubblingobserver';
 import { setData as setModelData } from '../../../src/dev-utils/model';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 
-describe( 'ArrowKeysObserver', () => {
+describe( 'BubblingObserver', () => {
 	let editor, model, view, viewDocument, observer;
+
+	class MockedBubblingObserver extends BubblingObserver {
+		constructor( view ) {
+			super( view, 'fakeEvent' );
+		}
+
+		_translateEvent( data, ...args ) {
+			if ( data.disable ) {
+				return false;
+			}
+
+			return super._translateEvent( data, ...args );
+		}
+	}
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing ] } );
@@ -22,7 +35,7 @@ describe( 'ArrowKeysObserver', () => {
 		model = editor.model;
 		view = editor.editing.view;
 		viewDocument = view.document;
-		observer = view.getObserver( ArrowKeysObserver );
+		observer = view.addObserver( MockedBubblingObserver );
 	} );
 
 	afterEach( async () => {
@@ -30,90 +43,53 @@ describe( 'ArrowKeysObserver', () => {
 	} );
 
 	it( 'should define eventType', () => {
-		expect( observer.eventType ).to.equal( 'keydown' );
+		expect( observer.eventType ).to.equal( 'fakeEvent' );
 	} );
 
 	it( 'should define firedEventType', () => {
-		expect( observer.firedEventType ).to.equal( 'arrowkey' );
+		expect( observer.firedEventType ).to.equal( 'fakeEvent' );
 	} );
 
 	describe( '#_translateEvent()', () => {
-		it( 'should fire arrowkey event with the same data as keydown event (arrow right)', () => {
+		it( 'should fire bubbling event with the same data as original event', () => {
 			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowright };
+			const data = {};
 
-			viewDocument.on( 'arrowkey', spy, { context: '$root' } );
-
-			// Prevent other listeners (especially jump over UI element because it required DOM).
-			viewDocument.on( 'keydown', event => event.stop() );
-
-			viewDocument.fire( 'keydown', data );
+			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
 		} );
 
-		it( 'should fire arrowkey event with the same data as keydown event (arrow left)', () => {
+		it( 'should not fire fakeEvent event on other event fired', () => {
 			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowleft };
 
-			viewDocument.on( 'arrowkey', spy, { context: '$root' } );
+			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
+			viewDocument.fire( 'otherEvent', {} );
 
-			// Prevent other listeners (especially jump over inline filler because it required DOM).
-			viewDocument.on( 'keydown', event => event.stop() );
-
-			viewDocument.fire( 'keydown', data );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
+			expect( spy.notCalled ).to.be.true;
 		} );
 
-		it( 'should fire arrowkey event with the same data as keydown event (arrow up)', () => {
+		it( 'should not start bubbling if #_translateEvent() returned false', () => {
 			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowup };
 
-			viewDocument.on( 'arrowkey', spy, { context: '$root' } );
-
-			viewDocument.fire( 'keydown', data );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
-		} );
-
-		it( 'should fire arrowkey event with the same data as keydown event (arrow down)', () => {
-			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowdown };
-
-			viewDocument.on( 'arrowkey', spy, { context: '$root' } );
-
-			viewDocument.fire( 'keydown', data );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
-		} );
-
-		it( 'should not fire arrowkey event on non arrow key press', () => {
-			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.space };
-
-			viewDocument.on( 'arrowkey', spy, { context: '$root' } );
-
-			viewDocument.fire( 'keydown', data );
+			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
+			viewDocument.fire( 'fakeEvent', { disable: true } );
 
 			expect( spy.notCalled ).to.be.true;
 		} );
 	} );
 
 	describe( '#_addEventListener()', () => {
-		it( 'should allow providing multiple context in one listener binding', () => {
+		it( 'should allow providing multiple contexts in one listener binding', () => {
 			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowdown };
+			const data = {};
 
-			viewDocument.on( 'arrowkey', spy, { context: [ '$text', 'p' ] } );
-
-			viewDocument.fire( 'keydown', data );
+			viewDocument.on( 'fakeEvent', spy, { context: [ '$text', 'p' ] } );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy.calledTwice ).to.be.true;
 			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
@@ -125,12 +101,12 @@ describe( 'ArrowKeysObserver', () => {
 
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
-			const data = { keyCode: keyCodes.arrowdown };
+			const data = {};
 
-			viewDocument.on( 'arrowkey', spy1, { context: 'p' } );
-			viewDocument.on( 'arrowkey', spy2, { context: 'p' } );
+			viewDocument.on( 'fakeEvent', spy1, { context: 'p' } );
+			viewDocument.on( 'fakeEvent', spy2, { context: 'p' } );
 
-			viewDocument.fire( 'keydown', data );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy1.calledOnce ).to.be.true;
 			expect( spy1.args[ 0 ][ 1 ] ).to.equal( data );
@@ -143,16 +119,16 @@ describe( 'ArrowKeysObserver', () => {
 
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
-			const data = { keyCode: keyCodes.arrowdown };
+			const data = {};
 
-			viewDocument.on( 'arrowkey', event => {
+			viewDocument.on( 'fakeEvent', event => {
 				spy1();
 				event.stop();
 			}, { context: 'p' } );
 
-			viewDocument.on( 'keydown', spy2 );
+			viewDocument.on( 'fakeEvent', spy2 );
 
-			viewDocument.fire( 'keydown', data );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy1.calledOnce ).to.be.true;
 			expect( spy2.notCalled ).to.be.true;
@@ -164,15 +140,15 @@ describe( 'ArrowKeysObserver', () => {
 			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowdown };
+			const data = {};
 
-			viewDocument.on( 'arrowkey', spy, { context: 'p' } );
-			viewDocument.fire( 'keydown', data );
+			viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy.calledOnce ).to.be.true;
 
-			viewDocument.off( 'arrowkey', spy );
-			viewDocument.fire( 'keydown', data );
+			viewDocument.off( 'fakeEvent', spy );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -181,15 +157,15 @@ describe( 'ArrowKeysObserver', () => {
 			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowdown };
+			const data = {};
 
-			viewDocument.on( 'arrowkey', spy, { context: 'p' } );
-			viewDocument.fire( 'keydown', data );
+			viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy.calledOnce ).to.be.true;
 
-			viewDocument.off( 'keydown', spy );
-			viewDocument.fire( 'keydown', data );
+			viewDocument.off( 'otherEvent', spy );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy.calledTwice ).to.be.true;
 		} );
@@ -200,12 +176,12 @@ describe( 'ArrowKeysObserver', () => {
 			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const spy = sinon.spy();
-			const data = { keyCode: keyCodes.arrowdown };
+			const data = {};
 
-			viewDocument.on( 'arrowkey', spy, { context: 'p' } );
+			viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
 
 			observer.disable();
-			viewDocument.fire( 'keydown', data );
+			viewDocument.fire( 'fakeEvent', data );
 
 			expect( spy.notCalled ).to.be.true;
 		} );
@@ -217,10 +193,10 @@ describe( 'ArrowKeysObserver', () => {
 					'<paragraph>b]ar</paragraph>'
 				);
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.fire( 'keydown', data );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
 			} );
@@ -232,10 +208,10 @@ describe( 'ArrowKeysObserver', () => {
 					{ lastRangeBackward: true }
 				);
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.fire( 'keydown', data );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
 			} );
@@ -245,10 +221,10 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should bubble events from $text to $root and to default handlers if not stopped', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.fire( 'keydown', data );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
 			} );
@@ -256,11 +232,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should not start bubbling events if stopped before entering high priority', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'keydown', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10' ] );
 			} );
@@ -268,11 +244,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should stop bubbling events if stopped on the $text context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: '$text' } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$text' } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text' ] );
 			} );
@@ -280,11 +256,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should stop bubbling events if stopped on the p context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: 'p' } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p' ] );
 			} );
@@ -292,11 +268,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should stop bubbling events if stopped on the blockquote context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: 'blockquote' } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote' ] );
 			} );
@@ -304,11 +280,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should not trigger listeners on the lower priority if stopped on the $root context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: '$root' } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root' ] );
 			} );
@@ -327,10 +303,10 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should bubble events from $custom to $root (but without $text) and to default handlers if not stopped', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.fire( 'keydown', data );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
 			} );
@@ -338,11 +314,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should not start bubbling events if stopped before entering high priority', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'keydown', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10' ] );
 			} );
@@ -350,11 +326,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should stop bubbling events if stopped on the custom context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: isCustomObject } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isCustomObject } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom' ] );
 			} );
@@ -362,11 +338,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should stop bubbling events if stopped on the p context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: 'p' } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p' ] );
 			} );
@@ -374,11 +350,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should stop bubbling events if stopped on the blockquote context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: 'blockquote' } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p', 'blockquote' ] );
 			} );
@@ -386,11 +362,11 @@ describe( 'ArrowKeysObserver', () => {
 			it( 'should not trigger listeners on the lower priority if stopped on the $root context', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
-				const data = { keyCode: keyCodes.arrowdown };
+				const data = {};
 				const events = setListeners();
 
-				viewDocument.on( 'arrowkey', event => event.stop(), { context: '$root' } );
-				viewDocument.fire( 'keydown', data );
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
+				viewDocument.fire( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p', 'blockquote', '$root' ] );
 			} );
@@ -399,15 +375,15 @@ describe( 'ArrowKeysObserver', () => {
 		function setListeners() {
 			const events = [];
 
-			viewDocument.on( 'arrowkey', () => events.push( '$root' ), { context: '$root' } );
-			viewDocument.on( 'arrowkey', () => events.push( '$text' ), { context: '$text' } );
-			viewDocument.on( 'arrowkey', () => events.push( '$custom' ), { context: isCustomObject } );
+			viewDocument.on( 'fakeEvent', () => events.push( '$root' ), { context: '$root' } );
+			viewDocument.on( 'fakeEvent', () => events.push( '$text' ), { context: '$text' } );
+			viewDocument.on( 'fakeEvent', () => events.push( '$custom' ), { context: isCustomObject } );
 
-			viewDocument.on( 'arrowkey', () => events.push( 'p' ), { context: 'p' } );
-			viewDocument.on( 'arrowkey', () => events.push( 'blockquote' ), { context: 'blockquote' } );
+			viewDocument.on( 'fakeEvent', () => events.push( 'p' ), { context: 'p' } );
+			viewDocument.on( 'fakeEvent', () => events.push( 'blockquote' ), { context: 'blockquote' } );
 
-			viewDocument.on( 'keydown', () => events.push( 'keydown@high+10' ), { priority: priorities.get( 'high' ) + 10 } );
-			viewDocument.on( 'keydown', () => events.push( 'keydown@high-10' ), { priority: priorities.get( 'high' ) - 10 } );
+			viewDocument.on( 'fakeEvent', () => events.push( 'keydown@high+10' ), { priority: priorities.get( 'high' ) + 10 } );
+			viewDocument.on( 'fakeEvent', () => events.push( 'keydown@high-10' ), { priority: priorities.get( 'high' ) - 10 } );
 
 			return events;
 		}
@@ -415,5 +391,11 @@ describe( 'ArrowKeysObserver', () => {
 		function isCustomObject( node ) {
 			return node.is( 'element', 'obj' );
 		}
+	} );
+
+	it( 'should implement empty #observe() method', () => {
+		expect( () => {
+			observer.observe();
+		} ).to.not.throw();
 	} );
 } );
