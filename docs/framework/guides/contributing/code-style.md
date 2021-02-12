@@ -609,6 +609,7 @@ this.mustRefresh;
 #### Buttons
 
 All buttons should follow the **verb + noun** or the **noun** convention. Examples:
+
 * The **verb + noun** convention:
 	* `insertTable`
 	* `selectAll`
@@ -621,6 +622,7 @@ All buttons should follow the **verb + noun** or the **noun** convention. Exampl
 #### Commands
 
 As for commands it is trickier, because there are many more possible combinations of their names than there are for buttons. Examples:
+
 * The **feature-related** convention:
 	* **noun-based** case:
 		* `codeBlock`
@@ -636,6 +638,7 @@ As for commands it is trickier, because there are many more possible combination
 	* `tableAlignment`
 
 For commands, the **noun + verb** (or the **feature + action**) naming conventions **should not be used**, because it does not sound natural (_what do_ vs. _do what_). In most cases the proper name should start with the **action** followed by the **feature** name:
+
 * `checkTodoList`
 * `insertTable`
 * `uploadImage`
