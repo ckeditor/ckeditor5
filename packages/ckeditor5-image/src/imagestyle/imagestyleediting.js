@@ -63,6 +63,7 @@ export default class ImageStyleEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const arrangements = this.normalizedStyles.arrangements;
+		const converterCallback = viewToModelStyleAttribute( arrangements );
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
@@ -70,12 +71,14 @@ export default class ImageStyleEditing extends Plugin {
 			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
 
 			// Converter for figure element from view to model.
-			editor.data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( arrangements ), { priority: 'low' } );
+			editor.data.upcastDispatcher.on( 'element:figure', converterCallback, { priority: 'low' } );
 		}
 
 		if ( isInlinePluginLoaded ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
-			// ASK: Additional converter needed?
+
+			// Converter for the img element from view to model.
+			editor.data.upcastDispatcher.on( 'element:img', converterCallback, { priority: 'low' } );
 		}
 
 		const modelToViewConverter = modelToViewStyleAttribute( arrangements );

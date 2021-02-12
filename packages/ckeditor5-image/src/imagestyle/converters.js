@@ -12,19 +12,19 @@ import { first } from 'ckeditor5/src/utils';
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
- * @param {Object} styles An object containing available styles. See {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}
- * for more details.
+ * @param {TODO} arrangements An array containing available arrangements.
+ * See {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat} for more details.
  * @returns {Function} A model-to-view attribute converter.
  */
-export function modelToViewStyleAttribute( styles ) {
+export function modelToViewStyleAttribute( arrangements ) {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
 		// Check if there is class name associated with given value.
-		const newStyle = getStyleByName( data.attributeNewValue, styles );
-		const oldStyle = getStyleByName( data.attributeOldValue, styles );
+		const newStyle = getArrangementDefinitionByName( data.attributeNewValue, arrangements );
+		const oldStyle = getArrangementDefinitionByName( data.attributeOldValue, arrangements );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -42,19 +42,19 @@ export function modelToViewStyleAttribute( styles ) {
 /**
  * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles The styles for which the converter is created.
+ * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} arrangements Arrangements for which the converter is created.
  * @returns {Function} A view-to-model converter.
  */
-export function viewToModelStyleAttribute( styles ) {
-	// Convert only non–default styles.
-	const filteredStyles = styles.filter( style => !style.isDefault );
+export function viewToModelStyleAttribute( arrangements ) {
+	// Convert only non–default arrangements.
+	const nonDefaultArrangements = arrangements.filter( style => !style.isDefault );
 
 	return ( evt, data, conversionApi ) => {
 		if ( !data.modelRange ) {
 			return;
 		}
 
-		const viewFigureElement = data.viewItem;
+		const viewElement = data.viewItem;
 		const modelImageElement = first( data.modelRange.getItems() );
 
 		// Check if `modelImageElement` exists (see: https://github.com/ckeditor/ckeditor5/issues/8270)
@@ -63,12 +63,12 @@ export function viewToModelStyleAttribute( styles ) {
 			return;
 		}
 
-		// Convert style one by one.
-		for ( const style of filteredStyles ) {
-			// Try to consume class corresponding with style.
-			if ( conversionApi.consumable.consume( viewFigureElement, { classes: style.className } ) ) {
-				// And convert this style to model attribute.
-				conversionApi.writer.setAttribute( 'imageStyle', style.name, modelImageElement );
+		// Convert arrangements one by one.
+		for ( const arrangement of nonDefaultArrangements ) {
+			// Try to consume class corresponding with arrangement.
+			if ( conversionApi.consumable.consume( viewElement, { classes: arrangement.className } ) ) {
+				// And convert this arrangement to model attribute.
+				conversionApi.writer.setAttribute( 'imageStyle', arrangement.name, modelImageElement );
 			}
 		}
 	};
@@ -79,7 +79,7 @@ export function viewToModelStyleAttribute( styles ) {
 // @param {String} name
 // @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat> } styles
 // @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat|undefined}
-function getStyleByName( name, styles ) {
+function getArrangementDefinitionByName( name, styles ) {
 	for ( const style of styles ) {
 		if ( style.name === name ) {
 			return style;
