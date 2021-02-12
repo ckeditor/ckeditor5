@@ -90,7 +90,7 @@ See the {@link features/image-upload Image upload} guide.
 
 Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL.
 
-In order to enable this option, install the `ImageInsert` plugin and add the `imageInsert` button to the toolbar (it replaces the standard `imageUpload` button).
+In order to enable this option, install the `ImageInsert` plugin and add the `insertImage` button to the toolbar (it replaces the standard `uploadImage` button).
 
 ```js
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
@@ -98,7 +98,7 @@ import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ... , ImageInsert ],
-		toolbar: [ ... , 'imageInsert' ]
+		toolbar: [ ... , 'insertImage' ]
 	} )
 ```
 
@@ -229,17 +229,17 @@ ClassicEditor
 			// Configure the available image resize options.
 			resizeOptions: [
 				{
-					name: 'imageResize:original',
+					name: 'resizeImage:original',
 					label: 'Original',
 					value: null
 				},
 				{
-					name: 'imageResize:50',
+					name: 'resizeImage:50',
 					label: '50%',
 					value: '50'
 				},
 				{
-					name: 'imageResize:75',
+					name: 'resizeImage:75',
 					label: '75%',
 					value: '75'
 				}
@@ -250,7 +250,7 @@ ClassicEditor
 			toolbar: [
 				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
 				'|',
-				'imageResize',
+				'resizeImage',
 				'|',
 				'imageTextAlternative'
 			]
@@ -262,7 +262,7 @@ ClassicEditor
 
 The code sample above uses predefined presentational image styles: `'alignLeft'`, `'alignCenter'` and `'alignRight'`. They apply, respectively, the `.image-style-align-left`, `.image-style-align-center` and  `.image-style-align-right` classes to the `<figure>` element.
 
-In addition to that, the sample is configured to use the [image resize feature](#resizing-images) with three {@link module:image/image~ImageConfig#resizeOptions resize options} available: `'imageResize:original'`, `'imageResize:50'` and `'imageResize:75'`. They allow you to set the image width in the editor to the original image size, 50% and 75%, respectively.
+In addition to that, the sample is configured to use the [image resize feature](#resizing-images) with three {@link module:image/image~ImageConfig#resizeOptions resize options} available: `'resizeImage:original'`, `'resizeImage:50'` and `'resizeImage:75'`. They allow you to set the image width in the editor to the original image size, 50% and 75%, respectively.
 
 See the result below:
 
@@ -351,22 +351,22 @@ To use this option, you need to [enable image resizing](#enabling-image-resizing
 const imageConfiguration = {
 	resizeOptions: [
 		{
-			name: 'imageResize:original',
+			name: 'resizeImage:original',
 			value: null,
 			label: 'Original'
 		},
 		{
-			name: 'imageResize:50',
+			name: 'resizeImage:50',
 			value: '50',
 			label: '50%'
 		},
 		{
-			name: 'imageResize:75',
+			name: 'resizeImage:75',
 			value: '75',
 			label: '75%'
 		}
 	],
-	toolbar: [ ..., 'imageResize' ]
+	toolbar: [ ..., 'resizeImage' ]
 }
 ```
 
@@ -384,26 +384,26 @@ To use this option, you need to [enable image resizing](#enabling-image-resizing
 const imageConfiguration = {
 	resizeOptions: [
 		{
-			name: 'imageResize:original',
+			name: 'resizeImage:original',
 			value: null,
 			icon: 'original'
 		},
 		{
-			name: 'imageResize:50',
+			name: 'resizeImage:50',
 			value: '50',
 			icon: 'medium'
 		},
 		{
-			name: 'imageResize:75',
+			name: 'resizeImage:75',
 			value: '75',
 			icon: 'large'
 		}
 	],
 	toolbar: [
 		...,
-		'imageResize:50',
-		'imageResize:75'
-		'imageResize:original',
+		'resizeImage:50',
+		'resizeImage:75'
+		'resizeImage:original',
 	]
 }
 ```
@@ -431,26 +431,26 @@ ClassicEditor
 		image: {
 			resizeOptions: [
 			{
-				name: 'imageResize:original',
+				name: 'resizeImage:original',
 				value: null,
 				icon: 'original'
 			},
 			{
-				name: 'imageResize:50',
+				name: 'resizeImage:50',
 				value: '50',
 				icon: 'medium'
 			},
 			{
-				name: 'imageResize:75',
+				name: 'resizeImage:75',
 				value: '75',
 				icon: 'large'
 			}
 		],
 		toolbar: [
 			// ...,
-			'imageResize:50',
-			'imageResize:75',
-			'imageResize:original',
+			'resizeImage:50',
+			'resizeImage:75',
+			'resizeImage:original',
 		]
 		}
 	} )
@@ -606,7 +606,7 @@ The {@link module:image/image~Image} plugin registers:
 
 * The `'imageTextAlternative'` button.
 * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}
-* The {@link module:image/image/imageinsertcommand~ImageInsertCommand `'imageInsert'` command} that accepts a source (e.g. a URL) of an image to insert.
+* The {@link module:image/image/insertimagecommand~InsertImageCommand `'insertImage'` command} that accepts a source (e.g. a URL) of an image to insert.
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
@@ -619,12 +619,12 @@ The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
 The {@link module:image/imageupload~ImageUpload} plugin registers:
 
-* The `'imageUpload'` button that opens the native file browser to let you upload a file directly from your disk.
-* The {@link module:image/imageupload/imageuploadcommand~ImageUploadCommand `'imageUpload'` command} that accepts the file to upload.
+* The `'uploadImage'` button that opens the native file browser to let you upload a file directly from your disk.
+* The {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `'uploadImage'` command} that accepts the file to upload.
 
 The {@link module:image/imageresize~ImageResize} plugin registers:
 
-* The {@link module:image/imageresize/imageresizecommand~ImageResizeCommand `'imageResize'` command} that accepts the target width.
+* The {@link module:image/imageresize/resizeimagecommand~ResizeImageCommand `'resizeImage'` command} that accepts the target width.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

@@ -418,21 +418,21 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should not replace greater-than character when inside numbered list', () => {
-			setData( model, '<listItem listIndent="0" listType="numbered">1. >[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="numbered">>[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">1. > []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">> []</listItem>' );
 		} );
 
 		it( 'should not replace greater-than character when inside buletted list', () => {
-			setData( model, '<listItem listIndent="0" listType="bulleted">1. >[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="bulleted">>[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">1. > []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">> []</listItem>' );
 		} );
 
 		it( 'should not replace greater-than character when inside to-do list', () => {
@@ -480,6 +480,24 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
+		} );
+
+		it( 'should not replace triple grave accents in a numbered list', () => {
+			setData( model, '<listItem listIndent="0" listType="numbered">``[]let foo = 1;</listItem>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">```[]let foo = 1;</listItem>' );
+		} );
+
+		it( 'should not replace triple grave accents in a bulleted list', () => {
+			setData( model, '<listItem listIndent="0" listType="bulleted">``[]let foo = 1;</listItem>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">```[]let foo = 1;</listItem>' );
 		} );
 
 		it( 'should not replace triple grave accents when already in a code block', () => {

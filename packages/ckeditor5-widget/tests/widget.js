@@ -917,7 +917,7 @@ describe( 'Widget', () => {
 		);
 
 		test(
-			'should not modify forward delete default behaviour in single paragraph boundaries',
+			'should not modify delete forward default behaviour in single paragraph boundaries',
 			'<paragraph>foo[]</paragraph>',
 			'forward',
 			'<paragraph>foo[]</paragraph>'
@@ -1097,7 +1097,7 @@ describe( 'Widget', () => {
 		);
 
 		test(
-			'should remove the entire empty element (deeper structure) if it is next to a widget (forward delete)',
+			'should remove the entire empty element (deeper structure) if it is next to a widget (delete forward)',
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
@@ -1128,7 +1128,7 @@ describe( 'Widget', () => {
 		);
 
 		test(
-			'should not remove the entire element which is not empty and the element is next to a widget (forward delete)',
+			'should not remove the entire element which is not empty and the element is next to a widget (delete forward)',
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><paragraph>Foo</paragraph><paragraph>[]</paragraph></blockQuote>' +
@@ -1224,7 +1224,7 @@ describe( 'Widget', () => {
 			scrollStub.restore();
 		} );
 
-		it( 'does nothing when editor when read only mode is enabled (forward delete)', () => {
+		it( 'does nothing when editor when read only mode is enabled (delete forward)', () => {
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			setModelData( model,
 				'<paragraph>foo</paragraph>' +
