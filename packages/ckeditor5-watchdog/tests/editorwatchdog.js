@@ -970,7 +970,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.data.get( 'header' ) ).to.equal( '<p>Foo</p>' );
 
 			const restartSpy = sinon.spy();
 
@@ -984,7 +984,7 @@ describe( 'EditorWatchdog', () => {
 
 			sinon.assert.calledOnce( restartSpy );
 
-			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.data.get( 'header' ) ).to.equal( '<p>Foo</p>' );
 
 			await watchdog.destroy();
 		} );

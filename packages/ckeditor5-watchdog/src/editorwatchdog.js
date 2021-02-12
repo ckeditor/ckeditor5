@@ -283,7 +283,7 @@ export default class EditorWatchdog extends Watchdog {
 		const data = {};
 
 		for ( const rootName of this._editor.model.document.getRootNames() ) {
-			data[ rootName ] = this._editor.data.get( { rootName } );
+			data[ rootName ] = this._editor.data.get( rootName );
 		}
 
 		return data;
