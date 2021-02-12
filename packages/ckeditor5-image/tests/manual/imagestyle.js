@@ -173,7 +173,7 @@ function getConfig( type ) {
 			styles: {
 				arrangements: [
 					{
-						name: 'blockSide',
+						name: 'side',
 						title: 'Side image',
 						icon: 'inLineLeft',
 						modelElement: 'imageInline',
@@ -185,13 +185,13 @@ function getConfig( type ) {
 						name: 'custom',
 						title: 'Image in paragraph',
 						defaultIcon: 'inLineLeft',
-						items: [ 'blockSide', 'blockFull' ]
+						items: [ 'side', 'full' ]
 					}
 				]
 			},
 			toolbar: [
 				'imageStyle:custom',
-				'imageStyle:blockFull',
+				'imageStyle:full',
 				'|',
 				'imageTextAlternative'
 			]
@@ -202,7 +202,7 @@ function getConfig( type ) {
 			styles: {
 				arrangements: [
 					{
-						name: 'blockSide',
+						name: 'side',
 						title: 'Side image',
 						icon: 'inLineLeft',
 						modelElement: 'imageInline',
@@ -211,7 +211,7 @@ function getConfig( type ) {
 				]
 			},
 			toolbar: [
-				'imageStyle:blockFull',
+				'imageStyle:full',
 				'|',
 				'imageTextAlternative'
 			]
@@ -222,7 +222,7 @@ function getConfig( type ) {
 			styles: {
 				arrangements: [
 					{
-						name: 'blockSide',
+						name: 'side',
 						title: 'Side image',
 						icon: 'inLineLeft',
 						modelElement: 'imageInline',
@@ -246,7 +246,7 @@ function getConfig( type ) {
 			styles: {
 				arrangements: [
 					{
-						name: 'blockSide',
+						name: 'side',
 						title: 'Side image',
 						icon: 'inLineLeft',
 						modelElement: 'imageInline',
@@ -258,7 +258,7 @@ function getConfig( type ) {
 						name: 'custom',
 						title: 'Image in paragraph',
 						defaultIcon: 'inLineLeft',
-						items: [ 'blockSide' ]
+						items: [ 'side' ]
 					}
 				]
 			},
@@ -276,7 +276,7 @@ function getConfig( type ) {
 			styles: {
 				arrangements: [
 					{
-						name: 'blockSide',
+						name: 'side',
 						title: 'Side image',
 						icon: 'inLineLeft',
 						modelElement: 'imageInline',
@@ -285,7 +285,7 @@ function getConfig( type ) {
 				], groups: []
 			},
 			toolbar: [
-				'imageStyle:blockSide',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]

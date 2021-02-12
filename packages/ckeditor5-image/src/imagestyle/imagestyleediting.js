@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageStyleCommand from './imagestylecommand';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import ImageStyleUtils from './utils';
+import { normalizeStyles } from './utils';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -19,13 +19,6 @@ import ImageStyleUtils from './utils';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageStyleEditing extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ ImageStyleUtils ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -43,8 +36,15 @@ export default class ImageStyleEditing extends Plugin {
 		const editing = editor.editing;
 		const loadedPlugins = editor.plugins;
 
+		this._defineDefaultConfiguration();
+
+		const configuredStyles = editor.config.get( 'image.styles' ) || [];
+
+		// Clear the arrangements and groups from the unsupported and undefined items.
+		this.normalizedStyles = normalizeStyles( configuredStyles, loadedPlugins );
+
 		// Get configuration.
-		const styles = editor.plugins.get( 'ImageStyleUtils' ).normalizedArrangements;
+		const styles = this.normalizedStyles.arrangements;
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
@@ -66,6 +66,37 @@ export default class ImageStyleEditing extends Plugin {
 
 		// Register imageStyle command.
 		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );
+	}
+
+	_defineDefaultConfiguration() {
+		const editor = this.editor;
+		const config = this.editor.config;
+
+		const loadedPlugins = editor.plugins;
+		const isBlockLoaded = loadedPlugins.has( 'ImageBlock' );
+		const isinlineLoaded = loadedPlugins.has( 'ImageInline' );
+
+		let styles;
+
+		if ( isBlockLoaded && isinlineLoaded ) {
+			styles = {
+				arrangements: [
+					'alignInline', 'alignLeft', 'alignRight',
+					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+				],
+				groups: [ 'inParagraph', 'betweenParagraphs' ]
+			};
+		} else if ( isBlockLoaded ) {
+			styles = {
+				arrangements: [ 'full', 'side' ]
+			};
+		} else if ( isinlineLoaded ) {
+			styles = {
+				arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
+			};
+		}
+
+		config.define( 'image.styles', styles );
 	}
 }
 

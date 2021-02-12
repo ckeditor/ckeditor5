@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
-import ImageStyleUtils from './utils';
+import ImageStyleEditing from './imagestyleediting';
 
 import '../../theme/imagestyle.css';
 
@@ -23,7 +23,7 @@ export default class ImageStyleUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageStyleUtils ];
+		return [ ImageStyleEditing ];
 	}
 
 	/**
@@ -68,10 +68,11 @@ export default class ImageStyleUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		this.utils = editor.plugins.get( 'ImageStyleUtils' );
+		this.editing = editor.plugins.get( 'ImageStyleEditing' );
+		this.normalizedStyles = this.editing.normalizedStyles;
 
 		const definedArrangements = translateStyles(
-			this.utils.normalizedArrangements,
+			this.normalizedStyles.arrangements,
 			this.localizedDefaultStylesTitles );
 
 		for ( const arrangementConfig of definedArrangements ) {
@@ -79,7 +80,7 @@ export default class ImageStyleUI extends Plugin {
 		}
 
 		const definedGroups = translateStyles(
-			this.utils.normalizedGroups,
+			this.normalizedStyles.groups,
 			this.localizedDefaultStylesTitles );
 
 		for ( const groupConfig of definedGroups ) {
@@ -125,9 +126,7 @@ export default class ImageStyleUI extends Plugin {
 					const index = areOn.findIndex( isOn => isOn );
 
 					if ( index < 0 ) {
-						const config = this.utils.getArrangementConfig( dropdownConfig.defaultItem );
-
-						return config.icon;
+						return this._getDefaultIcon( dropdownConfig.defaultItem );
 					}
 
 					return buttonViews[ index ].icon;
@@ -199,10 +198,17 @@ export default class ImageStyleUI extends Plugin {
 
 	_executeCommand( name ) {
 		const editor = this.editor;
-		const config = this.utils.getArrangementConfig( name );
 
-		editor.execute( 'imageStyle', { value: config.name } );
+		editor.execute( 'imageStyle', { value: name } );
 		editor.editing.view.focus();
+	}
+
+	_getDefaultIcon( arrangementName ) {
+		const arrangements = this.normalizedStyles.arrangements;
+		const configuration = arrangements.find( item => item.name === arrangementName );
+		const icon = configuration.icon;
+
+		return icon;
 	}
 }
 
