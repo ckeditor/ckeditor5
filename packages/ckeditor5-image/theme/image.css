@@ -29,16 +29,12 @@
 
 	& .image-inline {
 		display: inline-block;
+		max-width: 100%;
 
 		& img {
 			display: block;
 		}
 	}
-}
-
-.ck-content .image-inline {
-	display: inline-block;
-	line-height: 0;
 }
 
 /*

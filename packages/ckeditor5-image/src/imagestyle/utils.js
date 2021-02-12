@@ -23,7 +23,7 @@ export default class ImageStyleUtils extends Plugin {
 		const loadedPlugins = this.editor.plugins;
 
 		this.loadedPlugins = {
-			'imageBlock': loadedPlugins.has( 'ImageBlock' ),
+			'image': loadedPlugins.has( 'ImageBlock' ),
 			'imageInline': loadedPlugins.has( 'ImageInline' )
 		};
 
@@ -78,7 +78,7 @@ export default class ImageStyleUtils extends Plugin {
 				name: 'alignBlockLeft',
 				title: 'Left aligned image',
 				icon: icons.objectLeft,
-				modelElement: 'imageBlock',
+				modelElement: 'image',
 				className: 'image-style-block-align-left'
 			},
 
@@ -87,7 +87,7 @@ export default class ImageStyleUtils extends Plugin {
 				name: 'alignCenter',
 				title: 'Centered image',
 				icon: icons.objectCenter,
-				modelElement: 'imageBlock',
+				modelElement: 'image',
 				className: 'image-style-align-center'
 			},
 
@@ -95,7 +95,7 @@ export default class ImageStyleUtils extends Plugin {
 				name: 'alignBlockRight',
 				title: 'Right aligned image',
 				icon: icons.objectRight,
-				modelElement: 'imageBlock',
+				modelElement: 'image',
 				className: 'image-style-block-align-right'
 			},
 
@@ -104,7 +104,7 @@ export default class ImageStyleUtils extends Plugin {
 				name: 'full',
 				title: 'Full size image',
 				icon: icons.objectFullWidth,
-				modelElement: 'imageBlock',
+				modelElement: 'image',
 				isDefault: true
 			},
 
@@ -113,7 +113,7 @@ export default class ImageStyleUtils extends Plugin {
 				name: 'side',
 				title: 'Side image',
 				icon: icons.objectRight,
-				modelElement: 'imageBlock',
+				modelElement: 'image',
 				className: 'image-style-side'
 			}
 		};
@@ -297,12 +297,12 @@ export default class ImageStyleUtils extends Plugin {
 
 		const modelElement = config.modelElement;
 
+		// Check if the style's modelElement is supported by the loaeded plugins.
 		if ( modelElement && !this.loadedPlugins[ modelElement ] ) {
 			logWarning( 'image-style-unsupported', {
 				missingPlugin: modelElement,
 				unsupportedStyle: config.name
 			} );
-			// to jest case gdzie dostępne pluginy nie obsługują wybranych styli.
 			return false;
 		}
 		else {
@@ -311,6 +311,7 @@ export default class ImageStyleUtils extends Plugin {
 	}
 
 	_validateGroupItem( item ) {
+		// Check if arrangement set in the group items is defined.
 		const isItemDefined = this.getArrangementConfig( item );
 
 		return !!isItemDefined;
@@ -341,8 +342,6 @@ function extendStyle( source, style ) {
 		if ( !Object.prototype.hasOwnProperty.call( style, prop ) ) {
 			extendedStyle[ prop ] = source[ prop ];
 		}
-		// ASK: nie nadpisujemy tych wartości?
-		// Nie chcemy ich nadpisywać jeśli ktoś na przykład chce tylko podmienić itemy?
 	}
 
 	return extendedStyle;

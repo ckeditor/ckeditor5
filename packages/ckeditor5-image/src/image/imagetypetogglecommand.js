@@ -15,7 +15,7 @@ import { insertImage, isImage, isImageInline } from './utils';
  *
  * @extends module:core/command~Command
  */
-export default class ImageTypeSwitchCommand extends Command {
+export default class ImageTypeToggleCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -190,10 +190,8 @@ export default class ImageStyleUI extends Plugin {
 				isToggleable: true
 			} );
 
-			// ASK: faktycznie powinny być tylko zdisablowane? Jaki to jest przypadek? Czy dropdown tez powinien być disabled?
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			view.bind( 'isOn' ).to( command, 'value', value => value === buttonConfig.name );
-
 			view.on( 'execute', this._executeCommand.bind( this, buttonConfig.name ) );
 
 			return view;
@@ -204,7 +202,6 @@ export default class ImageStyleUI extends Plugin {
 		const editor = this.editor;
 		const config = this.utils.getArrangementConfig( name );
 
-		// TODO: Something bad happens when the only block image is loaded.
 		if ( config.modelElement ) {
 			editor.execute( 'imageTypeToggle', config.modelElement );
 		}

@@ -40,6 +40,7 @@
 	}
 }
 
+/* ASK: How to adjust the default margins properly? */
 .ck-content .image-inline {
 	&.image-style-align-left,
 	&.image-style-align-right {

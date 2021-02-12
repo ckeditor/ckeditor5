@@ -33,7 +33,7 @@ export default class ImageStyleCommand extends Command {
 		 * @type {Boolean|String}
 		 */
 		this.defaultStyles = {
-			imageBlock: false,
+			image: false,
 			imageInline: false
 		};
 

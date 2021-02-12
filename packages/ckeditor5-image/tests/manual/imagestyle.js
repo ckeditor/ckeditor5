@@ -94,7 +94,7 @@ ClassicEditor
 			'undo',
 			'redo'
 		],
-		image: getConfig( 'onlyToolbar' )
+		image: getConfig()
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;
@@ -106,6 +106,25 @@ ClassicEditor
 
 function getConfig( type ) {
 	const configs = {
+		setItemsInGroup: {
+			styles: {
+				groups: [
+					{
+						name: 'inParagraph',
+						items: [ 'alignLeft' ]
+					},
+					'betweenParagraphs'
+				]
+			},
+			toolbar: [
+				'imageStyle:alignInline',
+				'imageStyle:inParagraph',
+				'imageStyle:betweenParagraphs',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+
 		onlyToolbar: {
 			toolbar: [
 				'imageStyle:alignInline',
@@ -117,24 +136,26 @@ function getConfig( type ) {
 		},
 
 		validStyles: {
-			arrangements: [
-				{
-					name: 'side',
-					title: 'Side image',
-					icon: 'inLineLeft',
-					modelElement: 'imageInline',
-					className: 'image-style-side'
-				},
-				'full'
-			],
-			groups: [
-				{
-					name: 'custom',
-					title: 'Image in paragraph',
-					defaultIcon: 'inLineLeft',
-					items: [ 'side', 'full' ]
-				}
-			],
+			styles : {
+				arrangements: [
+					{
+						name: 'side',
+						title: 'Side image',
+						icon: 'inLineLeft',
+						modelElement: 'imageInline',
+						className: 'image-style-side'
+					},
+					'full'
+				],
+				groups: [
+					{
+						name: 'custom',
+						title: 'Image in paragraph',
+						defaultIcon: 'inLineLeft',
+						items: [ 'side', 'full' ]
+					}
+				],
+			},
 			toolbar: [
 				'imageStyle:inLine',
 				'imageStyle:inParagraph',
@@ -273,5 +294,9 @@ function getConfig( type ) {
 		}
 	};
 
-	return configs[ type ];
+	if ( type ) {
+		return configs[ type ];
+	} else {
+		return configs.onlyToolbar;
+	}
 }
