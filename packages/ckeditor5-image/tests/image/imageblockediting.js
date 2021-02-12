@@ -16,6 +16,8 @@ import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import { isImageWidget } from '../../src/image/utils';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
+import ImageTypeCommand from '../../src/image/imagetypecommand';
 
 describe( 'ImageBlockEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -64,6 +66,22 @@ describe( 'ImageBlockEditing', () => {
 
 	it( 'should register imageInsert command', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
+	} );
+
+	describe( 'imageTypeBlock command', () => {
+		it( 'should be registered if ImageInlineEditing is loaded', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing ]
+			} );
+
+			expect( editor.commands.get( 'imageTypeBlock' ) ).to.be.instanceOf( ImageTypeCommand );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not be registered if ImageInlineEditing is not loaded', () => {
+			expect( editor.commands.get( 'imageTypeBlock' ) ).to.be.undefined;
+		} );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.

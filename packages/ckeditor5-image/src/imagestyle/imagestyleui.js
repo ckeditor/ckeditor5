@@ -202,7 +202,7 @@ export default class ImageStyleUI extends Plugin {
 		const config = this.utils.getArrangementConfig( name );
 
 		if ( config.modelElement ) {
-			editor.execute( 'imageTypeToggle', config.modelElement );
+			editor.execute( config.modelElement === 'image' ? 'imageTypeBlock' : 'imageTypeInline' );
 		}
 
 		editor.execute( 'imageStyle', { value: config.name } );

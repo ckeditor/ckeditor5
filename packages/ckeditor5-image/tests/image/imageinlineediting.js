@@ -17,6 +17,8 @@ import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { isImageWidget } from '../../src/image/utils';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageTypeCommand from '../../src/image/imagetypecommand';
 
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -65,6 +67,22 @@ describe( 'ImageInlineEditing', () => {
 
 	it( 'should register imageInsert, imageTypeToggle', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
+	} );
+
+	describe( 'imageTypeInline command', () => {
+		it( 'should be registered if ImageBlockEditing is loaded', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageInlineEditing, ImageBlockEditing ]
+			} );
+
+			expect( editor.commands.get( 'imageTypeInline' ) ).to.be.instanceOf( ImageTypeCommand );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not be registered if ImageBlockEditing is not loaded', () => {
+			expect( editor.commands.get( 'imageTypeInline' ) ).to.be.undefined;
+		} );
 	} );
 
 	it( 'should update the ui after inline image has been loaded in the DOM', async () => {

@@ -10,17 +10,13 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 import ImageInsertCommand from './imageinsertcommand';
-import ImageTypeToggleCommand from './imagetypetogglecommand';
 
 /**
  * The image engine plugin. This module loads common code shared between
  * {@link module:image/image/imageinlineediting~ImageInlineEditing} and
  * {@link module:image/image/imageblockediting~ImageBlockEditing} plugins.
  *
- * The commands registered by this plugin are:
- *
- * * {@link module:image/image/imageinsertcommand~ImageInsertCommand 'imageInsert'},
- * * {@link module:image/image/imagetypetogglecommand~ImageTypeToggleCommand 'imageTypeToggle'}.
+ * This plugin registers the {@link module:image/image/imageinsertcommand~ImageInsertCommand 'imageInsert'} command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -72,6 +68,5 @@ export default class ImageEditing extends Plugin {
 			} );
 
 		editor.commands.add( 'imageInsert', new ImageInsertCommand( editor ) );
-		editor.commands.add( 'imageTypeToggle', new ImageTypeToggleCommand( this.editor ) );
 	}
 }

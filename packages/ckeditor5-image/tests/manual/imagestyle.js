@@ -3,11 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, console, window */
+/* global CKEditorInspector, document, console, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 import ImageBlock from '../../src/imageblock';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import ImageStyle from '../../src/imagestyle';
@@ -37,6 +36,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editorSemantic = editor;
+
+		CKEditorInspector.attach( { semantic: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -70,6 +71,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;
+
+		CKEditorInspector.attach( { formatting: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -97,8 +100,9 @@ ClassicEditor
 		image: getConfig()
 	} )
 	.then( editor => {
-		window.editorFormatting = editor;
-		CKEditorInspector.attach( editor );
+		window.editorInline = editor;
+
+		CKEditorInspector.attach( { inline: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -136,7 +140,7 @@ function getConfig( type ) {
 		},
 
 		validStyles: {
-			styles : {
+			styles: {
 				arrangements: [
 					{
 						name: 'side',
@@ -154,7 +158,7 @@ function getConfig( type ) {
 						defaultIcon: 'inLineLeft',
 						items: [ 'side', 'full' ]
 					}
-				],
+				]
 			},
 			toolbar: [
 				'imageStyle:inLine',

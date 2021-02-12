@@ -4,46 +4,60 @@
  */
 
 /**
- * @module image/image/imagetypetogglecommand
+ * @module image/image/imagetypecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
 import { insertImage, isImage, isImageInline } from './utils';
 
 /**
- * The image type toggle command. It is used to convert images between block and inline type.
+ * The image type command. It changes the type of a selected image, depending on the configuration.
+ *
+ * See {@link #constructor} to learn more.
  *
  * @extends module:core/command~Command
  */
-export default class ImageTypeToggleCommand extends Command {
+export default class ImageTypeCommand extends Command {
+	/**
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {'image'|'imageInline'} modelElementName Model element name the command converts to.
+	 */
+	constructor( editor, modelElementName ) {
+		super( editor );
+
+		/**
+		 * Model element name the command converts to.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {'image'|'imageInline'}
+		 */
+		this._modelElementName = modelElementName;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
 		const element = this.editor.model.document.selection.getSelectedElement();
 
-		if ( !this.editor.plugins.has( 'ImageBlockEditing' ) || !this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.isEnabled = false;
+		if ( this._modelElementName === 'image' ) {
+			this.isEnabled = isImageInline( element );
 		} else {
-			this.isEnabled = isImage( element ) || isImageInline( element );
+			this.isEnabled = isImage( element );
 		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	execute( requestedType ) {
+	execute() {
 		const selection = this.editor.model.document.selection;
 		const imageElement = selection.getSelectedElement();
-
-		if ( imageElement.name === requestedType ) {
-			return;
-		}
 
 		const src = imageElement.getAttribute( 'src' );
 		const alt = imageElement.getAttribute( 'alt' );
 		const srcset = imageElement.getAttribute( 'srcset' );
-		const imageType = isImage( imageElement ) ? 'imageInline' : 'image';
 
 		if ( !src ) {
 			return;
@@ -59,6 +73,6 @@ export default class ImageTypeToggleCommand extends Command {
 			attrs.srcset = srcset;
 		}
 
-		insertImage( this.editor, attrs, selection, imageType );
+		insertImage( this.editor, attrs, selection, this._modelElementName );
 	}
 }
