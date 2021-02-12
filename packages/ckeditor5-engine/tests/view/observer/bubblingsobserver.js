@@ -19,14 +19,6 @@ describe( 'BubblingObserver', () => {
 		constructor( view ) {
 			super( view, 'fakeEvent' );
 		}
-
-		_translateEvent( data, ...args ) {
-			if ( data.disable ) {
-				return false;
-			}
-
-			return super._translateEvent( data, ...args );
-		}
 	}
 
 	beforeEach( async () => {
@@ -46,129 +38,110 @@ describe( 'BubblingObserver', () => {
 		expect( observer.eventType ).to.equal( 'fakeEvent' );
 	} );
 
-	it( 'should define firedEventType', () => {
-		expect( observer.firedEventType ).to.equal( 'fakeEvent' );
+	it( 'should fire bubbling event with the same data as original event', () => {
+		const spy = sinon.spy();
+		const data = {};
+
+		viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
+		viewDocument.fire( 'fakeEvent', data );
+
+		expect( spy.calledOnce ).to.be.true;
+		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
 	} );
 
-	describe( '#_translateEvent()', () => {
-		it( 'should fire bubbling event with the same data as original event', () => {
-			const spy = sinon.spy();
-			const data = {};
+	it( 'should not fire fakeEvent event on other event fired', () => {
+		const spy = sinon.spy();
 
-			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
-			viewDocument.fire( 'fakeEvent', data );
+		viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
+		viewDocument.fire( 'otherEvent', {} );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
-		} );
-
-		it( 'should not fire fakeEvent event on other event fired', () => {
-			const spy = sinon.spy();
-
-			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
-			viewDocument.fire( 'otherEvent', {} );
-
-			expect( spy.notCalled ).to.be.true;
-		} );
-
-		it( 'should not start bubbling if #_translateEvent() returned false', () => {
-			const spy = sinon.spy();
-
-			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
-			viewDocument.fire( 'fakeEvent', { disable: true } );
-
-			expect( spy.notCalled ).to.be.true;
-		} );
+		expect( spy.notCalled ).to.be.true;
 	} );
 
-	describe( '#_addEventListener()', () => {
-		it( 'should allow providing multiple contexts in one listener binding', () => {
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+	it( 'should allow providing multiple contexts in one listener binding', () => {
+		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-			const spy = sinon.spy();
-			const data = {};
+		const spy = sinon.spy();
+		const data = {};
 
-			viewDocument.on( 'fakeEvent', spy, { context: [ '$text', 'p' ] } );
-			viewDocument.fire( 'fakeEvent', data );
+		viewDocument.on( 'fakeEvent', spy, { context: [ '$text', 'p' ] } );
+		viewDocument.fire( 'fakeEvent', data );
 
-			expect( spy.calledTwice ).to.be.true;
-			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
-			expect( spy.args[ 1 ][ 1 ] ).to.equal( data );
-		} );
-
-		it( 'should reuse existing context', () => {
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
-
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
-			const data = {};
-
-			viewDocument.on( 'fakeEvent', spy1, { context: 'p' } );
-			viewDocument.on( 'fakeEvent', spy2, { context: 'p' } );
-
-			viewDocument.fire( 'fakeEvent', data );
-
-			expect( spy1.calledOnce ).to.be.true;
-			expect( spy1.args[ 0 ][ 1 ] ).to.equal( data );
-			expect( spy2.calledOnce ).to.be.true;
-			expect( spy2.args[ 0 ][ 1 ] ).to.equal( data );
-		} );
-
-		it( 'should prevent registering a default listener', () => {
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
-
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
-			const data = {};
-
-			viewDocument.on( 'fakeEvent', event => {
-				spy1();
-				event.stop();
-			}, { context: 'p' } );
-
-			viewDocument.on( 'fakeEvent', spy2 );
-
-			viewDocument.fire( 'fakeEvent', data );
-
-			expect( spy1.calledOnce ).to.be.true;
-			expect( spy2.notCalled ).to.be.true;
-		} );
+		expect( spy.calledTwice ).to.be.true;
+		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
+		expect( spy.args[ 1 ][ 1 ] ).to.equal( data );
 	} );
 
-	describe( '#_removeEventListener()', () => {
-		it( 'should unbind from contexts', () => {
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+	it( 'should reuse existing context', () => {
+		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-			const spy = sinon.spy();
-			const data = {};
+		const spy1 = sinon.spy();
+		const spy2 = sinon.spy();
+		const data = {};
 
-			viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
-			viewDocument.fire( 'fakeEvent', data );
+		viewDocument.on( 'fakeEvent', spy1, { context: 'p' } );
+		viewDocument.on( 'fakeEvent', spy2, { context: 'p' } );
 
-			expect( spy.calledOnce ).to.be.true;
+		viewDocument.fire( 'fakeEvent', data );
 
-			viewDocument.off( 'fakeEvent', spy );
-			viewDocument.fire( 'fakeEvent', data );
+		expect( spy1.calledOnce ).to.be.true;
+		expect( spy1.args[ 0 ][ 1 ] ).to.equal( data );
+		expect( spy2.calledOnce ).to.be.true;
+		expect( spy2.args[ 0 ][ 1 ] ).to.equal( data );
+	} );
 
-			expect( spy.calledOnce ).to.be.true;
-		} );
+	it( 'should prevent registering a default listener', () => {
+		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		it( 'should not unbind from contexts if other event is off', () => {
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+		const spy1 = sinon.spy();
+		const spy2 = sinon.spy();
+		const data = {};
 
-			const spy = sinon.spy();
-			const data = {};
+		viewDocument.on( 'fakeEvent', event => {
+			spy1();
+			event.stop();
+		}, { context: 'p' } );
 
-			viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
-			viewDocument.fire( 'fakeEvent', data );
+		viewDocument.on( 'fakeEvent', spy2 );
 
-			expect( spy.calledOnce ).to.be.true;
+		viewDocument.fire( 'fakeEvent', data );
 
-			viewDocument.off( 'otherEvent', spy );
-			viewDocument.fire( 'fakeEvent', data );
+		expect( spy1.calledOnce ).to.be.true;
+		expect( spy2.notCalled ).to.be.true;
+	} );
 
-			expect( spy.calledTwice ).to.be.true;
-		} );
+	it( 'should unbind from contexts', () => {
+		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+		const spy = sinon.spy();
+		const data = {};
+
+		viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
+		viewDocument.fire( 'fakeEvent', data );
+
+		expect( spy.calledOnce ).to.be.true;
+
+		viewDocument.off( 'fakeEvent', spy );
+		viewDocument.fire( 'fakeEvent', data );
+
+		expect( spy.calledOnce ).to.be.true;
+	} );
+
+	it( 'should not unbind from contexts if other event is off', () => {
+		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+		const spy = sinon.spy();
+		const data = {};
+
+		viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
+		viewDocument.fire( 'fakeEvent', data );
+
+		expect( spy.calledOnce ).to.be.true;
+
+		viewDocument.off( 'otherEvent', spy );
+		viewDocument.fire( 'fakeEvent', data );
+
+		expect( spy.calledTwice ).to.be.true;
 	} );
 
 	describe( 'event bubbling', () => {

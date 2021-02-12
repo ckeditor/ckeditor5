@@ -8,10 +8,11 @@
 import DeleteObserver from '../src/deleteobserver';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import BubblingObserver from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingobserver';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DeleteObserver', () => {
@@ -35,6 +36,14 @@ describe( 'DeleteObserver', () => {
 			createViewRoot( viewDocument );
 			view.attachDomRoot( document.createElement( 'div' ) );
 		} ).to.not.throw();
+	} );
+
+	it( 'should extend BubblingObserver', () => {
+		expect( view.getObserver( DeleteObserver ) instanceof BubblingObserver ).to.be.true;
+	} );
+
+	it( 'should define eventType', () => {
+		expect( view.getObserver( DeleteObserver ).eventType ).to.equal( 'delete' );
 	} );
 
 	describe( 'delete event', () => {

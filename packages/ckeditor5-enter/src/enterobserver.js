@@ -9,6 +9,7 @@
 
 import BubblingObserver from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
@@ -24,17 +25,15 @@ export default class EnterObserver extends BubblingObserver {
 
 		doc.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
-				// Save the event object to check later if it was stopped or not.
-				let event;
-				doc.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );
+				const event = new EventInfo( doc, 'enter' );
 
-				doc.fire( 'enter', new DomEventData( doc, data.domEvent, {
+				doc.fire( event, new DomEventData( doc, data.domEvent, {
 					isSoft: data.shiftKey
 				} ) );
 
 				// Stop `keydown` event if `enter` event was stopped.
 				// https://github.com/ckeditor/ckeditor5/issues/753
-				if ( event && event.stop.called ) {
+				if ( event.stop.called ) {
 					evt.stop();
 				}
 			}

@@ -105,7 +105,7 @@ export default class TodoListEditing extends Plugin {
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
 		//
-		this.listenTo( editing.view.document, 'arrowkey', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ), { context: 'li' } );
+		this.listenTo( editing.view.document, 'arrowKey', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ), { context: 'li' } );
 
 		// Toggle check state of selected to-do list items on keystroke.
 		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );

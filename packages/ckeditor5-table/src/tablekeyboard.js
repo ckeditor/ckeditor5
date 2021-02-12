@@ -47,7 +47,7 @@ export default class TableKeyboard extends Plugin {
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		this.listenTo( viewDocument, 'arrowkey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
 	}
 
 	/**

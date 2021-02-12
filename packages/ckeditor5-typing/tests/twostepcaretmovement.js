@@ -745,10 +745,10 @@ describe( 'TwoStepCaretMovement()', () => {
 
 		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
-		emitter.listenTo( view.document, 'arrowkey', highestPlusPrioritySpy, { context: '$text', priority: priorities.highest + 1 } );
-		emitter.listenTo( view.document, 'arrowkey', highestPrioritySpy, { context: '$text', priority: 'highest' } );
-		emitter.listenTo( view.document, 'arrowkey', highPrioritySpy, { context: '$text', priority: 'high' } );
-		emitter.listenTo( view.document, 'arrowkey', normalPrioritySpy, { context: '$text', priority: 'normal' } );
+		emitter.listenTo( view.document, 'arrowKey', highestPlusPrioritySpy, { context: '$text', priority: priorities.highest + 1 } );
+		emitter.listenTo( view.document, 'arrowKey', highestPrioritySpy, { context: '$text', priority: 'highest' } );
+		emitter.listenTo( view.document, 'arrowKey', highPrioritySpy, { context: '$text', priority: 'high' } );
+		emitter.listenTo( view.document, 'arrowKey', normalPrioritySpy, { context: '$text', priority: 'normal' } );
 
 		fireKeyDownEvent( {
 			keyCode: keyCodes.arrowright,

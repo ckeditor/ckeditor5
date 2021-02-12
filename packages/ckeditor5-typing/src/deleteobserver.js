@@ -9,6 +9,7 @@
 
 import BubblingObserver from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -80,15 +81,13 @@ export default class DeleteObserver extends BubblingObserver {
 		}
 
 		function fireViewDeleteEvent( originalEvent, domEvent, deleteData ) {
-			// Save the event object to check later if it was stopped or not.
-			let event;
-			document.once( 'delete', evt => ( event = evt ), { priority: Number.POSITIVE_INFINITY } );
+			const event = new EventInfo( document, 'delete' );
 
-			document.fire( 'delete', new DomEventData( document, domEvent, deleteData ) );
+			document.fire( event, new DomEventData( document, domEvent, deleteData ) );
 
 			// Stop the original event if `delete` event was stopped.
 			// https://github.com/ckeditor/ckeditor5/issues/753
-			if ( event && event.stop.called ) {
+			if ( event.stop.called ) {
 				originalEvent.stop();
 			}
 		}

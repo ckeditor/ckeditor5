@@ -34,20 +34,20 @@ import Observer from './observer';
  *		}, { context: 'li' } );
  *
  *		// Listeners registered in the context of the '$text' and '$root' nodes.
- *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
  *			// ...
  *		}, { context: '$text', priority: 'high' } );
  *
- *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
  *			// ...
  *		}, { context: '$root' } );
  *
  *		// Listeners registered in the context of custom callback function.
- *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
  *			// ...
  *		}, { context: isWidget } );
  *
- *		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
  *			// ...
  *		}, { context: isWidget, priority: 'high' } );
  *
@@ -106,9 +106,8 @@ export default class BubblingObserver extends Observer {
 	 *
 	 * @param {module:engine/view/view~View} view
 	 * @param {String} eventType The type of the event the observer should listen to.
-	 * @param {String} [firedEventType=eventType] The type of the event the observer will fire.
 	 */
-	constructor( view, eventType, firedEventType = eventType ) {
+	constructor( view, eventType ) {
 		super( view );
 
 		/**
@@ -118,14 +117,6 @@ export default class BubblingObserver extends Observer {
 		 * @member {String}
 		 */
 		this.eventType = eventType;
-
-		/**
-		 * The type of the event the observer will fire.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
-		this.firedEventType = firedEventType;
 
 		/**
 		 * Map of context definitions to emitters.
@@ -189,24 +180,13 @@ export default class BubblingObserver extends Observer {
 	}
 
 	/**
-	 * Translates event data. It could also disable event bubbling by returning `false`.
-	 *
-	 * @protected
-	 * @param {...*} [args]
-	 * @returns {Array.<*>|Boolean} False if event should not be handled.
-	 */
-	_translateEvent( ...args ) {
-		return args;
-	}
-
-	/**
 	 * Intercept adding listeners for view document for bubbling observers.
 	 *
 	 * @private
 	 */
 	_setupListenerInterception() {
 		this.listenTo( this.document, '_addEventListener', ( evt, [ event, callback, options ] ) => {
-			if ( !options.context || event != this.firedEventType ) {
+			if ( !options.context || event != this.eventType ) {
 				return;
 			}
 
@@ -217,7 +197,7 @@ export default class BubblingObserver extends Observer {
 		}, { priority: 'high' } );
 
 		this.listenTo( this.document, '_removeEventListener', ( evt, [ event, callback ] ) => {
-			if ( event != this.firedEventType ) {
+			if ( event != this.eventType ) {
 				return;
 			}
 
@@ -235,17 +215,12 @@ export default class BubblingObserver extends Observer {
 	_setupEventListener() {
 		const selection = this.document.selection;
 
-		this.listenTo( this.document, this.eventType, ( event, ...args ) => {
+		this.listenTo( this.document, this.eventType, ( event, ...eventArgs ) => {
 			if ( !this.isEnabled || !this._listeners.size ) {
 				return;
 			}
 
-			const eventInfo = new EventInfo( this, this.firedEventType );
-			const eventArgs = this._translateEvent( ...args );
-
-			if ( eventArgs === false ) {
-				return;
-			}
+			const eventInfo = new EventInfo( this, this.eventType );
 
 			const selectedElement = selection.getSelectedElement();
 			const isCustomContext = Boolean( selectedElement && this._getCustomContext( selectedElement ) );

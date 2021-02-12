@@ -267,7 +267,7 @@ export default class WidgetTypeAround extends Plugin {
 
 		// This is the main listener responsible for the fake caret.
 		// Note: The priority must precede the default Widget class keydown handler ("high").
-		this._listenToIfEnabled( editingView.document, 'arrowkey', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'arrowKey', ( evt, domEventData ) => {
 			this._handleArrowKeyPress( evt, domEventData );
 		}, { context: [ isWidget, '$text' ], priority: 'high' } );
 

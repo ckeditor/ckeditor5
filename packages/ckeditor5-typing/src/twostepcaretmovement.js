@@ -146,7 +146,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		const modelSelection = model.document.selection;
 
 		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
-		this.listenTo( view.document, 'arrowkey', ( evt, data ) => {
+		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 			// This implementation works only for collapsed selection.
 			if ( !modelSelection.isCollapsed ) {
 				return;
