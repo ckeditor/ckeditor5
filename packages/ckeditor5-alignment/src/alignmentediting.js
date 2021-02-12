@@ -150,7 +150,7 @@ function _buildUpcastInlineDefinitions( options ) {
 	return definitions;
 }
 
-// Prepare conversion definitions for both upcast and downcast.
+// Prepare conversion definitions for upcast and downcast alignment with classes.
 // @private
 function _buildClassDefinition( options, alignmentClassNames ) {
 	const definition = {

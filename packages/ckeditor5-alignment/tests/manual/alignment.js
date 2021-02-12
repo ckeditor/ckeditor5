@@ -14,10 +14,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, Alignment ],
 		toolbar: [
 			'heading', '|', 'alignment', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
-		],
-		alignment: {
-			options: [ 'left', 'center' ]
-		}
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
