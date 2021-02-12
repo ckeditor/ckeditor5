@@ -147,39 +147,6 @@ export default class BubblingObserver extends Observer {
 	observe() {}
 
 	/**
-	 * Overrides the default implementation of EmitterMixin to intercept event bindings
-	 * and redirect them to the emitter for a specified context.
-	 *
-	 * @protected
-	 */
-	_addEventListener( event, callback, options ) {
-		const contexts = Array.isArray( options.context ) ? options.context : [ options.context ];
-
-		for ( const context of contexts ) {
-			let listener = this._listeners.get( context );
-
-			if ( !listener ) {
-				listener = Object.create( EmitterMixin );
-				this._listeners.set( context, listener );
-			}
-
-			this.listenTo( listener, event, callback, options );
-		}
-	}
-
-	/**
-	 * Overrides the default implementation of EmitterMixin to intercept event unbinding
-	 * and redirect them to emitters for all contexts.
-	 *
-	 * @protected
-	 */
-	_removeEventListener( event, callback ) {
-		for ( const listener of this._listeners.values() ) {
-			this.stopListening( listener, event, callback );
-		}
-	}
-
-	/**
 	 * Intercept adding listeners for view document for bubbling observers.
 	 *
 	 * @private
@@ -193,7 +160,18 @@ export default class BubblingObserver extends Observer {
 			// Prevent registering a default listener.
 			evt.stop();
 
-			this.document.listenTo( this, event, callback, options );
+			const contexts = Array.isArray( options.context ) ? options.context : [ options.context ];
+
+			for ( const context of contexts ) {
+				let listener = this._listeners.get( context );
+
+				if ( !listener ) {
+					listener = Object.create( EmitterMixin );
+					this._listeners.set( context, listener );
+				}
+
+				this.document.listenTo( listener, event, callback, options );
+			}
 		}, { priority: 'high' } );
 
 		this.listenTo( this.document, '_removeEventListener', ( evt, [ event, callback ] ) => {
@@ -203,7 +181,9 @@ export default class BubblingObserver extends Observer {
 
 			// We don't want to prevent removing a default listener - remove it if it's registered.
 
-			this.document.stopListening( this, event, callback );
+			for ( const listener of this._listeners.values() ) {
+				this.document.stopListening( listener, event, callback );
+			}
 		}, { priority: 'high' } );
 	}
 

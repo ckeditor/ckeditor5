@@ -90,41 +90,31 @@ describe( 'BubblingObserver', () => {
 		expect( spy2.args[ 0 ][ 1 ] ).to.equal( data );
 	} );
 
-	it( 'should prevent registering a default listener', () => {
-		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
-
-		const spy1 = sinon.spy();
-		const spy2 = sinon.spy();
-		const data = {};
-
-		viewDocument.on( 'fakeEvent', event => {
-			spy1();
-			event.stop();
-		}, { context: 'p' } );
-
-		viewDocument.on( 'fakeEvent', spy2 );
-
-		viewDocument.fire( 'fakeEvent', data );
-
-		expect( spy1.calledOnce ).to.be.true;
-		expect( spy2.notCalled ).to.be.true;
-	} );
-
 	it( 'should unbind from contexts', () => {
 		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		const spy = sinon.spy();
+		const spyContext = sinon.spy();
+		const spyGlobal = sinon.spy();
 		const data = {};
 
-		viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
+		viewDocument.on( 'fakeEvent', spyContext, { context: 'p' } );
+		viewDocument.on( 'fakeEvent', spyGlobal );
 		viewDocument.fire( 'fakeEvent', data );
 
-		expect( spy.calledOnce ).to.be.true;
+		expect( spyContext.callCount ).to.equal( 1 );
+		expect( spyGlobal.callCount ).to.equal( 1 );
 
-		viewDocument.off( 'fakeEvent', spy );
+		viewDocument.off( 'fakeEvent', spyContext );
 		viewDocument.fire( 'fakeEvent', data );
 
-		expect( spy.calledOnce ).to.be.true;
+		expect( spyContext.callCount ).to.equal( 1 );
+		expect( spyGlobal.callCount ).to.equal( 2 );
+
+		viewDocument.off( 'fakeEvent', spyGlobal );
+		viewDocument.fire( 'fakeEvent', data );
+
+		expect( spyContext.callCount ).to.equal( 1 );
+		expect( spyGlobal.callCount ).to.equal( 2 );
 	} );
 
 	it( 'should not unbind from contexts if other event is off', () => {
@@ -136,12 +126,12 @@ describe( 'BubblingObserver', () => {
 		viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
 		viewDocument.fire( 'fakeEvent', data );
 
-		expect( spy.calledOnce ).to.be.true;
+		expect( spy.callCount ).to.equal( 1 );
 
 		viewDocument.off( 'otherEvent', spy );
 		viewDocument.fire( 'fakeEvent', data );
 
-		expect( spy.calledTwice ).to.be.true;
+		expect( spy.callCount ).to.equal( 2 );
 	} );
 
 	describe( 'event bubbling', () => {
@@ -171,7 +161,35 @@ describe( 'BubblingObserver', () => {
 
 				viewDocument.fire( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'$text @ highest',
+					'$text @ high',
+					'$text @ normal',
+					'$text @ low',
+					'$text @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
+
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal',
+					'blockquote @ low',
+					'blockquote @ lowest',
+
+					'$root @ highest',
+					'$root @ high',
+					'$root @ normal',
+					'$root @ low',
+					'$root @ lowest',
+
+					'fakeEvent @ high-10'
+				] );
 			} );
 
 			it( 'should start bubbling from the selection focus position', () => {
@@ -186,7 +204,35 @@ describe( 'BubblingObserver', () => {
 
 				viewDocument.fire( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'$text @ highest',
+					'$text @ high',
+					'$text @ normal',
+					'$text @ low',
+					'$text @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
+
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal',
+					'blockquote @ low',
+					'blockquote @ lowest',
+
+					'$root @ highest',
+					'$root @ high',
+					'$root @ normal',
+					'$root @ low',
+					'$root @ lowest',
+
+					'fakeEvent @ high-10'
+				] );
 			} );
 		} );
 
@@ -199,55 +245,35 @@ describe( 'BubblingObserver', () => {
 
 				viewDocument.fire( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
-			} );
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
 
-			it( 'should not start bubbling events if stopped before entering high priority', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+					'$text @ highest',
+					'$text @ high',
+					'$text @ normal',
+					'$text @ low',
+					'$text @ lowest',
 
-				const data = {};
-				const events = setListeners();
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
 
-				viewDocument.on( 'fakeEvent', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
-				viewDocument.fire( 'fakeEvent', data );
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal',
+					'blockquote @ low',
+					'blockquote @ lowest',
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10' ] );
-			} );
+					'$root @ highest',
+					'$root @ high',
+					'$root @ normal',
+					'$root @ low',
+					'$root @ lowest',
 
-			it( 'should stop bubbling events if stopped on the $text context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
-
-				const data = {};
-				const events = setListeners();
-
-				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$text' } );
-				viewDocument.fire( 'fakeEvent', data );
-
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text' ] );
-			} );
-
-			it( 'should stop bubbling events if stopped on the p context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
-
-				const data = {};
-				const events = setListeners();
-
-				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
-				viewDocument.fire( 'fakeEvent', data );
-
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p' ] );
-			} );
-
-			it( 'should stop bubbling events if stopped on the blockquote context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
-
-				const data = {};
-				const events = setListeners();
-
-				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
-				viewDocument.fire( 'fakeEvent', data );
-
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote' ] );
+					'fakeEvent @ high-10'
+				] );
 			} );
 
 			it( 'should not trigger listeners on the lower priority if stopped on the $root context', () => {
@@ -259,7 +285,117 @@ describe( 'BubblingObserver', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
 				viewDocument.fire( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$text', 'p', 'blockquote', '$root' ] );
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'$text @ highest',
+					'$text @ high',
+					'$text @ normal',
+					'$text @ low',
+					'$text @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
+
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal',
+					'blockquote @ low',
+					'blockquote @ lowest',
+
+					'$root @ highest',
+					'$root @ high',
+					'$root @ normal'
+				] );
+			} );
+
+			it( 'should stop bubbling events if stopped on the blockquote context', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'$text @ highest',
+					'$text @ high',
+					'$text @ normal',
+					'$text @ low',
+					'$text @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
+
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal'
+				] );
+			} );
+
+			it( 'should stop bubbling events if stopped on the p context', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'$text @ highest',
+					'$text @ high',
+					'$text @ normal',
+					'$text @ low',
+					'$text @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal'
+				] );
+			} );
+
+			it( 'should stop bubbling events if stopped on the $text context', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$text' } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'$text @ highest',
+					'$text @ high',
+					'$text @ normal'
+				] );
+			} );
+
+			it( 'should not start bubbling events if stopped before entering high priority', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10'
+				] );
 			} );
 		} );
 
@@ -281,55 +417,35 @@ describe( 'BubblingObserver', () => {
 
 				viewDocument.fire( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p', 'blockquote', '$root', 'keydown@high-10' ] );
-			} );
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
 
-			it( 'should not start bubbling events if stopped before entering high priority', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+					'isCustomObject @ highest',
+					'isCustomObject @ high',
+					'isCustomObject @ normal',
+					'isCustomObject @ low',
+					'isCustomObject @ lowest',
 
-				const data = {};
-				const events = setListeners();
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
 
-				viewDocument.on( 'fakeEvent', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
-				viewDocument.fire( 'fakeEvent', data );
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal',
+					'blockquote @ low',
+					'blockquote @ lowest',
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10' ] );
-			} );
+					'$root @ highest',
+					'$root @ high',
+					'$root @ normal',
+					'$root @ low',
+					'$root @ lowest',
 
-			it( 'should stop bubbling events if stopped on the custom context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
-
-				const data = {};
-				const events = setListeners();
-
-				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isCustomObject } );
-				viewDocument.fire( 'fakeEvent', data );
-
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom' ] );
-			} );
-
-			it( 'should stop bubbling events if stopped on the p context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
-
-				const data = {};
-				const events = setListeners();
-
-				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
-				viewDocument.fire( 'fakeEvent', data );
-
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p' ] );
-			} );
-
-			it( 'should stop bubbling events if stopped on the blockquote context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
-
-				const data = {};
-				const events = setListeners();
-
-				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
-				viewDocument.fire( 'fakeEvent', data );
-
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p', 'blockquote' ] );
+					'fakeEvent @ high-10'
+				] );
 			} );
 
 			it( 'should not trigger listeners on the lower priority if stopped on the $root context', () => {
@@ -341,22 +457,139 @@ describe( 'BubblingObserver', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
 				viewDocument.fire( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [ 'keydown@high+10', '$custom', 'p', 'blockquote', '$root' ] );
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'isCustomObject @ highest',
+					'isCustomObject @ high',
+					'isCustomObject @ normal',
+					'isCustomObject @ low',
+					'isCustomObject @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
+
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal',
+					'blockquote @ low',
+					'blockquote @ lowest',
+
+					'$root @ highest',
+					'$root @ high',
+					'$root @ normal'
+				] );
+			} );
+
+			it( 'should stop bubbling events if stopped on the blockquote context', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'isCustomObject @ highest',
+					'isCustomObject @ high',
+					'isCustomObject @ normal',
+					'isCustomObject @ low',
+					'isCustomObject @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal',
+					'p @ low',
+					'p @ lowest',
+
+					'blockquote @ highest',
+					'blockquote @ high',
+					'blockquote @ normal'
+				] );
+			} );
+
+			it( 'should stop bubbling events if stopped on the p context', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'isCustomObject @ highest',
+					'isCustomObject @ high',
+					'isCustomObject @ normal',
+					'isCustomObject @ low',
+					'isCustomObject @ lowest',
+
+					'p @ highest',
+					'p @ high',
+					'p @ normal'
+				] );
+			} );
+
+			it( 'should stop bubbling events if stopped on the custom context', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isCustomObject } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10',
+
+					'isCustomObject @ highest',
+					'isCustomObject @ high',
+					'isCustomObject @ normal'
+				] );
+			} );
+
+			it( 'should not start bubbling events if stopped before entering high priority', () => {
+				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { priority: priorities.get( 'high' ) + 1 } );
+				viewDocument.fire( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'fakeEvent @ high+10'
+				] );
 			} );
 		} );
 
 		function setListeners() {
 			const events = [];
 
-			viewDocument.on( 'fakeEvent', () => events.push( '$root' ), { context: '$root' } );
-			viewDocument.on( 'fakeEvent', () => events.push( '$text' ), { context: '$text' } );
-			viewDocument.on( 'fakeEvent', () => events.push( '$custom' ), { context: isCustomObject } );
+			function setListenersForContext( context ) {
+				for ( const priority of [ 'highest', 'high', 'normal', 'low', 'lowest' ] ) {
+					viewDocument.on( 'fakeEvent', () => {
+						events.push( `${ typeof context == 'string' ? context : context.name } @ ${ priority }` );
+					}, { context, priority } );
+				}
+			}
 
-			viewDocument.on( 'fakeEvent', () => events.push( 'p' ), { context: 'p' } );
-			viewDocument.on( 'fakeEvent', () => events.push( 'blockquote' ), { context: 'blockquote' } );
+			setListenersForContext( '$root' );
+			setListenersForContext( '$text' );
+			setListenersForContext( 'p' );
+			setListenersForContext( 'blockquote' );
+			setListenersForContext( isCustomObject );
 
-			viewDocument.on( 'fakeEvent', () => events.push( 'keydown@high+10' ), { priority: priorities.get( 'high' ) + 10 } );
-			viewDocument.on( 'fakeEvent', () => events.push( 'keydown@high-10' ), { priority: priorities.get( 'high' ) - 10 } );
+			viewDocument.on( 'fakeEvent', () => events.push( 'fakeEvent @ high+10' ), { priority: priorities.get( 'high' ) + 10 } );
+			viewDocument.on( 'fakeEvent', () => events.push( 'fakeEvent @ high-10' ), { priority: priorities.get( 'high' ) - 10 } );
 
 			return events;
 		}
