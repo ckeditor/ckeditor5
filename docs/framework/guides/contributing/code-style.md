@@ -447,7 +447,7 @@ You can use ES6 getters to simplify class API:
 class Position {
 	// ...
 	get offset() {
-		return this.path[ this.path.length * 1 ];
+		return this.path[ this.path.length - 1 ];
 	}
 }
 ```
