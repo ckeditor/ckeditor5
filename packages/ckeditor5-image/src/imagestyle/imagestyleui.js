@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
+import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 
 import ImageStyleUtils from './utils';
 
@@ -98,53 +98,60 @@ export default class ImageStyleUI extends Plugin {
 		const componentName = getUIComponentName( dropdownName );
 
 		this.editor.ui.componentFactory.add( componentName, locale => {
-			const dropdownView = createDropdown( locale );
+			const dropdownView = createDropdown( locale, SplitButtonView );
+			const splitButtonView = dropdownView.buttonView;
 			const factory = this.editor.ui.componentFactory;
 
 			const buttonViews = dropdownConfig.items
 				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
 
-			// Hides the button if all of the nested buttons are unsupported by the loaded plugins or there are no items added the group.
-			// ASK: Maybe the group shouldn't be crated at all if there is no items?
-			if ( buttonViews.length === 0 ) {
-				dropdownView.buttonView.set( 'isVisible', false );
-				// return false;
-			}
-
 			addToolbarToDropdown( dropdownView, buttonViews );
-			// ASK: Jeśli uzyję tutaj fillWithItems, to nadal jeśli czegoś brakuje to edytor się wywala.
-			// To jest błąd w przypadku kiedy developer ustawi w itemach grupy arrangement, który nie jest dostępny
 
-			dropdownView.buttonView.set( {
+			splitButtonView.set( {
 				label: dropdownConfig.title,
-				ariaLabel: dropdownConfig.title,
 				icon: dropdownConfig.icon,
+				currentCommand: false,
+				class: null,
 				tooltip: true
 			} );
 
-			dropdownView.buttonView
-				.bind( 'icon' )
-				.toMany(
-					buttonViews,
-					'isOn',
-					( ...areOn ) => {
-						const index = areOn.findIndex( isOn => isOn );
+			splitButtonView.bind( 'icon' )
+				.toMany( buttonViews, 'isOn', ( ...areOn ) => {
+					const index = areOn.findIndex( isOn => isOn );
 
-						if ( index < 0 ) {
-							return dropdownConfig.defaultIcon;
-						}
+					if ( index < 0 ) {
+						const config = this.utils.getArrangementConfig( dropdownConfig.defaultItem );
 
-						return buttonViews[ index ].icon;
+						return config.icon;
 					}
-				);
 
-			dropdownView.buttonView
-				.bind( 'isSelected' )
-				.toMany(
-					buttonViews,
-					'isOn',
-					( ...areOn ) => areOn.find( isOn => isOn )
-				);
+					return buttonViews[ index ].icon;
+				} );
+
+			splitButtonView.bind( 'isOn' )
+				.toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.find( isOn => isOn ) );
+
+			splitButtonView.bind( 'currentCommand' )
+				.toMany( buttonViews, 'isOn', ( ...areOn ) => {
+					if ( areOn.find( isOn => isOn ) ) {
+						return false;
+					} else {
+						return dropdownConfig.defaultItem;
+					}
+				} );
+
+			splitButtonView.bind( 'class' )
+				.to( splitButtonView, 'currentCommand', command => command ? null : 'ck-splitbutton_flatten' );
+
+			splitButtonView.on( 'execute', () => {
+				const currentCommand = splitButtonView.currentCommand;
+
+				if ( currentCommand ) {
+					this._executeCommand( currentCommand );
+				} else {
+					splitButtonView.arrowView.fire( 'execute' );
+				}
+			} );
 
 			return dropdownView;
 		} );
@@ -172,7 +179,6 @@ export default class ImageStyleUI extends Plugin {
 
 			view.set( {
 				label: buttonConfig.title,
-				ariaLabel: buttonConfig.title,
 				icon: buttonConfig.icon,
 				tooltip: true,
 				isToggleable: true
@@ -182,14 +188,15 @@ export default class ImageStyleUI extends Plugin {
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			view.bind( 'isOn' ).to( command, 'value', value => value === buttonConfig.name );
 
-			view.on( 'execute', this._executeCommand.bind( this, buttonConfig ) );
+			view.on( 'execute', this._executeCommand.bind( this, buttonConfig.name ) );
 
 			return view;
 		} );
 	}
 
-	_executeCommand( config ) {
+	_executeCommand( name ) {
 		const editor = this.editor;
+		const config = this.utils.getArrangementConfig( name );
 
 		if ( config.modelElement ) {
 			editor.execute( 'imageTypeToggle', config.modelElement );

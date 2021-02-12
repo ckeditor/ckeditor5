@@ -95,10 +95,10 @@ export default class ImageStyleCommand extends Command {
 	}
 
 	_getDefaultStyle( imageType ) {
-		const cachedStyle = this.defaultStyles[ imageType ];
+		const defaultStyle = this.defaultStyles[ imageType ];
 
-		if ( cachedStyle ) {
-			return cachedStyle;
+		if ( defaultStyle ) {
+			return defaultStyle;
 		}
 
 		for ( const s in this.styles ) {

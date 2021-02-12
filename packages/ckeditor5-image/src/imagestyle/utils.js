@@ -178,7 +178,8 @@ export default class ImageStyleUtils {
 							.filter( item => this._validateGroupItem( item ) );
 
 						return group;
-					} );
+					} )
+					.filter( group => group.items.length > 0 );
 			}
 			return this.normalizedGroups;
 		}
@@ -260,7 +261,7 @@ export default class ImageStyleUtils {
 	}
 
 	_validateArrangement( arrangement ) {
-		const config = typeof arrangement === 'string' ? this._getArrangementConfig( arrangement ) : arrangement;
+		const config = typeof arrangement === 'string' ? this.getArrangementConfig( arrangement ) : arrangement;
 
 		const modelElement = config.modelElement;
 
@@ -278,12 +279,12 @@ export default class ImageStyleUtils {
 	}
 
 	_validateGroupItem( item ) {
-		const isItemDefined = this._getArrangementConfig( item );
+		const isItemDefined = this.getArrangementConfig( item );
 
 		return !!isItemDefined;
 	}
 
-	_getArrangementConfig( name ) {
+	getArrangementConfig( name ) {
 		const arrangements = this.normalizedArrangements || this.normalizeImageStyles( 'arrangements' );
 
 		return arrangements.find( arrangement => arrangement.name === name );

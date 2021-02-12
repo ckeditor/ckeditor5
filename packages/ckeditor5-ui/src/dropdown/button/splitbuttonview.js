@@ -47,6 +47,7 @@ export default class SplitButtonView extends View {
 		const bind = this.bindTemplate;
 
 		// Implement the Button interface.
+		this.set( 'class' );
 		this.set( 'icon' );
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );
@@ -112,6 +113,7 @@ export default class SplitButtonView extends View {
 				class: [
 					'ck',
 					'ck-splitbutton',
+					bind.to( 'class' ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					this.arrowView.bindTemplate.if( 'isOn', 'ck-splitbutton_open' ),
 					bind.to( 'isSelected', value => this.isSelectable && value ? 'ck-selected' : false )

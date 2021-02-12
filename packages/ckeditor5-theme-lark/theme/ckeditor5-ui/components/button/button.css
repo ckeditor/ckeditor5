@@ -148,17 +148,6 @@ a.ck.ck-button {
 	&.ck-button-cancel {
 		color: var(--ck-color-button-cancel);
 	}
-
-	&.ck-selected::before {
-		content: '';
-		position: absolute;
-		left: 0px;
-		top: 0px;
-		width: 28px;
-		height: 28px;
-		background: #dedede;
-		border-radius: 4px;
-	}
 }
 
 /* A style of the button which handles the primary action. */
