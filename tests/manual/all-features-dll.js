@@ -145,7 +145,7 @@ const config = {
 		toolbar: [
 			'imageTextAlternative', '|',
 			'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
-			'imageResize'
+			'resizeImage'
 		],
 		insert: {
 			integrations: [
