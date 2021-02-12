@@ -42,175 +42,6 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-const onlyToolbar = {
-	toolbar: [
-		'imageStyle:alignInline',
-		'imageStyle:inParagraph',
-		'imageStyle:betweenParagraphs',
-		'|',
-		'imageTextAlternative'
-	]
-};
-
-const validStyles = {
-	arrangements: [
-		{
-			name: 'side',
-			title: 'Side image',
-			icon: 'inLineLeft',
-			modelElement: 'imageInline',
-			className: 'image-style-side'
-		},
-		'full'
-	],
-	groups: [
-		{
-			name: 'custom',
-			title: 'Image in paragraph',
-			defaultIcon: 'inLineLeft',
-			items: [ 'side', 'full' ]
-		}
-	],
-	toolbar: [
-		'imageStyle:inLine',
-		'imageStyle:inParagraph',
-		'imageStyle:betweenParagraphs',
-		'|',
-		'imageTextAlternative'
-	]
-};
-
-const undeclaredItemInGroup = { // 1
-	styles: {
-		arrangements: [
-			{
-				name: 'blockSide',
-				title: 'Side image',
-				icon: 'inLineLeft',
-				modelElement: 'imageInline',
-				className: 'image-style-side'
-			}
-		],
-		groups: [
-			{
-				name: 'custom',
-				title: 'Image in paragraph',
-				defaultIcon: 'inLineLeft',
-				items: [ 'blockSide', 'blockFull' ]
-			}
-		]
-	},
-	toolbar: [
-		'imageStyle:custom',
-		'imageStyle:blockFull',
-		'|',
-		'imageTextAlternative'
-	]
-};
-
-// expected result: toolbarview-item-unavailable
-const undeclaredItemButton = { // 2
-	styles: {
-		arrangements: [
-			{
-				name: 'blockSide',
-				title: 'Side image',
-				icon: 'inLineLeft',
-				modelElement: 'imageInline',
-				className: 'image-style-side'
-			}
-		]
-	},
-	toolbar: [
-		'imageStyle:blockFull',
-		'|',
-		'imageTextAlternative'
-	]
-};
-
-// expected result: toolbarview-item-unavailable
-const undeclaredGroup = { // 3
-	styles: {
-		arrangements: [
-			{
-				name: 'blockSide',
-				title: 'Side image',
-				icon: 'inLineLeft',
-				modelElement: 'imageInline',
-				className: 'image-style-side'
-			}
-		],
-		groups: [
-			'inParagraph'
-		]
-	},
-	toolbar: [
-		'imageStyle:inLine',
-		'|',
-		'imageTextAlternative'
-	]
-};
-
-// requires removing ImageInline plugin
-// expected result: image-style-not-supported
-const unsupportedItemInGroup = { // 4
-	styles: {
-		arrangements: [
-			{
-				name: 'blockSide',
-				title: 'Side image',
-				icon: 'inLineLeft',
-				modelElement: 'imageInline',
-				className: 'image-style-side'
-			}
-		],
-		groups: [
-			{
-				name: 'custom',
-				title: 'Image in paragraph',
-				defaultIcon: 'inLineLeft',
-				items: [ 'blockSide' ]
-			}
-		]
-	},
-	toolbar: [
-		'imageStyle:custom',
-		'|',
-		'imageTextAlternative'
-	]
-};
-
-// requires removing ImageInline plugin
-// expected result: image-style-not-supported
-// expected result: toolbar-item-unavailable
-const arrangementUnsupported = { // 4
-	styles: {
-		arrangements: [
-			{
-				name: 'blockSide',
-				title: 'Side image',
-				icon: 'inLineLeft',
-				modelElement: 'imageInline',
-				className: 'image-style-side'
-			}
-		], groups: [
-
-		]
-	},
-	toolbar: [
-		'imageStyle:blockSide',
-		'|',
-		'imageTextAlternative'
-	]
-};
-
-const styleNotFound = {
-	styles: {
-		arrangements: [ 'custom' ]
-	},
-	toolbar: 'imageStyle:custom'
-};
-
 ClassicEditor
 	.create( document.querySelector( '#editor-formatting' ), {
 		plugins: [
@@ -230,7 +61,40 @@ ClassicEditor
 			'undo',
 			'redo'
 		],
-		image: onlyToolbar
+		image: {
+			styles: {
+				arrangements: [ 'alignLeft', 'alignCenter', 'alignRight' ]
+			},
+			toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight' ]
+		}
+	} )
+	.then( editor => {
+		window.editorFormatting = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-inline' ), {
+		plugins: [
+			ArticlePluginSet
+		],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
+		image: getConfig( 'onlyToolbar' )
 	} )
 	.then( editor => {
 		window.editorFormatting = editor;
@@ -239,3 +103,175 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function getConfig( type ) {
+	const configs = {
+		onlyToolbar: {
+			toolbar: [
+				'imageStyle:alignInline',
+				'imageStyle:inParagraph',
+				'imageStyle:betweenParagraphs',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+
+		validStyles: {
+			arrangements: [
+				{
+					name: 'side',
+					title: 'Side image',
+					icon: 'inLineLeft',
+					modelElement: 'imageInline',
+					className: 'image-style-side'
+				},
+				'full'
+			],
+			groups: [
+				{
+					name: 'custom',
+					title: 'Image in paragraph',
+					defaultIcon: 'inLineLeft',
+					items: [ 'side', 'full' ]
+				}
+			],
+			toolbar: [
+				'imageStyle:inLine',
+				'imageStyle:inParagraph',
+				'imageStyle:betweenParagraphs',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+
+		undeclaredItemInGroup: { // 1
+			styles: {
+				arrangements: [
+					{
+						name: 'blockSide',
+						title: 'Side image',
+						icon: 'inLineLeft',
+						modelElement: 'imageInline',
+						className: 'image-style-side'
+					}
+				],
+				groups: [
+					{
+						name: 'custom',
+						title: 'Image in paragraph',
+						defaultIcon: 'inLineLeft',
+						items: [ 'blockSide', 'blockFull' ]
+					}
+				]
+			},
+			toolbar: [
+				'imageStyle:custom',
+				'imageStyle:blockFull',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+
+		// expected result: toolbarview-item-unavailable
+		undeclaredItemButton: { // 2
+			styles: {
+				arrangements: [
+					{
+						name: 'blockSide',
+						title: 'Side image',
+						icon: 'inLineLeft',
+						modelElement: 'imageInline',
+						className: 'image-style-side'
+					}
+				]
+			},
+			toolbar: [
+				'imageStyle:blockFull',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+
+		// expected result: toolbarview-item-unavailable
+		undeclaredGroup: { // 3
+			styles: {
+				arrangements: [
+					{
+						name: 'blockSide',
+						title: 'Side image',
+						icon: 'inLineLeft',
+						modelElement: 'imageInline',
+						className: 'image-style-side'
+					}
+				],
+				groups: [
+					'inParagraph'
+				]
+			},
+			toolbar: [
+				'imageStyle:inLine',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+
+		// requires removing ImageInline plugin
+		// expected result: image-style-not-supported
+		unsupportedItemInGroup: { // 4
+			styles: {
+				arrangements: [
+					{
+						name: 'blockSide',
+						title: 'Side image',
+						icon: 'inLineLeft',
+						modelElement: 'imageInline',
+						className: 'image-style-side'
+					}
+				],
+				groups: [
+					{
+						name: 'custom',
+						title: 'Image in paragraph',
+						defaultIcon: 'inLineLeft',
+						items: [ 'blockSide' ]
+					}
+				]
+			},
+			toolbar: [
+				'imageStyle:custom',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+
+		// requires removing ImageInline plugin
+		// expected result: image-style-not-supported
+		// expected result: toolbar-item-unavailable
+		arrangementUnsupported: { // 4
+			styles: {
+				arrangements: [
+					{
+						name: 'blockSide',
+						title: 'Side image',
+						icon: 'inLineLeft',
+						modelElement: 'imageInline',
+						className: 'image-style-side'
+					}
+				], groups: []
+			},
+			toolbar: [
+				'imageStyle:blockSide',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+		styleNotFound: {
+			styles: {
+				arrangements: [ 'custom' ]
+			},
+			toolbar: 'imageStyle:custom'
+		}
+	};
+
+	return configs[ type ];
+}

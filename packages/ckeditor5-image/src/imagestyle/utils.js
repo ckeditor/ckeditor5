@@ -7,26 +7,28 @@
  * @module image/imagestyle/utils
  */
 
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { logWarning } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
 
-export default class ImageStyleUtils {
-	constructor( loadedPlugins, configuredStyles ) {
-		if ( ImageStyleUtils._instance ) {
-			return ImageStyleUtils._instance;
-		}
+export default class ImageStyleUtils extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'ImageStyleUtils';
+	}
 
-		ImageStyleUtils._instance = this;
+	init() {
+		const editor = this.editor;
+		const loadedPlugins = this.editor.plugins;
 
 		this.loadedPlugins = {
 			'imageBlock': loadedPlugins.has( 'ImageBlock' ),
 			'imageInline': loadedPlugins.has( 'ImageInline' )
 		};
 
-		this.configuredStyles = configuredStyles;
-
-		this.normalizedStyles = null;
-		this.normalizedGroups = null;
+		this._defineDefaultUI();
+		this.configuredStyles = editor.config.get( 'image.styles' ) || [];
 
 		/**
 		 * Default image styles provided by the plugin that can be referred in the
@@ -149,6 +151,38 @@ export default class ImageStyleUtils {
 			inLineRight: icons.objectInlineRight,
 			inLine: icons.objectInline
 		};
+
+		this.normalizedArrangements = this._normalizeArrangements();
+		this.normalizedGroups = this._normalizeGroups();
+	}
+
+	_defineDefaultUI() {
+		const config = this.editor.config;
+		const loadedPlugins = this.editor.plugins;
+		let styles;
+
+		const blockPluginLoaded = loadedPlugins.has( 'ImageBlockEditing' );
+		const inlinePluginLoaded = loadedPlugins.has( 'ImageInlineEditing' );
+
+		if ( inlinePluginLoaded && blockPluginLoaded ) {
+			styles = {
+				arrangements: [
+					'alignInline', 'alignLeft', 'alignRight',
+					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+				],
+				groups: [ 'inParagraph', 'betweenParagraphs' ]
+			};
+		} else if ( blockPluginLoaded ) {
+			styles = {
+				arrangements: [ 'full', 'side' ]
+			};
+		} else if ( inlinePluginLoaded ) {
+			styles = {
+				arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
+			};
+		}
+
+		config.define( 'image.styles', styles );
 	}
 
 	/**
@@ -157,32 +191,30 @@ export default class ImageStyleUtils {
 	 *
 	 * @returns {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
 	 */
-	normalizeImageStyles( type ) {
-		const configuredStyles = this.configuredStyles[ type ] || [];
+	_normalizeArrangements() {
+		const configuredStyles = this.configuredStyles.arrangements || [];
 
-		if ( type === 'arrangements' ) {
-			if ( !this.normalizedArrangements ) {
-				this.normalizedArrangements = configuredStyles
-					.map( arrangement => this._normalizeArrangement( arrangement ) )
-					.filter( arrangement => this._validateArrangement( arrangement ) );
-			}
-			return this.normalizedArrangements;
-		}
+		const normalizedArrangements = configuredStyles
+			.map( arrangement => this._normalizeArrangement( arrangement ) )
+			.filter( arrangement => this._validateArrangement( arrangement ) );
 
-		if ( type === 'groups' ) {
-			if ( !this.normalizedGroups ) {
-				this.normalizedGroups = configuredStyles
-					.map( group => this._normalizeGroup( group ) )
-					.map( group => {
-						group.items = group.items
-							.filter( item => this._validateGroupItem( item ) );
+		return normalizedArrangements;
+	}
 
-						return group;
-					} )
-					.filter( group => group.items.length > 0 );
-			}
-			return this.normalizedGroups;
-		}
+	_normalizeGroups() {
+		const configuredStyles = this.configuredStyles.groups || [];
+
+		const normalizedGroups = configuredStyles
+			.map( group => this._normalizeGroup( group ) )
+			.map( group => {
+				group.items = group.items
+					.filter( item => this._validateGroupItem( item ) );
+
+				return group;
+			} )
+			.filter( group => group.items.length > 0 );
+
+		return normalizedGroups;
 	}
 
 	// Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}

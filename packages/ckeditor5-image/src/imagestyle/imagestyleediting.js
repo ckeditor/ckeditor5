@@ -22,6 +22,13 @@ export default class ImageStyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ ImageStyleUtils ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'ImageStyleEditing';
 	}
@@ -36,13 +43,8 @@ export default class ImageStyleEditing extends Plugin {
 		const editing = editor.editing;
 		const loadedPlugins = editor.plugins;
 
-		// Aet default configuration.
-		this._defineDefaultUI();
-
 		// Get configuration.
-		const configuredStyles = editor.config.get( 'image.styles' );
-		const styles = new ImageStyleUtils( loadedPlugins, configuredStyles || [] )
-			.normalizeImageStyles( 'arrangements', true );
+		const styles = editor.plugins.get( 'ImageStyleUtils' ).normalizedArrangements;
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
@@ -64,35 +66,6 @@ export default class ImageStyleEditing extends Plugin {
 
 		// Register imageStyle command.
 		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );
-	}
-
-	_defineDefaultUI() {
-		const config = this.editor.config;
-		const loadedPlugins = this.editor.plugins;
-		let styles;
-
-		const blockPluginLoaded = loadedPlugins.has( 'ImageBlockEditing' );
-		const inlinePluginLoaded = loadedPlugins.has( 'ImageInlineEditing' );
-
-		if ( inlinePluginLoaded && blockPluginLoaded ) {
-			styles = {
-				arrangements: [
-					'alignInline', 'alignLeft', 'alignRight',
-					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
-				],
-				groups: [ 'inParagraph', 'betweenParagraphs' ]
-			};
-		} else if ( blockPluginLoaded ) {
-			styles = {
-				arrangements: [ 'full', 'side' ]
-			};
-		} else if ( inlinePluginLoaded ) {
-			styles = {
-				arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
-			};
-		}
-
-		config.define( 'image.styles', styles );
 	}
 }
 

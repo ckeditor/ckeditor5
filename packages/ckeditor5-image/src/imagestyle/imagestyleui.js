@@ -23,6 +23,13 @@ export default class ImageStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ ImageStyleUtils ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'ImageStyleUI';
 	}
@@ -61,12 +68,11 @@ export default class ImageStyleUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const configuredStyles = editor.config.get( 'image.styles' );
 
-		this.utils = new ImageStyleUtils( editor.plugins, configuredStyles );
+		this.utils = editor.plugins.get( 'ImageStyleUtils' );
 
 		const definedArrangements = translateStyles(
-			this.utils.normalizeImageStyles( 'arrangements' ),
+			this.utils.normalizedArrangements,
 			this.localizedDefaultStylesTitles );
 
 		for ( const arrangementConfig of definedArrangements ) {
@@ -74,7 +80,7 @@ export default class ImageStyleUI extends Plugin {
 		}
 
 		const definedGroups = translateStyles(
-			this.utils.normalizeImageStyles( 'groups' ),
+			this.utils.normalizedGroups,
 			this.localizedDefaultStylesTitles );
 
 		for ( const groupConfig of definedGroups ) {
@@ -198,6 +204,7 @@ export default class ImageStyleUI extends Plugin {
 		const editor = this.editor;
 		const config = this.utils.getArrangementConfig( name );
 
+		// TODO: Something bad happens when the only block image is loaded.
 		if ( config.modelElement ) {
 			editor.execute( 'imageTypeToggle', config.modelElement );
 		}
