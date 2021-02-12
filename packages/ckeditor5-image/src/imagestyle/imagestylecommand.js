@@ -82,6 +82,12 @@ export default class ImageStyleCommand extends Command {
 
 		const model = this.editor.model;
 		const imageElement = model.document.selection.getSelectedElement();
+		const modelElementName = this.styles[ styleName ].modelElement;
+
+		// Change the image type if a style requires it.
+		if ( modelElementName && modelElementName !== imageElement.name ) {
+			this.editor.execute( modelElementName === 'image' ? 'imageTypeBlock' : 'imageTypeInline' );
+		}
 
 		model.change( writer => {
 			// Default style means that there is no `imageStyle` attribute in the model.
