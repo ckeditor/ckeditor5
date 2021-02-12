@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageStyleCommand from './imagestylecommand';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import { normalizeStyles } from './utils';
+import { normalizeStyles, getDefaultStylesConfiguration } from './utils';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -31,72 +31,56 @@ export default class ImageStyleEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const isBlockPluginLoaded = editor.plugins.has( 'ImageBlockEditing' );
+		const isInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
+
+		editor.config.define( 'image.styles', getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) );
+
+		/**
+		 * TODO docs
+		 *
+		 * Clear the arrangements and groups from the unsupported and undefined items.
+		 */
+		this.normalizedStyles = normalizeStyles( {
+			configuredStyles: editor.config.get( 'image.styles' ),
+			isBlockPluginLoaded,
+			isInlinePluginLoaded
+		} );
+
+		this._setupConversion( isBlockPluginLoaded, isInlinePluginLoaded );
+
+		// Register imageStyle command.
+		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, this.normalizedStyles.arrangements ) );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {*} isBlockPluginLoaded
+	 * @param {*} isInlinePluginLoaded
+	 */
+	_setupConversion( isBlockPluginLoaded, isInlinePluginLoaded ) {
+		const editor = this.editor;
 		const schema = editor.model.schema;
-		const data = editor.data;
-		const editing = editor.editing;
-		const loadedPlugins = editor.plugins;
-
-		this._defineDefaultConfiguration();
-
-		const configuredStyles = editor.config.get( 'image.styles' ) || [];
-
-		// Clear the arrangements and groups from the unsupported and undefined items.
-		this.normalizedStyles = normalizeStyles( configuredStyles, loadedPlugins );
-
-		// Get configuration.
-		const styles = this.normalizedStyles.arrangements;
+		const arrangements = this.normalizedStyles.arrangements;
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
-		if ( loadedPlugins.has( 'ImageBlockEditing' ) ) {
+		if ( isBlockPluginLoaded ) {
 			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
 
 			// Converter for figure element from view to model.
-			data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
+			editor.data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( arrangements ), { priority: 'low' } );
 		}
 
-		if ( loadedPlugins.has( 'ImageInlineEditing' ) ) {
+		if ( isInlinePluginLoaded ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
 			// ASK: Additional converter needed?
 		}
 
-		const modelToViewConverter = modelToViewStyleAttribute( styles );
-		editing.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
-		data.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
-
-		// Register imageStyle command.
-		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );
-	}
-
-	_defineDefaultConfiguration() {
-		const editor = this.editor;
-		const config = this.editor.config;
-
-		const loadedPlugins = editor.plugins;
-		const isBlockLoaded = loadedPlugins.has( 'ImageBlock' );
-		const isinlineLoaded = loadedPlugins.has( 'ImageInline' );
-
-		let styles;
-
-		if ( isBlockLoaded && isinlineLoaded ) {
-			styles = {
-				arrangements: [
-					'alignInline', 'alignLeft', 'alignRight',
-					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
-				],
-				groups: [ 'inParagraph', 'betweenParagraphs' ]
-			};
-		} else if ( isBlockLoaded ) {
-			styles = {
-				arrangements: [ 'full', 'side' ]
-			};
-		} else if ( isinlineLoaded ) {
-			styles = {
-				arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
-			};
-		}
-
-		config.define( 'image.styles', styles );
+		const modelToViewConverter = modelToViewStyleAttribute( arrangements );
+		editor.editing.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
+		editor.data.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
 	}
 }
 

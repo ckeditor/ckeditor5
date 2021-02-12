@@ -10,11 +10,20 @@
 import { icons } from 'ckeditor5/src/core';
 import { logWarning } from 'ckeditor5/src/utils';
 
-const defaultArrangements = {
+const {
+	objectFullWidth,
+	objectLeft,
+	objectRight,
+	objectCenter,
+	objectInlineLeft, objectInlineRight,
+	objectInline
+} = icons;
+
+const DEFAULT_ARRANGEMENTS = {
 	alignInline: {
 		name: 'alignInline',
 		title: 'Image in text line',
-		icon: icons.objectInline,
+		icon: objectInline,
 		modelElement: 'imageInline',
 		isDefault: true
 	},
@@ -23,7 +32,7 @@ const defaultArrangements = {
 	alignLeft: {
 		name: 'alignLeft',
 		title: 'Left aligned image',
-		icon: icons.objectInlineLeft,
+		icon: objectInlineLeft,
 		modelElement: false,
 		className: 'image-style-align-left'
 	},
@@ -32,7 +41,7 @@ const defaultArrangements = {
 	alignRight: {
 		name: 'alignRight',
 		title: 'Right aligned image',
-		icon: icons.objectInlineRight,
+		icon: objectInlineRight,
 		modelElement: false,
 		className: 'image-style-align-right'
 	},
@@ -40,7 +49,7 @@ const defaultArrangements = {
 	alignBlockLeft: {
 		name: 'alignBlockLeft',
 		title: 'Left aligned image',
-		icon: icons.objectLeft,
+		icon: objectLeft,
 		modelElement: 'image',
 		className: 'image-style-block-align-left'
 	},
@@ -49,7 +58,7 @@ const defaultArrangements = {
 	alignCenter: {
 		name: 'alignCenter',
 		title: 'Centered image',
-		icon: icons.objectCenter,
+		icon: objectCenter,
 		modelElement: 'image',
 		className: 'image-style-align-center'
 	},
@@ -57,7 +66,7 @@ const defaultArrangements = {
 	alignBlockRight: {
 		name: 'alignBlockRight',
 		title: 'Right aligned image',
-		icon: icons.objectRight,
+		icon: objectRight,
 		modelElement: 'image',
 		className: 'image-style-block-align-right'
 	},
@@ -66,7 +75,7 @@ const defaultArrangements = {
 	full: {
 		name: 'full',
 		title: 'Full size image',
-		icon: icons.objectFullWidth,
+		icon: objectFullWidth,
 		modelElement: 'image',
 		isDefault: true
 	},
@@ -75,13 +84,13 @@ const defaultArrangements = {
 	side: {
 		name: 'side',
 		title: 'Side image',
-		icon: icons.objectRight,
+		icon: objectRight,
 		modelElement: 'image',
 		className: 'image-style-side'
 	}
 };
 
-const defaultGroups = {
+const DEFAULT_GROUPS = {
 	inParagraph: {
 		name: 'inParagraph',
 		title: 'Image in paragraph',
@@ -105,148 +114,121 @@ const defaultGroups = {
  *
  * @member {Object.<String, String>}
  */
-const defaultIcons = {
-	full: icons.objectFullWidth,
-	left: icons.objectLeft,
-	right: icons.objectRight,
-	center: icons.objectCenter,
-	inLineLeft: icons.objectInlineLeft,
-	inLineRight: icons.objectInlineRight,
-	inLine: icons.objectInline
+const DEFAULT_ICONS = {
+	full: objectFullWidth,
+	left: objectLeft,
+	right: objectRight,
+	center: objectCenter,
+	inLineLeft: objectInlineLeft,
+	inLineRight: objectInlineRight,
+	inLine: objectInline
 };
 
-export function normalizeStyles( configuredStyles, loadedPlugins ) {
-	const configuredArrangements = configuredStyles.arrangements || [];
-	const configuredGroups = configuredStyles.groups || [];
+export function normalizeStyles( options ) {
+	const configuredArrangements = options.configuredStyles.arrangements || [];
+	const configuredGroups = options.configuredStyles.groups || [];
 
 	const arrangements = configuredArrangements
-		.map( arrangement => normalizeArrangement( arrangement ) )
-		.filter( arrangement => validateArrangement( arrangement, loadedPlugins ) );
+		.map( arrangement => normalizeDefinition( DEFAULT_ARRANGEMENTS, arrangement, 'arrangement' ) )
+		.filter( arrangement => isValidArrangement( arrangement, options ) );
 
 	const groups = configuredGroups
-		.map( group => normalizeGroup( group ) )
+		.map( group => normalizeDefinition( DEFAULT_GROUPS, group, 'group' ) )
 		.map( group => {
-			group.items = group.items
-				.filter( item => validateGroupItem( item, arrangements ) );
+			group.items = group.items.filter( item => isValidGroupItem( item, arrangements ) );
 
 			return group;
 		} )
-		.filter( group => group.items.length > 0 );
+		.filter( group => !!group.items.length );
 
 	return { arrangements, groups };
 }
 
-function normalizeArrangement( arrangement ) {
-	const isDefault = defaultArrangements[ arrangement ];
-
-	const isOnlyName = typeof arrangement === 'string' && !isDefault;
-	const isCallingDefault = typeof arrangement === 'string' && isDefault;
-	const isExtendingDefault = defaultArrangements[ arrangement.name ];
-
-	// Just the name of the style has been passed, but none of the defaults.
-	// Warn because probably it's a mistake.
-	if ( isOnlyName ) {
-		warnUnavailableStyle( arrangement, 'group' );
-
-		// Normalize the style anyway to prevent errors.
-		const arrangementName = arrangement;
-		arrangement = { name: arrangementName };
+export function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) {
+	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {
+		return {
+			arrangements: [
+				'alignInline', 'alignLeft', 'alignRight',
+				'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+			],
+			groups: [ 'inParagraph', 'betweenParagraphs' ]
+		};
+	} else if ( isBlockPluginLoaded ) {
+		return {
+			arrangements: [ 'full', 'side' ]
+		};
+	} else if ( isInlinePluginLoaded ) {
+		return {
+			arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
+		};
 	}
-	// Just the name of the style has been passed and it's one of the defaults, just use it.
-	else if ( isCallingDefault ) {
+}
+
+function normalizeDefinition( defaults, definition, definitionType ) {
+	const iconPropertyName = definitionType === 'arrangement' ? 'icon' : 'defaultIcon';
+
+	if ( typeof definition === 'string' ) {
+		// Just the name of the style has been passed, but none of the defaults.
+		// Warn because probably it's a mistake.
+		if ( !defaults[ definition ] ) {
+			/**
+			 * There is no such image arrangement or group of given name.
+			 *
+			 * @error image-style-not-found
+			 * @param {String} name Name of a missing style.
+			 * @param {String} type Type of a missing style (an arrangement or a group).
+			 */
+			logWarning( 'image-style-not-found', { name: definition, type: definitionType } );
+
+			// Normalize the style anyway to prevent errors.
+			definition = { name: definition };
+		}
+		// Just the name of the style has been passed and it's one of the defaults, just use it.
 		// Clone the style to avoid overriding defaults.
-		const arrangementName = arrangement;
-		arrangement = Object.assign( {}, defaultArrangements[ arrangementName ] );
-	}
-	// If an object style has been passed and if the name matches one of the defaults,
-	// extend it with defaults – the user wants to customize a default style.
-	// Note: Don't override the user–defined style object, clone it instead.
-	else if ( isExtendingDefault ) {
-		arrangement = extendStyle( defaultArrangements[ arrangement.name ], arrangement );
+		else {
+			definition = Object.assign( {}, defaults[ definition ] );
+		}
+	} else {
+		// If an object style has been passed and if the name matches one of the defaults,
+		// extend it with defaults – the user wants to customize a default style.
+		// Note: Don't override the user–defined style object, clone it instead.
+		definition = extendStyle( defaults[ definition.name ], definition );
 	}
 
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
-	if ( typeof arrangement.icon === 'string' && defaultIcons[ arrangement.icon ] ) {
-		arrangement.icon = defaultIcons[ arrangement.icon ];
+	if ( typeof definition[ iconPropertyName ] === 'string' ) {
+		const iconContent = DEFAULT_ICONS[ definition[ iconPropertyName ] ];
+
+		if ( iconContent ) {
+			definition[ iconPropertyName ] = iconContent;
+		}
 	}
 
-	return arrangement;
+	return definition;
 }
 
-function normalizeGroup( group ) {
-	const isDefault = defaultGroups[ group ];
+// Check if the style's modelElement is supported by the loaded plugins.
+function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginLoaded } ) {
+	const { arrangementName, modelElement: modelElementName } = arrangement;
+	const isBlockArrangementInvalid = modelElementName === 'image' && !isBlockPluginLoaded;
+	const isInlineArrangementInvalid = modelElementName === 'imageInline' && !isInlinePluginLoaded;
 
-	const isOnlyName = typeof group === 'string' && !isDefault;
-	const isCallingDefault = typeof group === 'string' && isDefault;
-	const isExtendingDefault = defaultGroups[ group.name ];
-
-	if ( isOnlyName ) {
-		warnUnavailableStyle( group, 'group' );
-
-		// Normalize the style anyway to prevent errors.
-		const groupName = group;
-		group = { name: groupName };
-	}
-	else if ( isCallingDefault ) {
-		// Clone the style to avoid overriding defaults.
-		const groupName = group;
-		group = Object.assign( {}, defaultGroups[ groupName ] );
-	}
-	else if ( isExtendingDefault ) {
-		group = extendStyle( defaultGroups[ group.name ], group );
-	}
-
-	// Load default icon if possible.
-	if ( typeof group.defaultIcon === 'string' && defaultIcons[ group.defaultIcon ] ) {
-		group.defaultIcon = defaultIcons[ group.defaultIcon ];
-	}
-
-	return group;
-}
-
-// Check if the style's modelElement is supported by the loaeded plugins.
-function validateArrangement( arrangement, loadedPlugins ) {
-	const modelElementName = arrangement.modelElement;
-
-	// name się nie zgadza!!!
-	if ( modelElementName && !loadedPlugins.has( getPluginName( modelElementName ) ) ) {
+	if ( isBlockArrangementInvalid || isInlineArrangementInvalid ) {
 		logWarning( 'image-style-unsupported', {
 			missingPlugin: modelElementName,
-			unsupportedStyle: arrangement.name
+			unsupportedStyle: arrangementName
 		} );
+
 		return false;
 	}
-	else {
-		return true;
-	}
 
-	function getPluginName( modelElementName ) {
-		const mapping = {
-			image: 'ImageBlock',
-			imageInline: 'ImageInline'
-		};
-
-		return mapping[ modelElementName ];
-	}
+	return true;
 }
 
 // Check if arrangement set in the group items is defined.
-function validateGroupItem( itemName, normalizedArrangements ) {
-	const isItemDefined = normalizedArrangements.find( item => item.name === itemName );
-
-	return !!isItemDefined;
-}
-
-function warnUnavailableStyle( name, type ) {
-	/**
-	 * There is no such image arrangement or group of given name.
-	 *
-	 * @error image-style-not-found
-	 * @param {String} name Name of a missing style.
-	 * @param {String} type Type of a missing style (an arrangement or a group).
-	 */
-	logWarning( 'image-style-not-found', { name, type } );
+function isValidGroupItem( itemName, normalizedArrangements ) {
+	return !!normalizedArrangements.find( item => item.name === itemName );
 }
 
 function extendStyle( source, style ) {
