@@ -158,13 +158,9 @@ export default class ImageStyleUtils extends Plugin {
 
 	_defineDefaultUI() {
 		const config = this.editor.config;
-		const loadedPlugins = this.editor.plugins;
 		let styles;
 
-		const blockPluginLoaded = loadedPlugins.has( 'ImageBlockEditing' );
-		const inlinePluginLoaded = loadedPlugins.has( 'ImageInlineEditing' );
-
-		if ( inlinePluginLoaded && blockPluginLoaded ) {
+		if ( this.loadedPlugins.image && this.loadedPlugins.imageInline ) {
 			styles = {
 				arrangements: [
 					'alignInline', 'alignLeft', 'alignRight',
@@ -172,11 +168,11 @@ export default class ImageStyleUtils extends Plugin {
 				],
 				groups: [ 'inParagraph', 'betweenParagraphs' ]
 			};
-		} else if ( blockPluginLoaded ) {
+		} else if ( this.loadedPlugins.image ) {
 			styles = {
 				arrangements: [ 'full', 'side' ]
 			};
-		} else if ( inlinePluginLoaded ) {
+		} else if ( this.loadedPlugins.imageInline ) {
 			styles = {
 				arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
 			};
@@ -285,6 +281,7 @@ export default class ImageStyleUtils extends Plugin {
 			group = extendStyle( defaultGroups[ group.name ], group );
 		}
 
+		// Load default icon if possible.
 		if ( typeof group.defaultIcon === 'string' && this.defaultIcons[ group.defaultIcon ] ) {
 			group.defaultIcon = this.defaultIcons[ group.defaultIcon ];
 		}
@@ -292,12 +289,12 @@ export default class ImageStyleUtils extends Plugin {
 		return group;
 	}
 
+	// Check if the style's modelElement is supported by the loaeded plugins.
 	_validateArrangement( arrangement ) {
 		const config = typeof arrangement === 'string' ? this.getArrangementConfig( arrangement ) : arrangement;
 
 		const modelElement = config.modelElement;
 
-		// Check if the style's modelElement is supported by the loaeded plugins.
 		if ( modelElement && !this.loadedPlugins[ modelElement ] ) {
 			logWarning( 'image-style-unsupported', {
 				missingPlugin: modelElement,
@@ -310,8 +307,8 @@ export default class ImageStyleUtils extends Plugin {
 		}
 	}
 
+	// Check if arrangement set in the group items is defined.
 	_validateGroupItem( item ) {
-		// Check if arrangement set in the group items is defined.
 		const isItemDefined = this.getArrangementConfig( item );
 
 		return !!isItemDefined;
