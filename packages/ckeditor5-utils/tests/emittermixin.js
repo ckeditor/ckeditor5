@@ -544,6 +544,38 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledTwice( spyBar );
 			sinon.assert.calledOnce( spyBaz );
 		} );
+
+		it( 'should use _addEventListener() on emitter object', () => {
+			const emitter = {
+				_addEventListener() {}
+			};
+
+			const spy = sinon.spy( emitter, '_addEventListener' );
+
+			const callbackFunc = () => {};
+			const optionsObj = {};
+
+			listener.listenTo( emitter, 'test', callbackFunc, optionsObj );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc, optionsObj );
+		} );
+
+		it( 'should use listener\'s _addEventListener() if emitter is not implementing it', () => {
+			const emitter = {};
+
+			const spy = sinon.spy( listener, '_addEventListener' );
+
+			const callbackFunc = () => {};
+			const optionsObj = {};
+
+			listener.listenTo( emitter, 'test', callbackFunc, optionsObj );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc, optionsObj );
+		} );
 	} );
 
 	describe( 'stopListening', () => {
@@ -726,6 +758,38 @@ describe( 'EmitterMixin', () => {
 			emitter.fire( 'foo' );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should use _removeEventListener() on emitter object', () => {
+			const emitter = {
+				_removeEventListener() {}
+			};
+
+			const spy = sinon.spy( emitter, '_removeEventListener' );
+
+			const callbackFunc = () => {};
+
+			listener.listenTo( emitter, 'test', callbackFunc );
+			listener.stopListening( emitter, 'test', callbackFunc );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc );
+		} );
+
+		it( 'should use listener\'s _removeEventListener() if emitter is not implementing it', () => {
+			const emitter = {};
+
+			const spy = sinon.spy( listener, '_removeEventListener' );
+
+			const callbackFunc = () => {};
+
+			listener.listenTo( emitter, 'test', callbackFunc );
+			listener.stopListening( emitter, 'test', callbackFunc );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOn( spy, emitter );
+			sinon.assert.calledWithExactly( spy, 'test', callbackFunc );
 		} );
 	} );
 

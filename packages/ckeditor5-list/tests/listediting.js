@@ -218,7 +218,7 @@ describe( 'ListEditing', () => {
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'forwardDelete' );
+			sinon.assert.calledWith( editor.execute, 'deleteForward' );
 		} );
 
 		it( 'should not execute outdentList command when selection is not collapsed', () => {

@@ -109,7 +109,7 @@ const EmitterMixin = {
 		eventCallbacks.push( callback );
 
 		// Finally register the callback to the event.
-		emitter._addEventListener( event, callback, options );
+		addEventListener( this, emitter, event, callback, options );
 	},
 
 	/**
@@ -128,7 +128,7 @@ const EmitterMixin = {
 
 		// All params provided. off() that single callback.
 		if ( callback ) {
-			emitter._removeEventListener( event, callback );
+			removeEventListener( this, emitter, event, callback );
 
 			// We must remove callbacks as well in order to prevent memory leaks.
 			// See https://github.com/ckeditor/ckeditor5/pull/8480
@@ -138,14 +138,14 @@ const EmitterMixin = {
 				if ( eventCallbacks.length === 1 ) {
 					delete emitterInfo.callbacks[ event ];
 				} else {
-					emitter._removeEventListener( event, callback );
+					removeEventListener( this, emitter, event, callback );
 				}
 			}
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {
 			while ( ( callback = eventCallbacks.pop() ) ) {
-				emitter._removeEventListener( event, callback );
+				removeEventListener( this, emitter, event, callback );
 			}
 
 			delete emitterInfo.callbacks[ event ];
@@ -682,6 +682,26 @@ function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
 		delegatedInfo.path = [ ...eventInfo.path ];
 
 		emitter.fire( delegatedInfo, ...fireArgs );
+	}
+}
+
+// Helper for registering event callback on the emitter.
+function addEventListener( listener, emitter, event, callback, options ) {
+	if ( emitter._addEventListener ) {
+		emitter._addEventListener( event, callback, options );
+	} else {
+		// Allow listening on objects that do not implement Emitter interface.
+		listener._addEventListener.call( emitter, event, callback, options );
+	}
+}
+
+// Helper for removing event callback from the emitter.
+function removeEventListener( listener, emitter, event, callback ) {
+	if ( emitter._removeEventListener ) {
+		emitter._removeEventListener( event, callback );
+	} else {
+		// Allow listening on objects that do not implement Emitter interface.
+		listener._removeEventListener.call( emitter, event, callback );
 	}
 }
 
