@@ -179,7 +179,7 @@ An example classic editor build configuration using dll bundles:
 				'indent',
 				'outdent',
 				'|',
-				'imageUpload',
+				'uploadImage',
 				'blockQuote',
 				'insertTable',
 				'mediaEmbed',

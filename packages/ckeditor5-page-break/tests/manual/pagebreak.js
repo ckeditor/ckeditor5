@@ -23,7 +23,7 @@ ClassicEditor
 			'|',
 			'bold', 'italic', 'numberedList', 'bulletedList',
 			'|',
-			'link', 'blockquote', 'imageUpload', 'insertTable', 'mediaEmbed',
+			'link', 'blockquote', 'uploadImage', 'insertTable', 'mediaEmbed',
 			'|',
 			'undo', 'redo',
 			'|',

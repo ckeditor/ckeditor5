@@ -16,13 +16,14 @@ import { Clipboard } from 'ckeditor5/src/clipboard';
 import { FileRepository } from 'ckeditor5/src/upload';
 import { env } from 'ckeditor5/src/utils';
 
-import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
+import UploadImageCommand from './uploadimagecommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
 import { getViewImgFromWidget } from '../image/utils';
 
 /**
- * The editing part of the image upload feature. It registers the `'imageUpload'` command.
+ * The editing part of the image upload feature. It registers the `'uploadImage'` command
+ * and `imageUpload` command as an aliased name.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -68,8 +69,11 @@ export default class ImageUploadEditing extends Plugin {
 			allowAttributes: [ 'uploadId', 'uploadStatus' ]
 		} );
 
-		// Register imageUpload command.
-		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
+		const uploadImageCommand = new UploadImageCommand( editor );
+
+		// Register `uploadImage` command and add `imageUpload` command as an alias for backward compatibility.
+		editor.commands.add( 'uploadImage', uploadImageCommand );
+		editor.commands.add( 'imageUpload', uploadImageCommand );
 
 		// Register upcast converter for uploadId.
 		conversion.for( 'upcast' )
@@ -112,7 +116,7 @@ export default class ImageUploadEditing extends Plugin {
 
 					// Upload images after the selection has changed in order to ensure the command's state is refreshed.
 					editor.model.enqueueChange( 'default', () => {
-						editor.execute( 'imageUpload', { file: images } );
+						editor.execute( 'uploadImage', { file: images } );
 					} );
 				}
 			} );

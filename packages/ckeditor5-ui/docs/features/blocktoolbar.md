@@ -67,7 +67,7 @@ BalloonEditor
 			'|',
 			'bulletedList', 'numberedList',
 			'|',
-			'blockQuote', 'imageUpload'
+			'blockQuote', 'uploadImage'
 		],
 		toolbar: [ ... ]
 	} )
@@ -91,7 +91,7 @@ BalloonEditor
 				'|',
 				'bulletedList', 'numberedList',
 				'|',
-				'blockQuote', 'imageUpload'
+				'blockQuote', 'uploadImage'
 			],
 			shouldNotGroupWhenFull: true
 		},

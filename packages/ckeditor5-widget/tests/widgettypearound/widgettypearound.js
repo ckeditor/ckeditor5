@@ -1211,7 +1211,7 @@ describe( 'WidgetTypeAround', () => {
 				} );
 			} );
 
-			describe( 'forward delete', () => {
+			describe( 'delete forward', () => {
 				it( 'should delete content after a widget if the "fake caret" is also after the widget', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
 
