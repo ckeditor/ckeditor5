@@ -3,19 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-editor__editable .image {
-	/* Showing animation. */
-	&.ck-appear {
-		animation: fadeIn 700ms;
+.ck.ck-editor__editable {
+	& .image,
+	& .image-inline {
+		/* Showing animation. */
+		&.ck-appear {
+			animation: fadeIn 700ms;
+		}
 	}
-}
 
-/* Upload progress bar. */
-.ck.ck-editor__editable .image .ck-progress-bar {
-	height: 2px;
-	width: 0;
-	background: var(--ck-color-upload-bar-background);
-	transition: width 100ms;
+	/* Upload progress bar. */
+	& .image .ck-progress-bar,
+	& .image-inline .ck-progress-bar {
+		height: 2px;
+		width: 0;
+		background: var(--ck-color-upload-bar-background);
+		transition: width 100ms;
+	}
 }
 
 @keyframes fadeIn {

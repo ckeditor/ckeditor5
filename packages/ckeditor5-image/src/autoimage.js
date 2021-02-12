@@ -164,7 +164,7 @@ export default class AutoImage extends Plugin {
 					insertionPosition = this._positionToInsert.toPosition();
 				}
 
-				insertImage( editor.model, { src }, insertionPosition );
+				insertImage( editor, { src }, insertionPosition );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;

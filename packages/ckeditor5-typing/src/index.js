@@ -13,6 +13,7 @@ export { default as Delete } from './delete';
 
 export { default as TextWatcher } from './textwatcher';
 export { default as TwoStepCaretMovement } from './twostepcaretmovement';
+export { default as TextTransformation } from './texttransformation';
 
 export { default as inlineHighlight } from './utils/inlinehighlight';
 export { default as findAttributeRange } from './utils/findattributerange';
