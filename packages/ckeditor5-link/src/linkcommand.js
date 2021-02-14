@@ -68,7 +68,11 @@ export default class LinkCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		const selectedElement = first( doc.selection.getSelectedBlocks() );
+		let selectedElement = doc.selection.getSelectedElement();
+
+		if ( !selectedElement || selectedElement && selectedElement.name !== 'imageInline' ) {
+			selectedElement = first( doc.selection.getSelectedBlocks() );
+		}
 
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.

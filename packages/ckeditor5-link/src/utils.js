@@ -129,7 +129,8 @@ export function normalizeDecorators( decorators ) {
 }
 
 /**
- * Returns `true` if the specified `element` is an image and it can be linked (the element allows having the `linkHref` attribute).
+ * Returns `true` if the specified `element` is an image or imageInline
+ * and it can be linked (the element allows having the `linkHref` attribute).
  *
  * @params {module:engine/model/element~Element|null} element
  * @params {module:engine/model/schema~Schema} schema
@@ -140,7 +141,15 @@ export function isImageAllowed( element, schema ) {
 		return false;
 	}
 
-	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
+	if ( element.is( 'element', 'image' ) ) {
+		return schema.checkAttribute( 'image', 'linkHref' );
+	}
+
+	if ( element.is( 'element', 'imageInline' ) ) {
+		return schema.checkAttribute( 'imageInline', 'linkHref' );
+	}
+
+	return false;
 }
 
 /**
