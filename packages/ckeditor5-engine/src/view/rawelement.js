@@ -48,7 +48,7 @@ export default class RawElement extends Element {
 		super( document, name, attrs, children );
 
 		// Override the default of the base class.
-		this._isInline = true;
+		this._isAllowedInsideAttributeElement = true;
 
 		/**
 		 * Returns `null` because filler is not needed for raw elements.

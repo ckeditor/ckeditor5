@@ -131,13 +131,13 @@ export default class Element extends Node {
 		this._customProperties = new Map();
 
 		/**
-		 * Whether an element is inline and can be wrapped with {@link module:engine/view/attributeelement~AttributeElement}
-		 * by {@link module:engine/view/downcastwriter~DowncastWriter}.
+		 * Whether an element is allowed inside an AttributeElement and can be wrapped with
+		 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 		 *
 		 * @protected
 		 * @member {Boolean}
 		 */
-		this._isInline = false;
+		this._isAllowedInsideAttributeElement = false;
 	}
 
 	/**
@@ -161,14 +161,14 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Whether the element is inline and can be wrapped with {@link module:engine/view/attributeelement~AttributeElement}
-	 * by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * Whether the element is allowed inside an AttributeElement and can be wrapped with
+	 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 *
 	 * @readonly
 	 * @type {Boolean}
 	 */
-	get isInline() {
-		return this._isInline;
+	get isAllowedInsideAttributeElement() {
+		return this._isAllowedInsideAttributeElement;
 	}
 
 	/**
@@ -335,8 +335,8 @@ export default class Element extends Node {
 			return false;
 		}
 
-		// Check isInline property.
-		if ( this.isInline != otherElement.isInline ) {
+		// Check isAllowedInsideAttributeElement property.
+		if ( this.isAllowedInsideAttributeElement != otherElement.isAllowedInsideAttributeElement ) {
 			return false;
 		}
 
@@ -604,7 +604,7 @@ export default class Element extends Node {
 		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
 		cloned.getFillerOffset = this.getFillerOffset;
 
-		cloned._isInline = this.isInline;
+		cloned._isAllowedInsideAttributeElement = this.isAllowedInsideAttributeElement;
 
 		return cloned;
 	}

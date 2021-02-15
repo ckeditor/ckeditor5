@@ -164,6 +164,25 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
+		it( 'should break attribute on UIElement insertion (isAllowedInsideAttributeElement = false)', () => {
+			const { view, selection } = parse(
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
+			);
+
+			const element = new UIElement( document, 'span' );
+			element._isAllowedInsideAttributeElement = false;
+
+			const newRange = writer.insert( selection.getFirstPosition(), element );
+
+			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
+				'<container:p>' +
+				'<attribute:b view-priority="1">foo</attribute:b>' +
+				'[<ui:span></ui:span>]' +
+				'<attribute:b view-priority="1">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
 		it( 'should break attribute on multiple different nodes insertion', () => {
 			testInsert(
 				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
@@ -181,7 +200,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			const element = new ContainerElement( document, 'span', {}, 'baz' );
-			element._isInline = true;
+			element._isAllowedInsideAttributeElement = true;
 
 			const newRange = writer.insert( selection.getFirstPosition(), element );
 
@@ -209,7 +228,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			const element = new ContainerElement( document, 'span', {}, 'baz' );
-			element._isInline = false;
+			element._isAllowedInsideAttributeElement = false;
 
 			const newRange = writer.insert( selection.getFirstPosition(), element );
 
