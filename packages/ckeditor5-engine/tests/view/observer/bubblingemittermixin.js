@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import BubblingObserver from '../../../src/view/observer/bubblingobserver';
 import { setData as setModelData } from '../../../src/dev-utils/model';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -12,14 +11,8 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 
 import { priorities } from '@ckeditor/ckeditor5-utils';
 
-describe( 'BubblingObserver', () => {
-	let editor, model, view, viewDocument, observer;
-
-	class MockedBubblingObserver extends BubblingObserver {
-		constructor( view ) {
-			super( view, 'fakeEvent' );
-		}
-	}
+describe( 'BubblingEmitterMixin', () => {
+	let editor, model, view, viewDocument;
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing ] } );
@@ -27,15 +20,10 @@ describe( 'BubblingObserver', () => {
 		model = editor.model;
 		view = editor.editing.view;
 		viewDocument = view.document;
-		observer = view.addObserver( MockedBubblingObserver );
 	} );
 
 	afterEach( async () => {
 		await editor.destroy();
-	} );
-
-	it( 'should define eventType', () => {
-		expect( observer.eventType ).to.equal( 'fakeEvent' );
 	} );
 
 	it( 'should fire bubbling event with the same data as original event', () => {
@@ -135,20 +123,6 @@ describe( 'BubblingObserver', () => {
 	} );
 
 	describe( 'event bubbling', () => {
-		it( 'should not bubble events if observer is disabled', () => {
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
-
-			const spy = sinon.spy();
-			const data = {};
-
-			viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
-
-			observer.disable();
-			viewDocument.fire( 'fakeEvent', data );
-
-			expect( spy.notCalled ).to.be.true;
-		} );
-
 		describe( 'bubbling starting from non collapsed selection', () => {
 			it( 'should start bubbling from the selection anchor position', () => {
 				setModelData( model,
@@ -597,11 +571,5 @@ describe( 'BubblingObserver', () => {
 		function isCustomObject( node ) {
 			return node.is( 'element', 'obj' );
 		}
-	} );
-
-	it( 'should implement empty #observe() method', () => {
-		expect( () => {
-			observer.observe();
-		} ).to.not.throw();
 	} );
 } );

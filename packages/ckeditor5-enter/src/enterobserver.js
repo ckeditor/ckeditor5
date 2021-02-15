@@ -7,7 +7,7 @@
  * @module enter/enterobserver
  */
 
-import BubblingObserver from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingobserver';
+import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -15,11 +15,14 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /**
  * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
  *
- * @extends module:engine/view/observer/bubblingobserver~BubblingObserver
+ * @extends module:engine/view/observer/observer~Observer
  */
-export default class EnterObserver extends BubblingObserver {
+export default class EnterObserver extends Observer {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( view ) {
-		super( view, 'enter' );
+		super( view );
 
 		const doc = this.document;
 
@@ -39,6 +42,11 @@ export default class EnterObserver extends BubblingObserver {
 			}
 		} );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	observe() {}
 }
 
 /**

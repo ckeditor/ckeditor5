@@ -7,7 +7,6 @@
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import EnterObserver from '../src/enterobserver';
-import BubblingObserver from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -27,14 +26,6 @@ describe( 'EnterObserver', () => {
 			createViewRoot( viewDocument );
 			view.attachDomRoot( document.createElement( 'div' ) );
 		} ).to.not.throw();
-	} );
-
-	it( 'should extend BubblingObserver', () => {
-		expect( view.getObserver( EnterObserver ) instanceof BubblingObserver ).to.be.true;
-	} );
-
-	it( 'should define eventType', () => {
-		expect( view.getObserver( EnterObserver ).eventType ).to.equal( 'enter' );
 	} );
 
 	describe( 'enter event', () => {

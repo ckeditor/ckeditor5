@@ -7,7 +7,7 @@
  * @module typing/deleteobserver
  */
 
-import BubblingObserver from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingobserver';
+import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -16,11 +16,14 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
  *
- * @extends module:engine/view/observer/bubblingobserver~BubblingObserver
+ * @extends module:engine/view/observer/observer~Observer
  */
-export default class DeleteObserver extends BubblingObserver {
+export default class DeleteObserver extends Observer {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( view ) {
-		super( view, 'delete' );
+		super( view );
 
 		const document = view.document;
 		let sequence = 0;
@@ -92,6 +95,11 @@ export default class DeleteObserver extends BubblingObserver {
 			}
 		}
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	observe() {}
 }
 
 /**

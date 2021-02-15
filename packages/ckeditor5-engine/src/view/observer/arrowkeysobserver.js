@@ -7,21 +7,21 @@
  * @module engine/view/observer/arrowkeysobserver
  */
 
-import BubblingObserver from './bubblingobserver';
+import Observer from './observer';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Arrow keys observer introduces the {@link module:engine/view/document~Document#event:arrowKey} event.
  *
- * @extends module:engine/view/observer/bubblingobserver~BubblingObserver
+ * @extends module:engine/view/observer/observer~Observer
  */
-export default class ArrowKeysObserver extends BubblingObserver {
+export default class ArrowKeysObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( view ) {
-		super( view, 'arrowKey' );
+		super( view );
 
 		this.document.on( 'keydown', ( event, data ) => {
 			if ( this.isEnabled && isArrowKeyCode( data.keyCode ) ) {

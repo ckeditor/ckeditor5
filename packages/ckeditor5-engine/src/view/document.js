@@ -10,7 +10,7 @@
 import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { BubblingObservableMixin } from './observer/bubblingemittermixin';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -97,10 +97,6 @@ export default class Document {
 		 * @member {Set}
 		 */
 		this._postFixers = new Set();
-
-		// Decorate emitter protected methods to allow BubblingObservers to intercept registering/removing listeners.
-		this.decorate( '_addEventListener' );
-		this.decorate( '_removeEventListener' );
 	}
 
 	/**
@@ -207,7 +203,7 @@ export default class Document {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-mix( Document, ObservableMixin );
+mix( Document, BubblingObservableMixin );
 
 /**
  * Enum representing type of the change.

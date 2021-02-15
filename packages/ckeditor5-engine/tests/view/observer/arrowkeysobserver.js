@@ -4,7 +4,6 @@
  */
 
 import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver';
-import BubblingObserver from '../../../src/view/observer/bubblingobserver';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -25,14 +24,6 @@ describe( 'ArrowKeysObserver', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-	} );
-
-	it( 'should extend BubblingObserver', () => {
-		expect( observer instanceof BubblingObserver ).to.be.true;
-	} );
-
-	it( 'should define eventType', () => {
-		expect( observer.eventType ).to.equal( 'arrowKey' );
 	} );
 
 	it( 'should fire arrowKey event with the same data as keydown event (arrow right)', () => {
