@@ -11,22 +11,23 @@ import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import EmitterMixin, { getEvents, makeEventNode } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 import { extend } from 'lodash-es';
+
+const contextsSymbol = Symbol( 'bubbling contexts' );
 
 const BubblingEmitterMixinMethods = {
 	fire( eventOrInfo, ...eventArgs ) {
 		try {
 			const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
-			const eventName = eventInfo.name;
 
 			// TODO maybe there should be a special field in EventInfo that would enable bubbling
 			// TODO also maybe we could add eventPhase to EventInfo (at-target, bubbling)
 			//  maybe also "capturing" phase to indicate that it's before bubbling
 			//  while adding listener we could provide in options what phase we want (capture, at-target or bubbling (includes at-target) )
-			const eventContexts = getBubblingContexts( this, eventName );
+			const eventContexts = getBubblingContexts( this );
 
 			if ( !eventContexts.size ) {
 				return;
@@ -83,7 +84,7 @@ const BubblingEmitterMixinMethods = {
 
 	_addEventListener( event, callback, options ) {
 		const contexts = toArray( options.context || '$document' );
-		const eventContexts = getBubblingContexts( this, event );
+		const eventContexts = getBubblingContexts( this );
 
 		for ( const context of contexts ) {
 			let emitter = eventContexts.get( context );
@@ -98,7 +99,7 @@ const BubblingEmitterMixinMethods = {
 	},
 
 	_removeEventListener( event, callback ) {
-		const eventContexts = getBubblingContexts( this, event );
+		const eventContexts = getBubblingContexts( this );
 
 		for ( const emitter of eventContexts.values() ) {
 			this.stopListening( emitter, event, callback );
@@ -241,26 +242,20 @@ function getCustomContext( eventContexts, node ) {
 }
 
 // Returns bubbling contexts map for the source (emitter).
-function getBubblingContexts( source, eventName ) {
-	// TODO this could use it's own property to store contexts
-	const events = getEvents( source );
-
-	if ( !events[ eventName ] ) {
-		events[ eventName ] = makeEventNode();
+function getBubblingContexts( source ) {
+	if ( !source[ contextsSymbol ] ) {
+		source[ contextsSymbol ] = new Map();
 	}
 
-	// TODO this should get all namespaced events
-	const eventNode = events[ eventName ];
-
-	if ( !eventNode.bubblingContexts ) {
-		eventNode.bubblingContexts = new Map();
-	}
-
-	return eventNode.bubblingContexts;
+	return source[ contextsSymbol ];
 }
 
 // Returns the deeper parent element for the selection.
 function getDeeperSelectionParent( selection ) {
+	if ( !selection.rangeCount ) {
+		return null;
+	}
+
 	const focusParent = selection.focus.parent;
 	const anchorParent = selection.anchor.parent;
 

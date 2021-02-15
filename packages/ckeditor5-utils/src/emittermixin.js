@@ -532,17 +532,10 @@ export function _getEmitterId( emitter ) {
 	return emitter[ _emitterId ];
 }
 
-/**
- * Gets the internal `_events` property of the given object.
- * `_events` property store all lists with callbacks for registered event names.
- * If there were no events registered on the object, empty `_events` object is created.
- *
- * @public
- * @param {module:utils/emittermixin~Emitter} source
- *
- * TODO maybe this should be one of mixed methods (and protected to allow access in subclasses).
- */
-export function getEvents( source ) {
+// Gets the internal `_events` property of the given object.
+// `_events` property store all lists with callbacks for registered event names.
+// If there were no events registered on the object, empty `_events` object is created.
+function getEvents( source ) {
 	if ( !source._events ) {
 		Object.defineProperty( source, '_events', {
 			value: {}
@@ -553,8 +546,7 @@ export function getEvents( source ) {
 }
 
 // Creates event node for generic-specific events relation architecture.
-// TODO
-export function makeEventNode() {
+function makeEventNode() {
 	return {
 		callbacks: [],
 		childEvents: []
