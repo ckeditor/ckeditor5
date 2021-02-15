@@ -235,6 +235,17 @@ describe( 'Element', () => {
 
 			expect( cloned.getFillerOffset ).to.equal( fm );
 		} );
+
+		it( 'should clone isInline', () => {
+			const el = new Element( document, 'p' );
+
+			expect( el.isInline ).to.be.false;
+			el._isInline = true;
+
+			const cloned = el._clone();
+
+			expect( cloned.isInline ).to.equal( true );
+		} );
 	} );
 
 	describe( 'isSimilar()', () => {
@@ -261,6 +272,13 @@ describe( 'Element', () => {
 		it( 'should return false when name is not the same', () => {
 			const other = el._clone();
 			other.name = 'div';
+
+			expect( el.isSimilar( other ) ).to.be.false;
+		} );
+
+		it( 'should return false when isInline property is not the same', () => {
+			const other = el._clone();
+			other._isInline = true;
 
 			expect( el.isSimilar( other ) ).to.be.false;
 		} );
