@@ -335,6 +335,11 @@ export default class Element extends Node {
 			return false;
 		}
 
+		// Check isInline property.
+		if ( this.isInline != otherElement.isInline ) {
+			return false;
+		}
+
 		// Check number of attributes, classes and styles.
 		if ( this._attrs.size !== otherElement._attrs.size || this._classes.size !== otherElement._classes.size ||
 			this._styles.size !== otherElement._styles.size ) {
@@ -598,6 +603,8 @@ export default class Element extends Node {
 		// We can't define this method in a prototype because it's behavior which
 		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
 		cloned.getFillerOffset = this.getFillerOffset;
+
+		cloned._isInline = this.isInline;
 
 		return cloned;
 	}
