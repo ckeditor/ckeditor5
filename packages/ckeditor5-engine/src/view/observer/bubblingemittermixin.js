@@ -18,7 +18,19 @@ import { extend } from 'lodash-es';
 
 const contextsSymbol = Symbol( 'bubbling contexts' );
 
+// Overridden methods injected into BubblingEmitterMixin and BubblingObservableMixin.
+// @private
 const BubblingEmitterMixinMethods = {
+	// Fires an event, executing all callbacks registered for it.
+	//
+	// The first parameter passed to callbacks is an {@link module:utils/eventinfo~EventInfo} object,
+	// followed by the optional `args` provided in the `fire()` method call.
+	//
+	// @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object.
+	// @param {...*} [args] Additional arguments to be passed to the callbacks.
+	// @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
+	// through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
+	// is the first param of every callback).
 	fire( eventOrInfo, ...eventArgs ) {
 		try {
 			const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
@@ -33,20 +45,22 @@ const BubblingEmitterMixinMethods = {
 				return;
 			}
 
+			// The capture phase of the event.
 			if ( fireListenerFor( eventContexts, '$capture', eventInfo, ...eventArgs ) ) {
 				return eventInfo.return;
 			}
 
-			const selection = this.selection;
-			const selectedElement = selection.getSelectedElement();
-			const isCustomContext = Boolean( selectedElement && getCustomContext( eventContexts, selectedElement ) );
+			// TODO instead of using this.selection we could pass range in EventInfo.
+			const selectionRange = this.selection.getFirstRange();
+			const selectedElement = selectionRange ? selectionRange.getContainedElement() : null;
+			const isCustomContext = selectedElement ? Boolean( getCustomContext( eventContexts, selectedElement ) ) : false;
 
 			// For the not yet bubbling event trigger for $text node if selection can be there and it's not a custom context selected.
 			if ( !isCustomContext && fireListenerFor( eventContexts, '$text', eventInfo, ...eventArgs ) ) {
 				return eventInfo.return;
 			}
 
-			let node = selectedElement || getDeeperSelectionParent( selection );
+			let node = selectedElement || getDeeperRangeParent( selectionRange );
 
 			while ( node ) {
 				// Root node handling.
@@ -71,7 +85,7 @@ const BubblingEmitterMixinMethods = {
 				node = node.parent;
 			}
 
-			// Fire for document context.
+			// Document context.
 			fireListenerFor( eventContexts, '$document', eventInfo, ...eventArgs );
 
 			return eventInfo.return;
@@ -82,6 +96,14 @@ const BubblingEmitterMixinMethods = {
 		}
 	},
 
+	// Adds callback to emitter for given event.
+	// @param {String} event The name of the event.
+	// @param {Function} callback The function to be called on event.
+	// @param {Object} [options={}] Additional options.
+	// @param {String} [options.context='$document'] The listener context while bubbling up the view document tree.
+	// @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	// the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	// order they were added.
 	_addEventListener( event, callback, options ) {
 		const contexts = toArray( options.context || '$document' );
 		const eventContexts = getBubblingContexts( this );
@@ -98,6 +120,9 @@ const BubblingEmitterMixinMethods = {
 		}
 	},
 
+	// Removes callback from emitter for given event.
+	// @param {String} event The name of the event.
+	// @param {Function} callback The function to stop being called.
 	_removeEventListener( event, callback ) {
 		const eventContexts = getBubblingContexts( this );
 
@@ -108,99 +133,22 @@ const BubblingEmitterMixinMethods = {
 };
 
 /**
- * Bubbling emitter mixin for the view document.
- *
- * Bubbling emitter mixin is triggering events in the context of specified {@link module:engine/view/element~Element view element} name,
- * predefined `'$text'` and `'$root'` contexts, and context matchers provided as a function.
- *
- * The bubbling starts from the deeper selection position (by firing event on the `'$text'` context) and propagates
- * the view document tree up to the `'$root'`.
- *
- * Examples:
- *
- *		// Listeners registered in the context of the view element names:
- *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
- *			// ...
- *		}, { context: 'blockquote' } );
- *
- *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
- *			// ...
- *		}, { context: 'li' } );
- *
- *		// Listeners registered in the context of the '$text' and '$root' nodes.
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: '$text', priority: 'high' } );
- *
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: '$root' } );
- *
- *		// Listeners registered in the context of custom callback function.
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: isWidget } );
- *
- *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
- *			// ...
- *		}, { context: isWidget, priority: 'high' } );
- *
- * The bubbling emitter itself is listening on the `'high'` priority so there could be listeners that are triggered
- * no matter the context on lower or higher priorities. For example `'enter'` and `'delete'` commands are triggered
- * on the `'normal'` priority without checking the context.
- *
- * Example flow for selection in text:
- *
- *		<blockquote><p>Foo[]bar</p></blockquote>
- *
- * Fired events on contexts:
- * 1. `'$text'`
- * 2. `'p'`
- * 3. `'blockquote'`
- * 4. `'$root'`
- *
- * Example flow for selection on element (i.e., Widget):
- *
- *		<blockquote><p>Foo[<widget/>]bar</p></blockquote>
- *
- * Fired events on contexts:
- * 1. *widget* (custom matcher)
- * 2. `'p'`
- * 3. `'blockquote'`
- * 4. `'$root'`
- *
- * There could be multiple listeners registered for the same context and at different priority levels:
- *
- *		<p>Foo[]bar</p>
- *
- * 1. `'$text'` at priorities:
- *    1. `'highest'`
- *    2. `'high'`
- *    3. `'normal'`
- *    4. `'low'`
- *    5. `'lowest'`
- * 2. `'p'` at priorities:
- *    1. `'highest'`
- *    2. `'high'`
- *    3. `'normal'`
- *    4. `'low'`
- *    5. `'lowest'`
- * 3. `'$root'` at priorities:
- *    1. `'highest'`
- *    2. `'high'`
- *    3. `'normal'`
- *    4. `'low'`
- *    5. `'lowest'`
+ * Bubbling emitter mixin for the view document as described in the
+ * {@link ~BubblingEmitter} interface.
  *
  * @mixin BubblingEmitterMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
+ * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
  */
 export const BubblingEmitterMixin = {};
 extend( BubblingEmitterMixin, EmitterMixin, BubblingEmitterMixinMethods );
 
 /**
- * TODO
+ * A mixin that extends {@link module:utils/observablemixin~ObservableMixin} with {@link ~BubblingEmitter} capabilities.
  *
  * @mixin BubblingObservableMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
+ * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
  */
 export const BubblingObservableMixin = {};
 extend( BubblingObservableMixin, ObservableMixin, BubblingEmitterMixinMethods );
@@ -251,16 +199,118 @@ function getBubblingContexts( source ) {
 }
 
 // Returns the deeper parent element for the selection.
-function getDeeperSelectionParent( selection ) {
-	if ( !selection.rangeCount ) {
+function getDeeperRangeParent( selectionRange ) {
+	if ( !selectionRange ) {
 		return null;
 	}
 
-	const focusParent = selection.focus.parent;
-	const anchorParent = selection.anchor.parent;
+	const focusParent = selectionRange.start.parent;
+	const anchorParent = selectionRange.end.parent;
 
 	const focusPath = focusParent.getPath();
 	const anchorPath = anchorParent.getPath();
 
 	return focusPath.length > anchorPath.length ? focusParent : anchorParent;
 }
+
+/**
+ * Bubbling emitter for the view document.
+ *
+ * Bubbling emitter is triggering events in the context of specified {@link module:engine/view/element~Element view element} name,
+ * predefined `'$text'`, `'$root'`, `'$document'` and `'$capture'` contexts, and context matchers provided as a function.
+ *
+ * Before bubbling starts, listeners for `'$capture'` context are triggered. Then the bubbling starts from the deeper selection
+ * position (by firing event on the `'$text'` context) and propagates the view document tree up to the `'$root'` and finally
+ * the listeners at `'$document'` context are fired (this is the default context).
+ *
+ * Examples:
+ *
+ *		// Listeners registered in the context of the view element names:
+ *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+ *			// ...
+ *		}, { context: 'blockquote' } );
+ *
+ *		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+ *			// ...
+ *		}, { context: 'li' } );
+ *
+ *		// Listeners registered in the context of the '$text' and '$root' nodes.
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: '$text', priority: 'high' } );
+ *
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: '$root' } );
+ *
+ *		// Listeners registered in the context of custom callback function.
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: isWidget } );
+ *
+ *		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+ *			// ...
+ *		}, { context: isWidget, priority: 'high' } );
+ *
+ * Example flow for selection in text:
+ *
+ *		<blockquote><p>Foo[]bar</p></blockquote>
+ *
+ * Fired events on contexts:
+ * 1. `'$capture'`
+ * 2. `'$text'`
+ * 3. `'p'`
+ * 4. `'blockquote'`
+ * 5. `'$root'`
+ * 6. `'$document'`
+ *
+ * Example flow for selection on element (i.e., Widget):
+ *
+ *		<blockquote><p>Foo[<widget/>]bar</p></blockquote>
+ *
+ * Fired events on contexts:
+ * 1. `'$capture'`
+ * 2. *widget* (custom matcher)
+ * 3. `'p'`
+ * 4. `'blockquote'`
+ * 5. `'$root'`
+ * 6. `'$document'`
+ *
+ * There could be multiple listeners registered for the same context and at different priority levels:
+ *
+ *		<p>Foo[]bar</p>
+ *
+ * 1. `'$capture'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
+ * 2. `'$text'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
+ * 3. `'p'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
+ * 4. `'$root'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
+ * 5. `'$document'` at priorities:
+ *    1. `'highest'`
+ *    2. `'high'`
+ *    3. `'normal'`
+ *    4. `'low'`
+ *    5. `'lowest'`
+ *
+ * @interface BubblingEmitter
+ * @extends module:utils/emittermixin~Emitter
+ */
