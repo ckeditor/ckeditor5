@@ -165,12 +165,12 @@ export default class PluginCollection {
 	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}.
 	 * @param {Array.<String|Function>} [removedPlugins] Names of the plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
-	 * @param {Array.<Function>} replacePlugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
-	 * that will be used for replacing plugins defined in the `plugins` collection.
+	 * @param {Array.<Function>} pluginsToReplace An array of {@link module:core/plugin~PluginInterface plugin constructors}
+	 * that will be used for replacing plugins definitions while instantiating.
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
 	 * and available in the collection.
 	 */
-	init( plugins, removedPlugins = [], replacePlugins = [] ) {
+	init( plugins, removedPlugins = [], pluginsToReplace = [] ) {
 		// Plugin initialization procedure consists of 2 main steps:
 		// 1) collecting all available plugin constructors,
 		// 2) verification whether all required plugins can be instantiated.
@@ -196,7 +196,7 @@ export default class PluginCollection {
 
 		const pluginConstructors = [ ...getPluginConstructors( pluginsToLoad ) ];
 
-		replaceRuntimePlugins( pluginConstructors, replacePlugins );
+		substitutePlugins( pluginConstructors, pluginsToReplace );
 
 		const pluginInstances = loadPlugins( pluginConstructors );
 
@@ -429,31 +429,30 @@ export default class PluginCollection {
 		}
 
 		/**
-		 * Replaces plugin constructors with specified set of plugins. An useful option for replacing built-in plugins while creating
-		 * tests (for mocking their APIs). Plugins that will be replaced must follow the rules:
-		 * - the new plugin must be a class,
-		 * - the new plugin must be named,
-		 * - both plugins must not depend on other plugins.
+		 * Replaces plugin constructors with the specified set of plugins. A useful option for replacing built-in plugins while creating
+		 * tests (for mocking their APIs). Plugins that will be replaced must follow these rules:
+		 * - The new plugin must be a class.
+		 * - The new plugin must be named.
+		 * - Both plugins must not depend on other plugins.
 		 *
 		 * @param {Array.<Function>} pluginConstructors
-		 * @param {Array.<Function>} replacePlugins
+		 * @param {Array.<Function>} pluginsToReplace
 		 */
-		function replaceRuntimePlugins( pluginConstructors, replacePlugins ) {
-			for ( const pluginItem of replacePlugins ) {
+		function substitutePlugins( pluginConstructors, pluginsToReplace ) {
+			for ( const pluginItem of pluginsToReplace ) {
 				if ( typeof pluginItem != 'function' ) {
 					/**
-					 * A plugin for replacement an existing plugin must be a class.
+					 * The plugin replacing an existing plugin must be a function.
 					 *
 					 * @error plugincollection-replace-plugin-invalid-type
 					 */
 					throw new CKEditorError( 'plugincollection-replace-plugin-invalid-type', null, { pluginItem } );
 				}
-
 				const pluginName = pluginItem.pluginName;
 
 				if ( !pluginName ) {
 					/**
-					 * A plugin for replacement must have specified a name because it is used for finding a plugin for replacing.
+					 * The plugin replacing an existing plugin must have a name.
 					 *
 					 * @error plugincollection-replace-plugin-missing-name
 					 */
@@ -462,7 +461,7 @@ export default class PluginCollection {
 
 				if ( pluginItem.requires && pluginItem.requires.length ) {
 					/**
-					 * A plugin for replacing existing plugin cannot have dependencies to other plugins.
+					 * The plugin replacing an existing plugin cannot depend on other plugins.
 					 *
 					 * @error plugincollection-plugin-for-replacing-cannot-have-dependencies
 					 */
@@ -473,8 +472,8 @@ export default class PluginCollection {
 
 				if ( !pluginToReplace ) {
 					/**
-					 * A plugin for replacement does not exists in the
-					 * {@link module:core/plugincollection~PluginCollection#_availablePlugins available plugins} collection.
+					 * The replaced plugin does not exist in the
+					 * {@link module:core/plugincollection~PluginCollection available plugins} collection.
 					 *
 					 * @error plugincollection-plugin-for-replacing-not-exist
 					 */
@@ -485,7 +484,7 @@ export default class PluginCollection {
 
 				if ( indexInPluginConstructors === -1 ) {
 					/**
-					 * A plugin for replacement will not be loaded hence it cannot be replaced.
+					 * The replaced plugin will not be loaded so it cannot be replaced.
 					 *
 					 * @error plugincollection-plugin-for-replacing-not-loaded
 					 */
@@ -494,7 +493,7 @@ export default class PluginCollection {
 
 				if ( pluginToReplace.requires && pluginToReplace.requires.length ) {
 					/**
-					 * A replaced plugin cannot have dependencies to other plugins.
+					 * The replaced plugin cannot depend on other plugins.
 					 *
 					 * @error plugincollection-replaced-plugin-cannot-have-dependencies
 					 */
