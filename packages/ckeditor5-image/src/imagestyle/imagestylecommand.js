@@ -32,7 +32,7 @@ export default class ImageStyleCommand extends Command {
 		 * @readonly
 		 * @type {Boolean|String}
 		 */
-		this.defaultStyles = {
+		this._defaultStyles = {
 			image: false,
 			imageInline: false
 		};
@@ -43,10 +43,13 @@ export default class ImageStyleCommand extends Command {
 		 * @readonly
 		 * @member {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} #styles
 		 */
-		this.arrangements = arrangements.reduce( ( arrangements, arrangement ) => {
-			arrangements[ arrangement.name ] = arrangement;
-			return arrangements;
-		}, {} );
+		this._arrangements = new Map( arrangements.map( arrangement => {
+			if ( arrangement.isDefault ) {
+				this._defaultStyles[ arrangement.modelElement ] = arrangement.name;
+			}
+
+			return [ arrangement.name, arrangement ];
+		} ) );
 	}
 
 	/**
@@ -61,9 +64,9 @@ export default class ImageStyleCommand extends Command {
 			this.value = false;
 		} else if ( element.hasAttribute( 'imageStyle' ) ) {
 			const attributeValue = element.getAttribute( 'imageStyle' );
-			this.value = this.arrangements[ attributeValue ] ? attributeValue : false;
+			this.value = this._arrangements.get( attributeValue ) || false;
 		} else {
-			this.value = this._getDefaultStyle( element.name );
+			this.value = this._defaultStyles[ element.name ];
 		}
 	}
 
@@ -79,10 +82,10 @@ export default class ImageStyleCommand extends Command {
 	 */
 	execute( options ) {
 		const arrangementName = options.value;
-
 		const model = this.editor.model;
+
 		const imageElement = model.document.selection.getSelectedElement();
-		const modelElementName = this.arrangements[ arrangementName ].modelElement;
+		const modelElementName = this._arrangements.get( arrangementName ).modelElement;
 
 		// Change the image type if a style requires it.
 		if ( modelElementName && modelElementName !== imageElement.name ) {
@@ -92,29 +95,11 @@ export default class ImageStyleCommand extends Command {
 		model.change( writer => {
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
-			if ( this.arrangements[ arrangementName ].isDefault ) {
+			if ( this._arrangements.get( arrangementName ).isDefault ) {
 				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
 				writer.setAttribute( 'imageStyle', arrangementName, imageElement );
 			}
 		} );
-	}
-
-	_getDefaultStyle( imageType ) {
-		const defaultStyle = this.defaultStyles[ imageType ];
-
-		if ( defaultStyle ) {
-			return defaultStyle;
-		}
-
-		for ( const s in this.arrangements ) {
-			const style = this.arrangements[ s ];
-
-			if ( style.isDefault && style.modelElement === imageType ) {
-				return style.name;
-			}
-		}
-
-		return false;
 	}
 }
