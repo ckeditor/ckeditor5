@@ -161,7 +161,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Whether an element is inline and can be wrapped with {@link module:engine/view/attributeelement~AttributeElement}
+	 * Whether the element is inline and can be wrapped with {@link module:engine/view/attributeelement~AttributeElement}
 	 * by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 *
 	 * @readonly

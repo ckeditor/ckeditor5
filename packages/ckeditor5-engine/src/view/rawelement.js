@@ -47,7 +47,7 @@ export default class RawElement extends Element {
 	constructor( document, name, attrs, children ) {
 		super( document, name, attrs, children );
 
-		// Override the default of a base class.
+		// Override the default of the base class.
 		this._isInline = true;
 
 		/**

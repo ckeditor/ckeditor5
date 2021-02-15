@@ -1159,7 +1159,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Inserts a node or nodes at specified position. Takes care about breaking attributes before insertion
+	 * Inserts a node or nodes at the specified position. Takes care of breaking attributes before insertion
 	 * and merging them afterwards if requested by the breakAttributes param.
 	 *
 	 * @private
