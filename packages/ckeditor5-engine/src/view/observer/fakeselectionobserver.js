@@ -53,7 +53,7 @@ export default class FakeSelectionObserver extends Observer {
 				// Prevents default key down handling - no selection change will occur.
 				data.preventDefault();
 			}
-		}, { priority: 'highest' } );
+		}, { context: '$capture' } );
 
 		document.on( 'arrowKey', ( eventInfo, data ) => {
 			const selection = document.selection;
