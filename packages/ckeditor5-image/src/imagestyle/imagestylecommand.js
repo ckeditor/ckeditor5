@@ -32,7 +32,7 @@ export default class ImageStyleCommand extends Command {
 		 * @readonly
 		 * @type {Boolean|String}
 		 */
-		this._defaultStyles = {
+		this._defaultArrangements = {
 			image: false,
 			imageInline: false
 		};
@@ -45,7 +45,7 @@ export default class ImageStyleCommand extends Command {
 		 */
 		this._arrangements = new Map( arrangements.map( arrangement => {
 			if ( arrangement.isDefault ) {
-				this._defaultStyles[ arrangement.modelElement ] = arrangement.name;
+				this._defaultArrangements[ arrangement.modelElement ] = arrangement.name;
 			}
 
 			return [ arrangement.name, arrangement ];
@@ -60,13 +60,19 @@ export default class ImageStyleCommand extends Command {
 
 		this.isEnabled = isImage( element ) || isImageInline( element );
 
-		if ( !element ) {
+		if ( !element || !this.isEnabled ) {
 			this.value = false;
 		} else if ( element.hasAttribute( 'imageStyle' ) ) {
 			const attributeValue = element.getAttribute( 'imageStyle' );
-			this.value = this._arrangements.get( attributeValue ) || false;
+			const arrangement = this._arrangements.get( attributeValue );
+
+			if ( arrangement && ( !arrangement.modelElement || arrangement.modelElement === element.name ) ) {
+				this.value = attributeValue;
+			} else {
+				this.value = false;
+			}
 		} else {
-			this.value = this._defaultStyles[ element.name ];
+			this.value = this._defaultArrangements[ element.name ];
 		}
 	}
 
