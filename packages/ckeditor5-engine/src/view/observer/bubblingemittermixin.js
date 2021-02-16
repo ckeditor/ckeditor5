@@ -30,10 +30,9 @@ const BubblingEmitterMixin = {
 		try {
 			const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
 
-			// TODO maybe there should be a special field in EventInfo that would enable bubbling
-			// TODO also maybe we could add eventPhase to EventInfo (at-target, bubbling)
-			//  maybe also "capturing" phase to indicate that it's before bubbling
-			//  while adding listener we could provide in options what phase we want (capture, at-target or bubbling (includes at-target) )
+			// TODO Maybe there should be a special field in EventInfo that would enable bubbling.
+			// TODO Maybe we could add eventPhase to EventInfo (at-target, bubbling) to make some listeners simpler.
+
 			const eventContexts = getBubblingContexts( this );
 
 			if ( !eventContexts.size ) {
@@ -45,7 +44,7 @@ const BubblingEmitterMixin = {
 				return eventInfo.return;
 			}
 
-			// TODO instead of using this.selection we could pass range in EventInfo.
+			// TODO Instead of using this.selection we could pass range in EventInfo.
 			const selectionRange = this.selection.getFirstRange();
 			const selectedElement = selectionRange ? selectionRange.getContainedElement() : null;
 			const isCustomContext = selectedElement ? Boolean( getCustomContext( eventContexts, selectedElement ) ) : false;
