@@ -554,7 +554,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		describe( '#replacePlugins', () => {
+		describe( 'substituting plugins', () => {
 			afterEach( () => {
 				PluginA.prototype.init = undefined;
 				PluginA.requires = undefined;

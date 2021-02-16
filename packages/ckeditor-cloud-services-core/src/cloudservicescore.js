@@ -12,7 +12,7 @@ import Token from './token/token';
 import UploadGateway from './uploadgateway/uploadgateway';
 
 /**
- * The `CloudServicesCore` plugin that exposes API for file uploads to CKEditor Cloud Services.
+ * The `CloudServicesCore` plugin exposes the base API for communication with CKEditor Cloud Services.
  *
  * @extends module:core/contextplugin~ContextPlugin
  */

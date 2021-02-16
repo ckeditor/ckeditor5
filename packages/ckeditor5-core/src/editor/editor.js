@@ -237,7 +237,7 @@ export default class Editor {
 		const plugins = config.get( 'plugins' );
 		const removePlugins = config.get( 'removePlugins' ) || [];
 		const extraPlugins = config.get( 'extraPlugins' ) || [];
-		const replacePlugins = config.get( 'replacePlugins' ) || [];
+		const replacePlugins = config.get( 'substitutePlugins' ) || [];
 
 		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins, replacePlugins );
 	}
