@@ -279,6 +279,45 @@ describe( 'FontColorEditing', () => {
 			);
 		} );
 
+		it( 'should support <font color=".."> styling - RRGGBB color (no # prefix)', () => {
+			const data = '<p><font color="ACABAA">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="ACABAA">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:ACABAA;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - #RGB color', () => {
+			const data = '<p><font color="#FAF">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="#FAF">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:#FAF;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
+		it( 'should support <font color=".."> styling - RGB color (no # prefix)', () => {
+			const data = '<p><font color="FAF">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph><$text fontColor="FAF">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
+			);
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:FAF;">foo</span><span style="color:rgb(10,20,30);">bar</span>o</p>'
+			);
+		} );
+
 		it( 'should support <font color=".."> styling - named color', () => {
 			const data = '<p><font color="lightgreen">foo</font><span style="font-size: 18px;color: rgb(10, 20, 30);">bar</span>o</p>';
 
