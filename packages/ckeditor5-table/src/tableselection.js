@@ -7,8 +7,8 @@
  * @module table/tableselection
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Plugin } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';

@@ -9,7 +9,7 @@
 
 /* globals window */
 
-import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin';
+import { ContextPlugin } from 'ckeditor5/src/core';
 
 /**
  * The Notification plugin.

@@ -133,7 +133,6 @@ describe( 'AutoImage - integration', () => {
 				'http://www.example.com',
 				'https://example.com',
 				'http://www.example.com/image.svg',
-				'http://www.example.com/image.webp',
 				'http://www.example.com/image.mp3',
 				'http://www.example.com/image.exe',
 				'http://www.example.com/image.txt',

@@ -7,8 +7,8 @@
  * @module basic-styles/subscript/subscriptui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 import subscriptIcon from '../../theme/icons/subscript.svg';
 
@@ -20,6 +20,13 @@ const SUBSCRIPT = 'subscript';
  * @extends module:core/plugin~Plugin
  */
 export default class SubscriptUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'SubscriptUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

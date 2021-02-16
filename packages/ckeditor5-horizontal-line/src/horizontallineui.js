@@ -7,8 +7,9 @@
  * @module horizontal-line/horizontallineui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
+
 import horizontalLineIcon from '../theme/icons/horizontalline.svg';
 
 /**
@@ -17,6 +18,16 @@ import horizontalLineIcon from '../theme/icons/horizontalline.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class HorizontalLineUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'HorizontalLineUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;

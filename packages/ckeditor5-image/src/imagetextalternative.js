@@ -7,7 +7,7 @@
  * @module image/imagetextalternative
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageTextAlternativeEditing from './imagetextalternative/imagetextalternativeediting';
 import ImageTextAlternativeUI from './imagetextalternative/imagetextalternativeui';
 

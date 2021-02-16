@@ -3,19 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { FileRepository } from 'ckeditor5/src/upload';
+import { Command } from 'ckeditor5/src/core';
+import { toArray } from 'ckeditor5/src/utils';
+
 import { insertImage, isImageAllowed } from '../image/utils';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
- * @module image/imageupload/imageuploadcommand
+ * @module image/imageupload/uploadimagecommand
  */
 
 /**
- * The image upload command.
+ * The upload image command.
  *
- * The command is registered by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin as `'imageUpload'`.
+ * The command is registered by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin as `uploadImage`
+ * and it is also available via aliased `imageUpload` name.
  *
  * In order to upload an image at the current selection position
  * (according to the {@link module:widget/utils~findOptimalInsertionPosition} algorithm),
@@ -26,12 +28,12 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
  *			const images = Array.from( data.dataTransfer.files );
  *
  *			// Upload the first image:
- *			editor.execute( 'imageUpload', { file: images[ 0 ] } );
+ *			editor.execute( 'uploadImage', { file: images[ 0 ] } );
  *		} );
  *
  * It is also possible to insert multiple images at once:
  *
- *		editor.execute( 'imageUpload', {
+ *		editor.execute( 'uploadImage', {
  *			file: [
  *				file1,
  *				file2
@@ -40,7 +42,7 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
  *
  * @extends module:core/command~Command
  */
-export default class ImageUploadCommand extends Command {
+export default class UploadImageCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

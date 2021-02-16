@@ -7,8 +7,9 @@
  * @module image/imageresize/imageresizehandles
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import { Plugin } from 'ckeditor5/src/core';
+import { WidgetResize } from 'ckeditor5/src/widget';
+
 import ImageLoadObserver from '../image/imageloadobserver';
 
 /**
@@ -38,7 +39,7 @@ export default class ImageResizeHandles extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const command = this.editor.commands.get( 'imageResize' );
+		const command = this.editor.commands.get( 'resizeImage' );
 		this.bind( 'isEnabled' ).to( command );
 
 		this._setupResizerCreator();
@@ -99,7 +100,7 @@ export default class ImageResizeHandles extends Plugin {
 					},
 
 					onCommit( newValue ) {
-						editor.execute( 'imageResize', { width: newValue } );
+						editor.execute( 'resizeImage', { width: newValue } );
 					}
 				} );
 

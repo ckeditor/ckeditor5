@@ -34,6 +34,11 @@ describe( 'InsertTableCommand', () => {
 
 	describe( 'isEnabled', () => {
 		describe( 'when selection is collapsed', () => {
+			it( 'should be true if in a root', () => {
+				setData( model, '[]' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
 			it( 'should be true if in paragraph', () => {
 				setData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
@@ -42,6 +47,27 @@ describe( 'InsertTableCommand', () => {
 			it( 'should be false if in table', () => {
 				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 				expect( command.isEnabled ).to.be.false;
+			} );
+		} );
+
+		describe( 'when selection is not collapsed', () => {
+			it( 'should be false if an object is selected', () => {
+				model.schema.register( 'media', { isObject: true, isBlock: true, allowWhere: '$block' } );
+
+				setData( model, '[<media url="http://ckeditor.com"></media>]' );
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true if in a paragraph', () => {
+				setData( model, '<paragraph>[Foo]</paragraph>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true if a non-object element is selected', () => {
+				model.schema.register( 'element', { allowIn: '$root', isSelectable: true } );
+
+				setData( model, '[<element></element>]' );
+				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 	} );

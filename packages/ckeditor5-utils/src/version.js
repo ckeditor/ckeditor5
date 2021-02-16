@@ -13,6 +13,8 @@ import CKEditorError from './ckeditorerror';
 
 const version = '25.0.0';
 
+export default version;
+
 /* istanbul ignore next */
 const windowOrGlobal = typeof window === 'object' ? window : global;
 

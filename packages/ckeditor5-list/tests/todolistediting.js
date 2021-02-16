@@ -9,7 +9,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import ListCommand from '../src/listcommand';
-import TodoListCheckCommand from '../src/todolistcheckcommand';
+import CheckTodoListCommand from '../src/checktodolistcommand';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
@@ -22,6 +22,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 /* global Event, document */
 
@@ -31,7 +32,7 @@ describe( 'TodoListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
+				plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -123,8 +124,12 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getViewData( view ), '<p>ab{}</p>' );
 		} );
 
-		it( 'should register todoListCheck command', () => {
-			expect( editor.commands.get( 'todoListCheck' ) ).to.be.instanceOf( TodoListCheckCommand );
+		it( 'should register checkTodoList command', () => {
+			expect( editor.commands.get( 'checkTodoList' ) ).to.be.instanceOf( CheckTodoListCommand );
+		} );
+
+		it( 'should register todoListCheck command as an alias for checkTodoList command', () => {
+			expect( editor.commands.get( 'todoListCheck' ) ).to.equal( editor.commands.get( 'checkTodoList' ) );
 		} );
 	} );
 
@@ -608,7 +613,7 @@ describe( 'TodoListEditing', () => {
 			);
 
 			// CC.
-			editor.execute( 'todoListCheck' );
+			editor.execute( 'checkTodoList' );
 		} );
 
 		it( 'should properly handle typing inside text node with attribute', () => {
@@ -1022,7 +1027,7 @@ describe( 'TodoListEditing', () => {
 				return VirtualTestEditor
 					.create( {
 						language: 'en',
-						plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
@@ -1065,7 +1070,7 @@ describe( 'TodoListEditing', () => {
 				return VirtualTestEditor
 					.create( {
 						language: 'ar',
-						plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
@@ -1164,8 +1169,8 @@ describe( 'TodoListEditing', () => {
 			};
 		} );
 
-		it( 'should execute TodoListCheckCommand', () => {
-			const command = editor.commands.get( 'todoListCheck' );
+		it( 'should execute CheckTodoListCommand', () => {
+			const command = editor.commands.get( 'checkTodoList' );
 
 			sinon.spy( command, 'execute' );
 
@@ -1189,7 +1194,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ TodoListEditing ]
+				plugins: [ Paragraph, TodoListEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1239,7 +1244,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 			'<paragraph>b[a]r</paragraph>'
 		);
 
-		const command = editor.commands.get( 'todoListCheck' );
+		const command = editor.commands.get( 'checkTodoList' );
 
 		sinon.spy( command, 'execute' );
 
@@ -1280,7 +1285,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 		setModelData( model, '<listItem listIndent="0" listType="numbered">f[]oo</listItem>' );
 		editor.execute( 'todoList' );
 
-		const command = editor.commands.get( 'todoListCheck' );
+		const command = editor.commands.get( 'checkTodoList' );
 
 		sinon.spy( command, 'execute' );
 
@@ -1313,7 +1318,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 		dynamicRootEditable.name = 'dynamicRoot';
 		view.attachDomRoot( dynamicRootElement, 'dynamicRoot' );
 
-		const command = editor.commands.get( 'todoListCheck' );
+		const command = editor.commands.get( 'checkTodoList' );
 
 		sinon.spy( command, 'execute' );
 

@@ -7,9 +7,10 @@
  * @module page-break/pagebreakediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { toWidget } from 'ckeditor5/src/widget';
+
 import PageBreakCommand from './pagebreakcommand';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import '../theme/pagebreak.css';
 

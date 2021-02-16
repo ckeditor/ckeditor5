@@ -24,7 +24,7 @@ ClassicEditor
 				'indent',
 				'|',
 				'link',
-				'imageUpload',
+				'uploadImage',
 				'insertTable',
 				'|',
 				'undo',

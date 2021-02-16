@@ -72,7 +72,7 @@ ClassicEditor
 		plugins: [ CKFinder, ... ],
 
 		// Enable the "Insert image" button in the toolbar.
-		toolbar: [ 'imageUpload', ... ],
+		toolbar: [ 'uploadImage', ... ],
 
 		ckfinder: {
 			// Upload the images to the server using the CKFinder QuickUpload command.
@@ -189,7 +189,7 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ CKFinder, ... ],
-		toolbar: [ 'ckfinder', 'imageUpload' ... ], // Depending on your preference.
+		toolbar: [ 'ckfinder', 'uploadImage' ... ], // Depending on your preference.
 		ckfinder: {
 			// Feature configuration.
 		}
@@ -213,8 +213,8 @@ The {@link module:ckfinder/ckfinder~CKFinder} plugin registers:
 
 Additionally, in the "image upload only" integration, you can use the following button and command registered by the {@link module:image/imageupload~ImageUpload} plugin:
 
-* The `'imageUpload'` UI button component.
-* The `'imageUpload'` command implemented by the {@link module:image/imageupload/imageuploadcommand~ImageUploadCommand}.
+* The `'uploadImage'` UI button component.
+* The `'uploadImage'` command implemented by the {@link module:image/imageupload/uploadimagecommand~UploadImageCommand}.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

@@ -46,7 +46,7 @@ describe( 'HorizontalLineEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'horizontalLine' ) ).to.be.false;
 	} );
 
-	it( 'should register imageInsert command', () => {
+	it( 'should register horizontalLine command', () => {
 		expect( editor.commands.get( 'horizontalLine' ) ).to.be.instanceOf( HorizontalLineCommand );
 	} );
 

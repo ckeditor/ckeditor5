@@ -7,12 +7,12 @@
  * @module font/fontsize/fontsizeediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_SIZE } from '../utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The font size editing feature.
@@ -125,7 +125,7 @@ export default class FontSizeEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_SIZE,
 				value: viewElement => viewElement.getStyle( 'font-size' )

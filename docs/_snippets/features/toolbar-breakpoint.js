@@ -20,7 +20,7 @@ ClassicEditor
 				'code', 'codeBlock', '|',
 				'insertTable', '|',
 				'outdent', 'indent', '|',
-				'imageUpload', 'blockQuote', '|',
+				'uploadImage', 'blockQuote', '|',
 				'undo', 'redo'
 			],
 			shouldNotGroupWhenFull: true,

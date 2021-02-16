@@ -7,7 +7,7 @@
  * @module special-characters/specialcharactersmathematical
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * A plugin that provides special characters for the "Mathematical" category.
@@ -22,6 +22,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharactersMathematical extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'SpecialCharactersMathematical';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
