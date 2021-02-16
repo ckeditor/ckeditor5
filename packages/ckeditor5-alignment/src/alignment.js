@@ -67,7 +67,7 @@ export default class Alignment extends Plugin {
 /**
  * Class names to match {@link module:alignment/alignment~AlignmentConfig#options alignment options}.
  *
- * **Note:** The same number of classes should be provided as the number of `alignment.options`.
+ * **Note:** The same number of classes should be provided as the number of `config.alignment.options`.
  *
  *		ClassicEditor
  *			.create( editorElement, {

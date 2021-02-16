@@ -22,7 +22,7 @@ There are more CKEditor 5 features that can help you organize your content:
 
 ## Configuring alignment options
 
-### Alignment options
+### Defining available options
 
 It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
 
@@ -48,12 +48,12 @@ ClassicEditor
 
 {@snippet features/custom-text-alignment-options}
 
-### Assigning class to alignment option
+### Using classes instead of inline style
 
-By default alignment sets the style inline. If you wish to style the alignment by yourself, you can specify class names by using {@link module:alignment/alignment~AlignmentConfig#classNames `alignment.classNames`}  and style it using CSS.
+By default alignment is set inline using `text-align` CSS property. If you wish to style the alignment by yourself, you can specify class names by using {@link module:alignment/alignment~AlignmentConfig#classNames `config.alignment.classNames`}  and style it using CSS.
 
 <info-box>
-	Make sure to specify the same number of classes as the number of values in {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`}. If the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} are not specified, they are equal to `[ 'left', 'right', 'center', 'justify' ]`, therefore you have to provide 4 class names.
+	Make sure to specify the same number of classes as the number of values in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}. If the {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`} are not specified, they are equal to `[ 'left', 'right', 'center', 'justify' ]`, therefore you have to provide 4 class names.
 </info-box>
 
 The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment respectively.
