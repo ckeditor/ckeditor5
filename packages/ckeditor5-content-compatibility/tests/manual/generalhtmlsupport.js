@@ -13,36 +13,33 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import GeneralHTMLSupport from '../../src/generalhtmlsupport';
+import DataFilter from '../../src/datafilter';
 
 class ExtendHTMLSupport extends Plugin {
-	static get requires() {
-		return [ GeneralHTMLSupport ];
-	}
-
 	init() {
-		const dataSchema = this.editor.plugins.get( 'GeneralHTMLSupport' ).dataSchema;
+		const dataFilter = new DataFilter( this.editor );
 
-		dataSchema.allowElement( { name: /article|section/ } );
+		dataFilter.allowElement( { name: /article|section/ } );
 
-		dataSchema.allowAttributes( { name: 'section', attributes: { id: /[^]/ } } );
-		dataSchema.allowAttributes( { name: 'section', classes: /[^]/ } );
-		dataSchema.allowAttributes( { name: 'section', styles: { color: /[^]/ } } );
+		dataFilter.allowAttributes( { name: 'section', attributes: { id: /[^]/ } } );
+		dataFilter.allowAttributes( { name: 'section', classes: /[^]/ } );
+		dataFilter.allowAttributes( { name: 'section', styles: { color: /[^]/ } } );
 
-		dataSchema.allowElement( { name: /details|summary/ } );
+		dataFilter.allowElement( { name: /details|summary/ } );
 
-		dataSchema.allowElement( { name: /dl|dt|dd/ } );
+		dataFilter.allowElement( { name: /dl|dt|dd/ } );
+
+		window.dataFilter = dataFilter;
 	}
 }
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, Strikethrough, GeneralHTMLSupport, ExtendHTMLSupport ],
+		plugins: [ Essentials, Paragraph, Bold, Italic, Strikethrough, ExtendHTMLSupport ],
 		toolbar: [ 'bold', 'italic', 'strikethrough', 'contentTags' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
-		window.dataSchema = editor.plugins.get( 'GeneralHTMLSupport' ).dataSchema;
 	} )
 	.catch( err => {
 		console.error( err.stack );
