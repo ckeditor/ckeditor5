@@ -10,7 +10,8 @@
 import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { BubblingObservableMixin } from './observer/bubblingemittermixin';
+import BubblingEmitterMixin from './observer/bubblingemittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -18,6 +19,7 @@ import { BubblingObservableMixin } from './observer/bubblingemittermixin';
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
  * {@link module:engine/view/documentselection~DocumentSelection view selection} associated with this document.
  *
+ * @mixes module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Document {
@@ -203,7 +205,8 @@ export default class Document {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-mix( Document, BubblingObservableMixin );
+mix( Document, BubblingEmitterMixin );
+mix( Document, ObservableMixin );
 
 /**
  * Enum representing type of the change.

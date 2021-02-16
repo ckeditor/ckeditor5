@@ -8,29 +8,25 @@
  */
 
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
-import { extend } from 'lodash-es';
-
 const contextsSymbol = Symbol( 'bubbling contexts' );
 
-// Overridden methods injected into BubblingEmitterMixin and BubblingObservableMixin.
-// @private
-const BubblingEmitterMixinMethods = {
-	// Fires an event, executing all callbacks registered for it.
-	//
-	// The first parameter passed to callbacks is an {@link module:utils/eventinfo~EventInfo} object,
-	// followed by the optional `args` provided in the `fire()` method call.
-	//
-	// @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object.
-	// @param {...*} [args] Additional arguments to be passed to the callbacks.
-	// @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
-	// through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
-	// is the first param of every callback).
+/**
+ * Bubbling emitter mixin for the view document as described in the
+ * {@link ~BubblingEmitter} interface.
+ *
+ * @mixin BubblingEmitterMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
+ * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
+ */
+const BubblingEmitterMixin = {
+	/**
+	 * @inheritDoc
+	 */
 	fire( eventOrInfo, ...eventArgs ) {
 		try {
 			const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
@@ -96,14 +92,9 @@ const BubblingEmitterMixinMethods = {
 		}
 	},
 
-	// Adds callback to emitter for given event.
-	// @param {String} event The name of the event.
-	// @param {Function} callback The function to be called on event.
-	// @param {Object} [options={}] Additional options.
-	// @param {String} [options.context='$document'] The listener context while bubbling up the view document tree.
-	// @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
-	// the priority value the sooner the callback will be fired. Events having the same priority are called in the
-	// order they were added.
+	/**
+	 * @inheritDoc
+	 */
 	_addEventListener( event, callback, options ) {
 		const contexts = toArray( options.context || '$document' );
 		const eventContexts = getBubblingContexts( this );
@@ -120,9 +111,9 @@ const BubblingEmitterMixinMethods = {
 		}
 	},
 
-	// Removes callback from emitter for given event.
-	// @param {String} event The name of the event.
-	// @param {Function} callback The function to stop being called.
+	/**
+	 * @inheritDoc
+	 */
 	_removeEventListener( event, callback ) {
 		const eventContexts = getBubblingContexts( this );
 
@@ -132,26 +123,7 @@ const BubblingEmitterMixinMethods = {
 	}
 };
 
-/**
- * Bubbling emitter mixin for the view document as described in the
- * {@link ~BubblingEmitter} interface.
- *
- * @mixin BubblingEmitterMixin
- * @mixes module:utils/emittermixin~EmitterMixin
- * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
- */
-export const BubblingEmitterMixin = {};
-extend( BubblingEmitterMixin, EmitterMixin, BubblingEmitterMixinMethods );
-
-/**
- * A mixin that extends {@link module:utils/observablemixin~ObservableMixin} with {@link ~BubblingEmitter} capabilities.
- *
- * @mixin BubblingObservableMixin
- * @mixes module:utils/observablemixin~ObservableMixin
- * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
- */
-export const BubblingObservableMixin = {};
-extend( BubblingObservableMixin, ObservableMixin, BubblingEmitterMixinMethods );
+export default BubblingEmitterMixin;
 
 // Fires the listener for the specified context. Returns `true` if event was stopped.
 //
