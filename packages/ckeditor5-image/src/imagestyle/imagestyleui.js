@@ -66,10 +66,9 @@ export default class ImageStyleUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
+		const editing = this.editor.plugins.get( 'ImageStyleEditing' );
 
-		this.editing = editor.plugins.get( 'ImageStyleEditing' );
-		this.normalizedStyles = this.editing.normalizedStyles;
+		this.normalizedStyles = editing.normalizedStyles;
 
 		const definedArrangements = translateStyles(
 			this.normalizedStyles.arrangements,
@@ -96,17 +95,11 @@ export default class ImageStyleUI extends Plugin {
 	 * @param {Array<String>} buttonNames
 	 */
 	_createDropdown( dropdownConfig ) {
-		if ( !dropdownConfig ) {
-			return;
-		}
+		const factory = this.editor.ui.componentFactory;
 
-		const dropdownName = dropdownConfig.name;
-		const componentName = getUIComponentName( dropdownName );
-
-		this.editor.ui.componentFactory.add( componentName, locale => {
+		factory.add( getUIComponentName( dropdownConfig.name ), locale => {
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-			const factory = this.editor.ui.componentFactory;
 
 			const buttonViews = dropdownConfig.items
 				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
@@ -148,10 +141,8 @@ export default class ImageStyleUI extends Plugin {
 				.to( splitButtonView, 'currentCommand', command => command ? null : 'ck-splitbutton_flatten' );
 
 			splitButtonView.on( 'execute', () => {
-				const currentCommand = splitButtonView.currentCommand;
-
-				if ( currentCommand ) {
-					this._executeCommand( currentCommand );
+				if ( splitButtonView.currentCommand ) {
+					this._executeCommand( splitButtonView.currentCommand );
 				} else {
 					splitButtonView.arrowView.fire( 'execute' );
 				}
@@ -169,16 +160,10 @@ export default class ImageStyleUI extends Plugin {
 	 * @param {String} parentDropDownName
 	 */
 	_createButton( buttonConfig ) {
-		if ( !buttonConfig ) {
-			return;
-		}
-
-		const editor = this.editor;
 		const buttonName = buttonConfig.name;
-		const componentName = getUIComponentName( buttonName );
 
-		editor.ui.componentFactory.add( componentName, locale => {
-			const command = editor.commands.get( 'imageStyle' );
+		this.editor.ui.componentFactory.add( getUIComponentName( buttonName ), locale => {
+			const command = this.editor.commands.get( 'imageStyle' );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -189,26 +174,23 @@ export default class ImageStyleUI extends Plugin {
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			view.bind( 'isOn' ).to( command, 'value', value => value === buttonConfig.name );
-			view.on( 'execute', this._executeCommand.bind( this, buttonConfig.name ) );
+			view.bind( 'isOn' ).to( command, 'value', value => value === buttonName );
+			view.on( 'execute', this._executeCommand.bind( this, buttonName ) );
 
 			return view;
 		} );
 	}
 
 	_executeCommand( name ) {
-		const editor = this.editor;
-
-		editor.execute( 'imageStyle', { value: name } );
-		editor.editing.view.focus();
+		this.editor.execute( 'imageStyle', { value: name } );
+		this.editor.editing.view.focus();
 	}
 
 	_getDefaultIcon( arrangementName ) {
 		const arrangements = this.normalizedStyles.arrangements;
 		const configuration = arrangements.find( item => item.name === arrangementName );
-		const icon = configuration.icon;
 
-		return icon;
+		return configuration.icon;
 	}
 }
 
