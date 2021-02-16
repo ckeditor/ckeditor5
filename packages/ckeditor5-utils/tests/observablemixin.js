@@ -1056,6 +1056,33 @@ describe( 'Observable', () => {
 			}, 'observablemixin-cannot-decorate-undefined' );
 		} );
 
+		it( 'should allow decorating multiple methods', () => {
+			const spyFoo = sinon.spy();
+			const spyBar = sinon.spy();
+
+			class Foo extends Observable {
+				methodFoo() {}
+				methodBar() {}
+			}
+
+			const foo = new Foo();
+
+			foo.decorate( 'methodFoo' );
+			foo.decorate( 'methodBar' );
+
+			foo.on( 'methodFoo', spyFoo );
+			foo.on( 'methodBar', spyBar );
+
+			foo.methodFoo( 'abc' );
+			foo.methodBar( '123' );
+
+			expect( spyFoo.calledOnce ).to.be.true;
+			expect( spyFoo.args[ 0 ][ 1 ] ).to.deep.equal( [ 'abc' ] );
+
+			expect( spyBar.calledOnce ).to.be.true;
+			expect( spyBar.args[ 0 ][ 1 ] ).to.deep.equal( [ '123' ] );
+		} );
+
 		it( 'should reverts decorated methods to the original method on stopListening for all events', () => {
 			class Foo extends Observable {
 				method() {
