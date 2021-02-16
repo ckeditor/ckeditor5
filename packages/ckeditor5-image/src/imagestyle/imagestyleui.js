@@ -66,12 +66,10 @@ export default class ImageStyleUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editing = this.editor.plugins.get( 'ImageStyleEditing' );
-
-		this.normalizedStyles = editing.normalizedStyles;
+		const normalizedStyles = this.editor.plugins.get( 'ImageStyleEditing' ).normalizedStyles;
 
 		const definedArrangements = translateStyles(
-			this.normalizedStyles.arrangements,
+			normalizedStyles.arrangements,
 			this.localizedDefaultStylesTitles );
 
 		for ( const arrangementConfig of definedArrangements ) {
@@ -79,11 +77,11 @@ export default class ImageStyleUI extends Plugin {
 		}
 
 		const definedGroups = translateStyles(
-			this.normalizedStyles.groups,
+			normalizedStyles.groups,
 			this.localizedDefaultStylesTitles );
 
 		for ( const groupConfig of definedGroups ) {
-			this._createDropdown( groupConfig );
+			this._createDropdown( groupConfig, definedArrangements );
 		}
 	}
 
@@ -92,59 +90,51 @@ export default class ImageStyleUI extends Plugin {
 	 *
 	 * @private
 	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} dropdownConfig uwaga! tutaj format będzie się trochę róznił
-	 * @param {Array<String>} buttonNames
+	 * @param {Array.<String>} buttonNames
+	 * @param {Array.<Object>} definedArrangements
 	 */
-	_createDropdown( dropdownConfig ) {
+	_createDropdown( dropdownConfig, definedArrangements ) {
 		const factory = this.editor.ui.componentFactory;
 
 		factory.add( getUIComponentName( dropdownConfig.name ), locale => {
+			const { defaultItem, items, title, icon } = dropdownConfig;
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-
-			const buttonViews = dropdownConfig.items
-				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
+			const defaultIcon = definedArrangements.find( item => item.name === defaultItem ).icon;
+			const buttonViews = items.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
 
 			addToolbarToDropdown( dropdownView, buttonViews );
 
 			splitButtonView.set( {
-				label: dropdownConfig.title,
-				icon: dropdownConfig.icon,
+				label: title,
+				icon,
 				currentCommand: false,
 				class: null,
 				tooltip: true
 			} );
 
-			splitButtonView.bind( 'icon' )
-				.toMany( buttonViews, 'isOn', ( ...areOn ) => {
-					const index = areOn.findIndex( isOn => isOn );
+			splitButtonView.bind( 'icon' ).toMany( buttonViews, 'isOn', ( ...areOn ) => {
+				const index = areOn.findIndex( isOn => isOn );
 
-					if ( index < 0 ) {
-						return this._getDefaultIcon( dropdownConfig.defaultItem );
-					}
+				if ( index < 0 ) {
+					return defaultIcon;
+				}
 
-					return buttonViews[ index ].icon;
-				} );
+				return buttonViews[ index ].icon;
+			} );
 
-			splitButtonView.bind( 'isOn' )
-				.toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.find( isOn => isOn ) );
-
-			splitButtonView.bind( 'currentCommand' )
-				.toMany( buttonViews, 'isOn', ( ...areOn ) => {
-					if ( areOn.find( isOn => isOn ) ) {
-						return false;
-					} else {
-						return dropdownConfig.defaultItem;
-					}
-				} );
+			splitButtonView.bind( 'isOn' ).toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.find( isOn => isOn ) );
 
 			splitButtonView.bind( 'class' )
-				.to( splitButtonView, 'currentCommand', command => command ? null : 'ck-splitbutton_flatten' );
+				.toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.some( isOn => isOn ) ? 'ck-splitbutton_flatten' : null );
 
 			splitButtonView.on( 'execute', () => {
-				if ( splitButtonView.currentCommand ) {
-					this._executeCommand( splitButtonView.currentCommand );
+				const currentCommandName = buttonViews.some( ( { isOn } ) => isOn ) ? false : defaultItem;
+
+				if ( currentCommandName ) {
+					this._executeCommand( currentCommandName );
 				} else {
-					splitButtonView.arrowView.fire( 'execute' );
+					dropdownView.isOpen = !dropdownView.isOpen;
 				}
 			} );
 
@@ -185,13 +175,6 @@ export default class ImageStyleUI extends Plugin {
 		this.editor.execute( 'imageStyle', { value: name } );
 		this.editor.editing.view.focus();
 	}
-
-	_getDefaultIcon( arrangementName ) {
-		const arrangements = this.normalizedStyles.arrangements;
-		const configuration = arrangements.find( item => item.name === arrangementName );
-
-		return configuration.icon;
-	}
 }
 
 /**
@@ -214,5 +197,5 @@ function translateStyles( styles, titles ) {
 }
 
 function getUIComponentName( name ) {
-	return 'imageStyle:' + name;
+	return `imageStyle:${ name }`;
 }

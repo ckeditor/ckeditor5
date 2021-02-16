@@ -48,3 +48,30 @@
 		margin-bottom: var(--ck-image-style-spacing);
 	}
 }
+
+.ck.ck-splitbutton {
+	/* The button should display as a regular drop-down if the action button
+	is forced to fire the same action as the arrow button. */
+	&.ck-splitbutton_flatten {
+		&:hover,
+		&.ck-splitbutton_open {
+			& > .ck-splitbutton__action:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
+				background-color: var(--ck-color-button-on-background);
+
+				&::after {
+					display: none;
+				}
+			}
+		}
+
+		&.ck-splitbutton_open:hover {
+			& > .ck-splitbutton__action:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
+				background-color: var(--ck-color-button-on-hover-background);
+			}
+		}
+	}
+}
