@@ -115,14 +115,7 @@ export default class FontColorEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'downcast' ).attributeToElement( {
-			model: FONT_COLOR,
-			view: renderDowncastElement( 'color' )
-		} );
-
-		editor.commands.add( FONT_COLOR, new FontColorCommand( editor ) );
-
-		// Support `<font color="..">` formatting.
+		// Support legacy `<font color="..">` formatting.
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'font',
@@ -135,6 +128,13 @@ export default class FontColorEditing extends Plugin {
 				value: viewElement => viewElement.getAttribute( 'color' )
 			}
 		} );
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: FONT_COLOR,
+			view: renderDowncastElement( 'color' )
+		} );
+
+		editor.commands.add( FONT_COLOR, new FontColorCommand( editor ) );
 
 		// Allow the font color attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_COLOR } );
