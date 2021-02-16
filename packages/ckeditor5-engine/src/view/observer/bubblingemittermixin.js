@@ -20,7 +20,6 @@ const contextsSymbol = Symbol( 'bubbling contexts' );
  * {@link ~BubblingEmitter} interface.
  *
  * @mixin BubblingEmitterMixin
- * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:engine/view/observer/bubblingemittermixin~BubblingEmitter
  */
 const BubblingEmitterMixin = {
