@@ -8,7 +8,11 @@
  */
 
 import CKFinder from './ckfinder';
+import CKFinderEditing from './ckfinderediting';
+import CKFinderUI from './ckfinderui';
 
 export default {
-	CKFinder
+	CKFinder,
+	CKFinderEditing,
+	CKFinderUI
 };
