@@ -150,9 +150,6 @@ describe( 'FontSizeEditing', () => {
 					);
 				} );
 
-				// TODO: handle big sizes 		[ ]
-				// TODO: handle relative sizing	[ ]
-
 				it( 'should convert <font size=".."> styling - large value clamped to size 7 equivalent', () => {
 					const data = '<font size="999">foo</font><span style="font-size: 18px">bar</span>';
 

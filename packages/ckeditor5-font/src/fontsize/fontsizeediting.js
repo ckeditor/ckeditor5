@@ -175,7 +175,7 @@ export default class FontSizeEditing extends Plugin {
 					const value = viewElement.getAttribute( 'size' );
 					const isRelative = value[ 0 ] === '-' || value[ 0 ] === '+';
 
-					let size = Number( value );
+					let size = parseInt( value, 10 );
 
 					if ( isRelative ) {
 						// Add relative size (which can be negative) to the default size = 3.
