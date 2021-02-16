@@ -60,7 +60,6 @@ export default class SplitButtonView extends View {
 		this.set( 'tooltipPosition', 's' );
 		this.set( 'type', 'button' );
 		this.set( 'withText', false );
-		this.set( 'isSelectable', false );
 
 		/**
 		 * Collection of the child views inside of the split button {@link #element}.
