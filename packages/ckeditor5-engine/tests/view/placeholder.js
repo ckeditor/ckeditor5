@@ -236,7 +236,7 @@ describe( 'placeholder', () => {
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
-		it( 'should not set attributes/class when multiple children (isDirectHost=false)', () => {
+		it( 'should not set class when multiple children (isDirectHost=false)', () => {
 			setData( view, '<p></p><p></p>' );
 			viewDocument.isFocused = false;
 
@@ -247,7 +247,39 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/9009
+		it( 'should not set class when multiple children and some other element has content (isDirectHost=false)', () => {
+			setData( view, '<p></p><p>foobar</p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo bar baz',
+				isDirectHost: false
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
+		it( 'should not set class when there is no children (isDirectHost=false)', () => {
+			setData( view, '<p></p><p>foobar</p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot.getChild( 0 ),
+				text: 'foo bar baz',
+				isDirectHost: false
+			} );
+
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
