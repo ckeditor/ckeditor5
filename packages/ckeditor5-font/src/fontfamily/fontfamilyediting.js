@@ -113,7 +113,7 @@ export default class FontFamilyEditing extends Plugin {
 	}
 
 	/**
-	 * Adds support for `<font face="..">` formatting.
+	 * Adds support for legacy `<font face="..">` formatting.
 	 *
 	 * @private
 	 */

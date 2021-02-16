@@ -150,8 +150,25 @@ describe( 'FontSizeEditing', () => {
 					);
 				} );
 
-				it( 'should convert <font size=".."> styling - parameter outside of the range', () => {
-					const data = '<font size="8">foo</font><span style="font-size: 18px">bar</span>';
+				// TODO: handle big sizes 		[ ]
+				// TODO: handle relative sizing	[ ]
+
+				it( 'should convert <font size=".."> styling - large value clamped to size 7 equivalent', () => {
+					const data = '<font size="999">foo</font><span style="font-size: 18px">bar</span>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal(
+						'<paragraph><$text fontSize="xxx-large">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<p><span style="font-size:xxx-large;">foo</span><span style="font-size:18px;">bar</span></p>'
+					);
+				} );
+
+				it( 'should not convert <font size=".."> styling - parameter outside of the range', () => {
+					const data = '<font size="1000">foo</font><span style="font-size: 18px">bar</span>';
 
 					editor.setData( data );
 

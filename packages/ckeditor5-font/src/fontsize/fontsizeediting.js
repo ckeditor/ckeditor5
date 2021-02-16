@@ -153,7 +153,7 @@ export default class FontSizeEditing extends Plugin {
 	}
 
 	/**
-	 * Adds support for `<font size="..">` formatting.
+	 * Adds support for legacy `<font size="..">` formatting.
 	 *
 	 * @private
 	 */
@@ -164,16 +164,19 @@ export default class FontSizeEditing extends Plugin {
 			view: {
 				name: 'font',
 				attributes: {
-					// Size from 0 to 7.
-					'size': /^[0-7]$/
+					// Documentation mentions sizes from 1 to 7.
+					// To handle old content we support all values up to 999 (arbitrarily picked) but clamp it to the valid range.
+					'size': /^\d{1,3}$/
 				}
 			},
 			model: {
 				key: FONT_SIZE,
 				value: viewElement => {
-					const value = viewElement.getAttribute( 'size' );
+					const value = Number( viewElement.getAttribute( 'size' ) );
+					const maxSize = styleFontSize.length - 1;
+					const size = Math.min( Math.max( value, 0 ), maxSize );
 
-					return styleFontSize[ Number( value ) ];
+					return styleFontSize[ size ];
 				}
 			}
 		} );
