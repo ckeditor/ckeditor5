@@ -163,14 +163,19 @@ export default class PluginCollection {
 	 *
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
 	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}.
-	 * @param {Array.<String|Function>} [removedPlugins] Names of the plugins or plugin constructors
+	 * @param {Array.<String|Function>} [pluginsToRemove] Names of the plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
-	 * @param {Array.<Function>} pluginsToReplace An array of {@link module:core/plugin~PluginInterface plugin constructors}
-	 * that will be used for replacing plugins definitions while instantiating.
+	 * @param {Array.<Function>} pluginsSubstitutions An array of {@link module:core/plugin~PluginInterface plugin constructors}
+	 * that will be used to replace plugins of the same names that were passed in `plugins` or that are in their dependency tree.
+	 * A useful option for replacing built-in plugins while creating tests (for mocking their APIs). Plugins that will be replaced
+	 * must follow these rules:
+	 *   * The new plugin must be a class.
+	 *   * The new plugin must be named.
+	 *   * Both plugins must not depend on other plugins.
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
 	 * and available in the collection.
 	 */
-	init( plugins, removedPlugins = [], pluginsToReplace = [] ) {
+	init( plugins, pluginsToRemove = [], pluginsSubstitutions = [] ) {
 		// Plugin initialization procedure consists of 2 main steps:
 		// 1) collecting all available plugin constructors,
 		// 2) verification whether all required plugins can be instantiated.
@@ -192,11 +197,11 @@ export default class PluginCollection {
 
 		validatePlugins( plugins );
 
-		const pluginsToLoad = plugins.filter( plugin => !isPluginRemoved( plugin, removedPlugins ) );
+		const pluginsToLoad = plugins.filter( plugin => !isPluginRemoved( plugin, pluginsToRemove ) );
 
 		const pluginConstructors = [ ...getPluginConstructors( pluginsToLoad ) ];
 
-		substitutePlugins( pluginConstructors, pluginsToReplace );
+		substitutePlugins( pluginConstructors, pluginsSubstitutions );
 
 		const pluginInstances = loadPlugins( pluginConstructors );
 
@@ -212,8 +217,8 @@ export default class PluginCollection {
 			return isPluginConstructor( plugin ) && plugin.isContextPlugin;
 		}
 
-		function isPluginRemoved( plugin, removedPlugins ) {
-			return removedPlugins.some( removedPlugin => {
+		function isPluginRemoved( plugin, pluginsToRemove ) {
+			return pluginsToRemove.some( removedPlugin => {
 				if ( removedPlugin === plugin ) {
 					return true;
 				}
@@ -386,7 +391,7 @@ export default class PluginCollection {
 				return;
 			}
 
-			if ( !isPluginRemoved( plugin, removedPlugins ) ) {
+			if ( !isPluginRemoved( plugin, pluginsToRemove ) ) {
 				return;
 			}
 
@@ -428,18 +433,12 @@ export default class PluginCollection {
 			}, Promise.resolve() );
 		}
 
-		/**
-		 * Replaces plugin constructors with the specified set of plugins. A useful option for replacing built-in plugins while creating
-		 * tests (for mocking their APIs). Plugins that will be replaced must follow these rules:
-		 * - The new plugin must be a class.
-		 * - The new plugin must be named.
-		 * - Both plugins must not depend on other plugins.
-		 *
-		 * @param {Array.<Function>} pluginConstructors
-		 * @param {Array.<Function>} pluginsToReplace
-		 */
-		function substitutePlugins( pluginConstructors, pluginsToReplace ) {
-			for ( const pluginItem of pluginsToReplace ) {
+		// Replaces plugin constructors with the specified set of plugins.
+		//
+		// @param {Array.<Function>} pluginConstructors
+		// @param {Array.<Function>} pluginsSubstitutions
+		function substitutePlugins( pluginConstructors, pluginsSubstitutions ) {
+			for ( const pluginItem of pluginsSubstitutions ) {
 				if ( typeof pluginItem != 'function' ) {
 					/**
 					 * The plugin replacing an existing plugin must be a function.
