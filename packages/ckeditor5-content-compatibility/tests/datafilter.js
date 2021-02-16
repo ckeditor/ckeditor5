@@ -4,12 +4,12 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import DataSchema from '../src/dataschema';
+import DataFilter from '../src/datafilter';
 
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'DataSchema', () => {
-	let editor, model, dataSchema;
+describe( 'DataFilter', () => {
+	let editor, model, dataFilter;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -18,18 +18,7 @@ describe( 'DataSchema', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				dataSchema = new DataSchema( editor );
-
-				// Define some made up type definitions for testing purposes.
-				dataSchema.register( { view: 'div', model: 'ghsDiv', schema: {
-					inheritAllFrom: '$block',
-					allowIn: 'ghsDiv'
-				} } );
-				dataSchema.register( { view: 'article', model: 'ghsArticle', schema: '$block' } );
-				dataSchema.register( { view: 'section', model: 'ghsSection', schema: {
-					inheritAllFrom: '$block',
-					allowIn: 'ghsArticle'
-				} } );
+				dataFilter = new DataFilter( editor );
 			} );
 	} );
 
@@ -38,7 +27,7 @@ describe( 'DataSchema', () => {
 	} );
 
 	it( 'should allow element', () => {
-		dataSchema.allowElement( { name: 'article' } );
+		dataFilter.allowElement( { name: 'article' } );
 
 		editor.setData( '<article><section>section1</section><section>section2</section></article>' );
 
@@ -50,7 +39,7 @@ describe( 'DataSchema', () => {
 			'<article>section1section2</article>'
 		);
 
-		dataSchema.allowElement( { name: 'section' } );
+		dataFilter.allowElement( { name: 'section' } );
 
 		editor.setData( '<article><section>section1</section><section>section2</section></article>' );
 
@@ -64,83 +53,83 @@ describe( 'DataSchema', () => {
 	} );
 
 	it( 'should allow deeply nested structure', () => {
-		dataSchema.allowElement( { name: 'div' } );
+		dataFilter.allowElement( { name: 'section' } );
 
-		editor.setData( '<div>1<div>2<div>3</div></div></div>' );
+		editor.setData( '<section>1<section>2<section>3</section></section></section>' );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.eq(
-			'<ghsDiv>1<ghsDiv>2<ghsDiv>3</ghsDiv></ghsDiv></ghsDiv>'
+			'<ghsSection>1<ghsSection>2<ghsSection>3</ghsSection></ghsSection></ghsSection>'
 		);
 
 		expect( editor.getData() ).to.eq(
-			'<div>1<div>2<div>3</div></div></div>'
+			'<section>1<section>2<section>3</section></section></section>'
 		);
 	} );
 
 	it( 'should allow attributes', () => {
-		dataSchema.allowElement( { name: 'div' } );
-		dataSchema.allowAttributes( { name: 'div', attributes: {
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', attributes: {
 			'data-foo': 'foobar'
 		} } );
 
-		editor.setData( '<div data-foo="foobar">foobar</div>' );
+		editor.setData( '<section data-foo="foobar">foobar</section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsDiv ghsAttributes="(1)">foobar</ghsDiv>',
+			data: '<ghsSection ghsAttributes="(1)">foobar</ghsSection>',
 			attributes: {
 				1: [ [ 'data-foo', 'foobar' ] ]
 			}
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<div data-foo="foobar">foobar</div>'
+			'<section data-foo="foobar">foobar</section>'
 		);
 	} );
 
 	it( 'should allow attributes (styles)', () => {
-		dataSchema.allowElement( { name: 'div' } );
-		dataSchema.allowAttributes( { name: 'div', styles: {
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', styles: {
 			'color': 'red'
 		} } );
 
-		editor.setData( '<div style="color:red;">foobar</div>' );
+		editor.setData( '<section style="color:red;">foobar</section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsDiv ghsAttributes="(1)">foobar</ghsDiv>',
+			data: '<ghsSection ghsAttributes="(1)">foobar</ghsSection>',
 			attributes: {
 				1: [ [ 'style', { color: 'red' } ] ]
 			}
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<div style="color:red;">foobar</div>'
+			'<section style="color:red;">foobar</section>'
 		);
 	} );
 
 	it( 'should allow attributes (classes)', () => {
-		dataSchema.allowElement( { name: 'div' } );
-		dataSchema.allowAttributes( { name: 'div', classes: [ 'foo', 'bar' ] } );
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', classes: [ 'foo', 'bar' ] } );
 
-		editor.setData( '<div class="foo bar">foobar</div>' );
+		editor.setData( '<section class="foo bar">foobar</section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsDiv ghsAttributes="(1)">foobar</ghsDiv>',
+			data: '<ghsSection ghsAttributes="(1)">foobar</ghsSection>',
 			attributes: {
 				1: [ [ 'class', [ 'foo', 'bar' ] ] ]
 			}
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<div class="foo bar">foobar</div>'
+			'<section class="foo bar">foobar</section>'
 		);
 	} );
 
 	it( 'should allow nested attributes', () => {
-		dataSchema.allowElement( { name: /article|section/ } );
-		dataSchema.allowAttributes( { attributes: { 'data-foo': /foo|bar/ } } );
+		dataFilter.allowElement( { name: /article|section/ } );
+		dataFilter.allowAttributes( { attributes: { 'data-foo': /foo|bar/ } } );
 
 		editor.setData( '<article data-foo="foo">' +
-				'<section data-foo="bar">section1</secton>' +
+				'<section data-foo="bar">section1</section>' +
 				'<section data-foo="foo">section2</section>' +
 			'</article>' );
 
@@ -158,16 +147,16 @@ describe( 'DataSchema', () => {
 	} );
 
 	it( 'should allow attributes for all allowed definitions', () => {
-		dataSchema.allowElement( { name: 'div' } );
-		dataSchema.allowElement( { name: 'article' } );
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowElement( { name: 'article' } );
 		// We skip name purposely to allow attribute on every data schema element.
-		dataSchema.allowAttributes( { attributes: { 'data-foo': 'foo' } } );
-		dataSchema.allowAttributes( { attributes: { 'data-bar': 'bar' } } );
+		dataFilter.allowAttributes( { attributes: { 'data-foo': 'foo' } } );
+		dataFilter.allowAttributes( { attributes: { 'data-bar': 'bar' } } );
 
-		editor.setData( '<div data-foo="foo">foo</div><article data-bar="bar">bar</article>' );
+		editor.setData( '<section data-foo="foo">foo</section><article data-bar="bar">bar</article>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsDiv ghsAttributes="(1)">foo</ghsDiv><ghsArticle ghsAttributes="(2)">bar</ghsArticle>',
+			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsArticle ghsAttributes="(2)">bar</ghsArticle>',
 			attributes: {
 				1: [ [ 'data-foo', 'foo' ] ],
 				2: [ [ 'data-bar', 'bar' ] ]
@@ -175,64 +164,64 @@ describe( 'DataSchema', () => {
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<div data-foo="foo">foo</div><article data-bar="bar">bar</article>'
+			'<section data-foo="foo">foo</section><article data-bar="bar">bar</article>'
 		);
 	} );
 
 	it( 'should disallow attributes', () => {
-		dataSchema.allowElement( { name: 'div' } );
-		dataSchema.allowAttributes( { name: 'div', attributes: { 'data-foo': /[^]/ } } );
-		dataSchema.disallowAttributes( { name: 'div', attributes: { 'data-foo': 'bar' } } );
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': /[^]/ } } );
+		dataFilter.disallowAttributes( { name: 'section', attributes: { 'data-foo': 'bar' } } );
 
-		editor.setData( '<div data-foo="foo">foo</div><div data-foo="bar">bar</div>' );
+		editor.setData( '<section data-foo="foo">foo</section><section data-foo="bar">bar</section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsDiv ghsAttributes="(1)">foo</ghsDiv><ghsDiv>bar</ghsDiv>',
+			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsSection>bar</ghsSection>',
 			attributes: {
 				1: [ [ 'data-foo', 'foo' ] ]
 			}
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<div data-foo="foo">foo</div><div>bar</div>'
+			'<section data-foo="foo">foo</section><section>bar</section>'
 		);
 	} );
 
 	it( 'should disallow attributes (styles)', () => {
-		dataSchema.allowElement( { name: 'div' } );
-		dataSchema.allowAttributes( { name: 'div', styles: { color: /[^]/ } } );
-		dataSchema.disallowAttributes( { name: 'div', styles: { color: 'red' } } );
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', styles: { color: /[^]/ } } );
+		dataFilter.disallowAttributes( { name: 'section', styles: { color: 'red' } } );
 
-		editor.setData( '<div style="color:blue;">foo</div><div style="color:red">bar</div>' );
+		editor.setData( '<section style="color:blue;">foo</section><section style="color:red">bar</section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsDiv ghsAttributes="(1)">foo</ghsDiv><ghsDiv>bar</ghsDiv>',
+			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsSection>bar</ghsSection>',
 			attributes: {
 				1: [ [ 'style', { color: 'blue' } ] ]
 			}
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<div style="color:blue;">foo</div><div>bar</div>'
+			'<section style="color:blue;">foo</section><section>bar</section>'
 		);
 	} );
 
 	it( 'should disallow attributes (classes)', () => {
-		dataSchema.allowElement( { name: 'div' } );
-		dataSchema.allowAttributes( { name: 'div', classes: [ 'foo', 'bar' ] } );
-		dataSchema.disallowAttributes( { name: 'div', classes: [ 'bar' ] } );
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', classes: [ 'foo', 'bar' ] } );
+		dataFilter.disallowAttributes( { name: 'section', classes: [ 'bar' ] } );
 
-		editor.setData( '<div class="foo bar">foo</div><div class="bar">bar</div>' );
+		editor.setData( '<section class="foo bar">foo</section><section class="bar">bar</section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsDiv ghsAttributes="(1)">foo</ghsDiv><ghsDiv>bar</ghsDiv>',
+			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsSection>bar</ghsSection>',
 			attributes: {
 				1: [ [ 'class', [ 'foo' ] ] ]
 			}
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<div class="foo">foo</div><div>bar</div>'
+			'<section class="foo">foo</section><section>bar</section>'
 		);
 	} );
 } );
