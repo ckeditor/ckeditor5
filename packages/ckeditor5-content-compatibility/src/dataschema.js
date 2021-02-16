@@ -122,12 +122,14 @@ export default class DataSchema {
 	 * @returns {Iterable<String>}
 	 */
 	* _getReferences( name ) {
-		// TODO extend with the rest of schema properties based on other model types.
 		const { schema } = this._definitions[ name ];
+		const inheritProperties = [ 'inheritAllFrom', 'inheritTypesFrom', 'allowWhere', 'allowContentOf', 'allowAttributesOf' ];
 
-		for ( const model of toArray( schema.inheritAllFrom || [] ) ) {
-			if ( this._definitions[ model ] ) {
-				yield model;
+		for ( const property of inheritProperties ) {
+			for ( const model of toArray( schema[ property ] || [] ) ) {
+				if ( model !== name && this._definitions[ model ] ) {
+					yield model;
+				}
 			}
 		}
 	}
