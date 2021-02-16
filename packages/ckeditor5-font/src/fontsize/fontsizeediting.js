@@ -166,17 +166,26 @@ export default class FontSizeEditing extends Plugin {
 				attributes: {
 					// Documentation mentions sizes from 1 to 7.
 					// To handle old content we support all values up to 999 (arbitrarily picked) but clamp it to the valid range.
-					'size': /^\d{1,3}$/
+					'size': /^[+-]?\d{1,3}$/
 				}
 			},
 			model: {
 				key: FONT_SIZE,
 				value: viewElement => {
-					const value = Number( viewElement.getAttribute( 'size' ) );
-					const maxSize = styleFontSize.length - 1;
-					const size = Math.min( Math.max( value, 0 ), maxSize );
+					const value = viewElement.getAttribute( 'size' );
+					const isRelative = value[ 0 ] === '-' || value[ 0 ] === '+';
 
-					return styleFontSize[ size ];
+					let size = Number( value );
+
+					if ( isRelative ) {
+						// Add relative size (which can be negative) to the default size = 3.
+						size = 3 + size;
+					}
+
+					const maxSize = styleFontSize.length - 1;
+					const clampedSize = Math.min( Math.max( size, 0 ), maxSize );
+
+					return styleFontSize[ clampedSize ];
 				}
 			}
 		} );
