@@ -60,7 +60,7 @@ export default class ImageStyleCommand extends Command {
 
 		this.isEnabled = isImage( element ) || isImageInline( element );
 
-		if ( !element || !this.isEnabled ) {
+		if ( !element ) {
 			this.value = false;
 		} else if ( element.hasAttribute( 'imageStyle' ) ) {
 			const attributeValue = element.getAttribute( 'imageStyle' );

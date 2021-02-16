@@ -93,7 +93,7 @@ describe( 'ImageStyleCommand', () => {
 
 	describe( 'constuctor()', () => {
 		it( 'should set default arrangements properly if both are provided', () => {
-			expect( command._defaultArrangements ).to.eql( {
+			expect( command._defaultArrangements ).to.deep.equal( {
 				image: defaultBlock.name,
 				imageInline: defaultInline.name
 			} );
@@ -102,14 +102,14 @@ describe( 'ImageStyleCommand', () => {
 		it( 'should set default arrangements properly if one is missing', () => {
 			const command = new ImageStyleCommand( editor, [ defaultBlock ] );
 
-			expect( command._defaultArrangements ).to.eql( {
+			expect( command._defaultArrangements ).to.deep.equal( {
 				image: defaultBlock.name,
 				imageInline: false
 			} );
 		} );
 
 		it( 'should set the supported arrangements properly', () => {
-			expect( command._arrangements ).to.eql( new Map( [
+			expect( command._arrangements ).to.deep.equal( new Map( [
 				[ onlyBlock.name, onlyBlock ],
 				[ onlyInline.name, onlyInline ],
 				[ anyImage.name, anyImage ],
