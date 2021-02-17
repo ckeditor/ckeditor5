@@ -252,6 +252,90 @@ describe( 'Context', () => {
 			expect( editor.plugins.has( ContextPluginA ) ).to.equal( true );
 			expect( editor.plugins.has( ContextPluginB ) ).to.equal( false );
 		} );
+
+		it( 'should allow substituting a plugin specified as "config.plugins"', async () => {
+			class ErrorPlugin extends ContextPlugin {
+				static get pluginName() {
+					return 'FooPlugin';
+				}
+
+				init() {
+					throw new Error( 'Ooops.' );
+				}
+			}
+
+			class NoErrorPlugin extends ContextPlugin {
+				static get pluginName() {
+					return 'FooPlugin';
+				}
+
+				init() {
+					return Promise.resolve();
+				}
+			}
+
+			const context = await Context.create( {
+				plugins: [ ErrorPlugin ],
+				substitutePlugins: [ NoErrorPlugin ]
+			} );
+
+			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( ContextPlugin );
+			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+		} );
+
+		it( 'should throw an error if specified an invalid type of a plugin for substituting', async () => {
+			class ErrorPlugin extends ContextPlugin {
+				static get pluginName() {
+					return 'FooPlugin';
+				}
+
+				init() {
+					throw new Error( 'Ooops.' );
+				}
+			}
+
+			try {
+				await Context.create( {
+					plugins: [ ErrorPlugin ],
+					substitutePlugins: [ 'NoErrorPlugin' ]
+				} );
+			} catch ( error ) {
+				expect( error ).to.instanceof( CKEditorError );
+				expect( error.message ).match( /^context-initplugins-constructor-only/ );
+			}
+		} );
+
+		it( 'should throw an error if a plugin for substituting does not extend the ContextPlugin class', async () => {
+			class ErrorPlugin extends ContextPlugin {
+				static get pluginName() {
+					return 'FooPlugin';
+				}
+
+				init() {
+					throw new Error( 'Ooops.' );
+				}
+			}
+
+			class NoErrorPlugin extends Plugin {
+				static get pluginName() {
+					return 'FooPlugin';
+				}
+
+				init() {
+					throw new Error( 'Ooops.' );
+				}
+			}
+
+			try {
+				await Context.create( {
+					plugins: [ ErrorPlugin ],
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+			} catch ( error ) {
+				expect( error ).to.instanceof( CKEditorError );
+				expect( error.message ).match( /^context-initplugins-invalid-plugin/ );
+			}
+		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -336,6 +420,39 @@ describe( 'Context', () => {
 
 					expect( context.plugins.get( PluginA ) ).to.be.an.instanceof( ContextPlugin );
 				} );
+		} );
+
+		it( 'should allow substituting a plugin built in the context', async () => {
+			class ErrorPlugin extends ContextPlugin {
+				static get pluginName() {
+					return 'FooPlugin';
+				}
+
+				init() {
+					throw new Error( 'Ooops.' );
+				}
+			}
+
+			class NoErrorPlugin extends ContextPlugin {
+				static get pluginName() {
+					return 'FooPlugin';
+				}
+
+				init() {
+					return Promise.resolve();
+				}
+			}
+
+			class CustomContext extends Context {}
+
+			CustomContext.builtinPlugins = [ ErrorPlugin ];
+
+			const context = await CustomContext.create( {
+				substitutePlugins: [ NoErrorPlugin ]
+			} );
+
+			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( ContextPlugin );
+			expect( context.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
 		} );
 	} );
 
