@@ -60,17 +60,10 @@ export default class ImageStyleCommand extends Command {
 
 		this.isEnabled = isImage( element ) || isImageInline( element );
 
-		if ( !element ) {
+		if ( !this.isEnabled ) {
 			this.value = false;
 		} else if ( element.hasAttribute( 'imageStyle' ) ) {
-			const attributeValue = element.getAttribute( 'imageStyle' );
-			const arrangement = this._arrangements.get( attributeValue );
-
-			if ( arrangement && ( !arrangement.modelElement || arrangement.modelElement === element.name ) ) {
-				this.value = attributeValue;
-			} else {
-				this.value = false;
-			}
+			this.value = element.getAttribute( 'imageStyle' );
 		} else {
 			this.value = this._defaultArrangements[ element.name ];
 		}

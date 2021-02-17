@@ -19,8 +19,8 @@ const {
 	objectInline
 } = icons;
 
-const DEFAULT_ARRANGEMENTS = {
-	alignInline: {
+export const DEFAULT_ARRANGEMENTS = {
+	inline: {
 		name: 'alignInline',
 		title: 'Image in text line',
 		icon: objectInline,
