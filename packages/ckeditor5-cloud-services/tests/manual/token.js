@@ -10,7 +10,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import CloudServices from '../../src/cloudservices';
 
 import { TOKEN_URL, UPLOAD_URL } from '../_utils/cloud-services-config';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
+import CloudServicesCore from '../../src/cloudservicescore';
 
 const output = document.getElementById( 'output' );
 const requestOutput = document.getElementById( 'request' );

@@ -19,7 +19,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
+import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {

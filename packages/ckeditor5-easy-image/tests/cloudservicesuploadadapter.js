@@ -13,7 +13,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
+import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
 // EasyImage requires the `CloudServicesCore` plugin as a soft-requirement.
 // In order to mock the `Token` and `UploadGateway` classes, we create a new class that extend the `CloudServicesCore` plugin
@@ -47,7 +47,8 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ CloudServices, CloudServicesUploadAdapter, CloudServicesCoreMock ],
+					plugins: [ CloudServices, CloudServicesUploadAdapter ],
+					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
@@ -65,7 +66,8 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ CloudServices, CloudServicesUploadAdapter, CloudServicesCoreMock ]
+					plugins: [ CloudServices, CloudServicesUploadAdapter ],
+					substitutePlugins: [ CloudServicesCoreMock ]
 				} )
 				.then( editor => {
 					expect( UploadGatewayMock.lastToken ).to.be.undefined;
@@ -80,7 +82,8 @@ describe( 'CloudServicesUploadAdapter', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor.create( div, {
-				plugins: [ CloudServices, CloudServicesUploadAdapter, CloudServicesCoreMock ],
+				plugins: [ CloudServices, CloudServicesUploadAdapter ],
+				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'http://upload.mock.url/'

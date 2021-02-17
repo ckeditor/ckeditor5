@@ -15,7 +15,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import SpecialCharacters from '../../src/specialcharacters';
 import SpecialCharactersEssentials from '../../src/specialcharactersessentials';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
+import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -12,7 +12,6 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import MathType from '@wiris/mathtype-ckeditor5';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#mathtype-editor' ), {
@@ -21,7 +20,6 @@ ClassicEditor
 			EasyImage,
 			ImageUpload,
 			CloudServices,
-			CloudServicesCore,
 			MathType
 		],
 		toolbar: {

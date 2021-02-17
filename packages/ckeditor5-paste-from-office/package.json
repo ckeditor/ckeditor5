@@ -17,7 +17,6 @@
     "@ckeditor/ckeditor5-basic-styles": "^25.0.0",
     "@ckeditor/ckeditor5-clipboard": "^25.0.0",
     "@ckeditor/ckeditor5-cloud-services": "^25.0.0",
-    "@ckeditor/ckeditor-cloud-services-core": "^25.0.0",
     "@ckeditor/ckeditor5-core": "^25.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
     "@ckeditor/ckeditor5-easy-image": "^25.0.0",

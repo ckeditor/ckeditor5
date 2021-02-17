@@ -6,14 +6,13 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor-cloud-services-core.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core)
 
-CKEditor Cloud Services Core API:
 
-* {@link module:cloud-services-core/uploadgateway/uploadgateway~UploadGateway Upload Gateway} &mdash; API for file uploads to CKEditor Cloud Services.
+TODO: A note about merge the package into `@ckeditor/ckeditor5-cloud-services`.
 
 ## Installation
 
 ```bash
-npm install --save @ckeditor/ckeditor-cloud-services-core
+npm install --save @ckeditor/ckeditor5-cloud-services
 ```
 
 ## Contribute

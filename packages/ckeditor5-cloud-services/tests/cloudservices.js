@@ -6,13 +6,13 @@
 /* global document */
 
 import CloudServices from '../src/cloudservices';
+import CloudServicesCore from '../src/cloudservicescore';
 import Context from '@ckeditor/ckeditor5-core/src/context';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 import TokenMock from './_utils/tokenmock';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-// CloudServices requires the `CloudServicesCore` plugin as a soft-requirement.
+// CloudServices requires the `CloudServicesCore` plugin as a hard-requirement.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin
 // and override the `#createToken()` method which creates an instance of the `Token` class.
 class CloudServicesCoreMock extends CloudServicesCore {
@@ -33,11 +33,20 @@ describe( 'CloudServices', () => {
 		document.body.removeChild( element );
 	} );
 
+	it( 'should require CloudServicesCore', () => {
+		expect( CloudServices.requires ).to.deep.equal( [ CloudServicesCore ] );
+	} );
+
+	it( 'should be named', () => {
+		expect( CloudServices.pluginName ).to.equal( 'CloudServices' );
+	} );
+
 	describe( 'init()', () => {
 		it( 'should expose its properties based on config', () => {
 			return Context
 				.create( {
-					plugins: [ CloudServices, CloudServicesCoreMock ],
+					plugins: [ CloudServices ],
+					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'http://token-endpoint',
 						additionalOption: 'some-value'
@@ -57,7 +66,8 @@ describe( 'CloudServices', () => {
 		it( 'should work as an editor plugin', () => {
 			return ClassicTestEditor
 				.create( element, {
-					plugins: [ CloudServices, CloudServicesCoreMock ],
+					plugins: [ CloudServices ],
+					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'http://token-endpoint',
 						additionalOption: 'some-value'
@@ -73,7 +83,7 @@ describe( 'CloudServices', () => {
 
 		it( 'should be able to get by its plugin name', () => {
 			return Context
-				.create( { plugins: [ CloudServices, CloudServicesCoreMock ] } )
+				.create( { plugins: [ CloudServices ], substitutePlugins: [ CloudServicesCoreMock ] } )
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( 'CloudServices' );
 
@@ -85,13 +95,13 @@ describe( 'CloudServices', () => {
 
 		it( 'should not throw an error when no config is provided', () => {
 			return Context
-				.create( { plugins: [ CloudServices, CloudServicesCoreMock ] } )
+				.create( { plugins: [ CloudServices ], substitutePlugins: [ CloudServicesCoreMock ] } )
 				.then( context => context.destroy() );
 		} );
 
 		it( 'should not expose any default uploadUrl', () => {
 			return Context
-				.create( { plugins: [ CloudServices, CloudServicesCoreMock ] } )
+				.create( { plugins: [ CloudServices ], substitutePlugins: [ CloudServicesCoreMock ] } )
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( CloudServices );
 
@@ -104,7 +114,8 @@ describe( 'CloudServices', () => {
 		it( 'should use provided uploadUrl', () => {
 			return Context
 				.create( {
-					plugins: [ CloudServices, CloudServicesCoreMock ],
+					plugins: [ CloudServices ],
+					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						uploadUrl: 'https://some-upload-url/'
 					}
@@ -123,7 +134,8 @@ describe( 'CloudServices', () => {
 
 			return Context
 				.create( {
-					plugins: [ CloudServices, CloudServicesCoreMock ],
+					plugins: [ CloudServices ],
+					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'http://token-endpoint'
 					}
@@ -141,7 +153,7 @@ describe( 'CloudServices', () => {
 			TokenMock.initialToken = 'initial-token';
 
 			return Context
-				.create( { plugins: [ CloudServices, CloudServicesCoreMock ] } )
+				.create( { plugins: [ CloudServices ], substitutePlugins: [ CloudServicesCoreMock ] } )
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( CloudServices );
 
@@ -157,7 +169,8 @@ describe( 'CloudServices', () => {
 			TokenMock.initialToken = 'initial-token';
 
 			const context = await Context.create( {
-				plugins: [ CloudServices, CloudServicesCoreMock ],
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'http://token-endpoint'
 				}
@@ -176,7 +189,8 @@ describe( 'CloudServices', () => {
 
 		it( 'should return already registered token', async () => {
 			const context = await Context.create( {
-				plugins: [ CloudServices, CloudServicesCoreMock ],
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'http://token-endpoint'
 				}
@@ -194,7 +208,8 @@ describe( 'CloudServices', () => {
 	describe( 'getTokenFor()', () => {
 		it( 'should return token for registered tokenUrl', async () => {
 			const context = await Context.create( {
-				plugins: [ CloudServices, CloudServicesCoreMock ],
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'http://token-endpoint'
 				}
@@ -211,7 +226,8 @@ describe( 'CloudServices', () => {
 
 		it( 'should throw for not registered tokenUrl', async () => {
 			const context = await Context.create( {
-				plugins: [ CloudServices, CloudServicesCoreMock ],
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'http://token-endpoint'
 				}
@@ -235,7 +251,8 @@ describe( 'CloudServices', () => {
 			TokenMock.initialToken = 'initial-token';
 
 			const context = await Context.create( {
-				plugins: [ CloudServices, CloudServicesCoreMock ],
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'http://token-endpoint'
 				}
@@ -251,7 +268,7 @@ describe( 'CloudServices', () => {
 		} );
 
 		it( 'should not crash when tokenUrl was not provided', async () => {
-			const context = await Context.create( { plugins: [ CloudServices, CloudServicesCoreMock ] } );
+			const context = await Context.create( { plugins: [ CloudServices ], substitutePlugins: [ CloudServicesCoreMock ] } );
 
 			try {
 				await context.destroy();

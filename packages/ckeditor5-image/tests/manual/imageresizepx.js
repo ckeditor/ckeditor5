@@ -16,7 +16,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import ImageResize from '../../src/imageresize';
 import ImageUpload from '../../src/imageupload';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
+import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
 const commonConfig = {
 	plugins: [

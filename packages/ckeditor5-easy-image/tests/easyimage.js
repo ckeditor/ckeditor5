@@ -19,7 +19,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
+import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
 // EasyImage requires the `CloudServicesCore` plugin as a soft-requirement.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin
@@ -52,7 +52,8 @@ describe( 'EasyImage', () => {
 
 		return ClassicTestEditor
 			.create( div, {
-				plugins: [ Clipboard, Image, ImageUpload, CloudServices, EasyImage, CloudServicesCoreMock ],
+				plugins: [ Clipboard, Image, ImageUpload, CloudServices, EasyImage ],
+				substitutePlugins: [ CloudServicesCoreMock ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'def'
@@ -97,9 +98,8 @@ describe( 'EasyImage', () => {
 		it( 'should enable easy image uploading', () => {
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [
-						Clipboard, Image, ImageUpload, CloudServices, Paragraph, EasyImage, CloudServicesCoreMock
-					],
+					plugins: [ Clipboard, Image, ImageUpload, CloudServices, Paragraph, EasyImage ],
+					substitutePlugins: [ CloudServicesCoreMock ],
 					cloudServices: {
 						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
