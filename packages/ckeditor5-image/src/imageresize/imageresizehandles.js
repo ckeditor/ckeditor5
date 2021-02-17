@@ -39,7 +39,7 @@ export default class ImageResizeHandles extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const command = this.editor.commands.get( 'imageResize' );
+		const command = this.editor.commands.get( 'resizeImage' );
 		this.bind( 'isEnabled' ).to( command );
 
 		this._setupResizerCreator();
@@ -100,7 +100,7 @@ export default class ImageResizeHandles extends Plugin {
 					},
 
 					onCommit( newValue ) {
-						editor.execute( 'imageResize', { width: newValue } );
+						editor.execute( 'resizeImage', { width: newValue } );
 					}
 				} );
 

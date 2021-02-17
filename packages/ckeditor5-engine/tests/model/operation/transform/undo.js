@@ -325,7 +325,7 @@ describe( 'transform', () => {
 		john.split();
 		john.setSelection( [ 1, 0 ] );
 		john._processExecute( 'bold' );
-		john._processExecute( 'forwardDelete' );
+		john._processExecute( 'deleteForward' );
 
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 

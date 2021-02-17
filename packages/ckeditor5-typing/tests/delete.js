@@ -34,7 +34,11 @@ describe( 'Delete feature', () => {
 
 	it( 'creates two commands', () => {
 		expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'backward' );
-		expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'forward' );
+		expect( editor.commands.get( 'deleteForward' ) ).to.have.property( 'direction', 'forward' );
+	} );
+
+	it( 'should register forwardDelete command as an alias for deleteForward command', () => {
+		expect( editor.commands.get( 'forwardDelete' ) ).to.equal( editor.commands.get( 'deleteForward' ) );
 	} );
 
 	it( 'listens to the editing view document delete event', () => {
@@ -49,7 +53,7 @@ describe( 'Delete feature', () => {
 		} ) );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithMatch( 'forwardDelete', { unit: 'character', sequence: 1 } ) ).to.be.true;
+		expect( spy.calledWithMatch( 'deleteForward', { unit: 'character', sequence: 1 } ) ).to.be.true;
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
