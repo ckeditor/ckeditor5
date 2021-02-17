@@ -51,9 +51,9 @@ export default class ImageStyleUI extends Plugin {
 		const t = this.editor.t;
 
 		return {
-			'Image in paragraph': t( 'Image in paragraph' ),
-			'Image between paragraphs': t( 'Image between paragraphs' ),
-			'Image in text line': t( 'Image in text line' ),
+			'Wrap text': t( 'Wrap text' ),
+			'Break text': t( 'Break text' ),
+			'In line': t( 'In line' ),
 			'Full size image': t( 'Full size image' ),
 			'Side image': t( 'Side image' ),
 			'Left aligned image': t( 'Left aligned image' ),

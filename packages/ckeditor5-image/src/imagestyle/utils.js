@@ -21,8 +21,8 @@ const {
 
 export const DEFAULT_ARRANGEMENTS = {
 	inline: {
-		name: 'alignInline',
-		title: 'Image in text line',
+		name: 'inline',
+		title: 'In line',
 		icon: objectInline,
 		modelElement: 'imageInline',
 		isDefault: true
@@ -93,14 +93,14 @@ export const DEFAULT_ARRANGEMENTS = {
 const DEFAULT_GROUPS = {
 	inParagraph: {
 		name: 'inParagraph',
-		title: 'Image in paragraph',
+		title: 'Wrap text',
 		defaultItem: 'alignLeft',
 		items: [ 'alignLeft', 'alignRight' ]
 	},
 
 	betweenParagraphs: {
 		name: 'betweenParagraphs',
-		title: 'Image between paragraphs',
+		title: 'Break text',
 		defaultItem: 'alignCenter',
 		items: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
 	}
@@ -148,7 +148,7 @@ export function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePlug
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {
 		return {
 			arrangements: [
-				'alignInline', 'alignLeft', 'alignRight',
+				'inline', 'alignLeft', 'alignRight',
 				'alignCenter', 'alignBlockLeft', 'alignBlockRight'
 			],
 			groups: [ 'inParagraph', 'betweenParagraphs' ]
@@ -159,7 +159,7 @@ export function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePlug
 		};
 	} else if ( isInlinePluginLoaded ) {
 		return {
-			arrangements: [ 'alignInline', 'alignLeft', 'alignRight' ]
+			arrangements: [ 'inline', 'alignLeft', 'alignRight' ]
 		};
 	}
 }
