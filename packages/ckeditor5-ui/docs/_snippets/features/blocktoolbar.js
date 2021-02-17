@@ -25,7 +25,7 @@ BalloonEditor
 			'|',
 			'outdent', 'indent',
 			'|',
-			'blockQuote', 'imageUpload'
+			'blockQuote', 'uploadImage'
 		],
 		cloudServices: CS_CONFIG
 	} )

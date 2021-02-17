@@ -44,19 +44,19 @@ const imageConfig1 = {
 	resizeUnit: '%',
 	resizeOptions: [
 		{
-			name: 'imageResize:original',
+			name: 'resizeImage:original',
 			value: null
 		},
 		{
-			name: 'imageResize:50',
+			name: 'resizeImage:50',
 			value: '50'
 		},
 		{
-			name: 'imageResize:75',
+			name: 'resizeImage:75',
 			value: '75'
 		}
 	],
-	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'imageResize' ],
+	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'resizeImage' ],
 	styles: [
 		'alignLeft',
 		'alignCenter',
@@ -84,17 +84,17 @@ const imageConfig2 = {
 	resizeUnit: '%',
 	resizeOptions: [
 		{
-			name: 'imageResize:original',
+			name: 'resizeImage:original',
 			value: null,
 			icon: 'original'
 		},
 		{
-			name: 'imageResize:50',
+			name: 'resizeImage:50',
 			value: '50',
 			icon: 'medium'
 		},
 		{
-			name: 'imageResize:75',
+			name: 'resizeImage:75',
 			value: '75',
 			icon: 'large'
 		}
@@ -103,9 +103,9 @@ const imageConfig2 = {
 		'imageStyle:alignLeft',
 		'imageStyle:full',
 		'imageStyle:side', '|',
-		'imageResize:50',
-		'imageResize:75',
-		'imageResize:original'
+		'resizeImage:50',
+		'resizeImage:75',
+		'resizeImage:original'
 	],
 	styles: [
 		'full',

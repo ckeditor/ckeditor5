@@ -11,10 +11,12 @@ import Heading from './heading';
 import HeadingEditing from './headingediting';
 import HeadingUI from './headingui';
 import HeadingButtonsUI from './headingbuttonsui';
+import Title from './title';
 
 export default {
 	Heading,
 	HeadingEditing,
 	HeadingUI,
-	HeadingButtonsUI
+	HeadingButtonsUI,
+	Title
 };
