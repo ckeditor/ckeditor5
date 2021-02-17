@@ -79,7 +79,7 @@ describe( 'ImageResizeEditing', () => {
 		} );
 	} );
 
-	describe( 'conversion', () => {
+	describe( 'conversion (block images)', () => {
 		beforeEach( async () => {
 			editor = await createEditor();
 		} );
@@ -133,6 +133,67 @@ describe( 'ImageResizeEditing', () => {
 
 			expect( editor.getData() )
 				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+		} );
+	} );
+
+	describe( 'conversion (inline images)', () => {
+		beforeEach( async () => {
+			editor = await createEditor();
+		} );
+
+		it( 'upcasts 100px width correctly', () => {
+			editor.setData(
+				`<p>Lorem <span class="image-inline" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></span> ipsum</p>`
+			);
+
+			expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.equal( '100px' );
+		} );
+
+		it( 'upcasts 50% width correctly', () => {
+			editor.setData( `<p>Lorem <span class="image-inline" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></span> ipsum</p>` );
+
+			expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.equal( '50%' );
+		} );
+
+		it( 'downcasts 100px width correctly', () => {
+			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="100px"></imageInline></paragraph>` );
+
+			expect( editor.getData() )
+				.to.equal(
+					`<p><img class="image_resized" style="width:100px;" src="${ IMAGE_SRC_FIXTURE }"></p>`
+				);
+		} );
+
+		it( 'downcasts 50% width correctly', () => {
+			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageInline></paragraph>` );
+
+			expect( editor.getData() )
+				.to.equal( `<p><img class="image_resized" style="width:50%;" src="${ IMAGE_SRC_FIXTURE }"></p>` );
+		} );
+
+		it( 'removes style and extra class when no longer resized', () => {
+			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageInline></paragraph>` );
+
+			const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			editor.model.change( writer => {
+				writer.removeAttribute( 'width', imageModel );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( `<p><img src="${ IMAGE_SRC_FIXTURE }"></p>` );
+		} );
+
+		it( 'doesn\'t downcast consumed tokens', () => {
+			editor.conversion.for( 'downcast' ).add( dispatcher =>
+				dispatcher.on( 'attribute:width:imageInline', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:width:imageInline' );
+				}, { priority: 'high' } )
+			);
+			setData( editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageInline></paragraph>` );
+
+			expect( editor.getData() )
+				.to.equal( `<p><img src="${ IMAGE_SRC_FIXTURE }"></p>` );
 		} );
 	} );
 

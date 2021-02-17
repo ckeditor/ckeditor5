@@ -65,7 +65,8 @@ export default class ImageResizeEditing extends Plugin {
 		const command = new ImageResizeCommand( editor );
 
 		this._registerSchema();
-		this._registerConverters();
+		this._registerConverters( 'image' );
+		this._registerConverters( 'imageInline' );
 
 		editor.commands.add( 'imageResize', command );
 	}
@@ -91,13 +92,14 @@ export default class ImageResizeEditing extends Plugin {
 	 * Registers image resize converters.
 	 *
 	 * @private
+	 * @param {'image'|'imageInline'} imageType The type of the image.
 	 */
-	_registerConverters() {
+	_registerConverters( imageType ) {
 		const editor = this.editor;
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:width:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
@@ -119,6 +121,20 @@ export default class ImageResizeEditing extends Plugin {
 			.attributeToAttribute( {
 				view: {
 					name: 'figure',
+					styles: {
+						width: /.+/
+					}
+				},
+				model: {
+					key: 'width',
+					value: viewElement => viewElement.getStyle( 'width' )
+				}
+			} );
+
+		editor.conversion.for( 'upcast' )
+			.attributeToAttribute( {
+				view: {
+					name: 'span',
 					styles: {
 						width: /.+/
 					}
