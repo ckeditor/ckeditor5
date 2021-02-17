@@ -47,7 +47,10 @@ export function modelToViewStyleAttribute( arrangements ) {
  */
 export function viewToModelStyleAttribute( arrangements ) {
 	// Convert only non–default arrangements.
-	const nonDefaultArrangements = arrangements.filter( style => !style.isDefault );
+	const nonDefaultArrangements = {
+		imageInline: arrangements.filter( arrangement => !arrangement.isDefault && arrangement.modelElement.includes( 'imageInline' ) ),
+		image: arrangements.filter( arrangement => !arrangement.isDefault && arrangement.modelElement.includes( 'image' ) )
+	};
 
 	return ( evt, data, conversionApi ) => {
 		if ( !data.modelRange ) {
@@ -64,7 +67,7 @@ export function viewToModelStyleAttribute( arrangements ) {
 		}
 
 		// Convert arrangements one by one.
-		for ( const arrangement of nonDefaultArrangements ) {
+		for ( const arrangement of nonDefaultArrangements[ modelImageElement.name ] ) {
 			// Try to consume class corresponding with arrangement.
 			if ( conversionApi.consumable.consume( viewElement, { classes: arrangement.className } ) ) {
 				// And convert this arrangement to model attribute.

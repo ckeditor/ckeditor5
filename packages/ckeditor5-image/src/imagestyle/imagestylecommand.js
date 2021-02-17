@@ -45,7 +45,9 @@ export default class ImageStyleCommand extends Command {
 		 */
 		this._arrangements = new Map( arrangements.map( arrangement => {
 			if ( arrangement.isDefault ) {
-				this._defaultArrangements[ arrangement.modelElement ] = arrangement.name;
+				for ( const modelElementName of arrangement.modelElement ) {
+					this._defaultArrangements[ modelElementName ] = arrangement.name;
+				}
 			}
 
 			return [ arrangement.name, arrangement ];
@@ -84,11 +86,11 @@ export default class ImageStyleCommand extends Command {
 		const model = this.editor.model;
 
 		const imageElement = model.document.selection.getSelectedElement();
-		const requestedType = this._arrangements.get( requestedArrangement ).modelElement;
+		const supportedTypes = this._arrangements.get( requestedArrangement ).modelElement;
 
 		// Change the image type if a style requires it.
-		if ( requestedType && requestedType !== imageElement.name ) {
-			this.editor.execute( requestedType === 'image' ? 'imageTypeBlock' : 'imageTypeInline' );
+		if ( !supportedTypes.includes( imageElement.name ) ) {
+			this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
 		}
 
 		model.change( writer => {

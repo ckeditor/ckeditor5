@@ -24,7 +24,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'inline',
 		title: 'In line',
 		icon: objectInline,
-		modelElement: 'imageInline',
+		modelElement: [ 'imageInline' ],
 		isDefault: true
 	},
 
@@ -33,7 +33,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'alignLeft',
 		title: 'Left aligned image',
 		icon: objectInlineLeft,
-		modelElement: false,
+		modelElement: [ 'image', 'imageInline' ],
 		className: 'image-style-align-left'
 	},
 
@@ -42,7 +42,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'alignRight',
 		title: 'Right aligned image',
 		icon: objectInlineRight,
-		modelElement: false,
+		modelElement: [ 'image', 'imageInline' ],
 		className: 'image-style-align-right'
 	},
 
@@ -50,7 +50,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'alignBlockLeft',
 		title: 'Left aligned image',
 		icon: objectLeft,
-		modelElement: 'image',
+		modelElement: [ 'image' ],
 		className: 'image-style-block-align-left'
 	},
 
@@ -59,7 +59,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'alignCenter',
 		title: 'Centered image',
 		icon: objectCenter,
-		modelElement: 'image',
+		modelElement: [ 'image' ],
 		className: 'image-style-align-center'
 	},
 
@@ -67,7 +67,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'alignBlockRight',
 		title: 'Right aligned image',
 		icon: objectRight,
-		modelElement: 'image',
+		modelElement: [ 'image' ],
 		className: 'image-style-block-align-right'
 	},
 
@@ -76,7 +76,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'full',
 		title: 'Full size image',
 		icon: objectFullWidth,
-		modelElement: 'image',
+		modelElement: [ 'image' ],
 		isDefault: true
 	},
 
@@ -85,7 +85,7 @@ export const DEFAULT_ARRANGEMENTS = {
 		name: 'side',
 		title: 'Side image',
 		icon: objectInlineRight,
-		modelElement: 'image',
+		modelElement: [ 'image' ],
 		className: 'image-style-side'
 	}
 };
