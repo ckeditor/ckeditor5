@@ -120,20 +120,17 @@ function buildUpcastInlineDefinitions( options ) {
 	const definitions = [];
 
 	for ( const option of options ) {
-		const view = {
-			key: 'style',
-			value: {
-				'text-align': option
-			}
-		};
-		const model = {
-			key: 'alignment',
-			value: option
-		};
-
 		definitions.push( {
-			view,
-			model
+			view: {
+				key: 'style',
+				value: {
+					'text-align': option
+				}
+			},
+			model: {
+				key: 'alignment',
+				value: option
+			}
 		} );
 	}
 

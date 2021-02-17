@@ -153,8 +153,6 @@ describe( 'AlignmentEditing', () => {
 
 				setModelData( model, '<paragraph>[]x</paragraph>' );
 
-				expect( newEditor.getData() ).to.equal( '<p>x</p>' );
-
 				newEditor.execute( 'alignment', { value: 'left' } );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
@@ -248,8 +246,6 @@ describe( 'AlignmentEditing', () => {
 
 			setModelData( model, '<paragraph>[]x</paragraph>' );
 
-			expect( newEditor.getData() ).to.equal( '<p>x</p>' );
-
 			newEditor.execute( 'alignment', { value: 'center' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
@@ -331,8 +327,6 @@ describe( 'AlignmentEditing', () => {
 
 			setModelData( model, '<paragraph>[]x</paragraph>' );
 
-			expect( newEditor.getData() ).to.equal( '<p>x</p>' );
-
 			newEditor.execute( 'alignment', { value: 'right' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph alignment="right">[]x</paragraph>' );
@@ -374,8 +368,6 @@ describe( 'AlignmentEditing', () => {
 			const model = newEditor.model;
 
 			setModelData( model, '<paragraph>[]x</paragraph>' );
-
-			expect( newEditor.getData() ).to.equal( '<p>x</p>' );
 
 			newEditor.execute( 'alignment', { value: 'justify' } );
 
