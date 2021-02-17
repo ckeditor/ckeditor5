@@ -257,7 +257,7 @@ ClassicEditor.defaultConfig = {
 			'link',
 			'bulletedList',
 			'numberedList',
-			'imageUpload',
+			'uploadImage',
 			'blockQuote',
 			'undo',
 			'redo'
@@ -344,7 +344,7 @@ ClassicEditor
 			'link',
 			'bulletedList',
 			'numberedList',
-			'imageUpload',
+			'uploadImage',
 			'blockQuote',
 			'undo',
 			'redo'

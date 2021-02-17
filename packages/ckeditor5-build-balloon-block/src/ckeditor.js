@@ -76,7 +76,7 @@ BalloonEditor.defaultConfig = {
 		'indent',
 		'outdent',
 		'|',
-		'imageUpload',
+		'uploadImage',
 		'blockQuote',
 		'insertTable',
 		'mediaEmbed',

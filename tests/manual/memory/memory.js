@@ -63,7 +63,7 @@ function initEditor() {
 				'|',
 				'bulletedList', 'numberedList', 'todoList',
 				'|',
-				'blockQuote', 'imageUpload', 'insertTable', 'mediaEmbed', 'codeBlock',
+				'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 				'|',
 				'alignment', 'outdent', 'indent',
 				'|',
