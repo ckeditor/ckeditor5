@@ -482,6 +482,13 @@ export default class PluginCollection {
 				const indexInPluginConstructors = pluginConstructors.indexOf( pluginToReplace );
 
 				if ( indexInPluginConstructors === -1 ) {
+					// The Context feature can substitute plugins as well.
+					// It may happen that the editor will be created with the given context, where the plugin for substitute
+					// was already replaced. In such a case, we don't want to do it again.
+					if ( that._contextPlugins.has( pluginToReplace ) ) {
+						return;
+					}
+
 					/**
 					 * The replaced plugin will not be loaded so it cannot be replaced.
 					 *

@@ -7,6 +7,7 @@
 
 import Editor from '../src/editor/editor';
 import PluginCollection from '../src/plugincollection';
+import Context from '../src/context';
 import Plugin from '../src/plugin';
 import ContextPlugin from '../src/contextplugin';
 import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -754,6 +755,46 @@ describe( 'PluginCollection', () => {
 						pluginName: 'A'
 					} );
 				}
+			} );
+
+			// The Context feature has an own list of plugins that can be also substituted.
+			// Also, the context can be a part of an editor instance which means, that the context's
+			// plugins will be a part of the editor's plugins. However, the editor will not initialize the plugin,
+			// hence the substitute option could throw an error "plugincollection-plugin-for-replacing-not-loaded".
+			it( 'does not throw an error if a plugin for substitute was loaded by the Context feature', async () => {
+				class ContextPluginA extends ContextPlugin {
+					static get pluginName() {
+						return 'ContextPluginA';
+					}
+				}
+				class ContextPluginB extends ContextPlugin {
+					static get pluginName() {
+						return 'ContextPluginB';
+					}
+
+					static get requires() {
+						return [ ContextPluginA ];
+					}
+				}
+
+				class ContextPluginMockA extends ContextPlugin {
+					static get pluginName() {
+						return 'ContextPluginA';
+					}
+				}
+
+				const sharedConfig = {
+					plugins: [ ContextPluginB ],
+					substitutePlugins: [ ContextPluginMockA ]
+				};
+
+				const context = new Context( sharedConfig );
+
+				await context.initPlugins();
+
+				const plugins = new PluginCollection( editor, [ PluginA ], context.plugins );
+
+				return plugins.init( sharedConfig.plugins, [], sharedConfig.substitutePlugins );
 			} );
 		} );
 	} );
