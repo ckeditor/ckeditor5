@@ -109,7 +109,7 @@ export default class DataSchema {
 
 		schema.register( name, schemaDefinition );
 
-		if ( schema.allowText ) {
+		if ( schemaDefinition.allowText ) {
 			schema.extend( '$text', { allowIn: name } );
 		}
 	}
