@@ -84,7 +84,7 @@ const DEFAULT_ARRANGEMENTS = {
 	side: {
 		name: 'side',
 		title: 'Side image',
-		icon: objectRight,
+		icon: objectInlineRight,
 		modelElement: 'image',
 		className: 'image-style-side'
 	}
