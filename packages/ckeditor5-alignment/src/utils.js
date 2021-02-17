@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { CKEditorError } from '../../../src/utils';
+
 /**
  * @module alignment/utils
  */
@@ -16,6 +18,11 @@
  * * `'justify'`
  */
 export const supportedOptions = [ 'left', 'right', 'center', 'justify' ];
+export const defaultOptions = supportedOptions.map( option => {
+	return Object.assign( {}, {
+		name: option
+	} );
+} );
 
 /**
  * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
@@ -43,4 +50,42 @@ export function isDefault( alignment, locale ) {
 	} else {
 		return alignment === 'left';
 	}
+}
+
+export function normalizeAlignmentOptions( configuredOptions = [] ) {
+	return configuredOptions.map( ( option, index, options ) => {
+		let optionObj;
+
+		if ( typeof option == 'string' ) {
+			optionObj = Object.assign( {}, { name: option } );
+		} else {
+			optionObj = Object.assign( {}, defaultOptions[ index ], option );
+		}
+
+		const succeedingOptions = options.slice( index + 1 );
+		const nameAlreadyExists = succeedingOptions.some( item => {
+			const optionName = item.name || item;
+
+			return optionName == optionObj.name;
+		} );
+
+		if ( nameAlreadyExists ) {
+			// TODO: Fill in api docs.
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+			throw new CKEditorError( 'alignment-config-name-already-defined' );
+		}
+
+		const classNameAlreadyExists = optionObj.className && succeedingOptions.some(
+			// The `item.className` can be undefined. We shouldn't count it as a duplicate.
+			item => item.className && item.className == optionObj.className
+		);
+
+		if ( classNameAlreadyExists ) {
+			// TODO: Fill in api docs.
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+			throw new CKEditorError( 'alignment-config-classname-already-defined' );
+		}
+
+		return optionObj;
+	} );
 }

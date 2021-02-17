@@ -8,10 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { CKEditorError } from '../../../src/utils';
 
 import AlignmentCommand from './alignmentcommand';
-import { isDefault, isSupported, supportedOptions } from './utils';
+import { defaultOptions, isDefault, isSupported, normalizeAlignmentOptions } from './utils';
 
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
@@ -33,7 +32,7 @@ export default class AlignmentEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'alignment', {
-			options: [ ...supportedOptions ],
+			options: [ ...defaultOptions ],
 			classNames: []
 		} );
 	}
@@ -46,28 +45,19 @@ export default class AlignmentEditing extends Plugin {
 		const locale = editor.locale;
 		const schema = editor.model.schema;
 
-		// Filter out unsupported options.
-		const enabledOptions = editor.config.get( 'alignment.options' ).filter( isSupported );
-		const classNameConfig = editor.config.get( 'alignment.classNames' );
+		const alignmentOptions = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) );
 
-		if ( !Array.isArray( classNameConfig ) ||
-			( classNameConfig.length && classNameConfig.length != enabledOptions.length )
-		) {
-			/**
-			 * The number of items in `alignment.classNames` should match number of items in `alignment.options`.
-			 *
-			 * @error alignment-config-classnames-not-matching
-			 * @param {Array.<String>} enabledOptions Available alignment options set in config.
-			 * @param {Array.<String>} classNameConfig Classes listed in the config.
-			 */
-			throw new CKEditorError( 'alignment-config-classnames-not-matching', null, { enabledOptions, classNameConfig } );
-		}
+		// Filter out unsupported options.
+		const enabledOptions = alignmentOptions.map( option => option.name ).filter( isSupported );
+		const classNameConfig = alignmentOptions.map( option => option.className );
 
 		// Allow alignment attribute on all blocks.
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
 		editor.model.schema.setAttributeProperties( 'alignment', { isFormatting: true } );
 
-		const shouldUseClasses = classNameConfig.length;
+		const shouldUseClasses = classNameConfig.filter( className => !!className ).length;
+
+		// There is no need for converting alignment that's the same as current text direction.
 		const options = enabledOptions.filter( option => !isDefault( option, locale ) );
 
 		if ( shouldUseClasses ) {
@@ -79,18 +69,18 @@ export default class AlignmentEditing extends Plugin {
 				return classNameMap;
 			}, {} );
 
-			const definition = _buildClassDefinition( options, alignmentClassNames );
+			const definition = buildClassDefinition( options, alignmentClassNames );
 
 			editor.conversion.attributeToAttribute( definition );
 		} else {
 			// Downcast inline styles.
 
-			const definition = _buildDowncastInlineDefinition( options );
+			const definition = buildDowncastInlineDefinition( options );
 
 			editor.conversion.for( 'downcast' ).attributeToAttribute( definition );
 		}
 
-		const upcastInlineDefinitions = _buildUpcastInlineDefinitions( options );
+		const upcastInlineDefinitions = buildUpcastInlineDefinitions( options );
 
 		// Always upcast from inline styles.
 		for ( const definition of upcastInlineDefinitions ) {
@@ -103,7 +93,7 @@ export default class AlignmentEditing extends Plugin {
 
 // Prepare downcast conversion definition for inline alignment styling.
 // @private
-function _buildDowncastInlineDefinition( options ) {
+function buildDowncastInlineDefinition( options ) {
 	const definition = {
 		model: {
 			key: 'alignment',
@@ -126,7 +116,7 @@ function _buildDowncastInlineDefinition( options ) {
 
 // Prepare upcast definitions for inline alignment styles.
 // @private
-function _buildUpcastInlineDefinitions( options ) {
+function buildUpcastInlineDefinitions( options ) {
 	const definitions = [];
 
 	for ( const option of options ) {
@@ -152,7 +142,7 @@ function _buildUpcastInlineDefinitions( options ) {
 
 // Prepare conversion definitions for upcast and downcast alignment with classes.
 // @private
-function _buildClassDefinition( options, alignmentClassNames ) {
+function buildClassDefinition( options, alignmentClassNames ) {
 	const definition = {
 		model: {
 			key: 'alignment',
