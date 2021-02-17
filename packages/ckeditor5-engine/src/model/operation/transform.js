@@ -2111,7 +2111,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
 	}
 
-	// Case 3:
+	// Case 2:
 	//
 	// Split is at a position where nodes were moved.
 	//
@@ -2137,7 +2137,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		return [ a ];
 	}
 
-	// Case 2:
+	// Case 3:
 	//
 	// If the split position is inside the moved range, we need to shift the split position to a proper place.
 	// The position cannot be moved together with moved range because that would result in splitting of an incorrect element.
