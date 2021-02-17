@@ -124,27 +124,45 @@ export default class DataFilter {
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
 			model: ( viewElement, conversionApi ) => {
+				// We will stash only attributes which are not processed by any other features
+				// and should be left unchaged.
+				const viewConsumable = conversionApi.consumable;
+
 				const viewAttributes = [];
 				const allowedAttributes = this._getAllowedAttributes( viewElement );
 
+				// Stash attributes.
 				for ( const key of allowedAttributes.attributes ) {
-					viewAttributes.push( [ key, viewElement.getAttribute( key ) ] );
+					if ( viewConsumable.test( viewElement, { attributes: key } ) ) {
+						viewAttributes.push( [ key, viewElement.getAttribute( key ) ] );
+					}
 				}
 
-				if ( allowedAttributes.classes.length ) {
+				// Stash classes.
+				const classes = allowedAttributes.classes.filter( className => {
+					return viewConsumable.test( viewElement, { classes: className } );
+				} );
+
+				if ( classes.length ) {
 					viewAttributes.push( [ 'class', allowedAttributes.classes ] );
 				}
 
-				if ( allowedAttributes.styles.length ) {
+				// Stash styles.
+				const styles = allowedAttributes.styles.filter( styleName => {
+					return viewConsumable.test( viewElement, { styles: styleName } );
+				} );
+
+				if ( styles.length ) {
 					const stylesObj = {};
 
-					for ( const styleName of allowedAttributes.styles ) {
+					for ( const styleName of styles ) {
 						stylesObj[ styleName ] = viewElement.getStyle( styleName );
 					}
 
 					viewAttributes.push( [ 'style', stylesObj ] );
 				}
 
+				// Keep compatibility attributes inside a single model attribute.
 				let attributesToAdd;
 				if ( viewAttributes.length ) {
 					attributesToAdd = [ [ DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes ] ];
