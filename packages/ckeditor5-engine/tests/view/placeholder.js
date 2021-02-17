@@ -267,6 +267,47 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/9046
+		it( 'should set attribute for the direct placeholder even if there is also indirect one (isDirectHost=false)', () => {
+			setData( view, '<p></p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo',
+				isDirectHost: false
+			} );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot.getChild( 0 ),
+				text: 'bar',
+				isDirectHost: true
+			} );
+
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
+			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
+		it( 'should not trigger infinite post-fixers loop (isDirectHost=false)', () => {
+			setData( view, '<p></p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo bar baz',
+				isDirectHost: false
+			} );
+
+			view.forceRender();
+
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
 		it( 'should not set class when there is no children (isDirectHost=false)', () => {
 			setData( view, '<p></p><p>foobar</p>' );
 			viewDocument.isFocused = false;
