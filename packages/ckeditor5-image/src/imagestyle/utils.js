@@ -10,6 +10,12 @@
 import { icons } from 'ckeditor5/src/core';
 import { logWarning } from 'ckeditor5/src/utils';
 
+export default {
+	normalizeStyles,
+	getDefaultStylesConfiguration,
+	getDefaultArrangements
+};
+
 const {
 	objectFullWidth,
 	objectLeft,
@@ -19,7 +25,7 @@ const {
 	objectInline
 } = icons;
 
-export const DEFAULT_ARRANGEMENTS = {
+const DEFAULT_ARRANGEMENTS = {
 	inline: {
 		name: 'inline',
 		title: 'In line',
@@ -91,15 +97,15 @@ export const DEFAULT_ARRANGEMENTS = {
 };
 
 const DEFAULT_GROUPS = {
-	inParagraph: {
-		name: 'inParagraph',
+	wrapText: {
+		name: 'wrapText',
 		title: 'Wrap text',
 		defaultItem: 'alignLeft',
 		items: [ 'alignLeft', 'alignRight' ]
 	},
 
-	betweenParagraphs: {
-		name: 'betweenParagraphs',
+	breakText: {
+		name: 'breakText',
 		title: 'Break text',
 		defaultItem: 'alignCenter',
 		items: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
@@ -124,7 +130,7 @@ const DEFAULT_ICONS = {
 	inLine: objectInline
 };
 
-export function normalizeStyles( options ) {
+function normalizeStyles( options ) {
 	const configuredArrangements = options.configuredStyles.arrangements || [];
 	const configuredGroups = options.configuredStyles.groups || [];
 
@@ -144,14 +150,14 @@ export function normalizeStyles( options ) {
 	return { arrangements, groups };
 }
 
-export function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) {
+function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) {
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {
 		return {
 			arrangements: [
 				'inline', 'alignLeft', 'alignRight',
 				'alignCenter', 'alignBlockLeft', 'alignBlockRight'
 			],
-			groups: [ 'inParagraph', 'betweenParagraphs' ]
+			groups: [ 'wrapText', 'breakText' ]
 		};
 	} else if ( isBlockPluginLoaded ) {
 		return {
@@ -162,6 +168,8 @@ export function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePlug
 			arrangements: [ 'inline', 'alignLeft', 'alignRight' ]
 		};
 	}
+
+	return {};
 }
 
 function normalizeDefinition( defaults, definition, definitionType ) {
@@ -241,4 +249,8 @@ function extendStyle( source, style ) {
 	}
 
 	return extendedStyle;
+}
+
+function getDefaultArrangements() {
+	return DEFAULT_ARRANGEMENTS;
 }

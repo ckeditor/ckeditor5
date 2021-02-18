@@ -121,7 +121,7 @@ function getConfig( type ) {
 				]
 			},
 			toolbar: [
-				'imageStyle:alignInline',
+				'imageStyle:inline',
 				'imageStyle:inParagraph',
 				'imageStyle:betweenParagraphs',
 				'|',
@@ -131,7 +131,7 @@ function getConfig( type ) {
 
 		onlyToolbar: {
 			toolbar: [
-				'imageStyle:alignInline',
+				'imageStyle:inline',
 				'imageStyle:inParagraph',
 				'imageStyle:betweenParagraphs',
 				'|',

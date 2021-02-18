@@ -7,7 +7,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { DEFAULT_ARRANGEMENTS } from '../../src/imagestyle/utils';
+import utils from '../../src/imagestyle/utils';
 
 describe( 'ImageStyleCommand', () => {
 	const {
@@ -16,7 +16,7 @@ describe( 'ImageStyleCommand', () => {
 		alignLeft: anyImage,
 		inline: onlyInline,
 		alignCenter: onlyBlock
-	} = DEFAULT_ARRANGEMENTS;
+	} = utils.getDefaultArrangements();
 
 	let editor, model, command, editorElement;
 

@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageStyleCommand from './imagestylecommand';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import { normalizeStyles, getDefaultStylesConfiguration } from './utils';
+import utils from './utils';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -30,6 +30,7 @@ export default class ImageStyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const { normalizeStyles, getDefaultStylesConfiguration } = utils;
 		const editor = this.editor;
 		const isBlockPluginLoaded = editor.plugins.has( 'ImageBlockEditing' );
 		const isInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
