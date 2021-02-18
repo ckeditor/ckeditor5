@@ -63,19 +63,11 @@ export const BR_FILLER = domDocument => {
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
- * Inline filler which is a sequence of the zero width spaces.
+ * Inline filler which is a sequence of the word joiners.
  *
  * @type {String}
  */
-export const INLINE_FILLER = ( () => {
-	let inlineFiller = '';
-
-	for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
-		inlineFiller += '\u200b';
-	}
-
-	return inlineFiller;
-} )(); // Usu IIF so the INLINE_FILLER appears as a constant in the docs.
+export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
