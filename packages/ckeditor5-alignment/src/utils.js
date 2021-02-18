@@ -52,40 +52,49 @@ export function isDefault( alignment, locale ) {
 	}
 }
 
+/**
+ * Brings the configuration to the common form, an array of objects.
+ *
+ * @param {Array.<String|Object>} configuredOptions Alignment plugin configuration.
+ * @returns {Array.<Object>} Normalized object holding the configuration.
+ */
 export function normalizeAlignmentOptions( configuredOptions = [] ) {
-	return configuredOptions.map( ( option, index, options ) => {
-		let optionObj;
+	return configuredOptions.map( normalizeOption );
+}
 
-		if ( typeof option == 'string' ) {
-			optionObj = Object.assign( {}, { name: option } );
-		} else {
-			optionObj = Object.assign( {}, defaultOptions[ index ], option );
-		}
+// @private
+function normalizeOption( option, index, allOptions ) {
+	let optionObj;
 
-		const succeedingOptions = options.slice( index + 1 );
-		const nameAlreadyExists = succeedingOptions.some( item => {
-			const optionName = item.name || item;
+	if ( typeof option == 'string' ) {
+		optionObj = Object.assign( {}, { name: option } );
+	} else {
+		optionObj = Object.assign( {}, defaultOptions[ index ], option );
+	}
 
-			return optionName == optionObj.name;
-		} );
+	const succeedingOptions = allOptions.slice( index + 1 );
+	const nameAlreadyExists = succeedingOptions.some( item => {
+		const optionName = item.name || item;
 
-		if ( nameAlreadyExists ) {
-			// TODO: Fill in api docs.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'alignment-config-name-already-defined' );
-		}
-
-		const classNameAlreadyExists = optionObj.className && succeedingOptions.some(
-			// The `item.className` can be undefined. We shouldn't count it as a duplicate.
-			item => item.className && item.className == optionObj.className
-		);
-
-		if ( classNameAlreadyExists ) {
-			// TODO: Fill in api docs.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'alignment-config-classname-already-defined' );
-		}
-
-		return optionObj;
+		return optionName == optionObj.name;
 	} );
+
+	if ( nameAlreadyExists ) {
+		// TODO: Fill in api docs.
+		// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+		throw new CKEditorError( 'alignment-config-name-already-defined' );
+	}
+
+	const classNameAlreadyExists = optionObj.className && succeedingOptions.some(
+		// The `item.className` can be undefined. We shouldn't count it as a duplicate.
+		item => item.className && item.className == optionObj.className
+	);
+
+	if ( classNameAlreadyExists ) {
+		// TODO: Fill in api docs.
+		// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+		throw new CKEditorError( 'alignment-config-classname-already-defined' );
+	}
+
+	return optionObj;
 }
