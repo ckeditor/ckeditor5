@@ -22,7 +22,7 @@ BaloonBlockEditor
 			'outdent',
 			'indent',
 			'|',
-			'imageUpload',
+			'uploadImage',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed'
