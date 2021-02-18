@@ -276,7 +276,7 @@ describe( 'Element', () => {
 			expect( el.isSimilar( other ) ).to.be.false;
 		} );
 
-		it( 'should return false when isInline property is not the same', () => {
+		it( 'should return false when isAllowedInsideAttributeElement property is not the same', () => {
 			const other = el._clone();
 			other._isAllowedInsideAttributeElement = true;
 

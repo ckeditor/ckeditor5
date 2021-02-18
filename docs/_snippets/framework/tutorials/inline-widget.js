@@ -195,7 +195,7 @@ class PlaceholderEditing extends Plugin {
 			const placeholderView = viewWriter.createContainerElement( 'span', {
 				class: 'placeholder'
 			}, {
-				isInline: true
+				isAllowedInsideAttributeElement: true
 			} );
 
 			// Insert the placeholder name (as a text).

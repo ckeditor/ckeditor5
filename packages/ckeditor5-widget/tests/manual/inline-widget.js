@@ -74,7 +74,7 @@ class InlineWidget extends Plugin {
 		this._createToolbarButton();
 
 		function createPlaceholderView( modelItem, { writer } ) {
-			const widgetElement = writer.createContainerElement( 'placeholder', null, { isInline: true } );
+			const widgetElement = writer.createContainerElement( 'placeholder', null, { isAllowedInsideAttributeElement: true } );
 			const viewText = writer.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
 
 			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );

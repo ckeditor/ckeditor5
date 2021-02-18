@@ -358,7 +358,7 @@ export default class PlaceholderEditing extends Plugin {
 			const placeholderView = viewWriter.createContainerElement( 'span', {
 				class: 'placeholder'
 			}, {
-				isInline: true
+				isAllowedInsideAttributeElement: true
 			} );
 
 			// Insert the placeholder name (as a text).
@@ -409,7 +409,7 @@ export default class PlaceholderCommand extends Command {
 			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...
 			const placeholder = writer.createElement( 'placeholder', {
 				...Object.fromEntries( selection.getAttributes() ),
-                name: value 
+                name: value
 			} );
 
 			// ... and insert it into the document.
@@ -896,7 +896,7 @@ class PlaceholderEditing extends Plugin {
 
 			// The inline widget can have the same attributes as text (for example linkHref, bold).
 			allowAttributesOf: '$text',
-            
+
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
 		} );
