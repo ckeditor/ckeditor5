@@ -26,6 +26,7 @@ describe( 'Element', () => {
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( el ).to.have.property( 'parent' ).that.is.null;
 			expect( count( el.getAttributeKeys() ) ).to.equal( 0 );
+			expect( el.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
@@ -34,6 +35,7 @@ describe( 'Element', () => {
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( el.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 
 		it( 'should create element with attributes as map', () => {
@@ -45,6 +47,7 @@ describe( 'Element', () => {
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( el.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 
 		it( 'should stringify attributes', () => {
@@ -53,6 +56,7 @@ describe( 'Element', () => {
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'true' );
 			expect( el.getAttribute( 'bar' ) ).to.be.undefined;
 			expect( el.getAttribute( 'object' ) ).to.equal( '[object Object]' );
+			expect( el.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 
 		it( 'should create element with children', () => {
@@ -62,6 +66,7 @@ describe( 'Element', () => {
 			expect( parent ).to.have.property( 'name' ).that.equals( 'div' );
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
+			expect( parent.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 
 		it( 'should move class attribute to class set ', () => {
@@ -72,6 +77,7 @@ describe( 'Element', () => {
 			expect( el._classes.has( 'one' ) ).to.be.true;
 			expect( el._classes.has( 'two' ) ).to.be.true;
 			expect( el._classes.has( 'three' ) ).to.be.true;
+			expect( el.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 
 		it( 'should move style attribute to style proxy', () => {
@@ -86,6 +92,7 @@ describe( 'Element', () => {
 			expect( el._styles.getAsString( 'two' ) ).to.equal( 'style2' );
 			expect( el._styles.has( 'three' ) ).to.be.true;
 			expect( el._styles.getAsString( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+			expect( el.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 	} );
 
