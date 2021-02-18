@@ -16,7 +16,6 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import ImageResize from '../../src/imageresize';
 import ImageUpload from '../../src/imageupload';
-import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
 const commonConfig = {
 	plugins: [
@@ -26,7 +25,6 @@ const commonConfig = {
 		Indent,
 		IndentBlock,
 		CloudServices,
-		CloudServicesCore,
 		EasyImage
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',

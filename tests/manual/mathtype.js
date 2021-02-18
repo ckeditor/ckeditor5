@@ -26,7 +26,6 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import MathType from '@wiris/mathtype-ckeditor5';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import CloudServicesCore from '@ckeditor/ckeditor-cloud-services-core/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -41,7 +40,6 @@ ClassicEditor
 			Superscript,
 			ImageUpload,
 			CloudServices,
-			CloudServicesCore,
 			EasyImage,
 			Font,
 			Highlight,

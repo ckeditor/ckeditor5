@@ -12,11 +12,10 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import './custom.css';
-import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, CloudServicesCore ],
+		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices ],
 		toolbar: {
 			items: [
 				'heading',
