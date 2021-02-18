@@ -32,7 +32,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'CloudServicesCore', 'CloudServices', FileRepository ];
+		return [ 'CloudServices', FileRepository ];
 	}
 
 	/**
