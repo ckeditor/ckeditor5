@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { isDefault, isSupported, supportedOptions } from '../src/utils';
+import { CKEditorError } from '../../../src/utils';
+import { isDefault, isSupported, supportedOptions, normalizeAlignmentOptions } from '../src/utils';
 
 describe( 'utils', () => {
 	describe( 'isDefault()', () => {
@@ -45,6 +46,89 @@ describe( 'utils', () => {
 	describe( 'supportedOptions', () => {
 		it( 'should be set', () => {
 			expect( supportedOptions ).to.deep.equal( [ 'left', 'right', 'center', 'justify' ] );
+		} );
+	} );
+
+	describe( 'normalizeAlignmentOptions', () => {
+		it( 'does nothing when no parameters are provided', () => {
+			expect( () => normalizeAlignmentOptions() ).not.to.throw();
+		} );
+
+		it( 'throws when the name already exists', () => {
+			const config = [
+				'center',
+				{
+					name: 'center'
+				}
+			];
+			let error;
+
+			try {
+				normalizeAlignmentOptions( config );
+			} catch ( err ) {
+				error = err;
+			}
+
+			expect( error.constructor ).to.equal( CKEditorError );
+			expect( error ).to.match( /alignment-config-name-already-defined/ );
+		} );
+
+		it( 'throws when the className already exists', () => {
+			const config = [
+				'left',
+				{
+					name: 'center',
+					className: 'foo-center'
+				},
+				{
+					name: 'justify',
+					className: 'foo-center'
+				}
+			];
+			let error;
+
+			try {
+				normalizeAlignmentOptions( config );
+			} catch ( err ) {
+				error = err;
+			}
+
+			expect( error.constructor ).to.equal( CKEditorError );
+			expect( error ).to.match( /alignment-config-classname-already-defined/ );
+		} );
+
+		it( 'normalizes mixed input into an config array of objects', () => {
+			const config = [
+				'left',
+				{
+					name: 'right'
+				},
+				'center',
+				{
+					name: 'justify',
+					className: 'foo-center'
+				}
+			];
+
+			const result = normalizeAlignmentOptions( config );
+
+			expect( result ).to.deep.equal(
+				[
+					{
+						'name': 'left'
+					},
+					{
+						'name': 'right'
+					},
+					{
+						'name': 'center'
+					},
+					{
+						'className': 'foo-center',
+						'name': 'justify'
+					}
+				]
+			);
 		} );
 	} );
 } );
