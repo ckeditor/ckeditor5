@@ -229,7 +229,10 @@ function updatePlaceholder( writer, element, config ) {
 		wasViewModified = true;
 	}
 
-	if ( needsPlaceholder( hostElement, config.keepOnFocus ) ) {
+	// If the host element is not a direct host then placeholder is needed only when there is only one element.
+	const isOnlyChild = isDirectHost || element.childCount == 1;
+
+	if ( isOnlyChild && needsPlaceholder( hostElement, config.keepOnFocus ) ) {
 		if ( showPlaceholder( writer, hostElement ) ) {
 			wasViewModified = true;
 		}
@@ -248,7 +251,7 @@ function updatePlaceholder( writer, element, config ) {
 // @param {module:engine/view/element~Element} parent
 // @returns {module:engine/view/element~Element|null}
 function getChildPlaceholderHostSubstitute( parent ) {
-	if ( parent.childCount === 1 ) {
+	if ( parent.childCount ) {
 		const firstChild = parent.getChild( 0 );
 
 		if ( firstChild.is( 'element' ) && !firstChild.is( 'uiElement' ) ) {

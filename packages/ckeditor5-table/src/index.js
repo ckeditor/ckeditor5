@@ -8,9 +8,15 @@
  */
 
 import Table from './table';
+import TableEditing from './tableediting';
+import TableUI from './tableui';
 import TableToolbar from './tabletoolbar';
 import TableCellProperties from './tablecellproperties';
+import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
+import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
 import TableProperties from './tableproperties';
+import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
+import TablePropertiesUI from './tableproperties/tablepropertiesui';
 import TableClipboard from './tableclipboard';
 import TableMouse from './tablemouse';
 import TableKeyboard from './tablekeyboard';
@@ -19,9 +25,15 @@ import TableUtils from './tableutils';
 
 export default {
 	Table,
+	TableEditing,
+	TableUI,
 	TableToolbar,
 	TableCellProperties,
+	TableCellPropertiesEditing,
+	TableCellPropertiesUI,
 	TableProperties,
+	TablePropertiesEditing,
+	TablePropertiesUI,
 	TableMouse,
 	TableClipboard,
 	TableKeyboard,

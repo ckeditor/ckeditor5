@@ -784,7 +784,9 @@ export default class Writer {
 		do {
 			const version = splitElement.root.document ? splitElement.root.document.version : null;
 			const howMany = splitElement.maxOffset - position.offset;
-			const split = new SplitOperation( position, howMany, null, version );
+
+			const insertionPosition = SplitOperation.getInsertionPosition( position );
+			const split = new SplitOperation( position, howMany, insertionPosition, null, version );
 
 			this.batch.addOperation( split );
 			this.model.applyOperation( split );

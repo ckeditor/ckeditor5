@@ -72,7 +72,7 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		it( 'uses the command on commit', async () => {
-			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
+			const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
 
 			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -95,25 +95,25 @@ describe( 'ImageResizeHandles', () => {
 
 			let isEnabled = false;
 
-			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+			editor.commands.get( 'resizeImage' ).on( 'set:isEnabled', evt => {
 				evt.return = isEnabled;
 				evt.stop();
 			}, { priority: 'highest' } );
 
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 			expect( resizer.isEnabled ).to.be.false;
 
 			isEnabled = true;
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 			expect( resizer.isEnabled ).to.be.true;
 		} );
 
 		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
-			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+			editor.commands.get( 'resizeImage' ).on( 'set:isEnabled', evt => {
 				evt.return = false;
 				evt.stop();
 			}, { priority: 'highest' } );
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 
 			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -501,20 +501,20 @@ describe( 'ImageResizeHandles', () => {
 		);
 	}
 
-	function createEditor( config ) {
-		return ClassicEditor.create( editorElement, config || {
+	async function createEditor( config ) {
+		const newEditor = await ClassicEditor.create( editorElement, config || {
 			plugins: [ Widget, Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
 			image: {
 				resizeUnit: 'px'
 			}
-		} ).then( newEditor => {
-			view = newEditor.editing.view;
-			viewDocument = view.document;
-
-			focusEditor( newEditor );
-
-			return newEditor;
 		} );
+
+		view = newEditor.editing.view;
+		viewDocument = view.document;
+
+		await focusEditor( newEditor );
+
+		return newEditor;
 	}
 
 	async function setModelAndWaitForImages( editor, data ) {

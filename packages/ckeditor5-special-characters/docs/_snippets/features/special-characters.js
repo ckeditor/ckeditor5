@@ -24,7 +24,7 @@ ClassicEditor
 				'|',
 				'specialCharacters',
 				'link',
-				'imageUpload',
+				'uploadImage',
 				'insertTable',
 				'|',
 				'undo',

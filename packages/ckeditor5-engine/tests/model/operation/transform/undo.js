@@ -325,7 +325,7 @@ describe( 'transform', () => {
 		john.split();
 		john.setSelection( [ 1, 0 ] );
 		john._processExecute( 'bold' );
-		john._processExecute( 'forwardDelete' );
+		john._processExecute( 'deleteForward' );
 
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
@@ -709,5 +709,20 @@ describe( 'transform', () => {
 		john.undo();
 
 		expectClients( '<image></image><paragraph>A</paragraph><paragraph>B</paragraph>' );
+	} );
+
+	it( 'remove merged element then undo', () => {
+		john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+		john.merge();
+		john.setSelection( [ 0, 0 ], [ 0, 6 ] );
+		john.remove();
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.undo();
+		john.undo();
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 } );
