@@ -13,12 +13,14 @@ import CKEditorError from './ckeditorerror';
 import env from './env';
 
 const macGlyphsToModifiers = {
+	'⌃': 'ctrl!',
 	'⌘': 'ctrl',
 	'⇧': 'shift',
 	'⌥': 'alt'
 };
 
 const modifiersToMacGlyphs = {
+	'ctrl!': '⌃',
 	'ctrl': '⌘',
 	'shift': '⇧',
 	'alt': '⌥'
@@ -66,7 +68,8 @@ export function getCode( key ) {
 		keyCode = key.keyCode +
 			( key.altKey ? keyCodes.alt : 0 ) +
 			( key.ctrlKey ? keyCodes.ctrl : 0 ) +
-			( key.shiftKey ? keyCodes.shift : 0 );
+			( key.shiftKey ? keyCodes.shift : 0 ) +
+			( key.metaKey ? keyCodes.cmd : 0 );
 	}
 
 	return keyCode;
@@ -96,8 +99,33 @@ export function parseKeystroke( keystroke ) {
 	}
 
 	return keystroke
-		.map( key => ( typeof key == 'string' ) ? getCode( key ) : key )
+		.map( key => ( typeof key == 'string' ) ? getEnvCode( key ) : key )
 		.reduce( ( key, sum ) => sum + key, 0 );
+}
+
+/**
+ * TODO
+ * @param key
+ * @returns {Number}
+ */
+function getEnvCode( key ) {
+	if ( typeof key != 'string' ) {
+		return getCode( key );
+	}
+
+	key = key.toLowerCase();
+
+	if ( key == 'ctrl!' ) {
+		return keyCodes.ctrl;
+	}
+
+	const code = getCode( key );
+
+	if ( env.isMac && code == keyCodes.ctrl ) {
+		return keyCodes.cmd;
+	}
+
+	return code;
 }
 
 /**
@@ -108,13 +136,15 @@ export function parseKeystroke( keystroke ) {
  * @returns {String} Keystroke text specific for the environment.
  */
 export function getEnvKeystrokeText( keystroke ) {
-	if ( !env.isMac ) {
-		return keystroke;
-	}
-
 	return splitKeystrokeText( keystroke )
 		// Replace modifiers (e.g. "ctrl") with Mac glyphs (e.g. "⌘") first.
-		.map( key => modifiersToMacGlyphs[ key.toLowerCase() ] || key )
+		.map( key => {
+			if ( env.isMac ) {
+				return modifiersToMacGlyphs[ key.toLowerCase() ] || key;
+			} else {
+				return key.toLowerCase() == 'ctrl!' ? 'Ctrl' : key;
+			}
+		} )
 
 		// Decide whether to put "+" between keys in the keystroke or not.
 		.reduce( ( value, key ) => {
@@ -203,11 +233,9 @@ function generateKnownKeyCodes() {
 		// The idea about these numbers is that they do not collide with any real key codes, so we can use them
 		// like bit masks.
 		ctrl: 0x110000,
-		// Has the same code as ctrl, because their behaviour should be unified across the editor.
-		// See http://ckeditor.github.io/editor-recommendations/general-policies#ctrl-vs-cmd
-		cmd: 0x110000,
 		shift: 0x220000,
-		alt: 0x440000
+		alt: 0x440000,
+		cmd: 0x880000
 	};
 
 	// a-z
@@ -249,17 +277,17 @@ function splitKeystrokeText( keystroke ) {
 /**
  * Whether the <kbd>Alt</kbd> modifier was pressed.
  *
- * @member {Bolean} module:utils/keyboard~KeystrokeInfo#altKey
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#altKey
  */
 
 /**
  * Whether the <kbd>Ctrl</kbd> or <kbd>Cmd</kbd> modifier was pressed.
  *
- * @member {Bolean} module:utils/keyboard~KeystrokeInfo#ctrlKey
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#ctrlKey
  */
 
 /**
  * Whether the <kbd>Shift</kbd> modifier was pressed.
  *
- * @member {Bolean} module:utils/keyboard~KeystrokeInfo#shiftKey
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#shiftKey
  */
