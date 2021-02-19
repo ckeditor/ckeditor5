@@ -142,7 +142,7 @@ export function getEnvKeystrokeText( keystroke ) {
 			if ( env.isMac ) {
 				return modifiersToMacGlyphs[ key.toLowerCase() ] || key;
 			} else {
-				return key.toLowerCase() == 'ctrl!' ? 'Ctrl' : key;
+				return key.endsWith( '!' ) ? key.slice( 0, -1 ) : key;
 			}
 		} )
 
