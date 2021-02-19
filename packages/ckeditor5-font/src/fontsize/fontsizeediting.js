@@ -164,8 +164,9 @@ export default class FontSizeEditing extends Plugin {
 			view: {
 				name: 'font',
 				attributes: {
-					// Documentation mentions sizes from 1 to 7.
-					// To handle old content we support all values up to 999 (arbitrarily picked) but clamp it to the valid range.
+					// Documentation mentions sizes from 1 to 7. To handle old content we support all values
+					// up to 999 but clamp it to the valid range. Why 999? It should cover accidental values
+					// similar to percentage, e.g. 100%, 200% which could be the usual mistake for font size.
 					'size': /^[+-]?\d{1,3}$/
 				}
 			},
