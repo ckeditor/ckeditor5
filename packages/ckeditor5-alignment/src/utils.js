@@ -73,27 +73,40 @@ function normalizeOption( option, index, allOptions ) {
 	}
 
 	const succeedingOptions = allOptions.slice( index + 1 );
-	const nameAlreadyExists = succeedingOptions.some( item => {
-		const optionName = item.name || item;
+	const nameAlreadyExists = succeedingOptions.some(
+		item => {
+			const optionName = item.name || item;
 
-		return optionName == optionObj.name;
-	} );
+			return optionName == optionObj.name;
+		} );
 
 	if ( nameAlreadyExists ) {
-		// TODO: Fill in api docs.
-		// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-		throw new CKEditorError( 'alignment-config-name-already-defined' );
+		/**
+		 * The same `name` in one of the `alignment.options` was already declared.
+		 * Each `name` representing one alignment option can be set exactly once.
+		 *
+		 * @error alignment-config-name-already-defined
+		 * @param {Object} option First option that declares given `name`.
+		 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
+		 */
+		throw new CKEditorError( 'alignment-config-name-already-defined', { option, allOptions } );
 	}
 
 	const classNameAlreadyExists = optionObj.className && succeedingOptions.some(
 		// The `item.className` can be undefined. We shouldn't count it as a duplicate.
-		item => item.className && item.className == optionObj.className
+		item => item.className &&
+				item.className == optionObj.className
 	);
 
 	if ( classNameAlreadyExists ) {
-		// TODO: Fill in api docs.
-		// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-		throw new CKEditorError( 'alignment-config-classname-already-defined' );
+		/**
+		 * The same `className` in one of the `alignment.options` was already declared.
+		 *
+		 * @error alignment-config-classname-already-defined
+		 * @param {Object} option First option that declares given `className`.
+		 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
+		 */
+		throw new CKEditorError( 'alignment-config-classname-already-defined', { option, allOptions } );
 	}
 
 	return optionObj;

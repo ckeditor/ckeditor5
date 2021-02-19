@@ -51,7 +51,47 @@ describe( 'utils', () => {
 
 	describe( 'normalizeAlignmentOptions', () => {
 		it( 'does nothing when no parameters are provided', () => {
-			expect( () => normalizeAlignmentOptions() ).not.to.throw();
+			let result;
+
+			expect( () => {
+				result = normalizeAlignmentOptions();
+			} ).not.to.throw();
+
+			expect( result ).to.deep.equal( [ ] );
+		} );
+
+		it( 'normalizes mixed input into an config array of objects', () => {
+			const config = [
+				'left',
+				{
+					name: 'right'
+				},
+				'center',
+				{
+					name: 'justify',
+					className: 'foo-center'
+				}
+			];
+
+			const result = normalizeAlignmentOptions( config );
+
+			expect( result ).to.deep.equal(
+				[
+					{
+						'name': 'left'
+					},
+					{
+						'name': 'right'
+					},
+					{
+						'name': 'center'
+					},
+					{
+						'className': 'foo-center',
+						'name': 'justify'
+					}
+				]
+			);
 		} );
 
 		it( 'throws when the name already exists', () => {
@@ -95,40 +135,6 @@ describe( 'utils', () => {
 
 			expect( error.constructor ).to.equal( CKEditorError );
 			expect( error ).to.match( /alignment-config-classname-already-defined/ );
-		} );
-
-		it( 'normalizes mixed input into an config array of objects', () => {
-			const config = [
-				'left',
-				{
-					name: 'right'
-				},
-				'center',
-				{
-					name: 'justify',
-					className: 'foo-center'
-				}
-			];
-
-			const result = normalizeAlignmentOptions( config );
-
-			expect( result ).to.deep.equal(
-				[
-					{
-						'name': 'left'
-					},
-					{
-						'name': 'right'
-					},
-					{
-						'name': 'center'
-					},
-					{
-						'className': 'foo-center',
-						'name': 'justify'
-					}
-				]
-			);
 		} );
 	} );
 } );
