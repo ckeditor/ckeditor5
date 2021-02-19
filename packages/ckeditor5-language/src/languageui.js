@@ -34,7 +34,7 @@ export default class LanguageUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const options = getLocalizedOptions( editor );
+		const options = editor.config.get( 'language.options' );
 		const defaultTitle = t( 'Choose language' );
 		const removeTitle = t( 'Remove language' );
 		const dropdownTooltip = t( 'Language' );
@@ -103,19 +103,15 @@ export default class LanguageUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
-				editor.execute( 'language', { value: evt.source.languageCode } );
+				editor.execute( 'language', {
+					languageCode: evt.source.languageCode,
+					textDirection: evt.source.textDirection
+				} );
+
 				editor.editing.view.focus();
 			} );
 
 			return dropdownView;
 		} );
 	}
-}
-
-function getLocalizedOptions() {
-	return [
-		{ title: 'Arabic', class: 'ck-language_ar', languageCode: 'ar', textDirection: 'rtl' },
-		{ title: 'French', class: 'ck-language_fr', languageCode: 'fr', textDirection: 'ltr' },
-		{ title: 'Spanish', class: 'ck-language_es', languageCode: 'es', textDirection: 'ltr' }
-	];
 }

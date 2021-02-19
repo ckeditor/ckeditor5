@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import LanguageCommand from './languagecommand';
+import { parseLanguageToString, parseLanguageFromString } from './utils';
 
 const LANGUAGE = 'language';
 
@@ -30,6 +31,23 @@ export default class LanguageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		const t = editor.t;
+
+		editor.config.define( 'language', {
+			options: [
+				{ title: t( 'Arabic' ), class: 'ck-language_ar', languageCode: 'ar' },
+				{ title: t( 'French' ), class: 'ck-language_fr', languageCode: 'fr' },
+				{ title: t( 'Spanish' ), class: 'ck-language_es', languageCode: 'es' }
+			]
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
@@ -38,22 +56,47 @@ export default class LanguageEditing extends Plugin {
 			copyOnEnter: true
 		} );
 
-		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-			model: LANGUAGE,
-			view: 'lang'
+		this._defineConverters();
+
+		editor.commands.add( LANGUAGE, new LanguageCommand( editor, LANGUAGE ) );
+	}
+
+	/**
+	 * @private
+	 */
+	_defineConverters() {
+		const conversion = this.editor.conversion;
+
+		conversion.for( 'upcast' ).elementToAttribute( {
+			model: {
+				key: LANGUAGE,
+				value: viewElement => {
+					const languageCode = viewElement.getAttribute( 'lang' );
+					const textDirection = viewElement.getAttribute( 'dir' );
+
+					return parseLanguageToString( languageCode, textDirection );
+				}
+			},
+			view: {
+				name: 'span',
+				attributes: { lang: /[^]/ }
+			}
 		} );
 
-		editor.conversion.for( 'downcast' ).attributeToElement( {
+		conversion.for( 'downcast' ).attributeToElement( {
 			model: LANGUAGE,
 			view: ( attributeValue, { writer } ) => {
 				if ( !attributeValue ) {
 					return;
 				}
 
-				return writer.createAttributeElement( 'span', { 'lang': attributeValue } );
+				const { languageCode, textDirection } = parseLanguageFromString( attributeValue );
+
+				return writer.createAttributeElement( 'span', {
+					lang: languageCode,
+					dir: textDirection
+				} );
 			}
 		} );
-
-		editor.commands.add( LANGUAGE, new LanguageCommand( editor, LANGUAGE ) );
 	}
 }
