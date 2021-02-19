@@ -377,7 +377,7 @@ describe( 'ImageStyleEditing', () => {
 							styles: {
 								arrangements: [ {
 									name: 'onlyInline',
-									modelElement: [ 'imageInline' ],
+									modelElements: [ 'imageInline' ],
 									className: 'image-style-inline'
 								} ]
 							}

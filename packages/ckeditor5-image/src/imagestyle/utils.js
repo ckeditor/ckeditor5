@@ -30,7 +30,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'inline',
 		title: 'In line',
 		icon: objectInline,
-		modelElement: [ 'imageInline' ],
+		modelElements: [ 'imageInline' ],
 		isDefault: true
 	},
 
@@ -39,7 +39,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'alignLeft',
 		title: 'Left aligned image',
 		icon: objectInlineLeft,
-		modelElement: [ 'image', 'imageInline' ],
+		modelElements: [ 'image', 'imageInline' ],
 		className: 'image-style-align-left'
 	},
 
@@ -48,7 +48,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'alignRight',
 		title: 'Right aligned image',
 		icon: objectInlineRight,
-		modelElement: [ 'image', 'imageInline' ],
+		modelElements: [ 'image', 'imageInline' ],
 		className: 'image-style-align-right'
 	},
 
@@ -56,7 +56,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'alignBlockLeft',
 		title: 'Left aligned image',
 		icon: objectLeft,
-		modelElement: [ 'image' ],
+		modelElements: [ 'image' ],
 		className: 'image-style-block-align-left'
 	},
 
@@ -65,7 +65,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'alignCenter',
 		title: 'Centered image',
 		icon: objectCenter,
-		modelElement: [ 'image' ],
+		modelElements: [ 'image' ],
 		className: 'image-style-align-center'
 	},
 
@@ -73,7 +73,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'alignBlockRight',
 		title: 'Right aligned image',
 		icon: objectRight,
-		modelElement: [ 'image' ],
+		modelElements: [ 'image' ],
 		className: 'image-style-block-align-right'
 	},
 
@@ -82,7 +82,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'full',
 		title: 'Full size image',
 		icon: objectFullWidth,
-		modelElement: [ 'image' ],
+		modelElements: [ 'image' ],
 		isDefault: true
 	},
 
@@ -91,7 +91,7 @@ const DEFAULT_ARRANGEMENTS = {
 		name: 'side',
 		title: 'Side image',
 		icon: objectInlineRight,
-		modelElement: [ 'image' ],
+		modelElements: [ 'image' ],
 		className: 'image-style-side'
 	}
 };
@@ -216,16 +216,28 @@ function normalizeDefinition( defaults, definition, definitionType ) {
 	return definition;
 }
 
-// Check if the style's modelElement is supported by the loaded plugins.
 function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginLoaded } ) {
-	const { arrangementName, modelElement: modelElementName } = arrangement;
-	const isBlockArrangementInvalid = modelElementName === 'image' && !isBlockPluginLoaded;
-	const isInlineArrangementInvalid = modelElementName === 'imageInline' && !isInlinePluginLoaded;
+	const { name: arrangementName, modelElements } = arrangement;
 
-	if ( isBlockArrangementInvalid || isInlineArrangementInvalid ) {
+	if ( !modelElements || !modelElements.length ) {
+		logWarning( 'image-style-invalid', { arrangement } );
+
+		return false;
+	}
+
+	const loadedPlugins = [ isBlockPluginLoaded ? 'image' : null, isInlinePluginLoaded ? 'imageInline' : null ];
+	const supportedBy = loadedPlugins.filter( plugin => modelElements.includes( plugin ) );
+
+	// Check if arrangement is supported by any of the loaded plugins.
+	if ( !supportedBy.length ) {
+		const pluginsMap = {
+			'image': 'ImageBlockEditing',
+			'imageInline': 'ImageInlineEditing'
+		};
+
 		logWarning( 'image-style-unsupported', {
-			missingPlugin: modelElementName,
-			unsupportedStyle: arrangementName
+			arrangement: arrangementName,
+			missingPlugins: modelElements.map( modelElementName => pluginsMap[ modelElementName ] )
 		} );
 
 		return false;

@@ -45,7 +45,7 @@ export default class ImageStyleCommand extends Command {
 		 */
 		this._arrangements = new Map( arrangements.map( arrangement => {
 			if ( arrangement.isDefault ) {
-				for ( const modelElementName of arrangement.modelElement ) {
+				for ( const modelElementName of arrangement.modelElements ) {
 					this._defaultArrangements[ modelElementName ] = arrangement.name;
 				}
 			}
@@ -86,7 +86,7 @@ export default class ImageStyleCommand extends Command {
 		const model = this.editor.model;
 
 		const imageElement = model.document.selection.getSelectedElement();
-		const supportedTypes = this._arrangements.get( requestedArrangement ).modelElement;
+		const supportedTypes = this._arrangements.get( requestedArrangement ).modelElements;
 
 		// Change the image type if a style requires it.
 		if ( !supportedTypes.includes( imageElement.name ) ) {
