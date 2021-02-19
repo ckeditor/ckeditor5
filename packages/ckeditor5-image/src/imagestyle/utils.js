@@ -10,12 +10,6 @@
 import { icons } from 'ckeditor5/src/core';
 import { logWarning } from 'ckeditor5/src/utils';
 
-export default {
-	normalizeStyles,
-	getDefaultStylesConfiguration,
-	getDefaultArrangements
-};
-
 const {
 	objectFullWidth,
 	objectLeft,
@@ -140,11 +134,7 @@ function normalizeStyles( options ) {
 
 	const groups = configuredGroups
 		.map( group => normalizeDefinition( DEFAULT_GROUPS, group, 'group' ) )
-		.map( group => {
-			group.items = group.items.filter( item => isValidGroupItem( item, arrangements ) );
-
-			return group;
-		} )
+		.map( group => validateGroup( group, arrangements ) )
 		.filter( group => !!group.items.length );
 
 	return { arrangements, groups };
@@ -173,21 +163,10 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 }
 
 function normalizeDefinition( defaults, definition, definitionType ) {
-	const iconPropertyName = definitionType === 'arrangement' ? 'icon' : 'defaultIcon';
-
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
 		// Warn because probably it's a mistake.
 		if ( !defaults[ definition ] ) {
-			/**
-			 * There is no such image arrangement or group of given name.
-			 *
-			 * @error image-style-not-found
-			 * @param {String} name Name of a missing style.
-			 * @param {String} type Type of a missing style (an arrangement or a group).
-			 */
-			logWarning( 'image-style-not-found', { name: definition, type: definitionType } );
-
 			// Normalize the style anyway to prevent errors.
 			definition = { name: definition };
 		}
@@ -205,12 +184,8 @@ function normalizeDefinition( defaults, definition, definitionType ) {
 
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
-	if ( typeof definition[ iconPropertyName ] === 'string' ) {
-		const iconContent = DEFAULT_ICONS[ definition[ iconPropertyName ] ];
-
-		if ( iconContent ) {
-			definition[ iconPropertyName ] = iconContent;
-		}
+	if ( definitionType === 'arrangement' && typeof definition.icon === 'string' ) {
+		definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
 	}
 
 	return definition;
@@ -246,9 +221,29 @@ function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginL
 	return true;
 }
 
+function validateGroup( originalGroup, arrangements ) {
+	const group = Object.assign( {}, originalGroup );
+
+	group.items = ( group.items || [] ).filter( item => isValidGroupItem( item, arrangements ) );
+	const isDefaultItemValid = typeof group.defaultItem === 'string' && group.items.indexOf( group.defaultItem ) > -1;
+
+	if ( !group.items.length || !isDefaultItemValid ) {
+		logWarning( 'image-style-invalid', { group: originalGroup } );
+		return { name: group.name, items: [] };
+	}
+
+	return group;
+}
+
 // Check if arrangement set in the group items is defined.
 function isValidGroupItem( itemName, normalizedArrangements ) {
-	return !!normalizedArrangements.find( item => item.name === itemName );
+	const isValid = !!normalizedArrangements.find( item => item.name === itemName );
+
+	if ( !isValid ) {
+		logWarning( 'image-style-invalid', { groupItem: itemName } );
+	}
+
+	return isValid;
 }
 
 function extendStyle( source, style ) {
@@ -263,6 +258,10 @@ function extendStyle( source, style ) {
 	return extendedStyle;
 }
 
-function getDefaultArrangements() {
-	return DEFAULT_ARRANGEMENTS;
-}
+export default {
+	normalizeStyles,
+	getDefaultStylesConfiguration,
+	DEFAULT_ARRANGEMENTS,
+	DEFAULT_GROUPS,
+	DEFAULT_ICONS
+};

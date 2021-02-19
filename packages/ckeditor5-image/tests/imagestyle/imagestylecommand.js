@@ -16,7 +16,7 @@ describe( 'ImageStyleCommand', () => {
 		alignLeft: anyImage,
 		inline: onlyInline,
 		alignCenter: onlyBlock
-	} = utils.getDefaultArrangements();
+	} = utils.DEFAULT_ARRANGEMENTS;
 
 	let editor, model, command, editorElement;
 
