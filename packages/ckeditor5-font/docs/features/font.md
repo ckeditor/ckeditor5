@@ -180,7 +180,7 @@ ClassicEditor
 
 ### Accepting all font sizes
 
-By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontSize.supportAllValues`} option.
+By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} option.
 
 ```js
 ClassicEditor
@@ -492,6 +492,15 @@ The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+## Content compatibility
+
+The {@link module:font/font~Font} plugin provides basic support for the deprecated `<font>` tag.
+
+While `<font color>` is always supported, to use `<font face>` and `<font size>` you need to enable the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} and {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} options respectively.
+
+Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
+
 
 ## Contribute
 
