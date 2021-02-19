@@ -80,8 +80,6 @@ The base DLL build contains:
 	* `@ckeditor/ckeditor5-widget`
 * Other, frequently required plugins:
 	* `@ckeditor/ckeditor5-upload`
-* Cloud Services plugins:
-	* `@ckeditor/ckeditor-cloud-services-core`
 
 ### The editor bundles
 
