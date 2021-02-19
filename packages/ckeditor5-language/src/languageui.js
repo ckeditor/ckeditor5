@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
+import { parseLanguageToString, getLocalizedOptions } from './utils';
 
 import '../theme/language.css';
 
@@ -34,7 +35,7 @@ export default class LanguageUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const options = editor.config.get( 'language.options' );
+		const options = getLocalizedOptions( editor );
 		const defaultTitle = t( 'Choose language' );
 		const removeTitle = t( 'Remove language' );
 		const dropdownTooltip = t( 'Language' );
@@ -58,11 +59,13 @@ export default class LanguageUI extends Plugin {
 					} )
 				};
 
-				def.model.bind( 'isOn' ).to( languageCommand, 'value', value => value === option.languageCode );
+				const language = parseLanguageToString( option.languageCode, option.textDirection );
+
+				def.model.bind( 'isOn' ).to( languageCommand, 'value', value => value === language );
 
 				itemDefinitions.add( def );
 
-				titles[ option.languageCode ] = option.title;
+				titles[ language ] = option.title;
 			}
 
 			itemDefinitions.add( {
@@ -74,6 +77,7 @@ export default class LanguageUI extends Plugin {
 				type: 'button',
 				model: new Model( {
 					label: removeTitle,
+					class: 'ck-language_remove',
 					languageCode: false,
 					withText: true
 				} )

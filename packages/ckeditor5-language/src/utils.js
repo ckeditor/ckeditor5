@@ -42,3 +42,23 @@ export function parseLanguageFromString( str ) {
 	const parts = str.split( ':' );
 	return { languageCode: parts[ 0 ], textDirection: parts[ 1 ] };
 }
+
+/**
+ * Returns language options as defined in `config.languageList.options` but processed to consider
+ * the editor localization, i.e. to display {@link module:language/language~LanguageOption}
+ * in the correct language.
+ *
+ * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
+ * when the user configuration is defined because the editor does not exist yet.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @returns {Array.<module:language/language~LanguageOption>}.
+ */
+export function getLocalizedOptions( editor ) {
+	const t = editor.t;
+
+	return editor.config.get( 'languageList.options' ).map( option => {
+		option.title = t( option.title );
+		return option;
+	} );
+}
