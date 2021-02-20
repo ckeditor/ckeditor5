@@ -12,18 +12,16 @@
 import CKEditorError from './ckeditorerror';
 import env from './env';
 
-const macGlyphsToModifiers = {
-	'⌃': 'ctrl!',
-	'⌘': 'ctrl',
-	'⇧': 'shift',
-	'⌥': 'alt'
+const modifiersToGlyphsMac = {
+	'cmd': '⌘',
+	'alt': '⌥',
+	'shift': '⇧'
 };
 
-const modifiersToMacGlyphs = {
-	'ctrl!': '⌃',
-	'ctrl': '⌘',
-	'shift': '⇧',
-	'alt': '⌥'
+const modifiersToGlyphsNonMac = {
+	'ctrl': 'Ctrl+',
+	'alt': 'Alt+',
+	'shift': 'Shift+'
 };
 
 /**
@@ -39,6 +37,10 @@ const modifiersToMacGlyphs = {
  * * `ctrl`, `cmd`, `shift`, `alt`.
  */
 export const keyCodes = generateKnownKeyCodes();
+
+const keyCodeNames = Object.fromEntries(
+	Object.entries( keyCodes ).map( ( [ name, code ] ) => [ code, name.charAt( 0 ).toUpperCase() + name.slice( 1 ) ] )
+);
 
 /**
  * Converts a key name or a {@link module:utils/keyboard~KeystrokeInfo keystroke info} into a key code.
@@ -99,33 +101,9 @@ export function parseKeystroke( keystroke ) {
 	}
 
 	return keystroke
-		.map( key => ( typeof key == 'string' ) ? getEnvCode( key ) : key )
+		.map( key => ( typeof key == 'string' ) ? getCode( key ) : key )
+		.map( key => env.isMac && key == keyCodes.ctrl ? keyCodes.cmd : key )
 		.reduce( ( key, sum ) => sum + key, 0 );
-}
-
-/**
- * TODO
- * @param key
- * @returns {Number}
- */
-function getEnvCode( key ) {
-	if ( typeof key != 'string' ) {
-		return getCode( key );
-	}
-
-	key = key.toLowerCase();
-
-	if ( key == 'ctrl!' ) {
-		return keyCodes.ctrl;
-	}
-
-	const code = getCode( key );
-
-	if ( env.isMac && code == keyCodes.ctrl ) {
-		return keyCodes.cmd;
-	}
-
-	return code;
 }
 
 /**
@@ -136,24 +114,20 @@ function getEnvCode( key ) {
  * @returns {String} Keystroke text specific for the environment.
  */
 export function getEnvKeystrokeText( keystroke ) {
-	return splitKeystrokeText( keystroke )
-		// Replace modifiers (e.g. "ctrl") with Mac glyphs (e.g. "⌘") first.
-		.map( key => {
-			if ( env.isMac ) {
-				return modifiersToMacGlyphs[ key.toLowerCase() ] || key;
-			} else {
-				return key.endsWith( '!' ) ? key.slice( 0, -1 ) : key;
-			}
-		} )
+	let keystrokeCode = parseKeystroke( keystroke );
 
-		// Decide whether to put "+" between keys in the keystroke or not.
-		.reduce( ( value, key ) => {
-			if ( value.slice( -1 ) in macGlyphsToModifiers ) {
-				return value + key;
-			} else {
-				return value + '+' + key;
-			}
-		} );
+	const modifiersToGlyphs = Object.entries( env.isMac ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
+
+	const modifiers = modifiersToGlyphs.reduce( ( modifiers, [ name, glyph ] ) => {
+		if ( ( keystrokeCode & keyCodes[ name ] ) != 0 ) {
+			keystrokeCode &= ~keyCodes[ name ];
+			modifiers += glyph;
+		}
+
+		return modifiers;
+	}, '' );
+
+	return modifiers + ( keystrokeCode ? keyCodeNames[ keystrokeCode ] : '' );
 }
 
 /**

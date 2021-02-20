@@ -113,7 +113,7 @@ export default class TodoListEditing extends Plugin {
 		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
-		editor.keystrokes.set( 'Ctrl!+space', () => editor.execute( 'checkTodoList' ) );
+		editor.keystrokes.set( 'Ctrl+Enter', () => editor.execute( 'checkTodoList' ) );
 
 		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
 		const listItemsToFix = new Set();
