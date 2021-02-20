@@ -23,13 +23,20 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 /* global Event, document */
 
 describe( 'TodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		// For the KeystrokeHandler.
+		sinon.stub( env, 'isMac' ).value( false );
+
 		return VirtualTestEditor
 			.create( {
 				plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
@@ -1157,12 +1164,12 @@ describe( 'TodoListEditing', () => {
 		}
 	} );
 
-	describe( 'Ctrl+space keystroke handling', () => {
+	describe( 'Ctrl+enter keystroke handling', () => {
 		let domEvtDataStub;
 
 		beforeEach( () => {
 			domEvtDataStub = {
-				keyCode: getCode( 'space' ),
+				keyCode: getCode( 'enter' ),
 				ctrlKey: true,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()

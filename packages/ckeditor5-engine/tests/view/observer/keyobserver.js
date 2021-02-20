@@ -84,7 +84,7 @@ describe( 'KeyObserver', () => {
 			expect( getCode( data ) ).to.be.greaterThan( 111 );
 		} );
 
-		it( 'should fire keydown ctrlKey set to true one meta (cmd) was pressed', () => {
+		it( 'should fire keydown metaKey set to true once meta (cmd) was pressed', () => {
 			const spy = sinon.spy();
 
 			viewDocument.on( 'keydown', spy );
@@ -92,7 +92,8 @@ describe( 'KeyObserver', () => {
 			observer.onDomEvent( { type: 'keydown', target: document.body, keyCode: 111, metaKey: true } );
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data ).to.have.property( 'ctrlKey', true );
+			expect( data ).to.have.property( 'metaKey', true );
+			expect( data ).to.have.property( 'ctrlKey', false );
 		} );
 
 		it( 'should fire keyup with the target and key info', () => {
