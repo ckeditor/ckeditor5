@@ -57,7 +57,7 @@ describe( 'PageBreakEditing', () => {
 		setModelData( model, '[<pageBreak></pageBreak>]' );
 		const textNode = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
-		expect( textNode.is( 'uiElement' ) ).to.be.true;
+		expect( textNode.is( 'rawElement' ) ).to.be.true;
 		expect( textNode.hasClass( 'page-break__label' ) ).to.be.true;
 	} );
 
@@ -268,7 +268,7 @@ describe( 'PageBreakEditing', () => {
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label"></span></div>'
 				);
 
-				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label">Page break</span></div>'
 				);
 			} );
