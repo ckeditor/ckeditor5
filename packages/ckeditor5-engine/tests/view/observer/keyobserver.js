@@ -93,7 +93,6 @@ describe( 'KeyObserver', () => {
 
 			const data = spy.args[ 0 ][ 1 ];
 			expect( data ).to.have.property( 'metaKey', true );
-			expect( data ).to.have.property( 'ctrlKey', false );
 		} );
 
 		it( 'should fire keyup with the target and key info', () => {
