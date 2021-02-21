@@ -18,10 +18,10 @@ import { CKEditorError } from '../../../src/utils';
  * * `'justify'`
  */
 export const supportedOptions = [ 'left', 'right', 'center', 'justify' ];
-export const defaultOptions = supportedOptions.map( option => {
-	return Object.assign( {}, {
+export const defaultConfig = supportedOptions.map( option => {
+	return {
 		name: option
-	} );
+	};
 } );
 
 /**
@@ -59,55 +59,54 @@ export function isDefault( alignment, locale ) {
  * @returns {Array.<Object>} Normalized object holding the configuration.
  */
 export function normalizeAlignmentOptions( configuredOptions = [] ) {
-	return configuredOptions.map( normalizeOption );
-}
+	const optionNameToOptionMap = new Map( defaultConfig.map( option => [ option.name, option ] ) );
 
-// @private
-function normalizeOption( option, index, allOptions ) {
-	let optionObj;
+	const normalizedOptions = configuredOptions
+		.map( option => {
+			let optionObj;
 
-	if ( typeof option == 'string' ) {
-		optionObj = Object.assign( {}, { name: option } );
-	} else {
-		optionObj = Object.assign( {}, defaultOptions[ index ], option );
-	}
+			if ( typeof option == 'string' ) {
+				optionObj = { name: option };
+			} else {
+				optionObj = { ...optionNameToOptionMap[ option ], ...option };
+			}
 
-	const succeedingOptions = allOptions.slice( index + 1 );
-	const nameAlreadyExists = succeedingOptions.some(
-		item => {
-			const optionName = item.name || item;
-
-			return optionName == optionObj.name;
+			return optionObj;
 		} );
 
-	if ( nameAlreadyExists ) {
-		/**
-		 * The same `name` in one of the `alignment.options` was already declared.
-		 * Each `name` representing one alignment option can be set exactly once.
-		 *
-		 * @error alignment-config-name-already-defined
-		 * @param {Object} option First option that declares given `name`.
-		 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
-		 */
-		throw new CKEditorError( 'alignment-config-name-already-defined', { option, allOptions } );
-	}
+	// Validate resulting config.
+	normalizedOptions.forEach( ( option, index, allOptions ) => {
+		const succeedingOptions = allOptions.slice( index + 1 );
 
-	const classNameAlreadyExists = optionObj.className && succeedingOptions.some(
+		const nameAlreadyExists = succeedingOptions.some( item => item.name == option.name );
+
+		if ( nameAlreadyExists ) {
+			/**
+				 * The same `name` in one of the `alignment.options` was already declared.
+				 * Each `name` representing one alignment option can be set exactly once.
+				 *
+				 * @error alignment-config-name-already-defined
+				 * @param {Object} option First option that declares given `name`.
+				 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
+				 */
+			throw new CKEditorError( 'alignment-config-name-already-defined', { option, allOptions } );
+		}
+
 		// The `item.className` can be undefined. We shouldn't count it as a duplicate.
-		item => item.className &&
-				item.className == optionObj.className
-	);
+		const classNameAlreadyExists = option.className &&
+			succeedingOptions.some( item => item.className && item.className == option.className );
 
-	if ( classNameAlreadyExists ) {
-		/**
-		 * The same `className` in one of the `alignment.options` was already declared.
-		 *
-		 * @error alignment-config-classname-already-defined
-		 * @param {Object} option First option that declares given `className`.
-		 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
-		 */
-		throw new CKEditorError( 'alignment-config-classname-already-defined', { option, allOptions } );
-	}
+		if ( classNameAlreadyExists ) {
+			/**
+				 * The same `className` in one of the `alignment.options` was already declared.
+				 *
+				 * @error alignment-config-classname-already-defined
+				 * @param {Object} option First option that declares given `className`.
+				 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
+				 */
+			throw new CKEditorError( 'alignment-config-classname-already-defined', { option, allOptions } );
+		}
+	} );
 
-	return optionObj;
+	return normalizedOptions;
 }

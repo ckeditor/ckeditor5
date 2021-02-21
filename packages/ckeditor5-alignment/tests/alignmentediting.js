@@ -434,12 +434,6 @@ describe( 'AlignmentEditing', () => {
 		} );
 
 		describe( 'classNames', () => {
-			describe( 'default value', () => {
-				it( 'should be set', () => {
-					expect( editor.config.get( 'alignment.classNames' ) ).to.deep.equal( [ ] );
-				} );
-			} );
-
 			it( 'should throw when options are repeated - repeated name', async () => {
 				let error;
 
