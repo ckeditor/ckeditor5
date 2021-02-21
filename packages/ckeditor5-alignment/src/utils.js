@@ -92,11 +92,11 @@ export function normalizeAlignmentOptions( configuredOptions = [] ) {
 			throw new CKEditorError( 'alignment-config-name-already-defined', { option, allOptions } );
 		}
 
-		// The `item.className` can be undefined. We shouldn't count it as a duplicate.
-		const classNameAlreadyExists = option.className &&
-			succeedingOptions.some( item => item.className && item.className == option.className );
+		// The `className` property is present. Check for duplicates then.
+		if ( option.className ) {
+			const classNameAlreadyExists = succeedingOptions.some( item => item.className == option.className );
 
-		if ( classNameAlreadyExists ) {
+			if ( classNameAlreadyExists ) {
 			/**
 				 * The same `className` in one of the `alignment.options` was already declared.
 				 *
@@ -104,7 +104,8 @@ export function normalizeAlignmentOptions( configuredOptions = [] ) {
 				 * @param {Object} option First option that declares given `className`.
 				 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
 				 */
-			throw new CKEditorError( 'alignment-config-classname-already-defined', { option, allOptions } );
+				throw new CKEditorError( 'alignment-config-classname-already-defined', { option, allOptions } );
+			}
 		}
 	} );
 
