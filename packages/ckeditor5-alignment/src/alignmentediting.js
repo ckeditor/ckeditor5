@@ -144,7 +144,7 @@ function buildClassDefinition( options ) {
 	for ( const option of options ) {
 		definition.view[ option.name ] = {
 			key: 'class',
-			value: [ option.className ]
+			value: option.className
 		};
 	}
 
