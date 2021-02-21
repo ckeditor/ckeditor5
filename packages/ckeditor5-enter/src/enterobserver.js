@@ -9,7 +9,7 @@
 
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
@@ -28,7 +28,7 @@ export default class EnterObserver extends Observer {
 
 		doc.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
-				const event = new EventInfo( doc, 'enter' );
+				const event = new BubblingEventInfo( doc, 'enter', doc.selection.getFirstRange() );
 
 				doc.fire( event, new DomEventData( doc, data.domEvent, {
 					isSoft: data.shiftKey

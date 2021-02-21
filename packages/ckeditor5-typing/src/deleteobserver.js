@@ -9,7 +9,7 @@
 
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -84,7 +84,7 @@ export default class DeleteObserver extends Observer {
 		}
 
 		function fireViewDeleteEvent( originalEvent, domEvent, deleteData ) {
-			const event = new EventInfo( document, 'delete' );
+			const event = new BubblingEventInfo( document, 'delete', document.selection.getFirstRange() );
 
 			document.fire( event, new DomEventData( document, domEvent, deleteData ) );
 

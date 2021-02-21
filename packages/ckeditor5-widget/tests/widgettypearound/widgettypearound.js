@@ -9,6 +9,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
+import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 
 import Widget from '../../src/widget';
 import WidgetTypeAround from '../../src/widgettypearound/widgettypearound';
@@ -1398,7 +1399,7 @@ describe( 'WidgetTypeAround', () => {
 			} );
 
 			function fireDeleteEvent( isForward = false ) {
-				eventInfoStub = new EventInfo( viewDocument, 'delete' );
+				eventInfoStub = new BubblingEventInfo( viewDocument, 'delete' );
 				sinon.spy( eventInfoStub, 'stop' );
 
 				const data = {

@@ -13,6 +13,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
+import BubblingEventInfo from './bubblingeventinfo';
+
 const contextsSymbol = Symbol( 'bubbling contexts' );
 
 /**
@@ -29,32 +31,35 @@ const BubblingEmitterMixin = {
 	fire( eventOrInfo, ...eventArgs ) {
 		try {
 			const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
-
-			// TODO Maybe there should be a special field in EventInfo that would enable bubbling.
-			// TODO Maybe we could add eventPhase to EventInfo (at-target, bubbling) to make some listeners simpler.
-
 			const eventContexts = getBubblingContexts( this );
 
 			if ( !eventContexts.size ) {
 				return;
 			}
 
+			updateEventInfo( eventInfo, 'capturing', this );
+
 			// The capture phase of the event.
 			if ( fireListenerFor( eventContexts, '$capture', eventInfo, ...eventArgs ) ) {
 				return eventInfo.return;
 			}
 
-			// TODO Instead of using this.selection we could pass range in EventInfo.
-			const selectionRange = this.selection.getFirstRange();
-			const selectedElement = selectionRange ? selectionRange.getContainedElement() : null;
+			const startRange = eventInfo.startRange || this.selection.getFirstRange();
+			const selectedElement = startRange ? startRange.getContainedElement() : null;
 			const isCustomContext = selectedElement ? Boolean( getCustomContext( eventContexts, selectedElement ) ) : false;
 
-			// For the not yet bubbling event trigger for $text node if selection can be there and it's not a custom context selected.
-			if ( !isCustomContext && fireListenerFor( eventContexts, '$text', eventInfo, ...eventArgs ) ) {
-				return eventInfo.return;
-			}
+			let node = selectedElement || getDeeperRangeParent( startRange );
 
-			let node = selectedElement || getDeeperRangeParent( selectionRange );
+			updateEventInfo( eventInfo, 'atTarget', node );
+
+			// For the not yet bubbling event trigger for $text node if selection can be there and it's not a custom context selected.
+			if ( !isCustomContext ) {
+				if ( fireListenerFor( eventContexts, '$text', eventInfo, ...eventArgs ) ) {
+					return eventInfo.return;
+				}
+
+				updateEventInfo( eventInfo, 'bubbling', node );
+			}
 
 			while ( node ) {
 				// Root node handling.
@@ -77,7 +82,11 @@ const BubblingEmitterMixin = {
 				}
 
 				node = node.parent;
+
+				updateEventInfo( eventInfo, 'bubbling', node );
 			}
+
+			updateEventInfo( eventInfo, 'bubbling', this );
 
 			// Document context.
 			fireListenerFor( eventContexts, '$document', eventInfo, ...eventArgs );
@@ -122,6 +131,18 @@ const BubblingEmitterMixin = {
 };
 
 export default BubblingEmitterMixin;
+
+// Update the event info bubbling fields.
+//
+// @param {module:utils/eventinfo~EventInfo} eventInfo The event info object to update.
+// @param {'none'|'capturing'|'atTarget'|'bubbling'} eventPhase The current event phase.
+// @param {module:engine/view/document~Document|module:engine/view/node~Node} currentTarget The current bubbling target.
+function updateEventInfo( eventInfo, eventPhase, currentTarget ) {
+	if ( eventInfo instanceof BubblingEventInfo ) {
+		eventInfo._eventPhase = eventPhase;
+		eventInfo._currentTarget = currentTarget;
+	}
+}
 
 // Fires the listener for the specified context. Returns `true` if event was stopped.
 //
@@ -168,19 +189,19 @@ function getBubblingContexts( source ) {
 	return source[ contextsSymbol ];
 }
 
-// Returns the deeper parent element for the selection.
-function getDeeperRangeParent( selectionRange ) {
-	if ( !selectionRange ) {
+// Returns the deeper parent element for the range.
+function getDeeperRangeParent( range ) {
+	if ( !range ) {
 		return null;
 	}
 
-	const focusParent = selectionRange.start.parent;
-	const anchorParent = selectionRange.end.parent;
+	const startParent = range.start.parent;
+	const endParent = range.end.parent;
 
-	const focusPath = focusParent.getPath();
-	const anchorPath = anchorParent.getPath();
+	const startPath = startParent.getPath();
+	const endPath = endParent.getPath();
 
-	return focusPath.length > anchorPath.length ? focusParent : anchorParent;
+	return startPath.length > endPath.length ? startParent : endParent;
 }
 
 /**

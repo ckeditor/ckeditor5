@@ -541,14 +541,13 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
-			const selectedModelElement = selection.getSelectedElement();
-
 			// This event could be triggered from inside the widget but we are interested
 			// only when the widget is selected itself.
-			if ( !selectedModelElement ) {
+			if ( evt.eventPhase != 'atTarget' ) {
 				return;
 			}
 
+			const selectedModelElement = selection.getSelectedElement();
 			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
 
 			const schema = editor.model.schema;
@@ -628,11 +627,9 @@ export default class WidgetTypeAround extends Plugin {
 		const schema = model.schema;
 
 		this._listenToIfEnabled( editingView.document, 'delete', ( evt, domEventData ) => {
-			const selectedModelWidget = model.document.selection.getSelectedElement();
-
 			// This event could be triggered from inside the widget but we are interested
 			// only when the widget is selected itself.
-			if ( !selectedModelWidget ) {
+			if ( evt.eventPhase != 'atTarget' ) {
 				return;
 			}
 
@@ -644,6 +641,7 @@ export default class WidgetTypeAround extends Plugin {
 			}
 
 			const direction = domEventData.direction;
+			const selectedModelWidget = model.document.selection.getSelectedElement();
 
 			const isFakeCaretBefore = typeAroundFakeCaretPosition === 'before';
 			const isDeleteForward = direction == 'forward';

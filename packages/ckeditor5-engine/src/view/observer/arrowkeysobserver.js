@@ -8,7 +8,8 @@
  */
 
 import Observer from './observer';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import BubblingEventInfo from './bubblingeventinfo';
+
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -25,7 +26,7 @@ export default class ArrowKeysObserver extends Observer {
 
 		this.document.on( 'keydown', ( event, data ) => {
 			if ( this.isEnabled && isArrowKeyCode( data.keyCode ) ) {
-				const eventInfo = new EventInfo( this.document, 'arrowKey' );
+				const eventInfo = new BubblingEventInfo( this.document, 'arrowKey', this.document.selection.getFirstRange() );
 
 				this.document.fire( eventInfo, data );
 

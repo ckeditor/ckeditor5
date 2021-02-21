@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import BubblingEventInfo from '../../../src/view/observer/bubblingeventinfo';
 import { setData as setModelData } from '../../../src/dev-utils/model';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -35,7 +36,7 @@ describe( 'BubblingEmitterMixin', () => {
 		const data = {};
 
 		viewDocument.on( 'fakeEvent', spy, { context: [ '$text', 'p' ] } );
-		viewDocument.fire( 'fakeEvent', data );
+		fireBubblingEvent( 'fakeEvent', data );
 
 		expect( spy.calledTwice ).to.be.true;
 		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
@@ -52,7 +53,7 @@ describe( 'BubblingEmitterMixin', () => {
 		viewDocument.on( 'fakeEvent', spy1, { context: 'p' } );
 		viewDocument.on( 'fakeEvent', spy2, { context: 'p' } );
 
-		viewDocument.fire( 'fakeEvent', data );
+		fireBubblingEvent( 'fakeEvent', data );
 
 		expect( spy1.calledOnce ).to.be.true;
 		expect( spy1.args[ 0 ][ 1 ] ).to.equal( data );
@@ -69,19 +70,19 @@ describe( 'BubblingEmitterMixin', () => {
 
 		viewDocument.on( 'fakeEvent', spyContext, { context: 'p' } );
 		viewDocument.on( 'fakeEvent', spyGlobal );
-		viewDocument.fire( 'fakeEvent', data );
+		fireBubblingEvent( 'fakeEvent', data );
 
 		expect( spyContext.callCount ).to.equal( 1 );
 		expect( spyGlobal.callCount ).to.equal( 1 );
 
 		viewDocument.off( 'fakeEvent', spyContext );
-		viewDocument.fire( 'fakeEvent', data );
+		fireBubblingEvent( 'fakeEvent', data );
 
 		expect( spyContext.callCount ).to.equal( 1 );
 		expect( spyGlobal.callCount ).to.equal( 2 );
 
 		viewDocument.off( 'fakeEvent', spyGlobal );
-		viewDocument.fire( 'fakeEvent', data );
+		fireBubblingEvent( 'fakeEvent', data );
 
 		expect( spyContext.callCount ).to.equal( 1 );
 		expect( spyGlobal.callCount ).to.equal( 2 );
@@ -94,12 +95,12 @@ describe( 'BubblingEmitterMixin', () => {
 		const data = {};
 
 		viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
-		viewDocument.fire( 'fakeEvent', data );
+		fireBubblingEvent( 'fakeEvent', data );
 
 		expect( spy.callCount ).to.equal( 1 );
 
 		viewDocument.off( 'otherEvent', spy );
-		viewDocument.fire( 'fakeEvent', data );
+		fireBubblingEvent( 'fakeEvent', data );
 
 		expect( spy.callCount ).to.equal( 2 );
 	} );
@@ -110,7 +111,7 @@ describe( 'BubblingEmitterMixin', () => {
 			const data = {};
 
 			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
-			viewDocument.fire( 'fakeEvent', data );
+			fireBubblingEvent( 'fakeEvent', data );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
@@ -120,7 +121,7 @@ describe( 'BubblingEmitterMixin', () => {
 			const spy = sinon.spy();
 
 			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
-			viewDocument.fire( 'otherEvent', {} );
+			fireBubblingEvent( 'otherEvent', {} );
 
 			expect( spy.notCalled ).to.be.true;
 		} );
@@ -143,7 +144,7 @@ describe( 'BubblingEmitterMixin', () => {
 			viewDocument.on( 'test', spy2 );
 			viewDocument.on( 'test', spy3 );
 
-			viewDocument.fire( 'test' );
+			fireBubblingEvent( 'test' );
 
 			sinon.assert.callOrder( spy1, spy2, spy3 );
 		} );
@@ -161,7 +162,7 @@ describe( 'BubblingEmitterMixin', () => {
 			viewDocument.on( 'test', spy1, { priority: 'highest' } );
 			viewDocument.on( 'test', spy5, { priority: 'lowest' } );
 
-			viewDocument.fire( 'test' );
+			fireBubblingEvent( 'test' );
 
 			sinon.assert.callOrder( spy1, spy2, spy3, spy4, spy5 );
 		} );
@@ -173,10 +174,10 @@ describe( 'BubblingEmitterMixin', () => {
 			viewDocument.on( 'test', spy1 );
 			viewDocument.on( 'test', spy2 );
 
-			viewDocument.fire( 'test', 1, 'b', true );
+			fireBubblingEvent( 'test', 1, 'b', true );
 
-			sinon.assert.calledWithExactly( spy1, sinon.match.instanceOf( EventInfo ), 1, 'b', true );
-			sinon.assert.calledWithExactly( spy2, sinon.match.instanceOf( EventInfo ), 1, 'b', true );
+			sinon.assert.calledWithExactly( spy1, sinon.match.instanceOf( BubblingEventInfo ), 1, 'b', true );
+			sinon.assert.calledWithExactly( spy2, sinon.match.instanceOf( BubblingEventInfo ), 1, 'b', true );
 		} );
 
 		it( 'should fire the right event', () => {
@@ -186,7 +187,7 @@ describe( 'BubblingEmitterMixin', () => {
 			viewDocument.on( '1', spy1 );
 			viewDocument.on( '2', spy2 );
 
-			viewDocument.fire( '2' );
+			fireBubblingEvent( '2' );
 
 			sinon.assert.notCalled( spy1 );
 			sinon.assert.called( spy2 );
@@ -197,15 +198,15 @@ describe( 'BubblingEmitterMixin', () => {
 
 			viewDocument.on( 'test', spy );
 
-			viewDocument.fire( 'test' );
-			viewDocument.fire( 'test' );
-			viewDocument.fire( 'test' );
+			fireBubblingEvent( 'test' );
+			fireBubblingEvent( 'test' );
+			fireBubblingEvent( 'test' );
 
 			sinon.assert.calledThrice( spy );
 		} );
 
 		it( 'should do nothing for a non listened event', () => {
-			viewDocument.fire( 'test' );
+			fireBubblingEvent( 'test' );
 		} );
 
 		it( 'should accept the same callback many times', () => {
@@ -215,7 +216,7 @@ describe( 'BubblingEmitterMixin', () => {
 			viewDocument.on( 'test', spy );
 			viewDocument.on( 'test', spy );
 
-			viewDocument.fire( 'test' );
+			fireBubblingEvent( 'test' );
 
 			sinon.assert.calledThrice( spy );
 		} );
@@ -227,7 +228,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'test', spy );
 			} );
 
-			viewDocument.fire( 'test' );
+			fireBubblingEvent( 'test' );
 
 			sinon.assert.notCalled( spy );
 		} );
@@ -247,7 +248,7 @@ describe( 'BubblingEmitterMixin', () => {
 			viewDocument.on( 'foo', spyFoo2 );
 
 			// All four callbacks should be fired.
-			viewDocument.fire( 'foo:bar:abc' );
+			fireBubblingEvent( 'foo:bar:abc' );
 
 			sinon.assert.callOrder( spyFoo, spyAbc, spyBar, spyFoo2 );
 			sinon.assert.calledOnce( spyFoo );
@@ -256,7 +257,7 @@ describe( 'BubblingEmitterMixin', () => {
 			sinon.assert.calledOnce( spyFoo2 );
 
 			// Only callbacks for foo and foo:bar event should be called.
-			viewDocument.fire( 'foo:bar' );
+			fireBubblingEvent( 'foo:bar' );
 
 			sinon.assert.calledOnce( spyAbc );
 			sinon.assert.calledTwice( spyFoo );
@@ -265,7 +266,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 			// Only callback for foo should be called as foo:abc has not been registered.
 			// Still, foo is a valid, existing namespace.
-			viewDocument.fire( 'foo:abc' );
+			fireBubblingEvent( 'foo:abc' );
 
 			sinon.assert.calledOnce( spyAbc );
 			sinon.assert.calledTwice( spyBar );
@@ -280,7 +281,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			expectToThrowCKEditorError( () => {
-				viewDocument.fire( 'test' );
+				fireBubblingEvent( 'test' );
 			}, /foo/, null );
 		} );
 
@@ -292,19 +293,19 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			expect( () => {
-				viewDocument.fire( 'test' );
+				fireBubblingEvent( 'test' );
 			} ).to.throw( TypeError, /foo/ );
 		} );
 
 		describe( 'return value', () => {
 			it( 'is undefined by default', () => {
-				expect( viewDocument.fire( 'foo' ) ).to.be.undefined;
+				expect( fireBubblingEvent( 'foo' ) ).to.be.undefined;
 			} );
 
 			it( 'is undefined if none of the listeners modified EventInfo#return', () => {
 				viewDocument.on( 'foo', () => {} );
 
-				expect( viewDocument.fire( 'foo' ) ).to.be.undefined;
+				expect( fireBubblingEvent( 'foo' ) ).to.be.undefined;
 			} );
 
 			it( 'equals EventInfo#return\'s value', () => {
@@ -312,7 +313,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.return = 1;
 				} );
 
-				expect( viewDocument.fire( 'foo' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo' ) ).to.equal( 1 );
 			} );
 
 			it( 'equals EventInfo#return\'s value even if the event was stopped', () => {
@@ -323,7 +324,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.stop();
 				} );
 
-				expect( viewDocument.fire( 'foo' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo' ) ).to.equal( 1 );
 			} );
 
 			it( 'equals EventInfo#return\'s value when it was set in a namespaced event', () => {
@@ -331,7 +332,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.return = 1;
 				} );
 
-				expect( viewDocument.fire( 'foo:bar' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo:bar' ) ).to.equal( 1 );
 			} );
 
 			it( 'equals the value set by the last callback', () => {
@@ -342,7 +343,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.return = 2;
 				}, { priority: 'high' } );
 
-				expect( viewDocument.fire( 'foo' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo' ) ).to.equal( 1 );
 			} );
 		} );
 	} );
@@ -358,7 +359,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const data = {};
 				const events = setListeners();
 
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -409,7 +410,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const data = {};
 				const events = setListeners();
 
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -456,46 +457,46 @@ describe( 'BubblingEmitterMixin', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
-				const events = setListeners();
+				const events = setListeners( true );
 
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
-					'$capture @ highest',
-					'$capture @ high',
-					'$capture @ normal',
-					'$capture @ low',
-					'$capture @ lowest',
+					'$capture @ highest (capturing @ $document)',
+					'$capture @ high (capturing @ $document)',
+					'$capture @ normal (capturing @ $document)',
+					'$capture @ low (capturing @ $document)',
+					'$capture @ lowest (capturing @ $document)',
 
-					'$text @ highest',
-					'$text @ high',
-					'$text @ normal',
-					'$text @ low',
-					'$text @ lowest',
+					'$text @ highest (atTarget @ $text)',
+					'$text @ high (atTarget @ $text)',
+					'$text @ normal (atTarget @ $text)',
+					'$text @ low (atTarget @ $text)',
+					'$text @ lowest (atTarget @ $text)',
 
-					'p @ highest',
-					'p @ high',
-					'p @ normal',
-					'p @ low',
-					'p @ lowest',
+					'p @ highest (bubbling @ p)',
+					'p @ high (bubbling @ p)',
+					'p @ normal (bubbling @ p)',
+					'p @ low (bubbling @ p)',
+					'p @ lowest (bubbling @ p)',
 
-					'blockquote @ highest',
-					'blockquote @ high',
-					'blockquote @ normal',
-					'blockquote @ low',
-					'blockquote @ lowest',
+					'blockquote @ highest (bubbling @ blockquote)',
+					'blockquote @ high (bubbling @ blockquote)',
+					'blockquote @ normal (bubbling @ blockquote)',
+					'blockquote @ low (bubbling @ blockquote)',
+					'blockquote @ lowest (bubbling @ blockquote)',
 
-					'$root @ highest',
-					'$root @ high',
-					'$root @ normal',
-					'$root @ low',
-					'$root @ lowest',
+					'$root @ highest (bubbling @ $root)',
+					'$root @ high (bubbling @ $root)',
+					'$root @ normal (bubbling @ $root)',
+					'$root @ low (bubbling @ $root)',
+					'$root @ lowest (bubbling @ $root)',
 
-					'$document @ highest',
-					'$document @ high',
-					'$document @ normal',
-					'$document @ low',
-					'$document @ lowest'
+					'$document @ highest (bubbling @ $document)',
+					'$document @ high (bubbling @ $document)',
+					'$document @ normal (bubbling @ $document)',
+					'$document @ low (bubbling @ $document)',
+					'$document @ lowest (bubbling @ $document)'
 				] );
 			} );
 
@@ -506,7 +507,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop() );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -552,7 +553,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -592,7 +593,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -626,7 +627,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -654,7 +655,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$text' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -676,7 +677,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$capture' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -700,46 +701,46 @@ describe( 'BubblingEmitterMixin', () => {
 				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
-				const events = setListeners();
+				const events = setListeners( true );
 
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
-					'$capture @ highest',
-					'$capture @ high',
-					'$capture @ normal',
-					'$capture @ low',
-					'$capture @ lowest',
+					'$capture @ highest (capturing @ $document)',
+					'$capture @ high (capturing @ $document)',
+					'$capture @ normal (capturing @ $document)',
+					'$capture @ low (capturing @ $document)',
+					'$capture @ lowest (capturing @ $document)',
 
-					'isCustomObject @ highest',
-					'isCustomObject @ high',
-					'isCustomObject @ normal',
-					'isCustomObject @ low',
-					'isCustomObject @ lowest',
+					'isCustomObject @ highest (atTarget @ obj)',
+					'isCustomObject @ high (atTarget @ obj)',
+					'isCustomObject @ normal (atTarget @ obj)',
+					'isCustomObject @ low (atTarget @ obj)',
+					'isCustomObject @ lowest (atTarget @ obj)',
 
-					'p @ highest',
-					'p @ high',
-					'p @ normal',
-					'p @ low',
-					'p @ lowest',
+					'p @ highest (bubbling @ p)',
+					'p @ high (bubbling @ p)',
+					'p @ normal (bubbling @ p)',
+					'p @ low (bubbling @ p)',
+					'p @ lowest (bubbling @ p)',
 
-					'blockquote @ highest',
-					'blockquote @ high',
-					'blockquote @ normal',
-					'blockquote @ low',
-					'blockquote @ lowest',
+					'blockquote @ highest (bubbling @ blockquote)',
+					'blockquote @ high (bubbling @ blockquote)',
+					'blockquote @ normal (bubbling @ blockquote)',
+					'blockquote @ low (bubbling @ blockquote)',
+					'blockquote @ lowest (bubbling @ blockquote)',
 
-					'$root @ highest',
-					'$root @ high',
-					'$root @ normal',
-					'$root @ low',
-					'$root @ lowest',
+					'$root @ highest (bubbling @ $root)',
+					'$root @ high (bubbling @ $root)',
+					'$root @ normal (bubbling @ $root)',
+					'$root @ low (bubbling @ $root)',
+					'$root @ lowest (bubbling @ $root)',
 
-					'$document @ highest',
-					'$document @ high',
-					'$document @ normal',
-					'$document @ low',
-					'$document @ lowest'
+					'$document @ highest (bubbling @ $document)',
+					'$document @ high (bubbling @ $document)',
+					'$document @ normal (bubbling @ $document)',
+					'$document @ low (bubbling @ $document)',
+					'$document @ lowest (bubbling @ $document)'
 				] );
 			} );
 
@@ -750,7 +751,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop() );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -796,7 +797,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -836,7 +837,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -870,7 +871,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -898,7 +899,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isCustomObject } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -920,7 +921,7 @@ describe( 'BubblingEmitterMixin', () => {
 				const events = setListeners();
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$capture' } );
-				viewDocument.fire( 'fakeEvent', data );
+				fireBubblingEvent( 'fakeEvent', data );
 
 				expect( events ).to.deep.equal( [
 					'$capture @ highest',
@@ -930,13 +931,127 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 		} );
 
-		function setListeners() {
+		it( 'should bubble non bubbling event (but without event info bubbling data)', () => {
+			setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+
+			const data = {};
+			const events = setListeners( true );
+
+			viewDocument.fire( 'fakeEvent', data );
+
+			expect( events ).to.deep.equal( [
+				'$capture @ highest (undefined @ undefined)',
+				'$capture @ high (undefined @ undefined)',
+				'$capture @ normal (undefined @ undefined)',
+				'$capture @ low (undefined @ undefined)',
+				'$capture @ lowest (undefined @ undefined)',
+
+				'$text @ highest (undefined @ undefined)',
+				'$text @ high (undefined @ undefined)',
+				'$text @ normal (undefined @ undefined)',
+				'$text @ low (undefined @ undefined)',
+				'$text @ lowest (undefined @ undefined)',
+
+				'p @ highest (undefined @ undefined)',
+				'p @ high (undefined @ undefined)',
+				'p @ normal (undefined @ undefined)',
+				'p @ low (undefined @ undefined)',
+				'p @ lowest (undefined @ undefined)',
+
+				'blockquote @ highest (undefined @ undefined)',
+				'blockquote @ high (undefined @ undefined)',
+				'blockquote @ normal (undefined @ undefined)',
+				'blockquote @ low (undefined @ undefined)',
+				'blockquote @ lowest (undefined @ undefined)',
+
+				'$root @ highest (undefined @ undefined)',
+				'$root @ high (undefined @ undefined)',
+				'$root @ normal (undefined @ undefined)',
+				'$root @ low (undefined @ undefined)',
+				'$root @ lowest (undefined @ undefined)',
+
+				'$document @ highest (undefined @ undefined)',
+				'$document @ high (undefined @ undefined)',
+				'$document @ normal (undefined @ undefined)',
+				'$document @ low (undefined @ undefined)',
+				'$document @ lowest (undefined @ undefined)'
+			] );
+		} );
+
+		it( 'should bubble from the provided view range', () => {
+			setModelData( model, '<paragraph>a[]bc</paragraph><blockQuote><paragraph>foobar</paragraph></blockQuote>' );
+
+			const data = {};
+			const events = setListeners( true );
+
+			const range = view.createRangeIn( viewDocument.getRoot().getChild( 1 ).getChild( 0 ) );
+
+			viewDocument.fire( new BubblingEventInfo( viewDocument, 'fakeEvent', range ), data );
+
+			expect( events ).to.deep.equal( [
+				'$capture @ highest (capturing @ $document)',
+				'$capture @ high (capturing @ $document)',
+				'$capture @ normal (capturing @ $document)',
+				'$capture @ low (capturing @ $document)',
+				'$capture @ lowest (capturing @ $document)',
+
+				'$text @ highest (atTarget @ p)',
+				'$text @ high (atTarget @ p)',
+				'$text @ normal (atTarget @ p)',
+				'$text @ low (atTarget @ p)',
+				'$text @ lowest (atTarget @ p)',
+
+				'p @ highest (bubbling @ p)',
+				'p @ high (bubbling @ p)',
+				'p @ normal (bubbling @ p)',
+				'p @ low (bubbling @ p)',
+				'p @ lowest (bubbling @ p)',
+
+				'blockquote @ highest (bubbling @ blockquote)',
+				'blockquote @ high (bubbling @ blockquote)',
+				'blockquote @ normal (bubbling @ blockquote)',
+				'blockquote @ low (bubbling @ blockquote)',
+				'blockquote @ lowest (bubbling @ blockquote)',
+
+				'$root @ highest (bubbling @ $root)',
+				'$root @ high (bubbling @ $root)',
+				'$root @ normal (bubbling @ $root)',
+				'$root @ low (bubbling @ $root)',
+				'$root @ lowest (bubbling @ $root)',
+
+				'$document @ highest (bubbling @ $document)',
+				'$document @ high (bubbling @ $document)',
+				'$document @ normal (bubbling @ $document)',
+				'$document @ low (bubbling @ $document)',
+				'$document @ lowest (bubbling @ $document)'
+			] );
+		} );
+
+		function setListeners( useDetails ) {
 			const events = [];
 
 			function setListenersForContext( context ) {
 				for ( const priority of [ 'highest', 'high', 'normal', 'low', 'lowest' ] ) {
-					viewDocument.on( 'fakeEvent', () => {
-						events.push( `${ typeof context == 'string' ? context : context.name } @ ${ priority }` );
+					viewDocument.on( 'fakeEvent', evt => {
+						const contextName = typeof context == 'string' ? context : context.name;
+
+						if ( useDetails ) {
+							let currentTarget = '';
+
+							if ( !evt.currentTarget ) {
+								currentTarget = 'undefined';
+							} else if ( evt.currentTarget == viewDocument ) {
+								currentTarget = '$document';
+							} else if ( evt.currentTarget.is( '$text' ) ) {
+								currentTarget = '$text';
+							} else if ( evt.currentTarget.is( 'node' ) ) {
+								currentTarget = evt.currentTarget.name;
+							}
+
+							events.push( `${ contextName } @ ${ priority } (${ evt.eventPhase } @ ${ currentTarget })` );
+						} else {
+							events.push( `${ contextName } @ ${ priority }` );
+						}
 					}, { context, priority } );
 				}
 			}
@@ -956,4 +1071,11 @@ describe( 'BubblingEmitterMixin', () => {
 			return node.is( 'element', 'obj' );
 		}
 	} );
+
+	function fireBubblingEvent( name, ...args ) {
+		const selection = viewDocument.selection;
+		const eventInfo = new BubblingEventInfo( viewDocument, name, selection.getFirstRange() );
+
+		return viewDocument.fire( eventInfo, ...args );
+	}
 } );
