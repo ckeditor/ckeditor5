@@ -53,12 +53,12 @@ describe( 'PageBreakEditing', () => {
 	// https://github.com/ckeditor/ckeditor5/issues/8788.
 	// Proper integration testing of this is too complex.
 	// Making sure the label is no longer a regular text element should be enough.
-	it( 'should have label as a UIElement', () => {
+	it( 'should have label as a RawElement', () => {
 		setModelData( model, '[<pageBreak></pageBreak>]' );
-		const textNode = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
-		expect( textNode.is( 'rawElement' ) ).to.be.true;
-		expect( textNode.hasClass( 'page-break__label' ) ).to.be.true;
+		expect( element.is( 'rawElement' ) ).to.be.true;
+		expect( element.hasClass( 'page-break__label' ) ).to.be.true;
 	} );
 
 	describe( 'conversion in data pipeline', () => {
