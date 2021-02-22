@@ -119,6 +119,7 @@ export function getEnvKeystrokeText( keystroke ) {
 	const modifiersToGlyphs = Object.entries( env.isMac ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
 
 	const modifiers = modifiersToGlyphs.reduce( ( modifiers, [ name, glyph ] ) => {
+		// Modifier keys are stored as a bit mask so extract those from the keystroke code.
 		if ( ( keystrokeCode & keyCodes[ name ] ) != 0 ) {
 			keystrokeCode &= ~keyCodes[ name ];
 			modifiers += glyph;
