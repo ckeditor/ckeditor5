@@ -13,6 +13,7 @@ import CKEditorError from './ckeditorerror';
 import env from './env';
 
 const modifiersToGlyphsMac = {
+	'ctrl': '⌃',
 	'cmd': '⌘',
 	'alt': '⌥',
 	'shift': '⇧'
@@ -101,8 +102,7 @@ export function parseKeystroke( keystroke ) {
 	}
 
 	return keystroke
-		.map( key => ( typeof key == 'string' ) ? getCode( key ) : key )
-		.map( key => env.isMac && key == keyCodes.ctrl ? keyCodes.cmd : key )
+		.map( key => ( typeof key == 'string' ) ? getEnvKeyCode( key ) : key )
 		.reduce( ( key, sum ) => sum + key, 0 );
 }
 
@@ -172,6 +172,23 @@ export function getLocalizedArrowKeyCodeDirection( keyCode, contentLanguageDirec
 		case keyCodes.arrowdown:
 			return 'down';
 	}
+}
+
+// Converts a key name to the key code with mapping based on the env.
+//
+// See: {@link module:utils/keyboard~getCode}.
+//
+// @param {String} key The key name (see {@link module:utils/keyboard~keyCodes}).
+// @returns {Number} Key code.
+function getEnvKeyCode( key ) {
+	// Don't remap modifier key for forced modifiers.
+	if ( key.endsWith( '!' ) ) {
+		return getCode( key.slice( 0, -1 ) );
+	}
+
+	const code = getCode( key );
+
+	return env.isMac && code == keyCodes.ctrl ? keyCodes.cmd : code;
 }
 
 /**

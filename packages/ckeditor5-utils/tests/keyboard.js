@@ -114,6 +114,10 @@ describe( 'Keyboard', () => {
 				expect( parseKeystroke( 'ctrl+shift+a' ) ).to.equal( 0x880000 + 0x220000 + 65 );
 			} );
 
+			it( 'supports forced modifier', () => {
+				expect( parseKeystroke( 'ctrl!+a' ) ).to.equal( 0x110000 + 65 );
+			} );
+
 			it( 'throws on unknown name', () => {
 				expectToThrowCKEditorError( () => {
 					parseKeystroke( 'foo' );
@@ -150,6 +154,10 @@ describe( 'Keyboard', () => {
 				expect( parseKeystroke( 'ctrl+shift+a' ) ).to.equal( 0x110000 + 0x220000 + 65 );
 			} );
 
+			it( 'supports forced modifier', () => {
+				expect( parseKeystroke( 'ctrl!+a' ) ).to.equal( 0x110000 + 65 );
+			} );
+
 			it( 'throws on unknown name', () => {
 				expectToThrowCKEditorError( () => {
 					parseKeystroke( 'foo' );
@@ -174,6 +182,12 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'CTRL' ) ).to.equal( '⌘' );
 				expect( getEnvKeystrokeText( 'CTRL+A' ) ).to.equal( '⌘A' );
 				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( '⌘A' );
+			} );
+
+			it( 'replaces CTRL! with ⌃', () => {
+				expect( getEnvKeystrokeText( 'CTRL!' ) ).to.equal( '⌃' );
+				expect( getEnvKeystrokeText( 'CTRL!+A' ) ).to.equal( '⌃A' );
+				expect( getEnvKeystrokeText( 'ctrl!+A' ) ).to.equal( '⌃A' );
 			} );
 
 			it( 'replaces SHIFT with ⇧', () => {
@@ -214,7 +228,9 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( 'Ctrl+A' );
+				expect( getEnvKeystrokeText( 'CTRL!+a' ) ).to.equal( 'Ctrl+A' );
 				expect( getEnvKeystrokeText( 'ctrl+b' ) ).to.equal( 'Ctrl+B' );
+				expect( getEnvKeystrokeText( 'ctrl!+b' ) ).to.equal( 'Ctrl+B' );
 				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'Shift+A' );
 				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( 'Alt+A' );
 				expect( getEnvKeystrokeText( 'CTRL+SHIFT+A' ) ).to.equal( 'Ctrl+Shift+A' );
