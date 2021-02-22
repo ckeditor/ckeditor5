@@ -34,9 +34,6 @@ describe( 'TodoListEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		// For the KeystrokeHandler.
-		sinon.stub( env, 'isMac' ).value( false );
-
 		return VirtualTestEditor
 			.create( {
 				plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
@@ -1161,30 +1158,83 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 			} );
+
+			it( 'should do nothing when other arrow key was pressed', () => {
+				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+
+				domEvtDataStub = {
+					keyCode: getCode( 'arrowDown' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: {
+						ownerDocument: {
+							defaultView: {
+								getSelection: () => ( { rangeCount: 0 } )
+							}
+						}
+					}
+				};
+
+				viewDoc.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			} );
 		}
 	} );
 
 	describe( 'Ctrl+enter keystroke handling', () => {
-		let domEvtDataStub;
+		const initialEnvMac = env.isMac;
 
-		beforeEach( () => {
-			domEvtDataStub = {
+		afterEach( () => {
+			env.isMac = initialEnvMac;
+		} );
+
+		it( 'should execute CheckTodoListCommand (non-macOS)', () => {
+			env.isMac = false;
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			const domEvtDataStub = {
 				keyCode: getCode( 'enter' ),
 				ctrlKey: true,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-		} );
 
-		it( 'should execute CheckTodoListCommand', () => {
-			const command = editor.commands.get( 'checkTodoList' );
-
-			sinon.spy( command, 'execute' );
-
+			// First call.
 			viewDoc.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( command.execute );
 
+			// Second call.
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledTwice( command.execute );
+		} );
+
+		it( 'should execute CheckTodoListCommand (macOS)', () => {
+			env.isMac = true;
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			const domEvtDataStub = {
+				keyCode: getCode( 'enter' ),
+				metaKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			// First call.
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( command.execute );
+
+			// Second call.
 			viewDoc.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledTwice( command.execute );

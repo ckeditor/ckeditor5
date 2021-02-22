@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+import { env, keyCodes, getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
 
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
@@ -113,7 +113,12 @@ export default class TodoListEditing extends Plugin {
 		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
-		editor.keystrokes.set( 'Ctrl+Enter', () => editor.execute( 'checkTodoList' ) );
+		this.listenTo( editing.view.document, 'keydown', ( evt, data ) => {
+			if ( data.keyCode == keyCodes.enter && ( env.isMac ? data.metaKey : data.ctrlKey ) ) {
+				editor.execute( 'checkTodoList' );
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 
 		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
 		const listItemsToFix = new Set();
