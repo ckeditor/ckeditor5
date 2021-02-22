@@ -48,7 +48,8 @@ export function enablePlaceholder( options ) {
 	documentPlaceholders.get( doc ).set( element, {
 		text,
 		isDirectHost,
-		keepOnFocus
+		keepOnFocus,
+		hostElement: isDirectHost ? element : null
 	} );
 
 	// Update the placeholders right away.
@@ -186,9 +187,42 @@ export function needsPlaceholder( element, keepOnFocus ) {
 // @returns {Boolean} True if any changes were made to the view document.
 function updateDocumentPlaceholders( doc, writer ) {
 	const placeholders = documentPlaceholders.get( doc );
+	const directHostElements = [];
 	let wasViewModified = false;
 
+	// First set placeholders on the direct hosts.
 	for ( const [ element, config ] of placeholders ) {
+		if ( config.isDirectHost ) {
+			directHostElements.push( element );
+
+			if ( updatePlaceholder( writer, element, config ) ) {
+				wasViewModified = true;
+			}
+		}
+	}
+
+	// Then set placeholders on the indirect hosts but only on those that does not already have an direct host placeholder.
+	for ( const [ element, config ] of placeholders ) {
+		if ( config.isDirectHost ) {
+			continue;
+		}
+
+		const hostElement = getChildPlaceholderHostSubstitute( element );
+
+		// When not a direct host, it could happen that there is no child element
+		// capable of displaying a placeholder.
+		if ( !hostElement ) {
+			continue;
+		}
+
+		// Don't override placeholder if the host element already has some direct placeholder.
+		if ( directHostElements.includes( hostElement ) ) {
+			continue;
+		}
+
+		// Update the host element (used for setting and removing the placeholder).
+		config.hostElement = hostElement;
+
 		if ( updatePlaceholder( writer, element, config ) ) {
 			wasViewModified = true;
 		}
@@ -207,21 +241,9 @@ function updateDocumentPlaceholders( doc, writer ) {
 // @param {Boolean} config.isDirectHost
 // @returns {Boolean} True if any changes were made to the view document.
 function updatePlaceholder( writer, element, config ) {
-	const { text, isDirectHost } = config;
+	const { text, isDirectHost, hostElement } = config;
 
-	const hostElement = isDirectHost ? element : getChildPlaceholderHostSubstitute( element );
 	let wasViewModified = false;
-
-	// When not a direct host, it could happen that there is no child element
-	// capable of displaying a placeholder.
-	if ( !hostElement ) {
-		return false;
-	}
-
-	// Cache the host element. It will be necessary for disablePlaceholder() to know
-	// which element should have class and attribute removed because, depending on
-	// the config.isDirectHost value, it could be the element or one of its descendants.
-	config.hostElement = hostElement;
 
 	// This may be necessary when updating the placeholder text to something else.
 	if ( hostElement.getAttribute( 'data-placeholder' ) !== text ) {
