@@ -50,10 +50,10 @@ ClassicEditor
 
 ### Using classes instead of inline style
 
-By default alignment is set inline using `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the  `config.alignment.classNames` option and style them by using a stylesheet.
+By default alignment is set inline using `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the  `className` property in `config.alignment.options` and style them by using a stylesheet.
 
 <info-box>
-	Make sure to specify the same number of classes as the number of values in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}. If the {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`} are not specified, they are equal to `[ 'left', 'right', 'center', 'justify' ]`, therefore you have to provide 4 class names.
+	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
 </info-box>
 
 The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment respectively.
@@ -62,8 +62,10 @@ The following configuration will set `.my-align-left` and `.my-align-right` to l
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		alignment: {
-			options: [ 'left', 'right' ],
-			classNames: [ 'my-align-left', 'my-align-right' ]
+			options: [
+				{ name: 'left', className: 'my-align-left' },
+				{ name: 'right', className: 'my-align-right' }
+			]
 		},
 		toolbar: [
 			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'

@@ -91,8 +91,8 @@ export default class Alignment extends Plugin {
  *			.create( editorElement, {
  *				alignment: {
  *					options: [
- *						{ name: 'left', className: 'foo-align-left' },
- *						{ name: 'right', className: 'foo-align-right' }
+ *						{ name: 'left', className: 'my-align-left' },
+ *						{ name: 'right', className: 'my-align-right' }
  *					]
  *				}
  *			} )
