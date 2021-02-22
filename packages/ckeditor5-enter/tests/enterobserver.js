@@ -57,32 +57,6 @@ describe( 'EnterObserver', () => {
 			expect( spy.firstCall.args[ 1 ].isSoft ).to.be.true;
 		} );
 
-		it( 'is not fired on keydown when ctrl key was pressed along with the "enter" key', () => {
-			const spy = sinon.spy();
-
-			viewDocument.on( 'enter', spy );
-
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'enter' ),
-				ctrlKey: true
-			} ) );
-
-			expect( spy.notCalled ).to.be.true;
-		} );
-
-		it( 'is not fired on keydown when meta key was pressed along with the "enter" key', () => {
-			const spy = sinon.spy();
-
-			viewDocument.on( 'enter', spy );
-
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'enter' ),
-				metaKey: true
-			} ) );
-
-			expect( spy.notCalled ).to.be.true;
-		} );
-
 		it( 'is not fired on keydown when keyCode does not match enter', () => {
 			const spy = sinon.spy();
 
