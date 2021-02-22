@@ -5,121 +5,58 @@
 
 /* global document */
 
+import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Widget from '../src/widget';
-import WidgetTypeAround from '../src/widgettypearound/widgettypearound';
+import WidgetCore from '../src/widgetcore';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import { toWidget } from '../src/utils';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Widget', () => {
-	let element, editor, model, view, viewDocument;
+	let element, writer, viewDocument, editor, widget, domElement, view;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		element = document.createElement( 'div' );
-		document.body.appendChild( element );
+		domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
 
 		return ClassicTestEditor
-			.create( element, {
-				plugins: [ Paragraph, Widget, Typing, Enter ]
+			.create( domElement, {
+				plugins: [ Paragraph, Widget, WidgetCore, Typing, Enter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				model = editor.model;
-				view = editor.editing.view;
+				view = newEditor.editing.view;
 				viewDocument = view.document;
+				widget = newEditor.plugins.get( 'Widget' );
 
-				model.schema.register( 'widget', {
-					inheritAllFrom: '$block',
-					isObject: true
+				view.change( writer => {
+					element = writer.createContainerElement( 'div' );
+					widget.toWidget( element, writer );
 				} );
-				model.schema.extend( 'paragraph', {
-					allowIn: 'div'
-				} );
-				model.schema.register( 'inline', {
-					allowWhere: '$text',
-					isObject: true
-				} );
-				model.schema.register( 'nested', {
-					allowIn: 'widget',
-					isLimit: true
-				} );
-				model.schema.extend( '$text', {
-					allowIn: [ 'nested', 'editable' ]
-				} );
-				model.schema.register( 'editable', {
-					allowIn: [ 'widget', '$root' ]
-				} );
-				model.schema.register( 'inline-widget', {
-					allowWhere: '$text',
-					isObject: true,
-					isInline: true
-				} );
-
-				// Image feature.
-				model.schema.register( 'image', {
-					allowIn: '$root',
-					isObject: true,
-					isBlock: true
-				} );
-
-				// Block-quote feature.
-				model.schema.register( 'blockQuote', {
-					allowIn: '$root'
-				} );
-				model.schema.extend( '$block', { allowIn: 'blockQuote' } );
-
-				// Div element which helps nesting elements.
-				model.schema.register( 'div', {
-					allowIn: [ 'blockQuote', 'div' ]
-				} );
-
-				editor.conversion.for( 'downcast' )
-					.elementToElement( { model: 'inline', view: 'figure' } )
-					.elementToElement( { model: 'image', view: 'img' } )
-					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
-					.elementToElement( { model: 'div', view: 'div' } )
-					.elementToElement( {
-						model: 'widget',
-						view: ( modelItem, { writer } ) => {
-							const b = writer.createAttributeElement( 'b' );
-							const div = writer.createContainerElement( 'div' );
-							writer.insert( writer.createPositionAt( div, 0 ), b );
-
-							return toWidget( div, writer, { label: 'element label' } );
-						}
-					} )
-					.elementToElement( {
-						model: 'inline-widget',
-						view: ( modelItem, { writer } ) => {
-							const span = writer.createContainerElement( 'span' );
-
-							return toWidget( span, writer );
-						}
-					} )
-					.elementToElement( {
-						model: 'nested',
-						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
-					} )
-					.elementToElement( {
-						model: 'editable',
-						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
-					} );
 			} );
 	} );
 
 	afterEach( () => {
-		element.remove();
+		domElement.remove();
 
 		return editor.destroy();
 	} );
@@ -128,1398 +65,801 @@ describe( 'Widget', () => {
 		expect( editor.plugins.get( Widget ) ).to.be.instanceOf( Widget );
 	} );
 
-	it( 'should add MouseObserver', () => {
-		expect( view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
+	it( 'should require the WidgetCore plugin', () => {
+		expect( Widget.requires ).to.include( WidgetCore );
 	} );
 
-	it( 'should require the WidgetTypeAround plugin', () => {
-		expect( Widget.requires ).to.have.members( [ WidgetTypeAround ] );
+	it( 'should expose WIDGET_CLASS_NAME', () => {
+		expect( widget.WIDGET_CLASS_NAME ).to.equal( 'ck-widget' );
 	} );
 
-	it( 'should create selection over clicked widget', () => {
-		setModelData( model, '[]<widget></widget>' );
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( viewDiv ),
-			preventDefault: sinon.spy()
+	it( 'should expose WIDGET_SELECTED_CLASS_NAME', () => {
+		expect( widget.WIDGET_SELECTED_CLASS_NAME ).to.equal( 'ck-widget_selected' );
+	} );
+
+	describe( 'toWidget()', () => {
+		it( 'should set contenteditable to "false"', () => {
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 		} );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
-	} );
-
-	it( 'should create selection when clicked in nested element', () => {
-		setModelData( model, '[]<widget></widget>' );
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
-		const viewB = viewDiv.getChild( 0 );
-		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( viewB ),
-			preventDefault: sinon.spy()
+		it( 'should define getFillerOffset method', () => {
+			expect( element.getFillerOffset ).to.be.a( 'function' );
+			expect( element.getFillerOffset() ).to.be.null;
 		} );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
-	} );
-
-	it( 'should do nothing if clicked in non-widget element', () => {
-		setModelData( model, '<paragraph>[]foo bar</paragraph><widget></widget>' );
-		const viewP = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( viewP ),
-			preventDefault: sinon.spy()
+		it( 'should add proper CSS class', () => {
+			expect( element.hasClass( widget.WIDGET_CLASS_NAME ) ).to.be.true;
 		} );
 
-		view.focus();
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph><widget></widget>' );
-		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
-	} );
-
-	it( 'should not focus editable if already is focused', () => {
-		setModelData( model, '<widget></widget>' );
-		const widget = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( widget ),
-			preventDefault: sinon.spy()
-		} );
-		const focusSpy = sinon.spy( view, 'focus' );
-
-		viewDocument.isFocused = true;
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
-		sinon.assert.notCalled( focusSpy );
-		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-	} );
-
-	it( 'should apply fake view selection if model selection is on widget element', () => {
-		setModelData( model, '[<widget>foo bar</widget>]' );
-
-		expect( getViewData( view ) ).to.equal(
-			'[<div class="ck-widget ck-widget_selected" ' +
-			'contenteditable="false">' +
-				'foo bar' +
-				'<b></b>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-			'</div>]'
-		);
-		expect( viewDocument.selection.isFake ).to.be.true;
-	} );
-
-	it( 'should use element\'s label to set fake selection if one is provided', () => {
-		setModelData( model, '[<widget>foo bar</widget>]' );
-
-		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'element label' );
-	} );
-
-	it( 'should add selected class when other content is selected with widget', () => {
-		setModelData( model, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
-
-		expect( viewDocument.selection.isFake ).to.be.false;
-		expect( getViewData( view ) ).to.equal(
-
-			'<p>{foo</p>' +
-			'<div class="ck-widget ck-widget_selected" contenteditable="false">' +
-				'<b></b>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-			'</div>' +
-			'<div class="ck-widget ck-widget_selected" ' +
-			'contenteditable="false">' +
-				'<b></b>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-			'</div>]'
-		);
-	} );
-
-	it( 'fake selection should be empty if widget is not selected', () => {
-		setModelData( model, '<paragraph>foo</paragraph><widget>foo bar</widget>' );
-
-		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( '' );
-	} );
-
-	it( 'should toggle selected class', () => {
-		setModelData( model, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
-
-		expect( getViewData( view ) ).to.equal(
-			'<p>foo</p>' +
-			'[<div class="ck-widget ck-widget_selected" contenteditable="false">' +
-				'foo' +
-				'<b></b>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-			'</div>]'
-		);
-
-		model.change( writer => {
-			writer.setSelection( null );
-		} );
-
-		expect( getViewData( view ) ).to.equal(
-			'<p>{}foo</p>' +
-			'<div class="ck-widget" contenteditable="false">' +
-				'foo' +
-				'<b></b>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-			'</div>'
-		);
-	} );
-
-	it( 'should do nothing when selection is placed in other editable', () => {
-		setModelData( model, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
-
-		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
-				'<figcaption contenteditable="true">foo bar</figcaption>' +
-				'<b></b>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-			'</div>' +
-			'<figcaption contenteditable="true">{baz}</figcaption>'
-		);
-	} );
-
-	describe( 'keys handling', () => {
-		describe( 'arrows', () => {
-			test(
-				'should move selection forward from selected object - right arrow',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowright, keyCodes.arrowright ],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
-
-			test(
-				'should move selection forward from selected object - down arrow',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowdown, keyCodes.arrowdown ],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
-
-			test(
-				'should move selection backward from selected object - left arrow',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowleft, keyCodes.arrowleft ],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
-
-			test(
-				'should move selection backward from selected object - up arrow',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowup, keyCodes.arrowup ],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
-
-			test(
-				'should move selection to next widget - right arrow',
-				'[<widget></widget>]<widget></widget>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowright, keyCodes.arrowright ],
-				'<widget></widget>[<widget></widget>]'
-			);
-
-			test(
-				'should move selection to next widget - down arrow',
-				'[<widget></widget>]<widget></widget>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowdown, keyCodes.arrowdown ],
-				'<widget></widget>[<widget></widget>]'
-			);
-
-			test(
-				'should move selection to previous widget - left arrow',
-				'<widget></widget>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowleft, keyCodes.arrowleft ],
-				'[<widget></widget>]<widget></widget>'
-			);
-
-			test(
-				'should move selection to previous widget - up arrow',
-				'<widget></widget>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowup, keyCodes.arrowup ],
-				'[<widget></widget>]<widget></widget>'
-			);
-
-			// Note: Testing an inline widget only because block widgets are handled and tested by the WidgetTypeAround plugin.
-			test(
-				'should do nothing on non-collapsed selection next to an inline widget - right arrow',
-				'<paragraph>ba[r]<inline-widget></inline-widget></paragraph>',
-				keyCodes.arrowright,
-				'<paragraph>ba[r]<inline-widget></inline-widget></paragraph>'
-			);
-
-			// Note: Testing an inline widget only because block widgets are handled and tested by the WidgetTypeAround plugin.
-			test(
-				'should do nothing on non-collapsed selection next to an inline widget - down arrow',
-				'<paragraph>ba[r]<inline-widget></inline-widget></paragraph>',
-				keyCodes.arrowdown,
-				'<paragraph>ba[r]<inline-widget></inline-widget></paragraph>'
-			);
-
-			// Note: Testing an inline widget only because block widgets are handled and tested by the WidgetTypeAround plugin.
-			test(
-				'should do nothing on non-collapsed selection next to an inline widget - left arrow',
-				'<paragraph><inline-widget></inline-widget>[b]ar</paragraph>',
-				keyCodes.arrowleft,
-				'<paragraph><inline-widget></inline-widget>[b]ar</paragraph>'
-			);
-
-			// Note: Testing an inline widget only because block widgets are handled and tested by the WidgetTypeAround plugin.
-			test(
-				'should do nothing on non-collapsed selection next to an inline widget - up arrow',
-				'<paragraph><inline-widget></inline-widget>[b]ar</paragraph>',
-				keyCodes.arrowup,
-				'<paragraph><inline-widget></inline-widget>[b]ar</paragraph>'
-			);
-
-			test(
-				'should not move selection if there is no correct location - right arrow',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowright, keyCodes.arrowright ],
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should not move selection if there is no correct location - down arrow',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowdown, keyCodes.arrowdown ],
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should not move selection if there is no correct location - left arrow',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowleft, keyCodes.arrowleft ],
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should not move selection if there is no correct location - up arrow',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[ keyCodes.arrowup, keyCodes.arrowup ],
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should do nothing if other key is pressed',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Use a safe key (alt) to not trigger the Input features "unsafe keys" handler.
-				18,
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			it( 'should prevent default behaviour when there is no correct location - document end', () => {
-				const keydownHandler = sinon.spy();
-				const domEventDataMock = {
-					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy()
-				};
-				setModelData( model, '<paragraph>foo</paragraph>[<widget></widget>]' );
-				viewDocument.on( 'keydown', keydownHandler );
-
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				viewDocument.fire( 'keydown', domEventDataMock );
-				viewDocument.fire( 'keydown', domEventDataMock );
-
-				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
-				sinon.assert.calledTwice( domEventDataMock.preventDefault );
-				sinon.assert.notCalled( keydownHandler );
+		it( 'should add element\'s label if one is provided', () => {
+			view.change( writer => {
+				widget.toWidget( element, writer, { label: 'foo bar baz label' } );
 			} );
 
-			it( 'should prevent default behaviour when there is no correct location - document start', () => {
-				const keydownHandler = sinon.spy();
-				const domEventDataMock = {
-					keyCode: keyCodes.arrowleft,
-					preventDefault: sinon.spy()
-				};
-				setModelData( model, '[<widget></widget>]<paragraph>foo</paragraph>' );
-				viewDocument.on( 'keydown', keydownHandler );
+			expect( widget.getLabel( element ) ).to.equal( 'foo bar baz label' );
+		} );
 
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				viewDocument.fire( 'keydown', domEventDataMock );
-				viewDocument.fire( 'keydown', domEventDataMock );
-
-				expect( getModelData( model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
-				sinon.assert.calledTwice( domEventDataMock.preventDefault );
-				sinon.assert.notCalled( keydownHandler );
+		it( 'should add element\'s label if one is provided as function', () => {
+			view.change( writer => {
+				widget.toWidget( element, writer, { label: () => 'foo bar baz label' } );
 			} );
 
-			test(
-				'should move selection to object element - right arrow',
-				'<paragraph>foo[]</paragraph><widget></widget>',
-				keyCodes.arrowright,
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
+			expect( widget.getLabel( element ) ).to.equal( 'foo bar baz label' );
+		} );
 
-			test(
-				'should move selection to object element - down arrow',
-				'<paragraph>foo[]</paragraph><widget></widget>',
-				keyCodes.arrowdown,
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
+		it( 'should set default highlight handling methods', () => {
+			view.change( writer => {
+				widget.toWidget( element, writer );
+			} );
 
-			test(
-				'should move selection to object element - left arrow',
-				'<widget></widget><paragraph>[]foo</paragraph>',
-				keyCodes.arrowleft,
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
+			const set = element.getCustomProperty( 'addHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
 
-			test(
-				'should move selection to object element - up arrow',
-				'<widget></widget><paragraph>[]foo</paragraph>',
-				keyCodes.arrowup,
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
 
-			test(
-				'do nothing on non objects - right arrow',
-				'<paragraph>foo[]</paragraph><paragraph>bar</paragraph>',
-				keyCodes.arrowright,
-				'<paragraph>foo[]</paragraph><paragraph>bar</paragraph>'
-			);
+			view.change( writer => {
+				set( element, { priority: 1, classes: 'highlight', id: 'highlight' }, writer );
+			} );
 
-			test(
-				'do nothing on non objects - down arrow',
-				'<paragraph>foo[]</paragraph><paragraph>bar</paragraph>',
-				keyCodes.arrowdown,
-				'<paragraph>foo[]</paragraph><paragraph>bar</paragraph>'
-			);
+			expect( element.hasClass( 'highlight' ) ).to.be.true;
 
-			test(
-				'do nothing on non objects - left arrow',
-				'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>',
-				keyCodes.arrowleft,
-				'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>'
-			);
+			view.change( writer => {
+				remove( element, 'highlight', writer );
+			} );
 
-			test(
-				'do nothing on non objects - up arrow',
-				'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>',
-				keyCodes.arrowup,
-				'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>'
-			);
+			expect( element.hasClass( 'highlight' ) ).to.be.false;
+		} );
 
-			test(
-				'should work correctly with modifier key: right arrow + ctrl',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowright, ctrlKey: true },
-					{ keyCode: keyCodes.arrowright, ctrlKey: true }
-				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
+		it( 'should set default highlight handling methods - CSS classes array', () => {
+			view.change( writer => {
+				widget.toWidget( element, writer );
+			} );
 
-			test(
-				'should work correctly with modifier key: right arrow + alt',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowright, altKey: true },
-					{ keyCode: keyCodes.arrowright, altKey: true }
-				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
+			const set = element.getCustomProperty( 'addHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
 
-			test(
-				'should work correctly with modifier key: right arrow + shift',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowright, shiftKey: true },
-					{ keyCode: keyCodes.arrowright, shiftKey: true }
-				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
 
-			test(
-				'should work correctly with modifier key: down arrow + ctrl',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowdown, ctrlKey: true },
-					{ keyCode: keyCodes.arrowdown, ctrlKey: true }
-				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
+			view.change( writer => {
+				set( element, { priority: 1, classes: [ 'highlight', 'foo' ], id: 'highlight' }, writer );
+			} );
 
-			test(
-				'should work correctly with modifier key: down arrow + alt',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowdown, altKey: true },
-					{ keyCode: keyCodes.arrowdown, altKey: true }
-				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
+			expect( element.hasClass( 'highlight' ) ).to.be.true;
+			expect( element.hasClass( 'foo' ) ).to.be.true;
 
-			test(
-				'should work correctly with modifier key: down arrow + shift',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowdown, shiftKey: true },
-					{ keyCode: keyCodes.arrowdown, shiftKey: true }
-				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
+			view.change( writer => {
+				remove( element, 'highlight', writer );
+			} );
 
-			test(
-				'should work correctly with modifier key: left arrow + ctrl',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowleft, ctrlKey: true },
-					{ keyCode: keyCodes.arrowleft, ctrlKey: true }
-				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
+			expect( element.hasClass( 'highlight' ) ).to.be.false;
+			expect( element.hasClass( 'foo' ) ).to.be.false;
+		} );
 
-			test(
-				'should work correctly with modifier key: left arrow + alt',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowleft, altKey: true },
-					{ keyCode: keyCodes.arrowleft, altKey: true }
-				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
+		it( 'should add element a selection handle to widget if hasSelectionHandle=true is passed', () => {
+			view.change( writer => {
+				widget.toWidget( element, writer, { hasSelectionHandle: true } );
+			} );
 
-			test(
-				'should work correctly with modifier key: left arrow + shift',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowleft, shiftKey: true },
-					{ keyCode: keyCodes.arrowleft, shiftKey: true }
-				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
+			expect( element.hasClass( 'ck-widget_with-selection-handle' ) ).to.be.true;
 
-			test(
-				'should work correctly with modifier key: up arrow + ctrl',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowup, ctrlKey: true },
-					{ keyCode: keyCodes.arrowup, ctrlKey: true }
-				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
+			const selectionHandle = element.getChild( 0 );
+			expect( selectionHandle ).to.be.instanceof( UIElement );
 
-			test(
-				'should work correctly with modifier key: up arrow + alt',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowup, altKey: true },
-					{ keyCode: keyCodes.arrowup, altKey: true }
-				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
+			const domSelectionHandle = selectionHandle.render( document );
 
-			test(
-				'should work correctly with modifier key: up arrow + shift',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				// Note: The first step is handled by the WidgetTypeAround plugin.
-				[
-					{ keyCode: keyCodes.arrowup, shiftKey: true },
-					{ keyCode: keyCodes.arrowup, shiftKey: true }
-				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
-			);
+			expect( domSelectionHandle.classList.contains( 'ck' ) ).to.be.true;
+			expect( domSelectionHandle.classList.contains( 'ck-widget__selection-handle' ) ).to.be.true;
 
-			test(
-				'should do nothing if there is more than one selection in model',
-				'<paragraph>[foo]</paragraph><widget></widget><paragraph>[bar]</paragraph>',
-				keyCodes.arrowright,
-				'<paragraph>[foo]</paragraph><widget></widget><paragraph>[bar]</paragraph>'
-			);
+			const icon = domSelectionHandle.firstChild;
 
-			test(
-				'should work if selection is in nested element (left arrow)',
+			expect( icon.nodeName ).to.equal( 'svg' );
+			expect( icon.classList.contains( 'ck' ) ).to.be.true;
+			expect( icon.classList.contains( 'ck-icon' ) ).to.be.true;
+		} );
 
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph>[]</paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>',
+		it( 'should throw when attempting to create a widget out of anything but ContainerElement', () => {
+			// Due to the "Converting circular structure to JSON" error, we create manually instance of writer in this test.
+			viewDocument = new ViewDocument( new StylesProcessor() );
+			writer = new DowncastWriter( viewDocument );
 
-				keyCodes.arrowleft,
+			expect( () => {
+				widget.toWidget( writer.createRawElement( 'div' ), writer );
+			}, 'raw element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
 
-				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph></paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
+			expect( () => {
+				widget.toWidget( writer.createEmptyElement( 'img' ), writer );
+			}, 'empty element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
 
-			test(
-				'should work if selection is in nested element (up arrow)',
+			expect( () => {
+				widget.toWidget( writer.createAttributeElement( 'a' ), writer );
+			}, 'attribute element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
 
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph>[]</paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>',
+			expect( () => {
+				widget.toWidget( writer.createUIElement( 'span' ), writer );
+			}, 'UI element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+		} );
+	} );
 
-				keyCodes.arrowup,
+	describe( 'isWidget()', () => {
+		it( 'should return true for widgetized elements', () => {
+			expect( widget.isWidget( element ) ).to.be.true;
+		} );
 
-				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph></paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
+		it( 'should return false for non-widgetized elements', () => {
+			expect( widget.isWidget( new ViewElement( viewDocument, 'p' ) ) ).to.be.false;
+		} );
 
-			test(
-				'should work if selection is in nested element (right arrow)',
+		it( 'should return false for text node', () => {
+			expect( widget.isWidget( new ViewText( viewDocument, 'p' ) ) ).to.be.false;
+		} );
+	} );
 
-				'<paragraph>foo</paragraph>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph>[]</paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<image></image>' +
-				'<paragraph>foo</paragraph>',
+	describe( 'setLabel() / getLabel()', () => {
+		it( 'should allow to set label for element', () => {
+			const element = new ViewElement( viewDocument, 'p' );
+			widget.setLabel( element, 'foo bar baz', writer );
 
-				keyCodes.arrowright,
+			expect( widget.getLabel( element ) ).to.equal( 'foo bar baz' );
+		} );
 
-				'<paragraph>foo</paragraph>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph></paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'[<image></image>]' +
-				'<paragraph>foo</paragraph>'
-			);
+		it( 'should return empty string for elements without label', () => {
+			const element = new ViewElement( viewDocument, 'div' );
 
-			test(
-				'should work if selection is in nested element (down arrow)',
+			expect( widget.getLabel( element ) ).to.equal( '' );
+		} );
 
-				'<paragraph>foo</paragraph>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph>[]</paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<image></image>' +
-				'<paragraph>foo</paragraph>',
+		it( 'should allow to use a function as label creator', () => {
+			const element = new ViewElement( viewDocument, 'p' );
+			let caption = 'foo';
+			view.change( writer => {
+				widget.setLabel( element, () => caption, writer );
+			} );
 
-				keyCodes.arrowdown,
+			expect( widget.getLabel( element ) ).to.equal( 'foo' );
+			caption = 'bar';
+			expect( widget.getLabel( element ) ).to.equal( 'bar' );
+		} );
+	} );
 
-				'<paragraph>foo</paragraph>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph></paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'[<image></image>]' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			describe( 'RTL (right-to-left) content', () => {
-				test(
-					'should move selection forward from selected object - left arrow',
-					'[<widget></widget>]<paragraph>foo</paragraph>',
-					// Note: The first step is handled by the WidgetTypeAround plugin.
-					[ keyCodes.arrowleft, keyCodes.arrowleft ],
-					'<widget></widget><paragraph>[]foo</paragraph>',
-					null,
-					'rtl'
-				);
-
-				test(
-					'should move selection backward from selected object - right arrow',
-					'<paragraph>foo</paragraph>[<widget></widget>]',
-					// Note: The first step is handled by the WidgetTypeAround plugin.
-					[ keyCodes.arrowright, keyCodes.arrowright ],
-					'<paragraph>foo[]</paragraph><widget></widget>',
-					null,
-					'rtl'
-				);
-
-				test(
-					'should move selection to next widget - left arrow',
-					'[<widget></widget>]<widget></widget>',
-					// Note: The first step is handled by the WidgetTypeAround plugin.
-					[ keyCodes.arrowleft, keyCodes.arrowleft ],
-					'<widget></widget>[<widget></widget>]',
-					null,
-					'rtl'
-				);
-
-				test(
-					'should move selection to previous widget - right arrow',
-					'<widget></widget>[<widget></widget>]',
-					// Note: The first step is handled by the WidgetTypeAround plugin.
-					[ keyCodes.arrowright, keyCodes.arrowright ],
-					'[<widget></widget>]<widget></widget>',
-					null,
-					'rtl'
-				);
+	describe( 'toWidgetEditable()', () => {
+		beforeEach( () => {
+			view.change( writer => {
+				element = new ViewEditableElement( viewDocument, 'div' );
+				widget.toWidgetEditable( element, writer );
 			} );
 		} );
 
-		function test( name, data, actions, expected, expectedView, contentLanguageDirection = 'ltr' ) {
-			it( name, () => {
-				testUtils.sinon.stub( editor.locale, 'contentLanguageDirection' ).value( contentLanguageDirection );
+		it( 'should be created in context of proper document', () => {
+			expect( element.document ).to.equal( viewDocument );
+		} );
 
-				actions = toArray( actions );
-				actions = actions.map( action => {
-					if ( typeof action === 'object' ) {
-						return action;
-					}
+		it( 'should add proper class', () => {
+			expect( element.hasClass( 'ck-editor__editable', 'ck-editor__nested-editable' ) ).to.be.true;
+		} );
 
-					return {
-						keyCode: action
-					};
-				} );
+		it( 'should add proper contenteditable value when element is read-only - initialization', () => {
+			const element = new ViewEditableElement( viewDocument, 'div' );
+			element.isReadOnly = true;
 
-				setModelData( model, data );
-
-				for ( const action of actions ) {
-					viewDocument.fire( 'keydown', new DomEventData(
-						viewDocument,
-						{ target: document.createElement( 'div' ), preventDefault() {}, stopPropagation() {} },
-						action
-					) );
-				}
-
-				expect( getModelData( model ) ).to.equal( expected );
-
-				if ( expectedView ) {
-					expect( getViewData( view ) ).to.equal( expectedView );
-				}
+			view.change( writer => {
+				widget.toWidgetEditable( element, writer );
 			} );
-		}
-	} );
 
-	describe( 'delete integration', () => {
-		function test( name, input, direction, expected ) {
-			it( name, () => {
-				setModelData( model, input );
-				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-				const domEventDataMock = {
-					keyCode: direction == 'backward' ? keyCodes.backspace : keyCodes.delete
-				};
-
-				viewDocument.fire( 'keydown', new DomEventData(
-					viewDocument,
-					{ target: document.createElement( 'div' ), preventDefault() {} },
-					domEventDataMock
-				) );
-
-				expect( getModelData( model ) ).to.equal( expected );
-				scrollStub.restore();
-			} );
-		}
-
-		// Let's make this integration tests real which will help covering
-		// cases like https://github.com/ckeditor/ckeditor5/issues/753.
-		// Originally, this test file used the Delete feature only which was not "integrational" enough.
-		it( 'tests are executed with the Typing feature', () => {
-			expect( editor.plugins.get( 'Typing' ) ).to.not.be.undefined;
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 		} );
 
-		test(
-			'should select widget when backspace is pressed',
-			'<widget></widget><paragraph>[]foo</paragraph>',
-			'backward',
-			'[<widget></widget>]<paragraph>foo</paragraph>'
-		);
+		it( 'should add proper contenteditable value when element is read-only - when changing', () => {
+			element.isReadOnly = true;
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 
-		test(
-			'should remove empty element after selecting widget when backspace is pressed',
-			'<widget></widget><paragraph>[]</paragraph>',
-			'backward',
-			'[<widget></widget>]'
-		);
-
-		test(
-			'should select widget when delete is pressed',
-			'<paragraph>foo[]</paragraph><widget></widget>',
-			'forward',
-			'<paragraph>foo</paragraph>[<widget></widget>]'
-		);
-
-		test(
-			'should remove empty element after selecting widget when delete is pressed',
-			'<paragraph>[]</paragraph><widget></widget>',
-			'forward',
-			'[<widget></widget>]'
-		);
-
-		test(
-			'should not select widget on non-collapsed selection',
-			'<widget></widget><paragraph>[f]oo</paragraph>',
-			'backward',
-			'<widget></widget><paragraph>[]oo</paragraph>'
-		);
-
-		test(
-			'should not affect non-object elements',
-			'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>',
-			'backward',
-			'<paragraph>foo[]bar</paragraph>'
-		);
-
-		test(
-			'should not modify backward delete default behaviour in single paragraph boundaries',
-			'<paragraph>[]foo</paragraph>',
-			'backward',
-			'<paragraph>[]foo</paragraph>'
-		);
-
-		test(
-			'should not modify delete forward default behaviour in single paragraph boundaries',
-			'<paragraph>foo[]</paragraph>',
-			'forward',
-			'<paragraph>foo[]</paragraph>'
-		);
-
-		test(
-			'should delete selected widget with paragraph before - backward',
-			'<paragraph>foo</paragraph>[<widget></widget>]',
-			'backward',
-			'<paragraph>foo</paragraph><paragraph>[]</paragraph>'
-		);
-
-		test(
-			'should delete selected widget with paragraph before - forward',
-			'<paragraph>foo</paragraph>[<widget></widget>]',
-			'forward',
-			'<paragraph>foo</paragraph><paragraph>[]</paragraph>'
-		);
-
-		test(
-			'should delete selected widget with paragraph after - backward',
-			'[<widget></widget>]<paragraph>foo</paragraph>',
-			'backward',
-			'<paragraph>[]</paragraph><paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should delete selected widget with paragraph after - forward',
-			'[<widget></widget>]<paragraph>foo</paragraph>',
-			'forward',
-			'<paragraph>[]</paragraph><paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should delete selected widget between paragraphs - backward',
-			'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
-			'backward',
-			'<paragraph>bar</paragraph><paragraph>[]</paragraph><paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should delete selected widget between paragraphs - forward',
-			'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
-			'forward',
-			'<paragraph>bar</paragraph><paragraph>[]</paragraph><paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should delete selected widget preceded by another widget - backward',
-			'<widget></widget>[<widget></widget>]',
-			'backward',
-			'<widget></widget><paragraph>[]</paragraph>'
-		);
-
-		test(
-			'should delete selected widget preceded by another widget - forward',
-			'<widget></widget>[<widget></widget>]',
-			'forward',
-			'<widget></widget><paragraph>[]</paragraph>'
-		);
-
-		test(
-			'should delete selected widget before another widget - forward',
-			'[<widget></widget>]<widget></widget>',
-			'forward',
-			'<paragraph>[]</paragraph><widget></widget>'
-		);
-
-		test(
-			'should delete selected widget before another widget - backward',
-			'[<widget></widget>]<widget></widget>',
-			'backward',
-			'<paragraph>[]</paragraph><widget></widget>'
-		);
-
-		test(
-			'should delete selected widget between other widgets - forward',
-			'<widget></widget>[<widget></widget>]<widget></widget>',
-			'forward',
-			'<widget></widget><paragraph>[]</paragraph><widget></widget>'
-		);
-
-		test(
-			'should delete selected widget between other widgets - backward',
-			'<widget></widget>[<widget></widget>]<widget></widget>',
-			'backward',
-			'<widget></widget><paragraph>[]</paragraph><widget></widget>'
-		);
-
-		test(
-			'should select inline objects - backward',
-			'<paragraph>foo<inline></inline>[]bar</paragraph>',
-			'backward',
-			'<paragraph>foo[<inline></inline>]bar</paragraph>'
-		);
-
-		test(
-			'should select inline objects - forward',
-			'<paragraph>foo[]<inline></inline>bar</paragraph>',
-			'forward',
-			'<paragraph>foo[<inline></inline>]bar</paragraph>'
-		);
-
-		test(
-			'should delete selected inline objects - backward',
-			'<paragraph>foo[<inline></inline>]bar</paragraph>',
-			'backward',
-			'<paragraph>foo[]bar</paragraph>'
-		);
-
-		test(
-			'should delete selected inline objects - forward',
-			'<paragraph>foo[<inline></inline>]bar</paragraph>',
-			'forward',
-			'<paragraph>foo[]bar</paragraph>'
-		);
-
-		test(
-			'should use standard delete behaviour when after first letter - backward',
-			'<paragraph>a[]</paragraph>',
-			'backward',
-			'<paragraph>[]</paragraph>'
-		);
-
-		test(
-			'should use standard delete behaviour when before first letter - forward',
-			'<paragraph>[]a</paragraph>',
-			'forward',
-			'<paragraph>[]</paragraph>'
-		);
-
-		it( 'should prevent default behaviour and stop event propagation', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
-			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-			const deleteSpy = sinon.spy();
-
-			viewDocument.on( 'delete', deleteSpy );
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
-
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'forward', unit: 'character', sequence: 0 }
-			) );
-
-			sinon.assert.calledOnce( domEventDataMock.preventDefault );
-			sinon.assert.notCalled( deleteSpy );
-			scrollStub.restore();
+			element.isReadOnly = false;
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
 		} );
 
-		test(
-			'should remove the entire empty element if it is next to a widget',
+		it( 'should add proper class when element is focused', () => {
+			element.isFocused = true;
+			expect( element.hasClass( 'ck-editor__nested-editable_focused' ) ).to.be.true;
 
-			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
-			'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-			'<paragraph>foo</paragraph>',
-
-			'backward',
-
-			'<paragraph>foo</paragraph>[<image></image>]<paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should remove the entire empty element (deeper structure) if it is next to a widget',
-
-			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
-			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
-			'<paragraph>foo</paragraph>',
-
-			'backward',
-
-			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
-			'<paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should remove the entire empty element (deeper structure) if it is next to a widget (delete forward)',
-
-			'<paragraph>foo</paragraph>' +
-			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
-			'<image></image>' +
-			'<paragraph>foo</paragraph>',
-
-			'forward',
-
-			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
-			'<paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should not remove the entire element which is not empty and the element is next to a widget',
-
-			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
-			'<blockQuote><paragraph>[]</paragraph><paragraph></paragraph></blockQuote>' +
-			'<paragraph>foo</paragraph>',
-
-			'backward',
-
-			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
-			'<blockQuote><paragraph></paragraph></blockQuote>' +
-			'<paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should not remove the entire element which is not empty and the element is next to a widget (delete forward)',
-
-			'<paragraph>foo</paragraph>' +
-			'<blockQuote><paragraph>Foo</paragraph><paragraph>[]</paragraph></blockQuote>' +
-			'<image></image>' +
-			'<paragraph>foo</paragraph>',
-
-			'forward',
-
-			'<paragraph>foo</paragraph>' +
-			'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-			'[<image></image>]' +
-			'<paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should not remove the entire element (deeper structure) which is not empty and the element is next to a widget',
-
-			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
-			'<blockQuote>' +
-			'<div>' +
-			'<div>' +
-			'<paragraph>[]</paragraph>' +
-			'</div>' +
-			'</div>' +
-			'<paragraph></paragraph>' +
-			'</blockQuote>' +
-			'<paragraph>foo</paragraph>',
-
-			'backward',
-
-			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
-			'<blockQuote>' +
-			'<paragraph></paragraph>' +
-			'</blockQuote>' +
-			'<paragraph>foo</paragraph>'
-		);
-
-		test(
-			'should do nothing if the nested element is not empty and the element is next to a widget',
-
-			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
-			'<blockQuote>' +
-			'<div>' +
-			'<div>' +
-			'<paragraph>Foo[]</paragraph>' +
-			'</div>' +
-			'</div>' +
-			'</blockQuote>' +
-			'<paragraph>foo</paragraph>',
-
-			'backward',
-
-			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
-			'<blockQuote>' +
-			'<div>' +
-			'<div>' +
-			'<paragraph>Fo[]</paragraph>' +
-			'</div>' +
-			'</div>' +
-			'</blockQuote>' +
-			'<paragraph>foo</paragraph>'
-		);
-
-		it( 'does nothing when editor when read only mode is enabled (delete)', () => {
-			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-			setModelData( model,
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			editor.isReadOnly = true;
-
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
-
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'backward', unit: 'character', sequence: 0 }
-			) );
-
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
-			scrollStub.restore();
-		} );
-
-		it( 'does nothing when editor when read only mode is enabled (delete forward)', () => {
-			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-			setModelData( model,
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			editor.isReadOnly = true;
-
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
-
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'forward', unit: 'character', sequence: 0 }
-			) );
-
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
-			scrollStub.restore();
+			element.isFocused = false;
+			expect( element.hasClass( 'ck-editor__nested-editable_focused' ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'selection handle', () => {
-		let element, editor;
+	describe( 'addHighlightHandling()', () => {
+		let element, addSpy, removeSpy, set, remove;
 
 		beforeEach( () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
+			element = new ViewElement( viewDocument, 'p' );
+			addSpy = sinon.spy();
+			removeSpy = sinon.spy();
 
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ Paragraph, Widget, Typing ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					view = editor.editing.view;
-					viewDocument = view.document;
+			view.change( writer => {
+				widget.setHighlightHandling( element, writer, addSpy, removeSpy );
+			} );
 
-					model.schema.register( 'widget', {
-						inheritAllFrom: '$block',
-						allowIn: 'widget',
-						isObject: true
-					} );
-					model.schema.register( 'nested', {
-						allowIn: 'widget',
-						isLimit: true
-					} );
-					model.schema.extend( '$text', {
-						allowIn: 'nested'
-					} );
+			set = element.getCustomProperty( 'addHighlight' );
+			remove = element.getCustomProperty( 'removeHighlight' );
+		} );
 
-					editor.conversion.for( 'downcast' )
-						.elementToElement( { model: 'paragraph', view: 'p' } )
-						.elementToElement( {
-							model: 'widget',
-							view: ( modelItem, { writer } ) => {
-								const widget = writer.createContainerElement( 'div' );
+		it( 'should set highlight handling methods', () => {
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+		} );
 
-								return toWidget( widget, writer, { hasSelectionHandle: true } );
-							}
-						} )
-						.elementToElement( {
-							model: 'nested',
-							view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
-						} );
+		it( 'should call highlight methods when descriptor is added and removed', () => {
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight' };
+
+			view.change( writer => {
+				set( element, descriptor, writer );
+				remove( element, descriptor.id, writer );
+
+				sinon.assert.calledOnce( addSpy );
+				sinon.assert.calledWithExactly( addSpy, element, descriptor, writer );
+
+				sinon.assert.calledOnce( removeSpy );
+				sinon.assert.calledWithExactly( removeSpy, element, descriptor, writer );
+			} );
+		} );
+
+		it( 'should call highlight methods when next descriptor is added', () => {
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 11, classes: 'highlight', id: 'highlight-2' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+
+			sinon.assert.calledTwice( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+		} );
+
+		it( 'should not call highlight methods when descriptor with lower priority is added', () => {
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 9, classes: 'highlight', id: 'highlight-2' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+
+			sinon.assert.calledOnce( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+		} );
+
+		it( 'should call highlight methods when descriptor is removed changing active descriptor', () => {
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 11, classes: 'highlight', id: 'highlight-2' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+			remove( element, secondDescriptor.id );
+
+			sinon.assert.calledThrice( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+			expect( addSpy.thirdCall.args[ 1 ] ).to.equal( descriptor );
+
+			sinon.assert.calledTwice( removeSpy );
+			expect( removeSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( removeSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+		} );
+
+		it( 'should call highlight methods when descriptor is removed not changing active descriptor', () => {
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 9, classes: 'highlight', id: 'highlight-2' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+			remove( element, secondDescriptor );
+
+			sinon.assert.calledOnce( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+
+			sinon.assert.notCalled( removeSpy );
+		} );
+
+		it( 'should call highlight methods - CSS class array', () => {
+			const descriptor = { priority: 10, classes: [ 'highlight', 'a' ], id: 'highlight-1' };
+			const secondDescriptor = { priority: 10, classes: [ 'highlight', 'b' ], id: 'highlight-2' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+
+			sinon.assert.calledTwice( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+		} );
+	} );
+
+	describe( 'findOptimalInsertionPosition()', () => {
+		let model, doc;
+
+		beforeEach( () => {
+			model = new Model();
+			doc = model.document;
+
+			doc.createRoot();
+
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			model.schema.register( 'image' );
+			model.schema.register( 'span' );
+
+			model.schema.extend( 'image', {
+				allowIn: '$root',
+				isObject: true,
+				isBlock: true
+			} );
+
+			model.schema.register( 'horizontalLine', {
+				isObject: true,
+				allowWhere: '$block'
+			} );
+
+			model.schema.extend( 'span', { allowIn: 'paragraph' } );
+			model.schema.extend( '$text', { allowIn: 'span' } );
+		} );
+
+		it( 'returns position after selected element', () => {
+			setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 2 ] );
+		} );
+
+		it( 'returns position before parent block if an inline object is selected', () => {
+			model.schema.register( 'placeholder', {
+				allowWhere: '$text',
+				isInline: true,
+				isObject: true
+			} );
+
+			setData( model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'returns position inside empty block', () => {
+			setData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1, 0 ] );
+		} );
+
+		it( 'returns position before block if at the beginning of that block', () => {
+			setData( model, '<paragraph>x</paragraph><paragraph>[]foo</paragraph><paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'returns position before block if in the middle of that block (collapsed selection)', () => {
+			setData( model, '<paragraph>x</paragraph><paragraph>f[]oo</paragraph><paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'returns position before block if in the middle of that block (non-collapsed selection)', () => {
+			setData( model, '<paragraph>x</paragraph><paragraph>f[o]o</paragraph><paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'returns position after block if at the end of that block', () => {
+			setData( model, '<paragraph>x</paragraph><paragraph>foo[]</paragraph><paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 2 ] );
+		} );
+
+		// Checking if isTouching() was used.
+		it( 'returns position after block if at the end of that block (deeply nested)', () => {
+			setData( model, '<paragraph>x</paragraph><paragraph>foo<span>bar[]</span></paragraph><paragraph>y</paragraph>' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 2 ] );
+		} );
+
+		it( 'returns selection focus if not in a block', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'foo[]bar' );
+
+			const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 3 ] );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/7438
+		describe( 'integration with the WidgetTypeAround feature ("widget-type-around" model selection attribute)', () => {
+			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" before a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'before' );
 				} );
-		} );
 
-		afterEach( () => {
-			element.remove();
+				const pos = widget.findOptimalInsertionPosition( doc.selection, model );
 
-			return editor.destroy();
-		} );
-
-		it( 'should select a widget on mouse click', () => {
-			setModelData( model, '<paragraph>bar</paragraph><widget></widget><paragraph>foo[]</paragraph>' );
-
-			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
-
-			const domEventDataMock = new DomEventData( view, {
-				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
-				preventDefault: sinon.spy()
+				expect( pos.path ).to.deep.equal( [ 1 ] );
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" after a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>' );
-		} );
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'after' );
+				} );
 
-		it( 'should select the most top-outer widget if widgets are nested', () => {
-			setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
+				const pos = widget.findOptimalInsertionPosition( doc.selection, model );
 
-			// The top-outer widget.
-			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
-
-			const domEventDataMock = new DomEventData( view, {
-				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
-				preventDefault: sinon.spy()
+				expect( pos.path ).to.deep.equal( [ 2 ] );
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			it( 'should return a position after a selected widget (block and an object) ("fake caret" not displayed)', () => {
+				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
 
-			expect( getViewData( view ) ).to.equal(
-				'[<div class="' +
-					'ck-widget ' +
-					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
-				'>' +
-					'<div class="' +
-						'ck-widget ' +
-						'ck-widget_with-selection-handle" contenteditable="false"' +
-					'>' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-					'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-					'</div>' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>]'
-			);
-		} );
+				const pos = widget.findOptimalInsertionPosition( doc.selection, model );
 
-		it( 'should select a proper widget if they are nested and multiplied', () => {
-			setModelData( model,
-				'<widget></widget>' +
-				'<widget>' +
-					'<widget></widget>' +
-					'<widget></widget>' +
-				'</widget>' +
-				'<widget></widget>'
-			);
-
-			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 );
-
-			const domEventDataMock = new DomEventData( view, {
-				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
-				preventDefault: sinon.spy()
+				expect( pos.path ).to.deep.equal( [ 2 ] );
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" before a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
 
-			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handle" ' +
-				'contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>' +
-				'[<div class="' +
-					'ck-widget ' +
-					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
-				'>' +
-					'<div ' +
-					'class="ck-widget ck-widget_with-selection-handle" ' +
-					'contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" ' +
-					'contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>]' +
-					'<div ' +
-					'class="ck-widget ck-widget_with-selection-handle" ' +
-					'contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>'
-			);
-		} );
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				} );
 
-		it( 'works fine with a widget that contains more children', () => {
-			setModelData( model,
-				'<widget>' +
-					'<nested>foo bar</nested>' +
-					'<widget></widget>' +
-				'</widget>'
-			);
+				const pos = widget.findOptimalInsertionPosition( doc.selection, model );
 
-			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
-
-			const domEventDataMock = new DomEventData( view, {
-				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
-				preventDefault: sinon.spy()
+				expect( pos.path ).to.deep.equal( [ 1 ] );
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" after a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
 
-			expect( getViewData( view ) ).to.equal(
-				'[<div class="' +
-					'ck-widget ' +
-					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
-				'>' +
-					'<figcaption contenteditable="true">foo bar</figcaption>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-					'</div>' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>]'
-			);
-		} );
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'after' );
+				} );
 
-		it( 'should select a proper widget for more complex structures', () => {
-			setModelData( model,
-				'<widget>' +
-					'<widget></widget>' +
-					'<widget>' +
-						'<widget></widget>' +
-					'</widget>' +
-				'</widget>'
-			);
+				const pos = widget.findOptimalInsertionPosition( doc.selection, model );
 
-			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
-
-			const domEventDataMock = new DomEventData( view, {
-				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
-				preventDefault: sinon.spy()
+				expect( pos.path ).to.deep.equal( [ 2 ] );
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			it( 'should return a position after a selected widget (an object) ("fake caret" not displayed)', () => {
+				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
 
-			expect( getViewData( view ) ).to.equal(
-				'<div class="' +
-					'ck-widget ' +
-					'ck-widget_with-selection-handle" contenteditable="false"' +
-				'>' +
-					'<div class="' +
-						'ck-widget ' +
-						'ck-widget_with-selection-handle" contenteditable="false"' +
-					'>' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-					'</div>' +
-					'[<div class="' +
-						'ck-widget ' +
-						'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
-					'>' +
-						'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
-							'<div class="ck ck-widget__selection-handle"></div>' +
-							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-						'</div>' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-					'</div>]' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>'
-			);
+				const pos = widget.findOptimalInsertionPosition( doc.selection, model );
+
+				expect( pos.path ).to.deep.equal( [ 2 ] );
+			} );
 		} );
+	} );
 
-		it( 'should select widget in editable', () => {
-			model.schema.extend( 'widget', { allowIn: 'nested' } );
+	describe( 'checkSelectionOnObject()', () => {
+		let model;
 
-			setModelData( model, '[]<widget><nested><widget></widget></nested></widget>' );
+		beforeEach( () => {
+			model = new Model();
 
-			const widgetInEditable = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
+			model.document.createRoot();
 
-			const domEventDataMock = new DomEventData( view, {
-				target: view.domConverter.mapViewToDom( widgetInEditable ),
-				preventDefault: sinon.spy()
+			model.schema.register( 'image', {
+				allowIn: '$root',
+				isObject: true,
+				isBlock: true
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			model.schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
 
-			expect( getViewData( view ) ).to.equal(
-				'<div class="' +
-					'ck-widget ' +
-					'ck-widget_with-selection-handle" contenteditable="false"' +
-				'>' +
-					'<figcaption contenteditable="true">[' +
-						'<div class="' +
-							'ck-widget ' +
-							'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
-						'>' +
-							'<div class="ck ck-widget__selection-handle"></div>' +
-							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-						'</div>]' +
-					'</figcaption>' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</div>'
+			model.schema.register( 'element', {
+				allowIn: '$root',
+				isSelectable: true
+			} );
+
+			model.schema.extend( '$text', {
+				allowIn: 'image'
+			} );
+		} );
+
+		it( 'should return false if no element is selected', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = widget.checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+
+		it( 'should return false if the selection is not on an object', () => {
+			setData( model, '[<element></element>]' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = widget.checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+
+		it( 'should return true if the selection is on an object', () => {
+			setData( model, '<paragraph></paragraph>[<image></image>]' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = widget.checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.true;
+		} );
+
+		it( 'should return false if the selection contains an object', () => {
+			setData( model, '<paragraph>fo[o</paragraph><image></image><paragraph>ba]r</paragraph>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = widget.checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+
+		it( 'should return false if the selection is nested in an object', () => {
+			setData( model, '<image>[foo]</image>' );
+
+			const selection = model.document.selection;
+			const isSelectionOnObject = widget.checkSelectionOnObject( selection, model.schema );
+
+			expect( isSelectionOnObject ).to.be.false;
+		} );
+	} );
+
+	describe( 'viewToModelPositionOutsideModelElement()', () => {
+		let mapper, model, modelP, viewP, viewXyz, modelSpan, viewSpan;
+
+		beforeEach( () => {
+			mapper = new Mapper();
+			model = new Model();
+
+			// MODEL: <p>foo<span></span>bar</p>
+			const modelFoo = new ModelText( 'foo' );
+			modelSpan = new ModelElement( 'span' );
+			const modelBar = new ModelText( 'bar' );
+			modelP = new ModelElement( 'p', null, [ modelFoo, modelSpan, modelBar ] );
+
+			// VIEW: <p>foo<span>xyz</span>bar</p>
+			const viewFoo = new ViewText( viewDocument, 'foo' );
+			viewXyz = new ViewText( viewDocument, 'xyz' );
+			viewSpan = new ViewElement( viewDocument, 'span', null, viewXyz );
+			const viewBar = new ViewText( viewDocument, 'bar' );
+			viewP = new ViewElement( viewDocument, 'p', null, [ viewFoo, viewSpan, viewBar ] );
+
+			mapper.bindElements( modelP, viewP );
+			mapper.bindElements( modelSpan, viewSpan );
+		} );
+
+		it( 'should map view position that is at the beginning of the view element to a position before the model element', () => {
+			mapper.on(
+				'viewToModelPosition',
+				widget.viewToModelPositionOutsideModelElement( model, viewElement => viewElement.name == 'span' )
 			);
+
+			// View:
+			// <p>foo<span>|xyz</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 0 );
+
+			// Model:
+			// <p>foo|<span></span>bar</p>.
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 3 ] );
+		} );
+
+		it( 'should map view position that is in the middle of the view element to a position after the model element', () => {
+			mapper.on(
+				'viewToModelPosition',
+				widget.viewToModelPositionOutsideModelElement( model, viewElement => viewElement.name == 'span' )
+			);
+
+			// View:
+			// <p>foo<span>x|yz</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 1 );
+
+			// Model:
+			// <p>foo|<span></span>bar</p>.
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 4 ] );
+		} );
+
+		it( 'should map view position that is at the end of the view element to a position after the model element', () => {
+			mapper.on(
+				'viewToModelPosition',
+				widget.viewToModelPositionOutsideModelElement( model, viewElement => viewElement.name == 'span' )
+			);
+
+			// View:
+			// <p>foo<span>xyz|</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 3 );
+
+			// Model:
+			// <p>foo<span></span>|bar</p>.
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 4 ] );
+		} );
+
+		it( 'should not fire if view element is not matched', () => {
+			mapper.on( 'viewToModelPosition', widget.viewToModelPositionOutsideModelElement( model, () => false ) );
+
+			// View:
+			// <p>foo<span>x|yz</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 1 );
+
+			// Model:
+			// <p>foo<span>x|yz</span>bar</p>.
+			modelSpan._appendChild( new ModelText( 'xyz' ) );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 3, 1 ] );
+		} );
+	} );
+
+	describe( 'centeredBalloonPositionForLongWidgets()', () => {
+		const arrowVerticalOffset = BalloonPanelView.arrowVerticalOffset;
+
+		// Balloon is a 10x10 rect.
+		const balloonRect = new Rect( {
+			top: 0,
+			left: 0,
+			right: 10,
+			bottom: 10,
+			width: 10,
+			height: 10
+		} );
+
+		beforeEach( () => {
+			testUtils.sinon.stub( global.window, 'innerWidth' ).value( 100 );
+			testUtils.sinon.stub( global.window, 'innerHeight' ).value( 100 );
+		} );
+
+		it( 'should return null if there is enough space above the widget', () => {
+			// Widget is a 50x150 rect, translated (25,25) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 25,
+				left: 25,
+				right: 75,
+				bottom: 175,
+				width: 50,
+				height: 150
+			} );
+
+			const position = widget.centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.equal( null );
+		} );
+
+		it( 'should return null if there is enough space below the widget', () => {
+			// Widget is a 50x150 rect, translated (25,-125) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: -125,
+				left: 25,
+				right: 75,
+				bottom: 25,
+				width: 50,
+				height: 150
+			} );
+
+			const position = widget.centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.equal( null );
+		} );
+
+		it( 'should position the balloon inside a widget – at the top + in the middle', () => {
+			// Widget is a 50x150 rect, translated (25,5) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 5,
+				left: 25,
+				right: 75,
+				bottom: 155,
+				width: 50,
+				height: 150
+			} );
+
+			const position = widget.centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: 5 + arrowVerticalOffset,
+				left: 45,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'should stick the balloon to the top of the viewport when the top of a widget is off-screen', () => {
+			// Widget is a 50x150 rect, translated (25,-25) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: -25,
+				left: 25,
+				right: 75,
+				bottom: 150,
+				width: 50,
+				height: 150
+			} );
+
+			const position = widget.centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: arrowVerticalOffset,
+				left: 45,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'should horizontally center the balloon in the visible area when the widget is cropped by the viewport', () => {
+			// Widget is a 50x150 rect, translated (-25,5) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 5,
+				left: -25,
+				right: 25,
+				bottom: 155,
+				width: 50,
+				height: 150
+			} );
+
+			const position = widget.centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: 5 + arrowVerticalOffset,
+				left: 7.5,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'should horizontally center the balloon in the widget when the widget is completely off the viewport', () => {
+			// Widget is a 50x150 rect, translated (0,-100) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 0,
+				left: -100,
+				right: -50,
+				bottom: 150,
+				width: 50,
+				height: 150
+			} );
+
+			const position = widget.centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: 0 + arrowVerticalOffset,
+				left: -80,
+				name: 'arrow_n'
+			} );
 		} );
 	} );
 } );

@@ -8,7 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import KeyObserver from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
 
-import { toWidget } from '../src/utils';
+import Widget from '../src/widget';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -49,7 +49,7 @@ describe( 'Widget - Events', () => {
 	}
 
 	async function createEditor( element ) {
-		const editor = await ClassicEditor.create( element, { plugins: [ simpleWidgetPlugin ] } );
+		const editor = await ClassicEditor.create( element, { plugins: [ Widget, simpleWidgetPlugin ] } );
 
 		setModelData( editor.model, '[<simpleWidgetElement></simpleWidgetElement>]' );
 
@@ -82,9 +82,10 @@ describe( 'Widget - Events', () => {
 				.elementToElement( {
 					model: 'simpleWidgetElement',
 					view: ( modelElement, { writer } ) => {
+						const widget = editor.plugins.get( 'Widget' );
 						const widgetElement = createWidgetView( modelElement, { writer } );
 
-						return toWidget( widgetElement, writer );
+						return widget.toWidget( widgetElement, writer );
 					}
 				} );
 

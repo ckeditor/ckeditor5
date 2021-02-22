@@ -8,32 +8,18 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import WidgetTypeAround from './widgettypearound/widgettypearound';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import {
-	isArrowKeyCode,
-	isForwardArrowKeyCode
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-
-import '../theme/widget.css';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-import verticalNavigationHandler from './verticalnavigation';
+import WidgetCore from './widgetcore';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import HighlightStack from './highlightstack';
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import dragHandleIcon from '../theme/icons/drag-handle.svg';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 /**
- * The widget plugin. It enables base support for widgets.
- *
- * See {@glink api/widget package page} for more details and documentation.
- *
- * This plugin enables multiple behaviors required by widgets:
- *
- * * The model to view selection converter for the editing pipeline (it handles widget custom selection rendering).
- * If a converted selection wraps around a widget element, that selection is marked as
- * {@link module:engine/view/selection~Selection#isFake fake}. Additionally, the `ck-widget_selected` CSS class
- * is added to indicate that widget has been selected.
- * * The mouse and keyboard events handling on and around widget elements.
- *
  * @extends module:core/plugin~Plugin
  */
 export default class Widget extends Plugin {
@@ -48,363 +34,459 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetTypeAround ];
+		return [ WidgetCore ];
 	}
 
 	/**
-	 * @inheritDoc
+	 * CSS class added to each widget element.
+	 *
+	 * @member {String} module:widget/widget~Widget.WIDGET_CLASS_NAME
 	 */
-	init() {
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
-
-		/**
-		 * Holds previously selected widgets.
-		 *
-		 * @private
-		 * @type {Set.<module:engine/view/element~Element>}
-		 */
-		this._previouslySelected = new Set();
-
-		// Model to view selection converter.
-		// Converts selection placed over widget element to fake selection
-		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
-			// Remove selected class from previously selected widgets.
-			this._clearPreviouslySelectedWidgets( conversionApi.writer );
-
-			const viewWriter = conversionApi.writer;
-			const viewSelection = viewWriter.document.selection;
-			const selectedElement = viewSelection.getSelectedElement();
-			let lastMarked = null;
-
-			for ( const range of viewSelection.getRanges() ) {
-				for ( const value of range ) {
-					const node = value.item;
-
-					// Do not mark nested widgets in selected one. See: #57.
-					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
-						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
-
-						this._previouslySelected.add( node );
-						lastMarked = node;
-
-						// Check if widget is a single element selected.
-						if ( node == selectedElement ) {
-							viewWriter.setSelection( viewSelection.getRanges(), { fake: true, label: getLabel( selectedElement ) } );
-						}
-					}
-				}
-			}
-		}, { priority: 'low' } );
-
-		// If mouse down is pressed on widget - create selection over whole widget.
-		view.addObserver( MouseObserver );
-		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
-
-		// There are two keydown listeners working on different priorities. This allows other
-		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between
-		// and customize the behavior even further in different content/selection scenarios.
-		//
-		// * The first listener handles changing the selection on arrow key press
-		// if the widget is selected or if the selection is next to a widget and the widget
-		// should become selected upon the arrow key press.
-		//
-		// * The second (late) listener makes sure the default browser action on arrow key press is
-		// prevented when a widget is selected. This prevents the selection from being moved
-		// from a fake selection container.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
-			this._handleSelectionChangeOnArrowKeyPress( ...args );
-		}, { priority: 'high' } );
-
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
-			this._preventDefaultOnArrowKeyPress( ...args );
-		}, { priority: priorities.get( 'high' ) - 20 } );
-
-		this.listenTo( viewDocument, 'keydown', verticalNavigationHandler( this.editor.editing ) );
-
-		// Handle custom delete behaviour.
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-			if ( this._handleDelete( data.direction == 'forward' ) ) {
-				data.preventDefault();
-				evt.stop();
-			}
-		}, { priority: 'high' } );
+	get WIDGET_CLASS_NAME() {
+		return 'ck-widget';
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:mousedown mousedown} events on widget elements.
+	 * CSS class added to currently selected widget element.
 	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @member {String} module:widget/widget~Widget.WIDGET_SELECTED_CLASS_NAME
 	 */
-	_onMousedown( eventInfo, domEventData ) {
-		const editor = this.editor;
-		const view = editor.editing.view;
-		const viewDocument = view.document;
-		let element = domEventData.target;
-
-		// Do nothing for single or double click inside nested editable.
-		if ( isInsideNestedEditable( element ) ) {
-			// But at least triple click inside nested editable causes broken selection in Safari.
-			// For such event, we select the entire nested editable element.
-			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
-			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
-				const mapper = editor.editing.mapper;
-				const viewElement = element.is( 'attributeElement' ) ?
-					element.findAncestor( element => !element.is( 'attributeElement' ) ) : element;
-				const modelElement = mapper.toModelElement( viewElement );
-
-				domEventData.preventDefault();
-
-				this.editor.model.change( writer => {
-					writer.setSelection( modelElement, 'in' );
-				} );
-			}
-
-			return;
-		}
-
-		// If target is not a widget element - check if one of the ancestors is.
-		if ( !isWidget( element ) ) {
-			element = element.findAncestor( isWidget );
-
-			if ( !element ) {
-				return;
-			}
-		}
-
-		domEventData.preventDefault();
-
-		// Focus editor if is not focused already.
-		if ( !viewDocument.isFocused ) {
-			view.focus();
-		}
-
-		// Create model selection over widget.
-		const modelElement = editor.editing.mapper.toModelElement( element );
-
-		this._setSelectionOverElement( modelElement );
+	get WIDGET_SELECTED_CLASS_NAME() {
+		return 'ck-widget_selected';
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events and changes
-	 * the model selection when:
+	 * Returns `true` if given {@link module:engine/view/node~Node} is an {@link module:engine/view/element~Element} and a widget.
 	 *
-	 * * arrow key is pressed when the widget is selected,
-	 * * the selection is next to a widget and the widget should become selected upon the arrow key press.
-	 *
-	 * See {@link #_preventDefaultOnArrowKeyPress}.
-	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {module:engine/view/node~Node} node
+	 * @returns {Boolean}
 	 */
-	_handleSelectionChangeOnArrowKeyPress( eventInfo, domEventData ) {
-		const keyCode = domEventData.keyCode;
-
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
-		const model = this.editor.model;
-		const schema = model.schema;
-		const modelSelection = model.document.selection;
-		const objectElement = modelSelection.getSelectedElement();
-		const isForward = isForwardArrowKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
-
-		// If object element is selected.
-		if ( objectElement && schema.isObject( objectElement ) ) {
-			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-			const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
-
-			if ( newRange ) {
-				model.change( writer => {
-					writer.setSelection( newRange );
-				} );
-
-				domEventData.preventDefault();
-				eventInfo.stop();
-			}
-
-			return;
-		}
-
-		// If selection is next to object element.
-		// Return if not collapsed.
-		if ( !modelSelection.isCollapsed ) {
-			return;
-		}
-
-		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
-
-		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
-			this._setSelectionOverElement( objectElementNextToSelection );
-
-			domEventData.preventDefault();
-			eventInfo.stop();
-		}
-	}
-
-	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events and prevents
-	 * the default browser behavior to make sure the fake selection is not being moved from a fake selection
-	 * container.
-	 *
-	 * See {@link #_handleSelectionChangeOnArrowKeyPress}.
-	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
-	 */
-	_preventDefaultOnArrowKeyPress( eventInfo, domEventData ) {
-		const keyCode = domEventData.keyCode;
-
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
-		const model = this.editor.model;
-		const schema = model.schema;
-		const objectElement = model.document.selection.getSelectedElement();
-
-		// If object element is selected.
-		if ( objectElement && schema.isObject( objectElement ) ) {
-			domEventData.preventDefault();
-			eventInfo.stop();
-		}
-	}
-
-	/**
-	 * Handles delete keys: backspace and delete.
-	 *
-	 * @private
-	 * @param {Boolean} isForward Set to true if delete was performed in forward direction.
-	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
-	 */
-	_handleDelete( isForward ) {
-		// Do nothing when the read only mode is enabled.
-		if ( this.editor.isReadOnly ) {
-			return;
-		}
-
-		const modelDocument = this.editor.model.document;
-		const modelSelection = modelDocument.selection;
-
-		// Do nothing on non-collapsed selection.
-		if ( !modelSelection.isCollapsed ) {
-			return;
-		}
-
-		const objectElement = this._getObjectElementNextToSelection( isForward );
-
-		if ( objectElement ) {
-			this.editor.model.change( writer => {
-				let previousNode = modelSelection.anchor.parent;
-
-				// Remove previous element if empty.
-				while ( previousNode.isEmpty ) {
-					const nodeToRemove = previousNode;
-					previousNode = nodeToRemove.parent;
-
-					writer.remove( nodeToRemove );
-				}
-
-				this._setSelectionOverElement( objectElement );
-			} );
-
-			return true;
-		}
-	}
-
-	/**
-	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
-	 *
-	 * @protected
-	 * @param {module:engine/model/element~Element} element
-	 */
-	_setSelectionOverElement( element ) {
-		this.editor.model.change( writer => {
-			writer.setSelection( writer.createRangeOn( element ) );
-		} );
-	}
-
-	/**
-	 * Checks if {@link module:engine/model/element~Element element} placed next to the current
-	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
-	 * {@link module:engine/model/schema~Schema schema} as `object`.
-	 *
-	 * @protected
-	 * @param {Boolean} forward Direction of checking.
-	 * @returns {module:engine/model/element~Element|null}
-	 */
-	_getObjectElementNextToSelection( forward ) {
-		const model = this.editor.model;
-		const schema = model.schema;
-		const modelSelection = model.document.selection;
-
-		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
-		// to its current state after undo.
-		const probe = model.createSelection( modelSelection );
-		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
-		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
-
-		if ( !!objectElement && schema.isObject( objectElement ) ) {
-			return objectElement;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Removes CSS class from previously selected widgets.
-	 *
-	 * @private
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
-	 */
-	_clearPreviouslySelectedWidgets( writer ) {
-		for ( const widget of this._previouslySelected ) {
-			writer.removeClass( WIDGET_SELECTED_CLASS_NAME, widget );
-		}
-
-		this._previouslySelected.clear();
-	}
-}
-
-// Returns `true` when element is a nested editable or is placed inside one.
-//
-// @param {module:engine/view/element~Element}
-// @returns {Boolean}
-function isInsideNestedEditable( element ) {
-	while ( element ) {
-		if ( element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
-			return true;
-		}
-
-		// Click on nested widget should select it.
-		if ( isWidget( element ) ) {
+	isWidget( node ) {
+		if ( !node.is( 'element' ) ) {
 			return false;
 		}
 
-		element = element.parent;
+		return !!node.getCustomProperty( 'widget' );
 	}
 
-	return false;
+	/**
+	 * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
+	 *
+	 * * sets the `contenteditable` attribute to `"false"`,
+	 * * adds the `ck-widget` CSS class,
+	 * * adds a custom {@link module:engine/view/element~Element#getFillerOffset `getFillerOffset()`} method returning `null`,
+	 * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
+	 * * implements the {@link ~setHighlightHandling view highlight on widgets}.
+	 *
+	 * This function needs to be used in conjunction with
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers downcast conversion helpers}
+	 * like {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
+	 * Moreover, typically you will want to use `toWidget()` only for `editingDowncast`, while keeping the `dataDowncast` clean.
+	 *
+	 * For example, in order to convert a `<widget>` model element to `<div class="widget">` in the view, you can define
+	 * such converters:
+	 *
+	 *		editor.conversion.for( 'editingDowncast' )
+	 *			.elementToElement( {
+	 *				model: 'widget',
+	 *				view: ( modelItem, { writer } ) => {
+	 *					const div = writer.createContainerElement( 'div', { class: 'widget' } );
+	 *
+	 *					return toWidget( div, writer, { label: 'some widget' } );
+	 *				}
+	 *			} );
+	 *
+	 *		editor.conversion.for( 'dataDowncast' )
+	 *			.elementToElement( {
+	 *				model: 'widget',
+	 *				view: ( modelItem, { writer } ) => {
+	 *					return writer.createContainerElement( 'div', { class: 'widget' } );
+	 *				}
+	 *			} );
+	 *
+	 * See the full source code of the widget (with a nested editable) schema definition and converters in
+	 * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).
+	 *
+	 * @param {module:engine/view/element~Element} element
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @param {Object} [options={}]
+	 * @param {String|Function} [options.label] Element's label provided to the {@link ~setLabel} function. It can be passed as
+	 * a plain string or a function returning a string. It represents the widget for assistive technologies (like screen readers).
+	 * @param {Boolean} [options.hasSelectionHandle=false] If `true`, the widget will have a selection handle added.
+	 * @returns {module:engine/view/element~Element} Returns the same element.
+	 */
+	toWidget( element, writer, options = {} ) {
+		if ( !element.is( 'containerElement' ) ) {
+			/**
+			 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ContainerElement}
+			 * instance.
+			 *
+			 * @error widget-to-widget-wrong-element-type
+			 * @param {String} element The view element passed to `toWidget()`.
+			 */
+			throw new CKEditorError(
+				'widget-to-widget-wrong-element-type',
+				null,
+				{ element }
+			);
+		}
+
+		writer.setAttribute( 'contenteditable', 'false', element );
+
+		writer.addClass( this.WIDGET_CLASS_NAME, element );
+		writer.setCustomProperty( 'widget', true, element );
+		element.getFillerOffset = getFillerOffset;
+
+		if ( options.label ) {
+			this.setLabel( element, options.label, writer );
+		}
+
+		if ( options.hasSelectionHandle ) {
+			addSelectionHandle( element, writer );
+		}
+
+		this.setHighlightHandling(
+			element,
+			writer,
+			( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
+			( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
+		);
+
+		return element;
+	}
+
+	/**
+	 * Sets highlight handling methods. Uses {@link module:widget/highlightstack~HighlightStack} to
+	 * properly determine which highlight descriptor should be used at given time.
+	 *
+	 * @param {module:engine/view/element~Element} element
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @param {Function} add
+	 * @param {Function} remove
+	 */
+	setHighlightHandling( element, writer, add, remove ) {
+		const stack = new HighlightStack();
+
+		stack.on( 'change:top', ( evt, data ) => {
+			if ( data.oldDescriptor ) {
+				remove( element, data.oldDescriptor, data.writer );
+			}
+
+			if ( data.newDescriptor ) {
+				add( element, data.newDescriptor, data.writer );
+			}
+		} );
+
+		writer.setCustomProperty( 'addHighlight', ( element, descriptor, writer ) => stack.add( descriptor, writer ), element );
+		writer.setCustomProperty( 'removeHighlight', ( element, id, writer ) => stack.remove( id, writer ), element );
+	}
+
+	/**
+	 * Returns the label of the provided element.
+	 *
+	 * @param {module:engine/view/element~Element} element
+	 * @returns {String}
+	 */
+	getLabel( element ) {
+		const labelCreator = element.getCustomProperty( 'widgetLabel' );
+
+		if ( !labelCreator ) {
+			return '';
+		}
+
+		return typeof labelCreator == 'function' ? labelCreator() : labelCreator;
+	}
+
+	/**
+	 * Sets label for given element.
+	 * It can be passed as a plain string or a function returning a string. Function will be called each time label is retrieved by
+	 * {@link ~getLabel `getLabel()`}.
+	 *
+	 * @param {module:engine/view/element~Element} element
+	 * @param {String|Function} labelOrCreator
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 */
+	setLabel( element, labelOrCreator, writer ) {
+		writer.setCustomProperty( 'widgetLabel', labelOrCreator, element );
+	}
+
+	/**
+	 * Adds functionality to the provided {@link module:engine/view/editableelement~EditableElement} to act as a widget's editable:
+	 *
+	 * * sets the `contenteditable` attribute to `true` when {@link module:engine/view/editableelement~EditableElement#isReadOnly}
+	 * is `false`, otherwise sets it to `false`,
+	 * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
+	 * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
+	 *
+	 * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `editingDowncast` only and it is usually
+	 * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
+	 *
+	 * For example, in order to convert a `<nested>` model element to `<div class="nested">` in the view, you can define
+	 * such converters:
+	 *
+	 *		editor.conversion.for( 'editingDowncast' )
+	 *			.elementToElement( {
+	 *				model: 'nested',
+	 *				view: ( modelItem, { writer } ) => {
+	 *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
+	 *
+	 *					return toWidgetEditable( nested, writer );
+	 *				}
+	 *			} );
+	 *
+	 *		editor.conversion.for( 'dataDowncast' )
+	 *			.elementToElement( {
+	 *				model: 'nested',
+	 *				view: ( modelItem, { writer } ) => {
+	 *					return writer.createContainerElement( 'div', { class: 'nested' } );
+	 *				}
+	 *			} );
+	 *
+	 * See the full source code of the widget (with nested editable) schema definition and converters in
+	 * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).
+	 *
+	 * @param {module:engine/view/editableelement~EditableElement} editable
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @returns {module:engine/view/editableelement~EditableElement} Returns the same element that was provided in the `editable` parameter
+	 */
+	toWidgetEditable( editable, writer ) {
+		writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
+
+		// Set initial contenteditable value.
+		writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
+
+		// Bind the contenteditable property to element#isReadOnly.
+		editable.on( 'change:isReadOnly', ( evt, property, is ) => {
+			writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editable );
+		} );
+
+		editable.on( 'change:isFocused', ( evt, property, is ) => {
+			if ( is ) {
+				writer.addClass( 'ck-editor__nested-editable_focused', editable );
+			} else {
+				writer.removeClass( 'ck-editor__nested-editable_focused', editable );
+			}
+		} );
+
+		return editable;
+	}
+
+	/**
+	 * Returns a model position which is optimal (in terms of UX) for inserting a widget block.
+	 *
+	 * For instance, if a selection is in the middle of a paragraph, the position before this paragraph
+	 * will be returned so that it is not split. If the selection is at the end of a paragraph,
+	 * the position after this paragraph will be returned.
+	 *
+	 * Note: If the selection is placed in an empty block, that block will be returned. If that position
+	 * is then passed to {@link module:engine/model/model~Model#insertContent},
+	 * the block will be fully replaced by the image.
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+	 * The selection based on which the insertion position should be calculated.
+	 * @param {module:engine/model/model~Model} model Model instance.
+	 * @returns {module:engine/model/position~Position} The optimal position.
+	 */
+	findOptimalInsertionPosition( selection, model ) {
+		const selectedElement = selection.getSelectedElement();
+
+		if ( selectedElement ) {
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( selection );
+
+			// If the WidgetTypeAround "fake caret" is displayed, use its position for the insertion
+			// to provide the most predictable UX (https://github.com/ckeditor/ckeditor5/issues/7438).
+			if ( typeAroundFakeCaretPosition ) {
+				return model.createPositionAt( selectedElement, typeAroundFakeCaretPosition );
+			}
+
+			if ( model.schema.isBlock( selectedElement ) ) {
+				return model.createPositionAfter( selectedElement );
+			}
+		}
+
+		const firstBlock = selection.getSelectedBlocks().next().value;
+
+		if ( firstBlock ) {
+			// If inserting into an empty block – return position in that block. It will get
+			// replaced with the image by insertContent(). #42.
+			if ( firstBlock.isEmpty ) {
+				return model.createPositionAt( firstBlock, 0 );
+			}
+
+			const positionAfter = model.createPositionAfter( firstBlock );
+
+			// If selection is at the end of the block - return position after the block.
+			if ( selection.focus.isTouching( positionAfter ) ) {
+				return positionAfter;
+			}
+
+			// Otherwise return position before the block.
+			return model.createPositionBefore( firstBlock );
+		}
+
+		return selection.focus;
+	}
+
+	/**
+	 * Checks if the selection is on an object.
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+	 * @param {module:engine/model/schema~Schema} schema
+	 * @returns {Boolean}
+	 */
+	checkSelectionOnObject( selection, schema ) {
+		const selectedElement = selection.getSelectedElement();
+
+		return !!selectedElement && schema.isObject( selectedElement );
+	}
+
+	/**
+	 * A util to be used in order to map view positions to correct model positions when implementing a widget
+	 * which renders non-empty view element for an empty model element.
+	 *
+	 * For example:
+	 *
+	 *		// Model:
+	 *		<placeholder type="name"></placeholder>
+	 *
+	 *		// View:
+	 *		<span class="placeholder">name</span>
+	 *
+	 * In such case, view positions inside `<span>` cannot be correct mapped to the model (because the model element is empty).
+	 * To handle mapping positions inside `<span class="placeholder">` to the model use this util as follows:
+	 *
+	 *		editor.editing.mapper.on(
+	 *			'viewToModelPosition',
+	 *			viewToModelPositionOutsideModelElement( model, viewElement => viewElement.hasClass( 'placeholder' ) )
+	 *		);
+	 *
+	 * The callback will try to map the view offset of selection to an expected model position.
+	 *
+	 * 1. When the position is at the end (or in the middle) of the inline widget:
+	 *
+	 *		// View:
+	 *		<p>foo <span class="placeholder">name|</span> bar</p>
+	 *
+	 *		// Model:
+	 *		<paragraph>foo <placeholder type="name"></placeholder>| bar</paragraph>
+	 *
+	 * 2. When the position is at the beginning of the inline widget:
+	 *
+	 *		// View:
+	 *		<p>foo <span class="placeholder">|name</span> bar</p>
+	 *
+	 *		// Model:
+	 *		<paragraph>foo |<placeholder type="name"></placeholder> bar</paragraph>
+	 *
+	 * @param {module:engine/model/model~Model} model Model instance on which the callback operates.
+	 * @param {Function} viewElementMatcher Function that is passed a view element and should return `true` if the custom mapping
+	 * should be applied to the given view element.
+	 * @return {Function}
+	 */
+	viewToModelPositionOutsideModelElement( model, viewElementMatcher ) {
+		return ( evt, data ) => {
+			const { mapper, viewPosition } = data;
+
+			const viewParent = mapper.findMappedViewAncestor( viewPosition );
+
+			if ( !viewElementMatcher( viewParent ) ) {
+				return;
+			}
+
+			const modelParent = mapper.toModelElement( viewParent );
+
+			data.modelPosition = model.createPositionAt( modelParent, viewPosition.isAtStart ? 'before' : 'after' );
+		};
+	}
+
+	/**
+	 * A positioning function passed to the {@link module:utils/dom/position~getOptimalPosition} helper as a last resort
+	 * when attaching {@link  module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon UI} to widgets.
+	 * It comes in handy when a widget is longer than the visual viewport of the web browser and/or upper/lower boundaries
+	 * of a widget are off screen because of the web page scroll.
+	 *
+	 *	                                       ┌─┄┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┐
+	 *	                                       ┊                         ┊
+	 *	┌────────────Viewport───────────┐   ┌──╁─────────Viewport────────╁──┐
+	 *	│  ┏━━━━━━━━━━Widget━━━━━━━━━┓  │   │  ┃            ^            ┃  │
+	 *	│  ┃            ^            ┃  │   │  ┃   ╭───────/ \───────╮   ┃  │
+	 *	│  ┃   ╭───────/ \───────╮   ┃  │   │  ┃   │     Balloon     │   ┃  │
+	 *	│  ┃   │     Balloon     │   ┃  │   │  ┃   ╰─────────────────╯   ┃  │
+	 *	│  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │
+	 *	│  ┃                         ┃  │   │  ┃                         ┃  │
+	 *	│  ┃                         ┃  │   │  ┃                         ┃  │
+	 *	│  ┃                         ┃  │   │  ┃                         ┃  │
+	 *	│  ┃                         ┃  │   │  ┃                         ┃  │
+	 *	│  ┃                         ┃  │   │  ┃                         ┃  │
+	 *	│  ┃                         ┃  │   │  ┃                         ┃  │
+	 *	└──╀─────────────────────────╀──┘   └──╀─────────────────────────╀──┘
+	 *	   ┊                         ┊         ┊                         ┊
+	 *	   ┊                         ┊         └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
+	 *	   ┊                         ┊
+	 *	   └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
+	 *
+	 * **Note**: Works best if used together with
+	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions default `BalloonPanelView` positions}
+	 * like `northArrowSouth` and `southArrowNorth`; the transition between these two and this position is smooth.
+	 *
+	 * @param {module:utils/dom/rect~Rect} widgetRect A rect of the widget.
+	 * @param {module:utils/dom/rect~Rect} balloonRect A rect of the balloon.
+	 * @returns {module:utils/dom/position~Position|null}
+	 */
+	centeredBalloonPositionForLongWidgets( widgetRect, balloonRect ) {
+		const viewportRect = new Rect( global.window );
+		const viewportWidgetInsersectionRect = viewportRect.getIntersection( widgetRect );
+
+		const balloonTotalHeight = balloonRect.height + BalloonPanelView.arrowVerticalOffset;
+
+		// If there is enough space above or below the widget then this position should not be used.
+		if ( widgetRect.top - balloonTotalHeight > viewportRect.top || widgetRect.bottom + balloonTotalHeight < viewportRect.bottom ) {
+			return null;
+		}
+
+		// Because this is a last resort positioning, to keep things simple we're not playing with positions of the arrow
+		// like, for instance, "south west" or whatever. Just try to keep the balloon in the middle of the visible area of
+		// the widget for as long as it is possible. If the widgets becomes invisible (because cropped by the viewport),
+		// just... place the balloon in the middle of it (because why not?).
+		const targetRect = viewportWidgetInsersectionRect || widgetRect;
+		const left = targetRect.left + targetRect.width / 2 - balloonRect.width / 2;
+
+		return {
+			top: Math.max( widgetRect.top, 0 ) + BalloonPanelView.arrowVerticalOffset,
+			left,
+			name: 'arrow_n'
+		};
+	}
 }
 
-// Checks whether the specified `element` is a child of the `parent` element.
+// Default filler offset function applied to all widget elements.
 //
-// @param {module:engine/view/element~Element} element An element to check.
-// @param {module:engine/view/element~Element|null} parent A parent for the element.
-// @returns {Boolean}
-function isChild( element, parent ) {
-	if ( !parent ) {
-		return false;
-	}
+// @returns {null}
+function getFillerOffset() {
+	return null;
+}
 
-	return Array.from( element.getAncestors() ).includes( parent );
+// Adds a drag handle to the widget.
+//
+// @param {module:engine/view/containerelement~ContainerElement} widgetElement
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+function addSelectionHandle( widgetElement, writer ) {
+	const selectionHandle = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handle' }, function( domDocument ) {
+		const domElement = this.toDomElement( domDocument );
+
+		// Use the IconView from the ui library.
+		const icon = new IconView();
+		icon.set( 'content', dragHandleIcon );
+
+		// Render the icon view right away to append its #element to the selectionHandle DOM element.
+		icon.render();
+
+		domElement.appendChild( icon.element );
+
+		return domElement;
+	} );
+
+	// Append the selection handle into the widget wrapper.
+	writer.insert( writer.createPositionAt( widgetElement, 0 ), selectionHandle );
+	writer.addClass( [ 'ck-widget_with-selection-handle' ], widgetElement );
 }

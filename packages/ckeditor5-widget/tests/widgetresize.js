@@ -11,10 +11,10 @@ import WidgetResize from '../src/widgetresize';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { resizerMouseSimulator, focusEditor, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
+import Widget from '../src/widget';
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies, commitStub;
@@ -598,7 +598,7 @@ describe( 'WidgetResize', () => {
 		return ClassicEditor
 			.create( element, {
 				plugins: [
-					ArticlePluginSet, WidgetResize, simpleWidgetPlugin
+					ArticlePluginSet, WidgetResize, Widget, simpleWidgetPlugin
 				],
 				image: {
 					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
@@ -611,6 +611,8 @@ describe( 'WidgetResize', () => {
 			inheritAllFrom: '$block',
 			isObject: true
 		} );
+
+		const widget = editor.plugins.get( 'Widget' );
 
 		editor.conversion.for( 'downcast' )
 			.elementToElement( {
@@ -627,7 +629,7 @@ describe( 'WidgetResize', () => {
 					writer.setStyle( 'width', '50px', subDiv );
 					writer.insert( writer.createPositionAt( parentDiv, 'start' ), subDiv );
 
-					return toWidget( parentDiv, writer, {
+					return widget.toWidget( parentDiv, writer, {
 						label: 'element label'
 					} );
 				}

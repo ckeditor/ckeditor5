@@ -14,11 +14,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Widget from '../src/widget';
 import WidgetToolbarRepository from '../src/widgettoolbarrepository';
-import {
-	isWidget,
-	toWidget,
-	centeredBalloonPositionForLongWidgets
-} from '../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -27,7 +22,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'WidgetToolbarRepository', () => {
-	let editor, model, balloon, widgetToolbarRepository, editorElement;
+	let editor, model, balloon, widgetToolbarRepository, editorElement, widget;
 
 	testUtils.createSinonSandbox();
 
@@ -47,6 +42,7 @@ describe( 'WidgetToolbarRepository', () => {
 				model = newEditor.model;
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
+				widget = editor.plugins.get( 'Widget' );
 			} );
 	} );
 
@@ -150,7 +146,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should be visible when the `getRelatedElement` callback returns a selected widget element', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -163,7 +159,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should be hidden when the plugin gets disabled', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -176,7 +172,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should be hidden when the plugin was disabled prior changing selection', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			widgetToolbarRepository.isEnabled = false;
@@ -189,7 +185,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should be hidden when the `getRelatedElement` callback returns null', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
@@ -200,7 +196,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should be hidden when the `getRelatedElement` callback returns null #2', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -224,7 +220,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -245,7 +241,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should be hidden when the editor ui lost focus', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -266,7 +262,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -281,7 +277,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should update its position when other widget is selected', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
@@ -299,7 +295,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidgetContent
+				getRelatedElement: selection => getSelectedFakeWidgetContent( selection, widget )
 			} );
 
 			setData( model, '<fake-widget>[foo]</fake-widget>' );
@@ -312,7 +308,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should not engage when is in the balloon yet invisible', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
@@ -349,12 +345,12 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			widgetToolbarRepository.register( 'fake-child', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeChildWidget
+				getRelatedElement: selection => getSelectedFakeChildWidget( selection, widget )
 			} );
 
 			setData( model,
@@ -375,12 +371,12 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			widgetToolbarRepository.register( 'fake-child', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeChildWidget
+				getRelatedElement: selection => getSelectedFakeChildWidget( selection, widget )
 			} );
 
 			setData( model,
@@ -416,7 +412,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model,
@@ -452,7 +448,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model,
@@ -497,7 +493,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: getSelectedFakeWidget
+				getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -517,7 +513,7 @@ describe( 'WidgetToolbarRepository', () => {
 						defaultPositions.southArrowNorth,
 						defaultPositions.southArrowNorthWest,
 						defaultPositions.southArrowNorthEast,
-						centeredBalloonPositionForLongWidgets
+						widget.centeredBalloonPositionForLongWidgets
 					]
 				},
 				balloonClassName: 'ck-toolbar-container'
@@ -527,7 +523,7 @@ describe( 'WidgetToolbarRepository', () => {
 } );
 
 describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () => {
-	let clock, editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement;
+	let clock, editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement, widget;
 
 	testUtils.createSinonSandbox();
 
@@ -550,6 +546,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+				widget = editor.plugins.get( 'Widget' );
 				editor.ui.focusTracker.isFocused = true;
 			} );
 	} );
@@ -563,7 +560,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
 		widgetToolbarRepository.register( 'fake', {
 			items: editor.config.get( 'fake.toolbar' ),
-			getRelatedElement: getSelectedFakeWidget
+			getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 		} );
 
 		const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
@@ -579,7 +576,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	it( 'balloon toolbar should be visible when the widget is not selected', () => {
 		widgetToolbarRepository.register( 'fake', {
 			items: editor.config.get( 'fake.toolbar' ),
-			getRelatedElement: getSelectedFakeWidget
+			getRelatedElement: selection => getSelectedFakeWidget( selection, widget )
 		} );
 
 		editor.editing.view.document.isFocused = true;
@@ -667,32 +664,32 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	} );
 } );
 
-function getSelectedFakeWidget( selection ) {
+function getSelectedFakeWidget( selection, widget ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( 'fakeWidget' ) ) {
+	if ( viewElement && widget.isWidget( viewElement ) && !!viewElement.getCustomProperty( 'fakeWidget' ) ) {
 		return viewElement;
 	}
 
 	return null;
 }
 
-function getSelectedFakeChildWidget( selection ) {
+function getSelectedFakeChildWidget( selection, widget ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( 'fakeChildWidget' ) ) {
+	if ( viewElement && widget.isWidget( viewElement ) && !!viewElement.getCustomProperty( 'fakeChildWidget' ) ) {
 		return viewElement;
 	}
 
 	return null;
 }
 
-function getSelectedFakeWidgetContent( selection ) {
+function getSelectedFakeWidgetContent( selection, widget ) {
 	const pos = selection.getFirstPosition();
 	let node = pos.parent;
 
 	while ( node ) {
-		if ( node.is( 'element' ) && isWidget( node ) && node.getCustomProperty( 'fakeWidget' ) ) {
+		if ( node.is( 'element' ) && widget.isWidget( node ) && node.getCustomProperty( 'fakeWidget' ) ) {
 			return node;
 		}
 
@@ -728,6 +725,7 @@ class FakeWidget extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
+		const widget = editor.plugins.get( 'Widget' );
 
 		schema.register( 'fake-widget', {
 			isObject: true,
@@ -753,7 +751,7 @@ class FakeWidget extends Plugin {
 				const fakeWidget = writer.createContainerElement( 'div' );
 				writer.setCustomProperty( 'fakeWidget', true, fakeWidget );
 
-				return toWidget( fakeWidget, writer, { label: 'fake-widget' } );
+				return widget.toWidget( fakeWidget, writer, { label: 'fake-widget' } );
 			}
 		} );
 
@@ -779,6 +777,7 @@ class FakeChildWidget extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
+		const widget = editor.plugins.get('Widget');
 
 		schema.register( 'fake-child-widget', {
 			isObject: true,
@@ -805,7 +804,7 @@ class FakeChildWidget extends Plugin {
 				const fakeWidget = writer.createContainerElement( 'div' );
 				writer.setCustomProperty( 'fakeChildWidget', true, fakeWidget );
 
-				return toWidget( fakeWidget, writer, { label: 'fake-child-widget' } );
+				return widget.toWidget( fakeWidget, writer, { label: 'fake-child-widget' } );
 			}
 		} );
 

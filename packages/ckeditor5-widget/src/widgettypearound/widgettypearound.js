@@ -64,6 +64,13 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ 'Widget', 'WidgetCore' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -214,9 +221,10 @@ export default class WidgetTypeAround extends Plugin {
 
 		editor.editing.downcastDispatcher.on( 'insert', ( evt, data, conversionApi ) => {
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
+			const widget = editor.plugins.get( 'Widget' );
 
 			// Filter out non-widgets and inline widgets.
-			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
+			if ( isTypeAroundWidget( viewElement, data.item, schema, widget ) ) {
 				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement );
 			}
 		}, { priority: 'low' } );
@@ -255,6 +263,7 @@ export default class WidgetTypeAround extends Plugin {
 		const modelSelection = model.document.selection;
 		const schema = model.schema;
 		const editingView = editor.editing.view;
+		const widget = editor.plugins.get( 'Widget' );
 
 		// This is the main listener responsible for the fake caret.
 		// Note: The priority must precede the default Widget class keydown handler ("high") and the
@@ -290,7 +299,7 @@ export default class WidgetTypeAround extends Plugin {
 			if ( selectedModelElement ) {
 				const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
 
-				if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+				if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema, widget ) ) {
 					return;
 				}
 			}
@@ -325,7 +334,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			const selectedViewElement = conversionApi.mapper.toViewElement( selectedModelElement );
 
-			if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+			if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema, widget ) ) {
 				return;
 			}
 
@@ -375,6 +384,7 @@ export default class WidgetTypeAround extends Plugin {
 		const modelSelection = model.document.selection;
 		const schema = model.schema;
 		const editingView = editor.editing.view;
+		const widget = editor.plugins.get( 'Widget' );
 
 		const keyCode = domEventData.keyCode;
 		const isForward = isForwardArrowKeyCode( keyCode, editor.locale.contentLanguageDirection );
@@ -383,7 +393,7 @@ export default class WidgetTypeAround extends Plugin {
 		let shouldStopAndPreventDefault;
 
 		// Handle keyboard navigation when a type-around-compatible widget is currently selected.
-		if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+		if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema, widget ) ) {
 			shouldStopAndPreventDefault = this._handleArrowKeyPressOnSelectedWidget( isForward );
 		}
 		// Handle keyboard arrow navigation when the selection is next to a type-around-compatible widget
@@ -465,15 +475,16 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;
+		const widgetCorePlugin = editor.plugins.get( 'WidgetCore' );
 		const widgetPlugin = editor.plugins.get( 'Widget' );
 
 		// This is the widget the selection is about to be set on.
-		const modelElementNextToSelection = widgetPlugin._getObjectElementNextToSelection( isForward );
+		const modelElementNextToSelection = widgetCorePlugin._getObjectElementNextToSelection( isForward );
 		const viewElementNextToSelection = editor.editing.mapper.toViewElement( modelElementNextToSelection );
 
-		if ( isTypeAroundWidget( viewElementNextToSelection, modelElementNextToSelection, schema ) ) {
+		if ( isTypeAroundWidget( viewElementNextToSelection, modelElementNextToSelection, schema, widgetPlugin ) ) {
 			model.change( writer => {
-				widgetPlugin._setSelectionOverElement( modelElementNextToSelection );
+				widgetCorePlugin._setSelectionOverElement( modelElementNextToSelection );
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'before' : 'after' );
 			} );
 
@@ -532,6 +543,7 @@ export default class WidgetTypeAround extends Plugin {
 	_enableInsertingParagraphsOnEnterKeypress() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
+		const widget = editor.plugins.get( 'Widget' );
 
 		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
 			const selectedViewElement = editingView.document.selection.getSelectedElement();
@@ -546,7 +558,7 @@ export default class WidgetTypeAround extends Plugin {
 			}
 			// Then, if there is no selection attribute associated with the fake caret, check if the widget
 			// simply is selected and create a new paragraph according to the keystroke (Shift+)Enter.
-			else if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+			else if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema, widget ) ) {
 				this._insertParagraph( selectedModelElement, domEventData.isSoft ? 'before' : 'after' );
 
 				wasHandled = true;

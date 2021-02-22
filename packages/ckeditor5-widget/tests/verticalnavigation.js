@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { toWidget, toWidgetEditable } from '../src/utils';
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
@@ -17,6 +15,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import Widget from '../src/widget';
 
 describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	let editorElement, editor, model, styleElement;
@@ -30,7 +29,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		global.document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Image, ImageCaption, HorizontalLine, BlockQuote, BlockWidgetWithNestedEditable ]
+			plugins: [ Paragraph, Image, ImageCaption, HorizontalLine, BlockQuote, BlockWidgetWithNestedEditable, Widget ]
 		} );
 
 		model = editor.model;
@@ -1269,13 +1268,15 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				}
 			} );
 
+		const widget = editor.plugins.get( 'Widget' );
+
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'widget',
 				view: ( modelItem, { writer } ) => {
 					const div = writer.createContainerElement( 'figure' );
 
-					return toWidget( div, writer, { label: 'widget label' } );
+					return widget.toWidget( div, writer, { label: 'widget label' } );
 				}
 			} )
 			.elementToElement( {
@@ -1283,7 +1284,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				view: ( modelItem, { writer } ) => {
 					const nested = writer.createEditableElement( 'figcaption' );
 
-					return toWidgetEditable( nested, writer );
+					return widget.toWidgetEditable( nested, writer );
 				}
 			} );
 

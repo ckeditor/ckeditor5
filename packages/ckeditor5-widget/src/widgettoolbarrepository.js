@@ -11,10 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import {
-	isWidget,
-	centeredBalloonPositionForLongWidgets
-} from './utils';
 import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -46,7 +42,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ContextualBalloon ];
+		return [ 'Widget', ContextualBalloon ];
 	}
 
 	/**
@@ -65,9 +61,10 @@ export default class WidgetToolbarRepository extends Plugin {
 		// Disables the default balloon toolbar for all widgets.
 		if ( editor.plugins.has( 'BalloonToolbar' ) ) {
 			const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+			const widget = editor.plugins.get( 'Widget' );
 
 			this.listenTo( balloonToolbar, 'show', evt => {
-				if ( isWidgetSelected( editor.editing.view.document.selection ) ) {
+				if ( isWidgetSelected( editor.editing.view.document.selection, widget ) ) {
 					evt.stop();
 				}
 			}, { priority: 'high' } );
@@ -279,6 +276,7 @@ function repositionContextualBalloon( editor, relatedElement ) {
 function getBalloonPositionData( editor, relatedElement ) {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
+	const widget = editor.plugins.get( 'Widget' );
 
 	return {
 		target: editingView.domConverter.mapViewToDom( relatedElement ),
@@ -289,15 +287,15 @@ function getBalloonPositionData( editor, relatedElement ) {
 			defaultPositions.southArrowNorth,
 			defaultPositions.southArrowNorthWest,
 			defaultPositions.southArrowNorthEast,
-			centeredBalloonPositionForLongWidgets
+			widget.centeredBalloonPositionForLongWidgets
 		]
 	};
 }
 
-function isWidgetSelected( selection ) {
+function isWidgetSelected( selection, widget ) {
 	const viewElement = selection.getSelectedElement();
 
-	return !!( viewElement && isWidget( viewElement ) );
+	return !!( viewElement && widget.isWidget( viewElement ) );
 }
 
 /**

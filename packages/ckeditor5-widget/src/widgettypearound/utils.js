@@ -7,8 +7,6 @@
  * @module widget/widgettypearound/utils
  */
 
-import { isWidget } from '../utils';
-
 /**
  * The name of the type around model selection attribute responsible for
  * displaying a fake caret next to a selected widget.
@@ -21,10 +19,11 @@ export const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
  * @param {module:engine/view/element~Element} viewElement
  * @param {module:engine/model/element~Element} modelElement
  * @param {module:engine/model/schema~Schema} schema
+ * @param {module:widget/widget~Widget} widget
  * @returns {Boolean}
  */
-export function isTypeAroundWidget( viewElement, modelElement, schema ) {
-	return viewElement && isWidget( viewElement ) && !schema.isInline( modelElement );
+export function isTypeAroundWidget( viewElement, modelElement, schema, widget ) {
+	return viewElement && widget.isWidget( viewElement ) && !schema.isInline( modelElement );
 }
 
 /**

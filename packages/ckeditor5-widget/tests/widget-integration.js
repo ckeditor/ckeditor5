@@ -12,7 +12,6 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Widget from '../src/widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
-import { toWidget } from '../src/utils';
 import {
 	setData as setModelData,
 	getData as getModelData
@@ -63,6 +62,8 @@ describe( 'Widget - integration', () => {
 					allowIn: 'nested'
 				} );
 
+				const widget = editor.plugins.get( 'Widget' );
+
 				editor.conversion.for( 'downcast' )
 					.elementToElement( { model: 'inline', view: 'figure' } )
 					.elementToElement( { model: 'image', view: 'img' } )
@@ -71,7 +72,7 @@ describe( 'Widget - integration', () => {
 						view: ( modelItem, { writer } ) => {
 							const div = writer.createContainerElement( 'div' );
 
-							return toWidget( div, writer, { label: 'element label' } );
+							return widget.toWidget( div, writer, { label: 'element label' } );
 						}
 					} )
 					.elementToElement( {
@@ -79,7 +80,7 @@ describe( 'Widget - integration', () => {
 						view: ( modelItem, { writer } ) => {
 							const span = writer.createContainerElement( 'span' );
 
-							return toWidget( span, writer );
+							return widget.toWidget( span, writer );
 						}
 					} )
 					.elementToElement( {
