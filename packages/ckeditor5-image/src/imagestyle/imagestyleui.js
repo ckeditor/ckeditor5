@@ -108,7 +108,6 @@ export default class ImageStyleUI extends Plugin {
 			splitButtonView.set( {
 				label: title,
 				icon,
-				currentCommand: false,
 				class: null,
 				tooltip: true
 			} );
