@@ -66,7 +66,7 @@ describe( 'EnterObserver', () => {
 				keyCode: 1
 			} ) );
 
-			expect( spy.notCalled ).to.be.true;
+			expect( spy.calledOnce ).to.be.false;
 		} );
 
 		it( 'should stop keydown event when enter event is stopped', () => {
