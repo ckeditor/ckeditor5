@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 
 import AlignmentCommand from './alignmentcommand';
-import { defaultConfig, isDefault, isSupported, normalizeAlignmentOptions } from './utils';
+import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils';
 
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
@@ -32,7 +32,7 @@ export default class AlignmentEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'alignment', {
-			options: [ ...defaultConfig ]
+			options: [ ...supportedOptions.map( option => ( { name: option } ) ) ]
 		} );
 	}
 

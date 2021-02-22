@@ -18,11 +18,10 @@ import { CKEditorError } from '../../../src/utils';
  * * `'justify'`
  */
 export const supportedOptions = [ 'left', 'right', 'center', 'justify' ];
-export const defaultConfig = supportedOptions.map( option => {
-	return {
-		name: option
-	};
-} );
+
+const optionNameToOptionMap = Object.fromEntries(
+	supportedOptions.map( option => [ option, { name: option } ] )
+);
 
 /**
  * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
@@ -59,8 +58,6 @@ export function isDefault( alignment, locale ) {
  * @returns {Array.<Object>} Normalized object holding the configuration.
  */
 export function normalizeAlignmentOptions( configuredOptions = [] ) {
-	const optionNameToOptionMap = new Map( defaultConfig.map( option => [ option.name, option ] ) );
-
 	const normalizedOptions = configuredOptions
 		.map( option => {
 			let optionObj;
@@ -77,7 +74,6 @@ export function normalizeAlignmentOptions( configuredOptions = [] ) {
 	// Validate resulting config.
 	normalizedOptions.forEach( ( option, index, allOptions ) => {
 		const succeedingOptions = allOptions.slice( index + 1 );
-
 		const nameAlreadyExists = succeedingOptions.some( item => item.name == option.name );
 
 		if ( nameAlreadyExists ) {
