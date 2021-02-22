@@ -4,15 +4,14 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import utils from '../../src/imagestyle/utils';
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
 import ImageStyleUI from '../../src/imagestyle/imagestyleui';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import utils from '../../src/imagestyle/utils';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import { SplitButtonView } from '../../../../src/ui';
 
@@ -148,7 +147,7 @@ describe.only( 'ImageStyleUI', () => {
 
 			const customEditor = await ClassicTestEditor
 				.create( customEditorElement, {
-					plugins: [ ImageBlockEditing, ImageStyleEditing, ImageStyleUI ],
+					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 					image: {
 						styles: {
 							arrangements: allArrangements,
@@ -325,3 +324,4 @@ describe.only( 'ImageStyleUI', () => {
 		} );
 	} );
 } );
+

@@ -12,11 +12,9 @@ import { logWarning } from 'ckeditor5/src/utils';
 
 const {
 	objectFullWidth,
-	objectLeft,
-	objectRight,
-	objectCenter,
-	objectInlineLeft, objectInlineRight,
-	objectInline
+	objectInline,
+	objectLeft,	objectRight, objectCenter,
+	objectInlineLeft, objectInlineRight
 } = icons;
 
 const DEFAULT_ARRANGEMENTS = {
@@ -205,14 +203,11 @@ function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginL
 
 	// Check if arrangement is supported by any of the loaded plugins.
 	if ( !supportedBy.length ) {
-		const pluginsMap = {
-			'image': 'ImageBlockEditing',
-			'imageInline': 'ImageInlineEditing'
-		};
-
 		logWarning( 'image-style-unsupported', {
 			arrangement: arrangementName,
-			missingPlugins: modelElements.map( modelElementName => pluginsMap[ modelElementName ] )
+			missingPlugins: modelElements.map( modelElementName => {
+				return modelElementName === 'image' ? 'ImageBlockEditing' : 'ImageInlineEditing';
+			} )
 		} );
 
 		return false;
