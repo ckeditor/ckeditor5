@@ -52,7 +52,7 @@ ClassicEditor
 		toolbar: [
 			'MathType', 'ChemType', '|', 'heading', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
 			'highlight', 'alignment', '|', 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript',
-			'superscript', 'removeFormat', '|', 'bulletedList', 'numberedList', 'indent', 'outdent', '|', 'link',
+			'superscript', 'removeFormat', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'link',
 			'blockQuote', 'uploadImage', 'mediaEmbed', 'insertTable', '|', 'undo', 'redo'
 		],
 		image: {
