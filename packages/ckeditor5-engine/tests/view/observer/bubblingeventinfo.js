@@ -7,7 +7,7 @@ import BubblingEventInfo from '../../../src/view/observer/bubblingeventinfo';
 
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
-describe( 'EventInfo', () => {
+describe( 'BubblingEventInfo', () => {
 	it( 'should be created properly', () => {
 		const range = {};
 		const event = new BubblingEventInfo( this, 'test', range );
