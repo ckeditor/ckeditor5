@@ -133,7 +133,7 @@ describe( 'AlignmentEditing', () => {
 				return newEditor.destroy();
 			} );
 
-			it( 'uses class when alignment.classNames is set', async () => {
+			it( 'uses class when classNames is set', async () => {
 				const newEditor = await VirtualTestEditor
 					.create( {
 						language: {
@@ -172,7 +172,7 @@ describe( 'AlignmentEditing', () => {
 			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
 
-		it( 'uses class when alignment.classNames is set', async () => {
+		it( 'uses class when classNames is set', async () => {
 			const newEditor = await VirtualTestEditor
 				.create( {
 					plugins: [ AlignmentEditing, Paragraph ],
@@ -226,7 +226,7 @@ describe( 'AlignmentEditing', () => {
 			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
 		} );
 
-		it( 'uses class when alignment.classNames is set', async () => {
+		it( 'uses class when classNames is set', async () => {
 			const newEditor = await VirtualTestEditor
 				.create( {
 					language: {
@@ -310,7 +310,7 @@ describe( 'AlignmentEditing', () => {
 			} );
 		} );
 
-		it( 'uses class when alignment.classNames is set', async () => {
+		it( 'uses class when classNames is set', async () => {
 			const newEditor = await VirtualTestEditor
 				.create( {
 					plugins: [ AlignmentEditing, Paragraph ],
@@ -352,7 +352,7 @@ describe( 'AlignmentEditing', () => {
 			expect( editor.getData() ).to.equal( '<p style="text-align:justify;">x</p>' );
 		} );
 
-		it( 'uses class when alignment.classNames is set', async () => {
+		it( 'uses class when classNames is set', async () => {
 			const newEditor = await VirtualTestEditor
 				.create( {
 					plugins: [ AlignmentEditing, Paragraph ],
@@ -431,98 +431,74 @@ describe( 'AlignmentEditing', () => {
 					);
 				} );
 			} );
-		} );
 
-		describe( 'classNames', () => {
-			it( 'should throw when options are repeated - repeated name', async () => {
-				let error;
+			describe( 'className property', () => {
+				it( 'should throw when options are repeated - repeated name', async () => {
+					let error;
 
-				try {
-					await VirtualTestEditor
+					try {
+						await VirtualTestEditor
+							.create( {
+								plugins: [ AlignmentEditing, Paragraph ],
+								alignment: {
+									options: [
+										{ name: 'left', className: 'foo-left' },
+										'left'
+									]
+								}
+							} );
+					} catch ( err ) {
+						error = err;
+					}
+
+					expect( error.constructor ).to.equal( CKEditorError );
+					expect( error ).to.match( /alignment-config-name-already-defined/ );
+				} );
+
+				it( 'should throw when options are repeated - repeated className', async () => {
+					let error;
+
+					try {
+						await VirtualTestEditor
+							.create( {
+								plugins: [ AlignmentEditing, Paragraph ],
+								alignment: {
+									options: [
+										{ name: 'right', className: 'foo-right' },
+										'left',
+										{ name: 'center', className: 'foo-right' }
+									]
+								}
+							} );
+					} catch ( err ) {
+						error = err;
+					}
+
+					expect( error.constructor ).to.equal( CKEditorError );
+					expect( error ).to.match( /alignment-config-classname-already-defined/ );
+				} );
+
+				it( 'should map limited options to limited set of classes', async () => {
+					const newEditor = await VirtualTestEditor
 						.create( {
 							plugins: [ AlignmentEditing, Paragraph ],
 							alignment: {
 								options: [
-									{ name: 'left', className: 'foo-left' },
-									'left'
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'left', className: 'foo-left' }
 								]
 							}
 						} );
-				} catch ( err ) {
-					error = err;
-				}
+					const model = newEditor.model;
+					const data = '<p style="text-align:center;">x</p>';
 
-				expect( error.constructor ).to.equal( CKEditorError );
-				expect( error ).to.match( /alignment-config-name-already-defined/ );
-			} );
+					newEditor.setData( data );
 
-			it( 'should throw when options are repeated - repeated className', async () => {
-				let error;
+					expect( getModelData( model ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
+					expect( newEditor.getData() ).to.equal( '<p class="foo-center">x</p>' );
 
-				try {
-					await VirtualTestEditor
-						.create( {
-							plugins: [ AlignmentEditing, Paragraph ],
-							alignment: {
-								options: [
-									'left',
-									{ name: 'right', className: 'foo-right' },
-									{ name: 'center', className: 'foo-right' }
-								]
-							}
-						} );
-				} catch ( err ) {
-					error = err;
-				}
-
-				expect( error.constructor ).to.equal( CKEditorError );
-				expect( error ).to.match( /alignment-config-classname-already-defined/ );
-			} );
-
-			it( 'should map limited options to limited set of classes', async () => {
-				const newEditor = await VirtualTestEditor
-					.create( {
-						plugins: [ AlignmentEditing, Paragraph ],
-						alignment: {
-							options: [
-								{ name: 'left', className: 'foo-left' },
-								{ name: 'center', className: 'foo-center' }
-							]
-						}
-					} );
-				const model = newEditor.model;
-				const data = '<p style="text-align:center;">x</p>';
-
-				newEditor.setData( data );
-
-				expect( getModelData( model ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
-				expect( newEditor.getData() ).to.equal( '<p class="foo-center">x</p>' );
-
-				return newEditor.destroy();
-			} );
-
-			it( 'should map classes to default options', async () => {
-				const newEditor = await VirtualTestEditor
-					.create( {
-						plugins: [ AlignmentEditing, Paragraph ],
-						alignment: {
-							options: [
-								{ name: 'left', className: 'foo-left' },
-								{ name: 'right', className: 'foo-right' },
-								{ name: 'center', className: 'foo-center' },
-								{ name: 'justify', className: 'foo-justify' }
-							]
-						}
-					} );
-				const model = newEditor.model;
-				const data = '<p style="text-align:center;">x</p>';
-
-				newEditor.setData( data );
-
-				expect( getModelData( model ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
-				expect( newEditor.getData() ).to.equal( '<p class="foo-center">x</p>' );
-
-				return newEditor.destroy();
+					return newEditor.destroy();
+				} );
 			} );
 		} );
 	} );
