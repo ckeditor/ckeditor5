@@ -68,6 +68,6 @@ export default class ShiftEnter extends Plugin {
 
 			editor.execute( 'shiftEnter' );
 			view.scrollToTheSelection();
-		} );
+		}, { priority: 'low' } );
 	}
 }

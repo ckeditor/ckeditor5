@@ -48,6 +48,6 @@ export default class Enter extends Plugin {
 			editor.execute( 'enter' );
 
 			view.scrollToTheSelection();
-		} );
+		}, { priority: 'low' } );
 	}
 }
