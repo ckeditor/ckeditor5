@@ -13,7 +13,9 @@ import BubblingEventInfo from './bubblingeventinfo';
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Arrow keys observer introduces the {@link module:engine/view/document~Document#event:arrowKey} event.
+ * Arrow keys observer introduces the {@link module:engine/view/document~Document#event:arrowKey `Document#arrowKey`} event.
+ *
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @extends module:engine/view/observer/observer~Observer
  */
