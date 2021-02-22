@@ -924,7 +924,7 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement},
 	 * {@link module:engine/view/rawelement~RawElement} and other attribute elements with higher priority. Other elements while placed
 	 * inside an attribute element will split it (or nest it in case of an `AttributeElement`). This behavior can be modified by changing
-	 * the `isAllowedInsideAttributeElement` option while creating
+	 * the `isAllowedInsideAttributeElement` option while using
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement},
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement},
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement} or
