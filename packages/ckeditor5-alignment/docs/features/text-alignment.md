@@ -56,7 +56,7 @@ By default alignment is set inline using `text-align` CSS property. If you wish 
 	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
 </info-box>
 
-The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment respectively.
+The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment, respectively.
 
 ```js
 ClassicEditor
