@@ -5,19 +5,98 @@
 
 /* globals console */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
-import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '../../src/imagestyle/utils';
 
-const { normalizeStyles, getDefaultStylesConfiguration, DEFAULT_ARRANGEMENTS, DEFAULT_GROUPS, DEFAULT_ICONS } = utils;
+describe( 'ImageStyle utils', () => {
+	const { getDefaultStylesConfiguration, DEFAULT_ARRANGEMENTS, DEFAULT_GROUPS, DEFAULT_ICONS } = utils;
+	const allArrangements = Object.values( DEFAULT_ARRANGEMENTS );
+	const allGroups = Object.values( DEFAULT_GROUPS );
 
-describe.only( 'ImageStyle utils', () => {
 	testUtils.createSinonSandbox();
+
+	describe( 'default styles', () => {
+		describe( 'arrangements', () => {
+			it( 'should have the #DEFAULT_ARRANGMENTS properly defined', () => {
+				expect( DEFAULT_ARRANGEMENTS ).to.be.an( 'object' ).that.has.all.keys( [
+					'inline', 'alignLeft', 'alignRight', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'full', 'side'
+				] );
+			} );
+
+			it( 'should have always properly defined keys', () => {
+				allArrangements.forEach( arrangement => {
+					expect( arrangement ).to.be.an( 'object' ).that.includes.keys( [ 'name', 'title', 'icon', 'modelElements' ] );
+					expect( arrangement ).to.have.any.keys( [ 'className', 'isDefault' ] );
+				} );
+			} );
+
+			it( 'should have a single default arrangement defined for the inline and block images', () => {
+				const blockDefault = allArrangements.filter( arrangement =>
+					arrangement.isDefault && arrangement.modelElements.includes( 'image' ) );
+
+				const inlineDefault = allArrangements.filter( arrangement =>
+					arrangement.isDefault && arrangement.modelElements.includes( 'imageInline' ) );
+
+				expect( blockDefault ).to.have.lengthOf( 1 );
+				expect( blockDefault[ 0 ] ).to.not.have.key( 'className' );
+
+				expect( inlineDefault ).to.have.lengthOf( 1 );
+				expect( inlineDefault[ 0 ] ).to.not.have.key( 'className' );
+			} );
+
+			it( 'should always have #modelElements properly defined', () => {
+				allArrangements.forEach( arrangement => {
+					const modelElements = arrangement.modelElements;
+
+					expect( modelElements ).to.be.an( 'array' );
+					expect( modelElements ).to.contain.oneOf( [ 'image', 'imageInline' ] );
+
+					modelElements.forEach( elementName => {
+						expect( elementName ).to.match( /[image,imageInline]/ );
+					} );
+				} );
+			} );
+
+			it( 'should always have properly defined #name and #icon', () => {
+				for ( const arrangement in DEFAULT_ARRANGEMENTS ) {
+					expect( arrangement ).to.equal( DEFAULT_ARRANGEMENTS[ arrangement ].name );
+					expect( DEFAULT_ARRANGEMENTS[ arrangement ].icon ).to.be.a( 'string' );
+				}
+			} );
+		} );
+
+		describe( 'groups', () => {
+			it( 'should have the #DEFAULT_GROUPS properly defined', () => {
+				expect( DEFAULT_GROUPS ).to.be.an( 'object' ).that.has.all.keys( [ 'wrapText', 'breakText' ] );
+			} );
+
+			it( 'should have always properly defined keys', () => {
+				allGroups.forEach( group => {
+					expect( group ).to.be.an( 'object' ).that.has.all.keys( 'name', 'title', 'defaultItem', 'items' );
+				} );
+			} );
+
+			it( 'should have properly defined #items and #defaultItem', () => {
+				allGroups.forEach( group => {
+					expect( group.items ).to.include( group.defaultItem );
+
+					expect( DEFAULT_ARRANGEMENTS ).to.include.keys( group.items );
+				} );
+			} );
+
+			it( 'should have properly defined #name', () => {
+				for ( const group in DEFAULT_GROUPS ) {
+					expect( group ).to.equal( DEFAULT_GROUPS[ group ].name );
+				}
+			} );
+		} );
+
+		it( 'should have the #DEFAULT_ICONS properly defined', () => {
+			expect( DEFAULT_ICONS ).to.be.an( 'object' ).that.has.all.keys( [
+				'full', 'left', 'right', 'center', 'inLineLeft', 'inLineRight', 'inLine'
+			] );
+		} );
+	} );
 
 	describe( 'getDefaultStylesConfiguration()', () => {
 		it( 'should return the proper config if both image editing plugins are loaded', async () => {
@@ -56,15 +135,13 @@ describe.only( 'ImageStyle utils', () => {
 	} );
 
 	describe( 'normalizeImageStyles()', () => {
-		const allArrangements = Object.values( DEFAULT_ARRANGEMENTS );
-
-		function normalize(
+		function normalizeStyles(
 			arrangements = allArrangements,
 			groups = [],
 			isBlockPluginLoaded = true,
 			isInlinePluginLoaded = true
 		) {
-			return normalizeStyles( {
+			return utils.normalizeStyles( {
 				configuredStyles: { arrangements, groups },
 				isBlockPluginLoaded,
 				isInlinePluginLoaded
@@ -79,7 +156,7 @@ describe.only( 'ImageStyle utils', () => {
 			describe( 'set as a string in the editor config', () => {
 				it( 'should return the proper default arrangement if #name matches', () => {
 					for ( const arrangement in DEFAULT_ARRANGEMENTS ) {
-						const normalizedStyles = normalize( [ arrangement ] );
+						const normalizedStyles = normalizeStyles( [ arrangement ] );
 
 						expect( normalizedStyles.arrangements[ 0 ] ).to.not.equal( DEFAULT_ARRANGEMENTS[ arrangement ] );
 						expect( normalizedStyles ).to.deep.equal(
@@ -91,7 +168,7 @@ describe.only( 'ImageStyle utils', () => {
 				} );
 
 				it( 'should warn and ommit the arrangement if the #name not found in default arrangements', () => {
-					expect( normalize(
+					expect( normalizeStyles(
 						[ 'foo' ]
 					) ).to.deep.equal(
 						{ arrangements: [], groups: [] }
@@ -99,9 +176,9 @@ describe.only( 'ImageStyle utils', () => {
 
 					testUtils.sinon.assert.calledOnce( console.warn );
 					testUtils.sinon.assert.calledWithExactly( console.warn,
-						sinon.match( /^image-style-invalid/ ),
+						testUtils.sinon.match( /^image-style-invalid/ ),
 						{ arrangement: { name: 'foo' } },
-						sinon.match.string // Link to the documentation
+						testUtils.sinon.match.string // Link to the documentation
 					);
 				} );
 			} );
@@ -110,7 +187,7 @@ describe.only( 'ImageStyle utils', () => {
 				it( 'should pass through if #name not found in the default arrangements', () => {
 					const arrangement = { name: 'foo', modelElements: [ 'image' ] };
 
-					expect( normalize(
+					expect( normalizeStyles(
 						[ arrangement ]
 					) ).to.deep.equal(
 						{ arrangements: [ arrangement ], groups: [] }
@@ -123,7 +200,7 @@ describe.only( 'ImageStyle utils', () => {
 					for ( const icon in DEFAULT_ICONS ) {
 						const arrangement = { name: 'custom', modelElements: [ 'image' ], icon };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							[ arrangement ]
 						) ).to.deep.equal(
 							{ arrangements: [ { ...arrangement, icon: DEFAULT_ICONS[ icon ] } ], groups: [] }
@@ -136,7 +213,7 @@ describe.only( 'ImageStyle utils', () => {
 				it( 'should pass the icon if is not a string', () => {
 					const arrangement = { name: 'custom', modelElements: [ 'image' ], icon: {} };
 
-					expect( normalize(
+					expect( normalizeStyles(
 						[ arrangement ]
 					) ).to.deep.equal(
 						{ arrangements: [ arrangement ], groups: [] }
@@ -148,7 +225,7 @@ describe.only( 'ImageStyle utils', () => {
 				it( 'should warn and filter out the arrangement which has no modelElements defined', () => {
 					const arrangement = { name: 'foo' };
 
-					expect( normalize(
+					expect( normalizeStyles(
 						[ arrangement ]
 					) ).to.deep.equal(
 						{ arrangements: [], groups: [] }
@@ -165,7 +242,7 @@ describe.only( 'ImageStyle utils', () => {
 				it( 'should warn and filter out the arrangement which has modelElements defined as an empty array', () => {
 					const arrangement = { name: 'foo', modelElements: [] };
 
-					expect( normalize(
+					expect( normalizeStyles(
 						[ arrangement ]
 					) ).to.deep.equal(
 						{ arrangements: [], groups: [] }
@@ -173,7 +250,7 @@ describe.only( 'ImageStyle utils', () => {
 
 					testUtils.sinon.assert.calledOnce( console.warn );
 					testUtils.sinon.assert.calledWithExactly( console.warn,
-						sinon.match( /^image-style-invalid/ ),
+						testUtils.sinon.match( /^image-style-invalid/ ),
 						{ arrangement },
 						testUtils.sinon.match.string // Link to the documentation
 					);
@@ -182,14 +259,14 @@ describe.only( 'ImageStyle utils', () => {
 				it( 'should warn and filter out the arrangement which is not supported by any of the loaded editing plugins', () => {
 					const arrangement = { name: 'foo', modelElements: [ 'imageInline' ] };
 
-					expect( normalize(
+					expect( normalizeStyles(
 						[ arrangement ], [], true, false // ImageInlineEditing plugin is not loaded
 					) ).to.deep.equal(
 						{ arrangements: [], groups: [] }
 					);
 
-					sinon.assert.calledOnce( console.warn );
-					sinon.assert.calledWithExactly( console.warn,
+					testUtils.sinon.assert.calledOnce( console.warn );
+					testUtils.sinon.assert.calledWithExactly( console.warn,
 						testUtils.sinon.match( /^image-style-unsupported/ ),
 						{ arrangement: arrangement.name, missingPlugins: [ 'ImageInlineEditing' ] },
 						testUtils.sinon.match.string // Link to the documentation
@@ -207,7 +284,7 @@ describe.only( 'ImageStyle utils', () => {
 						customProp: 'customProp'
 					};
 
-					const normalizedStyles = normalize( [ arrangement ] );
+					const normalizedStyles = normalizeStyles( [ arrangement ] );
 
 					expect( normalizedStyles.arrangements[ 0 ] ).to.not.equal( DEFAULT_ARRANGEMENTS.alignLeft );
 					expect( normalizedStyles ).to.deep.equal(
@@ -224,7 +301,7 @@ describe.only( 'ImageStyle utils', () => {
 				it( 'should return the proper default group if #name matches', () => {
 					for ( const group in DEFAULT_GROUPS ) {
 						const currentGroup = DEFAULT_GROUPS[ group ];
-						const normalizedStyles = normalize( allArrangements, [ group ] );
+						const normalizedStyles = normalizeStyles( allArrangements, [ group ] );
 
 						expect( normalizedStyles.groups[ 0 ] ).to.not.equal( currentGroup );
 						expect( normalizedStyles ).to.deep.equal(
@@ -235,7 +312,7 @@ describe.only( 'ImageStyle utils', () => {
 				} );
 
 				it( 'should warn and ommit the group if a #name not found in default groups', () => {
-					expect( normalize(
+					expect( normalizeStyles(
 						allArrangements, [ 'foo' ]
 					) ).to.deep.equal(
 						{ groups: [], arrangements: allArrangements }
@@ -254,7 +331,7 @@ describe.only( 'ImageStyle utils', () => {
 				describe( '#name found in the default groups', () => {
 					it( 'should pass through and extend if definition is valid', () => {
 						const group = { name: 'wrapText', items: [ 'alignLeft' ], defaultItem: 'alignLeft', customProp: 'customProp' };
-						const normalizedStyles = normalize( allArrangements, [ group ] );
+						const normalizedStyles = normalizeStyles( allArrangements, [ group ] );
 
 						expect( normalizedStyles.groups[ 0 ] ).to.not.equal( DEFAULT_GROUPS.wrapText );
 						expect( normalizedStyles ).to.deep.equal(
@@ -267,7 +344,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if no valid #items are present', () => {
 						const group = { name: 'breakText', items: [ 'foo' ] };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -289,7 +366,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if no #items are present', () => {
 						const group = { name: 'breakText', items: null };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -306,7 +383,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if #items are empty', () => {
 						const group = { name: 'breakText', items: [] };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -323,7 +400,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if #defaultItem is not a string', () => {
 						const group = { name: 'breakText', items: [ 'alignLeft' ], defaultItem: { name: 'alignLeft' } };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -340,7 +417,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if #defaultItem is not present in items', () => {
 						const group = { name: 'breakText', items: [ 'alignLeft' ], defaultItem: 'alignRight' };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -355,7 +432,7 @@ describe.only( 'ImageStyle utils', () => {
 					} );
 
 					it( 'should warn and filter out the items that are not defined as the arrangements', () => {
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ { name: 'breakText', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' } ]
 						) ).to.deep.equal( {
 							arrangements: allArrangements,
@@ -376,7 +453,7 @@ describe.only( 'ImageStyle utils', () => {
 					} );
 
 					it( 'should warn and filter out the items which are not supported by any of the loaded editing plugins', () => {
-						expect( normalize(
+						expect( normalizeStyles(
 							[ { name: 'foo', modelElements: [ 'imageInline' ] }, 'alignLeft' ],
 							[ { name: 'wrapText', items: [ 'foo', 'alignLeft' ] } ],
 							true,
@@ -404,7 +481,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should pass through if definition is valid', () => {
 						const groups = [ { name: 'inline', items: [ 'alignLeft' ], defaultItem: 'alignLeft' } ];
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, groups
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups }
@@ -416,7 +493,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if no valid #items are present', () => {
 						const invalidGroup = { name: 'foo', items: [ 'foo' ], defaultItem: 'foo' };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ invalidGroup, 'wrapText' ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [ DEFAULT_GROUPS.wrapText ] }
@@ -438,7 +515,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if no #items are present', () => {
 						const group = { name: 'foo' };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -455,7 +532,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if #items are empty', () => {
 						const group = { name: 'foo', items: [] };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -472,7 +549,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if #defaultItem is not a string', () => {
 						const group = { name: 'foo', items: [ 'alignLeft' ], defaultItem: { name: 'alignLeft' } };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -489,7 +566,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if defaultItem is not defined', () => {
 						const group = { name: 'foo', items: [ 'alignLeft' ] };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -506,7 +583,7 @@ describe.only( 'ImageStyle utils', () => {
 					it( 'should warn and ommit if defaultItem is not present in items', () => {
 						const group = { name: 'foo', items: [ 'alignLeft' ], defaultItem: [ 'alignRight' ] };
 
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ group ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
@@ -521,7 +598,7 @@ describe.only( 'ImageStyle utils', () => {
 					} );
 
 					it( 'should warn and filter out the items that are not defined as the arrangements', () => {
-						expect( normalize(
+						expect( normalizeStyles(
 							allArrangements, [ { name: 'foo', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' } ]
 						) ).to.deep.equal( {
 							arrangements: allArrangements,
@@ -542,7 +619,7 @@ describe.only( 'ImageStyle utils', () => {
 					} );
 
 					it( 'should warn and filter out the items which are not supported by any of the loaded editing plugins', () => {
-						expect( normalize(
+						expect( normalizeStyles(
 							[ { name: 'foo', modelElements: [ 'imageInline' ] }, 'alignLeft' ],
 							[ { name: 'bar', defaultItem: 'alignLeft', items: [ 'foo', 'alignLeft' ] } ],
 							true,
@@ -565,61 +642,7 @@ describe.only( 'ImageStyle utils', () => {
 						);
 					} );
 				} );
-
-				// it( 'should warn and filter out the items that are not supported by any of the loaded plugins', () => {
-
-				// } );
-
-				// it( 'should use the custom defined icon if it is not a string', () => {
-				// 	//expect( imageStyles[ 1 ].icon ).to.equal( rightIcon );
-				// } );
 			} );
 		} );
 	} );
-
-	// describe( 'normalizeImageStyles()', () => {
-	// 	// Since this function is all about normalizing the config object, make sure it doesn't throw
-	// 	// if the config is empty (which may happen e.g. if only ImageStyleUI was loaded).
-	//  // It should not happen now.
-	// 	it( 'does not throw when given undefined', () => {
-	// 		expect( normalizeImageStyles() ).to.deep.equal( [] );
-	// 	} );
-
-	// 	describe( 'object format', () => {
-	// 		beforeEach( () => {
-	// 			imageStyles = normalizeImageStyles( [
-	// 				{ name: 'foo', title: 'foo', icon: 'custom', isDefault: true, className: 'foo-class' },
-	// 				{ name: 'bar', title: 'bar', icon: 'right', className: 'bar-class' },
-	// 				{ name: 'baz', title: 'Side image', icon: 'custom', className: 'baz-class' },
-
-	// 				// Customized default styles.
-	// 				{ name: 'full', icon: 'left', title: 'Custom title' }
-	// 			] );
-	// 		} );
-
-	// 		it( 'should pass through if #name not found in default styles', () => {
-	// 			expect( imageStyles[ 0 ] ).to.deep.equal( {
-	// 				name: 'foo',
-	// 				title: 'foo',
-	// 				icon: 'custom',
-	// 				isDefault: true,
-	// 				className: 'foo-class'
-	// 			} );
-	// 		} );
-
-	// 		it( 'should use one of default icons if #icon matches', () => {
-	// 			expect( imageStyles[ 1 ].icon ).to.equal( rightIcon );
-	// 		} );
-
-	// 		it( 'should extend one of default styles if #name matches', () => {
-	// 			expect( imageStyles[ 3 ] ).to.deep.equal( {
-	// 				name: 'full',
-	// 				title: 'Custom title',
-	// 				icon: leftIcon,
-	// 				isDefault: true
-	// 			} );
-	// 		} );
-	// 	} );
-
-	// } );
 } );
