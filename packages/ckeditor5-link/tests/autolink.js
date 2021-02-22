@@ -130,13 +130,25 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'adds linkHref attribute on enter when the link (that contains www) is partially selected (end)', () => {
+		it( 'adds linkHref attribute on enter when the link (that contains www) is partially selected (end)' +
+			'and the remaining fragment is a proper URL', () => {
+			setData( model, '<paragraph>https://www.foo.ba[r.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.foo.ba">https://www.foo.ba</$text></paragraph><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'does not add linkHref attribute on enter when the link (that contains www) is partially selected (end)' +
+			'and the remaining fragment is not a proper URL', () => {
 			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph><$text linkHref="https://www.ckso">https://www.ckso</$text></paragraph><paragraph>[]</paragraph>'
+				'<paragraph>https://www.ckso</paragraph><paragraph>[]</paragraph>'
 			);
 		} );
 
