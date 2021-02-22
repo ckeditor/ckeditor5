@@ -274,7 +274,11 @@ const ObservableMixin = {
 
 extend( ObservableMixin, EmitterMixin );
 
-// Override the EmitterMixin stopListening method to be able to clean decorated methods.
+// Override the EmitterMixin stopListening method to be able to clean (and restore) decorated methods.
+// This is needed in case of:
+//  1. Have x.foo() decorated.
+//  2. Call x.stopListening()
+//  3. Call x.foo(). Problem: nothing happens (the original foo() method is not executed)
 ObservableMixin.stopListening = function( emitter, event, callback ) {
 	// Removing all listeners so let's clean the decorated methods to the original state.
 	if ( !emitter && this[ _decoratedMethods ] ) {
