@@ -23,11 +23,15 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 /* global Event, document */
 
 describe( 'TodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -1154,30 +1158,55 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 			} );
+
+			it( 'should do nothing when other arrow key was pressed', () => {
+				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+
+				domEvtDataStub = {
+					keyCode: getCode( 'arrowDown' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: {
+						ownerDocument: {
+							defaultView: {
+								getSelection: () => ( { rangeCount: 0 } )
+							}
+						}
+					}
+				};
+
+				viewDoc.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			} );
 		}
 	} );
 
-	describe( 'Ctrl+space keystroke handling', () => {
-		let domEvtDataStub;
-
-		beforeEach( () => {
-			domEvtDataStub = {
-				keyCode: getCode( 'space' ),
-				ctrlKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-		} );
-
+	describe( 'Ctrl+enter keystroke handling', () => {
 		it( 'should execute CheckTodoListCommand', () => {
 			const command = editor.commands.get( 'checkTodoList' );
 
 			sinon.spy( command, 'execute' );
 
+			const domEvtDataStub = {
+				keyCode: getCode( 'enter' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			if ( env.isMac ) {
+				domEvtDataStub.metaKey = true;
+			} else {
+				domEvtDataStub.ctrlKey = true;
+			}
+
+			// First call.
 			viewDoc.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( command.execute );
 
+			// Second call.
 			viewDoc.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledTwice( command.execute );
