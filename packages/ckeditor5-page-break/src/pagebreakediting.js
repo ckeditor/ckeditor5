@@ -8,8 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { toWidget } from 'ckeditor5/src/widget';
-
 import PageBreakCommand from './pagebreakcommand';
 
 import '../theme/pagebreak.css';
@@ -20,6 +18,13 @@ import '../theme/pagebreak.css';
  * @extends module:core/plugin~Plugin
  */
 export default class PageBreakEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ 'Widget' ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -35,6 +40,7 @@ export default class PageBreakEditing extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;
+		const widget = editor.plugins.get( 'Widget' );
 
 		schema.register( 'pageBreak', {
 			isObject: true,
@@ -81,7 +87,7 @@ export default class PageBreakEditing extends Plugin {
 				writer.addClass( 'page-break', viewWrapper );
 				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewLabelElement );
 
-				return toPageBreakWidget( viewWrapper, writer, label );
+				return toPageBreakWidget( viewWrapper, writer, label, widget );
 			}
 		} );
 
@@ -134,12 +140,13 @@ export default class PageBreakEditing extends Plugin {
 //   recognize the page break widget element.
 // * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
 //
-//  @param {module:engine/view/element~Element} viewElement
-//  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
-//  @param {String} label The element's label.
-//  @returns {module:engine/view/element~Element}
-function toPageBreakWidget( viewElement, writer, label ) {
+// @param {module:engine/view/element~Element} viewElement
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
+// @param {String} label The element's label.
+// @param {module:widget/widget~Widget} widget
+// @returns {module:engine/view/element~Element}
+function toPageBreakWidget( viewElement, writer, label, widget ) {
 	writer.setCustomProperty( 'pageBreak', true, viewElement );
 
-	return toWidget( viewElement, writer, { label } );
+	return widget.toWidget( viewElement, writer, { label } );
 }

@@ -10,6 +10,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import PageBreakEditing from '../src/pagebreakediting';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'PageBreakCommand', () => {
 	let editor, model, editorElement, command;
@@ -22,7 +23,7 @@ describe( 'PageBreakCommand', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, PageBreakEditing ]
+				plugins: [ Widget, Paragraph, PageBreakEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

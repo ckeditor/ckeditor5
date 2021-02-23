@@ -3,23 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* global document */
+
 import PageBreakEditing from '../src/pagebreakediting';
 import PageBreakCommand from '../src/pagebreakcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'PageBreakEditing', () => {
-	let editor, model, view, viewDocument;
+	let element, editor, model, view, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ PageBreakEditing ]
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Widget, PageBreakEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -27,6 +32,17 @@ describe( 'PageBreakEditing', () => {
 				view = editor.editing.view;
 				viewDocument = view.document;
 			} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy()
+			.then( () => {
+				element.remove();
+			} );
+	} );
+
+	it( 'should require Widget as a soft-requirement', () => {
+		expect( PageBreakEditing.requires ).to.deep.equal( [ 'Widget' ] );
 	} );
 
 	it( 'should have pluginName', () => {
@@ -63,7 +79,7 @@ describe( 'PageBreakEditing', () => {
 
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
-			it( 'should convert', () => {
+			it( 'should convert the pageBreak element to data', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
 
 				expect( editor.getData() ).to.equal(
@@ -260,30 +276,30 @@ describe( 'PageBreakEditing', () => {
 
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
-			it( 'should convert', () => {
+			it( 'should convert the pageBreak element to editing data', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
 
 				// The page break label should be an UI element, thus should not be rendered by default.
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label"></span></div>'
-				);
-
-				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
-					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label">Page break</span></div>'
+					'<div class="ck-widget ck-widget_selected page-break" contenteditable="false">' +
+						'<span class="page-break__label"></span>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</div>'
 				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
-				const widget = viewDocument.getRoot().getChild( 0 );
+				const widgetElement = viewDocument.getRoot().getChild( 0 );
+				const widget = editor.plugins.get( 'Widget' );
 
-				expect( widget.name ).to.equal( 'div' );
-				expect( isPageBreakWidget( widget ) ).to.be.true;
+				expect( widgetElement.name ).to.equal( 'div' );
+				expect( isPageBreakWidget( widgetElement, widget ) ).to.be.true;
 			} );
 		} );
 	} );
 
-	function isPageBreakWidget( viewElement ) {
-		return !!viewElement.getCustomProperty( 'pageBreak' ) && isWidget( viewElement );
+	function isPageBreakWidget( viewElement, widget ) {
+		return !!viewElement.getCustomProperty( 'pageBreak' ) && widget.isWidget( viewElement );
 	}
 } );

@@ -12,6 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'PageBreakUI', () => {
 	let editor, editorElement, pageBreakView;
@@ -24,7 +25,7 @@ describe( 'PageBreakUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, PageBreakEditing, PageBreakUI ]
+				plugins: [ Widget, Paragraph, PageBreakEditing, PageBreakUI ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
