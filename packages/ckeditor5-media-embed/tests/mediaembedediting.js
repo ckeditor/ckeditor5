@@ -3,16 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console */
+/* globals console, document */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import MediaEmbedEditing from '../src/mediaembedediting';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import { Widget } from '@ckeditor/ckeditor5-widget';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'MediaEmbedEditing', () => {
-	let editor, model, doc, view;
+	let editor, model, doc, view, element;
 
 	const testProviders = {
 		A: {
@@ -53,8 +54,20 @@ describe( 'MediaEmbedEditing', () => {
 		}
 	};
 
-	afterEach( () => {
+	afterEach( async () => {
 		sinon.restore();
+
+		if ( editor ) {
+			await editor.destroy();
+		}
+
+		if ( element ) {
+			element.remove();
+		}
+	} );
+
+	it( 'should require Widget as a soft-requirement', () => {
+		expect( MediaEmbedEditing.requires ).to.deep.equal( [ 'Widget' ] );
 	} );
 
 	it( 'should be named', () => {
@@ -82,7 +95,7 @@ describe( 'MediaEmbedEditing', () => {
 				it( 'can override all providers', () => {
 					return createTestEditor( {
 						providers: []
-					} ).then( editor => {
+					} ).then( () => {
 						editor.setData( '<figure class="media"><div data-oembed-url="foo.com"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal( '' );
@@ -96,34 +109,37 @@ describe( 'MediaEmbedEditing', () => {
 							testProviders.B,
 							testProviders.C
 						]
-					} ).then( editor => {
+					} ).then( () => {
 						editor.setData( '<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://foo.com/123">' +
 									'A, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 
 						editor.setData( '<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 
 						editor.setData( '<figure class="media"><div data-oembed-url="anything.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://anything.com/123">' +
 									'C, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -132,8 +148,7 @@ describe( 'MediaEmbedEditing', () => {
 				describe( 'default value', () => {
 					beforeEach( () => {
 						return createTestEditor()
-							.then( newEditor => {
-								editor = newEditor;
+							.then( () => {
 								view = editor.editing.view;
 							} );
 					} );
@@ -347,24 +362,26 @@ describe( 'MediaEmbedEditing', () => {
 							testProviders.extraA,
 							testProviders.extraB
 						]
-					} ).then( editor => {
+					} ).then( () => {
 						editor.setData( '<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://foo.com/123">' +
 									'A, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 
 						editor.setData( '<figure class="media"><div data-oembed-url="anything.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://anything.com/123">' +
 									'extraB, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -379,16 +396,17 @@ describe( 'MediaEmbedEditing', () => {
 							testProviders.B
 						],
 						removeProviders: [ 'A' ]
-					} ).then( editor => {
+					} ).then( () => {
 						editor.setData(
 							'<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' +
 							'<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -402,16 +420,17 @@ describe( 'MediaEmbedEditing', () => {
 							testProviders.B
 						],
 						removeProviders: [ 'A' ]
-					} ).then( editor => {
+					} ).then( () => {
 						editor.setData(
 							'<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' +
 							'<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -429,16 +448,17 @@ describe( 'MediaEmbedEditing', () => {
 							testProviders.B
 						],
 						removeProviders: [ 'A' ]
-					} ).then( editor => {
+					} ).then( () => {
 						editor.setData(
 							'<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' +
 							'<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -455,16 +475,14 @@ describe( 'MediaEmbedEditing', () => {
 
 		it( 'should be loaded', () => {
 			return createTestEditor()
-				.then( newEditor => {
-					expect( newEditor.plugins.get( MediaEmbedEditing ) ).to.be.instanceOf( MediaEmbedEditing );
+				.then( () => {
+					expect( editor.plugins.get( MediaEmbedEditing ) ).to.be.instanceOf( MediaEmbedEditing );
 				} );
 		} );
 
 		it( 'should set proper schema rules', () => {
 			return createTestEditor()
-				.then( newEditor => {
-					model = newEditor.model;
-
+				.then( () => {
 					expect( model.schema.checkChild( [ '$root' ], 'media' ) ).to.be.true;
 					expect( model.schema.checkAttribute( [ '$root', 'media' ], 'url' ) ).to.be.true;
 
@@ -478,16 +496,14 @@ describe( 'MediaEmbedEditing', () => {
 
 		describe( 'conversion in the data pipeline', () => {
 			describe( 'previewsInData=false', () => {
-				beforeEach( () => {
+				beforeEach( async () => {
+					if ( element ) {
+						element.remove();
+					}
+
 					return createTestEditor( {
 						providers: providerDefinitions
-					} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
-							doc = model.document;
-							view = editor.editing.view;
-						} );
+					} );
 				} );
 
 				describe( 'model to view', () => {
@@ -603,20 +619,22 @@ describe( 'MediaEmbedEditing', () => {
 					} );
 
 					it( 'should not convert unknown media', () => {
-						return createTestEditor( {
-							providers: [
-								testProviders.A
-							]
-						} )
-							.then( newEditor => {
-								newEditor.setData(
+						return editor.destroy()
+							.then( () => {
+								element.remove();
+							} )
+							.then( () => createTestEditor( {
+								providers: [
+									testProviders.A
+								]
+							} ) )
+							.then( () => {
+								editor.setData(
 									'<figure class="media"><oembed url="unknown.media"></oembed></figure>' +
 									'<figure class="media"><oembed url="foo.com/123"></oembed></figure>' );
 
-								expect( getModelData( newEditor.model, { withoutSelection: true } ) )
+								expect( getModelData( editor.model, { withoutSelection: true } ) )
 									.to.equal( '<media url="foo.com/123"></media>' );
-
-								return newEditor.destroy();
 							} );
 					} );
 				} );
@@ -627,13 +645,7 @@ describe( 'MediaEmbedEditing', () => {
 					return createTestEditor( {
 						providers: providerDefinitions,
 						previewsInData: true
-					} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
-							doc = model.document;
-							view = editor.editing.view;
-						} );
+					} );
 				} );
 
 				describe( 'conversion in the data pipeline', () => {
@@ -676,6 +688,7 @@ describe( 'MediaEmbedEditing', () => {
 									'<div data-oembed-url="https://ckeditor.com">' +
 										'allow-everything, id=https://cksource.com></iframe>' +
 									'</div>' +
+									'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 								'</figure>' );
 
 							expect( getModelData( model, { withoutSelection: true } ) )
@@ -769,13 +782,17 @@ describe( 'MediaEmbedEditing', () => {
 						} );
 
 						it( 'should not convert unknown media', () => {
-							return createTestEditor( {
-								providers: [
-									testProviders.A
-								]
-							} )
-								.then( newEditor => {
-									newEditor.setData(
+							return editor.destroy()
+								.then( () => {
+									element.remove();
+								} )
+								.then( () => createTestEditor( {
+									providers: [
+										testProviders.A
+									]
+								} ) )
+								.then( () => {
+									editor.setData(
 										'<figure class="media">' +
 											'<div data-oembed-url="foo.com/123"></div>' +
 										'</figure>' +
@@ -783,10 +800,8 @@ describe( 'MediaEmbedEditing', () => {
 											'<div data-oembed-url="unknown.media/123"></div>' +
 										'</figure>' );
 
-									expect( getModelData( newEditor.model, { withoutSelection: true } ) )
+									expect( getModelData( editor.model, { withoutSelection: true } ) )
 										.to.equal( '<media url="foo.com/123"></media>' );
-
-									return newEditor.destroy();
 								} );
 						} );
 					} );
@@ -800,8 +815,7 @@ describe( 'MediaEmbedEditing', () => {
 					return createTestEditor( {
 						providers: providerDefinitions
 					} )
-						.then( newEditor => {
-							editor = newEditor;
+						.then( () => {
 							model = editor.model;
 							doc = model.document;
 							view = editor.editing.view;
@@ -816,13 +830,7 @@ describe( 'MediaEmbedEditing', () => {
 					return createTestEditor( {
 						providers: providerDefinitions,
 						previewsInData: true
-					} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
-							doc = model.document;
-							view = editor.editing.view;
-						} );
+					} );
 				} );
 
 				test();
@@ -834,10 +842,11 @@ describe( 'MediaEmbedEditing', () => {
 						setModelData( model, '<media url="https://ckeditor.com"></media>' );
 
 						expect( getViewData( view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
 									'allow-everything, id=https://ckeditor.com' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -851,10 +860,11 @@ describe( 'MediaEmbedEditing', () => {
 						} );
 
 						expect( getViewData( view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://cksource.com">' +
 									'allow-everything, id=https://cksource.com' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -869,9 +879,10 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( view, { withoutSelection: true, renderRawElements: true } ) )
 							.to.equal(
-								'<figure class="ck-widget media" contenteditable="false">' +
+								'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 									'<div class="ck-media__wrapper">' +
 									'</div>' +
+									'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 								'</figure>'
 							);
 					} );
@@ -889,10 +900,11 @@ describe( 'MediaEmbedEditing', () => {
 						} );
 
 						expect( getViewData( view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
+							'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
 									'allow-everything, id=https://ckeditor.com' +
 								'</div>' +
+								'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 							'</figure>'
 						);
 					} );
@@ -916,26 +928,48 @@ describe( 'MediaEmbedEditing', () => {
 							writer.insert( writer.createPositionAt( widgetViewElement, 'end' ), externalUIElement );
 						} );
 
-						expect( getViewData( view, { withoutSelection: true, renderUIElements: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
-									'allow-everything, id=https://ckeditor.com' +
-								'</div>' +
-								'<div>external UI</div>' +
-							'</figure>'
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true, renderRawElements: true } ) ).to.match(
+							new RegExp(
+								'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
+									'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
+										'allow-everything, id=https://ckeditor.com' +
+									'</div>' +
+									'<div class="ck ck-reset_all ck-widget__type-around">' +
+										'<div class="[^]+" title="[^]+">' +
+											'<svg [^]+>.*</svg>' +
+										'</div>' +
+										'<div class="[^]+" title="[^]+">' +
+											'<svg [^]+>.*</svg>' +
+										'</div>' +
+										'<div class="[^]+"></div>' +
+									'</div>' +
+									'<div>external UI</div>' +
+								'</figure>'
+							)
 						);
 
 						model.change( writer => {
 							writer.setAttribute( 'url', 'https://cksource.com', media );
 						} );
 
-						expect( getViewData( view, { withoutSelection: true, renderUIElements: true, renderRawElements: true } ) ).to.equal(
-							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="https://cksource.com">' +
-									'allow-everything, id=https://cksource.com' +
-								'</div>' +
-								'<div>external UI</div>' +
-							'</figure>'
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true, renderRawElements: true } ) ).to.match(
+							new RegExp(
+								'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
+									'<div class="ck-media__wrapper" data-oembed-url="https://cksource.com">' +
+										'allow-everything, id=https://cksource.com' +
+									'</div>' +
+									'<div class="ck ck-reset_all ck-widget__type-around">' +
+										'<div class="[^]+" title="[^]+">' +
+											'<svg [^]+>.*</svg>' +
+										'</div>' +
+										'<div class="[^]+" title="[^]+">' +
+											'<svg [^]+>.*</svg>' +
+										'</div>' +
+										'<div class="[^]+"></div>' +
+									'</div>' +
+									'<div>external UI</div>' +
+								'</figure>'
+							)
 						);
 					} );
 				} );
@@ -958,6 +992,7 @@ describe( 'MediaEmbedEditing', () => {
 						'<div[^>]+>' +
 							normalizeHtml( expected ) +
 						'</div>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>' );
 			} else {
 				expectedRegExp = new RegExp(
@@ -973,6 +1008,7 @@ describe( 'MediaEmbedEditing', () => {
 								'</a>' +
 							'</div>' +
 						'</div>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</figure>' );
 			}
 
@@ -981,10 +1017,19 @@ describe( 'MediaEmbedEditing', () => {
 	}
 
 	function createTestEditor( mediaEmbedConfig ) {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ MediaEmbedEditing ],
+		element = document.createElement( 'div' );
+		document.body.append( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Widget, MediaEmbedEditing ],
 				mediaEmbed: mediaEmbedConfig
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				doc = model.document;
+				view = editor.editing.view;
 			} );
 	}
 } );

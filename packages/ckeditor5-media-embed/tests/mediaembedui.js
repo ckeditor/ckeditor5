@@ -10,6 +10,7 @@ import MediaFormView from '../src/ui/mediaformview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import mediaIcon from '../theme/icons/media.svg';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'MediaEmbedUI', () => {
 	let editorElement, editor, dropdown, button, form;
@@ -20,7 +21,7 @@ describe( 'MediaEmbedUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ MediaEmbed ],
+				plugins: [ Widget, MediaEmbed ],
 				mediaEmbed: {
 					providers: [
 						{

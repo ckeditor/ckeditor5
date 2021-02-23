@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'MediaEmbed integration', () => {
 	let element, clock;
@@ -30,7 +31,7 @@ describe( 'MediaEmbed integration', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/1684
 		it( 'should make the placeholder CSS class disappear when pasting a new media into an empty editing root', async () => {
 			const editor = await ClassicTestEditor.create( element, {
-				plugins: [ MediaEmbed, Paragraph ]
+				plugins: [ Widget, MediaEmbed, Paragraph ]
 			} );
 
 			enablePlaceholder( {

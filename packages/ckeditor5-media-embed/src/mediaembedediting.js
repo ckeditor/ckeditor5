@@ -25,6 +25,13 @@ export default class MediaEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ 'Widget' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'MediaEmbedEditing';
 	}
@@ -163,6 +170,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const conversion = editor.conversion;
 		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
 		const registry = this.registry;
+		const widget = editor.plugins.get( 'Widget' );
 
 		editor.commands.add( 'mediaEmbed', new MediaEmbedCommand( editor ) );
 
@@ -201,7 +209,7 @@ export default class MediaEmbedEditing extends Plugin {
 					renderForEditingView: true
 				} );
 
-				return toMediaWidget( figure, writer, t( 'media widget' ) );
+				return toMediaWidget( figure, writer, t( 'media widget' ), widget );
 			}
 		} );
 

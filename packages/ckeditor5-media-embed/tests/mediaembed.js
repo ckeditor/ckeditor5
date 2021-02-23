@@ -20,7 +20,7 @@ describe( 'MediaEmbed', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ MediaEmbed ]
+				plugins: [ Widget, MediaEmbed ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -39,10 +39,6 @@ describe( 'MediaEmbed', () => {
 
 	it( 'should load MediaEmbedEditing plugin', () => {
 		expect( editor.plugins.get( MediaEmbedEditing ) ).to.instanceOf( MediaEmbedEditing );
-	} );
-
-	it( 'should load Widget plugin', () => {
-		expect( editor.plugins.get( Widget ) ).to.instanceOf( Widget );
 	} );
 
 	it( 'should load MediaEmbedUI plugin', () => {

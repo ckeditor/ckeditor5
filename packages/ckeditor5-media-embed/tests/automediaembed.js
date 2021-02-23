@@ -18,6 +18,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'AutoMediaEmbed - integration', () => {
 	let editorElement, editor;
@@ -28,7 +29,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Typing, Paragraph, Link, Image, ImageCaption, MediaEmbed, AutoMediaEmbed ]
+				plugins: [ Widget, Typing, Paragraph, Link, Image, ImageCaption, MediaEmbed, AutoMediaEmbed ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -376,7 +377,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 		it( 'does nothing if URL match to media but it was removed', () => {
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ MediaEmbed, AutoMediaEmbed, Paragraph ],
+					plugins: [ Widget, MediaEmbed, AutoMediaEmbed, Paragraph ],
 					mediaEmbed: {
 						removeProviders: [ 'youtube' ]
 					}
@@ -585,7 +586,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 	it( 'should detach LiveRange', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Typing, Paragraph, Link, Image, ImageCaption, Table, MediaEmbed, AutoMediaEmbed ]
+			plugins: [ Widget, Typing, Paragraph, Link, Image, ImageCaption, Table, MediaEmbed, AutoMediaEmbed ]
 		} );
 
 		setData(

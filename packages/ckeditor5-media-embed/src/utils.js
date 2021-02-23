@@ -7,8 +7,6 @@
  * @module media-embed/utils
  */
 
-import { isWidget, toWidget } from 'ckeditor5/src/widget';
-
 /**
  * Converts a given {@link module:engine/view/element~Element} to a media embed widget:
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the media widget element.
@@ -17,24 +15,26 @@ import { isWidget, toWidget } from 'ckeditor5/src/widget';
  * @param {module:engine/view/element~Element} viewElement
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
  * @param {String} label The element's label.
+ * @param {module:widget/widget~Widget} widget The widget plugin.
  * @returns {module:engine/view/element~Element}
  */
-export function toMediaWidget( viewElement, writer, label ) {
+export function toMediaWidget( viewElement, writer, label, widget ) {
 	writer.setCustomProperty( 'media', true, viewElement );
 
-	return toWidget( viewElement, writer, { label } );
+	return widget.toWidget( viewElement, writer, { label } );
 }
 
 /**
  * Returns a media widget editing view element if one is selected.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @param {module:widget/widget~Widget} widget The widget plugin.
  * @returns {module:engine/view/element~Element|null}
  */
-export function getSelectedMediaViewWidget( selection ) {
+export function getSelectedMediaViewWidget( selection, widget ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isMediaWidget( viewElement ) ) {
+	if ( viewElement && isMediaWidget( viewElement, widget ) ) {
 		return viewElement;
 	}
 
@@ -45,10 +45,11 @@ export function getSelectedMediaViewWidget( selection ) {
  * Checks if a given view element is a media widget.
  *
  * @param {module:engine/view/element~Element} viewElement
+ * @param {module:widget/widget~Widget} widget The widget plugin.
  * @returns {Boolean}
  */
-export function isMediaWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( 'media' ) && isWidget( viewElement );
+export function isMediaWidget( viewElement, widget ) {
+	return !!viewElement.getCustomProperty( 'media' ) && widget.isWidget( viewElement );
 }
 
 /**

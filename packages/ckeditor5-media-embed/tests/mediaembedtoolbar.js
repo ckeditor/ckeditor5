@@ -17,6 +17,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'MediaEmbedToolbar', () => {
 	let editor, element, widgetToolbarRepository, balloon, toolbar, model;
@@ -28,7 +29,7 @@ describe( 'MediaEmbedToolbar', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton ],
+			plugins: [ Widget, Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton ],
 			mediaEmbed: {
 				toolbar: [ 'fake_button' ]
 			}
@@ -183,7 +184,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		clock = testUtils.sinon.useFakeTimers();
 
 		return BalloonEditor.create( element, {
-			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton, Bold ],
+			plugins: [ Widget, Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton, Bold ],
 			balloonToolbar: [ 'bold' ],
 			mediaEmbed: {
 				toolbar: [ 'fake_button' ]
@@ -244,7 +245,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		const element = document.createElement( 'div' );
 
 		return BalloonEditor.create( element, {
-			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, Bold ]
+			plugins: [ Widget, Paragraph, MediaEmbed, MediaEmbedToolbar, Bold ]
 		} ).then( editor => {
 			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
 

@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
 
 import MediaEmbedEditing from './mediaembedediting';
 import AutoMediaEmbed from './automediaembed';
@@ -34,7 +33,7 @@ export default class MediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ MediaEmbedEditing, MediaEmbedUI, AutoMediaEmbed, Widget ];
+		return [ MediaEmbedEditing, MediaEmbedUI, AutoMediaEmbed ];
 	}
 
 	/**

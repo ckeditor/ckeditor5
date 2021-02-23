@@ -42,11 +42,12 @@ export default class MediaEmbedToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+		const widget = editor.plugins.get( 'Widget' );
 
 		widgetToolbarRepository.register( 'mediaEmbed', {
 			ariaLabel: t( 'Media toolbar' ),
 			items: editor.config.get( 'mediaEmbed.toolbar' ) || [],
-			getRelatedElement: getSelectedMediaViewWidget
+			getRelatedElement: selection => getSelectedMediaViewWidget( selection, widget )
 		} );
 	}
 }

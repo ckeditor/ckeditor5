@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
 import { getSelectedMediaModelWidget, insertMedia } from './utils';
 
 /**
@@ -30,13 +29,14 @@ export default class MediaEmbedCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const schema = model.schema;
+		const widget = this.editor.plugins.get( 'Widget' );
 		const selectedMedia = getSelectedMediaModelWidget( selection );
 
 		this.value = selectedMedia ? selectedMedia.getAttribute( 'url' ) : null;
 
 		this.isEnabled = isMediaSelected( selection ) ||
-			isAllowedInParent( selection, model ) &&
-			!checkSelectionOnObject( selection, schema );
+			isAllowedInParent( selection, model, widget ) &&
+			!widget.checkSelectionOnObject( selection, schema );
 	}
 
 	/**
@@ -52,13 +52,14 @@ export default class MediaEmbedCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedMedia = getSelectedMediaModelWidget( selection );
+		const widget = this.editor.plugins.get( 'Widget' );
 
 		if ( selectedMedia ) {
 			model.change( writer => {
 				writer.setAttribute( 'url', url, selectedMedia );
 			} );
 		} else {
-			const insertPosition = findOptimalInsertionPosition( selection, model );
+			const insertPosition = widget.findOptimalInsertionPosition( selection, model );
 
 			insertMedia( model, url, insertPosition );
 		}
@@ -70,8 +71,8 @@ export default class MediaEmbedCommand extends Command {
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function isAllowedInParent( selection, model ) {
-	const insertPosition = findOptimalInsertionPosition( selection, model );
+function isAllowedInParent( selection, model, widget ) {
+	const insertPosition = widget.findOptimalInsertionPosition( selection, model );
 	let parent = insertPosition.parent;
 
 	// The model.insertContent() will remove empty parent (unless it is a $root or a limit).
@@ -88,5 +89,6 @@ function isAllowedInParent( selection, model ) {
 // @returns {Boolean}
 function isMediaSelected( selection ) {
 	const element = selection.getSelectedElement();
+
 	return !!element && element.name === 'media';
 }
