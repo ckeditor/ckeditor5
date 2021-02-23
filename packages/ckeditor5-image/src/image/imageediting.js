@@ -20,7 +20,7 @@ import ToggleImageTypeCommand from './ToggleImageTypeCommand';
  * The commands registered by this plugin are:
  *
  * * {@link module:image/image/insertimagecommand~InsertImageCommand 'insertImage'},
- * * {@link module:image/image/ToggleImageTypeCommand~toggleimagetypecommand 'toggleImageType'}.
+ * * {@link module:image/image/toggleimagetypecommand~ToggleImageTypeCommand 'toggleImageType'}.
  *
  * @extends module:core/plugin~Plugin
  */
