@@ -26,7 +26,7 @@ export default function upcastTable() {
 				return;
 			}
 
-			const { rows, headingRows, headingColumns } = scanTable( viewTable );
+			const { caption, rows, headingRows, headingColumns } = scanTable( viewTable );
 
 			// Only set attributes if values is greater then 0.
 			const attributes = {};
@@ -43,6 +43,10 @@ export default function upcastTable() {
 
 			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
 				return;
+			}
+
+			if ( caption ) {
+				conversionApi.convertItem( caption, conversionApi.writer.createPositionAt( table, 0 ) );
 			}
 
 			conversionApi.consumable.consume( viewTable, { name: true } );
@@ -119,6 +123,7 @@ export function ensureParagraphInTableCell( elementName ) {
 // @returns {{headingRows, headingColumns, rows}}
 function scanTable( viewTable ) {
 	const tableMeta = {
+		caption: undefined,
 		headingRows: 0,
 		headingColumns: 0
 	};
@@ -171,6 +176,10 @@ function scanTable( viewTable ) {
 					}
 				}
 			}
+		}
+		// Separate caption from other table elements.
+		else if ( tableChild.name === 'caption' ) {
+			tableMeta.caption = tableChild;
 		}
 	}
 
