@@ -4,6 +4,7 @@
  */
 
 import { first } from 'ckeditor5/src/utils';
+import { getViewImageFromWidget } from '../image/utils';
 
 /**
  * @module image/imagestyle/converters
@@ -26,7 +27,8 @@ export function modelToViewStyleAttribute( arrangements ) {
 		const newStyle = getArrangementDefinitionByName( data.attributeNewValue, arrangements );
 		const oldStyle = getArrangementDefinitionByName( data.attributeOldValue, arrangements );
 
-		const viewElement = conversionApi.mapper.toViewElement( data.item );
+		const viewElementWrapper = conversionApi.mapper.toViewElement( data.item );
+		const viewElement = data.item.name === 'image' ? viewElementWrapper : getViewImageFromWidget( viewElementWrapper );
 		const viewWriter = conversionApi.writer;
 
 		if ( oldStyle ) {
