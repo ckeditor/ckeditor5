@@ -27,7 +27,12 @@ describe( 'ImageStyleCommand', () => {
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ ArticlePluginSet ],
-			image: { styles: { arrangements: [ 'full', 'inline', 'alignLeft', 'alignCenter' ] }
+			image: {
+				styles: {
+					arrangements: [ 'full', 'inline', 'alignLeft', 'alignCenter' ],
+					groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
+				},
+				toolbar: [ 'imageStyle:full' ]
 			}
 		} );
 
@@ -53,21 +58,26 @@ describe( 'ImageStyleCommand', () => {
 	} );
 
 	describe( 'constuctor()', () => {
-		it( 'should set default arrangements properly if both are provided', () => {
+		it( 'should set default arrangements properly if both of them are defined in the config', () => {
 			expect( command._defaultArrangements ).to.deep.equal( {
 				image: defaultBlock.name,
 				imageInline: defaultInline.name
 			} );
 		} );
 
-		it( 'should set default arrangements properly if one is missing', async () => {
+		it( 'should set default arrangements properly if one of them is missing in the config', async () => {
 			const customElement = document.createElement( 'div' );
 
 			document.body.appendChild( customElement );
 
 			const customEditor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ ArticlePluginSet ],
-				image: { styles: { arrangements: [ 'full', 'alignLeft', 'alignCenter' ] }
+				image: {
+					styles: {
+						arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+						groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
+					},
+					toolbar: [ 'imageStyle:full' ]
 				}
 			} );
 
@@ -132,7 +142,12 @@ describe( 'ImageStyleCommand', () => {
 
 				const customEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet ],
-					image: { styles: { arrangements: [ 'full', 'alignLeft', 'alignCenter' ] }
+					image: {
+						styles: {
+							arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+							groups: []
+						},
+						toolbar: [ 'imageStyle:full' ]
 					}
 				} );
 
@@ -166,7 +181,12 @@ describe( 'ImageStyleCommand', () => {
 
 				const customEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet ],
-					image: { styles: { arrangements: [ 'inline', 'alignLeft', 'alignCenter' ] }
+					image: {
+						styles: {
+							arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+							groups: []
+						},
+						toolbar: [ 'imageStyle:full' ]
 					}
 				} );
 

@@ -13,8 +13,6 @@ describe( 'ImageStyle utils', () => {
 	const allArrangements = Object.values( DEFAULT_ARRANGEMENTS );
 	const allGroups = Object.values( DEFAULT_GROUPS );
 
-	testUtils.createSinonSandbox();
-
 	describe( 'default styles', () => {
 		describe( 'arrangements', () => {
 			it( 'should have the #DEFAULT_ARRANGMENTS properly defined', () => {
@@ -148,6 +146,8 @@ describe( 'ImageStyle utils', () => {
 			} );
 		}
 
+		testUtils.createSinonSandbox();
+
 		beforeEach( () => {
 			testUtils.sinon.stub( console, 'warn' );
 		} );
@@ -164,7 +164,7 @@ describe( 'ImageStyle utils', () => {
 						);
 					}
 
-					testUtils.sinon.assert.notCalled( console.warn );
+					sinon.assert.notCalled( console.warn );
 				} );
 
 				it( 'should warn and ommit the arrangement if the #name not found in default arrangements', () => {
@@ -174,11 +174,11 @@ describe( 'ImageStyle utils', () => {
 						{ arrangements: [], groups: [] }
 					);
 
-					testUtils.sinon.assert.calledOnce( console.warn );
-					testUtils.sinon.assert.calledWithExactly( console.warn,
-						testUtils.sinon.match( /^image-style-invalid/ ),
+					sinon.assert.calledOnce( console.warn );
+					sinon.assert.calledWithExactly( console.warn,
+						sinon.match( /^image-style-invalid/ ),
 						{ arrangement: { name: 'foo' } },
-						testUtils.sinon.match.string // Link to the documentation
+						sinon.match.string // Link to the documentation
 					);
 				} );
 			} );
@@ -193,7 +193,7 @@ describe( 'ImageStyle utils', () => {
 						{ arrangements: [ arrangement ], groups: [] }
 					);
 
-					testUtils.sinon.assert.notCalled( console.warn );
+					sinon.assert.notCalled( console.warn );
 				} );
 
 				it( 'should use one of default icons if #icon matches', () => {
@@ -207,7 +207,7 @@ describe( 'ImageStyle utils', () => {
 						);
 					}
 
-					testUtils.sinon.assert.notCalled( console.warn );
+					sinon.assert.notCalled( console.warn );
 				} );
 
 				it( 'should pass the icon if is not a string', () => {
@@ -219,7 +219,7 @@ describe( 'ImageStyle utils', () => {
 						{ arrangements: [ arrangement ], groups: [] }
 					);
 
-					testUtils.sinon.assert.notCalled( console.warn );
+					sinon.assert.notCalled( console.warn );
 				} );
 
 				it( 'should warn and filter out the arrangement which has no modelElements defined', () => {
@@ -231,11 +231,11 @@ describe( 'ImageStyle utils', () => {
 						{ arrangements: [], groups: [] }
 					);
 
-					testUtils.sinon.assert.calledOnce( console.warn );
-					testUtils.sinon.assert.calledWithExactly( console.warn,
-						testUtils.sinon.match( /^image-style-invalid/ ),
+					sinon.assert.calledOnce( console.warn );
+					sinon.assert.calledWithExactly( console.warn,
+						sinon.match( /^image-style-invalid/ ),
 						{ arrangement },
-						testUtils.sinon.match.string // Link to the documentation
+						sinon.match.string // Link to the documentation
 					);
 				} );
 
@@ -248,28 +248,28 @@ describe( 'ImageStyle utils', () => {
 						{ arrangements: [], groups: [] }
 					);
 
-					testUtils.sinon.assert.calledOnce( console.warn );
-					testUtils.sinon.assert.calledWithExactly( console.warn,
-						testUtils.sinon.match( /^image-style-invalid/ ),
+					sinon.assert.calledOnce( console.warn );
+					sinon.assert.calledWithExactly( console.warn,
+						sinon.match( /^image-style-invalid/ ),
 						{ arrangement },
-						testUtils.sinon.match.string // Link to the documentation
+						sinon.match.string // Link to the documentation
 					);
 				} );
 
 				it( 'should warn and filter out the arrangement which is not supported by any of the loaded editing plugins', () => {
-					const arrangement = { name: 'foo', modelElements: [ 'imageInline' ] };
+					const arrangement = { name: 'foo', modelElements: [ 'image' ] };
 
 					expect( normalizeStyles(
-						[ arrangement ], [], true, false // ImageInlineEditing plugin is not loaded
+						[ arrangement ], [], false, true // ImageBlockEditing plugin is not loaded
 					) ).to.deep.equal(
 						{ arrangements: [], groups: [] }
 					);
 
-					testUtils.sinon.assert.calledOnce( console.warn );
-					testUtils.sinon.assert.calledWithExactly( console.warn,
-						testUtils.sinon.match( /^image-style-unsupported/ ),
-						{ arrangement: arrangement.name, missingPlugins: [ 'ImageInlineEditing' ] },
-						testUtils.sinon.match.string // Link to the documentation
+					sinon.assert.calledOnce( console.warn );
+					sinon.assert.calledWithExactly( console.warn,
+						sinon.match( /^image-style-unsupported/ ),
+						{ arrangement: arrangement.name, missingPlugins: [ 'ImageBlockEditing' ] },
+						sinon.match.string // Link to the documentation
 					);
 				} );
 
@@ -291,7 +291,7 @@ describe( 'ImageStyle utils', () => {
 						{ arrangements: [ { ...arrangement, icon: DEFAULT_ICONS.inLine } ], groups: [] }
 					);
 
-					testUtils.sinon.assert.notCalled( console.warn );
+					sinon.assert.notCalled( console.warn );
 				} );
 			} );
 		} );
@@ -308,7 +308,7 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [ currentGroup ] } );
 					}
 
-					testUtils.sinon.assert.notCalled( console.warn );
+					sinon.assert.notCalled( console.warn );
 				} );
 
 				it( 'should warn and ommit the group if a #name not found in default groups', () => {
@@ -318,11 +318,11 @@ describe( 'ImageStyle utils', () => {
 						{ groups: [], arrangements: allArrangements }
 					);
 
-					testUtils.sinon.assert.calledOnce( console.warn );
-					testUtils.sinon.assert.calledWithExactly( console.warn,
-						testUtils.sinon.match( /^image-style-invalid/ ),
+					sinon.assert.calledOnce( console.warn );
+					sinon.assert.calledWithExactly( console.warn,
+						sinon.match( /^image-style-invalid/ ),
 						{ group: { name: 'foo' } },
-						testUtils.sinon.match.string // Link to the documentation
+						sinon.match.string // Link to the documentation
 					);
 				} );
 			} );
@@ -338,7 +338,7 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [ { ...DEFAULT_GROUPS.wrapText, ...group } ] }
 						);
 
-						testUtils.sinon.assert.notCalled( console.warn );
+						sinon.assert.notCalled( console.warn );
 					} );
 
 					it( 'should warn and ommit if no valid #items are present', () => {
@@ -350,16 +350,16 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledTwice( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'foo' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -372,11 +372,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -389,11 +389,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -406,11 +406,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -423,11 +423,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -439,16 +439,16 @@ describe( 'ImageStyle utils', () => {
 							groups: [ { ...DEFAULT_GROUPS.breakText, items: [ 'alignLeft' ], defaultItem: 'alignLeft' } ]
 						} );
 
-						testUtils.sinon.assert.calledTwice( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'foo' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'bar' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -463,16 +463,16 @@ describe( 'ImageStyle utils', () => {
 							groups: [ { name: 'wrapText', defaultItem: 'alignLeft', title: 'Wrap text', items: [ 'alignLeft' ] } ]
 						} );
 
-						testUtils.sinon.assert.calledTwice( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-unsupported/ ),
+						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-unsupported/ ),
 							{ arrangement: 'foo', missingPlugins: [ 'ImageInlineEditing' ] },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'foo' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 				} );
@@ -487,7 +487,7 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups }
 						);
 
-						testUtils.sinon.assert.notCalled( console.warn );
+						sinon.assert.notCalled( console.warn );
 					} );
 
 					it( 'should warn and ommit if no valid #items are present', () => {
@@ -499,16 +499,16 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [ DEFAULT_GROUPS.wrapText ] }
 						);
 
-						testUtils.sinon.assert.calledTwice( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group: invalidGroup },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'foo' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -521,11 +521,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -538,11 +538,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -555,11 +555,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -572,11 +572,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -589,11 +589,11 @@ describe( 'ImageStyle utils', () => {
 							{ arrangements: allArrangements, groups: [] }
 						);
 
-						testUtils.sinon.assert.calledOnce( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledOnce( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ group },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -605,16 +605,16 @@ describe( 'ImageStyle utils', () => {
 							groups: [ { name: 'foo', items: [ 'alignLeft' ], defaultItem: 'alignLeft' } ]
 						} );
 
-						testUtils.sinon.assert.calledTwice( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'foo' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'bar' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 
@@ -629,16 +629,16 @@ describe( 'ImageStyle utils', () => {
 							groups: [ { name: 'bar', defaultItem: 'alignLeft', items: [ 'alignLeft' ] } ]
 						} );
 
-						testUtils.sinon.assert.calledTwice( console.warn );
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-unsupported/ ),
+						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-unsupported/ ),
 							{ arrangement: 'foo', missingPlugins: [ 'ImageInlineEditing' ] },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
-						testUtils.sinon.assert.calledWithExactly( console.warn,
-							testUtils.sinon.match( /^image-style-invalid/ ),
+						sinon.assert.calledWithExactly( console.warn,
+							sinon.match( /^image-style-invalid/ ),
 							{ groupItem: 'foo' },
-							testUtils.sinon.match.string // Link to the documentation
+							sinon.match.string // Link to the documentation
 						);
 					} );
 				} );

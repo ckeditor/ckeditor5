@@ -15,7 +15,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import { SplitButtonView } from '../../../../src/ui';
 
-describe.only( 'ImageStyleUI', () => {
+describe( 'ImageStyleUI', () => {
 	let editor, editorElement, factory;
 
 	const { DEFAULT_ARRANGEMENTS, DEFAULT_GROUPS } = utils;
@@ -188,6 +188,28 @@ describe.only( 'ImageStyleUI', () => {
 			customEditorElement.remove();
 			await customEditor.destroy();
 		} );
+
+		it( 'should pass through the defined title if the translation is missing', async () => {
+			const customEditorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( customEditorElement );
+
+			const customEditor = await ClassicTestEditor.create( customEditorElement, {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
+				image: {
+					styles: {
+						arrangements: [ { name: 'foo', modelElements: [ 'image' ], title: 'Custom title' } ],
+						groups: []
+					}
+				}
+			} );
+
+			const buttonView = customEditor.ui.componentFactory.create( 'imageStyle:foo' );
+
+			expect( buttonView.label ).to.equal( 'Custom title' );
+
+			customEditorElement.remove();
+			await customEditor.destroy();
+		} );
 	} );
 
 	describe( 'drop-downs', () => {
@@ -239,6 +261,28 @@ describe.only( 'ImageStyleUI', () => {
 			const dropdownView = customEditor.ui.componentFactory.create( 'imageStyle:wrapText' );
 
 			expect( dropdownView.buttonView.label ).to.equal( 'Default title' );
+
+			customEditorElement.remove();
+			await customEditor.destroy();
+		} );
+
+		it( 'should pass through the defined title if the translation is missing', async () => {
+			const customEditorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( customEditorElement );
+
+			const customEditor = await ClassicTestEditor.create( customEditorElement, {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
+				image: {
+					styles: {
+						arrangements: allArrangements,
+						groups: [ { name: 'foo', items: [ 'alignLeft' ], defaultItem: 'alignLeft', title: 'Custom title' } ]
+					}
+				}
+			} );
+
+			const dropdownView = customEditor.ui.componentFactory.create( 'imageStyle:foo' );
+
+			expect( dropdownView.buttonView.label ).to.equal( 'Custom title' );
 
 			customEditorElement.remove();
 			await customEditor.destroy();

@@ -20,8 +20,6 @@ import ImageEditing from '../../src/image/imageediting';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 
 describe( 'ImageStyleEditing', () => {
-	testUtils.createSinonSandbox( 'ImageStyleEditing' );
-
 	describe( 'plugin', () => {
 		let editor;
 
@@ -45,6 +43,8 @@ describe( 'ImageStyleEditing', () => {
 	} );
 
 	describe( 'init()', () => {
+		testUtils.createSinonSandbox();
+
 		describe( 'default styles configuration', () => {
 			it( 'should not alter the image.styles configuration', async () => {
 				const editor = await ModelTestEditor.create( {
@@ -52,14 +52,14 @@ describe( 'ImageStyleEditing', () => {
 					image: {
 						styles: {
 							arrangements: [ 'full' ],
-							groups: [ 'wrapText' ]
+							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 						}
 					}
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
 					arrangements: [ 'full' ],
-					groups: [ 'wrapText' ]
+					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 				} );
 
 				await editor.destroy();
@@ -70,15 +70,15 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 					image: {
 						styles: {
-							arrangements: [ { name: 'full' } ],
-							groups: [ { name: 'wrapText' } ]
+							arrangements: [ { name: 'full', modelElements: [ 'image' ] } ],
+							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 						}
 					}
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					arrangements: [ { name: 'full' } ],
-					groups: [ { name: 'wrapText' } ]
+					arrangements: [ { name: 'full', modelElements: [ 'image' ] } ],
+					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 				} );
 
 				await editor.destroy();
@@ -89,13 +89,15 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 					image: {
 						styles: {
-							arrangements: [ { name: 'full' } ]
+							arrangements: [
+								{ name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+							]
 						}
 					}
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					arrangements: [ { name: 'full' } ],
+					arrangements: [ { name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight' ],
 					groups: [ 'wrapText', 'breakText' ]
 				} );
 
@@ -209,7 +211,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should call the normalizedStyles with the proper arguments', async () => {
-			const normalizationSpy = sinon.spy( imageStyleUtils, 'normalizeStyles' );
+			const normalizationSpy = testUtils.sinon.spy( imageStyleUtils, 'normalizeStyles' );
 
 			const editor = await ModelTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageStyleEditing ]
@@ -231,7 +233,7 @@ describe( 'ImageStyleEditing', () => {
 				customProperty: true
 			};
 
-			sinon.stub( imageStyleUtils, 'normalizeStyles' ).callsFake( () => customStyles );
+			testUtils.sinon.stub( imageStyleUtils, 'normalizeStyles' ).callsFake( () => customStyles );
 
 			const editor = await ModelTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageStyleEditing ]
@@ -379,7 +381,8 @@ describe( 'ImageStyleEditing', () => {
 									name: 'onlyInline',
 									modelElements: [ 'imageInline' ],
 									className: 'image-style-inline'
-								} ]
+								} ],
+								groups: []
 							}
 						}
 					} );
