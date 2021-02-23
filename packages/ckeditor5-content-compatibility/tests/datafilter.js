@@ -126,7 +126,7 @@ describe( 'DataFilter', () => {
 
 	it( 'should allow nested attributes', () => {
 		dataFilter.allowElement( { name: /article|section/ } );
-		dataFilter.allowAttributes( { attributes: { 'data-foo': /foo|bar/ } } );
+		dataFilter.allowAttributes( { name: /[^]/, attributes: { 'data-foo': /foo|bar/ } } );
 
 		editor.setData( '<article data-foo="foo">' +
 				'<section data-foo="bar">section1</section>' +
@@ -147,11 +147,10 @@ describe( 'DataFilter', () => {
 	} );
 
 	it( 'should allow attributes for all allowed definitions', () => {
-		dataFilter.allowElement( { name: 'section' } );
-		dataFilter.allowElement( { name: 'article' } );
-		// We skip name purposely to allow attribute on every data schema element.
-		dataFilter.allowAttributes( { attributes: { 'data-foo': 'foo' } } );
-		dataFilter.allowAttributes( { attributes: { 'data-bar': 'bar' } } );
+		dataFilter.allowElement( { name: /section|article/ } );
+
+		dataFilter.allowAttributes( { name: /section|article/, attributes: { 'data-foo': 'foo' } } );
+		dataFilter.allowAttributes( { name: /section|article/, attributes: { 'data-bar': 'bar' } } );
 
 		editor.setData( '<section data-foo="foo">foo</section><article data-bar="bar">bar</article>' );
 

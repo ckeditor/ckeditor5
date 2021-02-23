@@ -59,10 +59,8 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements which should be allowed.
 	 */
 	allowElement( config ) {
-		const nameRegExp = toRegExp( config.name );
-
 		for ( const mapping of this.dataSchema.getModelViewMapping() ) {
-			if ( nameRegExp.test( mapping.view ) ) {
+			if ( matchViewName( config.name, mapping.view ) ) {
 				this.dataSchema.enable( mapping.model );
 				this._defineConverters( mapping );
 			}
@@ -97,7 +95,7 @@ export default class DataFilter {
 	 * @param {Object} rules Rules object holding matchers.
 	 */
 	_addAttributeMatcher( config, rules ) {
-		const nameRegExp = toRegExp( config.name );
+		const name = config.name;
 
 		config = cloneDeep( config );
 		// We don't want match by name when matching attributes.
@@ -105,7 +103,7 @@ export default class DataFilter {
 		delete config.name;
 
 		for ( const { view } of this.dataSchema.getModelViewMapping() ) {
-			if ( nameRegExp.test( view ) ) {
+			if ( matchViewName( name, view ) ) {
 				getOrCreateMatcher( view, rules ).add( config );
 			}
 		}
@@ -280,15 +278,14 @@ function mergeMatchResults( matches ) {
 	return matchResult;
 }
 
-function toRegExp( value ) {
-	// Match everything if name not given.
-	if ( !value ) {
-		value = /[^]/;
+function matchViewName( pattern, viewName ) {
+	if ( typeof pattern === 'string' ) {
+		return pattern === viewName;
 	}
 
-	if ( !( value instanceof RegExp ) ) {
-		value = new RegExp( escapeRegExp( value ) );
+	if ( pattern instanceof RegExp ) {
+		return pattern.test( viewName );
 	}
 
-	return value;
+	return false;
 }
