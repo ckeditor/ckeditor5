@@ -54,21 +54,21 @@ export function isDefault( alignment, locale ) {
 /**
  * Brings the configuration to the common form, an array of objects.
  *
- * @param {Array.<String|Object>} configuredOptions Alignment plugin configuration.
- * @returns {Array.<Object>} Normalized object holding the configuration.
+ * @param {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} configuredOptions Alignment plugin configuration.
+ * @returns {Array.<module:alignment/alignmentediting~AlignmentFormat>} Normalized object holding the configuration.
  */
 export function normalizeAlignmentOptions( configuredOptions ) {
 	const normalizedOptions = configuredOptions
 		.map( option => {
-			let optionObj;
+			let result;
 
 			if ( typeof option == 'string' ) {
-				optionObj = { name: option };
+				result = { name: option };
 			} else {
-				optionObj = { ...optionNameToOptionMap[ option.name ], ...option };
+				result = { ...optionNameToOptionMap[ option.name ], ...option };
 			}
 
-			return optionObj;
+			return result;
 		} )
 		// Remove all unknown options.
 		.filter( option => {
@@ -80,13 +80,25 @@ export function normalizeAlignmentOptions( configuredOptions ) {
 				 *
 				 * @error alignment-config-name-not-recognized
 				 * @param {Object} option Options with unknown value of the `name` property.
-				 * @param {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} allOptions Contents of `alignment.options`.
 				 */
-				logWarning( 'alignment-config-name-not-recognized', { option, supportedOptions } );
+				logWarning( 'alignment-config-name-not-recognized', { option } );
 			}
 
 			return isNameValid;
 		} );
+
+	const classNameCount = normalizedOptions.filter( option => !!option.className ).length;
+
+	// We either use classes for all styling options or for none.
+	if ( classNameCount && classNameCount < normalizedOptions.length ) {
+		/**
+		 * The `className` property has to be defined for all options once at least one option declares `className`.
+		 *
+		 * @error alignment-config-classnames-are-missing
+		 * @param {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} configuredOptions Contents of `alignment.options`.
+		 */
+		throw new CKEditorError( 'alignment-config-classnames-are-missing', { configuredOptions } );
+	}
 
 	// Validate resulting config.
 	normalizedOptions.forEach( ( option, index, allOptions ) => {
@@ -100,9 +112,9 @@ export function normalizeAlignmentOptions( configuredOptions ) {
 			 *
 			 * @error alignment-config-name-already-defined
 			 * @param {Object} option First option that declares given `name`.
-			 * @param {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} allOptions Contents of `alignment.options`.
+			 * @param {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} configuredOptions Contents of `alignment.options`.
 			 */
-			throw new CKEditorError( 'alignment-config-name-already-defined', { option, allOptions } );
+			throw new CKEditorError( 'alignment-config-name-already-defined', { option, configuredOptions } );
 		}
 
 		// The `className` property is present. Check for duplicates then.
@@ -115,9 +127,10 @@ export function normalizeAlignmentOptions( configuredOptions ) {
 				 *
 				 * @error alignment-config-classname-already-defined
 				 * @param {Object} option First option that declares given `className`.
-				 * @param {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} allOptions  Contents of `alignment.options`.
+				 * @param {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} configuredOptions
+				 * Contents of `alignment.options`.
 				 */
-				throw new CKEditorError( 'alignment-config-classname-already-defined', { option, allOptions } );
+				throw new CKEditorError( 'alignment-config-classname-already-defined', { option, configuredOptions } );
 			}
 		}
 	} );

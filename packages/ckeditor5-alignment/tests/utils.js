@@ -60,10 +60,7 @@ describe( 'utils', () => {
 				'left',
 				{ name: 'right' },
 				'center',
-				{
-					name: 'justify',
-					className: 'foo-center'
-				}
+				{ name: 'justify' }
 			];
 
 			const result = normalizeAlignmentOptions( config );
@@ -73,15 +70,12 @@ describe( 'utils', () => {
 					{ 'name': 'left' },
 					{ 'name': 'right' },
 					{ 'name': 'center' },
-					{
-						'className': 'foo-center',
-						'name': 'justify'
-					}
+					{ 'name': 'justify' }
 				]
 			);
 		} );
 
-		it( 'should warn if the name is not recognized', () => {
+		it( 'warns if the name is not recognized', () => {
 			testUtils.sinon.stub( console, 'warn' );
 
 			const config = [
@@ -94,8 +88,7 @@ describe( 'utils', () => {
 			] );
 
 			const params = {
-				option: { name: 'center1' },
-				supportedOptions: [ 'left', 'right', 'center', 'justify' ]
+				option: { name: 'center1' }
 			};
 
 			sinon.assert.calledOnce( console.warn );
@@ -104,6 +97,23 @@ describe( 'utils', () => {
 				params,
 				sinon.match.string // Link to the documentation
 			);
+		} );
+
+		it( 'throws when the className is not defined for all options', () => {
+			const config = [
+				'left',
+				{ name: 'center', className: 'foo-center' }
+			];
+			let error;
+
+			try {
+				normalizeAlignmentOptions( config );
+			} catch ( err ) {
+				error = err;
+			}
+
+			expect( error.constructor ).to.equal( CKEditorError );
+			expect( error ).to.match( /alignment-config-classnames-are-missing/ );
 		} );
 
 		it( 'throws when the name already exists', () => {
@@ -125,7 +135,6 @@ describe( 'utils', () => {
 
 		it( 'throws when the className already exists', () => {
 			const config = [
-				'left',
 				{
 					name: 'center',
 					className: 'foo-center'

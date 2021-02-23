@@ -49,12 +49,11 @@ describe( 'AlignmentEditing', () => {
 
 	describe( 'integration', () => {
 		beforeEach( async () => {
-			const newEditor = await VirtualTestEditor
+			const editor = await VirtualTestEditor
 				.create( {
 					plugins: [ AlignmentEditing, ImageCaptionEditing, Paragraph, ListEditing, HeadingEditing ]
 				} );
 
-			editor = newEditor;
 			model = editor.model;
 		} );
 
