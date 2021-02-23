@@ -11,11 +11,11 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import UpdateHtmlEmbedCommand from '../src/updatehtmlembedcommand';
 import InsertHtmlEmbedCommand from '../src/inserthtmlembedcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'HtmlEmbedEditing', () => {
-	let element, editor, model, view, viewDocument;
+	let element, editor, model, view, viewDocument, widget;
 
 	testUtils.createSinonSandbox();
 
@@ -25,13 +25,14 @@ describe( 'HtmlEmbedEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ HtmlEmbedEditing, Clipboard ]
+				plugins: [ Widget, HtmlEmbedEditing, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				view = editor.editing.view;
 				viewDocument = view.document;
+				widget = editor.plugins.get( 'Widget' );
 			} );
 	} );
 
@@ -40,6 +41,10 @@ describe( 'HtmlEmbedEditing', () => {
 			.then( () => {
 				element.remove();
 			} );
+	} );
+
+	it( 'should require Widget as a soft-requirement', () => {
+		expect( HtmlEmbedEditing.requires ).to.deep.equal( [ 'Widget' ] );
 	} );
 
 	it( 'should have pluginName', () => {
@@ -282,12 +287,12 @@ describe( 'HtmlEmbedEditing', () => {
 		describe( 'without previews (htmlEmbed.showPreviews=false)', () => {
 			it( 'converted element should be widgetized', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
-				const widget = viewDocument.getRoot().getChild( 0 );
+				const widgetElement = viewDocument.getRoot().getChild( 0 );
 
-				expect( widget.name ).to.equal( 'div' );
-				expect( isRawHtmlWidget( widget ) ).to.be.true;
+				expect( widgetElement.name ).to.equal( 'div' );
+				expect( isRawHtmlWidget( widgetElement, widget ) ).to.be.true;
 
-				const contentWrapper = widget.getChild( 1 );
+				const contentWrapper = widgetElement.getChild( 1 );
 
 				expect( contentWrapper.hasClass( 'raw-html-embed__content-wrapper' ) );
 			} );
@@ -674,7 +679,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				return ClassicTestEditor
 					.create( element, {
-						plugins: [ HtmlEmbedEditing ],
+						plugins: [ Widget, HtmlEmbedEditing ],
 						htmlEmbed: {
 							showPreviews: true,
 							sanitizeHtml
@@ -811,8 +816,8 @@ describe( 'HtmlEmbedEditing', () => {
 	} );
 } );
 
-function isRawHtmlWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( 'rawHtml' ) && isWidget( viewElement );
+function isRawHtmlWidget( viewElement, widget ) {
+	return !!viewElement.getCustomProperty( 'rawHtml' ) && widget.isWidget( viewElement );
 }
 
 function createDataTransfer( data ) {

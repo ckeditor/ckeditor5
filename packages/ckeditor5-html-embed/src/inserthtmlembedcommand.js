@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
 
 /**
  * The insert HTML embed element command.
@@ -26,7 +25,9 @@ export default class InsertHtmlEmbedCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isHtmlEmbedAllowed( this.editor.model );
+		const widget = this.editor.plugins.get( 'Widget' );
+
+		this.isEnabled = isHtmlEmbedAllowed( this.editor.model, widget );
 	}
 
 	/**
@@ -49,13 +50,14 @@ export default class InsertHtmlEmbedCommand extends Command {
 // Checks if the `htmlEmbed` element can be inserted at the current model selection.
 //
 // @param {module:engine/model/model~Model} model
+// @param {module:widget/widget~Widget} widget
 // @returns {Boolean}
-function isHtmlEmbedAllowed( model ) {
+function isHtmlEmbedAllowed( model, widget ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isHtmlEmbedAllowedInParent( selection, schema, model ) &&
-		!checkSelectionOnObject( selection, schema );
+	return isHtmlEmbedAllowedInParent( selection, schema, model, widget ) &&
+		!widget.checkSelectionOnObject( selection, schema );
 }
 
 // Checks if an HTML embed is allowed by the schema in the optimal insertion parent.
@@ -63,9 +65,10 @@ function isHtmlEmbedAllowed( model ) {
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/model~Model} model Model instance.
+// @param {module:widget/widget~Widget} widget
 // @returns {Boolean}
-function isHtmlEmbedAllowedInParent( selection, schema, model ) {
-	const parent = getInsertPageBreakParent( selection, model );
+function isHtmlEmbedAllowedInParent( selection, schema, model, widget ) {
+	const parent = getInsertHtmlEmbedParent( selection, model, widget );
 
 	return schema.checkChild( parent, 'rawHtml' );
 }
@@ -74,9 +77,10 @@ function isHtmlEmbedAllowedInParent( selection, schema, model ) {
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.
+// @param {module:widget/widget~Widget} widget
 // @returns {module:engine/model/element~Element}
-function getInsertPageBreakParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
+function getInsertHtmlEmbedParent( selection, model, widget ) {
+	const insertAt = widget.findOptimalInsertionPosition( selection, model );
 
 	const parent = insertAt.parent;
 

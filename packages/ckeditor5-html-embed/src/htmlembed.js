@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
 
 import HtmlEmbedEditing from './htmlembedediting';
 import HtmlEmbedUI from './htmlembedui';
@@ -27,7 +26,7 @@ export default class HtmlEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HtmlEmbedEditing, HtmlEmbedUI, Widget ];
+		return [ HtmlEmbedEditing, HtmlEmbedUI ];
 	}
 
 	/**

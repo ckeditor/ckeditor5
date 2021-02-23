@@ -10,6 +10,7 @@ import HtmlEmbedEditing from '../src/htmlembedediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import HtmlEmbedUI from '../src/htmlembedui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'HtmlEmbedEditing', () => {
 	let element, editor, htmlEmbedView;
@@ -22,7 +23,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ HtmlEmbedUI, HtmlEmbedEditing ]
+				plugins: [ Widget, HtmlEmbedUI, HtmlEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
