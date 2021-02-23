@@ -214,14 +214,12 @@ describe( 'DataFilter', () => {
 		editor.setData( '<section class="foo bar">foo</section><section class="bar">bar</section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
-			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsSection>bar</ghsSection>',
-			attributes: {
-				1: [ [ 'class', [ 'foo' ] ] ]
-			}
+			data: '<ghsSection>foo</ghsSection><ghsSection>bar</ghsSection>',
+			attributes: {}
 		} );
 
 		expect( editor.getData() ).to.eq(
-			'<section class="foo">foo</section><section>bar</section>'
+			'<section>foo</section><section>bar</section>'
 		);
 	} );
 } );

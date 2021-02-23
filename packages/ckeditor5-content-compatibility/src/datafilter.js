@@ -119,54 +119,57 @@ export default class DataFilter {
 		const viewName = definition.view;
 		const modelName = definition.model;
 
+		// Consumes disallowed element attributes to prevent them of being processed by other converters.
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
+				for ( const match of matchAll( data.viewItem, this._disallowedAttributes ) ) {
+					conversionApi.consumable.consume( data.viewItem, match.match );
+				}
+			}, { priority: 'high' } );
+		} );
+
+		// Stash unused, allowed element attributes, so they can be reapplied later in data conversion.
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
 			model: ( viewElement, conversionApi ) => {
-				// We will stash only attributes which are not processed by any other features
-				// and should be left unchaged.
-				const viewConsumable = conversionApi.consumable;
-
-				const viewAttributes = [];
-				const allowedAttributes = this._getAllowedAttributes( viewElement );
-
-				// Stash attributes.
-				for ( const key of allowedAttributes.attributes ) {
-					if ( viewConsumable.test( viewElement, { attributes: key } ) ) {
-						viewAttributes.push( [ key, viewElement.getAttribute( key ) ] );
+				const matches = [];
+				for ( const match of matchAll( viewElement, this._allowedAttributes ) ) {
+					if ( conversionApi.consumable.consume( viewElement, match.match ) ) {
+						matches.push( match );
 					}
 				}
 
-				// Stash classes.
-				const classes = allowedAttributes.classes.filter( className => {
-					return viewConsumable.test( viewElement, { classes: className } );
-				} );
+				const allowedAttributes = mergeMatchResults( matches );
+				const viewAttributes = [];
 
-				if ( classes.length ) {
+				// Stash attributes.
+				for ( const key of allowedAttributes.attributes ) {
+					viewAttributes.push( [ key, viewElement.getAttribute( key ) ] );
+				}
+
+				// Stash classes.
+				if ( allowedAttributes.classes.length ) {
 					viewAttributes.push( [ 'class', allowedAttributes.classes ] );
 				}
 
 				// Stash styles.
-				const styles = allowedAttributes.styles.filter( styleName => {
-					return viewConsumable.test( viewElement, { styles: styleName } );
-				} );
-
-				if ( styles.length ) {
+				if ( allowedAttributes.styles.length ) {
 					const stylesObj = {};
 
-					for ( const styleName of styles ) {
+					for ( const styleName of allowedAttributes.styles ) {
 						stylesObj[ styleName ] = viewElement.getStyle( styleName );
 					}
 
 					viewAttributes.push( [ 'style', stylesObj ] );
 				}
 
-				// Keep compatibility attributes inside a single model attribute.
-				let attributesToAdd;
+				const element = conversionApi.writer.createElement( modelName );
+
 				if ( viewAttributes.length ) {
-					attributesToAdd = [ [ DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes ] ];
+					conversionApi.writer.setAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes, element );
 				}
 
-				return conversionApi.writer.createElement( modelName, attributesToAdd );
+				return element;
 			}
 		} );
 
@@ -209,29 +212,6 @@ export default class DataFilter {
 			} );
 		} );
 	}
-
-	/**
-	 * Returns all allowed view element attributes based on attribute matchers registered via {@link #allowedAttributes}
-	 * and {@link #disallowedAttributes} methods.
-	 *
-	 * @private
-	 * @param {module:engine/view/element~Element} viewElement
-	 * @returns {Object} result
-	 * @returns {Array} result.attributes Array with matched attribute names.
-	 * @returns {Array} result.classes Array with matched class names.
-	 * @returns {Array} result.styles Array with matched style names.
-	 */
-	_getAllowedAttributes( viewElement ) {
-		const allowedAttributes = matchAll( viewElement, this._allowedAttributes );
-		const disallowedAttributes = matchAll( viewElement, this._disallowedAttributes );
-
-		// Drop disallowed content.
-		for ( const key in allowedAttributes ) {
-			allowedAttributes[ key ] = removeArray( allowedAttributes[ key ], disallowedAttributes[ key ] );
-		}
-
-		return allowedAttributes;
-	}
 }
 
 /**
@@ -253,7 +233,7 @@ function getOrCreateMatcher( key, rules ) {
 }
 
 /**
- * Helper function matching all attributes for the given element.
+ * Alias for {@link module:engine/view/matcher~Matcher#matchAll matchAll}.
  *
  * @private
  * @param {module:engine/view/element~Element} viewElement
@@ -265,9 +245,8 @@ function getOrCreateMatcher( key, rules ) {
  */
 function matchAll( viewElement, rules ) {
 	const matcher = getOrCreateMatcher( viewElement.name, rules );
-	const matches = matcher.matchAll( viewElement );
 
-	return mergeMatchAllResult( matches || [] );
+	return matcher.matchAll( viewElement ) || [];
 }
 
 /**
@@ -280,7 +259,7 @@ function matchAll( viewElement, rules ) {
  * @returns {Array} result.classes Array with matched class names.
  * @returns {Array} result.styles Array with matched style names.
  */
-function mergeMatchAllResult( matches ) {
+function mergeMatchResults( matches ) {
 	const matchResult = { attributes: [], classes: [], styles: [] };
 
 	for ( const match of matches ) {
@@ -295,17 +274,6 @@ function mergeMatchAllResult( matches ) {
 	}
 
 	return matchResult;
-}
-
-/**
- * Removes array items included in the second array parameter.
- *
- * @param {Array} array
- * @param {Array} toRemove
- * @returns {Array} Filtered array items.
- */
-function removeArray( array, toRemove ) {
-	return array.filter( item => !toRemove.includes( item ) );
 }
 
 function toRegExp( value ) {
