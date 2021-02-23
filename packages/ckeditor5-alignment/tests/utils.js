@@ -3,10 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { CKEditorError } from '../../../src/utils';
+/* globals console */
+
+import { CKEditorError } from 'ckeditor5/src/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { isDefault, isSupported, supportedOptions, normalizeAlignmentOptions } from '../src/utils';
 
 describe( 'utils', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'isDefault()', () => {
 		it( 'should return true for "left" alignment only (LTR)', () => {
 			const locale = {
@@ -53,9 +58,7 @@ describe( 'utils', () => {
 		it( 'normalizes mixed input into an config array of objects', () => {
 			const config = [
 				'left',
-				{
-					name: 'right'
-				},
+				{ name: 'right' },
 				'center',
 				{
 					name: 'justify',
@@ -67,15 +70,9 @@ describe( 'utils', () => {
 
 			expect( result ).to.deep.equal(
 				[
-					{
-						'name': 'left'
-					},
-					{
-						'name': 'right'
-					},
-					{
-						'name': 'center'
-					},
+					{ 'name': 'left' },
+					{ 'name': 'right' },
+					{ 'name': 'center' },
 					{
 						'className': 'foo-center',
 						'name': 'justify'
@@ -84,12 +81,35 @@ describe( 'utils', () => {
 			);
 		} );
 
+		it( 'should warn if the name is not recognized', () => {
+			testUtils.sinon.stub( console, 'warn' );
+
+			const config = [
+				'left',
+				{ name: 'center1' }
+			];
+
+			expect( normalizeAlignmentOptions( config ) ).to.deep.equal( [
+				{ name: 'left' }
+			] );
+
+			const params = {
+				option: { name: 'center1' },
+				supportedOptions: [ 'left', 'right', 'center', 'justify' ]
+			};
+
+			sinon.assert.calledOnce( console.warn );
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( /^alignment-config-name-not-recognized/ ),
+				params,
+				sinon.match.string // Link to the documentation
+			);
+		} );
+
 		it( 'throws when the name already exists', () => {
 			const config = [
 				'center',
-				{
-					name: 'center'
-				}
+				{ name: 'center' }
 			];
 			let error;
 

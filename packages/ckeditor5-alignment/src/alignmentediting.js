@@ -59,7 +59,6 @@ export default class AlignmentEditing extends Plugin {
 		editor.model.schema.setAttributeProperties( 'alignment', { isFormatting: true } );
 
 		if ( shouldUseClasses ) {
-			// Downcast to only to classes.
 			editor.conversion.attributeToAttribute( buildClassDefinition( optionsToConvert ) );
 		} else {
 			// Downcast inline styles.
@@ -80,20 +79,19 @@ export default class AlignmentEditing extends Plugin {
 // Prepare downcast conversion definition for inline alignment styling.
 // @private
 function buildDowncastInlineDefinition( options ) {
-	const optionNames = options.map( option => option.name );
 	const definition = {
 		model: {
 			key: 'alignment',
-			values: optionNames
+			values: options.map( option => option.name )
 		},
 		view: {}
 	};
 
-	for ( const name of optionNames ) {
-		definition.view[ name ] = {
+	for ( const option of options ) {
+		definition.view[ option.name ] = {
 			key: 'style',
 			value: {
-				'text-align': name
+				'text-align': option.name
 			}
 		};
 	}
@@ -104,20 +102,19 @@ function buildDowncastInlineDefinition( options ) {
 // Prepare upcast definitions for inline alignment styles.
 // @private
 function buildUpcastInlineDefinitions( options ) {
-	const optionNames = options.map( option => option.name );
 	const definitions = [];
 
-	for ( const name of optionNames ) {
+	for ( const option of options ) {
 		definitions.push( {
 			view: {
 				key: 'style',
 				value: {
-					'text-align': name
+					'text-align': option.name
 				}
 			},
 			model: {
 				key: 'alignment',
-				value: name
+				value: option.name
 			}
 		} );
 	}
