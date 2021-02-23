@@ -13,16 +13,16 @@ import CKEditorError from './ckeditorerror';
 import env from './env';
 
 const modifiersToGlyphsMac = {
-	'ctrl': '⌃',
-	'cmd': '⌘',
-	'alt': '⌥',
-	'shift': '⇧'
+	ctrl: '⌃',
+	cmd: '⌘',
+	alt: '⌥',
+	shift: '⇧'
 };
 
 const modifiersToGlyphsNonMac = {
-	'ctrl': 'Ctrl+',
-	'alt': 'Alt+',
-	'shift': 'Shift+'
+	ctrl: 'Ctrl+',
+	alt: 'Alt+',
+	shift: 'Shift+'
 };
 
 /**
