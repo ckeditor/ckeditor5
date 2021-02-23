@@ -8,7 +8,7 @@
  */
 
 import { cloneDeep } from 'lodash-es';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import { toArray } from 'ckeditor5/src/utils';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
