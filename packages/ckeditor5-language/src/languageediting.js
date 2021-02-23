@@ -4,7 +4,7 @@
  */
 
 /**
- * @module block-quote/languageediting
+ * @module language/languageediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
