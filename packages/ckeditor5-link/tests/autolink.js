@@ -130,7 +130,7 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'adds linkHref attribute on enter when the link (that contains www) is partially selected (end)' +
+		it( 'adds linkHref attribute on enter when the link (containing www) is partially selected (end)' +
 			'and the remaining fragment is a proper URL', () => {
 			setData( model, '<paragraph>https://www.foo.ba[r.com]</paragraph>' );
 
@@ -141,8 +141,8 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'does not add linkHref attribute on enter when the link (that contains www) is partially selected (end)' +
-			'and the remaining fragment is not a proper URL', () => {
+		it( 'does not add a linkHref attribute for links with www subdomain only, pressing enter with part of its end selected', () => {
+			// https://github.com/ckeditor/ckeditor5/issues/8050.
 			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
 
 			editor.execute( 'enter' );
