@@ -170,7 +170,8 @@ export default class DataFilter {
 				}
 
 				return element;
-			}
+			},
+			converterPriority: 'low'
 		} );
 
 		conversion.for( 'downcast' ).elementToElement( {
