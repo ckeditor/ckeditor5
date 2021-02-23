@@ -277,6 +277,8 @@ describe( 'AutoLink', () => {
 				'http://🥳.cksource.com/',
 				'http://code.cksource.com/woot/#&product=browser',
 				'http://j.mp',
+				'http://ww.mp',
+				'http://wwww.mp',
 				'ftp://cksource.com/baz',
 				'http://cksource.com/?q=Test%20URL-encoded%20stuff',
 				'http://مثال.إختبار',
@@ -326,6 +328,7 @@ describe( 'AutoLink', () => {
 				'http://-error-.invalid/',
 				'http://localhost',
 				'http:/cksource.com',
+				'http://www.cksource', // https://github.com/ckeditor/ckeditor5/issues/8050.
 				'cksource.com',
 				'ww.cksource.com',
 				'www.cksource'
