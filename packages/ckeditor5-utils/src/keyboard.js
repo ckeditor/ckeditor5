@@ -273,7 +273,7 @@ function splitKeystrokeText( keystroke ) {
  */
 
 /**
- * Whether the <kbd>Ctrl</kbd> or <kbd>Cmd</kbd> modifier was pressed.
+ * Whether the <kbd>Ctrl</kbd> modifier was pressed.
  *
  * @member {Boolean} module:utils/keyboard~KeystrokeInfo#ctrlKey
  */
@@ -282,4 +282,10 @@ function splitKeystrokeText( keystroke ) {
  * Whether the <kbd>Shift</kbd> modifier was pressed.
  *
  * @member {Boolean} module:utils/keyboard~KeystrokeInfo#shiftKey
+ */
+
+/**
+ * Whether the <kbd>Cmd</kbd> modifier was pressed.
+ *
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#metaKey
  */
