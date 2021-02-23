@@ -48,10 +48,8 @@ export default class DataFilter {
 
 		this.dataSchema = new DataSchema( editor );
 
-		this._viewMatchers = {
-			allowedAttributes: {},
-			disallowedAttributes: {}
-		};
+		this._allowedAttributes = {};
+		this._disallowedAttributes = {};
 	}
 
 	/**
@@ -78,7 +76,7 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all attributes which should be allowed.
 	 */
 	allowAttributes( config ) {
-		this._addAttributeMatcher( config, this._viewMatchers.allowedAttributes );
+		this._addAttributeMatcher( config, this._allowedAttributes );
 	}
 
 	/**
@@ -87,7 +85,7 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all attributes which should be disallowed.
 	 */
 	disallowAttributes( config ) {
-		this._addAttributeMatcher( config, this._viewMatchers.disallowedAttributes );
+		this._addAttributeMatcher( config, this._disallowedAttributes );
 	}
 
 	/**
@@ -95,9 +93,9 @@ export default class DataFilter {
 	 *
 	 * @private
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern
-	 * @param {Object} cache Cache object holding matchers.
+	 * @param {Object} rules Rules object holding matchers.
 	 */
-	_addAttributeMatcher( config, cache ) {
+	_addAttributeMatcher( config, rules ) {
 		const nameRegExp = toRegExp( config.name );
 
 		config = cloneDeep( config );
@@ -107,7 +105,7 @@ export default class DataFilter {
 
 		for ( const { view } of this.dataSchema.getModelViewMapping() ) {
 			if ( nameRegExp.test( view ) ) {
-				getOrCreateMatcher( view, cache ).add( config );
+				getOrCreateMatcher( view, rules ).add( config );
 			}
 		}
 	}
@@ -243,8 +241,8 @@ export default class DataFilter {
 	 * @returns {Array} result.styles Array with matched style names.
 	 */
 	_getAllowedAttributes( viewElement ) {
-		const allowedAttributes = matchAll( viewElement, this._viewMatchers.allowedAttributes );
-		const disallowedAttributes = matchAll( viewElement, this._viewMatchers.disallowedAttributes );
+		const allowedAttributes = matchAll( viewElement, this._allowedAttributes );
+		const disallowedAttributes = matchAll( viewElement, this._disallowedAttributes );
 
 		// Drop disallowed content.
 		for ( const key in allowedAttributes ) {
@@ -256,21 +254,21 @@ export default class DataFilter {
 }
 
 /**
- * Helper function restoring matcher for the given key from cache object.
+ * Helper function restoring matcher for the given key from `rules` object.
  *
  * If matcher for the given key does not exist, this function will create a new one
- * inside cache object under the given key.
+ * inside `rules` object under the given key.
  *
  * @private
  * @param {String} key
- * @param {Object} cache
+ * @param {Object} rules
  */
-function getOrCreateMatcher( key, cache ) {
-	if ( !cache[ key ] ) {
-		cache[ key ] = new Matcher();
+function getOrCreateMatcher( key, rules ) {
+	if ( !rules[ key ] ) {
+		rules[ key ] = new Matcher();
 	}
 
-	return cache[ key ];
+	return rules[ key ];
 }
 
 /**
@@ -278,14 +276,14 @@ function getOrCreateMatcher( key, cache ) {
  *
  * @private
  * @param {module:engine/view/element~Element} viewElement
- * @param {Object} cache Cache object holding matchers.
+ * @param {Object} rules Rules object holding matchers.
  * @returns {Object} result
  * @returns {Array} result.attributes Array with matched attribute names.
  * @returns {Array} result.classes Array with matched class names.
  * @returns {Array} result.styles Array with matched style names.
  */
-function matchAll( viewElement, cache ) {
-	const matcher = getOrCreateMatcher( viewElement.name, cache );
+function matchAll( viewElement, rules ) {
+	const matcher = getOrCreateMatcher( viewElement.name, rules );
 	const matches = matcher.matchAll( viewElement );
 
 	return mergeMatchAllResult( matches || [] );
