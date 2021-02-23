@@ -67,14 +67,11 @@ export default class PageBreakEditing extends Plugin {
 			view: ( modelElement, { writer } ) => {
 				const label = t( 'Page break' );
 				const viewWrapper = writer.createContainerElement( 'div' );
-				const viewLabelElement = writer.createUIElement(
+				const viewLabelElement = writer.createRawElement(
 					'span',
 					{ class: 'page-break__label' },
-					function( domDocument ) {
-						const domElement = this.toDomElement( domDocument );
+					function( domElement ) {
 						domElement.innerText = t( 'Page break' );
-
-						return domElement;
 					}
 				);
 
