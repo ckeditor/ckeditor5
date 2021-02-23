@@ -4,40 +4,74 @@
  */
 
 /* globals console, window, document, CKEditorInspector */
+// Dll core.
 import 'ckeditor5/build/ckeditor5-dll.js';
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/build/editor-classic';
-import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled';
-import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline/build/editor-inline';
-import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon';
+// Editor creators.
+import '@ckeditor/ckeditor5-editor-classic/build/editor-classic';
+import '@ckeditor/ckeditor5-editor-decoupled/build/editor-decoupled';
+import '@ckeditor/ckeditor5-editor-inline/build/editor-inline';
+import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon';
 
-import { Alignment } from '@ckeditor/ckeditor5-alignment/build/alignment';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat/build/autoformat';
-import { AutoImage, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image/build/image';
-import { AutoLink, Link, LinkImage } from '@ckeditor/ckeditor5-link/build/link';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/build/block-quote';
-import { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } from '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/build/cloud-services';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/build/code-block';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/build/easy-image';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/build/essentials';
-import { FontColor, FontFamily, FontSize, FontBackgroundColor } from '@ckeditor/ckeditor5-font/build/font';
-import { Heading } from '@ckeditor/ckeditor5-heading/build/heading';
-import { Highlight } from '@ckeditor/ckeditor5-highlight/build/highlight';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/build/horizontal-line';
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed/build/html-embed';
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent/build/indent';
-import { List, ListStyle, TodoList } from '@ckeditor/ckeditor5-list/build/list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/build/media-embed';
-import { Mention } from '@ckeditor/ckeditor5-mention/build/mention';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break/build/page-break';
-import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office/build/paste-from-office';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format/build/remove-format';
-import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters/build/special-characters';
-import { Table, TableToolbar, TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table/build/table';
-import { WordCount } from '@ckeditor/ckeditor5-word-count/build/word-count';
+// Plugins.
+import '@ckeditor/ckeditor5-image/build/image';
+import '@ckeditor/ckeditor5-link/build/link';
+import '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
+import '@ckeditor/ckeditor5-font/build/font';
+import '@ckeditor/ckeditor5-indent/build/indent';
+import '@ckeditor/ckeditor5-list/build/list';
+import '@ckeditor/ckeditor5-special-characters/build/special-characters';
+import '@ckeditor/ckeditor5-table/build/table';
+import '@ckeditor/ckeditor5-alignment/build/alignment';
+import '@ckeditor/ckeditor5-autoformat/build/autoformat';
+import '@ckeditor/ckeditor5-block-quote/build/block-quote';
+import '@ckeditor/ckeditor5-cloud-services/build/cloud-services';
+import '@ckeditor/ckeditor5-code-block/build/code-block';
+import '@ckeditor/ckeditor5-easy-image/build/easy-image';
+import '@ckeditor/ckeditor5-essentials/build/essentials';
+import '@ckeditor/ckeditor5-heading/build/heading';
+import '@ckeditor/ckeditor5-highlight/build/highlight';
+import '@ckeditor/ckeditor5-horizontal-line/build/horizontal-line';
+import '@ckeditor/ckeditor5-html-embed/build/html-embed';
+import '@ckeditor/ckeditor5-media-embed/build/media-embed';
+import '@ckeditor/ckeditor5-mention/build/mention';
+import '@ckeditor/ckeditor5-page-break/build/page-break';
+import '@ckeditor/ckeditor5-paste-from-office/build/paste-from-office';
+import '@ckeditor/ckeditor5-remove-format/build/remove-format';
+import '@ckeditor/ckeditor5-word-count/build/word-count';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+const { ClassicEditor } = window.CKEditor5.editorClassic;
+const { DecoupledEditor } = window.CKEditor5.editorDecoupled;
+const { InlineEditor } = window.CKEditor5.editorInline;
+const { BalloonEditor } = window.CKEditor5.editorBalloon;
+
+const { AutoImage, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } = window.CKEditor5.image;
+const { AutoLink, Link, LinkImage } = window.CKEditor5.link;
+const { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } = window.CKEditor5.basicStyles;
+const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor5.font;
+const { Indent, IndentBlock } = window.CKEditor5.indent;
+const { List, ListStyle, TodoList } = window.CKEditor5.list;
+const { SpecialCharacters, SpecialCharactersEssentials } = window.CKEditor5.specialCharacters;
+const { Table, TableToolbar, TableCellProperties, TableProperties } = window.CKEditor5.table;
+const { Alignment } = window.CKEditor5.alignment;
+const { Autoformat } = window.CKEditor5.autoformat;
+const { BlockQuote } = window.CKEditor5.blockQuote;
+const { CloudServices } = window.CKEditor5.cloudServices;
+const { CodeBlock } = window.CKEditor5.codeBlock;
+const { EasyImage } = window.CKEditor5.easyImage;
+const { Essentials } = window.CKEditor5.essentials;
+const { Heading } = window.CKEditor5.heading;
+const { Highlight } = window.CKEditor5.highlight;
+const { HorizontalLine } = window.CKEditor5.horizontalLine;
+const { HtmlEmbed } = window.CKEditor5.htmlEmbed;
+const { MediaEmbed } = window.CKEditor5.mediaEmbed;
+const { Mention } = window.CKEditor5.mention;
+const { PageBreak } = window.CKEditor5.pageBreak;
+const { PasteFromOffice } = window.CKEditor5.pasteFromOffice;
+const { RemoveFormat } = window.CKEditor5.removeFormat;
+const { WordCount } = window.CKEditor5.wordCount;
 
 const { Plugin } = window.CKEditor5.core;
 const { ButtonView } = window.CKEditor5.ui;

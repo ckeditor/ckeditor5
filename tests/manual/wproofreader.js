@@ -50,7 +50,7 @@ ClassicEditor
 			'heading', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', 'highlight', 'alignment', '|',
 			'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'removeFormat', '|',
 			'link', 'blockQuote', 'uploadImage', 'mediaEmbed', 'insertTable', '|',
-			'bulletedList', 'numberedList', 'indent', 'outdent', '|', 'undo', 'redo',
+			'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'undo', 'redo',
 			'|'
 		],
 		image: {

@@ -8,7 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+import {
+	getCode,
+	parseKeystroke,
+	getLocalizedArrowKeyCodeDirection
+} from 'ckeditor5/src/utils';
 
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
@@ -21,6 +25,8 @@ import {
 	modelViewChangeType,
 	modelViewInsertion
 } from './todolistconverters';
+
+const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
@@ -113,7 +119,12 @@ export default class TodoListEditing extends Plugin {
 		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
-		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'checkTodoList' ) );
+		this.listenTo( editing.view.document, 'keydown', ( evt, data ) => {
+			if ( getCode( data ) === ITEM_TOGGLE_KEYSTROKE ) {
+				editor.execute( 'checkTodoList' );
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 
 		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
 		const listItemsToFix = new Set();

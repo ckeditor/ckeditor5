@@ -501,20 +501,20 @@ describe( 'ImageResizeHandles', () => {
 		);
 	}
 
-	function createEditor( config ) {
-		return ClassicEditor.create( editorElement, config || {
+	async function createEditor( config ) {
+		const newEditor = await ClassicEditor.create( editorElement, config || {
 			plugins: [ Widget, Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
 			image: {
 				resizeUnit: 'px'
 			}
-		} ).then( newEditor => {
-			view = newEditor.editing.view;
-			viewDocument = view.document;
-
-			focusEditor( newEditor );
-
-			return newEditor;
 		} );
+
+		view = newEditor.editing.view;
+		viewDocument = view.document;
+
+		await focusEditor( newEditor );
+
+		return newEditor;
 	}
 
 	async function setModelAndWaitForImages( editor, data ) {

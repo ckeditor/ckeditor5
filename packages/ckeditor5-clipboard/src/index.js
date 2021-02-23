@@ -8,3 +8,5 @@
  */
 
 export { default as Clipboard } from './clipboard';
+export { default as PastePlainText } from './pasteplaintext';
+
