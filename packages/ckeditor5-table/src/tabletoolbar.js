@@ -46,14 +46,14 @@ export default class TableToolbar extends Plugin {
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
 		const tableContentToolbarItems = editor.config.get( 'table.contentToolbar' );
-
 		const tableToolbarItems = editor.config.get( 'table.tableToolbar' );
+		const widget = editor.plugins.get( 'Widget' );
 
 		if ( tableContentToolbarItems ) {
 			widgetToolbarRepository.register( 'tableContent', {
 				ariaLabel: t( 'Table toolbar' ),
 				items: tableContentToolbarItems,
-				getRelatedElement: getTableWidgetAncestor
+				getRelatedElement: selection => getTableWidgetAncestor( selection, widget )
 			} );
 		}
 
@@ -61,7 +61,7 @@ export default class TableToolbar extends Plugin {
 			widgetToolbarRepository.register( 'table', {
 				ariaLabel: t( 'Table toolbar' ),
 				items: tableToolbarItems,
-				getRelatedElement: getSelectedTableWidget
+				getRelatedElement: selection => getSelectedTableWidget( selection, widget )
 			} );
 		}
 	}

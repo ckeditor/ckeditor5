@@ -13,10 +13,10 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
 import { modelTable } from '../../_utils/utils';
 import { getTableCellsContainingSelection } from '../../../src/utils/selection';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'table utils', () => {
 	let editor, editingView, balloon, editorElement;
@@ -29,7 +29,7 @@ describe( 'table utils', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCellProperties, Paragraph ]
+				plugins: [ Widget, Table, TableCellProperties, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -99,6 +99,7 @@ describe( 'table utils', () => {
 					const spy = sinon.spy( balloon, 'updatePosition' );
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
+					const widget = editor.plugins.get( 'Widget' );
 
 					view.element = global.document.createElement( 'div' );
 
@@ -128,7 +129,7 @@ describe( 'table utils', () => {
 							defaultPositions.southArrowNorth,
 							defaultPositions.southArrowNorthWest,
 							defaultPositions.southArrowNorthEast,
-							centeredBalloonPositionForLongWidgets
+							widget.centeredBalloonPositionForLongWidgets
 						]
 					} );
 				} );

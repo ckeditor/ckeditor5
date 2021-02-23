@@ -7,7 +7,6 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { centeredBalloonPositionForLongWidgets } from 'ckeditor5/src/widget';
 import { Rect } from 'ckeditor5/src/utils';
 import { BalloonPanelView } from 'ckeditor5/src/ui';
 
@@ -22,11 +21,6 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
-];
-
-const TABLE_PROPERTIES_BALLOON_POSITIONS = [
-	...BALLOON_POSITIONS,
-	centeredBalloonPositionForLongWidgets
 ];
 
 /**
@@ -66,10 +60,14 @@ export function getBalloonTablePositionData( editor ) {
 	const firstPosition = editor.model.document.selection.getFirstPosition();
 	const modelTable = firstPosition.findAncestor( 'table' );
 	const viewTable = editor.editing.mapper.toViewElement( modelTable );
+	const widget = editor.plugins.get( 'Widget' );
 
 	return {
 		target: editor.editing.view.domConverter.viewToDom( viewTable ),
-		positions: TABLE_PROPERTIES_BALLOON_POSITIONS
+		positions: [
+			...BALLOON_POSITIONS,
+			widget.centeredBalloonPositionForLongWidgets
+		]
 	};
 }
 

@@ -49,6 +49,13 @@ export default class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ TableUtils, 'Widget' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'TableEditing';
 	}
@@ -61,6 +68,7 @@ export default class TableEditing extends Plugin {
 		const model = editor.model;
 		const schema = model.schema;
 		const conversion = editor.conversion;
+		const widget = editor.plugins.get( 'Widget' );
 
 		schema.register( 'table', {
 			allowWhere: '$block',
@@ -94,14 +102,14 @@ export default class TableEditing extends Plugin {
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
+		conversion.for( 'editingDowncast' ).add( downcastInsertTable( widget, { asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastInsertTable( widget ) );
 
 		// Table row conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 		conversion.for( 'upcast' ).add( skipEmptyTableRow() );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertRow() );
+		conversion.for( 'editingDowncast' ).add( downcastInsertRow( widget ) );
 		conversion.for( 'editingDowncast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
@@ -110,7 +118,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
+		conversion.for( 'editingDowncast' ).add( downcastInsertCell( widget ) );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
@@ -156,12 +164,5 @@ export default class TableEditing extends Plugin {
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model, editor.editing.mapper );
 		injectTableCellParagraphPostFixer( model );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ TableUtils ];
 	}
 }

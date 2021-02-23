@@ -52,7 +52,7 @@ export default class TablePropertiesUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ContextualBalloon ];
+		return [ ContextualBalloon, 'Widget' ];
 	}
 
 	/**
@@ -316,8 +316,9 @@ export default class TablePropertiesUI extends Plugin {
 	_updateView() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
+		const widget = editor.plugins.get( 'Widget' );
 
-		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+		if ( !getTableWidgetAncestor( viewDocument.selection, widget ) ) {
 			this._hideView();
 		} else if ( this._isViewVisible ) {
 			repositionContextualBalloon( editor, 'table' );

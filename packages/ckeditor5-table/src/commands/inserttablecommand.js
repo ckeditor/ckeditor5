@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
 
 /**
  * The insert table command.
@@ -29,9 +28,10 @@ export default class InsertTableCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const schema = model.schema;
+		const widget = this.editor.plugins.get( 'Widget' );
 
 		this.isEnabled = isAllowedInParent( selection, schema ) &&
-			!checkSelectionOnObject( selection, schema );
+			!widget.checkSelectionOnObject( selection, schema );
 	}
 
 	/**
@@ -50,8 +50,9 @@ export default class InsertTableCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const widget = this.editor.plugins.get( 'Widget' );
 
-		const insertPosition = findOptimalInsertionPosition( selection, model );
+		const insertPosition = widget.findOptimalInsertionPosition( selection, model );
 
 		model.change( writer => {
 			const table = tableUtils.createTable( writer, options );

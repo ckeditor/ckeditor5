@@ -7,18 +7,17 @@
  * @module table/utils/ui/widget
  */
 
-import { isWidget } from 'ckeditor5/src/widget';
-
 /**
  * Returns a table widget editing view element if one is selected.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @param {module:widget/widget~Widget} widget
  * @returns {module:engine/view/element~Element|null}
  */
-export function getSelectedTableWidget( selection ) {
+export function getSelectedTableWidget( selection, widget ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isTableWidget( viewElement ) ) {
+	if ( viewElement && isTableWidget( viewElement, widget ) ) {
 		return viewElement;
 	}
 
@@ -29,12 +28,13 @@ export function getSelectedTableWidget( selection ) {
  * Returns a table widget editing view element if one is among the selection's ancestors.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @param {module:widget/widget~Widget} widget
  * @returns {module:engine/view/element~Element|null}
  */
-export function getTableWidgetAncestor( selection ) {
+export function getTableWidgetAncestor( selection, widget ) {
 	const parentTable = findAncestor( 'table', selection.getFirstPosition() );
 
-	if ( parentTable && isTableWidget( parentTable.parent ) ) {
+	if ( parentTable && isTableWidget( parentTable.parent, widget ) ) {
 		return parentTable.parent;
 	}
 
@@ -44,9 +44,10 @@ export function getTableWidgetAncestor( selection ) {
 // Checks if a given view element is a table widget.
 //
 // @param {module:engine/view/element~Element} viewElement
+// @param {module:widget/widget~Widget} widget
 // @returns {Boolean}
-function isTableWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
+function isTableWidget( viewElement, widget ) {
+	return !!viewElement.getCustomProperty( 'table' ) && widget.isWidget( viewElement );
 }
 
 function findAncestor( parentName, positionOrElement ) {

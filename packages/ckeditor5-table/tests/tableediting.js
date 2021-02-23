@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
@@ -23,14 +24,19 @@ import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { Widget } from '@ckeditor/ckeditor5-widget';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'TableEditing', () => {
-	let editor, model;
+	let editor, model, element;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ TableEditing, Paragraph, ImageEditing, MediaEmbedEditing ]
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Widget, TableEditing, Paragraph, ImageEditing, MediaEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -40,7 +46,14 @@ describe( 'TableEditing', () => {
 	} );
 
 	afterEach( () => {
-		editor.destroy();
+		return editor.destroy()
+			.then( () => {
+				element.remove();
+			} );
+	} );
+
+	it( 'should require Widget as a soft-requirement', () => {
+		expect( TableEditing.requires ).to.deep.include( 'Widget' );
 	} );
 
 	it( 'should have pluginName', () => {
@@ -225,18 +238,21 @@ describe( 'TableEditing', () => {
 	} );
 
 	describe( 'enter key', () => {
-		let evtDataStub, viewDocument;
+		let evtDataStub, viewDocument, element, editor;
 
 		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
 			evtDataStub = {
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy(),
 				isSoft: false
 			};
 
-			return VirtualTestEditor
-				.create( {
-					plugins: [ TableEditing, Paragraph ]
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Widget, TableEditing, Paragraph ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -245,6 +261,13 @@ describe( 'TableEditing', () => {
 
 					viewDocument = editor.editing.view.document;
 					model = editor.model;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy()
+				.then( () => {
+					element.remove();
 				} );
 		} );
 

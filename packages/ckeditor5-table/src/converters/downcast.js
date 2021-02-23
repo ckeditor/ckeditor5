@@ -8,7 +8,6 @@
  */
 
 import TableWalker from './../tablewalker';
-import { setHighlightHandling, toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
 import { toArray } from 'ckeditor5/src/utils';
 
 /**
@@ -16,11 +15,12 @@ import { toArray } from 'ckeditor5/src/utils';
  *
  * This conversion helper creates the whole table element with child elements.
  *
- * @param {Object} options
+ * @param {module:widget/widget~Widget} widget The Widget plugin.
+ * @param {Object} options={}
  * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertTable( options = {} ) {
+export function downcastInsertTable( widget, options = {} ) {
 	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
 
@@ -41,7 +41,7 @@ export function downcastInsertTable( options = {} ) {
 		let tableWidget;
 
 		if ( asWidget ) {
-			tableWidget = toTableWidget( figureElement, conversionApi.writer );
+			tableWidget = toTableWidget( figureElement, conversionApi.writer, widget );
 		}
 
 		const tableWalker = new TableWalker( table );
@@ -66,7 +66,7 @@ export function downcastInsertTable( options = {} ) {
 
 			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
-			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
+			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options, widget );
 		}
 
 		// Insert empty TR elements if there are any rows without anchored cells. Since the model is always normalized
@@ -91,9 +91,10 @@ export function downcastInsertTable( options = {} ) {
  *
  * This conversion helper creates the whole `<tr>` element with child elements.
  *
+ * @param {module:widget/widget~Widget} widget The Widget plugin
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertRow() {
+export function downcastInsertRow( widget ) {
 	return dispatcher => dispatcher.on( 'insert:tableRow', ( evt, data, conversionApi ) => {
 		const tableRow = data.item;
 
@@ -127,7 +128,7 @@ export function downcastInsertRow() {
 
 			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
-			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true } );
+			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true }, widget );
 		}
 	} );
 }
@@ -138,9 +139,10 @@ export function downcastInsertRow() {
  * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
  * and `<td>` otherwise.
  *
+ * @param {module:widget/widget~Widget} widget
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertCell() {
+export function downcastInsertCell( widget ) {
 	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
 		const tableCell = data.item;
 
@@ -165,7 +167,7 @@ export function downcastInsertCell() {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
 				const insertPosition = conversionApi.writer.createPositionAt( trElement, tableRow.getChildIndex( tableCell ) );
 
-				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true } );
+				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true }, widget );
 
 				// No need to iterate further.
 				return;
@@ -292,10 +294,10 @@ export function isSingleParagraphWithoutAttributes( modelElement ) {
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
 // @param {String} label The element's label. It will be concatenated with the table `alt` attribute if one is present.
 // @returns {module:engine/view/element~Element}
-function toTableWidget( viewElement, writer ) {
+function toTableWidget( viewElement, writer, widget ) {
 	writer.setCustomProperty( 'table', true, viewElement );
 
-	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
+	return widget.toWidget( viewElement, writer, { hasSelectionHandle: true } );
 }
 
 // Renames an existing table cell in the view to a given element name.
@@ -305,14 +307,15 @@ function toTableWidget( viewElement, writer ) {
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} desiredCellElementName
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-function renameViewTableCell( tableCell, desiredCellElementName, conversionApi ) {
+// @param {module:widget/widget~Widget} widget
+function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, widget ) {
 	const viewWriter = conversionApi.writer;
 	const viewCell = conversionApi.mapper.toViewElement( tableCell );
 
 	const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
-	const renamedCell = toWidgetEditable( editable, viewWriter );
+	const renamedCell = widget.toWidgetEditable( editable, viewWriter, widget );
 
-	setHighlightHandling(
+	widget.setHighlightHandling(
 		renamedCell,
 		viewWriter,
 		( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
@@ -350,18 +353,21 @@ function renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionAp
 // Creates a table cell element in the view.
 //
 // @param {module:table/tablewalker~TableSlot} tableSlot
+// @param {{headingColumns, headingRows}} tableAttributes
 // @param {module:engine/view/position~Position} insertPosition
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-function createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options ) {
+// @param {Object} options
+// @param {module:widget/widget~Widget} widget
+function createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options, widget ) {
 	const asWidget = options && options.asWidget;
 	const cellElementName = getCellElementName( tableSlot, tableAttributes );
 
 	const cellElement = asWidget ?
-		toWidgetEditable( conversionApi.writer.createEditableElement( cellElementName ), conversionApi.writer ) :
+		widget.toWidgetEditable( conversionApi.writer.createEditableElement( cellElementName ), conversionApi.writer ) :
 		conversionApi.writer.createContainerElement( cellElementName );
 
 	if ( asWidget ) {
-		setHighlightHandling(
+		widget.setHighlightHandling(
 			cellElement,
 			conversionApi.writer,
 			( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),

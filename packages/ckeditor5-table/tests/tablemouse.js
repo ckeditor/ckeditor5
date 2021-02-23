@@ -15,6 +15,7 @@ import TableMouse from '../src/tablemouse';
 import { assertSelectedCells, modelTable } from './_utils/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'TableMouse', () => {
 	let editorElement, editor, model, tableMouse, modelRoot, view, viewDocument;
@@ -58,7 +59,9 @@ describe( 'TableMouse', () => {
 		it( 'should do nothing if the plugin is disabled', () => {
 			tableMouse.isEnabled = false;
 
-			viewDocument.fire( 'mousedown', new DomEventData( view, {} ) );
+			viewDocument.fire( 'mousedown', new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewDocument.getRoot() )
+			} ) );
 
 			assertSelectedCells( model, [
 				[ 0, 0, 0 ],
@@ -70,7 +73,9 @@ describe( 'TableMouse', () => {
 		it( 'should do nothing if the TableSelection plugin is disabled', () => {
 			editor.plugins.get( 'TableSelection' ).isEnabled = false;
 
-			viewDocument.fire( 'mousedown', new DomEventData( view, {} ) );
+			viewDocument.fire( 'mousedown', new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewDocument.getRoot() )
+			} ) );
 
 			assertSelectedCells( model, [
 				[ 0, 0, 0 ],
@@ -278,7 +283,9 @@ describe( 'TableMouse', () => {
 		it( 'should do nothing if the plugin is disabled', () => {
 			tableMouse.isEnabled = false;
 
-			const domEventDataMock = new DomEventData( view, {} );
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewDocument.getRoot() )
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -292,7 +299,9 @@ describe( 'TableMouse', () => {
 		it( 'should do nothing if the TableSelection plugin is disabled', () => {
 			editor.plugins.get( 'TableSelection' ).isEnabled = false;
 
-			const domEventDataMock = new DomEventData( view, {} );
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewDocument.getRoot() )
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -305,7 +314,8 @@ describe( 'TableMouse', () => {
 
 		it( 'should abort if Ctrl is pressed', () => {
 			const domEventDataMock = new DomEventData( view, {
-				ctrlKey: true
+				ctrlKey: true,
+				target: view.domConverter.mapViewToDom( viewDocument.getRoot() )
 			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
@@ -319,7 +329,8 @@ describe( 'TableMouse', () => {
 
 		it( 'should abort if Alt is pressed', () => {
 			const domEventDataMock = new DomEventData( view, {
-				altKey: true
+				altKey: true,
+				target: view.domConverter.mapViewToDom( viewDocument.getRoot() )
 			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
@@ -333,7 +344,8 @@ describe( 'TableMouse', () => {
 
 		it( 'should do nothing if any of mouse buttons was not clicked', () => {
 			viewDocument.fire( 'mousemove', new DomEventData( view, {
-				buttons: 0
+				buttons: 0,
+				target: view.domConverter.mapViewToDom( viewDocument.getRoot() )
 			} ) );
 
 			assertSelectedCells( model, [
@@ -563,7 +575,7 @@ describe( 'TableMouse', () => {
 
 	function createEditor() {
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ TableEditing, TableSelection, TableMouse, Paragraph, Typing ]
+			plugins: [ Widget, TableEditing, TableSelection, TableMouse, Paragraph, Typing ]
 		} );
 	}
 } );

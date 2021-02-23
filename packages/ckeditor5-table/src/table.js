@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
 
 import TableEditing from './tableediting';
 import TableUI from './tableui';
@@ -40,7 +39,7 @@ export default class Table extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget ];
+		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard ];
 	}
 
 	/**

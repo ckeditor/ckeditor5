@@ -10,7 +10,6 @@ import TableSelection from '../src/tableselection';
 import { modelTable } from './_utils/utils';
 import { getTableCellsContainingSelection } from '../src/utils/selection';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
@@ -25,6 +24,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'TableKeyboard', () => {
 	let editor, model, modelRoot, tableSelection, tableKeyboard, selection, editorElement;
@@ -37,7 +37,7 @@ describe( 'TableKeyboard', () => {
 		global.document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed ]
+			plugins: [ Widget, Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed ]
 		} );
 
 		model = editor.model;
@@ -3068,12 +3068,15 @@ describe( 'TableKeyboard', () => {
 		} );
 
 		describe( 'for right-to-left content language', () => {
-			let editor, model, modelRoot, tableSelection;
+			let editor, model, modelRoot, tableSelection, editorElement;
 
 			beforeEach( () => {
-				return VirtualTestEditor
-					.create( {
-						plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ],
+				editorElement = global.document.createElement( 'div' );
+				global.document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Widget, TableEditing, TableKeyboard, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ],
 						language: 'ar'
 					} )
 					.then( newEditor => {
@@ -3086,6 +3089,7 @@ describe( 'TableKeyboard', () => {
 			} );
 
 			afterEach( () => {
+				editorElement.remove();
 				return editor.destroy();
 			} );
 

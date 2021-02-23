@@ -10,8 +10,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TableEditing from '../src/tableediting';
 import TableProperties from '../src/tableproperties';
 import TablePropertiesEditing from '../src/tableproperties/tablepropertiesediting';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
-describe( 'table properties', () => {
+describe.only( 'table properties', () => {
 	describe( 'TableProperties', () => {
 		let editor, editorElement;
 
@@ -20,7 +21,7 @@ describe( 'table properties', () => {
 			global.document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ TableProperties, Paragraph, TableEditing ]
+				plugins: [ Widget, TableProperties, Paragraph, TableEditing ]
 			} );
 		} );
 
