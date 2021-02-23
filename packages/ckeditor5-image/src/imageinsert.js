@@ -55,7 +55,7 @@ export default class ImageInsert extends Plugin {
  *			.create( editorElement, {
  * 				image: {
  * 					insert: {
- *						... // settings for "imageInsert" view goes here
+ *						... // settings for "insertImage" view goes here
  * 					}
  * 				}
  *			} )
@@ -95,7 +95,7 @@ export default class ImageInsert extends Plugin {
  */
 
 /**
- * This options allows to override the image type used by the {@link module:image/image/imageinsertcommand~ImageInsertCommand} when the user
+ * This options allows to override the image type used by the {@link module:image/image/insertimagecommand~InsertImageCommand} when the user
  * inserts new images into the editor content. By default, this option is unset which means the editor will choose the optimal image type
  * based on the context of the insertion (e.g. the current selection and availability of plugins)
  *

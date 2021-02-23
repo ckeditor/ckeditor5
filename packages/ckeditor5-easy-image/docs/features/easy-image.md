@@ -132,7 +132,7 @@ import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ EasyImage, ... ],
-		toolbar: [ 'imageUpload', ... ],
+		toolbar: [ 'uploadImage', ... ],
 
 		// Configure the endpoint. See the "Configuration" section above.
 		cloudServices: {

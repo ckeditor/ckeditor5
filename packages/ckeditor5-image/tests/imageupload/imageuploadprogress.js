@@ -75,7 +75,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>[<span class="ck-appear ck-image-upload-placeholder ck-widget image-inline" contenteditable="false">' +
@@ -87,7 +87,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should convert image\'s "uploading" uploadStatus attribute', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			try {
@@ -137,7 +137,7 @@ describe( 'ImageUploadProgress', () => {
 
 		setModelData( model, '<outerBlock><innerBlock><paragraph>[]</paragraph></innerBlock></outerBlock>' );
 
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			try {
@@ -226,7 +226,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should update progressbar width on progress', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			adapterMock.mockProgress( 40, 100 );
@@ -252,7 +252,7 @@ describe( 'ImageUploadProgress', () => {
 		const clock = testUtils.sinon.useFakeTimers();
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
@@ -289,7 +289,7 @@ describe( 'ImageUploadProgress', () => {
 		uploadProgress.placeholder = base64Sample;
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>[<span class="ck-appear ck-image-upload-placeholder ck-widget image-inline" contenteditable="false">' +
@@ -305,7 +305,7 @@ describe( 'ImageUploadProgress', () => {
 		}, { priority: 'highest' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img></img></span>}foo</p>'
