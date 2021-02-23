@@ -7,7 +7,7 @@
  * @module content-compatibility/datafilter
  */
 
-import { escapeRegExp, cloneDeep, uniq } from 'lodash-es';
+import { cloneDeep, uniq } from 'lodash-es';
 
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, toArray } from 'ckeditor5/src/utils';
@@ -59,11 +59,12 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements which should be allowed.
 	 */
 	allowElement( config ) {
-		for ( const mapping of this.dataSchema.getModelViewMapping() ) {
-			if ( matchViewName( config.name, mapping.view ) ) {
-				this.dataSchema.enable( mapping.model );
-				this._defineConverters( mapping );
+		for ( const definition of this.dataSchema.getDefinitionsForView( config.name ) ) {
+			for ( const reference of definition.references ) {
+				this._registerElement( reference );
 			}
+
+			this._registerElement( definition );
 		}
 
 		this.allowAttributes( config );
@@ -95,17 +96,44 @@ export default class DataFilter {
 	 * @param {Object} rules Rules object holding matchers.
 	 */
 	_addAttributeMatcher( config, rules ) {
-		const name = config.name;
+		const viewName = config.name;
 
 		config = cloneDeep( config );
-		// We don't want match by name when matching attributes.
-		// Matcher will be already attached to specific definition.
+		// We don't want match by name when matching attributes. Matcher will be already attached to specific definition.
 		delete config.name;
 
-		for ( const { view } of this.dataSchema.getModelViewMapping() ) {
-			if ( matchViewName( name, view ) ) {
-				getOrCreateMatcher( view, rules ).add( config );
-			}
+		for ( const definition of this.dataSchema.getDefinitionsForView( viewName ) ) {
+			getOrCreateMatcher( definition.view, rules ).add( config );
+		}
+	}
+
+	/**
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 */
+	_registerElement( definition ) {
+		if ( this.editor.model.schema.isRegistered( definition.model ) ) {
+			return;
+		}
+
+		this._defineSchema( definition );
+
+		if ( definition.view ) {
+			this._defineConverters( definition );
+		}
+	}
+
+	/**
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 */
+	_defineSchema( definition ) {
+		const schema = this.editor.model.schema;
+
+		schema.register( definition.model, definition.schema );
+
+		if ( definition.schema.allowText ) {
+			schema.extend( '$text', { allowIn: definition.model } );
 		}
 	}
 
@@ -276,16 +304,4 @@ function mergeMatchResults( matches ) {
 	}
 
 	return matchResult;
-}
-
-function matchViewName( pattern, viewName ) {
-	if ( typeof pattern === 'string' ) {
-		return pattern === viewName;
-	}
-
-	if ( pattern instanceof RegExp ) {
-		return pattern.test( viewName );
-	}
-
-	return false;
 }

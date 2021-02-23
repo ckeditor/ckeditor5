@@ -74,20 +74,6 @@ export default class DataSchema {
 	}
 
 	/**
-	 * Returns model-view-pairs for the added data schema definitions.
-	 *
-	 * This method will only return pairs when if
-	 * {@link module:content-compatibility/dataschema~DataSchemaDefinition#view view} has been set.
-	 *
-	 * @returns {Object[]} result
-	 */
-	getModelViewMapping() {
-		return Object.values( this._definitions )
-			.filter( def => def.view && def.model )
-			.map( def => ( { model: def.model, view: def.view } ) );
-	}
-
-	/**
 	 * Registers model schema item for the given
 	 * {@link module:content-compatibility/dataschema~DataSchemaDefinition data schema definition} name.
 	 *
@@ -115,7 +101,39 @@ export default class DataSchema {
 	}
 
 	/**
-	 * Resolves all model references registered for the given data schema definition.
+	 * Returns all definitions matching the given view name.
+	 *
+	 * @param {String} viewName
+	 * @returns {Iterable<*>}
+	 */
+	* getDefinitionsForView( viewName ) {
+		const definitions = Object.values( this._definitions )
+			.filter( def => def.view && testViewName( viewName, def.view ) );
+
+		for ( const definition of definitions ) {
+			yield this.getDefinition( definition.model );
+		}
+	}
+
+	/**
+	 * Returns definition for the given model name.
+	 *
+	 * Definition will also include `references` property including all definitions
+	 * referenced by this definition.
+	 *
+	 * @param {String} modelName
+	 * @returns {module:content-compatibility/dataschema~DataSchemaDefinition}
+	 */
+	getDefinition( modelName ) {
+		const definition = cloneDeep( this._definitions[ modelName ] );
+
+		definition.references = this._getReferences( modelName );
+
+		return definition;
+	}
+
+	/**
+	 * Resolves all definition references registered for the given data schema definition.
 	 *
 	 * @private
 	 * @param {String} name Data schema model name.
@@ -126,13 +144,36 @@ export default class DataSchema {
 		const inheritProperties = [ 'inheritAllFrom', 'inheritTypesFrom', 'allowWhere', 'allowContentOf', 'allowAttributesOf' ];
 
 		for ( const property of inheritProperties ) {
-			for ( const model of toArray( schema[ property ] || [] ) ) {
-				if ( model !== name && this._definitions[ model ] ) {
-					yield model;
+			for ( const modelName of toArray( schema[ property ] || [] ) ) {
+				const definition = this._definitions[ modelName ];
+
+				if ( modelName !== name && definition ) {
+					yield* this._getReferences( definition.model );
+					yield definition;
 				}
 			}
 		}
 	}
+}
+
+/**
+ * Test view name against the given pattern.
+ *
+ * @private
+ * @param {String|RegExp} pattern
+ * @param {String} viewName
+ * @returns {Boolean}
+ */
+function testViewName( pattern, viewName ) {
+	if ( typeof pattern === 'string' ) {
+		return pattern === viewName;
+	}
+
+	if ( pattern instanceof RegExp ) {
+		return pattern.test( viewName );
+	}
+
+	return false;
 }
 
 /**
