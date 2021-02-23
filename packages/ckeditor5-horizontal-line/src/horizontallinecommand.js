@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
 
 /**
  * The horizontal line command.
@@ -26,7 +25,9 @@ export default class HorizontalLineCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isHorizontalLineAllowed( this.editor.model );
+		const widget = this.editor.plugins.get( 'Widget' );
+
+		this.isEnabled = isHorizontalLineAllowed( this.editor.model, widget );
 	}
 
 	/**
@@ -65,13 +66,14 @@ export default class HorizontalLineCommand extends Command {
 // Checks if the `horizontalLine` element can be inserted at the current model selection.
 //
 // @param {module:engine/model/model~Model} model
+// @param {module:widget/widget~Widget} widget
 // @returns {Boolean}
-function isHorizontalLineAllowed( model ) {
+function isHorizontalLineAllowed( model, widget ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isHorizontalLineAllowedInParent( selection, schema, model ) &&
-		!checkSelectionOnObject( selection, schema );
+	return isHorizontalLineAllowedInParent( selection, schema, model, widget ) &&
+		!widget.checkSelectionOnObject( selection, schema );
 }
 
 // Checks if a horizontal line is allowed by the schema in the optimal insertion parent.
@@ -79,9 +81,10 @@ function isHorizontalLineAllowed( model ) {
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/model~Model} model Model instance.
+// @param {module:widget/widget~Widget} widget
 // @returns {Boolean}
-function isHorizontalLineAllowedInParent( selection, schema, model ) {
-	const parent = getInsertHorizontalLineParent( selection, model );
+function isHorizontalLineAllowedInParent( selection, schema, model, widget ) {
+	const parent = getInsertHorizontalLineParent( selection, model, widget );
 
 	return schema.checkChild( parent, 'horizontalLine' );
 }
@@ -91,9 +94,10 @@ function isHorizontalLineAllowedInParent( selection, schema, model ) {
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.
+// @param {module:widget/widget~Widget} widget
 // @returns {module:engine/model/element~Element}
-function getInsertHorizontalLineParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
+function getInsertHorizontalLineParent( selection, model, widget ) {
+	const insertAt = widget.findOptimalInsertionPosition( selection, model );
 
 	const parent = insertAt.parent;
 

@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { toWidget } from 'ckeditor5/src/widget';
 
 import HorizontalLineCommand from './horizontallinecommand';
 
@@ -20,6 +19,13 @@ import '../theme/horizontalline.css';
  * @extends module:core/plugin~Plugin
  */
 export default class HorizontalLineEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ 'Widget' ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -35,6 +41,7 @@ export default class HorizontalLineEditing extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;
+		const widget = editor.plugins.get( 'Widget' );
 
 		schema.register( 'horizontalLine', {
 			isObject: true,
@@ -60,7 +67,7 @@ export default class HorizontalLineEditing extends Plugin {
 
 				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewHrElement );
 
-				return toHorizontalLineWidget( viewWrapper, writer, label );
+				return toHorizontalLineWidget( viewWrapper, writer, label, widget );
 			}
 		} );
 
@@ -75,12 +82,13 @@ export default class HorizontalLineEditing extends Plugin {
 //   recognize the horizontal line widget element.
 // * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
 //
-//  @param {module:engine/view/element~Element} viewElement
-//  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
-//  @param {String} label The element's label.
-//  @returns {module:engine/view/element~Element}
-function toHorizontalLineWidget( viewElement, writer, label ) {
+// @param {module:engine/view/element~Element} viewElement
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
+// @param {String} label The element's label.
+// @param {module:widget/widget~Widget} widget
+// @returns {module:engine/view/element~Element}
+function toHorizontalLineWidget( viewElement, writer, label, widget ) {
 	writer.setCustomProperty( 'horizontalLine', true, viewElement );
 
-	return toWidget( viewElement, writer, { label } );
+	return widget.toWidget( viewElement, writer, { label } );
 }

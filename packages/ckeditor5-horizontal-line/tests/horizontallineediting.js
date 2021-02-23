@@ -3,23 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* global document */
+
 import HorizontalLineEditing from '../src/horizontallineediting';
 import HorizontalLineCommand from '../src/horizontallinecommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'HorizontalLineEditing', () => {
-	let editor, model, view, viewDocument;
+	let element, editor, model, view, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ HorizontalLineEditing ]
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Widget, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -27,6 +32,17 @@ describe( 'HorizontalLineEditing', () => {
 				view = editor.editing.view;
 				viewDocument = view.document;
 			} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy()
+			.then( () => {
+				element.remove();
+			} );
+	} );
+
+	it( 'should require Widget as a soft-requirement', () => {
+		expect( HorizontalLineEditing.requires ).to.deep.equal( [ 'Widget' ] );
 	} );
 
 	it( 'should have pluginName', () => {
@@ -52,7 +68,7 @@ describe( 'HorizontalLineEditing', () => {
 
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
-			it( 'should convert', () => {
+			it( 'should convert the horitonalLine element to data', () => {
 				setModelData( model, '<horizontalLine></horizontalLine>' );
 
 				expect( editor.getData() ).to.equal( '<hr>' );
@@ -87,25 +103,29 @@ describe( 'HorizontalLineEditing', () => {
 
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
-			it( 'should convert', () => {
+			it( 'should convert the horizontalLine element to editing data', () => {
 				setModelData( model, '<horizontalLine></horizontalLine>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<div class="ck-horizontal-line ck-widget" contenteditable="false"><hr></hr></div>'
+					'<div class="ck-horizontal-line ck-widget ck-widget_selected" contenteditable="false">' +
+						'<hr></hr>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</div>'
 				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
 				setModelData( model, '<horizontalLine></horizontalLine>' );
-				const widget = viewDocument.getRoot().getChild( 0 );
+				const widgetElement = viewDocument.getRoot().getChild( 0 );
+				const widget = editor.plugins.get( 'Widget' );
 
-				expect( widget.name ).to.equal( 'div' );
-				expect( isHorizontalLineWidget( widget ) ).to.be.true;
+				expect( widgetElement.name ).to.equal( 'div' );
+				expect( isHorizontalLineWidget( widgetElement, widget ) ).to.be.true;
 			} );
 		} );
 	} );
 
-	function isHorizontalLineWidget( viewElement ) {
-		return !!viewElement.getCustomProperty( 'horizontalLine' ) && isWidget( viewElement );
+	function isHorizontalLineWidget( viewElement, widget ) {
+		return !!viewElement.getCustomProperty( 'horizontalLine' ) && widget.isWidget( viewElement );
 	}
 } );
