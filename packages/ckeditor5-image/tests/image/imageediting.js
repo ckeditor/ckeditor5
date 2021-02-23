@@ -16,7 +16,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ImageEditing from '../../src/image/imageediting';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import InsertImageCommand from '../../src/image/insertimagecommand';
-import ToggleImageTypeCommand from '../../src/image/ToggleImageTypeCommand';
+import ToggleImageTypeCommand from '../../src/image/toggleimagetypecommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { isImageWidget } from '../../src/image/utils';
