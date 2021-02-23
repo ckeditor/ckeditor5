@@ -42,7 +42,7 @@ ClassicEditor
 			'outdent',
 			'indent',
 			'|',
-			'imageUpload',
+			'uploadImage',
 			'blockQuote',
 			'horizontalLine',
 			'|',

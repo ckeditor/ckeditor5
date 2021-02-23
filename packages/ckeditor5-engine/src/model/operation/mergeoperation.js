@@ -127,10 +127,7 @@ export default class MergeOperation extends Operation {
 		const path = this.sourcePosition.path.slice( 0, -1 );
 		const insertionPosition = new Position( this.sourcePosition.root, path )._getTransformedByMergeOperation( this );
 
-		const split = new SplitOperation( targetPosition, this.howMany, this.graveyardPosition, this.baseVersion + 1 );
-		split.insertionPosition = insertionPosition;
-
-		return split;
+		return new SplitOperation( targetPosition, this.howMany, insertionPosition, this.graveyardPosition, this.baseVersion + 1 );
 	}
 
 	/**

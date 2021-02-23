@@ -72,6 +72,12 @@ ClassicEditor
 			writer.insert( new Position( viewText2, 0 ), createMiddleUIElement( writer ) );
 			writer.insert( new Position( viewText2, 6 ), createMiddleUIElement( writer ) );
 		} );
+
+		document.querySelector( '#insert-ui-element' ).addEventListener( 'click', () => {
+			view.change( writer => {
+				writer.insert( view.document.selection.getFirstPosition(), createMiddleUIElement( writer ) );
+			} );
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

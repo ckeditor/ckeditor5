@@ -15,7 +15,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import ImageEditing from '../../src/image/imageediting';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
-import ImageInsertCommand from '../../src/image/imageinsertcommand';
+import InsertImageCommand from '../../src/image/insertimagecommand';
 import ImageTypeToggleCommand from '../../src/image/imagetypetogglecommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
@@ -78,8 +78,15 @@ describe( 'ImageEditing', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
-	it( 'should register imageInsert, imageTypeToggle', () => {
-		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
+	it( 'should register the insertImage command', () => {
+		expect( editor.commands.get( 'insertImage' ) ).to.be.instanceOf( InsertImageCommand );
+	} );
+
+	it( 'should register the imageInsert command as an alias for the insertImage command', () => {
+		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
+	} );
+
+	it( 'should register the imageTypeToggle command', () => {
 		expect( editor.commands.get( 'imageTypeToggle' ) ).to.be.instanceOf( ImageTypeToggleCommand );
 	} );
 

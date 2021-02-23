@@ -55,7 +55,7 @@ export default class ImageInsert extends Plugin {
  *			.create( editorElement, {
  * 				image: {
  * 					insert: {
- *						... // settings for "imageInsert" view goes here
+ *						... // settings for "insertImage" view goes here
  * 					}
  * 				}
  *			} )

@@ -112,7 +112,7 @@ toolbar: {
 		'bulletedList', 'numberedList', 'todoList', '|',
 		'code', 'codeBlock', '|',
 		'insertTable', '|',
-		'imageUpload', 'blockQuote', '|',
+		'uploadImage', 'blockQuote', '|',
 		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
@@ -140,7 +140,7 @@ toolbar: {
 		'code', 'codeBlock', '|',
 		'insertTable', '|',
 		'outdent', 'indent', '|',
-		'imageUpload', 'blockQuote', '|',
+		'uploadImage', 'blockQuote', '|',
 		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
