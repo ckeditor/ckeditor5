@@ -30,7 +30,7 @@ export default class AutoImage extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard, Undo ];
+		return [ Clipboard, Undo, 'Widget' ];
 	}
 
 	/**
@@ -164,7 +164,9 @@ export default class AutoImage extends Plugin {
 					insertionPosition = this._positionToInsert.toPosition();
 				}
 
-				insertImage( editor.model, { src }, insertionPosition );
+				const widget = editor.plugins.get( 'Widget' );
+
+				insertImage( editor.model, widget, { src }, insertionPosition );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;

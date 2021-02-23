@@ -43,6 +43,13 @@ export default class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ 'Widget' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
@@ -67,7 +74,11 @@ export default class ImageEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'image',
-			view: ( modelElement, { writer } ) => toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ) )
+			view: ( modelElement, { writer } ) => {
+				const widget = editor.plugins.get( 'Widget' );
+
+				return toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ), widget );
+			}
 		} );
 
 		conversion.for( 'downcast' )

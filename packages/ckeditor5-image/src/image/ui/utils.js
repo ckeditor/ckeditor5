@@ -19,8 +19,9 @@ import { getSelectedImageWidget } from '../utils';
  */
 export function repositionContextualBalloon( editor ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
+	const widget = editor.plugins.get( 'Widget' );
 
-	if ( getSelectedImageWidget( editor.editing.view.document.selection ) ) {
+	if ( getSelectedImageWidget( editor.editing.view.document.selection, widget ) ) {
 		const position = getBalloonPositionData( editor );
 
 		balloon.updatePosition( position );

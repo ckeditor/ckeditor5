@@ -40,7 +40,9 @@ export default class InsertImageCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isImageAllowed( this.editor.model );
+		const widget = this.editor.plugins.get( 'Widget' );
+
+		this.isEnabled = isImageAllowed( this.editor.model, widget );
 	}
 
 	/**
@@ -52,9 +54,10 @@ export default class InsertImageCommand extends Command {
 	 */
 	execute( options ) {
 		const model = this.editor.model;
+		const widget = this.editor.plugins.get( 'Widget' );
 
 		for ( const src of toArray( options.source ) ) {
-			insertImage( model, { src } );
+			insertImage( model, widget, { src } );
 		}
 	}
 }

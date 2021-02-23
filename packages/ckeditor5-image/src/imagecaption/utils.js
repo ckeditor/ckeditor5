@@ -8,16 +8,16 @@
  */
 
 import { enablePlaceholder } from 'ckeditor5/src/engine';
-import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 /**
  * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.
  *
  * @param {module:engine/view/view~View} view
  * @param {String} placeholderText The text to be displayed when the caption is empty.
+ * @param {module:widget/widget~Widget} widget
  * @returns {Function}
  */
-export function captionElementCreator( view, placeholderText ) {
+export function captionElementCreator( view, placeholderText, widget ) {
 	return writer => {
 		const editable = writer.createEditableElement( 'figcaption' );
 		writer.setCustomProperty( 'imageCaption', true, editable );
@@ -28,7 +28,7 @@ export function captionElementCreator( view, placeholderText ) {
 			text: placeholderText
 		} );
 
-		return toWidgetEditable( editable, writer );
+		return widget.toWidgetEditable( editable, writer );
 	};
 }
 

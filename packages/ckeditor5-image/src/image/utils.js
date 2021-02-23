@@ -7,8 +7,6 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, checkSelectionOnObject, isWidget, toWidget } from 'ckeditor5/src/widget';
-
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element.
@@ -17,12 +15,13 @@ import { findOptimalInsertionPosition, checkSelectionOnObject, isWidget, toWidge
  * @param {module:engine/view/element~Element} viewElement
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
  * @param {String} label The element's label. It will be concatenated with the image `alt` attribute if one is present.
+ * @param {module:widget/widget~Widget} widget
  * @returns {module:engine/view/element~Element}
  */
-export function toImageWidget( viewElement, writer, label ) {
+export function toImageWidget( viewElement, writer, label, widget ) {
 	writer.setCustomProperty( 'image', true, viewElement );
 
-	return toWidget( viewElement, writer, { label: labelCreator } );
+	return widget.toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
 		const imgElement = getViewImgFromWidget( viewElement );
@@ -36,22 +35,24 @@ export function toImageWidget( viewElement, writer, label ) {
  * Checks if a given view element is an image widget.
  *
  * @param {module:engine/view/element~Element} viewElement
+ * @param {module:widget/widget~Widget} widget
  * @returns {Boolean}
  */
-export function isImageWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( 'image' ) && isWidget( viewElement );
+export function isImageWidget( viewElement, widget ) {
+	return !!viewElement.getCustomProperty( 'image' ) && widget.isWidget( viewElement );
 }
 
 /**
  * Returns an image widget editing view element if one is selected.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @param {module:widget/widget~Widget} widget
  * @returns {module:engine/view/element~Element|null}
  */
-export function getSelectedImageWidget( selection ) {
+export function getSelectedImageWidget( selection, widget ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isImageWidget( viewElement ) ) {
+	if ( viewElement && isImageWidget( viewElement, widget ) ) {
 		return viewElement;
 	}
 
@@ -69,20 +70,22 @@ export function isImage( modelElement ) {
 }
 
 /**
- * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
+ * Handles inserting single file. This method unifies image insertion using
+ * {@link module:widget/widget~Widget#findOptimalInsertionPosition} method.
  *
- *		insertImage( model, { src: 'path/to/image.jpg' } );
+ *		insertImage( model, widgetPlugin, { src: 'path/to/image.jpg' } );
  *
  * @param {module:engine/model/model~Model} model
+ * @param {module:widget/widget~Widget} widget
  * @param {Object} [attributes={}] Attributes of inserted image
  * @param {module:engine/model/position~Position} [insertPosition] Position to insert the image. If not specified,
- * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied.
+ * the {@link module:widget/widget~Widget#findOptimalInsertionPosition} logic will be applied.
  */
-export function insertImage( model, attributes = {}, insertPosition = null ) {
+export function insertImage( model, widget, attributes = {}, insertPosition = null ) {
 	model.change( writer => {
 		const imageElement = writer.createElement( 'image', attributes );
 
-		const insertAtSelection = insertPosition || findOptimalInsertionPosition( model.document.selection, model );
+		const insertAtSelection = insertPosition || widget.findOptimalInsertionPosition( model.document.selection, model );
 
 		model.insertContent( imageElement, insertAtSelection );
 
@@ -97,14 +100,15 @@ export function insertImage( model, attributes = {}, insertPosition = null ) {
  * Checks if image can be inserted at current model selection.
  *
  * @param {module:engine/model/model~Model} model
+ * @param {module:widget/widget~Widget} widget
  * @returns {Boolean}
  */
-export function isImageAllowed( model ) {
+export function isImageAllowed( model, widget ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isImageAllowedInParent( selection, schema, model ) &&
-		!checkSelectionOnObject( selection, schema ) &&
+	return isImageAllowedInParent( selection, schema, model, widget ) &&
+		!widget.checkSelectionOnObject( selection, schema ) &&
 		isInOtherImage( selection );
 }
 
@@ -136,8 +140,8 @@ export function getViewImgFromWidget( figureView ) {
 // Checks if image is allowed by schema in optimal insertion parent.
 //
 // @returns {Boolean}
-function isImageAllowedInParent( selection, schema, model ) {
-	const parent = getInsertImageParent( selection, model );
+function isImageAllowedInParent( selection, schema, model, widget ) {
+	const parent = getInsertImageParent( selection, model, widget );
 
 	return schema.checkChild( parent, 'image' );
 }
@@ -148,8 +152,8 @@ function isInOtherImage( selection ) {
 }
 
 // Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
-function getInsertImageParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
+function getInsertImageParent( selection, model, widget ) {
+	const insertAt = widget.findOptimalInsertionPosition( selection, model );
 
 	const parent = insertAt.parent;
 

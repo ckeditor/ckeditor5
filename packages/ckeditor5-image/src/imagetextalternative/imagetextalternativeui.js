@@ -26,7 +26,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ContextualBalloon ];
+		return [ 'Widget', ContextualBalloon ];
 	}
 
 	/**
@@ -94,6 +94,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const widget = editor.plugins.get( 'Widget' );
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -133,7 +134,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		// Reposition the balloon or hide the form if an image widget is no longer selected.
 		this.listenTo( editor.ui, 'update', () => {
-			if ( !getSelectedImageWidget( viewDocument.selection ) ) {
+			if ( !getSelectedImageWidget( viewDocument.selection, widget ) ) {
 				this._hideForm( true );
 			} else if ( this._isVisible ) {
 				repositionContextualBalloon( editor );

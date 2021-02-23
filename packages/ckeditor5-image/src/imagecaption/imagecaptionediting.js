@@ -37,6 +37,7 @@ export default class ImageCaptionEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 		const t = editor.t;
+		const widget = editor.plugins.get( 'Widget' );
 
 		/**
 		 * The last selected caption editable.
@@ -67,7 +68,7 @@ export default class ImageCaptionEditing extends Plugin {
 		data.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForData, false ) );
 
 		// Model to view converter for the editing pipeline.
-		const createCaptionForEditing = captionElementCreator( view, t( 'Enter image caption' ) );
+		const createCaptionForEditing = captionElementCreator( view, t( 'Enter image caption' ), widget );
 		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForEditing ) );
 
 		// Always show caption in view when something is inserted in model.

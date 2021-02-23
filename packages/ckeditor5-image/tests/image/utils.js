@@ -3,9 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+/* global document */
+
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import {
 	toImageWidget,
@@ -16,88 +15,121 @@ import {
 	insertImage,
 	getViewImgFromWidget
 } from '../../src/image/utils';
-import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Image from '../../src/image/imageediting';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import { Widget } from '@ckeditor/ckeditor5-widget';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'image widget utils', () => {
-	let element, image, writer, viewDocument;
+	let domElement, element, image, editor, model, widget, view
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument( new StylesProcessor() );
-		writer = new ViewDowncastWriter( viewDocument );
-		image = writer.createContainerElement( 'img' );
-		element = writer.createContainerElement( 'figure' );
-		writer.insert( writer.createPositionAt( element, 0 ), image );
-		toImageWidget( element, writer, 'image widget' );
+		domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
+
+		return ClassicTestEditor
+			.create( domElement, {
+				plugins: [ Image, Paragraph, Widget ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				view = editor.editing.view;
+				widget = editor.plugins.get( 'Widget' );
+
+				const schema = model.schema;
+				schema.extend( 'image', { allowAttributes: 'uploadId' } );
+
+				view.change( writer => {
+					image = writer.createContainerElement( 'img' );
+					element = writer.createContainerElement( 'figure' );
+
+					writer.insert( writer.createPositionAt( element, 0 ), image );
+
+					toImageWidget( element, writer, 'image widget', widget );
+				} );
+			} );
+	} );
+
+	afterEach( async () => {
+		domElement.remove();
+		await editor.destroy();
 	} );
 
 	describe( 'toImageWidget()', () => {
 		it( 'should be widgetized', () => {
-			expect( isWidget( element ) ).to.be.true;
+			expect( widget.isWidget( element ) ).to.be.true;
 		} );
 
 		it( 'should set element\'s label', () => {
-			expect( getLabel( element ) ).to.equal( 'image widget' );
+			expect( widget.getLabel( element ) ).to.equal( 'image widget' );
 		} );
 
 		it( 'should set element\'s label combined with alt attribute', () => {
-			writer.setAttribute( 'alt', 'foo bar baz', image );
-			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
+			view.change( writer => {
+				writer.setAttribute( 'alt', 'foo bar baz', image );
+			} );
+
+			expect( widget.getLabel( element ) ).to.equal( 'foo bar baz image widget' );
 		} );
 
 		it( 'provided label creator should always return same label', () => {
-			writer.setAttribute( 'alt', 'foo bar baz', image );
+			view.change( writer => {
+				writer.setAttribute( 'alt', 'foo bar baz', image );
+			} );
 
-			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
-			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
+			expect( widget.getLabel( element ) ).to.equal( 'foo bar baz image widget' );
+			expect( widget.getLabel( element ) ).to.equal( 'foo bar baz image widget' );
 		} );
 	} );
 
 	describe( 'isImageWidget()', () => {
 		it( 'should return true for elements marked with toImageWidget()', () => {
-			expect( isImageWidget( element ) ).to.be.true;
+			expect( isImageWidget( element, widget ) ).to.be.true;
 		} );
 
 		it( 'should return false for non-widgetized elements', () => {
-			expect( isImageWidget( writer.createContainerElement( 'p' ) ) ).to.be.false;
+			view.change( writer => {
+				expect( isImageWidget( writer.createContainerElement( 'p' ), widget ) ).to.be.false;
+			} );
 		} );
 	} );
 
 	describe( 'getSelectedImageWidget()', () => {
-		let frag;
+		let selection;
 
 		it( 'should return true when image widget is the only element in the selection', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( viewDocument, [ element ] );
+			view.change( writer => {
+				writer.createDocumentFragment( [ element ] );
+				selection = writer.createSelection( element, 'on' );
+			} );
 
-			const selection = writer.createSelection( element, 'on' );
-
-			expect( getSelectedImageWidget( selection ) ).to.equal( element );
+			expect( getSelectedImageWidget( selection, widget ) ).to.equal( element );
 		} );
 
 		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
-			const notWidgetizedElement = writer.createContainerElement( 'p' );
-
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( viewDocument, [ notWidgetizedElement ] );
+			view.change( writer => {
+				const notWidgetizedElement = writer.createContainerElement( 'p' );
 
-			const selection = writer.createSelection( notWidgetizedElement, 'on' );
+				writer.createDocumentFragment( [ notWidgetizedElement ] );
+				selection = writer.createSelection( notWidgetizedElement, 'on' );
+			} );
 
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( getSelectedImageWidget( selection, widget ) ).to.be.null;
 		} );
 
 		it( 'should return false when widget element is not the only element in the selection', () => {
-			const notWidgetizedElement = writer.createContainerElement( 'p' );
+			view.change( writer => {
+				const notWidgetizedElement = writer.createContainerElement( 'p' );
+				const frag = writer.createDocumentFragment( [ notWidgetizedElement ] );
 
-			frag = new ViewDocumentFragment( viewDocument, [ element, notWidgetizedElement ] );
+				selection = writer.createSelection( writer.createRangeIn( frag ) );
+			} );
 
-			const selection = writer.createSelection( writer.createRangeIn( frag ) );
-
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( getSelectedImageWidget( selection, widget ) ).to.be.null;
 		} );
 	} );
 
@@ -121,39 +153,23 @@ describe( 'image widget utils', () => {
 	} );
 
 	describe( 'isImageAllowed()', () => {
-		let editor, model;
-
-		beforeEach( () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ Image, Paragraph ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-
-					const schema = model.schema;
-					schema.extend( 'image', { allowAttributes: 'uploadId' } );
-				} );
-		} );
-
 		it( 'should return true when the selection directly in the root', () => {
 			model.enqueueChange( 'transparent', () => {
 				setModelData( model, '[]' );
 
-				expect( isImageAllowed( model ) ).to.be.true;
+				expect( isImageAllowed( model, widget ) ).to.be.true;
 			} );
 		} );
 
 		it( 'should return true when the selection is in empty block', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( model, widget ) ).to.be.true;
 		} );
 
 		it( 'should return true when the selection directly in a paragraph', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( model, widget ) ).to.be.true;
 		} );
 
 		it( 'should return true when the selection directly in a block', () => {
@@ -162,12 +178,12 @@ describe( 'image widget utils', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( model, widget ) ).to.be.true;
 		} );
 
 		it( 'should return false when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( model, widget ) ).to.be.false;
 		} );
 
 		it( 'should return false when the selection is inside other image', () => {
@@ -178,7 +194,7 @@ describe( 'image widget utils', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			setModelData( model, '<image><caption>[]</caption></image>' );
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( model, widget ) ).to.be.false;
 		} );
 
 		it( 'should return false when the selection is on other object', () => {
@@ -186,7 +202,7 @@ describe( 'image widget utils', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( model, widget ) ).to.be.false;
 		} );
 
 		it( 'should be true when the selection is inside isLimit element which allows image', () => {
@@ -200,7 +216,7 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
-			expect( isImageAllowed( model ) ).to.be.true;
+			expect( isImageAllowed( model, widget ) ).to.be.true;
 		} );
 
 		it( 'should return false when schema disallows image', () => {
@@ -216,31 +232,15 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( isImageAllowed( model ) ).to.be.false;
+			expect( isImageAllowed( model, widget ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'insertImage()', () => {
-		let editor, model;
-
-		beforeEach( () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ Image, Paragraph ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-
-					const schema = model.schema;
-					schema.extend( 'image', { allowAttributes: 'uploadId' } );
-				} );
-		} );
-
 		it( 'should insert image at selection position as other widgets', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( model );
+			insertImage( model, widget );
 
 			expect( getModelData( model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
 		} );
@@ -248,7 +248,7 @@ describe( 'image widget utils', () => {
 		it( 'should insert image with given attributes', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( model, { src: 'bar' } );
+			insertImage( model, widget, { src: 'bar' } );
 
 			expect( getModelData( model ) ).to.equal( '[<image src="bar"></image>]<paragraph>foo</paragraph>' );
 		} );
@@ -264,7 +264,7 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			insertImage( model );
+			insertImage( model, widget );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
@@ -281,7 +281,9 @@ describe( 'image widget utils', () => {
 		//   div
 		//   img
 		it( 'returns the the img element from widget if the img is not the first children', () => {
-			writer.insert( writer.createPositionAt( element, 0 ), writer.createContainerElement( 'div' ) );
+			view.change( writer => {
+				writer.insert( writer.createPositionAt( element, 0 ), writer.createContainerElement( 'div' ) );
+			} );
 			expect( getViewImgFromWidget( element ) ).to.equal( image );
 		} );
 
@@ -289,11 +291,13 @@ describe( 'image widget utils', () => {
 		//   div
 		//     img
 		it( 'returns the the img element from widget if the img is a child of another element', () => {
-			const divElement = writer.createContainerElement( 'div' );
+			view.change( writer => {
+				const divElement = writer.createContainerElement( 'div' );
 
-			writer.insert( writer.createPositionAt( element, 0 ), divElement );
-			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 0 ) );
-
+				writer.insert( writer.createPositionAt( element, 0 ), divElement );
+				writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 0 ) );
+			} )
+;
 			expect( getViewImgFromWidget( element ) ).to.equal( image );
 		} );
 
@@ -303,12 +307,14 @@ describe( 'image widget utils', () => {
 		//     img
 		//   "Foo"
 		it( 'does not throw an error if text node found', () => {
-			const divElement = writer.createContainerElement( 'div' );
+			view.change( writer => {
+				const divElement = writer.createContainerElement( 'div' );
 
-			writer.insert( writer.createPositionAt( element, 0 ), divElement );
-			writer.insert( writer.createPositionAt( element, 0 ), writer.createText( 'Foo' ) );
-			writer.insert( writer.createPositionAt( divElement, 0 ), writer.createText( 'Bar' ) );
-			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
+				writer.insert( writer.createPositionAt( element, 0 ), divElement );
+				writer.insert( writer.createPositionAt( element, 0 ), writer.createText( 'Foo' ) );
+				writer.insert( writer.createPositionAt( divElement, 0 ), writer.createText( 'Bar' ) );
+				writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
+			} );
 
 			expect( getViewImgFromWidget( element ) ).to.equal( image );
 		} );

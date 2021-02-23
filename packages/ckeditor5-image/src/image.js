@@ -36,7 +36,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, Widget, ImageTextAlternative ];
+		return [ 'Widget', ImageEditing, ImageTextAlternative ];
 	}
 
 	/**
@@ -53,7 +53,9 @@ export default class Image extends Plugin {
 	 * @returns {Boolean}
 	 */
 	isImageWidget( viewElement ) {
-		return isImageWidget( viewElement );
+		const widget = this.editor.plugins.get( 'Widget' );
+
+		return isImageWidget( viewElement, widget );
 	}
 }
 
