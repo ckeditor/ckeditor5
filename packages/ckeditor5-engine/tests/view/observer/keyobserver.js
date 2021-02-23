@@ -84,7 +84,18 @@ describe( 'KeyObserver', () => {
 			expect( getCode( data ) ).to.be.greaterThan( 111 );
 		} );
 
-		it( 'should fire keydown metaKey set to true once meta (cmd) was pressed', () => {
+		it( 'should fire keydown with ctrlKey set to true once ctrl was pressed', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'keydown', spy );
+
+			observer.onDomEvent( { type: 'keydown', target: document.body, keyCode: 111, ctrlKey: true } );
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data ).to.have.property( 'ctrlKey', true );
+		} );
+
+		it( 'should fire keydown with metaKey set to true once meta (cmd) was pressed', () => {
 			const spy = sinon.spy();
 
 			viewDocument.on( 'keydown', spy );
