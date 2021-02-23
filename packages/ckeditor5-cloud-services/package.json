@@ -13,7 +13,6 @@
     "ckeditor5": "^25.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor-cloud-services-core": "^25.0.0",
     "@ckeditor/ckeditor5-core": "^25.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^25.0.0",

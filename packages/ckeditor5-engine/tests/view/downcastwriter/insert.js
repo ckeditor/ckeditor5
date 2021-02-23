@@ -156,6 +156,91 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
+		it( 'should not break attribute on UIElement insertion', () => {
+			testInsert(
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
+				[ '<ui:span></ui:span>' ],
+				'<container:p><attribute:b view-priority="1">foo[<ui:span></ui:span>]bar</attribute:b></container:p>'
+			);
+		} );
+
+		it( 'should break attribute on UIElement insertion (isAllowedInsideAttributeElement = false)', () => {
+			const { view, selection } = parse(
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
+			);
+
+			const element = new UIElement( document, 'span' );
+			element._isAllowedInsideAttributeElement = false;
+
+			const newRange = writer.insert( selection.getFirstPosition(), element );
+
+			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
+				'<container:p>' +
+				'<attribute:b view-priority="1">foo</attribute:b>' +
+				'[<ui:span></ui:span>]' +
+				'<attribute:b view-priority="1">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should break attribute on multiple different nodes insertion', () => {
+			testInsert(
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
+				[ '<ui:span></ui:span>', 'baz' ],
+				'<container:p>' +
+					'<attribute:b view-priority="1">foo[<ui:span></ui:span></attribute:b>baz]' +
+					'<attribute:b view-priority="1">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should not break attribute on inline ContainerElement insertion and wrapped with an attribute', () => {
+			const { view, selection } = parse(
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
+			);
+
+			const element = new ContainerElement( document, 'span', {}, 'baz' );
+			element._isAllowedInsideAttributeElement = true;
+
+			const newRange = writer.insert( selection.getFirstPosition(), element );
+
+			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
+				'<container:p>' +
+					'<attribute:b view-priority="1">foo</attribute:b>' +
+					'[<container:span>baz</container:span>]' +
+					'<attribute:b view-priority="1">bar</attribute:b>' +
+				'</container:p>'
+			);
+
+			const attribute = new AttributeElement( document, 'b' );
+			attribute._priority = 1;
+
+			const finalRange = writer.wrap( newRange, attribute );
+
+			expect( stringify( view.root, finalRange, { showType: true, showPriority: true } ) ).to.equal(
+				'<container:p><attribute:b view-priority="1">foo[<container:span>baz</container:span>]bar</attribute:b></container:p>'
+			);
+		} );
+
+		it( 'should break attribute on non inline ContainerElement insertion', () => {
+			const { view, selection } = parse(
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
+			);
+
+			const element = new ContainerElement( document, 'span', {}, 'baz' );
+			element._isAllowedInsideAttributeElement = false;
+
+			const newRange = writer.insert( selection.getFirstPosition(), element );
+
+			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
+				'<container:p>' +
+					'<attribute:b view-priority="1">foo</attribute:b>' +
+					'[<container:span>baz</container:span>]' +
+					'<attribute:b view-priority="1">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
 		it( 'should throw when inserting Element', () => {
 			const element = new Element( document, 'b' );
 			const container = new ContainerElement( document, 'p' );
