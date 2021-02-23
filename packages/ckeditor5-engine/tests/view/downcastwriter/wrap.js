@@ -441,6 +441,61 @@ describe( 'DowncastWriter', () => {
 				}, 'view-writer-cannot-break-raw-element', document );
 			} );
 
+			it( 'should wrap an inline ContainerElement', () => {
+				const element = new ContainerElement( document, 'span', {}, 'baz' );
+				const container = new ContainerElement( document, 'p', null, [ 'foo', element, 'bar' ] );
+
+				element._isAllowedInsideAttributeElement = true;
+
+				const wrapAttribute = new AttributeElement( document, 'b' );
+				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
+				const newRange = writer.wrap( range, wrapAttribute );
+
+				expect( stringify( container, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) ).to.equal(
+					'<container:p>' +
+						'[<attribute:b view-priority="10">foo<container:span>baz</container:span>bar</attribute:b>]' +
+					'</container:p>'
+				);
+			} );
+
+			it( 'should not wrap an non-inline ContainerElement', () => {
+				const element = new ContainerElement( document, 'span', {}, 'baz' );
+				const container = new ContainerElement( document, 'p', null, [ 'foo', element, 'bar' ] );
+
+				element._isAllowedInsideAttributeElement = false;
+
+				const wrapAttribute = new AttributeElement( document, 'b' );
+				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
+				const newRange = writer.wrap( range, wrapAttribute );
+
+				expect( stringify( container, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) ).to.equal(
+					'<container:p>' +
+						'[<attribute:b view-priority="10">foo</attribute:b>' +
+						'<container:span>baz</container:span>' +
+						'<attribute:b view-priority="10">bar</attribute:b>]' +
+					'</container:p>'
+				);
+			} );
+
+			it( 'should not wrap an non-inline UIElement', () => {
+				const element = new UIElement( document, 'span' );
+				const container = new ContainerElement( document, 'p', null, [ 'foo', element, 'bar' ] );
+
+				element._isAllowedInsideAttributeElement = false;
+
+				const wrapAttribute = new AttributeElement( document, 'b' );
+				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
+				const newRange = writer.wrap( range, wrapAttribute );
+
+				expect( stringify( container, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) ).to.equal(
+					'<container:p>' +
+					'[<attribute:b view-priority="10">foo</attribute:b>' +
+					'<ui:span></ui:span>' +
+					'<attribute:b view-priority="10">bar</attribute:b>]' +
+					'</container:p>'
+				);
+			} );
+
 			it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {
 				testWrap(
 					'<container:p>[<attribute:span>foo</attribute:span>]</container:p>',
