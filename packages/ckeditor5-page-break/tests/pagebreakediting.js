@@ -50,7 +50,8 @@ describe( 'PageBreakEditing', () => {
 		expect( editor.commands.get( 'pageBreak' ) ).to.be.instanceOf( PageBreakCommand );
 	} );
 
-	// https://github.com/ckeditor/ckeditor5/issues/8788.
+	// https://github.com/ckeditor/ckeditor5/issues/8880.
+	// (Formerly it was a UIElement https://github.com/ckeditor/ckeditor5/issues/8788)
 	// Proper integration testing of this is too complex.
 	// Making sure the label is no longer a regular text element should be enough.
 	it( 'should have label as a RawElement', () => {
