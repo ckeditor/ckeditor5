@@ -1184,50 +1184,22 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'Ctrl+enter keystroke handling', () => {
-		const initialEnvMac = env.isMac;
-
-		afterEach( () => {
-			env.isMac = initialEnvMac;
-		} );
-
-		it( 'should execute CheckTodoListCommand (non-macOS)', () => {
-			env.isMac = false;
-
+		it( 'should execute CheckTodoListCommand', () => {
 			const command = editor.commands.get( 'checkTodoList' );
 
 			sinon.spy( command, 'execute' );
 
 			const domEvtDataStub = {
 				keyCode: getCode( 'enter' ),
-				ctrlKey: true,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
 
-			// First call.
-			viewDoc.fire( 'keydown', domEvtDataStub );
-
-			sinon.assert.calledOnce( command.execute );
-
-			// Second call.
-			viewDoc.fire( 'keydown', domEvtDataStub );
-
-			sinon.assert.calledTwice( command.execute );
-		} );
-
-		it( 'should execute CheckTodoListCommand (macOS)', () => {
-			env.isMac = true;
-
-			const command = editor.commands.get( 'checkTodoList' );
-
-			sinon.spy( command, 'execute' );
-
-			const domEvtDataStub = {
-				keyCode: getCode( 'enter' ),
-				metaKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
+			if ( env.isMac ) {
+				domEvtDataStub.metaKey = true;
+			} else {
+				domEvtDataStub.ctrlKey = true;
+			}
 
 			// First call.
 			viewDoc.fire( 'keydown', domEvtDataStub );
