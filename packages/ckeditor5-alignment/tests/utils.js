@@ -50,16 +50,6 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'normalizeAlignmentOptions', () => {
-		it( 'does nothing when no parameters are provided', () => {
-			let result;
-
-			expect( () => {
-				result = normalizeAlignmentOptions();
-			} ).not.to.throw();
-
-			expect( result ).to.deep.equal( [ ] );
-		} );
-
 		it( 'normalizes mixed input into an config array of objects', () => {
 			const config = [
 				'left',

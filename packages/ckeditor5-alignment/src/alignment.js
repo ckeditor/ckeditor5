@@ -101,5 +101,5 @@ export default class Alignment extends Plugin {
  *
  * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
  *
- * @member {Array.<String>} module:alignment/alignment~AlignmentConfig#options
+ * @member {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} module:alignment/alignment~AlignmentConfig#options
  */

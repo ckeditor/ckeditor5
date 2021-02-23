@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { CKEditorError } from '../../../src/utils';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 /**
  * @module alignment/utils
@@ -57,7 +57,7 @@ export function isDefault( alignment, locale ) {
  * @param {Array.<String|Object>} configuredOptions Alignment plugin configuration.
  * @returns {Array.<Object>} Normalized object holding the configuration.
  */
-export function normalizeAlignmentOptions( configuredOptions = [] ) {
+export function normalizeAlignmentOptions( configuredOptions ) {
 	const normalizedOptions = configuredOptions
 		.map( option => {
 			let optionObj;
@@ -78,13 +78,13 @@ export function normalizeAlignmentOptions( configuredOptions = [] ) {
 
 		if ( nameAlreadyExists ) {
 			/**
-				 * The same `name` in one of the `alignment.options` was already declared.
-				 * Each `name` representing one alignment option can be set exactly once.
-				 *
-				 * @error alignment-config-name-already-defined
-				 * @param {Object} option First option that declares given `name`.
-				 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
-				 */
+			 * The same `name` in one of the `alignment.options` was already declared.
+			 * Each `name` representing one alignment option can be set exactly once.
+			 *
+			 * @error alignment-config-name-already-defined
+			 * @param {Object} option First option that declares given `name`.
+			 * @param {Array.<String|Object>} allOptions Contents of `alignment.options`.
+			 */
 			throw new CKEditorError( 'alignment-config-name-already-defined', { option, allOptions } );
 		}
 
@@ -93,7 +93,7 @@ export function normalizeAlignmentOptions( configuredOptions = [] ) {
 			const classNameAlreadyExists = succeedingOptions.some( item => item.className == option.className );
 
 			if ( classNameAlreadyExists ) {
-			/**
+				/**
 				 * The same `className` in one of the `alignment.options` was already declared.
 				 *
 				 * @error alignment-config-classname-already-defined

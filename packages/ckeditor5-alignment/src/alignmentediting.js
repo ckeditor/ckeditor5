@@ -51,9 +51,6 @@ export default class AlignmentEditing extends Plugin {
 			option => isSupported( option.name ) && !isDefault( option.name, locale )
 		);
 
-		// Converters for inline alignment need only alignment name.
-		const optionNamesToConvert = optionsToConvert.map( option => option.name );
-
 		// Once there is at least one `className` defined, we switch to alignment with classes.
 		const shouldUseClasses = optionsToConvert.some( option => !!option.className );
 
@@ -63,17 +60,13 @@ export default class AlignmentEditing extends Plugin {
 
 		if ( shouldUseClasses ) {
 			// Downcast to only to classes.
-			const definition = buildClassDefinition( optionsToConvert );
-
-			editor.conversion.attributeToAttribute( definition );
+			editor.conversion.attributeToAttribute( buildClassDefinition( optionsToConvert ) );
 		} else {
 			// Downcast inline styles.
-			const definition = buildDowncastInlineDefinition( optionNamesToConvert );
-
-			editor.conversion.for( 'downcast' ).attributeToAttribute( definition );
+			editor.conversion.for( 'downcast' ).attributeToAttribute( buildDowncastInlineDefinition( optionsToConvert ) );
 		}
 
-		const upcastInlineDefinitions = buildUpcastInlineDefinitions( optionNamesToConvert );
+		const upcastInlineDefinitions = buildUpcastInlineDefinitions( optionsToConvert );
 
 		// Always upcast from inline styles.
 		for ( const definition of upcastInlineDefinitions ) {
@@ -86,11 +79,12 @@ export default class AlignmentEditing extends Plugin {
 
 // Prepare downcast conversion definition for inline alignment styling.
 // @private
-function buildDowncastInlineDefinition( optionNames ) {
+function buildDowncastInlineDefinition( options ) {
+	const optionNames = options.map( option => option.name );
 	const definition = {
 		model: {
 			key: 'alignment',
-			values: optionNames.slice()
+			values: optionNames
 		},
 		view: {}
 	};
@@ -109,7 +103,8 @@ function buildDowncastInlineDefinition( optionNames ) {
 
 // Prepare upcast definitions for inline alignment styles.
 // @private
-function buildUpcastInlineDefinitions( optionNames ) {
+function buildUpcastInlineDefinitions( options ) {
+	const optionNames = options.map( option => option.name );
 	const definitions = [];
 
 	for ( const name of optionNames ) {
@@ -136,7 +131,7 @@ function buildClassDefinition( options ) {
 	const definition = {
 		model: {
 			key: 'alignment',
-			values: options.map( option => option.name ).slice()
+			values: options.map( option => option.name )
 		},
 		view: {}
 	};
@@ -151,3 +146,18 @@ function buildClassDefinition( options ) {
 	return definition;
 }
 
+/**
+ * The alignment configuration format descriptor.
+ *
+ *		const alignmentFormat = {
+ *			name: 'right',
+ *			className: 'my-align-right-class'
+ *		}
+ *
+ * @typedef {Object} module:alignment/alignmentediting~AlignmentFormat
+ *
+ * @property {'left'|'right'|'center'|'justify'} name One of the alignment names options.
+ *
+ * @property {String} className The CSS class used to represent the style in the view.
+ * Used to override default, inline styling for alignment.
+ */

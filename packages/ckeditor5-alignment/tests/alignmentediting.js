@@ -12,7 +12,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import AlignmentCommand from '../src/alignmentcommand';
-import { CKEditorError } from '../../../src/utils';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 describe( 'AlignmentEditing', () => {
 	let editor, model;
