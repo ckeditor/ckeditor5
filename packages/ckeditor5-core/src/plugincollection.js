@@ -165,7 +165,7 @@ export default class PluginCollection {
 	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}.
 	 * @param {Array.<String|Function>} [pluginsToRemove] Names of the plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
-	 * @param {Array.<Function>} pluginsSubstitutions An array of {@link module:core/plugin~PluginInterface plugin constructors}
+	 * @param {Array.<Function>} [pluginsSubstitutions] An array of {@link module:core/plugin~PluginInterface plugin constructors}
 	 * that will be used to replace plugins of the same names that were passed in `plugins` or that are in their dependency tree.
 	 * A useful option for replacing built-in plugins while creating tests (for mocking their APIs). Plugins that will be replaced
 	 * must follow these rules:
