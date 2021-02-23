@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imagetypetogglecommand
+ * @module image/image/toggleimagetypecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -15,7 +15,7 @@ import { insertImage, isImage, isImageInline } from './utils';
  *
  * @extends module:core/command~Command
  */
-export default class ImageTypeToggleCommand extends Command {
+export default class ToggleImageTypeCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -10,7 +10,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import ImageInline from '../../src/image/imageinlineediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 
-describe( 'ImageTypeToggleCommand', () => {
+describe( 'ToggleImageTypeCommand', () => {
 	let editor, command, model;
 
 	beforeEach( () => {
@@ -22,7 +22,7 @@ describe( 'ImageTypeToggleCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = editor.commands.get( 'imageTypeToggle' );
+				command = editor.commands.get( 'toggleImageType' );
 			} );
 	} );
 
