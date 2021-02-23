@@ -8,10 +8,9 @@
  */
 
 import { escapeRegExp, cloneDeep, uniq } from 'lodash-es';
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
-import { priorities } from 'ckeditor5/src/utils';
+import { Matcher } from 'ckeditor5/src/engine';
+import { priorities, toArray } from 'ckeditor5/src/utils';
 
 import DataSchema from './dataschema';
 
