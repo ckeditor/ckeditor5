@@ -49,8 +49,8 @@ ClassicEditor
 		toolbar: [
 			'heading', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', 'highlight', 'alignment', '|',
 			'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'removeFormat', '|',
-			'link', 'blockQuote', 'imageUpload', 'mediaEmbed', 'insertTable', '|',
-			'bulletedList', 'numberedList', 'indent', 'outdent', '|', 'undo', 'redo',
+			'link', 'blockQuote', 'uploadImage', 'mediaEmbed', 'insertTable', '|',
+			'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'undo', 'redo',
 			'|'
 		],
 		image: {

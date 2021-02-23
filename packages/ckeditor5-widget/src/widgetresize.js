@@ -258,7 +258,7 @@ mix( WidgetResize, ObservableMixin );
  *
  * It receives a `Number` (`newValue`) as a parameter.
  *
- * For example, {@link module:image/imageresize~ImageResize} uses it to execute the image resize command
+ * For example, {@link module:image/imageresize~ImageResize} uses it to execute the resize image command
  * which puts the new value into the model.
  *
  * ```js
@@ -268,7 +268,7 @@ mix( WidgetResize, ObservableMixin );
  *	viewElement: widget,
  *
  *	onCommit( newValue ) {
- *		editor.execute( 'imageResize', { width: newValue } );
+ *		editor.execute( 'resizeImage', { width: newValue } );
  *	}
  * };
  * ```

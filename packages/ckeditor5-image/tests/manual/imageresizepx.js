@@ -31,7 +31,7 @@ const commonConfig = {
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
 	image: {
 		resizeUnit: 'px',
-		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'imageResize' ],
+		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'resizeImage' ],
 		styles: [
 			'alignLeft',
 			'alignCenter',

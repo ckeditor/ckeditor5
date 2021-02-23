@@ -26,12 +26,13 @@ export async function waitForAllImagesLoaded( editor ) {
 	editingView.addObserver( ImageLoadObserver );
 
 	return new Promise( resolve => {
+		// This listener should execute later than the one in ImageResizeHandles.
 		editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
 			images.delete( domEvent.target );
 
 			if ( images.size === 0 ) {
 				resolve();
 			}
-		} );
+		}, { priority: 'low' } );
 	} );
 }
