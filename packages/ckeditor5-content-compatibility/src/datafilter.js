@@ -11,6 +11,8 @@ import { escapeRegExp, cloneDeep, uniq } from 'lodash-es';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
+import { priorities } from 'ckeditor5/src/utils';
+
 import DataSchema from './dataschema';
 
 const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
@@ -171,7 +173,9 @@ export default class DataFilter {
 
 				return element;
 			},
-			converterPriority: 'low'
+			// With a `low` priority, `paragraph` plugin autoparagraphing mechanism is executed. Make sure
+			// this listener is called before it. If not, some elements will be transformed into a paragraph.
+			converterPriority: priorities.get( 'low' ) + 1
 		} );
 
 		conversion.for( 'downcast' ).elementToElement( {
