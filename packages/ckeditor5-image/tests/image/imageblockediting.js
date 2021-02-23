@@ -13,9 +13,9 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import ImageLoadObserver from '../../src/image/imageloadobserver';
-import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import { isImageWidget } from '../../src/image/utils';
+import InsertImageCommand from '../../src/image/insertimagecommand';
 
 describe( 'ImageBlockEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -62,8 +62,12 @@ describe( 'ImageBlockEditing', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
-	it( 'should register imageInsert command', () => {
-		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
+	it( 'should register the insertImage command', () => {
+		expect( editor.commands.get( 'insertImage' ) ).to.be.instanceOf( InsertImageCommand );
+	} );
+
+	it( 'should register the imageInsert command as an alias for the insertImage command', () => {
+		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.
