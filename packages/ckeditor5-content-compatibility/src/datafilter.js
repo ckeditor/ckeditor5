@@ -188,25 +188,6 @@ export default class DataFilter {
 				const viewWriter = conversionApi.writer;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-				// Remove old values.
-				if ( data.attributeOldValue !== null ) {
-					data.attributeOldValue.forEach( ( [ key, value ] ) => {
-						if ( key === 'class' ) {
-							const classes = toArray( value );
-
-							for ( const className of classes ) {
-								viewWriter.removeClass( className, viewElement );
-							}
-						} else if ( key === 'style' ) {
-							for ( const key in value ) {
-								viewWriter.removeStyle( key, viewElement );
-							}
-						} else {
-							viewWriter.removeAttribute( key, viewElement );
-						}
-					} );
-				}
-
 				// Apply new values.
 				if ( data.attributeNewValue !== null ) {
 					data.attributeNewValue.forEach( ( [ key, value ] ) => {
