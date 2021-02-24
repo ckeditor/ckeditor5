@@ -51,8 +51,8 @@ export default class DataFilter {
 
 		this.dataSchema = new DataSchema( editor );
 
-		this._allowedAttributes = {};
-		this._disallowedAttributes = {};
+		this._allowedAttributes = new Map();
+		this._disallowedAttributes = new Map();
 	}
 
 	/**
@@ -95,7 +95,7 @@ export default class DataFilter {
 	 *
 	 * @private
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern
-	 * @param {Object} rules Rules object holding matchers.
+	 * @param {Map} rules Rules map holding matchers.
 	 */
 	_addAttributeMatcher( config, rules ) {
 		const viewName = config.name;
@@ -244,14 +244,14 @@ export default class DataFilter {
  *
  * @private
  * @param {String} key
- * @param {Object} rules
+ * @param {Map} rules
  */
 function getOrCreateMatcher( key, rules ) {
-	if ( !rules[ key ] ) {
-		rules[ key ] = new Matcher();
+	if ( !rules.has( key ) ) {
+		rules.set( key, new Matcher() );
 	}
 
-	return rules[ key ];
+	return rules.get( key );
 }
 
 /**
@@ -259,7 +259,7 @@ function getOrCreateMatcher( key, rules ) {
  *
  * @private
  * @param {module:engine/view/element~Element} viewElement
- * @param {Object} rules Rules object holding matchers.
+ * @param {Map} rules Rules map holding matchers.
  * @returns {Object} result
  * @returns {Array} result.attributes Array with matched attribute names.
  * @returns {Array} result.classes Array with matched class names.
