@@ -47,7 +47,7 @@ describe( 'ImageCaptionUI', () => {
 			buttonView = editor.ui.componentFactory.create( 'toggleImageCaption' );
 		} );
 
-		it( 'should be registered as imageCaptionToggle in the component factory', () => {
+		it( 'should be registered as toggleImageCaption in the component factory', () => {
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.isOn ).to.be.false;
 			expect( buttonView.label ).to.equal( 'Toggle caption on' );
@@ -56,7 +56,7 @@ describe( 'ImageCaptionUI', () => {
 			expect( buttonView.isToggleable ).to.be.true;
 		} );
 
-		it( 'should execute the imageCaptionToggle command on the #execute event', () => {
+		it( 'should execute the toggleImageCaption command on the #execute event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 			buttonView.fire( 'execute' );
@@ -85,7 +85,17 @@ describe( 'ImageCaptionUI', () => {
 			sinon.assert.notCalled( executeSpy );
 		} );
 
-		it( 'should have #isEnabled and #isOn bound to the imageCaptionToggle command', () => {
+		it( 'should highlight the figcaption element in the view on the #execute event if the caption showed up', () => {
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+
+			buttonView.fire( 'execute' );
+
+			const figcaptionElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
+
+			expect( figcaptionElement.hasClass( 'image__caption_highlighted' ) ).to.be.true;
+		} );
+
+		it( 'should have #isEnabled and #isOn bound to the toggleImageCaption command', () => {
 			const command = editor.commands.get( 'toggleImageCaption' );
 
 			command.isEnabled = command.value = false;
@@ -104,7 +114,7 @@ describe( 'ImageCaptionUI', () => {
 			expect( buttonView.isEnabled ).to.be.true;
 		} );
 
-		it( 'should have #label bound to the imageCaptionToggle command', () => {
+		it( 'should have #label bound to the toggleImageCaption command', () => {
 			const command = editor.commands.get( 'toggleImageCaption' );
 
 			command.value = true;

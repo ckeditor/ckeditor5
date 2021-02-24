@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import captionIcon from '../../theme/icons/imagecaption.svg';
+import { getCaptionFromModelSelection } from './utils';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
@@ -30,6 +31,7 @@ export default class ImageCaptionUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const editingView = editor.editing.view;
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'toggleImageCaption', locale => {
@@ -48,9 +50,16 @@ export default class ImageCaptionUI extends Plugin {
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
-				// Scroll to the selection if the caption showed up.
+				// Scroll to the selection and highlight the caption if the caption showed up.
 				if ( command.value ) {
-					editor.editing.view.scrollToTheSelection();
+					const modelCaptionElement = getCaptionFromModelSelection( editor.model.document.selection );
+					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
+
+					editingView.scrollToTheSelection();
+
+					editingView.change( writer => {
+						writer.addClass( 'image__caption_highlighted', figcaptionElement );
+					} );
 				}
 			} );
 

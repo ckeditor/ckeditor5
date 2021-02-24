@@ -14,7 +14,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'ImageCaptionToggleCommand', () => {
+describe( 'ToggleImageCaptionCommand', () => {
 	let editor, model, command;
 
 	testUtils.createSinonSandbox();
