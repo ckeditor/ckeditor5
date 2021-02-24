@@ -89,6 +89,7 @@ InlineEditor.defaultConfig = {
 			'imageStyle:full',
 			'imageStyle:side',
 			'|',
+			'toggleImageCaption',
 			'imageTextAlternative'
 		]
 	},
