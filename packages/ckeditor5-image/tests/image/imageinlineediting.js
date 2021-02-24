@@ -14,9 +14,9 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import ImageLoadObserver from '../../src/image/imageloadobserver';
-import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { isImageWidget } from '../../src/image/utils';
+import InsertImageCommand from '../../src/image/insertimagecommand';
 
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -63,8 +63,12 @@ describe( 'ImageInlineEditing', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
-	it( 'should register imageInsert, imageTypeToggle', () => {
-		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
+	it( 'should register the insertImage command', () => {
+		expect( editor.commands.get( 'insertImage' ) ).to.be.instanceOf( InsertImageCommand );
+	} );
+
+	it( 'should register the imageInsert command as an alias for the insertImage command', () => {
+		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
 	} );
 
 	it( 'should update the ui after inline image has been loaded in the DOM', async () => {

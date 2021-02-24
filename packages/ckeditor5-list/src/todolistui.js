@@ -21,6 +21,13 @@ export default class TodoListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'TodoListUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const t = this.editor.t;
 

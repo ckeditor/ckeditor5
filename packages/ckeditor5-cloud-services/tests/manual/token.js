@@ -10,6 +10,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import CloudServices from '../../src/cloudservices';
 
 import { TOKEN_URL, UPLOAD_URL } from '../_utils/cloud-services-config';
+import CloudServicesCore from '../../src/cloudservicescore';
 
 const output = document.getElementById( 'output' );
 const requestOutput = document.getElementById( 'request' );
@@ -20,7 +21,7 @@ ClassicEditor
 			tokenUrl: getToken,
 			uploadUrl: UPLOAD_URL
 		},
-		plugins: [ ArticlePluginSet, CloudServices ],
+		plugins: [ ArticlePluginSet, CloudServices, CloudServicesCore ],
 		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {

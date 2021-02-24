@@ -116,8 +116,10 @@ export default class Context {
 	 */
 	initPlugins() {
 		const plugins = this.config.get( 'plugins' ) || [];
+		const substitutePlugins = this.config.get( 'substitutePlugins' ) || [];
 
-		for ( const Plugin of plugins ) {
+		// Plugins for substitution should be checked as well.
+		for ( const Plugin of plugins.concat( substitutePlugins ) ) {
 			if ( typeof Plugin != 'function' ) {
 				/**
 				 * Only a constructor function is allowed as a {@link module:core/contextplugin~ContextPlugin context plugin}.
@@ -146,7 +148,7 @@ export default class Context {
 			}
 		}
 
-		return this.plugins.init( plugins );
+		return this.plugins.init( plugins, [], substitutePlugins );
 	}
 
 	/**

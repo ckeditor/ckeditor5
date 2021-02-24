@@ -171,8 +171,8 @@ for ( let code = 112; code <= 135; code++ ) {
  * @returns {Boolean}
  */
 export function isNonTypingKeystroke( keyData ) {
-	// Keystrokes which contain Ctrl don't represent typing.
-	if ( keyData.ctrlKey ) {
+	// Keystrokes which contain Ctrl or Cmd don't represent typing.
+	if ( keyData.ctrlKey || keyData.metaKey ) {
 		return true;
 	}
 

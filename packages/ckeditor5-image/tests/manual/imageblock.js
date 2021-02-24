@@ -6,7 +6,6 @@
 /* globals window, document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -48,8 +47,7 @@ ClassicEditor
 			Table,
 			TableToolbar,
 			ImageInsert,
-			AutoImage,
-			CKFinder
+			AutoImage
 		],
 		toolbar: [
 			'heading',

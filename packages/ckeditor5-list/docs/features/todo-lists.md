@@ -16,7 +16,7 @@ To-do lists can be introduced using the dedicated toolbar button. Thanks to the 
 
 ## Keyboard support
 
-You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Space</kbd> shortcut when the selection is in that item.
+You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>⌘</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
 
 ## Installation
 

@@ -12,16 +12,17 @@
 import CKEditorError from './ckeditorerror';
 import env from './env';
 
-const macGlyphsToModifiers = {
-	'⌘': 'ctrl',
-	'⇧': 'shift',
-	'⌥': 'alt'
+const modifiersToGlyphsMac = {
+	ctrl: '⌃',
+	cmd: '⌘',
+	alt: '⌥',
+	shift: '⇧'
 };
 
-const modifiersToMacGlyphs = {
-	'ctrl': '⌘',
-	'shift': '⇧',
-	'alt': '⌥'
+const modifiersToGlyphsNonMac = {
+	ctrl: 'Ctrl+',
+	alt: 'Alt+',
+	shift: 'Shift+'
 };
 
 /**
@@ -37,6 +38,10 @@ const modifiersToMacGlyphs = {
  * * `ctrl`, `cmd`, `shift`, `alt`.
  */
 export const keyCodes = generateKnownKeyCodes();
+
+const keyCodeNames = Object.fromEntries(
+	Object.entries( keyCodes ).map( ( [ name, code ] ) => [ code, name.charAt( 0 ).toUpperCase() + name.slice( 1 ) ] )
+);
 
 /**
  * Converts a key name or a {@link module:utils/keyboard~KeystrokeInfo keystroke info} into a key code.
@@ -66,7 +71,8 @@ export function getCode( key ) {
 		keyCode = key.keyCode +
 			( key.altKey ? keyCodes.alt : 0 ) +
 			( key.ctrlKey ? keyCodes.ctrl : 0 ) +
-			( key.shiftKey ? keyCodes.shift : 0 );
+			( key.shiftKey ? keyCodes.shift : 0 ) +
+			( key.metaKey ? keyCodes.cmd : 0 );
 	}
 
 	return keyCode;
@@ -96,7 +102,7 @@ export function parseKeystroke( keystroke ) {
 	}
 
 	return keystroke
-		.map( key => ( typeof key == 'string' ) ? getCode( key ) : key )
+		.map( key => ( typeof key == 'string' ) ? getEnvKeyCode( key ) : key )
 		.reduce( ( key, sum ) => sum + key, 0 );
 }
 
@@ -108,22 +114,21 @@ export function parseKeystroke( keystroke ) {
  * @returns {String} Keystroke text specific for the environment.
  */
 export function getEnvKeystrokeText( keystroke ) {
-	if ( !env.isMac ) {
-		return keystroke;
-	}
+	let keystrokeCode = parseKeystroke( keystroke );
 
-	return splitKeystrokeText( keystroke )
-		// Replace modifiers (e.g. "ctrl") with Mac glyphs (e.g. "⌘") first.
-		.map( key => modifiersToMacGlyphs[ key.toLowerCase() ] || key )
+	const modifiersToGlyphs = Object.entries( env.isMac ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
 
-		// Decide whether to put "+" between keys in the keystroke or not.
-		.reduce( ( value, key ) => {
-			if ( value.slice( -1 ) in macGlyphsToModifiers ) {
-				return value + key;
-			} else {
-				return value + '+' + key;
-			}
-		} );
+	const modifiers = modifiersToGlyphs.reduce( ( modifiers, [ name, glyph ] ) => {
+		// Modifier keys are stored as a bit mask so extract those from the keystroke code.
+		if ( ( keystrokeCode & keyCodes[ name ] ) != 0 ) {
+			keystrokeCode &= ~keyCodes[ name ];
+			modifiers += glyph;
+		}
+
+		return modifiers;
+	}, '' );
+
+	return modifiers + ( keystrokeCode ? keyCodeNames[ keystrokeCode ] : '' );
 }
 
 /**
@@ -169,6 +174,23 @@ export function getLocalizedArrowKeyCodeDirection( keyCode, contentLanguageDirec
 	}
 }
 
+// Converts a key name to the key code with mapping based on the env.
+//
+// See: {@link module:utils/keyboard~getCode}.
+//
+// @param {String} key The key name (see {@link module:utils/keyboard~keyCodes}).
+// @returns {Number} Key code.
+function getEnvKeyCode( key ) {
+	// Don't remap modifier key for forced modifiers.
+	if ( key.endsWith( '!' ) ) {
+		return getCode( key.slice( 0, -1 ) );
+	}
+
+	const code = getCode( key );
+
+	return env.isMac && code == keyCodes.ctrl ? keyCodes.cmd : code;
+}
+
 /**
  * Determines if the provided key code moves the {@link module:engine/model/documentselection~DocumentSelection selection}
  * forward or backward considering the language direction of the editor content.
@@ -203,11 +225,9 @@ function generateKnownKeyCodes() {
 		// The idea about these numbers is that they do not collide with any real key codes, so we can use them
 		// like bit masks.
 		ctrl: 0x110000,
-		// Has the same code as ctrl, because their behaviour should be unified across the editor.
-		// See http://ckeditor.github.io/editor-recommendations/general-policies#ctrl-vs-cmd
-		cmd: 0x110000,
 		shift: 0x220000,
-		alt: 0x440000
+		alt: 0x440000,
+		cmd: 0x880000
 	};
 
 	// a-z
@@ -249,17 +269,23 @@ function splitKeystrokeText( keystroke ) {
 /**
  * Whether the <kbd>Alt</kbd> modifier was pressed.
  *
- * @member {Bolean} module:utils/keyboard~KeystrokeInfo#altKey
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#altKey
  */
 
 /**
- * Whether the <kbd>Ctrl</kbd> or <kbd>Cmd</kbd> modifier was pressed.
+ * Whether the <kbd>Ctrl</kbd> modifier was pressed.
  *
- * @member {Bolean} module:utils/keyboard~KeystrokeInfo#ctrlKey
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#ctrlKey
  */
 
 /**
  * Whether the <kbd>Shift</kbd> modifier was pressed.
  *
- * @member {Bolean} module:utils/keyboard~KeystrokeInfo#shiftKey
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#shiftKey
+ */
+
+/**
+ * Whether the <kbd>Cmd</kbd> modifier was pressed.
+ *
+ * @member {Boolean} module:utils/keyboard~KeystrokeInfo#metaKey
  */

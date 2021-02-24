@@ -31,7 +31,7 @@ ClassicEditor.defaultConfig = {
 			'|',
 			'bulletedList', 'numberedList',
 			'|',
-			'indent', 'outdent',
+			'outdent', 'indent',
 			'|',
 			'link', 'blockQuote',
 			'|',

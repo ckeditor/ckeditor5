@@ -56,23 +56,30 @@ describe( 'ImageUploadUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register imageUpload button', () => {
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+	it( 'should register uploadImage button', () => {
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 
 		expect( button ).to.be.instanceOf( FileDialogButtonView );
 	} );
 
-	it( 'should set proper accepted mime-types for imageUpload button as defined in configuration', () => {
+	it( 'should register imageUpload button as an alias for uploadImage button', () => {
+		const buttonCreator = editor.ui.componentFactory._components.get( 'uploadImage'.toLowerCase() );
+		const buttonAliasCreator = editor.ui.componentFactory._components.get( 'imageUpload'.toLowerCase() );
+
+		expect( buttonCreator.callback ).to.equal( buttonAliasCreator.callback );
+	} );
+
+	it( 'should set proper accepted mime-types for uploadImage button as defined in configuration', () => {
 		editor.config.set( 'image.upload.types', [ 'svg+xml', 'jpeg', 'vnd.microsoft.icon', 'x-xbitmap' ] );
 
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 
 		expect( button.acceptedType ).to.equal( 'image/svg+xml,image/jpeg,image/vnd.microsoft.icon,image/x-xbitmap' );
 	} );
 
-	it( 'should be disabled while ImageUploadCommand is disabled', () => {
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
-		const command = editor.commands.get( 'imageUpload' );
+	it( 'should be disabled while UploadImageCommand is disabled', () => {
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
+		const command = editor.commands.get( 'uploadImage' );
 
 		command.isEnabled = true;
 
@@ -84,9 +91,9 @@ describe( 'ImageUploadUI', () => {
 	} );
 
 	// ckeditor5-upload/#77
-	it( 'should be properly bound with ImageUploadCommand', () => {
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
-		const command = editor.commands.get( 'imageUpload' );
+	it( 'should be properly bound with UploadImageCommand', () => {
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
+		const command = editor.commands.get( 'uploadImage' );
 		const spy = sinon.spy();
 
 		button.render();
@@ -100,30 +107,30 @@ describe( 'ImageUploadUI', () => {
 		sinon.assert.notCalled( spy );
 	} );
 
-	it( 'should execute imageUpload command', () => {
+	it( 'should execute uploadImage command', () => {
 		const executeStub = sinon.stub( editor, 'execute' );
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const files = [ createNativeFileMock() ];
 
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
-		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
+		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
 	} );
 
-	it( 'should execute imageUpload command with multiple files', () => {
+	it( 'should execute uploadImage command with multiple files', () => {
 		const executeStub = sinon.stub( editor, 'execute' );
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const files = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
 
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
-		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
+		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
 	} );
 
 	it( 'should optimize the insertion position', () => {
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const files = [ createNativeFileMock() ];
 
 		setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -133,13 +140,14 @@ describe( 'ImageUploadUI', () => {
 		const id = fileRepository.getLoader( files[ 0 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
-			`[<image uploadId="${ id }" uploadStatus="reading"></image>]` +
-			'<paragraph>foo</paragraph>'
+			'<paragraph>' +
+				`f[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]oo` +
+			'</paragraph>'
 		);
 	} );
 
 	it( 'should correctly insert multiple files', () => {
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 
 		setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
@@ -150,16 +158,17 @@ describe( 'ImageUploadUI', () => {
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
-			'<paragraph>foo</paragraph>' +
-			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
-			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +
+			'<paragraph>' +
+				`foo<imageInline uploadId="${ id1 }" uploadStatus="reading"></imageInline>` +
+				`[<imageInline uploadId="${ id2 }" uploadStatus="reading"></imageInline>]` +
+			'</paragraph>' +
 			'<paragraph>bar</paragraph>'
 		);
 	} );
 
-	it( 'should not execute imageUpload if the file is not an image', () => {
+	it( 'should not execute uploadImage if the file is not an image', () => {
 		const executeStub = sinon.stub( editor, 'execute' );
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const file = {
 			type: 'media/mp3',
 			size: 1024
@@ -171,7 +180,7 @@ describe( 'ImageUploadUI', () => {
 
 	it( 'should work even if the FileList does not support iterators', () => {
 		const executeStub = sinon.stub( editor, 'execute' );
-		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const files = {
 			0: createNativeFileMock(),
 			length: 1
@@ -179,7 +188,7 @@ describe( 'ImageUploadUI', () => {
 
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
-		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
+		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( [ files[ 0 ] ] );
 	} );
 } );

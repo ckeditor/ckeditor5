@@ -66,7 +66,7 @@ ClassicEditor
 			'|',
 			'bulletedList', 'numberedList', 'todoList',
 			'|',
-			'blockQuote', 'imageUpload', 'insertTable', 'mediaEmbed', 'codeBlock',
+			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 			'|',
 			'htmlEmbed',
 			'|',
@@ -88,17 +88,17 @@ ClassicEditor
 			],
 			resizeOptions: [
 				{
-					name: 'imageResize:original',
+					name: 'resizeImage:original',
 					label: 'Original size',
 					value: null
 				},
 				{
-					name: 'imageResize:50',
+					name: 'resizeImage:50',
 					label: '50%',
 					value: '50'
 				},
 				{
-					name: 'imageResize:75',
+					name: 'resizeImage:75',
 					label: '75%',
 					value: '75'
 				}
@@ -106,7 +106,7 @@ ClassicEditor
 			toolbar: [
 				'imageTextAlternative', '|',
 				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
-				'imageResize'
+				'resizeImage'
 			],
 			insert: {
 				integrations: [
