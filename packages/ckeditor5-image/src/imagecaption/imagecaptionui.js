@@ -47,6 +47,11 @@ export default class ImageCaptionUI extends Plugin {
 
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
+
+				// Scroll to the selection if the caption showed up.
+				if ( command.value ) {
+					editor.editing.view.scrollToTheSelection();
+				}
 			} );
 
 			return view;

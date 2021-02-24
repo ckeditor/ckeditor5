@@ -14,6 +14,7 @@ import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageCaptionUI from '../../src/imagecaption/imagecaptionui';
 
 import captionIcon from '../../theme/icons/imagecaption.svg';
+import ImageBlockEditing from '../../src/image/imageblockediting';
 
 describe( 'ImageCaptionUI', () => {
 	let editor, editorElement;
@@ -25,7 +26,7 @@ describe( 'ImageCaptionUI', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, ImageCaptionEditing, ImageCaptionUI ]
+			plugins: [ Paragraph, ImageBlockEditing, ImageCaptionEditing, ImageCaptionUI ]
 		} );
 	} );
 
@@ -62,6 +63,26 @@ describe( 'ImageCaptionUI', () => {
 
 			sinon.assert.calledOnce( executeSpy );
 			sinon.assert.calledWithExactly( executeSpy, 'toggleImageCaption', { focusCaptionOnShow: true } );
+		} );
+
+		it( 'should scroll the editing view to the caption on the #execute event if the caption showed up', () => {
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+
+			const executeSpy = testUtils.sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			buttonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+		} );
+
+		it( 'should not scroll the editing view on the #execute event if the caption was hidden', () => {
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /><figcaption>foo</figcaption></figure>' );
+
+			const executeSpy = testUtils.sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			buttonView.fire( 'execute' );
+
+			sinon.assert.notCalled( executeSpy );
 		} );
 
 		it( 'should have #isEnabled and #isOn bound to the imageCaptionToggle command', () => {
