@@ -28,7 +28,7 @@ export default class DataSchema {
 	constructor( editor ) {
 		this.editor = editor;
 
-		this._definitions = {};
+		this._definitions = new Map();
 
 		// Add block elements.
 		this.register( { model: '$ghsBlock' }, {
@@ -70,34 +70,7 @@ export default class DataSchema {
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	register( { view, model }, schema ) {
-		this._definitions[ model ] = { view, model, schema };
-	}
-
-	/**
-	 * Registers model schema item for the given
-	 * {@link module:content-compatibility/dataschema~DataSchemaDefinition data schema definition} name.
-	 *
-	 * @param {String} name
-	 */
-	enable( name ) {
-		const schema = this.editor.model.schema;
-
-		if ( schema.isRegistered( name ) ) {
-			return;
-		}
-
-		const definition = this._definitions[ name ];
-		const schemaDefinition = cloneDeep( definition.schema );
-
-		for ( const reference of this._getReferences( name ) ) {
-			this.enable( reference );
-		}
-
-		schema.register( name, schemaDefinition );
-
-		if ( schemaDefinition.allowText ) {
-			schema.extend( '$text', { allowIn: name } );
-		}
+		this._definitions.set( model, { view, model, schema } );
 	}
 
 	/**
@@ -107,7 +80,7 @@ export default class DataSchema {
 	 * @returns {Iterable<*>}
 	 */
 	* getDefinitionsForView( viewName ) {
-		const definitions = Object.values( this._definitions )
+		const definitions = Array.from( this._definitions.values() )
 			.filter( def => def.view && testViewName( viewName, def.view ) );
 
 		for ( const definition of definitions ) {
@@ -125,7 +98,7 @@ export default class DataSchema {
 	 * @returns {module:content-compatibility/dataschema~DataSchemaDefinition}
 	 */
 	getDefinition( modelName ) {
-		const definition = cloneDeep( this._definitions[ modelName ] );
+		const definition = cloneDeep( this._definitions.get( modelName ) );
 
 		definition.references = this._getReferences( modelName );
 
@@ -136,18 +109,18 @@ export default class DataSchema {
 	 * Resolves all definition references registered for the given data schema definition.
 	 *
 	 * @private
-	 * @param {String} name Data schema model name.
+	 * @param {String} modelName Data schema model name.
 	 * @returns {Iterable<String>}
 	 */
-	* _getReferences( name ) {
-		const { schema } = this._definitions[ name ];
+	* _getReferences( modelName ) {
+		const { schema } = this._definitions.get( modelName );
 		const inheritProperties = [ 'inheritAllFrom', 'inheritTypesFrom', 'allowWhere', 'allowContentOf', 'allowAttributesOf' ];
 
 		for ( const property of inheritProperties ) {
-			for ( const modelName of toArray( schema[ property ] || [] ) ) {
-				const definition = this._definitions[ modelName ];
+			for ( const referenceName of toArray( schema[ property ] || [] ) ) {
+				const definition = this._definitions.get( referenceName );
 
-				if ( modelName !== name && definition ) {
+				if ( referenceName !== modelName && definition ) {
 					yield* this._getReferences( definition.model );
 					yield definition;
 				}
