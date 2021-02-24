@@ -43,7 +43,7 @@ describe( 'ImageCaptionUI', () => {
 		let buttonView;
 
 		beforeEach( () => {
-			buttonView = editor.ui.componentFactory.create( 'imageCaptionToggle' );
+			buttonView = editor.ui.componentFactory.create( 'toggleImageCaption' );
 		} );
 
 		it( 'should be registered as imageCaptionToggle in the component factory', () => {
@@ -61,11 +61,11 @@ describe( 'ImageCaptionUI', () => {
 			buttonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'imageCaptionToggle', { focusCaptionOnShow: true } );
+			sinon.assert.calledWithExactly( executeSpy, 'toggleImageCaption', { focusCaptionOnShow: true } );
 		} );
 
 		it( 'should have #isEnabled and #isOn bound to the imageCaptionToggle command', () => {
-			const command = editor.commands.get( 'imageCaptionToggle' );
+			const command = editor.commands.get( 'toggleImageCaption' );
 
 			command.isEnabled = command.value = false;
 
@@ -84,7 +84,7 @@ describe( 'ImageCaptionUI', () => {
 		} );
 
 		it( 'should have #label bound to the imageCaptionToggle command', () => {
-			const command = editor.commands.get( 'imageCaptionToggle' );
+			const command = editor.commands.get( 'toggleImageCaption' );
 
 			command.value = true;
 			expect( buttonView.label ).to.equal( 'Toggle caption off' );

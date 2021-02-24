@@ -13,7 +13,7 @@ import { ButtonView } from 'ckeditor5/src/ui';
 import captionIcon from '../../theme/icons/imagecaption.svg';
 
 /**
- * The image caption UI plugin. It introduces the `'imageCaptionToggle'` UI button.
+ * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -32,8 +32,8 @@ export default class ImageCaptionUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'imageCaptionToggle', locale => {
-			const command = editor.commands.get( 'imageCaptionToggle' );
+		editor.ui.componentFactory.add( 'toggleImageCaption', locale => {
+			const command = editor.commands.get( 'toggleImageCaption' );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -46,7 +46,7 @@ export default class ImageCaptionUI extends Plugin {
 			view.bind( 'label' ).to( command, 'value', value => value ? t( 'Toggle caption off' ) : t( 'Toggle caption on' ) );
 
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'imageCaptionToggle', { focusCaptionOnShow: true } );
+				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 			} );
 
 			return view;

@@ -15,7 +15,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ImageCaptionToggleCommand from '../../src/imagecaption/imagecaptiontogglecommand';
+import ToggleImageCaptionCommand from '../../src/imagecaption/toggleimagecaptioncommand';
 
 describe( 'ImageCaptionEditing', () => {
 	let editor, model, doc, view;
@@ -98,10 +98,10 @@ describe( 'ImageCaptionEditing', () => {
 	} );
 
 	describe( 'command', () => {
-		it( 'should register the imageCaptionToggle command', () => {
-			const command = editor.commands.get( 'imageCaptionToggle' );
+		it( 'should register the toggleImageCaption command', () => {
+			const command = editor.commands.get( 'toggleImageCaption' );
 
-			expect( command ).to.be.instanceOf( ImageCaptionToggleCommand );
+			expect( command ).to.be.instanceOf( ToggleImageCaptionCommand );
 		} );
 	} );
 
@@ -454,7 +454,7 @@ describe( 'ImageCaptionEditing', () => {
 		it( 'should hide placeholder when figcaption is focused', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<image src=""></image>]' );
 
-			editor.execute( 'imageCaptionToggle' );
+			editor.execute( 'toggleImageCaption' );
 
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo</p>' +

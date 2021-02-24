@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagecaption/imagecaptiontogglecommand
+ * @module image/imagecaption/toggleimagecaptioncommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -36,7 +36,7 @@ import { getCaptionFromImageModelElement, getCaptionFromModelSelection } from '.
  *
  * @extends module:core/command~Command
  */
-export default class ImageCaptionToggleCommand extends Command {
+export default class ToggleImageCaptionCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

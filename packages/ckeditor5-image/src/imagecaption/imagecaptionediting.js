@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ImageCaptionToggleCommand from './imagecaptiontogglecommand';
+import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
@@ -22,7 +22,7 @@ import ImageBlockEditing from '../image/imageblockediting';
  *
  * * registering converters for the caption element,
  * * registering converters for the caption model attribute,
- * * registering the {@link module:image/imagecaption/imagecaptiontogglecommand~ImageCaptionToggleCommand `imageCaptionToggle`} command.
+ * * registering the {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand `toggleImageCaption`} command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -62,7 +62,7 @@ export default class ImageCaptionEditing extends Plugin {
 			} );
 		}
 
-		editor.commands.add( 'imageCaptionToggle', new ImageCaptionToggleCommand( this.editor ) );
+		editor.commands.add( 'toggleImageCaption', new ToggleImageCaptionCommand( this.editor ) );
 
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
