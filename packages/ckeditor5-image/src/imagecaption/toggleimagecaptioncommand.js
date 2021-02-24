@@ -15,22 +15,23 @@ import { isImage, isImageInline } from '../image/utils';
 import { getCaptionFromImageModelElement, getCaptionFromModelSelection } from './utils';
 
 /**
- * The image caption toggle command.
+ * The toggle image caption command.
  *
- * The command is registered by {@link module:image/imagecaption/imagecaptionediting~ImageCaptionEditing} as the
+ * This command is registered by {@link module:image/imagecaption/imagecaptionediting~ImageCaptionEditing} as the
  * `'toggleImageCaption'` editor command.
  *
  * Executing this command:
  *
- * * adds or removes the image caption of a selected image depending on whether the caption is present or not,
+ * * either adds or removes the image caption of a selected image (depending on whether the caption is present or not),
  * * removes the image caption if the selection is anchored in one.
  *
  *		// Toggle the presence of the caption.
  *		editor.execute( 'toggleImageCaption' );
  *
- * **Note**: The selection is set on the image if anchored in the caption element at the moment of removal.
+ * **Note**: Upon executing this command, the selection will be set on the image if previously anchored in the caption element.
  *
- * **Note**: You can move the selection to the caption right away as it shows up by using the `focusCaptionOnShow` option:
+ * **Note**: You can move the selection to the caption right away as it shows up upon executing this command by using
+ * the `focusCaptionOnShow` option:
  *
  *		editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
  *
