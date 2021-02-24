@@ -10,7 +10,9 @@
 import { cloneDeep, uniq } from 'lodash-es';
 
 import { Matcher } from 'ckeditor5/src/engine';
-import { priorities, toArray } from 'ckeditor5/src/utils';
+import { priorities } from 'ckeditor5/src/utils';
+
+import StylesMap, { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 import DataSchema from './dataschema';
 
@@ -176,7 +178,7 @@ export default class DataFilter {
 
 				// Stash classes.
 				if ( allowedAttributes.classes.length ) {
-					viewAttributes.push( [ 'class', allowedAttributes.classes ] );
+					viewAttributes.push( [ 'class', allowedAttributes.classes.join( ' ' ) ] );
 				}
 
 				// Stash styles.
@@ -187,7 +189,7 @@ export default class DataFilter {
 						stylesObj[ styleName ] = viewElement.getStyle( styleName );
 					}
 
-					viewAttributes.push( [ 'style', stylesObj ] );
+					viewAttributes.push( [ 'style', inlineStyles( stylesObj ) ] );
 				}
 
 				const element = conversionApi.writer.createElement( modelName );
@@ -214,6 +216,10 @@ export default class DataFilter {
 					return;
 				}
 
+				if ( data.attributeNewValue === null ) {
+					return;
+				}
+
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
@@ -222,23 +228,9 @@ export default class DataFilter {
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 				// Apply new values.
-				if ( data.attributeNewValue !== null ) {
-					data.attributeNewValue.forEach( ( [ key, value ] ) => {
-						if ( key === 'class' ) {
-							const classes = toArray( value );
-
-							for ( const className of classes ) {
-								viewWriter.addClass( className, viewElement );
-							}
-						} else if ( key === 'style' ) {
-							for ( const key in value ) {
-								viewWriter.setStyle( key, value[ key ], viewElement );
-							}
-						} else {
-							viewWriter.setAttribute( key, value, viewElement );
-						}
-					} );
-				}
+				data.attributeNewValue.forEach( ( [ key, value ] ) => {
+					viewWriter.setAttribute( key, value, viewElement );
+				} );
 			} );
 		} );
 	}
@@ -304,4 +296,16 @@ function mergeMatchResults( matches ) {
 	}
 
 	return matchResult;
+}
+
+/**
+ * Inlines styles object into normalized style string.
+ *
+ * @param {Object} stylesObject
+ * @returns {String}
+ */
+function inlineStyles( stylesObj ) {
+	const stylesMap = new StylesMap( new StylesProcessor() );
+	stylesMap.set( stylesObj );
+	return stylesMap.toString();
 }
