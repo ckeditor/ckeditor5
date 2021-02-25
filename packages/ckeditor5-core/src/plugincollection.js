@@ -95,9 +95,9 @@ export default class PluginCollection {
 	 * Gets the plugin instance by its constructor or name.
 	 *
 	 *		// Check if 'Clipboard' plugin was loaded.
-	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
 	 *			// Get clipboard plugin instance
-	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 	 *
 	 *			this.listenTo( clipboard, 'inputTransformation', ( evt, data ) => {
 	 *				// Do something on clipboard input.
@@ -144,9 +144,9 @@ export default class PluginCollection {
 	 * Checks if a plugin is loaded.
 	 *
 	 *		// Check if the 'Clipboard' plugin was loaded.
-	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
 	 *			// Now use the clipboard plugin instance:
-	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 	 *
 	 *			// ...
 	 *		}

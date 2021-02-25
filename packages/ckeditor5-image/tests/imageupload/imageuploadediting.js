@@ -8,7 +8,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import ImageEditing from '../../src/image/imageediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import UploadImageCommand from '../../src/imageupload/uploadimagecommand';
@@ -58,7 +58,7 @@ describe( 'ImageUploadEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -97,7 +97,7 @@ describe( 'ImageUploadEditing', () => {
 				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
 			} )
 			.then( editor => {
-				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
+				expect( editor.plugins.get( ClipboardPipeline ) ).to.be.instanceOf( ClipboardPipeline );
 			} );
 	} );
 
@@ -181,7 +181,7 @@ describe( 'ImageUploadEditing', () => {
 		// Clipboard plugin is required for this test.
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, ClipboardPipeline ]
 			} )
 			.then( editor => {
 				const fileMock = createNativeFileMock();
@@ -620,7 +620,7 @@ describe( 'ImageUploadEditing', () => {
 			preventDefault: spy
 		} );
 
-		expect( spy.calledOnce ).to.equal( true );
+		expect( spy.called ).to.equal( true );
 	} );
 
 	it( 'should upload image with base64 src', done => {
@@ -700,7 +700,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -756,7 +756,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -792,7 +792,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -830,7 +830,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -982,7 +982,7 @@ describe( 'ImageUploadEditing', () => {
 			sinon.stub( HTMLCanvasElement.prototype, 'toBlob' ).callsFake( fn => fn( null ) );
 
 			let content = null;
-			editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+			editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 				content = data.content;
 			} );
 

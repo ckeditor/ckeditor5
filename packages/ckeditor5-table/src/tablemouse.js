@@ -41,7 +41,7 @@ export default class TableMouse extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Currently the MouseObserver only handles `mouseup` events.
+		// Currently the MouseObserver only handles `mousedown` and `mouseup` events.
 		// TODO move to the engine?
 		editor.editing.view.addObserver( MouseEventsObserver );
 

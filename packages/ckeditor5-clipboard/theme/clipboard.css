@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck {
+	/*
+	 * Vertical drop target (in text).
+	 */
+	& .ck.ck-clipboard-drop-target-position {
+		display: inline;
+		position: relative;
+
+		& span {
+			position: absolute;
+			width: 0;
+		}
+	}
+
+	/*
+	 * Styles of the widget being dragged (its preview).
+	 */
+	& .ck-widget:-webkit-drag {
+		& > .ck-widget__selection-handle {
+			display: none;
+		}
+
+		& > .ck-widget__type-around {
+			display: none;
+		}
+	}
+}

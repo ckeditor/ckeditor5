@@ -17,11 +17,16 @@ import DataTransfer from './datatransfer';
  * Fires the following events:
  *
  * * {@link module:engine/view/document~Document#event:clipboardInput}
- * * {@link module:engine/view/document~Document#event:dragover}
- * * {@link module:engine/view/document~Document#event:drop}
  * * {@link module:engine/view/document~Document#event:paste}
  * * {@link module:engine/view/document~Document#event:copy}
  * * {@link module:engine/view/document~Document#event:cut}
+ * * {@link module:engine/view/document~Document#event:drop}
+ * * {@link module:engine/view/document~Document#event:dragover}
+ * * {@link module:engine/view/document~Document#event:dragging}
+ * * {@link module:engine/view/document~Document#event:dragstart}
+ * * {@link module:engine/view/document~Document#event:dragend}
+ * * {@link module:engine/view/document~Document#event:dragenter}
+ * * {@link module:engine/view/document~Document#event:dragleave}
  *
  * Note that this observer is not available by default (it is not added by the engine).
  * To make it available, it needs to be added to {@link module:engine/view/document~Document} by
@@ -36,29 +41,33 @@ export default class ClipboardObserver extends DomEventObserver {
 
 		const viewDocument = this.document;
 
-		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover' ];
+		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave' ];
 
-		this.listenTo( viewDocument, 'paste', handleInput, { priority: 'low' } );
-		this.listenTo( viewDocument, 'drop', handleInput, { priority: 'low' } );
+		this.listenTo( viewDocument, 'paste', handleInput( 'clipboardInput' ), { priority: 'low' } );
+		this.listenTo( viewDocument, 'drop', handleInput( 'clipboardInput' ), { priority: 'low' } );
+		this.listenTo( viewDocument, 'dragover', handleInput( 'dragging' ), { priority: 'low' } );
 
-		function handleInput( evt, data ) {
-			data.preventDefault();
+		function handleInput( type ) {
+			return ( evt, data ) => {
+				data.preventDefault();
 
-			const targetRanges = data.dropRange ? [ data.dropRange ] : Array.from( viewDocument.selection.getRanges() );
+				const targetRanges = data.dropRange ? [ data.dropRange ] : null;
+				const eventInfo = new EventInfo( viewDocument, type );
 
-			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+				viewDocument.fire( eventInfo, {
+					dataTransfer: data.dataTransfer,
+					method: evt.name,
+					targetRanges,
+					target: data.target
+				} );
 
-			viewDocument.fire( eventInfo, {
-				dataTransfer: data.dataTransfer,
-				targetRanges
-			} );
-
-			// If CKEditor handled the input, do not bubble the original event any further.
-			// This helps external integrations recognize that fact and act accordingly.
-			// https://github.com/ckeditor/ckeditor5-upload/issues/92
-			if ( eventInfo.stop.called ) {
-				data.stopPropagation();
-			}
+				// If CKEditor handled the input, do not bubble the original event any further.
+				// This helps external integrations recognize that fact and act accordingly.
+				// https://github.com/ckeditor/ckeditor5-upload/issues/92
+				if ( eventInfo.stop.called ) {
+					data.stopPropagation();
+				}
+			};
 		}
 	}
 
@@ -67,7 +76,7 @@ export default class ClipboardObserver extends DomEventObserver {
 			dataTransfer: new DataTransfer( domEvent.clipboardData ? domEvent.clipboardData : domEvent.dataTransfer )
 		};
 
-		if ( domEvent.type == 'drop' ) {
+		if ( domEvent.type == 'drop' || domEvent.type == 'dragover' ) {
 			evtData.dropRange = getDropViewRange( this.view, domEvent );
 		}
 
@@ -94,9 +103,9 @@ function getDropViewRange( view, domEvent ) {
 
 	if ( domRange ) {
 		return view.domConverter.domRangeToView( domRange );
-	} else {
-		return view.document.selection.getFirstRange();
 	}
+
+	return null;
 }
 
 /**
@@ -116,9 +125,11 @@ function getDropViewRange( view, domEvent ) {
  * @event module:engine/view/document~Document#event:clipboardInput
  * @param {Object} data Event data.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
+ * @param {'paste'|'drop'} method Whether the event was triggered by a paste or drop operation.
+ * @param {module:engine/view/element~Element} target The tree view element representing the target.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
  * (usually – into which the content should be inserted).
- * If clipboard input was triggered by a paste operation, then these are the selection ranges. If by a drop operation,
+ * If clipboard input was triggered by a paste operation, then this property is not set. If by a drop operation,
  * then it is the drop position (which can be different than the selection at the moment of drop).
  */
 
@@ -208,4 +219,83 @@ function getDropViewRange( view, domEvent ) {
  *
  * @readonly
  * @member {module:clipboard/datatransfer~DataTransfer} module:clipboard/clipboardobserver~ClipboardEventData#dataTransfer
+ */
+
+/**
+ * Fired as a continuation of the {@link #event:dragover} event.
+ *
+ * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
+ *
+ * Fired with a `dataTransfer` which comes from the clipboard and whose content should be processed
+ * and inserted into the editor.
+ *
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ *
+ * @see module:clipboard/clipboardobserver~ClipboardObserver
+ * @see module:clipboard/clipboard~Clipboard
+ * @event module:engine/view/document~Document#event:dragging
+ * @param {Object} data Event data.
+ * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
+ * @param {module:engine/view/element~Element} target The tree view element representing the target.
+ * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
+ * (usually – into which the content should be inserted).
+ * It is the drop position (which can be different than the selection at the moment of drop).
+ */
+
+/**
+ * Fired when the user starts dragging the content in one of the editables.
+ *
+ * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ *
+ * @see module:engine/view/document~Document#event:clipboardInput
+ * @event module:engine/view/document~Document#event:dragstart
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ */
+
+/**
+ * Fired when the user ended dragging the content.
+ *
+ * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ *
+ * @see module:engine/view/document~Document#event:clipboardInput
+ * @event module:engine/view/document~Document#event:dragend
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ */
+
+/**
+ * Fired when the user drags the content into one of the editables.
+ *
+ * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ *
+ * @see module:engine/view/document~Document#event:clipboardInput
+ * @event module:engine/view/document~Document#event:dragenter
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
+ */
+
+/**
+ * Fired when the user drags the content out of one of the editables.
+ *
+ * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ *
+ * @see module:engine/view/document~Document#event:clipboardInput
+ * @event module:engine/view/document~Document#event:dragleave
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */

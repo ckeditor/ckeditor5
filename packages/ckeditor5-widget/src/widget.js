@@ -174,8 +174,6 @@ export default class Widget extends Plugin {
 			}
 		}
 
-		domEventData.preventDefault();
-
 		// Focus editor if is not focused already.
 		if ( !viewDocument.isFocused ) {
 			view.focus();
