@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
+import { findOptimalInsertionRange, checkSelectionOnObject } from 'ckeditor5/src/widget';
 import { getSelectedMediaModelWidget, insertMedia } from './utils';
 
 /**
@@ -58,9 +58,7 @@ export default class MediaEmbedCommand extends Command {
 				writer.setAttribute( 'url', url, selectedMedia );
 			} );
 		} else {
-			const insertPosition = findOptimalInsertionPosition( selection, model );
-
-			insertMedia( model, url, insertPosition );
+			insertMedia( model, url, findOptimalInsertionRange( selection, model ) );
 		}
 	}
 }
@@ -71,8 +69,8 @@ export default class MediaEmbedCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
 function isAllowedInParent( selection, model ) {
-	const insertPosition = findOptimalInsertionPosition( selection, model );
-	let parent = insertPosition.parent;
+	const insertionRange = findOptimalInsertionRange( selection, model );
+	let parent = insertionRange.start.parent;
 
 	// The model.insertContent() will remove empty parent (unless it is a $root or a limit).
 	if ( parent.isEmpty && !model.schema.isLimit( parent ) ) {

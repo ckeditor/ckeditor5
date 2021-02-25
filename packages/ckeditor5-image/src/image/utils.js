@@ -7,7 +7,7 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, isWidget, toWidget } from 'ckeditor5/src/widget';
+import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { first } from 'ckeditor5/src/utils';
 
 /**
@@ -80,14 +80,14 @@ export function isImageInline( modelElement ) {
 }
 
 /**
- * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
+ * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionRange} method.
  *
  *		insertImage( model, { src: 'path/to/image.jpg' } );
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {Object} [attributes={}] Attributes of inserted image
  * @param {module:engine/model/selection~Selectable} [selectable] Place to insert the image. If not specified,
- * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied for the block images
+ * the {@link module:widget/utils~findOptimalInsertionRange} logic will be applied for the block images
  * and `model.document.selection` for the inline images.
  * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
  * it will be determined automatically depending of editor config or place of the insertion.
@@ -102,7 +102,7 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 		const imageElement = writer.createElement( imageType, attributes );
 
 		if ( !selectable && imageType != 'imageInline' && !selection.getSelectedElement() ) {
-			selectable = findOptimalInsertionPosition( selection, model );
+			selectable = findOptimalInsertionRange( selection, model );
 		}
 
 		model.insertContent( imageElement, selectable );
@@ -255,9 +255,8 @@ function isNotInsideImage( selection ) {
 // @param {module:engine/model/model~Model} model
 // @returns {module:engine/model/element~Element}
 function getInsertImageParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
-
-	const parent = insertAt.parent;
+	const insertionRange = findOptimalInsertionRange( selection, model );
+	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
 		return parent.parent;

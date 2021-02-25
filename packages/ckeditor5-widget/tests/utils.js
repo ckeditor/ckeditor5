@@ -18,7 +18,7 @@ import {
 	getLabel,
 	toWidgetEditable,
 	setHighlightHandling,
-	findOptimalInsertionPosition,
+	findOptimalInsertionRange,
 	checkSelectionOnObject,
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME,
@@ -327,7 +327,7 @@ describe( 'widget utils', () => {
 		} );
 	} );
 
-	describe( 'findOptimalInsertionPosition()', () => {
+	describe( 'findOptimalInsertionRange()', () => {
 		let model, doc;
 
 		beforeEach( () => {
@@ -355,15 +355,16 @@ describe( 'widget utils', () => {
 			model.schema.extend( '$text', { allowIn: 'span' } );
 		} );
 
-		it( 'returns position after selected element', () => {
+		it( 'returns a collapsed range after selected element', () => {
 			setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 2 ] );
+			expect( range.start.path ).to.deep.equal( [ 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 2 ] );
 		} );
 
-		it( 'returns position before parent block if an inline object is selected', () => {
+		it( 'returns a collapsed range before parent block if an inline object is selected', () => {
 			model.schema.register( 'placeholder', {
 				allowWhere: '$text',
 				isInline: true,
@@ -372,67 +373,75 @@ describe( 'widget utils', () => {
 
 			setData( model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 1 ] );
+			expect( range.start.path ).to.deep.equal( [ 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 1 ] );
 		} );
 
-		it( 'returns position inside empty block', () => {
+		it( 'returns a collapsed range inside empty block', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 1, 0 ] );
+			expect( range.start.path ).to.deep.equal( [ 1, 0 ] );
+			expect( range.end.path ).to.deep.equal( [ 1, 0 ] );
 		} );
 
-		it( 'returns position before block if at the beginning of that block', () => {
+		it( 'returns a collapsed range before block if at the beginning of that block', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>[]foo</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 1 ] );
+			expect( range.start.path ).to.deep.equal( [ 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 1 ] );
 		} );
 
-		it( 'returns position before block if in the middle of that block (collapsed selection)', () => {
+		it( 'returns a collapsed range before block if in the middle of that block (collapsed selection)', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>f[]oo</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 1 ] );
+			expect( range.start.path ).to.deep.equal( [ 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 1 ] );
 		} );
 
-		it( 'returns position before block if in the middle of that block (non-collapsed selection)', () => {
+		it( 'returns a collapsed range before block if in the middle of that block (non-collapsed selection)', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>f[o]o</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 1 ] );
+			expect( range.start.path ).to.deep.equal( [ 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 1 ] );
 		} );
 
-		it( 'returns position after block if at the end of that block', () => {
+		it( 'returns a collapsed range after block if at the end of that block', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>foo[]</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 2 ] );
+			expect( range.start.path ).to.deep.equal( [ 2 ] );
+			expect( range.end.path ).to.deep.equal( [ 2 ] );
 		} );
 
 		// Checking if isTouching() was used.
-		it( 'returns position after block if at the end of that block (deeply nested)', () => {
+		it( 'returns a collapsed range after block if at the end of that block (deeply nested)', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>foo<span>bar[]</span></paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 2 ] );
+			expect( range.start.path ).to.deep.equal( [ 2 ] );
+			expect( range.end.path ).to.deep.equal( [ 2 ] );
 		} );
 
 		it( 'returns selection focus if not in a block', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'foo[]bar' );
 
-			const pos = findOptimalInsertionPosition( doc.selection, model );
+			const range = findOptimalInsertionRange( doc.selection, model );
 
-			expect( pos.path ).to.deep.equal( [ 3 ] );
+			expect( range.start.path ).to.deep.equal( [ 3 ] );
+			expect( range.end.path ).to.deep.equal( [ 3 ] );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/7438
@@ -444,9 +453,10 @@ describe( 'widget utils', () => {
 					writer.setSelectionAttribute( 'widget-type-around', 'before' );
 				} );
 
-				const pos = findOptimalInsertionPosition( doc.selection, model );
+				const range = findOptimalInsertionRange( doc.selection, model );
 
-				expect( pos.path ).to.deep.equal( [ 1 ] );
+				expect( range.start.path ).to.deep.equal( [ 1 ] );
+				expect( range.end.path ).to.deep.equal( [ 1 ] );
 			} );
 
 			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" after a widget)', () => {
@@ -456,17 +466,19 @@ describe( 'widget utils', () => {
 					writer.setSelectionAttribute( 'widget-type-around', 'after' );
 				} );
 
-				const pos = findOptimalInsertionPosition( doc.selection, model );
+				const range = findOptimalInsertionRange( doc.selection, model );
 
-				expect( pos.path ).to.deep.equal( [ 2 ] );
+				expect( range.start.path ).to.deep.equal( [ 2 ] );
+				expect( range.end.path ).to.deep.equal( [ 2 ] );
 			} );
 
-			it( 'should return a position after a selected widget (block and an object) ("fake caret" not displayed)', () => {
+			it( 'should return a range on a selected widget (block and an object) ("fake caret" not displayed)', () => {
 				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
 
-				const pos = findOptimalInsertionPosition( doc.selection, model );
+				const range = findOptimalInsertionRange( doc.selection, model );
 
-				expect( pos.path ).to.deep.equal( [ 2 ] );
+				expect( range.start.path ).to.deep.equal( [ 1 ] );
+				expect( range.end.path ).to.deep.equal( [ 2 ] );
 			} );
 
 			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" before a widget)', () => {
@@ -476,9 +488,10 @@ describe( 'widget utils', () => {
 					writer.setSelectionAttribute( 'widget-type-around', 'before' );
 				} );
 
-				const pos = findOptimalInsertionPosition( doc.selection, model );
+				const range = findOptimalInsertionRange( doc.selection, model );
 
-				expect( pos.path ).to.deep.equal( [ 1 ] );
+				expect( range.start.path ).to.deep.equal( [ 1 ] );
+				expect( range.end.path ).to.deep.equal( [ 1 ] );
 			} );
 
 			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" after a widget)', () => {
@@ -488,17 +501,19 @@ describe( 'widget utils', () => {
 					writer.setSelectionAttribute( 'widget-type-around', 'after' );
 				} );
 
-				const pos = findOptimalInsertionPosition( doc.selection, model );
+				const range = findOptimalInsertionRange( doc.selection, model );
 
-				expect( pos.path ).to.deep.equal( [ 2 ] );
+				expect( range.start.path ).to.deep.equal( [ 2 ] );
+				expect( range.end.path ).to.deep.equal( [ 2 ] );
 			} );
 
-			it( 'should return a position after a selected widget (an object) ("fake caret" not displayed)', () => {
+			it( 'should return a range on a selected widget (an object) ("fake caret" not displayed)', () => {
 				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
 
-				const pos = findOptimalInsertionPosition( doc.selection, model );
+				const range = findOptimalInsertionRange( doc.selection, model );
 
-				expect( pos.path ).to.deep.equal( [ 2 ] );
+				expect( range.start.path ).to.deep.equal( [ 1 ] );
+				expect( range.end.path ).to.deep.equal( [ 2 ] );
 			} );
 		} );
 	} );
