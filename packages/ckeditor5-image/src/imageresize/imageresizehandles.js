@@ -58,12 +58,16 @@ export default class ImageResizeHandles extends Plugin {
 
 		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
 			// The resizer must be attached only to images loaded by the `ImageInsert`, `ImageUpload` or `LinkImage` plugins.
-			if ( !domEvent.target.matches( 'figure.image.ck-widget > img, figure.image.ck-widget > a > img' ) ) {
+			if ( !domEvent.target.matches(
+				'figure.image.ck-widget > img,' +
+				'figure.image.ck-widget > a > img,' +
+				'span.image-inline.ck-widget > img'
+			) ) {
 				return;
 			}
 
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
-			const widgetView = imageView.findAncestor( 'figure' );
+			const widgetView = imageView.findAncestor( 'figure' ) || imageView.findAncestor( 'span' );
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 
 			if ( resizer ) {

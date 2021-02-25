@@ -122,7 +122,7 @@ export default class ImageResizeEditing extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
-					name: imageType === 'image' ? 'figure' : 'span',
+					name: imageType === 'image' ? 'figure' : 'img',
 					styles: {
 						width: /.+/
 					}

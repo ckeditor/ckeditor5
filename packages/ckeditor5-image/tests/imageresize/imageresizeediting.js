@@ -143,14 +143,14 @@ describe( 'ImageResizeEditing', () => {
 
 		it( 'upcasts 100px width correctly', () => {
 			editor.setData(
-				`<p>Lorem <span class="image-inline" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></span> ipsum</p>`
+				`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;"></span> ipsum</p>`
 			);
 
 			expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.equal( '100px' );
 		} );
 
 		it( 'upcasts 50% width correctly', () => {
-			editor.setData( `<p>Lorem <span class="image-inline" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></span> ipsum</p>` );
+			editor.setData( `<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="width:50%;"></span> ipsum</p>` );
 
 			expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.equal( '50%' );
 		} );
