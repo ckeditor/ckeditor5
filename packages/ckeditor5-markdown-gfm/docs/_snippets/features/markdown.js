@@ -22,8 +22,10 @@ import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, Markdown,
-			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine ],
+		plugins: [
+			ArticlePluginSet, EasyImage, ImageUpload, CloudServices, Markdown,
+			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
+		],
 		toolbar: [
 			'heading',
 			'|',

@@ -37,6 +37,8 @@ const URL_REG_EXP = new RegExp(
 				'(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))' +
 				'|' +
 				'(' +
+					// Do not allow `www.foo` - see https://github.com/ckeditor/ckeditor5/issues/8050.
+					'((?!www\\.)|(www\\.))' +
 					// Host & domain names.
 					'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
 					// TLD identifier name.
@@ -54,9 +56,9 @@ const URL_REG_EXP = new RegExp(
 			'(www.|(\\S+@))' +
 			// Host & domain names.
 			'((?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.))+' +
-	// TLD identifier name.
-	'(?:[a-z\\u00a1-\\uffff]{2,})' +
-	')' +
+			// TLD identifier name.
+			'(?:[a-z\\u00a1-\\uffff]{2,})' +
+		')' +
 	')$', 'i' );
 
 const URL_GROUP_IN_MATCH = 2;

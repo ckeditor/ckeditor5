@@ -33,8 +33,22 @@ const dataDiv = document.querySelector( '#data' );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, TableToolbar, PageBreak,
-			TableProperties, TableCellProperties, ImageUpload, CloudServices, EasyImage, PasteFromOffice, FontColor, FontBackgroundColor ],
+		plugins: [
+			ArticlePluginSet,
+			Strikethrough,
+			Underline,
+			Table,
+			TableToolbar,
+			PageBreak,
+			TableProperties,
+			TableCellProperties,
+			ImageUpload,
+			CloudServices,
+			EasyImage,
+			PasteFromOffice,
+			FontColor,
+			FontBackgroundColor
+		],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'pageBreak', 'undo', 'redo' ],
 		table: {

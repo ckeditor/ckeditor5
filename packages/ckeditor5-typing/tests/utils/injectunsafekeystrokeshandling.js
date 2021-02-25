@@ -17,6 +17,11 @@ describe( 'unsafe keystroke handling utils', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], ctrlKey: true } ), 'Ctrl+0' ).to.be.true;
 		} );
 
+		it( 'should return "true" for any keystroke with the Cmd key', () => {
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, metaKey: true } ), '⌘a' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], metaKey: true } ), '⌘0' ).to.be.true;
+		} );
+
 		it( 'should return "true" for all arrow keys', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.arrowup } ), 'arrow up' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.arrowdown } ), 'arrow down' ).to.be.true;
