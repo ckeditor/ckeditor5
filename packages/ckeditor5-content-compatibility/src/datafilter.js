@@ -211,10 +211,7 @@ export default class DataFilter {
 		} );
 
 		conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }`, ( evt, data, conversionApi ) => {
-				if ( data.item.name != modelName ) {
-					return;
-				}
+			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }:${ modelName }`, ( evt, data, conversionApi ) => {
 
 				if ( data.attributeNewValue === null ) {
 					return;
