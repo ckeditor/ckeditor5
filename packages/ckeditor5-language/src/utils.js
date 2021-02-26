@@ -7,7 +7,7 @@
  * @module language/utils
  */
 
-import { getLanguageDirection } from '@ckeditor/ckeditor5-utils/src/language';
+import { getLanguageDirection } from 'ckeditor5/src/utils';
 
 /**
  * Returns language attribute value in a human-readable text format:
