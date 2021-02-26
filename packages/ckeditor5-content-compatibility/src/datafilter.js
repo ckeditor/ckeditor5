@@ -7,7 +7,7 @@
  * @module content-compatibility/datafilter
  */
 
-import { cloneDeep, uniq } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities } from 'ckeditor5/src/utils';
@@ -168,24 +168,24 @@ export default class DataFilter {
 					}
 				}
 
-				const allowedAttributes = mergeMatchResults( matches );
+				const { attributes, classes, styles } = mergeMatchResults( matches );
 				const viewAttributes = {};
 
 				// Stash attributes.
-				for ( const key of allowedAttributes.attributes ) {
+				for ( const key of attributes.values() ) {
 					viewAttributes[ key ] = viewElement.getAttribute( key );
 				}
 
 				// Stash classes.
-				if ( allowedAttributes.classes.length ) {
-					viewAttributes.class = allowedAttributes.classes.join( ' ' );
+				if ( classes.size ) {
+					viewAttributes.class = [ ...classes.values() ].join( ' ' );
 				}
 
 				// Stash styles.
-				if ( allowedAttributes.styles.length ) {
+				if ( styles.size ) {
 					const stylesObj = {};
 
-					for ( const styleName of allowedAttributes.styles ) {
+					for ( const styleName of styles.values() ) {
 						stylesObj[ styleName ] = viewElement.getStyle( styleName );
 					}
 
@@ -295,17 +295,13 @@ function matchAll( viewElement, rules ) {
  * @returns {Array} result.styles Array with matched style names.
  */
 function mergeMatchResults( matches ) {
-	const matchResult = { attributes: [], classes: [], styles: [] };
+	const matchResult = { attributes: new Set(), classes: new Set(), styles: new Set() };
 
 	for ( const match of matches ) {
 		for ( const key in matchResult ) {
 			const values = match.match[ key ] || [];
-			matchResult[ key ].push( ...values );
+			values.forEach( value => matchResult[ key ].add( value ) );
 		}
-	}
-
-	for ( const key in matchResult ) {
-		matchResult[ key ] = uniq( matchResult[ key ] );
 	}
 
 	return matchResult;
