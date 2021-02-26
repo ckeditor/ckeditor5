@@ -48,7 +48,7 @@ class ExtendHTMLSupport extends Plugin {
 
 		// Let's extend 'section' with some attributes. Data filter will take care of
 		// creating proper converters and attribute matchers:
-		dataFilter.allowAttributes( { name: 'section', attributes: { id: /[^]/, 'data-foo': /[^]/ } } );
+		dataFilter.allowAttributes( { name: 'section', attributes: { id: /[^]/ } } );
 		dataFilter.allowAttributes( { name: 'section', classes: /[^]/ } );
 		dataFilter.allowAttributes( { name: 'section', styles: { color: 'red' } } );
 
