@@ -4,6 +4,7 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import DataSchema from '../src/dataschema';
 import DataFilter from '../src/datafilter';
 
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -18,7 +19,7 @@ describe( 'DataFilter', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				dataFilter = new DataFilter( editor );
+				dataFilter = new DataFilter( editor, new DataSchema() );
 			} );
 	} );
 

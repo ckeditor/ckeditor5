@@ -25,9 +25,7 @@ import { toArray } from 'ckeditor5/src/utils';
  *		dataSchema.enable( 'my-section' );
  */
 export default class DataSchema {
-	constructor( editor ) {
-		this.editor = editor;
-
+	constructor() {
 		this._definitions = new Map();
 
 		// Add block elements.
