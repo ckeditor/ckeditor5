@@ -13,11 +13,13 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import DataSchema from '../../src/dataschema';
 import DataFilter from '../../src/datafilter';
 
 class ExtendHTMLSupport extends Plugin {
 	init() {
-		const dataFilter = new DataFilter( this.editor );
+		const dataSchema = new DataSchema();
+		const dataFilter = new DataFilter( this.editor, dataSchema );
 
 		dataFilter.allowElement( { name: /article|section/ } );
 
@@ -28,8 +30,6 @@ class ExtendHTMLSupport extends Plugin {
 		dataFilter.allowElement( { name: /details|summary/ } );
 
 		dataFilter.allowElement( { name: /dl|dt|dd/ } );
-
-		window.dataFilter = dataFilter;
 	}
 }
 

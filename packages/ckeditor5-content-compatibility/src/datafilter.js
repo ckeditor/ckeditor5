@@ -14,8 +14,6 @@ import { priorities } from 'ckeditor5/src/utils';
 
 import StylesMap from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
-import DataSchema from './dataschema';
-
 const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
 
 /**
@@ -46,10 +44,10 @@ const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
  *		} );
  */
 export default class DataFilter {
-	constructor( editor ) {
+	constructor( editor, dataSchema ) {
 		this.editor = editor;
 
-		this.dataSchema = new DataSchema( editor );
+		this._dataSchema = dataSchema;
 
 		this._allowedAttributes = new Map();
 		this._disallowedAttributes = new Map();
@@ -61,7 +59,7 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all view elements which should be allowed.
 	 */
 	allowElement( config ) {
-		for ( const definition of this.dataSchema.getDefinitionsForView( config.name ) ) {
+		for ( const definition of this._dataSchema.getDefinitionsForView( config.name ) ) {
 			for ( const reference of definition.references ) {
 				this._registerElement( reference );
 			}
@@ -104,7 +102,7 @@ export default class DataFilter {
 		// We don't want match by name when matching attributes. Matcher will be already attached to specific definition.
 		delete config.name;
 
-		for ( const definition of this.dataSchema.getDefinitionsForView( viewName ) ) {
+		for ( const definition of this._dataSchema.getDefinitionsForView( viewName ) ) {
 			getOrCreateMatcher( definition.view, rules ).add( config );
 		}
 	}
