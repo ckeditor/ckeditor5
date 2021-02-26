@@ -30,6 +30,9 @@ import {
 import {
 	isNonTypingKeystroke
 } from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+import { findDropTargetRange } from '@ckeditor/ckeditor5-clipboard/src/dragdrop';
+import { getDropViewRange } from '@ckeditor/ckeditor5-clipboard/src/clipboardobserver';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
@@ -499,18 +502,53 @@ export default class WidgetTypeAround extends Plugin {
 		this._listenToIfEnabled( editingView.document, 'mousedown', ( evt, domEventData ) => {
 			const button = getClosestTypeAroundDomButton( domEventData.domTarget );
 
-			if ( !button ) {
-				return;
+			if ( button ) {
+				const buttonPosition = getTypeAroundButtonPosition( button );
+				const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
+				const widgetModelElement = editor.editing.mapper.toModelElement( widgetViewElement );
+
+				this._insertParagraph( widgetModelElement, buttonPosition );
+
+				domEventData.preventDefault();
+				evt.stop();
+			} else {
+				const viewRange = getDropViewRange( editingView, domEventData.domEvent );
+				const modelRange = findDropTargetRange( editor, viewRange ? [ viewRange ] : null, domEventData.target );
+				const modelElement = modelRange.getContainedElement();
+
+				if ( !modelElement ) {
+					return;
+				}
+
+				const viewElement = editor.editing.mapper.toViewElement( modelElement );
+
+				if ( !isTypeAroundWidget( viewElement, modelElement, editor.model.schema ) ) {
+					return;
+				}
+
+				domEventData.preventDefault();
+				evt.stop();
+
+				const domElement = editor.editing.view.domConverter.mapViewToDom( viewElement );
+				const rect = new Rect( domElement );
+				const x = domEventData.domEvent.clientX;
+				const y = domEventData.domEvent.clientY;
+
+				editor.model.change( writer => {
+					editor.editing.view.focus();
+					writer.setSelection( modelRange );
+
+					if ( rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom ) {
+						return;
+					}
+
+					if ( y < ( rect.top + rect.bottom ) / 2 ) {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+					} else {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+					}
+				} );
 			}
-
-			const buttonPosition = getTypeAroundButtonPosition( button );
-			const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
-			const widgetModelElement = editor.editing.mapper.toModelElement( widgetViewElement );
-
-			this._insertParagraph( widgetModelElement, buttonPosition );
-
-			domEventData.preventDefault();
-			evt.stop();
 		} );
 	}
 

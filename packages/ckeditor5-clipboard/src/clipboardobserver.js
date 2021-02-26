@@ -84,7 +84,7 @@ export default class ClipboardObserver extends DomEventObserver {
 	}
 }
 
-function getDropViewRange( view, domEvent ) {
+export function getDropViewRange( view, domEvent ) {
 	const domDoc = domEvent.target.ownerDocument;
 	const x = domEvent.clientX;
 	const y = domEvent.clientY;

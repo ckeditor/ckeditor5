@@ -535,7 +535,7 @@ export default class DragDrop extends Plugin {
 // @param {Array.<module:engine/view/range~Range>} targetViewRanges
 // @param {module:engine/view/element~Element} targetViewElement
 // @returns {module:engine/model/range~Range|null}
-function findDropTargetRange( editor, targetViewRanges, targetViewElement ) {
+export function findDropTargetRange( editor, targetViewRanges, targetViewElement ) {
 	const model = editor.model;
 	const mapper = editor.editing.mapper;
 
