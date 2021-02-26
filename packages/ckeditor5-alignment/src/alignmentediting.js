@@ -87,11 +87,11 @@ function buildDowncastInlineDefinition( options ) {
 		view: {}
 	};
 
-	for ( const option of options ) {
-		definition.view[ option.name ] = {
+	for ( const { name } of options ) {
+		definition.view[ name ] = {
 			key: 'style',
 			value: {
-				'text-align': option.name
+				'text-align': name
 			}
 		};
 	}
@@ -104,17 +104,17 @@ function buildDowncastInlineDefinition( options ) {
 function buildUpcastInlineDefinitions( options ) {
 	const definitions = [];
 
-	for ( const option of options ) {
+	for ( const { name } of options ) {
 		definitions.push( {
 			view: {
 				key: 'style',
 				value: {
-					'text-align': option.name
+					'text-align': name
 				}
 			},
 			model: {
 				key: 'alignment',
-				value: option.name
+				value: name
 			}
 		} );
 	}

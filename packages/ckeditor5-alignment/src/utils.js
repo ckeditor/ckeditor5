@@ -19,10 +19,6 @@ import { CKEditorError, logWarning } from 'ckeditor5/src/utils';
  */
 export const supportedOptions = [ 'left', 'right', 'center', 'justify' ];
 
-const optionNameToOptionMap = Object.fromEntries(
-	supportedOptions.map( option => [ option, { name: option } ] )
-);
-
 /**
  * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
  *
@@ -65,7 +61,7 @@ export function normalizeAlignmentOptions( configuredOptions ) {
 			if ( typeof option == 'string' ) {
 				result = { name: option };
 			} else {
-				result = { ...optionNameToOptionMap[ option.name ], ...option };
+				result = option;
 			}
 
 			return result;
