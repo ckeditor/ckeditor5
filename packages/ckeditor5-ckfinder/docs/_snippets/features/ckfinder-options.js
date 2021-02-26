@@ -9,7 +9,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-ckfinder-options' ), {
 		toolbar: {
 			items: [
-				'ckfinder', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
+				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|', 'ckfinder'
 			],
 			viewportTopOffset: 100
 		},
