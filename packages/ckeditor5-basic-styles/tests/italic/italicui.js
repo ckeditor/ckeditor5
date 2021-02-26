@@ -10,6 +10,7 @@ import ItalicEditing from '../../src/italic/italicediting';
 import ItalicUI from '../../src/italic/italicui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -80,7 +81,8 @@ describe( 'ItalicUI', () => {
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.i,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		} );

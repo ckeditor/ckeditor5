@@ -16,10 +16,6 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "A label of the button that allows inserting a new code block into the editor content."
-msgid "Insert code block"
-msgstr "Codeblok invoegen"
-
-msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
-msgid "Plain text"
-msgstr "Platte tekst"
+msgctxt "The label of the select all toolbar button."
+msgid "Select all"
+msgstr "Selecteer alles"
