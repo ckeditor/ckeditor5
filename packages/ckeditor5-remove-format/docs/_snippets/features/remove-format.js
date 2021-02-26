@@ -9,8 +9,6 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
-				'removeformat',
-				'|',
 				'bold',
 				'italic',
 				'underline',
@@ -18,13 +16,17 @@ ClassicEditor
 				'code',
 				'subscript',
 				'superscript',
+				'|',
 				'fontSize',
 				'fontFamily',
+				'|',
 				'alignment',
 				'link',
 				'|',
 				'undo',
-				'redo'
+				'redo',
+				'|',
+				'removeformat'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
