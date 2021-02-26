@@ -16,15 +16,13 @@ import AlignmentCommand from '../src/alignmentcommand';
 describe( 'AlignmentEditing', () => {
 	let editor, model;
 
-	beforeEach( () => {
-		return VirtualTestEditor
+	beforeEach( async () => {
+		editor = await VirtualTestEditor
 			.create( {
 				plugins: [ AlignmentEditing, Paragraph ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
 			} );
+
+		model = editor.model;
 	} );
 
 	afterEach( () => {
@@ -50,15 +48,13 @@ describe( 'AlignmentEditing', () => {
 	} );
 
 	describe( 'integration', () => {
-		beforeEach( () => {
-			return VirtualTestEditor
+		beforeEach( async () => {
+			const editor = await VirtualTestEditor
 				.create( {
 					plugins: [ AlignmentEditing, ImageCaptionEditing, Paragraph, ListEditing, HeadingEditing ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
 				} );
+
+			model = editor.model;
 		} );
 
 		it( 'is allowed on paragraph', () => {
@@ -96,46 +92,150 @@ describe( 'AlignmentEditing', () => {
 
 				expect( editor.getData() ).to.equal( '<p>x</p>' );
 			} );
+
+			describe( 'className', () => {
+				it( 'adds converters to the data pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+					const data = '<p class="foo-left">x</p>';
+
+					newEditor.setData( data );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]x</paragraph>' );
+
+					return newEditor.destroy();
+				} );
+
+				it( 'adds a converter to the view pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+
+					setModelData( model, '<paragraph alignment="center">[]x</paragraph>' );
+
+					expect( newEditor.getData() ).to.equal( '<p class="foo-center">x</p>' );
+
+					newEditor.execute( 'alignment', { value: 'left' } );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]x</paragraph>' );
+					expect( newEditor.getData() ).to.equal( '<p>x</p>' );
+
+					return newEditor.destroy();
+				} );
+			} );
 		} );
 
 		describe( 'RTL content', () => {
-			it( 'adds converters to the data pipeline', () => {
-				return VirtualTestEditor
+			it( 'adds converters to the data pipeline', async () => {
+				const newEditor = await VirtualTestEditor
 					.create( {
 						language: {
 							content: 'ar'
 						},
 						plugins: [ AlignmentEditing, Paragraph ]
-					} )
-					.then( newEditor => {
-						const model = newEditor.model;
-						const data = '<p style="text-align:left;">x</p>';
-
-						newEditor.setData( data );
-
-						expect( getModelData( model ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
-						expect( newEditor.getData() ).to.equal( '<p style="text-align:left;">x</p>' );
-
-						return newEditor.destroy();
 					} );
+				const model = newEditor.model;
+				const data = '<p style="text-align:left;">x</p>';
+
+				newEditor.setData( data );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
+				expect( newEditor.getData() ).to.equal( '<p style="text-align:left;">x</p>' );
+
+				return newEditor.destroy();
 			} );
 
-			it( 'adds a converter to the view pipeline', () => {
-				return VirtualTestEditor
+			it( 'adds a converter to the view pipeline', async () => {
+				const newEditor = await VirtualTestEditor
 					.create( {
 						language: {
 							content: 'ar'
 						},
 						plugins: [ AlignmentEditing, Paragraph ]
-					} )
-					.then( newEditor => {
-						const model = newEditor.model;
-
-						setModelData( model, '<paragraph alignment="left">[]x</paragraph>' );
-						expect( newEditor.getData() ).to.equal( '<p style="text-align:left;">x</p>' );
-
-						return newEditor.destroy();
 					} );
+				const model = newEditor.model;
+
+				setModelData( model, '<paragraph alignment="left">[]x</paragraph>' );
+				expect( newEditor.getData() ).to.equal( '<p style="text-align:left;">x</p>' );
+
+				return newEditor.destroy();
+			} );
+
+			describe( 'className', () => {
+				it( 'adds a converter to the view pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							language: {
+								content: 'ar'
+							},
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+
+					setModelData( model, '<paragraph>[]x</paragraph>' );
+
+					newEditor.execute( 'alignment', { value: 'left' } );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
+					expect( newEditor.getData() ).to.equal( '<p class="foo-left">x</p>' );
+
+					return newEditor.destroy();
+				} );
+
+				it( 'adds converters to the data pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							language: {
+								content: 'ar'
+							},
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+					const data = '<p style="text-align:left;">x</p>';
+
+					newEditor.setData( data );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
+
+					return newEditor.destroy();
+				} );
 			} );
 		} );
 
@@ -175,6 +275,56 @@ describe( 'AlignmentEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
 		} );
+
+		describe( 'className', () => {
+			it( 'adds a converter to the view pipeline', async () => {
+				const newEditor = await VirtualTestEditor
+					.create( {
+						plugins: [ AlignmentEditing, Paragraph ],
+						alignment: {
+							options: [
+								{ name: 'left', className: 'foo-left' },
+								{ name: 'right', className: 'foo-right' },
+								{ name: 'center', className: 'foo-center' },
+								{ name: 'justify', className: 'foo-justify' }
+							]
+						}
+					} );
+				const model = newEditor.model;
+
+				setModelData( model, '<paragraph>[]x</paragraph>' );
+
+				newEditor.execute( 'alignment', { value: 'center' } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
+				expect( newEditor.getData() ).to.equal( '<p class="foo-center">x</p>' );
+
+				return newEditor.destroy();
+			} );
+
+			it( 'adds converters to the data pipeline', async () => {
+				const newEditor = await VirtualTestEditor
+					.create( {
+						plugins: [ AlignmentEditing, Paragraph ],
+						alignment: {
+							options: [
+								{ name: 'left', className: 'foo-left' },
+								{ name: 'right', className: 'foo-right' },
+								{ name: 'center', className: 'foo-center' },
+								{ name: 'justify', className: 'foo-justify' }
+							]
+						}
+					} );
+				const model = newEditor.model;
+				const data = '<p class="foo-center">x</p>';
+
+				newEditor.setData( data );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
+
+				return newEditor.destroy();
+			} );
+		} );
 	} );
 
 	describe( 'right alignment', () => {
@@ -193,46 +343,148 @@ describe( 'AlignmentEditing', () => {
 
 				expect( editor.getData() ).to.equal( '<p style="text-align:right;">x</p>' );
 			} );
+
+			describe( 'className', () => {
+				it( 'adds a converter to the view pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+
+					setModelData( model, '<paragraph>[]x</paragraph>' );
+
+					newEditor.execute( 'alignment', { value: 'right' } );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph alignment="right">[]x</paragraph>' );
+					expect( newEditor.getData() ).to.equal( '<p class="foo-right">x</p>' );
+
+					return newEditor.destroy();
+				} );
+
+				it( 'adds converters to the data pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+					const data = '<p class="foo-right">x</p>';
+
+					newEditor.setData( data );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph alignment="right">[]x</paragraph>' );
+
+					return newEditor.destroy();
+				} );
+			} );
 		} );
 
 		describe( 'RTL content', () => {
-			it( 'adds converters to the data pipeline', () => {
-				return VirtualTestEditor
+			it( 'adds converters to the data pipeline', async () => {
+				const newEditor = await VirtualTestEditor
 					.create( {
 						language: {
 							content: 'ar'
 						},
 						plugins: [ AlignmentEditing, Paragraph ]
-					} )
-					.then( newEditor => {
-						const model = newEditor.model;
-						const data = '<p style="text-align:right;">x</p>';
-
-						newEditor.setData( data );
-
-						expect( getModelData( model ) ).to.equal( '<paragraph>[]x</paragraph>' );
-						expect( newEditor.getData() ).to.equal( '<p>x</p>' );
-
-						return newEditor.destroy();
 					} );
+				const model = newEditor.model;
+				const data = '<p style="text-align:right;">x</p>';
+
+				newEditor.setData( data );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]x</paragraph>' );
+				expect( newEditor.getData() ).to.equal( '<p>x</p>' );
+
+				return newEditor.destroy();
 			} );
 
-			it( 'adds a converter to the view pipeline', () => {
-				return VirtualTestEditor
+			it( 'adds a converter to the view pipeline', async () => {
+				const newEditor = await VirtualTestEditor
 					.create( {
 						language: {
 							content: 'ar'
 						},
 						plugins: [ AlignmentEditing, Paragraph ]
-					} )
-					.then( newEditor => {
-						const model = newEditor.model;
-
-						setModelData( model, '<paragraph alignment="right">[]x</paragraph>' );
-						expect( newEditor.getData() ).to.equal( '<p>x</p>' );
-
-						return newEditor.destroy();
 					} );
+				const model = newEditor.model;
+
+				setModelData( model, '<paragraph alignment="right">[]x</paragraph>' );
+				expect( newEditor.getData() ).to.equal( '<p>x</p>' );
+
+				return newEditor.destroy();
+			} );
+
+			describe( 'className', () => {
+				it( 'adds a converter to the view pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							language: {
+								content: 'ar'
+							},
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+
+					setModelData( model, '<paragraph>[]x</paragraph>' );
+
+					newEditor.execute( 'alignment', { value: 'right' } );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]x</paragraph>' );
+					expect( newEditor.getData() ).to.equal( '<p>x</p>' );
+
+					return newEditor.destroy();
+				} );
+
+				it( 'adds converters to the data pipeline', async () => {
+					const newEditor = await VirtualTestEditor
+						.create( {
+							language: {
+								content: 'ar'
+							},
+							plugins: [ AlignmentEditing, Paragraph ],
+							alignment: {
+								options: [
+									{ name: 'left', className: 'foo-left' },
+									{ name: 'right', className: 'foo-right' },
+									{ name: 'center', className: 'foo-center' },
+									{ name: 'justify', className: 'foo-justify' }
+								]
+							}
+						} );
+					const model = newEditor.model;
+					const data = '<p class="foo-right">x</p>';
+
+					newEditor.setData( data );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]x</paragraph>' );
+
+					return newEditor.destroy();
+				} );
 			} );
 		} );
 	} );
@@ -251,6 +503,56 @@ describe( 'AlignmentEditing', () => {
 			setModelData( model, '<paragraph alignment="justify">[]x</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:justify;">x</p>' );
+		} );
+
+		describe( 'className', () => {
+			it( 'adds a converter to the view pipeline', async () => {
+				const newEditor = await VirtualTestEditor
+					.create( {
+						plugins: [ AlignmentEditing, Paragraph ],
+						alignment: {
+							options: [
+								{ name: 'left', className: 'foo-left' },
+								{ name: 'right', className: 'foo-right' },
+								{ name: 'center', className: 'foo-center' },
+								{ name: 'justify', className: 'foo-justify' }
+							]
+						}
+					} );
+				const model = newEditor.model;
+
+				setModelData( model, '<paragraph>[]x</paragraph>' );
+
+				newEditor.execute( 'alignment', { value: 'justify' } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph alignment="justify">[]x</paragraph>' );
+				expect( newEditor.getData() ).to.equal( '<p class="foo-justify">x</p>' );
+
+				return newEditor.destroy();
+			} );
+
+			it( 'adds converters to the data pipeline', async () => {
+				const newEditor = await VirtualTestEditor
+					.create( {
+						plugins: [ AlignmentEditing, Paragraph ],
+						alignment: {
+							options: [
+								{ name: 'left', className: 'foo-left' },
+								{ name: 'right', className: 'foo-right' },
+								{ name: 'center', className: 'foo-center' },
+								{ name: 'justify', className: 'foo-justify' }
+							]
+						}
+					} );
+				const model = newEditor.model;
+				const data = '<p class="foo-justify">x</p>';
+
+				newEditor.setData( data );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph alignment="justify">[]x</paragraph>' );
+
+				return newEditor.destroy();
+			} );
 		} );
 	} );
 
@@ -297,7 +599,14 @@ describe( 'AlignmentEditing', () => {
 		describe( 'options', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
-					expect( editor.config.get( 'alignment.options' ) ).to.deep.equal( [ 'left', 'right', 'center', 'justify' ] );
+					expect( editor.config.get( 'alignment.options' ) ).to.deep.equal(
+						[
+							{ name: 'left' },
+							{ name: 'right' },
+							{ name: 'center' },
+							{ name: 'justify' }
+						]
+					);
 				} );
 			} );
 		} );
