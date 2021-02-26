@@ -169,16 +169,16 @@ export default class DataFilter {
 				}
 
 				const allowedAttributes = mergeMatchResults( matches );
-				const viewAttributes = [];
+				const viewAttributes = {};
 
 				// Stash attributes.
 				for ( const key of allowedAttributes.attributes ) {
-					viewAttributes.push( [ key, viewElement.getAttribute( key ) ] );
+					viewAttributes[ key ] = viewElement.getAttribute( key );
 				}
 
 				// Stash classes.
 				if ( allowedAttributes.classes.length ) {
-					viewAttributes.push( [ 'class', allowedAttributes.classes.join( ' ' ) ] );
+					viewAttributes.class = allowedAttributes.classes.join( ' ' );
 				}
 
 				// Stash styles.
@@ -189,12 +189,12 @@ export default class DataFilter {
 						stylesObj[ styleName ] = viewElement.getStyle( styleName );
 					}
 
-					viewAttributes.push( [ 'style', this.inlineStyles( stylesObj ) ] );
+					viewAttributes.style = this.inlineStyles( stylesObj );
 				}
 
 				const element = conversionApi.writer.createElement( modelName );
 
-				if ( viewAttributes.length ) {
+				if ( Object.keys( viewAttributes ).length ) {
 					conversionApi.writer.setAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes, element );
 				}
 
@@ -212,7 +212,9 @@ export default class DataFilter {
 
 		conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }:${ modelName }`, ( evt, data, conversionApi ) => {
-				if ( data.attributeNewValue === null ) {
+				const viewAttributes = data.attributeNewValue;
+
+				if ( viewAttributes === null ) {
 					return;
 				}
 
@@ -224,9 +226,9 @@ export default class DataFilter {
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 				// Apply new values.
-				data.attributeNewValue.forEach( ( [ key, value ] ) => {
-					viewWriter.setAttribute( key, value, viewElement );
-				} );
+				for ( const key in viewAttributes ) {
+					viewWriter.setAttribute( key, viewAttributes[ key ], viewElement );
+				}
 			} );
 		} );
 	}
