@@ -626,8 +626,8 @@ export default class WidgetTypeAround extends Plugin {
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 
 			const isFakeCaretBefore = typeAroundFakeCaretPosition === 'before';
-			const isForwardDelete = direction == 'forward';
-			const shouldDeleteEntireWidget = isFakeCaretBefore === isForwardDelete;
+			const isDeleteForward = direction == 'forward';
+			const shouldDeleteEntireWidget = isFakeCaretBefore === isDeleteForward;
 
 			if ( shouldDeleteEntireWidget ) {
 				editor.execute( 'delete', {
@@ -645,7 +645,7 @@ export default class WidgetTypeAround extends Plugin {
 					if ( !range.isCollapsed ) {
 						model.change( writer => {
 							writer.setSelection( range );
-							editor.execute( isForwardDelete ? 'forwardDelete' : 'delete' );
+							editor.execute( isDeleteForward ? 'deleteForward' : 'delete' );
 						} );
 					} else {
 						const probe = model.createSelection( range.start );
@@ -656,11 +656,11 @@ export default class WidgetTypeAround extends Plugin {
 						if ( !probe.focus.isEqual( range.start ) ) {
 							model.change( writer => {
 								writer.setSelection( range );
-								editor.execute( isForwardDelete ? 'forwardDelete' : 'delete' );
+								editor.execute( isDeleteForward ? 'deleteForward' : 'delete' );
 							} );
 						}
 						// If there is no non-collapsed range to be deleted then we are sure that there is an empty element
-						// next to a widget that should be removed. "delete" and "forwardDelete" commands cannot get rid of it
+						// next to a widget that should be removed. "delete" and "deleteForward" commands cannot get rid of it
 						// so calling Model#deleteContent here manually.
 						else {
 							const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor( schema, range.start.parent );

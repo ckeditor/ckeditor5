@@ -24,7 +24,7 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'imageInsert',
+			'insertImage',
 			'insertTable',
 			'mediaEmbed',
 			'undo',

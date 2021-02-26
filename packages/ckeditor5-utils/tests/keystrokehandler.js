@@ -6,15 +6,23 @@
 import EmitterMixin from '../src/emittermixin';
 import KeystrokeHandler from '../src/keystrokehandler';
 import { keyCodes } from '../src/keyboard';
+import env from '../src/env';
 
 describe( 'KeystrokeHandler', () => {
+	const initialEnvMac = env.isMac;
 	let emitter, keystrokes;
 
 	beforeEach( () => {
+		env.isMac = false;
+
 		emitter = Object.create( EmitterMixin );
 		keystrokes = new KeystrokeHandler();
 
 		keystrokes.listenTo( emitter );
+	} );
+
+	afterEach( () => {
+		env.isMac = initialEnvMac;
 	} );
 
 	describe( 'listenTo()', () => {

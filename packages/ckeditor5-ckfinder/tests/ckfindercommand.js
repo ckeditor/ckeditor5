@@ -105,9 +105,9 @@ describe( 'CKFinderCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true when imageInsert or link command is enabled', () => {
+		it( 'should be true when insertImage or link command is enabled', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
-			const insertImage = editor.commands.get( 'imageInsert' );
+			const insertImage = editor.commands.get( 'insertImage' );
 			const linkCommand = editor.commands.get( 'link' );
 
 			insertImage.isEnabled = false;

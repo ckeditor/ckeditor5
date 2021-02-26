@@ -7,6 +7,7 @@
 
 import Editor from '../src/editor/editor';
 import PluginCollection from '../src/plugincollection';
+import Context from '../src/context';
 import Plugin from '../src/plugin';
 import ContextPlugin from '../src/contextplugin';
 import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -72,7 +73,7 @@ describe( 'PluginCollection', () => {
 		sinon.restore();
 	} );
 
-	describe( 'load()', () => {
+	describe( 'init()', () => {
 		it( 'should not fail when trying to load 0 plugins (empty array)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -552,6 +553,249 @@ describe( 'PluginCollection', () => {
 					expect( getPluginNames( loadedPlugins ) )
 						.to.deep.equal( [ 'A', 'B', 'Foo', 'C', 'D' ], 'order by returned value' );
 				} );
+		} );
+
+		describe( 'substituting plugins', () => {
+			afterEach( () => {
+				PluginA.prototype.init = undefined;
+				PluginA.requires = undefined;
+			} );
+
+			it( 'allows replacing a plugin in the "availablePlugins" collection (constructor)', () => {
+				const plugins = new PluginCollection( editor, [ PluginA, PluginB ] );
+
+				PluginA.prototype.init = function() {
+					throw new Error( 'Foo' );
+				};
+
+				const newPluginA = createPlugin( 'A' );
+
+				return plugins.init( [ 'A', 'B' ], [], [ newPluginA ] )
+					.then( () => {
+						expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+						expect( plugins.get( newPluginA ) ).to.be.an.instanceof( newPluginA );
+						expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					} );
+			} );
+
+			it( 'allows replacing a plugin in the "plugins" collection (init)', () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				PluginA.prototype.init = function() {
+					throw new Error( 'Foo' );
+				};
+
+				const newPluginA = createPlugin( 'A' );
+
+				return plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
+					.then( () => {
+						expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+						expect( plugins.get( newPluginA ) ).to.be.an.instanceof( newPluginA );
+						expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					} );
+			} );
+
+			it( 'throws an error if plugin for replacement is specified as a string', async () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				try {
+					await plugins.init( [ PluginA, PluginB ], [], [ 'A' ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-replace-plugin-invalid-type', null, {
+						pluginItem: 'A'
+					} );
+				}
+			} );
+
+			it( 'throws an error if plugin for replacement is not named', async () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				const newPluginA = createPlugin( 'A' );
+				newPluginA.pluginName = undefined;
+
+				try {
+					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-replace-plugin-missing-name', null, {
+						pluginItem: newPluginA
+					} );
+				}
+			} );
+
+			it( 'throws an error if plugin for replacement requires other plugins (soft requirements)', async () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				const newPluginA = createPlugin( 'A' );
+
+				newPluginA.requires = [ 'Foo' ];
+
+				try {
+					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-cannot-have-dependencies', null, {
+						pluginName: 'A'
+					} );
+				}
+			} );
+
+			it( 'throws an error if plugin for replacement requires other plugins (hard requirements)', async () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				const newPluginA = createPlugin( 'A' );
+
+				newPluginA.requires = [ PluginC ];
+
+				try {
+					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-cannot-have-dependencies', null, {
+						pluginName: 'A'
+					} );
+				}
+			} );
+
+			it( 'throws an error if the replaced requires other plugins (soft requirements)', async () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				const newPluginA = createPlugin( 'A' );
+
+				PluginA.requires = [ 'Foo' ];
+
+				try {
+					await plugins.init( [ PluginA, PluginB, PluginFoo ], [], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-replaced-plugin-cannot-have-dependencies', null, {
+						pluginName: 'A'
+					} );
+				}
+			} );
+
+			it( 'throws an error if the replaced requires other plugins (hard requirements)', async () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				const newPluginA = createPlugin( 'A' );
+
+				PluginA.requires = [ PluginC ];
+
+				try {
+					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-replaced-plugin-cannot-have-dependencies', null, {
+						pluginName: 'A'
+					} );
+				}
+			} );
+
+			it( 'throws an error if plugin for replacement exists (in "availablePlugins") but it will not be loaded', async () => {
+				const plugins = new PluginCollection( editor, [ PluginA ] );
+
+				const newPluginA = createPlugin( 'A' );
+
+				try {
+					await plugins.init( [ PluginB ], [], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-not-loaded', null, {
+						pluginName: 'A'
+					} );
+				}
+			} );
+
+			it( 'throws an error if plugin for replacement does not exist', async () => {
+				const plugins = new PluginCollection( editor, [] );
+
+				const newPluginA = createPlugin( 'A' );
+
+				try {
+					await plugins.init( [ PluginB ], [], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-not-exist', null, {
+						pluginName: 'A'
+					} );
+				}
+			} );
+
+			it( 'throws an error if replacing a removed plugin', async () => {
+				const plugins = new PluginCollection( editor, availablePlugins );
+
+				const newPluginA = createPlugin( 'A' );
+
+				try {
+					await plugins.init( [ PluginA, PluginB ], [ 'A' ], [ newPluginA ] )
+						.then( () => {
+							throw new Error( 'Expected to be rejected.' );
+						} );
+				} catch ( err ) {
+					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-not-loaded', null, {
+						pluginName: 'A'
+					} );
+				}
+			} );
+
+			// The Context feature has an own list of plugins that can be also substituted.
+			// Also, the context can be a part of an editor instance which means, that the context's
+			// plugins will be a part of the editor's plugins. However, the editor will not initialize the plugin,
+			// hence the substitute option could throw an error "plugincollection-plugin-for-replacing-not-loaded".
+			it( 'does not throw an error if a plugin for substitute was loaded by the Context feature', async () => {
+				class ContextPluginA extends ContextPlugin {
+					static get pluginName() {
+						return 'ContextPluginA';
+					}
+				}
+				class ContextPluginB extends ContextPlugin {
+					static get pluginName() {
+						return 'ContextPluginB';
+					}
+
+					static get requires() {
+						return [ ContextPluginA ];
+					}
+				}
+
+				class ContextPluginMockA extends ContextPlugin {
+					static get pluginName() {
+						return 'ContextPluginA';
+					}
+				}
+
+				const sharedConfig = {
+					plugins: [ ContextPluginB ],
+					substitutePlugins: [ ContextPluginMockA ]
+				};
+
+				const context = new Context( sharedConfig );
+
+				await context.initPlugins();
+
+				const plugins = new PluginCollection( editor, [ PluginA ], context.plugins );
+
+				return plugins.init( sharedConfig.plugins, [], sharedConfig.substitutePlugins );
+			} );
 		} );
 	} );
 

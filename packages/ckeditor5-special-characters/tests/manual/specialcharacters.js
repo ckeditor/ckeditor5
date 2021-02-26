@@ -19,13 +19,20 @@ import SpecialCharactersEssentials from '../../src/specialcharactersessentials';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, SpecialCharacters, SpecialCharactersEssentials ],
+		plugins: [
+			ArticlePluginSet,
+			ImageUpload,
+			CloudServices,
+			EasyImage,
+			SpecialCharacters,
+			SpecialCharactersEssentials
+		],
 		toolbar: [
 			'heading',
 			'|',
 			'bold', 'italic', 'numberedList', 'bulletedList',
 			'|',
-			'link', 'blockquote', 'imageUpload', 'insertTable', 'mediaEmbed',
+			'link', 'blockquote', 'uploadImage', 'insertTable', 'mediaEmbed',
 			'|',
 			'undo', 'redo',
 			'|',

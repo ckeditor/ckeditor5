@@ -29,8 +29,9 @@ export default class KeyObserver extends DomEventObserver {
 			keyCode: domEvt.keyCode,
 
 			altKey: domEvt.altKey,
-			ctrlKey: domEvt.ctrlKey || domEvt.metaKey,
+			ctrlKey: domEvt.ctrlKey,
 			shiftKey: domEvt.shiftKey,
+			metaKey: domEvt.metaKey,
 
 			get keystroke() {
 				return getCode( this );

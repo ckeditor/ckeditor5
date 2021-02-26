@@ -520,7 +520,7 @@ There are some special rules and tips for tests.
    * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
 
 		```js
-		expect( myMethodSpy ).to.be.calledOnce 
+		expect( myMethodSpy ).to.be.calledOnce
 		// expected myMethod to be called once but was called twice
 		```
 
@@ -603,6 +603,59 @@ this.hasChildren;
 this.canObserve;
 this.mustRefresh;
 ```
+
+### Buttons, Commands and Plugins
+
+#### Buttons
+
+All buttons should follow the **verb + noun** or the **noun** convention. Examples:
+
+* The **verb + noun** convention:
+	* `insertTable`
+	* `selectAll`
+	* `uploadImage`
+* The **noun** convention:
+	* `bold`
+	* `mediaEmbed`
+	* `restrictedEditing`
+
+#### Commands
+
+As for commands it is trickier, because there are many more possible combinations of their names than there are for buttons. Examples:
+
+* The **feature-related** convention:
+	* **noun-based** case:
+		* `codeBlock`
+		* `fontColor`
+		* `shiftEnter`
+	* **verb-based** case:
+		* `indent`
+		* `removeFormat`
+		* `selectAll`
+* The **feature + sub-feature** convention:
+	* `imageStyle`
+	* `imageTextAlternative`
+	* `tableAlignment`
+
+For commands, the **noun + verb** (or the **feature + action**) naming conventions **should not be used**, because it does not sound natural (_what do_ vs. _do what_). In most cases the proper name should start with the **action** followed by the **feature** name:
+
+* `checkTodoList`
+* `insertTable`
+* `uploadImage`
+
+#### Plugins
+
+Plugins should follow the **feature** or the **feature + sub-feature** convention. Examples:
+* The **feature** convention:
+	* `Bold`
+	* `Paragraph`
+	* `SpecialCharacters`
+* The **feature + sub-feature** convention:
+	* `ImageResize`
+	* `ListStyle`
+	* `TableClipboard`
+
+Plugins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase).
 
 ### Shortcuts
 

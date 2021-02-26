@@ -38,8 +38,8 @@ msgstr "Salva modifiche"
 
 msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
 msgid "No preview available"
-msgstr ""
+msgstr "Nessuna anteprima disponibile"
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr ""
+msgstr "Contenuto frammento di codice vuoto"

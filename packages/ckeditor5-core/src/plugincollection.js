@@ -163,12 +163,19 @@ export default class PluginCollection {
 	 *
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
 	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}.
-	 * @param {Array.<String|Function>} [removedPlugins] Names of the plugins or plugin constructors
+	 * @param {Array.<String|Function>} [pluginsToRemove] Names of the plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
+	 * @param {Array.<Function>} [pluginsSubstitutions] An array of {@link module:core/plugin~PluginInterface plugin constructors}
+	 * that will be used to replace plugins of the same names that were passed in `plugins` or that are in their dependency tree.
+	 * A useful option for replacing built-in plugins while creating tests (for mocking their APIs). Plugins that will be replaced
+	 * must follow these rules:
+	 *   * The new plugin must be a class.
+	 *   * The new plugin must be named.
+	 *   * Both plugins must not depend on other plugins.
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
 	 * and available in the collection.
 	 */
-	init( plugins, removedPlugins = [] ) {
+	init( plugins, pluginsToRemove = [], pluginsSubstitutions = [] ) {
 		// Plugin initialization procedure consists of 2 main steps:
 		// 1) collecting all available plugin constructors,
 		// 2) verification whether all required plugins can be instantiated.
@@ -190,9 +197,11 @@ export default class PluginCollection {
 
 		validatePlugins( plugins );
 
-		const pluginsToLoad = plugins.filter( plugin => !isPluginRemoved( plugin, removedPlugins ) );
+		const pluginsToLoad = plugins.filter( plugin => !isPluginRemoved( plugin, pluginsToRemove ) );
 
 		const pluginConstructors = [ ...getPluginConstructors( pluginsToLoad ) ];
+
+		substitutePlugins( pluginConstructors, pluginsSubstitutions );
 
 		const pluginInstances = loadPlugins( pluginConstructors );
 
@@ -208,8 +217,8 @@ export default class PluginCollection {
 			return isPluginConstructor( plugin ) && plugin.isContextPlugin;
 		}
 
-		function isPluginRemoved( plugin, removedPlugins ) {
-			return removedPlugins.some( removedPlugin => {
+		function isPluginRemoved( plugin, pluginsToRemove ) {
+			return pluginsToRemove.some( removedPlugin => {
 				if ( removedPlugin === plugin ) {
 					return true;
 				}
@@ -382,7 +391,7 @@ export default class PluginCollection {
 				return;
 			}
 
-			if ( !isPluginRemoved( plugin, removedPlugins ) ) {
+			if ( !isPluginRemoved( plugin, pluginsToRemove ) ) {
 				return;
 			}
 
@@ -422,6 +431,84 @@ export default class PluginCollection {
 
 				return promise.then( plugin[ method ].bind( plugin ) );
 			}, Promise.resolve() );
+		}
+
+		// Replaces plugin constructors with the specified set of plugins.
+		//
+		// @param {Array.<Function>} pluginConstructors
+		// @param {Array.<Function>} pluginsSubstitutions
+		function substitutePlugins( pluginConstructors, pluginsSubstitutions ) {
+			for ( const pluginItem of pluginsSubstitutions ) {
+				if ( typeof pluginItem != 'function' ) {
+					/**
+					 * The plugin replacing an existing plugin must be a function.
+					 *
+					 * @error plugincollection-replace-plugin-invalid-type
+					 */
+					throw new CKEditorError( 'plugincollection-replace-plugin-invalid-type', null, { pluginItem } );
+				}
+				const pluginName = pluginItem.pluginName;
+
+				if ( !pluginName ) {
+					/**
+					 * The plugin replacing an existing plugin must have a name.
+					 *
+					 * @error plugincollection-replace-plugin-missing-name
+					 */
+					throw new CKEditorError( 'plugincollection-replace-plugin-missing-name', null, { pluginItem } );
+				}
+
+				if ( pluginItem.requires && pluginItem.requires.length ) {
+					/**
+					 * The plugin replacing an existing plugin cannot depend on other plugins.
+					 *
+					 * @error plugincollection-plugin-for-replacing-cannot-have-dependencies
+					 */
+					throw new CKEditorError( 'plugincollection-plugin-for-replacing-cannot-have-dependencies', null, { pluginName } );
+				}
+
+				const pluginToReplace = that._availablePlugins.get( pluginName );
+
+				if ( !pluginToReplace ) {
+					/**
+					 * The replaced plugin does not exist in the
+					 * {@link module:core/plugincollection~PluginCollection available plugins} collection.
+					 *
+					 * @error plugincollection-plugin-for-replacing-not-exist
+					 */
+					throw new CKEditorError( 'plugincollection-plugin-for-replacing-not-exist', null, { pluginName } );
+				}
+
+				const indexInPluginConstructors = pluginConstructors.indexOf( pluginToReplace );
+
+				if ( indexInPluginConstructors === -1 ) {
+					// The Context feature can substitute plugins as well.
+					// It may happen that the editor will be created with the given context, where the plugin for substitute
+					// was already replaced. In such a case, we don't want to do it again.
+					if ( that._contextPlugins.has( pluginToReplace ) ) {
+						return;
+					}
+
+					/**
+					 * The replaced plugin will not be loaded so it cannot be replaced.
+					 *
+					 * @error plugincollection-plugin-for-replacing-not-loaded
+					 */
+					throw new CKEditorError( 'plugincollection-plugin-for-replacing-not-loaded', null, { pluginName } );
+				}
+
+				if ( pluginToReplace.requires && pluginToReplace.requires.length ) {
+					/**
+					 * The replaced plugin cannot depend on other plugins.
+					 *
+					 * @error plugincollection-replaced-plugin-cannot-have-dependencies
+					 */
+					throw new CKEditorError( 'plugincollection-replaced-plugin-cannot-have-dependencies', null, { pluginName } );
+				}
+
+				pluginConstructors.splice( indexInPluginConstructors, 1, pluginItem );
+				that._availablePlugins.set( pluginName, pluginItem );
+			}
 		}
 	}
 

@@ -15,7 +15,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import ImageEditing from '../../src/image/imageediting';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
-import ImageInsertCommand from '../../src/image/imageinsertcommand';
+import InsertImageCommand from '../../src/image/insertimagecommand';
+import ImageTypeCommand from '../../src/image/imagetypecommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { isImageWidget } from '../../src/image/utils';
@@ -77,8 +78,17 @@ describe( 'ImageEditing', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
-	it( 'should register imageInsert', () => {
-		expect( editor.commands.get( 'imageInsert' ) ).to.be.instanceOf( ImageInsertCommand );
+	it( 'should register the insertImage command', () => {
+		expect( editor.commands.get( 'insertImage' ) ).to.be.instanceOf( InsertImageCommand );
+	} );
+
+	it( 'should register the imageInsert command as an alias for the insertImage command', () => {
+		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
+	} );
+
+	it( 'should register the imageType command', () => {
+		expect( editor.commands.get( 'imageTypeBlock' ) ).to.be.instanceOf( ImageTypeCommand );
+		expect( editor.commands.get( 'imageTypeInline' ) ).to.be.instanceOf( ImageTypeCommand );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.

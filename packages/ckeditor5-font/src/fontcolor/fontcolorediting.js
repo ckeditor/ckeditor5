@@ -115,6 +115,20 @@ export default class FontColorEditing extends Plugin {
 			}
 		} );
 
+		// Support legacy `<font color="..">` formatting.
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'font',
+				attributes: {
+					'color': /^#?\w+$/
+				}
+			},
+			model: {
+				key: FONT_COLOR,
+				value: viewElement => viewElement.getAttribute( 'color' )
+			}
+		} );
+
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_COLOR,
 			view: renderDowncastElement( 'color' )

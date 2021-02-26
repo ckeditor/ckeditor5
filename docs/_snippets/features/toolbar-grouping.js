@@ -17,7 +17,7 @@ ClassicEditor
 				'bulletedList', 'numberedList', 'todoList', '|',
 				'code', 'codeBlock', '|',
 				'outdent', 'indent', '|',
-				'imageUpload', 'blockQuote', '|',
+				'uploadImage', 'blockQuote', '|',
 				'undo', 'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
