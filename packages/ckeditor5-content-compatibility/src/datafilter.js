@@ -58,7 +58,7 @@ export default class DataFilter {
 	/**
 	 * Allow the given element registered by {@link #register} method.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements which should be allowed.
+	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all view elements which should be allowed.
 	 */
 	allowElement( config ) {
 		for ( const definition of this.dataSchema.getDefinitionsForView( config.name ) ) {
@@ -75,7 +75,7 @@ export default class DataFilter {
 	/**
 	 * Allow the given attributes for view element allowed by {@link #allowElement} method.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all attributes which should be allowed.
+	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be allowed.
 	 */
 	allowAttributes( config ) {
 		this._addAttributeMatcher( config, this._allowedAttributes );
@@ -84,7 +84,7 @@ export default class DataFilter {
 	/**
 	 * Disallowe the given attributes for view element allowed by {@link #allowElement} method.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all attributes which should be disallowed.
+	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be disallowed.
 	 */
 	disallowAttributes( config ) {
 		this._addAttributeMatcher( config, this._disallowedAttributes );
@@ -94,7 +94,7 @@ export default class DataFilter {
 	 * Adds attribute matcher for every registered data schema definition for the given `config.name`.
 	 *
 	 * @private
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern
+	 * @param {module:engine/view/matcher~MatcherPattern} config
 	 * @param {Map} rules Rules map holding matchers.
 	 */
 	_addAttributeMatcher( config, rules ) {
