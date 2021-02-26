@@ -77,7 +77,7 @@ describe( 'DataFilter', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
 			data: '<ghsSection ghsAttributes="(1)">foobar</ghsSection>',
 			attributes: {
-				1: [ [ 'data-foo', 'foobar' ] ]
+				1: { 'data-foo': 'foobar' }
 			}
 		} );
 
@@ -98,7 +98,7 @@ describe( 'DataFilter', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
 			data: '<ghsSection ghsAttributes="(1)">foobar</ghsSection>',
 			attributes: {
-				1: [ [ 'style', 'background-color:blue;color:red;' ] ]
+				1: { 'style': 'background-color:blue;color:red;' }
 			}
 		} );
 
@@ -116,7 +116,7 @@ describe( 'DataFilter', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
 			data: '<ghsSection ghsAttributes="(1)">foobar</ghsSection>',
 			attributes: {
-				1: [ [ 'class', 'foo bar' ] ]
+				1: { 'class': 'foo bar' }
 			}
 		} );
 
@@ -140,9 +140,9 @@ describe( 'DataFilter', () => {
 				'<ghsSection ghsAttributes="(3)">section2</ghsSection>' +
 			'</ghsArticle>',
 			attributes: {
-				1: [ [ 'data-foo', 'foo' ] ],
-				2: [ [ 'data-foo', 'bar' ] ],
-				3: [ [ 'data-foo', 'foo' ] ]
+				1: { 'data-foo': 'foo' },
+				2: { 'data-foo': 'bar' },
+				3: { 'data-foo': 'foo' }
 			}
 		} );
 	} );
@@ -158,8 +158,8 @@ describe( 'DataFilter', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
 			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsArticle ghsAttributes="(2)">bar</ghsArticle>',
 			attributes: {
-				1: [ [ 'data-foo', 'foo' ] ],
-				2: [ [ 'data-bar', 'bar' ] ]
+				1: { 'data-foo': 'foo' },
+				2: { 'data-bar': 'bar' }
 			}
 		} );
 
@@ -178,7 +178,7 @@ describe( 'DataFilter', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
 			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsSection>bar</ghsSection>',
 			attributes: {
-				1: [ [ 'data-foo', 'foo' ] ]
+				1: { 'data-foo': 'foo' }
 			}
 		} );
 
@@ -197,7 +197,7 @@ describe( 'DataFilter', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.eq( {
 			data: '<ghsSection ghsAttributes="(1)">foo</ghsSection><ghsSection>bar</ghsSection>',
 			attributes: {
-				1: [ [ 'style', 'color:blue;' ] ]
+				1: { 'style': 'color:blue;' }
 			}
 		} );
 
@@ -225,9 +225,9 @@ describe( 'DataFilter', () => {
 } );
 
 function getModelDataWithAttributes( model, options ) {
-	// Simplify GHS attributes as they are not readable at this point due to complex structure.
+	// Simplify GHS attributes as they are not very readable at this point due to object structure.
 	let counter = 1;
-	const data = getModelData( model, options ).replace( /ghsAttributes="(.*?)"/g, () => {
+	const data = getModelData( model, options ).replace( /ghsAttributes="{(.*?)}"/g, () => {
 		return `ghsAttributes="(${ counter++ })"`;
 	} );
 
