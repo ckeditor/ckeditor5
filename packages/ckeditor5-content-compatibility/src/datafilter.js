@@ -19,7 +19,7 @@ import DataSchema from './dataschema';
 const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
 
 /**
- * Allows to validate elements and element attributes registered by {@link @module content-compatibility/dataschema~DataSchema}.
+ * Allows to validate elements and element attributes registered by {@link module:content-compatibility/dataschema~DataSchema}.
  *
  * To enable registered element in the editor, use {@link #allowElement} method:
  *
