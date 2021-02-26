@@ -160,6 +160,40 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
+			// https://github.com/ckeditor/ckeditor5/issues/8941
+			// https://github.com/ckeditor/ckeditor5/issues/8979
+			it( 'should create table with an empty cell', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+				editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+
+				editor.setData(
+					'<block>' +
+						'<table>' +
+							'<tr>' +
+								'<td>&nbsp;</td>' +
+							'</tr>' +
+						'</table>' +
+					'</block>'
+				);
+
+				assertEqualMarkup( editor.getData(),
+					'<block>' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>&nbsp;</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</block>'
+				);
+			} );
+
 			it( 'should be possible to overwrite', () => {
 				editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
 				editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );

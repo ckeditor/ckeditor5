@@ -7,7 +7,7 @@ CKEditor Cloud Services Core
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor-cloud-services-core` package](https://ckeditor.com/docs/ckeditor5/latest/api/cloud-services-core.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+**NOTE:** This package has been merged into `@ckeditor/ckeditor5-cloud-services`. See https://ckeditor.com/docs/ckeditor5/latest/api/module_cloud-services_cloudservicescore-CloudServicesCore.html
 
 ## License
 

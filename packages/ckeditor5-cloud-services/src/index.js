@@ -8,7 +8,9 @@
  */
 
 import CloudServices from './cloudservices';
+import CloudServicesCore from './cloudservicescore';
 
 export default {
-	CloudServices
+	CloudServices,
+	CloudServicesCore
 };

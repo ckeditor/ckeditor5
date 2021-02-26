@@ -197,6 +197,28 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
+	it( 'should create valid table model from table with empty cells', () => {
+		model.schema.register( 'block', {
+			allowWhere: '$block',
+			allowContentOf: '$root'
+		} );
+		editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+
+		editor.setData(
+			'<block>' +
+				'<table>' +
+					'<tr>' +
+						'<td></td>' +
+					'</tr>' +
+				'</table>' +
+			'</block>'
+		);
+
+		expectModel(
+			'<block><table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table></block>'
+		);
+	} );
+
 	it( 'should skip empty table rows', () => {
 		editor.setData(
 			'<table>' +

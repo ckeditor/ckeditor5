@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imagetypetogglecommand
+ * @module image/image/toggleimagetypecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -15,7 +15,7 @@ import { insertImage, isImage, isImageInline } from './utils';
  *
  * @extends module:core/command~Command
  */
-export default class ImageTypeToggleCommand extends Command {
+export default class ToggleImageTypeCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -33,12 +33,12 @@ export default class ImageTypeToggleCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const model = this.editor.model;
-		const selection = model.document.selection;
+		const selection = this.editor.model.document.selection;
 		const imageElement = selection.getSelectedElement();
 		const src = imageElement.getAttribute( 'src' );
 		const alt = imageElement.getAttribute( 'alt' );
 		const srcset = imageElement.getAttribute( 'srcset' );
+		const imageType = isImage( imageElement ) ? 'imageInline' : 'image';
 
 		if ( !src ) {
 			return;
@@ -54,17 +54,6 @@ export default class ImageTypeToggleCommand extends Command {
 			attrs.srcset = srcset;
 		}
 
-		if ( isImage( imageElement ) ) {
-			model.change( writer => {
-				const paragraph = writer.createElement( 'paragraph' );
-				const imageInlineElement = writer.createElement( 'imageInline', attrs );
-
-				writer.append( imageInlineElement, paragraph );
-				model.insertContent( paragraph, selection );
-				writer.setSelection( imageInlineElement, 'on' );
-			} );
-		} else {
-			insertImage( model, attrs, selection );
-		}
+		insertImage( this.editor, attrs, selection, imageType );
 	}
 }
