@@ -12,7 +12,9 @@ const chalk = require( 'chalk' );
 const ora = require( 'ora' );
 const minimist = require( 'minimist' );
 
-const DEFAULT_TIMEOUT = ( 15 * 1000 );
+const DEFAULT_CONCURRENCY = require( 'os' ).cpus().length / 2;
+
+const DEFAULT_TIMEOUT = 15 * 1000;
 
 const ERROR_TYPES = {
 	PAGE_CRASH: {
@@ -214,16 +216,12 @@ function getProgressHandler( spinner ) {
 }
 
 /**
- * Searches and opens all found links in the document body from requested URL, recursively. Each link is opened in
- * a dedicated Puppeteer's page. Only links from the same host as the tested URL are collected and opened sequentially.
- * Only the main URL part consisting of a protocol, a host, a port, and a path is collected, without a hash and search parts.
- * Duplicated links, which were already collected and enqueued, are skipped to avoid loops. Explicitly excluded links
- * are also skipped.
+ * Searches and opens all found links in the document body from requested URL, recursively.
  *
  * @param {Object} browser The headless browser instance from Puppeteer.
  * @param {Object} data All data needed for crawling the links.
  * @param {String} data.host The host from the initial page URL.
- * @param {Array.<Object>} data.linksQueue An array of link to crawl. Each item has `url` and `depth` keys.
+ * @param {Array.<Link>} data.linksQueue An array of link to crawl.
  * @param {Array.<String>} data.foundLinks An array of all links, which have been already discovered.
  * @param {RegExp|null} data.exclude A regular expression pattern to exclude links. Null by default to not exclude anything.
  * @param {Number} data.concurrency Number of concurrent pages (browser tabs) to be used during crawling.
@@ -249,7 +247,7 @@ async function openLinks( browser, { host, linksQueue, foundLinks, exclude, conc
 
 			newLinks.forEach( newLink => linksQueue.push( {
 				url: newLink,
-				depth: link.depth - 1
+				remainingNestedLevels: link.remainingNestedLevels - 1
 			} ) );
 
 			// When currently examined link has been checked, try to open new links up to the concurrency limit.
@@ -258,6 +256,22 @@ async function openLinks( browser, { host, linksQueue, foundLinks, exclude, conc
 	);
 }
 
+/**
+ * Creates a dedicated Puppeteer's page for URL to be tested and collects all links from it. Only links from the same host as the
+ * tested URL are collected. Only the main URL part consisting of a protocol, a host, a port, and a path is collected, without
+ * a hash and search parts. Duplicated links, which were already collected and enqueued, are skipped to avoid loops. Explicitly
+ * excluded links are also skipped. If the requested traversing depth has been reached, nested links from this URL are not collected
+ * anymore.
+ *
+ * @param {Object} browser The headless browser instance from Puppeteer.
+ * @param {Object} data All data needed for crawling the link.
+ * @param {String} data.host The host from the initial page URL.
+ * @param {Link} data.link A link to crawl.
+ * @param {Array.<String>} data.foundLinks An array of all links, which have been already discovered.
+ * @param {RegExp|null} data.exclude A regular expression pattern to exclude links. Null by default to not exclude anything.
+ * @param {Function} data.onError Callback called ever time an error has been found.
+ * @param {Function} data.onProgress Callback called every time just before opening a new link.
+ */
 async function collectLinks( browser, { host, link, foundLinks, exclude, onError, onProgress } ) {
 	// Inform progress handler about current number of discovered links in total.
 	onProgress( {
@@ -286,7 +300,7 @@ async function collectLinks( browser, { host, link, foundLinks, exclude, onError
 	}
 
 	// Skip crawling deeper, if the bottom has been reached.
-	if ( link.depth === 0 ) {
+	if ( link.remainingNestedLevels === 0 ) {
 		await page.close();
 
 		return [];
@@ -437,8 +451,18 @@ function parseArguments( args ) {
 		throw new Error( 'Mutually exclusive --docs and --manual arguments.' );
 	}
 
-	const defaultOptionsForDocs = minimist( '-u http://fake.ckeditor.com:8080/ckeditor5/ -e /api/,/assets/ -c 10'.split( ' ' ), config );
-	const defaultOptionsForManual = minimist( '-u http://localhost:8125/ -d 1 -c 10'.split( ' ' ), config );
+	const defaultOptionsForDocs = minimist( [
+		'-u', 'http://fake.ckeditor.com:8080/ckeditor5/latest/',
+		'-e', '/api/,/assets/',
+		'-c', DEFAULT_CONCURRENCY
+	], config );
+
+	const defaultOptionsForManual = minimist( [
+		'-u', 'http://localhost:8125/',
+		'-d', 1,
+		'-c', DEFAULT_CONCURRENCY
+	], config );
+
 	const options = {};
 
 	if ( parsedOptions.docs ) {
@@ -460,3 +484,12 @@ function parseArguments( args ) {
 		concurrency: options.concurrency ? Number( options.concurrency ) : 1
 	};
 }
+
+/**
+ * @typedef {Object} Link
+ *
+ * @property {String} url The URL associated with the link.
+ *
+ * @property {Number} remainingNestedLevels The remaining number of nested levels to be checked. If `remainingNestedLevels` is 0,
+ * the requested traversing depth has been reached and nested links from the URL associated with this link are not collected anymore.
+ */
