@@ -12,7 +12,7 @@ import { cloneDeep, uniq } from 'lodash-es';
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities } from 'ckeditor5/src/utils';
 
-import StylesMap, { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import StylesMap from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 import DataSchema from './dataschema';
 
@@ -189,7 +189,7 @@ export default class DataFilter {
 						stylesObj[ styleName ] = viewElement.getStyle( styleName );
 					}
 
-					viewAttributes.push( [ 'style', inlineStyles( stylesObj ) ] );
+					viewAttributes.push( [ 'style', this.inlineStyles( stylesObj ) ] );
 				}
 
 				const element = conversionApi.writer.createElement( modelName );
@@ -212,7 +212,6 @@ export default class DataFilter {
 
 		conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }:${ modelName }`, ( evt, data, conversionApi ) => {
-
 				if ( data.attributeNewValue === null ) {
 					return;
 				}
@@ -230,6 +229,21 @@ export default class DataFilter {
 				} );
 			} );
 		} );
+	}
+
+	/**
+	 * Inlines styles object into normalized style string.
+	 *
+	 * @param {Object} stylesObject
+	 * @returns {String}
+	 */
+	inlineStyles( stylesObj ) {
+		const stylesProcessor = this.editor.editing.view.document.stylesProcessor;
+		const stylesMap = new StylesMap( stylesProcessor );
+
+		stylesMap.set( stylesObj );
+
+		return stylesMap.toString();
 	}
 }
 
@@ -293,16 +307,4 @@ function mergeMatchResults( matches ) {
 	}
 
 	return matchResult;
-}
-
-/**
- * Inlines styles object into normalized style string.
- *
- * @param {Object} stylesObject
- * @returns {String}
- */
-function inlineStyles( stylesObj ) {
-	const stylesMap = new StylesMap( new StylesProcessor() );
-	stylesMap.set( stylesObj );
-	return stylesMap.toString();
 }
