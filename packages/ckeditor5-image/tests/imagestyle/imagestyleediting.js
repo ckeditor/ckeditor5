@@ -565,9 +565,7 @@ describe( 'ImageStyleEditing', () => {
 						writer.setAttribute( 'imageStyle', 'alignLeft', image );
 					} );
 
-					expect( editor.getData() ).to.equal(
-						'<p><img class="image-style-align-left" src="/assets/sample.png"></p>'
-					);
+					expect( editor.getData() ).to.equal( '<p><img class="image-style-align-left" src="/assets/sample.png"></p>' );
 					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 						'<p><span class="ck-widget image-inline" contenteditable="false">' +
 							'<img class="image-style-align-left" src="/assets/sample.png"></img>' +
@@ -601,9 +599,7 @@ describe( 'ImageStyleEditing', () => {
 						writer.setAttribute( 'imageStyle', 'alignRight', image );
 					} );
 
-					expect( editor.getData() ).to.equal(
-						'<p><img class="image-style-align-right" src="/assets/sample.png"></p>'
-					);
+					expect( editor.getData() ).to.equal( '<p><img class="image-style-align-right" src="/assets/sample.png"></p>' );
 
 					// https://github.com/ckeditor/ckeditor5-image/issues/132
 					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -616,8 +612,7 @@ describe( 'ImageStyleEditing', () => {
 						writer.setAttribute( 'imageStyle', 'alignLeft', image );
 					} );
 
-					expect( editor.getData() )
-						.to.equal( '<p><img class="image-style-align-left" src="/assets/sample.png"></p>' );
+					expect( editor.getData() ).to.equal( '<p><img class="image-style-align-left" src="/assets/sample.png"></p>' );
 
 					// https://github.com/ckeditor/ckeditor5-image/issues/132
 					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(

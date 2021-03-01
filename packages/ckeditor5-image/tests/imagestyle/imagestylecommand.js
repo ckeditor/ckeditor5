@@ -237,53 +237,54 @@ describe( 'ImageStyleCommand', () => {
 		describe( 'converting image type', () => {
 			describe( 'on the inline image', () => {
 				it( 'should change the image type if the requested type is other than imageInline', () => {
-					setData( model, '<paragraph>[<imageInline src="source"></imageInline>]</paragraph>' );
+					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
 					command.execute( { value: onlyBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( '[<image src="source"><caption></caption></image>]' );
+						.to.equal( '[<image src="assets/sample.png"><caption></caption></image>]' );
 				} );
 
 				it( 'should not change the image type if the requested type equals imageInline', () => {
-					setData( model, '<paragraph>[<imageInline src="source"></imageInline>]</paragraph>' );
+					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
 					command.execute( { value: defaultInline.name } );
 
 					expect( getData( model ) )
-						.to.equal( '<paragraph>[<imageInline src="source"></imageInline>]</paragraph>' );
+						.to.equal( '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
 				} );
 
 				it( 'should not change the image type if the requested type is not specified', () => {
-					setData( model, '<paragraph>[<imageInline src="source"></imageInline>]</paragraph>' );
+					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
 					command.execute( { value: anyImage.name } );
 
-					expect( getData( model ) )
-						.to.equal( `<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="source"></imageInline>]</paragraph>` );
+					expect( getData( model ) ).to.equal(
+						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="assets/sample.png"></imageInline>]</paragraph>`
+					);
 				} );
 			} );
 
 			describe( 'on the block image', () => {
 				it( 'should change the image type if the requested type is other than imageBlock', () => {
-					setData( model, '[<image src="source"></image>]' );
+					setData( model, '[<image src="assets/sample.png"></image>]' );
 					command.execute( { value: onlyInline.name } );
 
 					expect( getData( model ) )
-						.to.equal( '<paragraph>[<imageInline src="source"></imageInline>]</paragraph>' );
+						.to.equal( '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
 				} );
 
 				it( 'should not change the image type if the requested type equals imageBlock', () => {
-					setData( model, '[<image src="source"><caption></caption></image>]' );
+					setData( model, '[<image src="assets/sample.png"><caption></caption></image>]' );
 					command.execute( { value: onlyBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ onlyBlock.name }" src="source"><caption></caption></image>]` );
+						.to.equal( `[<image imageStyle="${ onlyBlock.name }" src="assets/sample.png"><caption></caption></image>]` );
 				} );
 
 				it( 'should not change the image type if the requested type is not specified', () => {
-					setData( model, '[<image src="source"><caption></caption></image>]' );
+					setData( model, '[<image src="assets/sample.png"><caption></caption></image>]' );
 					command.execute( { value: anyImage.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ anyImage.name }" src="source"><caption></caption></image>]` );
+						.to.equal( `[<image imageStyle="${ anyImage.name }" src="assets/sample.png"><caption></caption></image>]` );
 				} );
 			} );
 		} );
