@@ -57,11 +57,7 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all view elements which should be allowed.
 	 */
 	allowElement( config ) {
-		for ( const definition of this._dataSchema.getDefinitionsForView( config.name ) ) {
-			for ( const reference of definition.references ) {
-				this._registerElement( reference );
-			}
-
+		for ( const definition of this._dataSchema.getDefinitionsForView( config.name, true ) ) {
 			this._registerElement( definition );
 		}
 
