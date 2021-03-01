@@ -7,7 +7,6 @@
  * @module content-compatibility/dataschema
  */
 
-import { cloneDeep } from 'lodash-es';
 import { toArray } from 'ckeditor5/src/utils';
 
 /**
@@ -122,32 +121,35 @@ export default class DataSchema {
 	 * Returns all definitions matching the given view name.
 	 *
 	 * @param {String} viewName
-	 * @returns {Iterable<*>}
+	 * @param {Boolean} [includeReferences] Indicates if this method should also include definitions of referenced models.
+	 * @returns {Set<*>}
 	 */
-	* getDefinitionsForView( viewName ) {
-		const definitions = Array.from( this._definitions.values() )
-			.filter( def => def.view && testViewName( viewName, def.view ) );
+	getDefinitionsForView( viewName, includeReferences ) {
+		const definitions = new Set();
 
-		for ( const definition of definitions ) {
-			yield this.getDefinition( definition.model );
+		for ( const definition of this._filterViewDefinitions( viewName ) ) {
+			if ( includeReferences ) {
+				for ( const reference of this._getReferences( definition.model ) ) {
+					definitions.add( reference );
+				}
+			}
+
+			definitions.add( definition );
 		}
+
+		return definitions;
 	}
 
 	/**
-	 * Returns definition for the given model name.
+	 * Filters definitions matching the given view name.
 	 *
-	 * Definition will also include `references` property including all definitions
-	 * referenced by this definition.
-	 *
-	 * @param {String} modelName
-	 * @returns {module:content-compatibility/dataschema~DataSchemaDefinition}
+	 * @private
+	 * @param {String} viewName
+	 * @returns {Array}
 	 */
-	getDefinition( modelName ) {
-		const definition = cloneDeep( this._definitions.get( modelName ) );
-
-		definition.references = this._getReferences( modelName );
-
-		return definition;
+	_filterViewDefinitions( viewName ) {
+		return Array.from( this._definitions.values() )
+			.filter( def => def.view && testViewName( viewName, def.view ) );
 	}
 
 	/**
