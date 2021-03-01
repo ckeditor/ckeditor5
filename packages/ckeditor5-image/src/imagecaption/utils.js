@@ -7,7 +7,7 @@
  * @module image/imagecaption/utils
  */
 
-import { isImage, isImageInline } from '../image/utils';
+import { isImage } from '../image/utils';
 
 /**
  * Returns the caption model element from a given image element. Returns `null` if no caption is found.
