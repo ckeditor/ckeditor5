@@ -10,7 +10,7 @@
 import { cloneDeep } from 'lodash-es';
 
 import { Matcher } from 'ckeditor5/src/engine';
-import { priorities } from 'ckeditor5/src/utils';
+import { priorities, toArray } from 'ckeditor5/src/utils';
 
 import StylesMap from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
@@ -132,8 +132,14 @@ export default class DataFilter {
 
 		schema.register( definition.model, definition.schema );
 
-		if ( definition.schema.allowText ) {
-			schema.extend( '$text', { allowIn: definition.model } );
+		const allowedChildren = toArray( definition.allowChildren || [] );
+
+		for ( const child of allowedChildren ) {
+			if ( schema.isRegistered( child ) ) {
+				schema.extend( child, {
+					allowIn: definition.model
+				} );
+			}
 		}
 	}
 
