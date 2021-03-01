@@ -22,6 +22,8 @@ There are more CKEditor 5 features that can help you organize your content:
 
 ## Configuring alignment options
 
+### Defining available options
+
 It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
 
 <info-box>
@@ -45,6 +47,33 @@ ClassicEditor
 ```
 
 {@snippet features/custom-text-alignment-options}
+
+### Using classes instead of inline style
+
+By default alignment is set inline using `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the  `className` property in `config.alignment.options` and style them by using a stylesheet.
+
+<info-box>
+	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
+</info-box>
+
+The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment, respectively.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		alignment: {
+			options: [
+				{ name: 'left', className: 'my-align-left' },
+				{ name: 'right', className: 'my-align-right' }
+			]
+		},
+		toolbar: [
+			'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Configuring the toolbar
 
