@@ -47,7 +47,7 @@ class HCardEditing extends Plugin {
 	init() {
 		this._defineSchema();
 		this._defineConverters();
-		this._defineClipboardInput();
+		this._defineClipboardInputOutput();
 
 		this.editor.editing.mapper.on(
 			'viewToModelPosition',
@@ -76,35 +76,7 @@ class HCardEditing extends Plugin {
 				classes: [ 'h-card' ]
 			},
 			model: ( viewElement, { writer, consumable } ) => {
-				const children = Array.from( viewElement.getChildren() );
-				const linkElement = children.find( element => element.is( 'element', 'a' ) && element.hasClass( 'p-name' ) );
-				const telElement = children.find( element => element.is( 'element', 'span' ) && element.hasClass( 'p-tel' ) );
-
-				consumable.consume( linkElement, { name: true, attributes: [ 'href' ], classes: [ 'p-name', 'u-email' ] } );
-				consumable.consume( telElement, { name: true, classes: 'p-tel' } );
-
-				const name = getAndConsumeText( linkElement, consumable );
-				const tel = getAndConsumeText( telElement, consumable );
-				const email = linkElement.getAttribute( 'href' ).replace( /^mailto:/i, '' );
-
-				// Consume other ignored text nodes.
-				getAndConsumeText( viewElement, consumable );
-
-				return writer.createElement( 'h-card', { name, tel, email } );
-
-				function getAndConsumeText( viewElement, consumable ) {
-					return Array.from( viewElement.getChildren() )
-						.map( node => {
-							if ( !node.is( '$text' ) ) {
-								return '';
-							}
-
-							consumable.consume( node );
-
-							return node.data;
-						} )
-						.join( '' );
-				}
+				return writer.createElement( 'h-card', getAndConsumeHCardViewElement( viewElement, consumable ) );
 			}
 		} );
 
@@ -143,7 +115,7 @@ class HCardEditing extends Plugin {
 		}
 	}
 
-	_defineClipboardInput() {
+	_defineClipboardInputOutput() {
 		const document = this.editor.editing.view.document;
 
 		this.listenTo( document, 'clipboardInput', ( evt, data ) => {
@@ -167,7 +139,52 @@ class HCardEditing extends Plugin {
 
 			data.content = fragment;
 		} );
+
+		this.listenTo( document, 'clipboardOutput', ( evt, data ) => {
+			if ( data.content.childCount != 1 ) {
+				return;
+			}
+
+			const viewElement = data.content.getChild( 0 );
+
+			if ( viewElement.is( 'element', 'span' ) && viewElement.hasClass( 'h-card' ) ) {
+				data.dataTransfer.setData( 'contact', JSON.stringify( getAndConsumeHCardViewElement( viewElement ) ) );
+			}
+		} );
 	}
+}
+
+function getAndConsumeHCardViewElement( viewElement, consumable ) {
+	const children = Array.from( viewElement.getChildren() );
+	const linkElement = children.find( element => element.is( 'element', 'a' ) && element.hasClass( 'p-name' ) );
+	const telElement = children.find( element => element.is( 'element', 'span' ) && element.hasClass( 'p-tel' ) );
+
+	if ( consumable ) {
+		consumable.consume( linkElement, { name: true, attributes: [ 'href' ], classes: [ 'p-name', 'u-email' ] } );
+		consumable.consume( telElement, { name: true, classes: 'p-tel' } );
+	}
+
+	return {
+		name: getAndConsumeText( linkElement, consumable ),
+		tel: getAndConsumeText( telElement, consumable ),
+		email: linkElement.getAttribute( 'href' ).replace( /^mailto:/i, '' )
+	};
+}
+
+function getAndConsumeText( viewElement, consumable ) {
+	return Array.from( viewElement.getChildren() )
+		.map( node => {
+			if ( !node.is( '$text' ) ) {
+				return '';
+			}
+
+			if ( consumable ) {
+				consumable.consume( node );
+			}
+
+			return node.data;
+		} )
+		.join( '' );
 }
 
 ClassicEditor
@@ -232,6 +249,7 @@ contactsContainer.addEventListener( 'dragstart', event => {
 	const draggable = event.target.closest( '[draggable]' );
 
 	event.dataTransfer.setData( 'text/plain', draggable.innerText );
+	event.dataTransfer.setData( 'text/html', draggable.innerText );
 	event.dataTransfer.setData( 'contact', JSON.stringify( contacts[ draggable.dataset.contact ] ) );
 
 	event.dataTransfer.setDragImage( draggable, 0, 0 );
@@ -241,11 +259,32 @@ contacts.forEach( ( contact, id ) => {
 	const li = document.createElement( 'li' );
 
 	li.innerHTML =
-		`<div class="contact h-card" data-contact="${ id }" draggable="true">
-			<img src="assets/${ contact.avatar }.png" alt="avatar" class="u-photo" draggable="false" /> 
-			${ contact.name }
-		</div>`;
+		`<div class="contact h-card" data-contact="${ id }" draggable="true">` +
+			`<img src="assets/${ contact.avatar }.png" alt="avatar" class="u-photo" draggable="false" />` +
+			contact.name +
+		'</div>';
 
 	contactsContainer.appendChild( li );
 } );
 
+const dropArea = document.querySelector( '#drop-area' );
+
+dropArea.addEventListener( 'dragover', event => {
+	event.preventDefault();
+	event.dataTransfer.dropEffect = 'copy';
+	dropArea.classList.add( 'dragover' );
+} );
+
+dropArea.addEventListener( 'dragleave', () => {
+	dropArea.classList.remove( 'dragover' );
+} );
+
+dropArea.addEventListener( 'drop', event => {
+	const contact = event.dataTransfer.getData( 'contact' );
+
+	dropArea.innerText =
+		'-- text/plain --\n' + event.dataTransfer.getData( 'text/plain' ) + '\n\n' +
+		'-- text/html --\n' + event.dataTransfer.getData( 'text/html' ) + '\n\n' +
+		'-- contact --\n' + ( contact ? JSON.stringify( JSON.parse( contact ), 0, 2 ) : '' ) + '\n';
+	dropArea.classList.remove( 'dragover' );
+} );

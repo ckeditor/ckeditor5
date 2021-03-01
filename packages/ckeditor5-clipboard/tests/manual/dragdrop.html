@@ -86,6 +86,7 @@ function bar() {
 	<div class="contacts">
 		<h3>List of Droppable Contacts</h3>
 		<ul id="contactList"></ul>
+		<div id="drop-area">Drop here</div>
 	</div>
 </div>
 
@@ -156,5 +157,19 @@ function bar() {
 	.ck-content .h-card .p-tel::after {
 		font-style: normal;
 		content: ")";
+	}
+
+	#drop-area {
+		min-height: 100px;
+		font-family: monospace;
+		font-size: 0.9em;
+		white-space: pre;
+		background: hsl(60, 0%, 90%);
+		transition: background-color 300ms;
+		overflow: auto;
+		padding: 3px;
+	}
+	#drop-area.dragover {
+		background: hsl(60, 50%, 90%);
 	}
 </style>
