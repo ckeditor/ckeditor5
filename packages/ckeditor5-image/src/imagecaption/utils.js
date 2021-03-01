@@ -38,7 +38,7 @@ export function getCaptionFromModelSelection( selection ) {
 		return null;
 	}
 
-	if ( isImage( captionElement.parent ) || isImageInline( captionElement.parent ) ) {
+	if ( isImage( captionElement.parent ) ) {
 		return captionElement;
 	}
 
