@@ -229,14 +229,22 @@ ClassicEditor
 const contactsContainer = document.querySelector( '#contactList' );
 
 contactsContainer.addEventListener( 'dragstart', event => {
-	event.dataTransfer.setData( 'text/plain', event.target.innerText );
-	event.dataTransfer.setData( 'contact', JSON.stringify( contacts[ event.target.dataset.contact ] ) );
+	const draggable = event.target.closest( '[draggable]' );
+
+	event.dataTransfer.setData( 'text/plain', draggable.innerText );
+	event.dataTransfer.setData( 'contact', JSON.stringify( contacts[ draggable.dataset.contact ] ) );
+
+	event.dataTransfer.setDragImage( draggable, 0, 0 );
 } );
 
 contacts.forEach( ( contact, id ) => {
 	const li = document.createElement( 'li' );
 
-	li.innerHTML = `<div class="contact h-card" data-contact="${ id }" draggable="true">${ contact.name }</div>`;
+	li.innerHTML =
+		`<div class="contact h-card" data-contact="${ id }" draggable="true">
+			<img src="assets/${ contact.avatar }.png" alt="avatar" class="u-photo" draggable="false" /> 
+			${ contact.name }
+		</div>`;
 
 	contactsContainer.appendChild( li );
 } );
