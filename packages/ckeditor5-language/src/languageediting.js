@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import LanguageCommand from './languagecommand';
-import { parseLanguageToString, parseLanguageFromString } from './utils';
+import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
 
 const LANGUAGE = 'language';
 
@@ -72,7 +72,7 @@ export default class LanguageEditing extends Plugin {
 					const languageCode = viewElement.getAttribute( 'lang' );
 					const textDirection = viewElement.getAttribute( 'dir' );
 
-					return parseLanguageToString( languageCode, textDirection );
+					return stringifyLanguageAttribute( languageCode, textDirection );
 				}
 			},
 			view: {
@@ -88,7 +88,7 @@ export default class LanguageEditing extends Plugin {
 					return;
 				}
 
-				const { languageCode, textDirection } = parseLanguageFromString( attributeValue );
+				const { languageCode, textDirection } = parseLanguageAttribute( attributeValue );
 
 				return writer.createAttributeElement( 'span', {
 					lang: languageCode,

@@ -24,21 +24,21 @@ import { getLanguageDirection } from 'ckeditor5/src/utils';
  * @param {String} languageCode The language code in ISO 639 format.
  * @param {String} [textDirection] Language text direction. Automatically detected if omitted.
  */
-export function parseLanguageToString( languageCode, textDirection ) {
+export function stringifyLanguageAttribute( languageCode, textDirection ) {
 	textDirection = textDirection || getLanguageDirection( languageCode );
 	return `${ languageCode }:${ textDirection }`;
 }
 
 /**
  * Retrieves language properties converted to attribute value by
- * {@link module:language/utils~parseLanguageToString parseLanguageToString} function.
+ * {@link module:language/utils~stringifyLanguageAttribute stringifyLanguageAttribute} function.
  *
  * @param {String} str Attribute value.
  * @returns result
  * @returns result.languageCode The language code in ISO 639 format.
  * @returns result.textDirection Language text direction.
  */
-export function parseLanguageFromString( str ) {
+export function parseLanguageAttribute( str ) {
 	const parts = str.split( ':' );
 	return { languageCode: parts[ 0 ], textDirection: parts[ 1 ] };
 }

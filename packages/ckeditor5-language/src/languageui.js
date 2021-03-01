@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
-import { parseLanguageToString, getLocalizedOptions } from './utils';
+import { stringifyLanguageAttribute, getLocalizedOptions } from './utils';
 
 import '../theme/language.css';
 
@@ -58,7 +58,7 @@ export default class LanguageUI extends Plugin {
 					} )
 				};
 
-				const language = parseLanguageToString( option.languageCode, option.textDirection );
+				const language = stringifyLanguageAttribute( option.languageCode, option.textDirection );
 
 				def.model.bind( 'isOn' ).to( languageCommand, 'value', value => value === language );
 

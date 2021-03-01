@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { parseLanguageToString } from './utils';
+import { stringifyLanguageAttribute } from './utils';
 
 const ATTRIBUTE_KEY = 'language';
 
@@ -72,7 +72,7 @@ export default class LanguageCommand extends Command {
 		const doc = model.document;
 		const selection = doc.selection;
 
-		const value = languageCode ? parseLanguageToString( languageCode, textDirection ) : false;
+		const value = languageCode ? stringifyLanguageAttribute( languageCode, textDirection ) : false;
 
 		model.change( writer => {
 			if ( selection.isCollapsed ) {
