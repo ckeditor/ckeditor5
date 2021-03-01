@@ -297,7 +297,11 @@ function matchAll( viewElement, rules ) {
  * @returns {Array} result.styles Array with matched style names.
  */
 function mergeMatchResults( matches ) {
-	const matchResult = { attributes: new Set(), classes: new Set(), styles: new Set() };
+	const matchResult = {
+		attributes: new Set(),
+		classes: new Set(),
+		styles: new Set()
+	};
 
 	for ( const match of matches ) {
 		for ( const key in matchResult ) {
