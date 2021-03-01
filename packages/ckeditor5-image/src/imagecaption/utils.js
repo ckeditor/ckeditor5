@@ -26,7 +26,7 @@ export function getCaptionFromImageModelElement( imageModelElement ) {
 }
 
 /**
- * Returns the caption model element a model selection. Returns `null` if the selection has no caption element ancestor.
+ * Returns the caption model element for a model selection. Returns `null` if the selection has no caption element ancestor.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {module:engine/model/element~Element|null}
