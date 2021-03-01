@@ -4,14 +4,13 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ToggleImageCaptionCommand', () => {
@@ -287,12 +286,20 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		describe( 'the focusCaptionOnShow option', () => {
-			it( 'should move the selection to the caption when adding a caption', () => {
+			it( 'should move the selection to the caption when adding a caption (new empty caption)', () => {
 				setModelData( model, '[<image src="test.png"></image>]' );
 
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
 				expect( getModelData( model ) ).to.equal( '<image src="test.png"><caption>[]</caption></image>' );
+			} );
+
+			it( 'should move the selection to the caption when adding a caption (restoring caption from an attribute)', () => {
+				setModelData( model, '[<image src="test.png" caption=\'{"name":"caption","children":[{"data":"foo"}]}\'></image>]' );
+
+				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
+
+				expect( getModelData( model ) ).to.equal( '<image src="test.png"><caption>[foo]</caption></image>' );
 			} );
 
 			it( 'should not affect removal of the caption (selection in the caption)', () => {

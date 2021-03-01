@@ -12,9 +12,9 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageCaptionUI from '../../src/imagecaption/imagecaptionui';
+import ImageBlockEditing from '../../src/image/imageblockediting';
 
 import captionIcon from '../../theme/icons/imagecaption.svg';
-import ImageBlockEditing from '../../src/image/imageblockediting';
 
 describe( 'ImageCaptionUI', () => {
 	let editor, editorElement;

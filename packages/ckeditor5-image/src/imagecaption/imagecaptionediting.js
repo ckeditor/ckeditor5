@@ -8,14 +8,15 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
-
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
-import { isImage } from '../image/utils';
-import { matchImageCaptionViewElement } from './utils';
+
+import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 import ImageInlineEditing from '../image/imageinlineediting';
 import ImageBlockEditing from '../image/imageblockediting';
+
+import { isImage } from '../image/utils';
+import { matchImageCaptionViewElement } from './utils';
 
 /**
  * The image caption engine plugin. It is responsible for:
@@ -127,6 +128,8 @@ function mapModelPositionToView( editingView ) {
 
 		const viewElement = data.mapper.toViewElement( parent );
 
+		// The "img" element is inserted by ImageBlockEditing during the downcast conversion via
+		// an explicit view position so the "0" position does not need any mapping.
 		data.viewPosition = editingView.createPositionAt( viewElement, modelPosition.offset + 1 );
 	};
 }

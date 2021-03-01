@@ -46,7 +46,8 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Only block images can get captions.
 		if ( !editor.plugins.has( ImageBlockEditing ) ) {
-			this.isEnabled = this.value = false;
+			this.isEnabled = false;
+			this.value = false;
 
 			return;
 		}
@@ -57,12 +58,14 @@ export default class ToggleImageCaptionCommand extends Command {
 		if ( !selectedElement ) {
 			const ancestorCaptionElement = getCaptionFromModelSelection( selection );
 
-			this.isEnabled = this.value = !!ancestorCaptionElement;
+			this.isEnabled = !!ancestorCaptionElement;
+			this.value = !!ancestorCaptionElement;
 
 			return;
 		}
 
-		// Only block images have captions.
+		// Block images support captions by default but the command should also be enabled for inline
+		// images because toggling the caption when one is selected should convert it into a block image.
 		this.isEnabled = isImage( selectedElement ) || isImageInline( selectedElement );
 
 		if ( !this.isEnabled ) {
@@ -131,7 +134,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		writer.append( newCaptionElement, selectedImage );
 
 		if ( focusCaptionOnShow ) {
-			writer.setSelection( newCaptionElement, 'end' );
+			writer.setSelection( newCaptionElement, 'in' );
 		}
 	}
 

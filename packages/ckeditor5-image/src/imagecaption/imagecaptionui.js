@@ -10,8 +10,9 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
-import captionIcon from '../../theme/icons/imagecaption.svg';
 import { getCaptionFromModelSelection } from './utils';
+
+import captionIcon from '../../theme/icons/imagecaption.svg';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.

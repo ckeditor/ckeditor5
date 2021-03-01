@@ -4,18 +4,17 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ToggleImageCaptionCommand from '../../src/imagecaption/toggleimagecaptioncommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ToggleImageCaptionCommand from '../../src/imagecaption/toggleimagecaptioncommand';
 
 describe( 'ImageCaptionEditing', () => {
 	let editor, model, doc, view;
