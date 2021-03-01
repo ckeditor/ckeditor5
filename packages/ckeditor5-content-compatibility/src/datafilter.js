@@ -12,8 +12,6 @@ import { cloneDeep } from 'lodash-es';
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, toArray } from 'ckeditor5/src/utils';
 
-import StylesMap from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-
 const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
 
 /**
@@ -176,24 +174,30 @@ export default class DataFilter {
 				const viewAttributes = {};
 
 				// Stash attributes.
-				for ( const key of attributes.values() ) {
-					viewAttributes[ key ] = viewElement.getAttribute( key );
+				if ( attributes.size ) {
+					const attributesObject = {};
+
+					for ( const attributeName of attributes ) {
+						attributesObject[ attributeName ] = viewElement.getAttribute( attributeName );
+					}
+
+					viewAttributes.attributes = attributesObject;
 				}
 
 				// Stash classes.
 				if ( classes.size ) {
-					viewAttributes.class = [ ...classes.values() ].join( ' ' );
+					viewAttributes.classes = Array.from( classes );
 				}
 
 				// Stash styles.
 				if ( styles.size ) {
 					const stylesObj = {};
 
-					for ( const styleName of styles.values() ) {
+					for ( const styleName of styles ) {
 						stylesObj[ styleName ] = viewElement.getStyle( styleName );
 					}
 
-					viewAttributes.style = this.inlineStyles( stylesObj );
+					viewAttributes.styles = stylesObj;
 				}
 
 				const element = conversionApi.writer.createElement( modelName );
@@ -229,27 +233,21 @@ export default class DataFilter {
 				const viewWriter = conversionApi.writer;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-				// Apply new values.
-				for ( const key in viewAttributes ) {
-					viewWriter.setAttribute( key, viewAttributes[ key ], viewElement );
+				if ( viewAttributes.attributes ) {
+					for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
+						viewWriter.setAttribute( key, value, viewElement );
+					}
+				}
+
+				if ( viewAttributes.styles ) {
+					viewWriter.setStyle( viewAttributes.styles, viewElement );
+				}
+
+				if ( viewAttributes.classes ) {
+					viewWriter.addClass( viewAttributes.classes, viewElement );
 				}
 			} );
 		} );
-	}
-
-	/**
-	 * Inlines styles object into normalized style string.
-	 *
-	 * @param {Object} stylesObject
-	 * @returns {String}
-	 */
-	inlineStyles( stylesObj ) {
-		const stylesProcessor = this.editor.editing.view.document.stylesProcessor;
-		const stylesMap = new StylesMap( stylesProcessor );
-
-		stylesMap.set( stylesObj );
-
-		return stylesMap.toString();
 	}
 }
 
