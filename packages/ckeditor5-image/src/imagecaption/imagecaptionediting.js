@@ -97,7 +97,8 @@ export default class ImageCaptionEditing extends Plugin {
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter image caption' )
+					text: t( 'Enter image caption' ),
+					keepOnFocus: true
 				} );
 
 				return toWidgetEditable( figcaptionElement, writer );

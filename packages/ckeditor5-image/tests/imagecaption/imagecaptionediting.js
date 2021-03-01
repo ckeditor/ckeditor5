@@ -450,7 +450,7 @@ describe( 'ImageCaptionEditing', () => {
 			);
 		} );
 
-		it( 'should hide placeholder when figcaption is focused', () => {
+		it( 'should keep the placeholder visible when the figcaption is focused', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<image src=""></image>]' );
 
 			editor.execute( 'toggleImageCaption' );
@@ -478,7 +478,8 @@ describe( 'ImageCaptionEditing', () => {
 				'<p>foo</p>' +
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused" ' +
+					'<figcaption ' +
+						'class="ck-editor__editable ck-editor__nested-editable ck-editor__nested-editable_focused ck-placeholder" ' +
 						'contenteditable="true" data-placeholder="Enter image caption">[]' +
 					'</figcaption>' +
 				'</figure>'
