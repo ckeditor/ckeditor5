@@ -12,6 +12,7 @@ import AttributeCommand from '../../src/attributecommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'BoldEditing', () => {
 	let editor, model;
@@ -60,7 +61,8 @@ describe( 'BoldEditing', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const keyEventData = {
 			keyCode: keyCodes.b,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		};

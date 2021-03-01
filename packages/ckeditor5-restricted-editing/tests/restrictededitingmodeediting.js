@@ -23,6 +23,7 @@ import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicedi
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -1432,7 +1433,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 			beforeEach( async () => {
 				evtData = {
 					keyCode: getCode( 'A' ),
-					ctrlKey: true,
+					ctrlKey: !env.isMac,
+					metaKey: env.isMac,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};

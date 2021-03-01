@@ -82,7 +82,24 @@ export default class Alignment extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
+ * By default the alignment is set inline using `text-align` CSS property. To further customize the alignment you can
+ * provide names of classes for each alignment option using `className` property.
+ *
+ * **Note:** Once you define `className` property for one option, you need to specify it for all other options.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				alignment: {
+ *					options: [
+ *						{ name: 'left', className: 'my-align-left' },
+ *						{ name: 'right', className: 'my-align-right' }
+ *					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
  * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
  *
- * @member {Array.<String>} module:alignment/alignment~AlignmentConfig#options
+ * @member {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} module:alignment/alignment~AlignmentConfig#options
  */
