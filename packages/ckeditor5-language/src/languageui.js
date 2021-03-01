@@ -52,7 +52,6 @@ export default class LanguageUI extends Plugin {
 					type: 'button',
 					model: new Model( {
 						label: option.title,
-						class: option.class,
 						languageCode: option.languageCode,
 						textDirection: option.textDirection,
 						withText: true
@@ -77,7 +76,6 @@ export default class LanguageUI extends Plugin {
 				type: 'button',
 				model: new Model( {
 					label: removeTitle,
-					class: 'ck-language_remove',
 					languageCode: false,
 					withText: true
 				} )

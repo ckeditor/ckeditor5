@@ -126,6 +126,19 @@ describe( 'LanguageUI', () => {
 				command.value = 'ar:rtl';
 				expect( dropdown.buttonView.label ).to.equal( 'Arabic' );
 			} );
+
+			it( 'reflects the #value of the command', () => {
+				const listView = dropdown.listView;
+
+				setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+
+				expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
+					false,
+					true,
+					false,
+					false
+				] );
+			} );
 		} );
 
 		describe( 'localization', () => {
@@ -225,32 +238,6 @@ describe( 'LanguageUI', () => {
 						return editor.destroy();
 					} );
 			}
-		} );
-
-		describe( 'class', () => {
-			it( 'is set for the listView#items in the panel', () => {
-				const listView = dropdown.listView;
-
-				expect( getListViewItems( listView ).map( item => item.children.first.class ) ).to.deep.equal( [
-					'ck-language_ar',
-					'ck-language_fr',
-					'ck-language_es',
-					'ck-language_remove'
-				] );
-			} );
-
-			it( 'reflects the #value of the commands', () => {
-				const listView = dropdown.listView;
-
-				setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
-
-				expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
-					false,
-					true,
-					false,
-					false
-				] );
-			} );
 		} );
 	} );
 } );

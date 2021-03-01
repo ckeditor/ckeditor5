@@ -69,13 +69,13 @@ export default class Language extends Plugin {
  *
  *		const languageConfig = {
  *			options: [
- *				{ title: 'Arabic', class: 'ck-language_ar', languageCode: 'ar' },
- *				{ title: 'French', class: 'ck-language_fr', languageCode: 'fr' },
- *				{ title: 'Spanish', class: 'ck-language_es', languageCode: 'es' }
+ *				{ title: 'Arabic', languageCode: 'ar' },
+ *				{ title: 'French', languageCode: 'fr' },
+ *				{ title: 'Spanish', languageCode: 'es' }
  *			]
  *		};
  *
- * The `title` and `class` properties will be used by the `language` dropdown to render available options.
+ * The `title` property will be used by the `language` dropdown to render available options.
  *
  * The `languageCode` property is used for the lang attribute in ISO 639 format. Language codes can be found
  * [here](http://www.loc.gov/standards/iso639-2/php/English_list.php). You can use both 2-letter ISO-639-1 codes
@@ -93,7 +93,6 @@ export default class Language extends Plugin {
  *
  * @typedef {Object} module:language/language~LanguageOption
  * @property {String} title The user-readable title of the option.
- * @property {String} class The class which will be added to the dropdown item representing this option.
  * @property {String} languageCode The language code in ISO 639 format.
  * @property {Strint} [textDirection] Language text direction. Automatically detected if omitted.
  * @extends module:engine/conversion/conversion~ConverterDefinition

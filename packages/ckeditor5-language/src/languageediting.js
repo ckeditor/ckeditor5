@@ -36,9 +36,9 @@ export default class LanguageEditing extends Plugin {
 
 		editor.config.define( 'languageList', {
 			options: [
-				{ title: 'Arabic', class: 'ck-language_ar', languageCode: 'ar' },
-				{ title: 'French', class: 'ck-language_fr', languageCode: 'fr' },
-				{ title: 'Spanish', class: 'ck-language_es', languageCode: 'es' }
+				{ title: 'Arabic', languageCode: 'ar' },
+				{ title: 'French', languageCode: 'fr' },
+				{ title: 'Spanish', languageCode: 'es' }
 			]
 		} );
 	}
