@@ -35,8 +35,7 @@ class ExtendHTMLSupport extends Plugin {
 			view: 'xyz',
 			model: 'ghsXyz',
 			schema: {
-				inheritAllFrom: '$ghsBlock',
-				allowText: true
+				inheritAllFrom: '$ghsBlock'
 			}
 		} );
 
