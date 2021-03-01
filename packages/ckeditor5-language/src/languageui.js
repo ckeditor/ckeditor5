@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 import { Collection } from 'ckeditor5/src/utils';
-import { stringifyLanguageAttribute, getLocalizedOptions } from './utils';
+import { stringifyLanguageAttribute } from './utils';
 
 import '../theme/language.css';
 
@@ -35,7 +35,7 @@ export default class LanguageUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const options = getLocalizedOptions( editor );
+		const options = editor.config.get( 'languageList.options' );
 		const defaultTitle = t( 'Choose language' );
 		const removeTitle = t( 'Remove language' );
 		const dropdownTooltip = t( 'Language' );

@@ -34,6 +34,9 @@ export default class LanguageEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		// Language options are only used to ensure that the feature works by default.
+		// In the real usage it should be reconfigured by a developer. We are not providing
+		// translations for `title` properties on purpose, as it's only an example configuration.
 		editor.config.define( 'languageList', {
 			options: [
 				{ title: 'Arabic', languageCode: 'ar' },

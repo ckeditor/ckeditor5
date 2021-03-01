@@ -10,7 +10,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import LanguageEditing from '../src/languageediting';
 import LanguageUI from '../src/languageui';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -139,105 +138,6 @@ describe( 'LanguageUI', () => {
 					false
 				] );
 			} );
-		} );
-
-		describe( 'localization', () => {
-			let command, editor, dropdown;
-
-			before( () => {
-				addTranslations( 'en', {
-					'Choose language': 'Choose language',
-					'Language': 'Language',
-					'Hebrew': 'Hebrew',
-					'Polish': 'Polish',
-					'Remove language': 'Remove language'
-				} );
-
-				addTranslations( 'pl', {
-					'Choose language': 'Wybierz język',
-					'Language': 'Język',
-					'Hebrew': 'Hebrajski',
-					'Polish': 'Polski',
-					'Remove language': 'Usuń język'
-				} );
-			} );
-
-			after( () => {
-				clearTranslations();
-			} );
-
-			beforeEach( () => {
-				return localizedEditor( [
-					{ title: 'Hebrew', languageCode: 'he' },
-					{ title: 'Polish', languageCode: 'pl' }
-				] );
-			} );
-
-			it( 'does not alter the original config', () => {
-				expect( editor.config.get( 'languageList.options' ) ).to.deep.equal( [
-					{ title: 'Hebrew', languageCode: 'he' },
-					{ title: 'Polish', languageCode: 'pl' }
-				] );
-			} );
-
-			it( 'works for the #buttonView', () => {
-				const buttonView = dropdown.buttonView;
-
-				expect( buttonView.label ).to.equal( 'Wybierz język' );
-				expect( buttonView.tooltip ).to.equal( 'Język' );
-
-				command.value = 'he:rtl';
-				expect( buttonView.label ).to.equal( 'Hebrajski' );
-			} );
-
-			it( 'works for the listView#items in the panel', () => {
-				const listView = dropdown.listView;
-
-				expect( getListViewItems( listView ).map( item => item.children.first.label ) ).to.deep.equal( [
-					'Hebrajski',
-					'Polski',
-					'Usuń język'
-				] );
-			} );
-
-			it( 'allows custom titles', () => {
-				return localizedEditor( [
-					{ title: 'He', languageCode: 'he' },
-					{ title: 'Pl', languageCode: 'pl' }
-				] ).then( () => {
-					const listView = dropdown.listView;
-
-					expect( getListViewItems( listView ).map( item => item.children.first.label ) ).to.deep.equal( [
-						'He',
-						'Pl',
-						'Usuń język'
-					] );
-				} );
-			} );
-
-			function localizedEditor( options ) {
-				const editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
-
-				return ClassicTestEditor
-					.create( editorElement, {
-						plugins: [ LanguageEditing, LanguageUI ],
-						toolbar: [ 'language' ],
-						language: 'pl',
-						languageList: {
-							options
-						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						dropdown = editor.ui.componentFactory.create( 'language' );
-						command = editor.commands.get( 'language' );
-
-						editorElement.remove();
-
-						return editor.destroy();
-					} );
-			}
 		} );
 	} );
 } );
