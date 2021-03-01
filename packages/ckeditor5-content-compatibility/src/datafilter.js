@@ -166,34 +166,22 @@ export default class DataFilter {
 					}
 				}
 
-				const { attributes, classes, styles } = mergeMatchResults( matches );
+				const { attributes, styles, classes } = mergeMatchResults( matches );
 				const viewAttributes = {};
 
 				// Stash attributes.
 				if ( attributes.size ) {
-					const attributesObject = {};
+					viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
+				}
 
-					for ( const attributeName of attributes ) {
-						attributesObject[ attributeName ] = viewElement.getAttribute( attributeName );
-					}
-
-					viewAttributes.attributes = attributesObject;
+				// Stash styles.
+				if ( styles.size ) {
+					viewAttributes.styles = iterableToObject( styles, key => viewElement.getStyle( key ) );
 				}
 
 				// Stash classes.
 				if ( classes.size ) {
 					viewAttributes.classes = Array.from( classes );
-				}
-
-				// Stash styles.
-				if ( styles.size ) {
-					const stylesObj = {};
-
-					for ( const styleName of styles ) {
-						stylesObj[ styleName ] = viewElement.getStyle( styleName );
-					}
-
-					viewAttributes.styles = stylesObj;
 				}
 
 				const element = conversionApi.writer.createElement( modelName );
@@ -307,4 +295,22 @@ function mergeMatchResults( matches ) {
 	}
 
 	return matchResult;
+}
+
+/**
+ * Convertes the given iterable object into an object.
+ *
+ * @private
+ * @param {Iterable<String>} iterable
+ * @param {Function} getValue Shoud result with value for the given object key.
+ * @returns {Object}
+ */
+function iterableToObject( iterable, getValue ) {
+	const attributesObject = {};
+
+	for ( const prop of iterable ) {
+		attributesObject[ prop ] = getValue( prop );
+	}
+
+	return attributesObject;
 }
