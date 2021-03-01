@@ -46,9 +46,7 @@ describe( 'LanguageEditing', () => {
 	describe( 'command', () => {
 		it( 'should register language command', () => {
 			const command = editor.commands.get( 'language' );
-
 			expect( command ).to.be.instanceOf( LanguageCommand );
-			expect( command ).to.have.property( 'attributeKey', 'language' );
 		} );
 	} );
 

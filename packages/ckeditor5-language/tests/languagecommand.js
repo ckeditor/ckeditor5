@@ -20,7 +20,7 @@ describe( 'LanguageCommand', () => {
 				doc = model.document;
 				root = doc.getRoot();
 
-				command = new LanguageCommand( editor, attrKey );
+				command = new LanguageCommand( editor );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 				model.schema.register( 'h1', { inheritAllFrom: '$block' } );

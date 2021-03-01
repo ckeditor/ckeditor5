@@ -56,7 +56,7 @@ export default class LanguageEditing extends Plugin {
 
 		this._defineConverters();
 
-		editor.commands.add( LANGUAGE, new LanguageCommand( editor, LANGUAGE ) );
+		editor.commands.add( LANGUAGE, new LanguageCommand( editor ) );
 	}
 
 	/**

@@ -10,6 +10,8 @@
 import { Command } from 'ckeditor5/src/core';
 import { parseLanguageToString } from './utils';
 
+const ATTRIBUTE_KEY = 'language';
+
 /**
  * The language command plugin.
  *
@@ -17,38 +19,22 @@ import { parseLanguageToString } from './utils';
  */
 export default class LanguageCommand extends Command {
 	/**
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {String} attributeKey Attribute that will be set by the command.
+	 * If the selection starts in a language attribute the value is set to
+	 * the value of that language in a format:
+	 *
+	 *		<languageCode>:<textDirection>
+	 *
+	 * * `languageCode` - The language code used for the lang attribute in ISO 639 format.
+	 * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
+	 *
+	 * See {@link module:language/language~LanguageConfig language config} for more information about language properties.
+	 *
+	 * It is set to `false` otherwise.
+	 *
+	 * @observable
+	 * @readonly
+	 * @member {Boolean|String} #value
 	 */
-	constructor( editor, attributeKey ) {
-		super( editor );
-
-		/**
-		 * The attribute that will be set by the command.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
-		this.attributeKey = attributeKey;
-
-		/**
-		 * If the selection starts in a language attribute the value is set to
-		 * the value of that language in a format:
-		 *
-		 *		<languageCode>:<textDirection>
-		 *
-		 * * `languageCode` - The language code used for the lang attribute in ISO 639 format.
-		 * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
-		 *
-		 * See {@link module:language/language~LanguageConfig language config} for more information about language properties.
-		 *
-		 * It is set to `false` otherwise.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean|String} #value
-		 */
-	}
 
 	/**
 	 * @inheritDoc
@@ -58,7 +44,7 @@ export default class LanguageCommand extends Command {
 		const doc = model.document;
 
 		this.value = this._getValueFromFirstAllowedNode();
-		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, ATTRIBUTE_KEY );
 	}
 
 	/**
@@ -91,18 +77,18 @@ export default class LanguageCommand extends Command {
 		model.change( writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
-					writer.setSelectionAttribute( this.attributeKey, value );
+					writer.setSelectionAttribute( ATTRIBUTE_KEY, value );
 				} else {
-					writer.removeSelectionAttribute( this.attributeKey );
+					writer.removeSelectionAttribute( ATTRIBUTE_KEY );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), ATTRIBUTE_KEY );
 
 				for ( const range of ranges ) {
 					if ( value ) {
-						writer.setAttribute( this.attributeKey, value, range );
+						writer.setAttribute( ATTRIBUTE_KEY, value, range );
 					} else {
-						writer.removeAttribute( this.attributeKey, range );
+						writer.removeAttribute( ATTRIBUTE_KEY, range );
 					}
 				}
 			}
@@ -122,13 +108,13 @@ export default class LanguageCommand extends Command {
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
-			return selection.getAttribute( this.attributeKey ) || false;
+			return selection.getAttribute( ATTRIBUTE_KEY ) || false;
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				if ( schema.checkAttribute( item, this.attributeKey ) ) {
-					return item.getAttribute( this.attributeKey ) || false;
+				if ( schema.checkAttribute( item, ATTRIBUTE_KEY ) ) {
+					return item.getAttribute( ATTRIBUTE_KEY ) || false;
 				}
 			}
 		}
