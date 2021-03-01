@@ -32,7 +32,7 @@
 		"features/mathtype.html": "features/math-equations.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
-		"builds/guides/migrate.html": "builds/guides/migrate/migration-from-ckeditor-4.html"
+		"builds/guides/migrate.html": "builds/guides/migration/migration-from-ckeditor-4.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
