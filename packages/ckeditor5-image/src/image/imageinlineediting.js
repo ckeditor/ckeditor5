@@ -21,7 +21,7 @@ import ImageTypeCommand from './imagetypecommand';
  *
  * * `<imageInline>` as an inline element in the document schema, and allows `alt`, `src` and `srcset` attributes.
  * * converters for editing and data pipelines.
- * * {@link module:image/image/imagetypetogglecommand~ImageTypeToggleCommand `'imageTypeInline'`} command that converts block images into
+ * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeInline'`} command that converts block images into
  * inline images.
  *
  * @extends module:core/plugin~Plugin

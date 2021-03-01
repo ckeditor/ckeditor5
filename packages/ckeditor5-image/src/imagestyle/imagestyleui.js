@@ -37,8 +37,11 @@ export default class ImageStyleUI extends Plugin {
 	 * Returns the default localized style titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:image/imagestyle/utils~defaultStyles} are available:
+	 * {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS} are available:
 	 *
+	 * * `'Wrap text'`,
+	 * * `'Break text'`,
+	 * * `'In line'`,
 	 * * `'Full size image'`,
 	 * * `'Side image'`,
 	 * * `'Left aligned image'`,
@@ -89,9 +92,8 @@ export default class ImageStyleUI extends Plugin {
 	 * Creates a dropdown and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} dropdownConfig uwaga! tutaj format będzie się trochę róznił
-	 * @param {Array.<String>} buttonNames
-	 * @param {Array.<Object>} definedArrangements
+	 * @param {module:image/imagestyle~ImageStyleGroupFormat} dropdownConfig
+	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} definedArrangements
 	 */
 	_createDropdown( dropdownConfig, definedArrangements ) {
 		const factory = this.editor.ui.componentFactory;
@@ -145,8 +147,7 @@ export default class ImageStyleUI extends Plugin {
 	 * Creates a button and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle/imagestyleediting~ImageStyleFormat} buttonConfig
-	 * @param {String} parentDropDownName
+	 * @param {module:image/imagestyle~ImageStyleArrangementFormat} buttonConfig
 	 */
 	_createButton( buttonConfig ) {
 		const buttonName = buttonConfig.name;
@@ -176,13 +177,13 @@ export default class ImageStyleUI extends Plugin {
 	}
 }
 
-/**
- * Returns the translated `title` from the passed styles array.
- *
- * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles
- * @param titles
- * @returns {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
- */
+// Returns the translated `title` from the passed styles array.
+//
+// @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat|
+// module:image/imagestyle~ImageStyleGroupFormat>} styles
+// @param {Object.<String,String>} titles
+// @returns {Array.<module:image/imagestyle~ImageStyleArrangementFormat|
+// module:image/imagestyle~ImageStyleGroupFormat>}
 function translateStyles( styles, titles ) {
 	for ( const style of styles ) {
 		// Localize the titles of the styles, if a title corresponds with
@@ -195,6 +196,10 @@ function translateStyles( styles, titles ) {
 	return styles;
 }
 
+// Returns the image style component name with the `imageStyle:` prefix.
+//
+// @param {String} name
+// @returns {String}
 function getUIComponentName( name ) {
 	return `imageStyle:${ name }`;
 }

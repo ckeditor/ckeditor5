@@ -13,8 +13,8 @@ import { getViewImageFromWidget } from '../image/utils';
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
- * @param {TODO} arrangements An array containing available arrangements.
- * See {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat} for more details.
+ * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} arrangements
+ * An array containing available arrangements.
  * @returns {Function} A model-to-view attribute converter.
  */
 export function modelToViewStyleAttribute( arrangements ) {
@@ -44,7 +44,8 @@ export function modelToViewStyleAttribute( arrangements ) {
 /**
  * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} arrangements Arrangements for which the converter is created.
+ * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} arrangements
+ * Arrangements for which the converter is created.
  * @returns {Function} A view-to-model converter.
  */
 export function viewToModelStyleAttribute( arrangements ) {
@@ -79,11 +80,11 @@ export function viewToModelStyleAttribute( arrangements ) {
 	};
 }
 
-// Returns the style with a given `name` from an array of styles.
+// Returns the style with a given `name` from an array of arrangements.
 //
 // @param {String} name
-// @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat> } styles
-// @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat|undefined}
+// @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat> } styles
+// @returns {module:image/imagestyle~ImageStyleArrangementFormat|undefined}
 function getArrangementDefinitionByName( name, styles ) {
 	for ( const style of styles ) {
 		if ( style.name === name ) {

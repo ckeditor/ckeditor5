@@ -13,12 +13,12 @@ import { insertImage, isImage, isImageInline } from './utils';
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
  *
- * See {@link #constructor} to learn more.
- *
  * @extends module:core/command~Command
  */
 export default class ImageTypeCommand extends Command {
 	/**
+	 * @inheritDoc
+	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {'image'|'imageInline'} modelElementName Model element name the command converts to.
 	 */

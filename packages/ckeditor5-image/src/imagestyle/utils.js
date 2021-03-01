@@ -17,6 +17,27 @@ const {
 	objectInlineLeft, objectInlineRight
 } = icons;
 
+/**
+ * Default image arrangements provided by the plugin that can be referred in the
+ * {@link module:image/image~ImageConfig#styles} configuration.
+ *
+ * There are available 5 styles focused on formatting:
+ *
+ * * **`'alignLeft'`** aligns the inline or block image to the left and wraps it with the text using the `image-style-align-left` class,
+ * * **`'alignRight'`** aligns the inline or block image to the right and wraps it with the text using the `image-style-align-right` class,
+ * * **`'alignCenter'`** centers the block image using the `image-style-align-center` class,
+ * * **`'alignBlockLeft'`** aligns the block image to the left using the `image-style-block-align-left` class,
+ * * **`'alignBlockRight'`** aligns the block image to the right using the `image-style-block-align-right` class,
+ *
+ * and 3 semantic styles:
+ *
+ * * **`'inline'`** is an inline image without any CSS class,
+ * * **`'full'`** is a block image without any CSS class,
+ * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
+ *
+ * @readonly
+ * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementFormat>}
+ */
 const DEFAULT_ARRANGEMENTS = {
 	inline: {
 		name: 'inline',
@@ -88,6 +109,19 @@ const DEFAULT_ARRANGEMENTS = {
 	}
 };
 
+/**
+ * Default image groups provided by the plugin that can be referred in the
+ * {@link module:image/image~ImageConfig#styles} configuration.
+ *
+ * There are 2 groups available:
+ *
+ * * **`'wrapText'`**, which contains the `alignLeft` and `alignRight` arrangements, that is, those that wraps the text around the image,
+ * * **`'breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` arrangements, that is,
+ * those that breaks the text around the image.
+ *
+ * @readonly
+ * @type {Object.<String,module:image/imagestyle~ImageStyleGroupFormat>}
+ */
 const DEFAULT_GROUPS = {
 	wrapText: {
 		name: 'wrapText',
@@ -105,12 +139,13 @@ const DEFAULT_GROUPS = {
 };
 
 /**
- * Default image style icons provided by the plugin that can be referred in the
+ * Default image arrangement icons provided by the plugin that can be referred in the
  * {@link module:image/image~ImageConfig#styles} configuration.
  *
- * There are 4 icons available: `'full'`, `'left'`, `'center'` and `'right'`.
+ * There are 7 icons available: `'full'`, `'left'`, `'inLineLeft'`, `'center'`, `'right'`, `'inLineRight'`, and `'inLine'`.
  *
- * @member {Object.<String, String>}
+ * @readonly
+ * @type {Object.<String,String>}
  */
 const DEFAULT_ICONS = {
 	full: objectFullWidth,
@@ -122,6 +157,28 @@ const DEFAULT_ICONS = {
 	inLine: objectInline
 };
 
+/**
+ * Returns lists of the normalized and validated arrangements and groups.
+ * @protected
+ *
+ * @param {Object} options
+ *
+ * @param {Boolean} options.isInlinePluginLoaded
+ * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
+ *
+ * @param {Boolean} options.isBlockPluginLoaded
+ * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
+ *
+ * @param {module:image/imagestyle~ImageStyleFormat} options.configuredStyles
+ * The image styles configuration provided in the image styles {@link module:image/image~ImageConfig#styles configuration}
+ * as a default or custom value.
+ *
+ * @returns {module:image/imagestyle~ImageStyleFormat}
+ * * Each of arrangements contains a complete icon markup.
+ * * The arrangements not supported by any of the loaded plugins are filtered out. TODO: plugins
+ * * The groups with no {@link module:image/imagestyle~ImageStyleGroupFormat#items items} are filtered out.
+ * * All of the group items not defined in the arrangements are filtered out.
+ */
 function normalizeStyles( options ) {
 	const configuredArrangements = options.configuredStyles.arrangements || [];
 	const configuredGroups = options.configuredStyles.groups || [];
@@ -132,12 +189,27 @@ function normalizeStyles( options ) {
 
 	const groups = configuredGroups
 		.map( group => normalizeDefinition( DEFAULT_GROUPS, group, 'group' ) )
-		.map( group => validateGroup( group, arrangements ) )
+		.map( group => validateGroupItems( group, arrangements ) )
 		.filter( group => !!group.items.length );
 
 	return { arrangements, groups };
 }
 
+/**
+ * Returns the default image styles configuration depending on the loaded image editing plugins.
+ * @protected
+ *
+ * @param {Boolean} isInlinePluginLoaded
+ * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
+ *
+ * @param {Boolean} isBlockPluginLoaded
+ * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
+ *
+ * @returns {Object<String,Array>}
+ * It returns an object with the lists of the image arrangements and groups defined as strings related to the
+ * {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} and the
+ * {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups}.
+ */
 function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) {
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {
 		return {
@@ -163,7 +235,7 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 function normalizeDefinition( defaults, definition, definitionType ) {
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
-		// Warn because probably it's a mistake.
+		// Warn because probably it's a mistake. TODO
 		if ( !defaults[ definition ] ) {
 			// Normalize the style anyway to prevent errors.
 			definition = { name: definition };
@@ -171,7 +243,7 @@ function normalizeDefinition( defaults, definition, definitionType ) {
 		// Just the name of the style has been passed and it's one of the defaults, just use it.
 		// Clone the style to avoid overriding defaults.
 		else {
-			definition = Object.assign( {}, defaults[ definition ] );
+			definition = { ...defaults[ definition ] };
 		}
 	} else {
 		// If an object style has been passed and if the name matches one of the defaults,
@@ -190,59 +262,44 @@ function normalizeDefinition( defaults, definition, definitionType ) {
 }
 
 function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginLoaded } ) {
-	const { name: arrangementName, modelElements } = arrangement;
+	const { modelElements, name } = arrangement;
 
-	if ( !modelElements || !modelElements.length ) {
-		logWarning( 'image-style-invalid', { arrangement } );
-
-		return false;
-	}
-
-	const loadedPlugins = [ isBlockPluginLoaded ? 'image' : null, isInlinePluginLoaded ? 'imageInline' : null ];
-	const supportedBy = loadedPlugins.filter( plugin => modelElements.includes( plugin ) );
-
-	// Check if arrangement is supported by any of the loaded plugins.
-	if ( !supportedBy.length ) {
-		logWarning( 'image-style-unsupported', {
-			arrangement: arrangementName,
-			missingPlugins: modelElements.map( modelElementName => {
-				return modelElementName === 'image' ? 'ImageBlockEditing' : 'ImageInlineEditing';
-			} )
-		} );
+	if ( !modelElements || !modelElements.length || !name ) {
+		warnInvalidStyle( { arrangement } );
 
 		return false;
+	} else {
+		const supportedElements = [ isBlockPluginLoaded ? 'image' : null, isInlinePluginLoaded ? 'imageInline' : null ];
+
+		// Check if arrangement is supported by any of the loaded plugins.
+		if ( !modelElements.some( elementName => supportedElements.includes( elementName ) ) ) {
+			warnInvalidStyle( {
+				arrangement,
+				missingPlugins: modelElements.map( name => name === 'image' ? 'ImageBlockEditing' : 'ImageInlineEditing' )
+			} );
+
+			return false;
+		}
 	}
 
 	return true;
 }
 
-function validateGroup( originalGroup, arrangements ) {
-	const group = Object.assign( {}, originalGroup );
+function validateGroupItems( originalGroup, arrangements ) {
+	const group = { ...originalGroup, items: originalGroup.items || [] };
+	const validItems = group.items.filter( item => !!arrangements.find( arrangement => arrangement.name === item ) );
 
-	group.items = ( group.items || [] ).filter( item => isValidGroupItem( item, arrangements ) );
-	const isDefaultItemValid = typeof group.defaultItem === 'string' && group.items.indexOf( group.defaultItem ) > -1;
+	if ( !validItems.length || group.items.length !== validItems.length ) {
+		warnInvalidStyle( { group: originalGroup } );
 
-	if ( !group.items.length || !isDefaultItemValid ) {
-		logWarning( 'image-style-invalid', { group: originalGroup } );
-		return { name: group.name, items: [] };
+		return { ...originalGroup, items: validItems };
 	}
 
 	return group;
 }
 
-// Check if arrangement set in the group items is defined.
-function isValidGroupItem( itemName, normalizedArrangements ) {
-	const isValid = !!normalizedArrangements.find( item => item.name === itemName );
-
-	if ( !isValid ) {
-		logWarning( 'image-style-invalid', { groupItem: itemName } );
-	}
-
-	return isValid;
-}
-
 function extendStyle( source, style ) {
-	const extendedStyle = Object.assign( {}, style );
+	const extendedStyle = { ...style };
 
 	for ( const prop in source ) {
 		if ( !Object.prototype.hasOwnProperty.call( style, prop ) ) {
@@ -251,6 +308,10 @@ function extendStyle( source, style ) {
 	}
 
 	return extendedStyle;
+}
+
+function warnInvalidStyle( info ) {
+	logWarning( 'image-style-invalid', info );
 }
 
 export default {

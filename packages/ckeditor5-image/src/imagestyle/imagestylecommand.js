@@ -11,26 +11,28 @@ import { Command } from 'ckeditor5/src/core';
 import { isImage, isImageInline } from '../image/utils';
 
 /**
- * The image style command. It is used to apply different image styles.
+ * The image style command. It is used to apply different image arrangements
+ * and optionally changing the image model element.
  *
  * @extends module:core/command~Command
  */
 export default class ImageStyleCommand extends Command {
 	/**
-	 * Creates an instance of the image style command. Each command instance is handling one style.
+	 * Creates an instance of the image style command. Each command instance is handling one arrangement.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles The styles that this command supports.
+	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} arrangements
+	 * The arrangements that this command supports.
 	 */
 	constructor( editor, arrangements ) {
 		super( editor );
 
 		/**
-		 * The name of the default styles for inline and block images,
-		 * if it is present. If there is no default style, it defaults to `false`.
+		 * An object containing names of the default arrangements for the inline and block images,
+		 * if it is present. If there is no default arrangement for the given image type, it is set to `false`.
 		 *
-		 * @readonly
-		 * @type {Boolean|String}
+		 * @private
+		 * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementFormat#name>}
 		 */
 		this._defaultArrangements = {
 			image: false,
@@ -38,10 +40,10 @@ export default class ImageStyleCommand extends Command {
 		};
 
 		/**
-		 * A style handled by this command.
+		 * The arrangements handled by this command.
 		 *
-		 * @readonly
-		 * @member {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} #styles
+		 * @private
+		 * @type {Array.<module:image/imagestyle~ImageStyleArrangementFormat>}
 		 */
 		this._arrangements = new Map( arrangements.map( arrangement => {
 			if ( arrangement.isDefault ) {
@@ -77,8 +79,8 @@ export default class ImageStyleCommand extends Command {
 	 *		editor.execute( 'imageStyle', { value: 'side' } );
 	 *
 	 * @param {Object} options
-	 * @param {String} options.value The name of the style (based on the
-	 * {@link module:image/image~ImageConfig#styles `image.styles`} configuration option).
+	 * @param {String} options.value The name of the arrangement (based on the
+	 * {@link module:image/image~ImageConfig#styles `image.styles.arrangements`} configuration option).
 	 * @fires execute
 	 */
 	execute( options ) {

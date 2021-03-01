@@ -38,9 +38,16 @@ export default class ImageStyleEditing extends Plugin {
 		editor.config.define( 'image.styles', getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) );
 
 		/**
-		 * TODO docs
+		 * It contains lists of the normalized and validated arrangements and groups.
+		 * * Each of arrangements contains a complete icon markup.
+		 * * The arrangements not supported by any of the loaded image editing plugins (
+		 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} or
+		 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`}) are filtered out.
+		 * * The groups with no {@link module:image/imagestyle~ImageStyleGroupFormat#items items} are filtered out.
+		 * * All of the group items not defined in the arrangements are filtered out.
 		 *
-		 * Clear the arrangements and groups from the unsupported and undefined items.
+		 * @readonly
+		 * @type {module:image/imagestyle~ImageStyleFormat}
 		 */
 		this.normalizedStyles = normalizeStyles( {
 			configuredStyles: editor.config.get( 'image.styles' ),
@@ -55,10 +62,10 @@ export default class ImageStyleEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * @private
 	 *
-	 * @param {*} isBlockPluginLoaded
-	 * @param {*} isInlinePluginLoaded
+	 * @param {Boolean} isBlockPluginLoaded
+	 * @param {Boolean} isInlinePluginLoaded
 	 */
 	_setupConversion( isBlockPluginLoaded, isInlinePluginLoaded ) {
 		const editor = this.editor;
@@ -88,38 +95,3 @@ export default class ImageStyleEditing extends Plugin {
 		}
 	}
 }
-
-/**
- * The image style format descriptor.
- *
- *		import fullSizeIcon from 'path/to/icon.svg';
- *
- *		const imageStyleFormat = {
- *			name: 'fullSize',
- *			icon: fullSizeIcon,
- *			title: 'Full size image',
- *			className: 'image-full-size'
- *		}
- *
- * @typedef {Object} module:image/imagestyle/imagestyleediting~ImageStyleFormat
- *
- * @property {String} name The unique name of the style. It will be used to:
- *
- * * Store the chosen style in the model by setting the `imageStyle` attribute of the `<image>` element.
- * * As a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
- * * when registering a button for each of the styles (`'imageStyle:{name}'`) in the
- * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
- * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin).
- *
- * @property {Boolean} [isDefault] When set, the style will be used as the default one.
- * A default style does not apply any CSS class to the view element.
- *
- * @property {String} icon One of the following to be used when creating the style's button:
- *
- * * An SVG icon source (as an XML string).
- * * One of {@link module:image/imagestyle/utils~defaultIcons} to use a default icon provided by the plugin.
- *
- * @property {String} title The style's title.
- *
- * @property {String} className The CSS class used to represent the style in the view.
- */
