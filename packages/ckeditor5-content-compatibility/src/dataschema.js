@@ -29,36 +29,83 @@ export default class DataSchema {
 		this._definitions = new Map();
 
 		// Add block elements.
-		this.register( { model: '$ghsBlock' }, {
-			inheritAllFrom: '$block',
-			allowIn: '$ghsBlock'
+		this.register( {
+			model: '$ghsBlock',
+			allowChildren: '$block',
+			schema: {
+				inheritAllFrom: '$block',
+				allowIn: '$ghsBlock'
+			}
 		} );
 
-		this.register( { view: 'article', model: 'ghsArticle' }, { inheritAllFrom: '$ghsBlock' } );
-		this.register( { view: 'section', model: 'ghsSection' }, { inheritAllFrom: '$ghsBlock' } );
+		this.register( {
+			view: 'article',
+			model: 'ghsArticle',
+			schema: {
+				inheritAllFrom: '$ghsBlock'
+			}
+		} );
+
+		this.register( {
+			view: 'section',
+			model: 'ghsSection',
+			schema: {
+				inheritAllFrom: '$ghsBlock'
+			}
+		} );
 
 		// Add data list elements.
-		this.register( { view: 'dl', model: 'ghsDl' }, {
-			allowIn: [ '$ghsBlock', '$root' ],
-			isBlock: true
+		this.register( {
+			view: 'dl',
+			model: 'ghsDl',
+			schema: {
+				allowIn: [ '$ghsBlock', '$root' ],
+				isBlock: true
+			}
 		} );
 
-		this.register( { model: '$ghsDatalist' }, {
-			allowIn: 'ghsDl',
-			isBlock: true,
-			allowContentOf: '$ghsBlock',
-			allowText: true
+		this.register( {
+			model: '$ghsDatalist',
+			allowChildren: '$text',
+			schema: {
+				allowIn: 'ghsDl',
+				isBlock: true,
+				allowContentOf: '$ghsBlock'
+			}
 		} );
 
-		this.register( { view: 'dt', model: 'ghsDt' }, { inheritAllFrom: '$ghsDatalist' } );
-		this.register( { view: 'dd', model: 'ghsDd' }, { inheritAllFrom: '$ghsDatalist' } );
+		this.register( {
+			view: 'dt',
+			model: 'ghsDt',
+			schema: {
+				inheritAllFrom: '$ghsDatalist'
+			}
+		} );
+
+		this.register( {
+			view: 'dd',
+			model: 'ghsDd',
+			schema: {
+				inheritAllFrom: '$ghsDatalist'
+			}
+		} );
 
 		// Add details elements.
-		this.register( { view: 'details', model: 'ghsDetails' }, { inheritAllFrom: '$ghsBlock' } );
+		this.register( {
+			view: 'details',
+			model: 'ghsDetails',
+			schema: {
+				inheritAllFrom: '$ghsBlock'
+			}
+		} );
 
-		this.register( { view: 'summary', model: 'ghsSummary' }, {
-			allowIn: 'ghsDetails',
-			allowText: true
+		this.register( {
+			view: 'summary',
+			model: 'ghsSummary',
+			allowChildren: '$text',
+			schema: {
+				allowIn: 'ghsDetails'
+			}
 		} );
 	}
 
@@ -67,8 +114,8 @@ export default class DataSchema {
 	 *
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
-	register( { view, model }, schema ) {
-		this._definitions.set( model, { view, model, schema } );
+	register( definition ) {
+		this._definitions.set( definition.model, definition );
 	}
 
 	/**
@@ -154,5 +201,6 @@ function testViewName( pattern, viewName ) {
  * @property {String} [view] Name of the view element.
  * @property {String} model Name of the model element.
  * @property {String|module:engine/model/schema~SchemaItemDefinition} schema Name of the schema to inherit
+ * @property {String|Array} allowChildren Extends the given children list to allow definition model.
  * or custom schema item definition.
  */

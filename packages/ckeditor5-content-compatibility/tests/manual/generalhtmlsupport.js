@@ -12,6 +12,8 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import List from '@ckeditor/ckeditor5-list/src/list';
 
 import DataSchema from '../../src/dataschema';
 import DataFilter from '../../src/datafilter';
@@ -29,9 +31,13 @@ class ExtendHTMLSupport extends Plugin {
 		const dataSchema = new DataSchema();
 
 		// Extend schema with custom `xyz` element.
-		dataSchema.register( { view: 'xyz', model: 'ghsXyz' }, {
-			inheritAllFrom: '$ghsBlock',
-			allowText: true
+		dataSchema.register( {
+			view: 'xyz',
+			model: 'ghsXyz',
+			schema: {
+				inheritAllFrom: '$ghsBlock',
+				allowText: true
+			}
 		} );
 
 		// Create data filter which will register editor model schema and converters required
@@ -59,8 +65,26 @@ class ExtendHTMLSupport extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, Strikethrough, ExtendHTMLSupport ],
-		toolbar: [ 'bold', 'italic', 'strikethrough', 'contentTags' ]
+		plugins: [
+			BlockQuote,
+			Bold,
+			Essentials,
+			ExtendHTMLSupport,
+			Italic,
+			List,
+			Paragraph,
+			Strikethrough
+		],
+		toolbar: [
+			'bold',
+			'italic',
+			'strikethrough',
+			'|',
+			'numberedList',
+			'bulletedList',
+			'|',
+			'blockquote'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
