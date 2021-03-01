@@ -6,27 +6,37 @@
 import { getLanguageDirection } from '../src/language';
 
 describe( 'language', () => {
-	describe( 'getLanguageDirection', () => {
-		it( 'determines the language direction', () => {
-			expect( getLanguageDirection( 'en' ) ).to.eql( 'ltr' );
-			expect( getLanguageDirection( 'pl' ) ).to.eql( 'ltr' );
-			expect( getLanguageDirection( 'fr' ) ).to.eql( 'ltr' );
+	describe( 'getLanguageDirection()', () => {
+		[
+			// Common LTR languages.
+			{ code: 'en', textDirection: 'ltr' },
+			{ code: 'pl', textDirection: 'ltr' },
+			{ code: 'fr', textDirection: 'ltr' },
 
-			expect( getLanguageDirection( 'ar' ) ).to.eql( 'rtl' );
-			expect( getLanguageDirection( 'ara' ) ).to.eql( 'rtl' );
+			// Arabic
+			{ code: 'ar', textDirection: 'rtl' },
+			{ code: 'ara', textDirection: 'rtl' },
 
-			expect( getLanguageDirection( 'fa' ) ).to.eql( 'rtl' );
-			expect( getLanguageDirection( 'per' ) ).to.eql( 'rtl' );
-			expect( getLanguageDirection( 'fas' ) ).to.eql( 'rtl' );
+			// Persian
+			{ code: 'fa', textDirection: 'rtl' },
+			{ code: 'per', textDirection: 'rtl' },
+			{ code: 'fas', textDirection: 'rtl' },
 
-			expect( getLanguageDirection( 'he' ) ).to.eql( 'rtl' );
-			expect( getLanguageDirection( 'heb' ) ).to.eql( 'rtl' );
+			// Hebrew
+			{ code: 'he', textDirection: 'rtl' },
+			{ code: 'heb', textDirection: 'rtl' },
 
-			expect( getLanguageDirection( 'ku' ) ).to.eql( 'rtl' );
-			expect( getLanguageDirection( 'kur' ) ).to.eql( 'rtl' );
+			// Kurdish
+			{ code: 'ku', textDirection: 'rtl' },
+			{ code: 'kur', textDirection: 'rtl' },
 
-			expect( getLanguageDirection( 'ug' ) ).to.eql( 'rtl' );
-			expect( getLanguageDirection( 'uig' ) ).to.eql( 'rtl' );
+			// Uighur, Uyghur
+			{ code: 'ug', textDirection: 'rtl' },
+			{ code: 'uig', textDirection: 'rtl' }
+		].forEach( ( { code, textDirection } ) => {
+			it( `determines the "${ code }" language direction`, () => {
+				expect( getLanguageDirection( code ) ).to.equal( textDirection );
+			} );
 		} );
 	} );
 } );
