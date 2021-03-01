@@ -179,11 +179,10 @@ export default class ImageStyleUI extends Plugin {
 
 // Returns the translated `title` from the passed styles array.
 //
-// @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat|
-// module:image/imagestyle~ImageStyleGroupFormat>} styles
+// @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat|module:image/imagestyle~ImageStyleGroupFormat>} styles
 // @param {Object.<String,String>} titles
-// @returns {Array.<module:image/imagestyle~ImageStyleArrangementFormat|
-// module:image/imagestyle~ImageStyleGroupFormat>}
+//
+// @returns {Array.<module:image/imagestyle~ImageStyleArrangementFormat|module:image/imagestyle~ImageStyleGroupFormat>}
 function translateStyles( styles, titles ) {
 	for ( const style of styles ) {
 		// Localize the titles of the styles, if a title corresponds with

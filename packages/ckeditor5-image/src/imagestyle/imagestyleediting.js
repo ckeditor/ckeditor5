@@ -40,10 +40,13 @@ export default class ImageStyleEditing extends Plugin {
 		/**
 		 * It contains lists of the normalized and validated arrangements and groups.
 		 * * Each of arrangements contains a complete icon markup.
+		 *
 		 * * The arrangements not supported by any of the loaded image editing plugins (
 		 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} or
 		 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`}) are filtered out.
+		 *
 		 * * The groups with no {@link module:image/imagestyle~ImageStyleGroupFormat#items items} are filtered out.
+		 *
 		 * * All of the group items not defined in the arrangements are filtered out.
 		 *
 		 * @readonly
