@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "パラグラフ"
+msgstr "段落"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"

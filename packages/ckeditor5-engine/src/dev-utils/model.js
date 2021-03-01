@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -102,7 +102,7 @@ getData._stringify = stringify;
  * name will be used.
  * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
- * @param {String} [options.batchType='transparent'] Batch type used for inserting elements.
+ * @param {String} [options.batchType='default'] Batch type used for inserting elements.
  * See {@link module:engine/model/batch~Batch#type}.
  */
 export function setData( model, data, options = {} ) {
@@ -128,7 +128,13 @@ export function setData( model, data, options = {} ) {
 		modelDocumentFragment = parsedResult;
 	}
 
-	model.change( writer => {
+	if ( typeof options.batchType === 'string' ) {
+		model.enqueueChange( options.batchType, writeToModel );
+	} else {
+		model.change( writeToModel );
+	}
+
+	function writeToModel( writer ) {
 		// Replace existing model in document by new one.
 		writer.remove( writer.createRangeIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
@@ -154,7 +160,7 @@ export function setData( model, data, options = {} ) {
 				writer.setSelectionAttribute( selection.getAttributes() );
 			}
 		}
-	} );
+	}
 }
 
 // Set parse as setData private method - needed for testing/spying.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -213,6 +213,13 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
+
+			// The <a> element was removed by the time this converter is executed.
+			// It may happen when the base `linkHref` and decorator attributes are removed
+			// at the same time (see #8401).
+			if ( !linkInImage ) {
+				return;
+			}
 
 			for ( const [ key, val ] of toMap( attributes ) ) {
 				conversionApi.writer.setAttribute( key, val, linkInImage );

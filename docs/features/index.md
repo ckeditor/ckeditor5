@@ -77,7 +77,7 @@ Do not get stopped by technology differences - CKEditor 5 offers cross-platform 
 
 ### Output and exports
 
-Writing and editing content is one thing, sharing it is another. The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@lik features/markdown Github-flavored Markdown} formatted text.
+Writing and editing content is one thing, sharing it is another. The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text.
 
 If you need to share the document, use [export to PDF feature](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) instead - and keep your comment and changes in the resulting document, ready to be edited further.
 
