@@ -31,7 +31,8 @@
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
-		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html"
+		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
+		"builds/guides/migrate.html": "builds/guides/migrate/migration-from-ckeditor-4.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -109,10 +110,16 @@
 							"order": 200
 						},
 						{
+							"name": "Migration",
+							"id": "builds-migration",
+							"slug": "migration",
+							"order": 300
+						},
+						{
 							"name": "Support",
 							"id": "builds-support",
 							"slug": "support",
-							"order": 300
+							"order": 400
 						}
 					]
 				}
