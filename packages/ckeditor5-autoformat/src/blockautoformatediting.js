@@ -98,6 +98,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 
 		// Only lists should be formatted inside the lists.
 		if ( blockToFormat.is( 'element', 'listItem' ) &&
+			typeof callbackOrCommand !== 'function' &&
 			![ 'numberedList', 'bulletedList', 'todoList' ].includes( callbackOrCommand )
 		) {
 			return;

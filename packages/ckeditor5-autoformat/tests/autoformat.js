@@ -116,6 +116,15 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
 		} );
+
+		it( 'should be converted from a checked to-do list', () => {
+			setData( model, '<listItem listIndent="0" listType="todo">*[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
+		} );
 	} );
 
 	describe( 'Numbered list', () => {
@@ -208,6 +217,15 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
 		} );
+
+		it( 'should be converted from a checked to-do list', () => {
+			setData( model, '<listItem listIndent="0" listType="todo">1.[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
+		} );
 	} );
 
 	describe( 'To-do list', () => {
@@ -284,6 +302,62 @@ describe( 'Autoformat', () => {
 			insertSpace();
 
 			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[] []</paragraph>' );
+		} );
+
+		describe( 'checked', () => {
+			it( 'should replace square brackets with "x"', () => {
+				setData( model, '[]' );
+				insertBrackets( 'x' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
+			} );
+
+			it( 'should be converted from a paragraph', () => {
+				setData( model, '<paragraph>[]Sample text</paragraph>' );
+				insertBrackets( 'x' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal(
+					'<listItem listIndent="0" listType="todo" todoListChecked="true">[]Sample text</listItem>'
+				);
+			} );
+
+			it( 'should be converted from a header', () => {
+				setData( model, '<heading1>[]Header text</heading1>' );
+				insertBrackets( 'x' );
+				insertSpace();
+
+				expect(
+					getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]Header text</listItem>'
+				);
+			} );
+
+			it( 'should be converted from a numbered list', () => {
+				setData( model, '<listItem listIndent="0" listType="numbered">[]Sample text</listItem>' );
+				insertBrackets( 'x' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal(
+					'<listItem listIndent="0" listType="todo" todoListChecked="true">[]Sample text</listItem>'
+				);
+			} );
+
+			it( 'should not replace the brackets if is not at the beginning of the line', () => {
+				setData( model, '<paragraph>Sample text []</paragraph>' );
+				insertBrackets( 'x' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal( '<paragraph>Sample text [x] []</paragraph>' );
+			} );
+
+			it( 'should not replace the brackets after <softBreak>', () => {
+				setData( model, '<paragraph>Foo<softBreak></softBreak>[]</paragraph>' );
+				insertBrackets( 'x' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[x] []</paragraph>' );
+			} );
 		} );
 	} );
 
@@ -444,6 +518,15 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">> []</listItem>' );
 		} );
 
+		it( 'should not replace greater-than character when inside checked to-do list', () => {
+			setData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">>[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">> []</listItem>' );
+		} );
+
 		it( 'should not replace greater-than character after <softBreak>', () => {
 			setData( model, '<paragraph>Foo<softBreak></softBreak>>[]</paragraph>' );
 			model.change( writer => {
@@ -547,6 +630,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">```[]</listItem>' );
+		} );
+
+		it( 'should not replace triple grave accents when inside checked todo list', () => {
+			setData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">``[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">```[]</listItem>' );
 		} );
 	} );
 
@@ -863,6 +955,18 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[] []</paragraph>' );
+		} );
+
+		it( 'should not replace square brackets containing "x" with checked to-do list item', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '[x]', doc.selection.getFirstPosition() );
+			} );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[x] []</paragraph>' );
 		} );
 
 		it( 'should not replace hash character with heading', () => {
