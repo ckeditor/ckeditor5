@@ -6,6 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
 import UndoEditing from '../src/undoediting';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'UndoEditing', () => {
@@ -143,7 +144,8 @@ describe( 'UndoEditing', () => {
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.z,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		} );
@@ -157,7 +159,8 @@ describe( 'UndoEditing', () => {
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.y,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		} );
@@ -170,7 +173,8 @@ describe( 'UndoEditing', () => {
 		const spy = sinon.stub( editor, 'execute' );
 		const keyEventData = {
 			keyCode: keyCodes.z,
-			ctrlKey: true,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
 			shiftKey: true,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()

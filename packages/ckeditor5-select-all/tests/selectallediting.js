@@ -6,6 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import SelectAllEditing from '../src/selectallediting';
 import SelectAllCommand from '../src/selectallcommand';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'SelectAllEditing', () => {
@@ -42,7 +43,8 @@ describe( 'SelectAllEditing', () => {
 		it( 'should execute the "selectAll" command', () => {
 			const domEventDataMock = {
 				keyCode: keyCodes.a,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy()
 			};
 
@@ -55,7 +57,8 @@ describe( 'SelectAllEditing', () => {
 		it( 'should prevent the default action', () => {
 			const domEventDataMock = {
 				keyCode: keyCodes.a,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy()
 			};
 
@@ -67,7 +70,8 @@ describe( 'SelectAllEditing', () => {
 		it( 'should not react to other keystrokes', () => {
 			const domEventDataMock = {
 				keyCode: keyCodes.x,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy()
 			};
 

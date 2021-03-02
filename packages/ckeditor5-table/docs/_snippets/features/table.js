@@ -15,6 +15,7 @@ ClassicEditor
 				'imageStyle:full',
 				'imageStyle:side',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		}

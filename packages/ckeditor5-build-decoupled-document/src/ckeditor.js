@@ -124,6 +124,7 @@ DecoupledEditor.defaultConfig = {
 			'imageStyle:full',
 			'imageStyle:alignRight',
 			'|',
+			'toggleImageCaption',
 			'imageTextAlternative'
 		]
 	},

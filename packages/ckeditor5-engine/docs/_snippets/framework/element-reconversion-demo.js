@@ -333,7 +333,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ ComplexBox ],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

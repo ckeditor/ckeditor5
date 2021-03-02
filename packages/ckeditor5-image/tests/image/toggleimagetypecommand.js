@@ -9,6 +9,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 
 import ImageInline from '../../src/image/imageinlineediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 
 describe( 'ToggleImageTypeCommand', () => {
 	let editor, command, model;
@@ -16,7 +17,7 @@ describe( 'ToggleImageTypeCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageBlockEditing, ImageInline, Paragraph ]
+				plugins: [ ImageBlockEditing, ImageInline, ImageCaptionEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -71,12 +72,6 @@ describe( 'ToggleImageTypeCommand', () => {
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
-			model.schema.register( 'caption', {
-				allowIn: 'image',
-				allowContentOf: '$block',
-				isLimit: true
-			} );
-			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			setModelData( model, '<image><caption>[]</caption></image>' );
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -91,66 +86,142 @@ describe( 'ToggleImageTypeCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should convert block image to inline image', () => {
-			const imgSrc = 'foo/bar.jpg';
+		describe( 'for block image', () => {
+			it( 'should convert block image to inline image', () => {
+				const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
 
-			command.execute();
+				command.execute();
 
-			expect( getModelData( model ) ).to.equal(
-				`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
-			);
+				expect( getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
+			} );
+
+			it( 'should convert block image with alt attribute to inline image', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model,
+					`[<image src="${ imgSrc }" alt="alt text"></image>]`
+				);
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+					`[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should convert block image with srcset attribute to inline image', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model,
+					`[<image src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></image>]`
+				);
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+					`[<imageInline src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should convert block image with caption attribute to inline image', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model,
+					`[<image caption="foo" src="${ imgSrc }"></image>]`
+				);
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+					`[<imageInline caption="foo" src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should not convert if "src" attribute is not set', () => {
+				setModelData( model, '[<image></image>]' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+			} );
 		} );
 
-		it( 'should convert block image with alt and srcset attributes to inline image', () => {
-			const imgSrc = 'foo/bar.jpg';
+		describe( 'for inline image', () => {
+			it( 'should convert inline image to block image', () => {
+				const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model,
-				`[<image src="${ imgSrc }" alt="alt text"  srcset='{ "data": "small.png 148w, big.png 1024w" }'></image>]`
-			);
+				setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 
-			command.execute();
+				command.execute();
 
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>' +
-				`[<imageInline alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
-				'</paragraph>'
-			);
-		} );
+				expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
+			} );
 
-		it( 'should convert inline image to block image', () => {
-			const imgSrc = 'foo/bar.jpg';
+			it( 'should convert inline image with alt attribute to block image', () => {
+				const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+				setModelData( model,
+					`<paragraph>
+						[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]
+						</paragraph>`
+				);
 
-			command.execute();
+				command.execute();
 
-			expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
-		} );
+				expect( getModelData( model ) ).to.equal(
+					`[<image alt="alt text" src="${ imgSrc }"></image>]`
+				);
+			} );
 
-		it( 'should convert inline image with alt and srcset attributes to block image', () => {
-			const imgSrc = 'foo/bar.jpg';
+			it( 'should convert inline image with srcset attribute to block image', () => {
+				const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model,
-				`<paragraph>
-					[<imageInline alt="alt text" src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
-					</paragraph>`
-			);
+				setModelData( model,
+					`<paragraph>
+						[<imageInline src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
+						</paragraph>`
+				);
 
-			command.execute();
+				command.execute();
 
-			expect( getModelData( model ) ).to.equal(
-				`[<image alt="alt text" src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>]`
-			);
-		} );
+				expect( getModelData( model ) ).to.equal(
+					`[<image src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>]`
+				);
+			} );
 
-		it( 'should not convert if "src" attribute is not set', () => {
-			setModelData( model, '[<image></image>]' );
+			it( 'should convert inline image with caption attribute to block image', () => {
+				const imgSrc = 'foo/bar.jpg';
 
-			command.execute();
+				setModelData( model,
+					`<paragraph>
+						[<imageInline caption="foo" src="${ imgSrc }"></imageInline>]
+						</paragraph>`
+				);
 
-			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`[<image caption="foo" src="${ imgSrc }"></image>]`
+				);
+			} );
+
+			it( 'should not convert if "src" attribute is not set', () => {
+				setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+			} );
 		} );
 	} );
 } );
