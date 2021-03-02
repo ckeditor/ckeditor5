@@ -52,6 +52,7 @@ ClassicEditor
 				'imageStyle:full',
 				'imageStyle:alignRight',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		},

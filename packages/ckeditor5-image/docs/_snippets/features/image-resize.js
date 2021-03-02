@@ -24,6 +24,7 @@ ClassicEditor
 				'imageStyle:alignCenter',
 				'imageStyle:alignRight',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		},

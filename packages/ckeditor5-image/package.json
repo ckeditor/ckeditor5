@@ -11,8 +11,8 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "^25.0.0",
-    "ckeditor5": "^25.0.0"
+    "ckeditor5": "^25.0.0",
+    "@ckeditor/ckeditor5-ui": "^25.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "^25.0.0",

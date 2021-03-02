@@ -268,6 +268,7 @@ ClassicEditor.defaultConfig = {
 			'imageStyle:full',
 			'imageStyle:side',
 			'|',
+			'toggleImageCaption',
 			'imageTextAlternative'
 		]
 	},
@@ -354,6 +355,7 @@ ClassicEditor
 				'imageStyle:full',
 				'imageStyle:side',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		}

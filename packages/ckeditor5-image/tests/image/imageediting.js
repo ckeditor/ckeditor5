@@ -86,7 +86,7 @@ describe( 'ImageEditing', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
 	} );
 
-	it( 'should register the imageTypeToggle command', () => {
+	it( 'should register the toggleImageType command', () => {
 		expect( editor.commands.get( 'toggleImageType' ) ).to.be.instanceOf( ToggleImageTypeCommand );
 	} );
 

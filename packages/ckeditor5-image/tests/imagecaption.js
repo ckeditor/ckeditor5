@@ -8,6 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ImageCaption from '../src/imagecaption';
 import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
+import ImageCaptionUI from '../src/imagecaption/imagecaptionui';
 
 describe( 'ImageCaption', () => {
 	let editor, editorElement;
@@ -34,7 +35,11 @@ describe( 'ImageCaption', () => {
 		expect( editor.plugins.get( ImageCaption ) ).to.instanceOf( ImageCaption );
 	} );
 
-	it( 'should load ImageCaptionEditing plugin', () => {
+	it( 'should load the ImageCaptionEditing plugin', () => {
 		expect( editor.plugins.get( ImageCaptionEditing ) ).to.instanceOf( ImageCaptionEditing );
+	} );
+
+	it( 'should load the ImageCaptionUI plugin', () => {
+		expect( editor.plugins.get( ImageCaptionUI ) ).to.instanceOf( ImageCaptionUI );
 	} );
 } );
