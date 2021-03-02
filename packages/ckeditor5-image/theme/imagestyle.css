@@ -47,6 +47,14 @@
 		margin-top: var(--ck-inline-image-style-spacing);
 		margin-bottom: var(--ck-inline-image-style-spacing);
 	}
+
+	&.image-style-align-left {
+		margin-right: var(--ck-inline-image-style-spacing);
+	}
+
+	&.image-style-align-right {
+		margin-left: var(--ck-inline-image-style-spacing);
+	}
 }
 
 .ck.ck-splitbutton {
