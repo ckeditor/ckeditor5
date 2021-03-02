@@ -15,7 +15,7 @@ describe( 'ImageStyle utils', () => {
 
 	describe( 'default styles', () => {
 		describe( 'arrangements', () => {
-			it( 'should have the #DEFAULT_ARRANGMENTS properly defined', () => {
+			it( 'should have the #DEFAULT_ARRANGEMENTS properly defined', () => {
 				expect( DEFAULT_ARRANGEMENTS ).to.be.an( 'object' ).that.has.all.keys( [
 					'inline', 'alignLeft', 'alignRight', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'full', 'side'
 				] );
@@ -125,7 +125,7 @@ describe( 'ImageStyle utils', () => {
 			} );
 		} );
 
-		it( 'should return an empty object if neither image editing plugins are loaed', () => {
+		it( 'should return an empty object if neither image editing plugins are loaded', () => {
 			const config = getDefaultStylesConfiguration( false, false );
 
 			expect( config ).to.deep.equal( {} );
@@ -167,7 +167,7 @@ describe( 'ImageStyle utils', () => {
 					sinon.assert.notCalled( console.warn );
 				} );
 
-				it( 'should warn and ommit the arrangement if the #name not found in default arrangements', () => {
+				it( 'should warn and omit the arrangement if the #name not found in default arrangements', () => {
 					expect( normalizeStyles(
 						[ 'foo' ]
 					) ).to.deep.equal(
@@ -311,7 +311,7 @@ describe( 'ImageStyle utils', () => {
 					sinon.assert.notCalled( console.warn );
 				} );
 
-				it( 'should warn and ommit the group if a #name not found in default groups', () => {
+				it( 'should warn and omit the group if a #name not found in default groups', () => {
 					expect( normalizeStyles(
 						allArrangements, [ 'foo' ]
 					) ).to.deep.equal(
@@ -341,7 +341,7 @@ describe( 'ImageStyle utils', () => {
 						sinon.assert.notCalled( console.warn );
 					} );
 
-					it( 'should warn and ommit if no valid #items are present', () => {
+					it( 'should warn and omit if no valid #items are present', () => {
 						const group = { name: 'breakText', items: [ 'foo' ] };
 
 						expect( normalizeStyles(
@@ -358,7 +358,7 @@ describe( 'ImageStyle utils', () => {
 						);
 					} );
 
-					it( 'should warn and ommit if no #items are present', () => {
+					it( 'should warn and omit if no #items are present', () => {
 						const group = { name: 'breakText', items: null };
 
 						expect( normalizeStyles(
@@ -375,7 +375,7 @@ describe( 'ImageStyle utils', () => {
 						);
 					} );
 
-					it( 'should warn and ommit if #items are empty', () => {
+					it( 'should warn and omit if #items are empty', () => {
 						const group = { name: 'breakText', items: [] };
 
 						expect( normalizeStyles(
@@ -404,7 +404,7 @@ describe( 'ImageStyle utils', () => {
 						sinon.assert.calledWithExactly( console.warn,
 							sinon.match( /^image-style-invalid/ ),
 							{ group:
-								{ name: 'breakText', title: 'Break text', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft'}
+								{ name: 'breakText', title: 'Break text', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' }
 							},
 							sinon.match.string // Link to the documentation
 						);
@@ -450,7 +450,7 @@ describe( 'ImageStyle utils', () => {
 						sinon.assert.notCalled( console.warn );
 					} );
 
-					it( 'should warn and ommit if no valid #items are present', () => {
+					it( 'should warn and omit if no valid #items are present', () => {
 						const invalidGroup = { name: 'foo', items: [ 'foo' ], defaultItem: 'foo' };
 
 						expect( normalizeStyles(
@@ -467,7 +467,7 @@ describe( 'ImageStyle utils', () => {
 						);
 					} );
 
-					it( 'should warn and ommit if no #items are present', () => {
+					it( 'should warn and omit if no #items are present', () => {
 						const group = { name: 'foo' };
 
 						expect( normalizeStyles(
@@ -484,7 +484,7 @@ describe( 'ImageStyle utils', () => {
 						);
 					} );
 
-					it( 'should warn and ommit if #items are empty', () => {
+					it( 'should warn and omit if #items are empty', () => {
 						const group = { name: 'foo', items: [] };
 
 						expect( normalizeStyles(

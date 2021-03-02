@@ -82,7 +82,7 @@ describe( 'ImageStyleUI', () => {
 		} );
 	} );
 
-	describe( 'arrangment buttons', () => {
+	describe( 'arrangement buttons', () => {
 		let buttons;
 
 		beforeEach( () => {

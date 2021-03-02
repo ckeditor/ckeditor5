@@ -123,7 +123,7 @@ describe( 'ImageStyleEditing', () => {
 			} );
 
 			describe( 'no image styles are defined in the editor configuration', () => {
-				it( 'should set the proper defult config if both image editing plugins are loaded', async () => {
+				it( 'should set the proper default config if both image editing plugins are loaded', async () => {
 					const editor = await ModelTestEditor.create( {
 						plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ]
 					} );
@@ -139,7 +139,7 @@ describe( 'ImageStyleEditing', () => {
 					editor.destroy();
 				} );
 
-				it( 'should not set a default config if neither image editing plugins are loaed', async () => {
+				it( 'should not set a default config if neither image editing plugins are loaded', async () => {
 					const editor = await ModelTestEditor.create( {
 						plugins: [ ImageStyleEditing ]
 					} );

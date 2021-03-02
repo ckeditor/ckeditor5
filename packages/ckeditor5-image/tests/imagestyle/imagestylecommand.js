@@ -57,7 +57,7 @@ describe( 'ImageStyleCommand', () => {
 		} );
 	} );
 
-	describe( 'constuctor()', () => {
+	describe( 'constructor()', () => {
 		it( 'should set default arrangements properly if both of them are defined in the config', () => {
 			expect( command._defaultArrangements ).to.deep.equal( {
 				image: defaultBlock.name,
@@ -129,7 +129,7 @@ describe( 'ImageStyleCommand', () => {
 				expect( command.value ).to.equal( anyImage.name );
 			} );
 
-			it( 'should match the proper default arrangment if the imageStyle attribute is not present', () => {
+			it( 'should match the proper default arrangement if the imageStyle attribute is not present', () => {
 				setData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
 				expect( command.value ).to.equal( defaultInline.name );
@@ -168,7 +168,7 @@ describe( 'ImageStyleCommand', () => {
 				expect( command.value ).to.equal( anyImage.name );
 			} );
 
-			it( 'should match the proper default arrangment if the imageStyle attribute is not present', () => {
+			it( 'should match the proper default arrangement if the imageStyle attribute is not present', () => {
 				setData( model, '[<image></image>]' );
 
 				expect( command.value ).to.equal( defaultBlock.name );

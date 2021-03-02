@@ -10,7 +10,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 import InsertImageCommand from './insertimagecommand';
-import ImageTypeCommand from './imagetypecommand';
 
 /**
  * The image engine plugin. This module loads common code shared between
@@ -67,7 +66,6 @@ export default class ImageEditing extends Plugin {
 					}
 				}
 			} );
-
 
 		const insertImageCommand = new InsertImageCommand( editor );
 
