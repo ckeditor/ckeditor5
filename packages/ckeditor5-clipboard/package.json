@@ -33,6 +33,7 @@
     "@ckeditor/ckeditor5-paragraph": "^25.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^25.0.0",
     "@ckeditor/ckeditor5-remove-format": "^25.0.0",
+    "@ckeditor/ckeditor5-table": "^25.0.0",
     "@ckeditor/ckeditor5-typing": "^25.0.0"
   },
   "engines": {
