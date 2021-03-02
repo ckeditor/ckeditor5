@@ -182,5 +182,37 @@ ClassicEditor
 
 ## Keystrokes
 
-Starting from 26.0.0 the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} is not automatically binding to both <kbd>Ctrl</kbd> and <kbd>Cmd</kbd> keys on macOS as before, it's translating <kbd>Ctrl</kbd> key to <kbd>Cmd</kbd> key and handling only that keystroke. So if there was a registered keystroke `Ctrl+A` it is translated to `Cmd+A` on macOS. To be able to disable translation of some keystroke the forced modifier should be used: `Ctrl!+A` (note the exclamation mark). 
+Starting from 26.0.0 the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} is not automatically binding to both <kbd>Ctrl</kbd> and <kbd>Cmd</kbd> keys on macOS as before, it's translating <kbd>Ctrl</kbd> key to <kbd>Cmd</kbd> key and handling only that keystroke. So if there was a registered keystroke `Ctrl+A` it is translated to `Cmd+A` on macOS. To be able to disable translation of some keystroke the forced modifier should be used: `Ctrl!+A` (note the exclamation mark).
 
+## Unified button and command naming convention
+
+The naming conventions for buttons and commands have been reviewed and unified to maintain maximum consistency and provide sane rules that match real-life cases.
+
+All buttons follow the **verb + noun** (i.e. `insertTable`, `selectAll`) or the **noun** (i.e. `bold`, `mediaEmbed`) convention.
+
+As for commands it was trickier, because there are many more possible combinations of their names than there are for buttons. For commands, in most cases, the proper name should start with the **action** followed by the **feature** name (i.e. `checkTodoList`, `insertTable`).
+
+Changes in toolbar buttons (before → after):
+
+* `imageUpload` → `uploadImage`
+* `imageResize` → `resizeImage`
+* `imageInsert` → `insertImage`
+* `imageResize:*` → `resizeImage:*`
+
+Changes in command names (before → after):
+
+* `imageInsert` → `insertImage`
+* `imageUpload` → `uploadImage`
+* `imageResize` → `resizeImage`
+* `forwardDelete` → `deleteForward`
+* `todoListCheck` → `checkTodoList`
+
+The `TodoListCheckCommand` module has been moved to {@link module:list/checktodolistcommand~CheckTodoListCommand `CheckTodoListCommand`}.
+
+The `ImageInsertCommand` module has been moved to {@link module:image/image/insertimagecommand~InsertImageCommand `InsertImageCommand`}.
+
+The `ImageResizeCommand` module has been moved to {@link module:image/imageresize/resizeimagecommand~ResizeImageCommand `ResizeImageCommand`}.
+
+The `ImageUploadCommand` module has been moved to {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `UploadImageCommand`}.
+
+Old names are still available as aliases.
