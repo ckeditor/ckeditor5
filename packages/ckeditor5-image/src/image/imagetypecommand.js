@@ -58,6 +58,8 @@ export default class ImageTypeCommand extends Command {
 		const src = imageElement.getAttribute( 'src' );
 		const alt = imageElement.getAttribute( 'alt' );
 		const srcset = imageElement.getAttribute( 'srcset' );
+		const caption = imageElement.getAttribute( 'caption' );
+		const imageType = isImage( imageElement ) ? 'imageInline' : 'image';
 
 		if ( !src ) {
 			return;
@@ -73,6 +75,10 @@ export default class ImageTypeCommand extends Command {
 			attrs.srcset = srcset;
 		}
 
-		insertImage( this.editor, attrs, selection, this._modelElementName );
+		if ( caption ) {
+			attrs.caption = caption;
+		}
+
+		insertImage( this.editor, attrs, selection, imageType );
 	}
 }

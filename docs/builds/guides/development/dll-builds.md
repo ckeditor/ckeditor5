@@ -190,6 +190,7 @@ An example classic editor build configuration using dll bundles:
 				'imageStyle:full',
 				'imageStyle:side',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		},

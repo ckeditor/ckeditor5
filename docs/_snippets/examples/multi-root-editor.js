@@ -397,8 +397,9 @@ MultirootEditor
 			'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',
 			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full',
-				'imageStyle:side' ],
+			toolbar: [
+				'toggleImageCaption', 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side'
+			],
 			styles: [ 'full', 'side' ]
 		},
 		table: {

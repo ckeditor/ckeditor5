@@ -241,7 +241,7 @@ describe( 'ImageStyleCommand', () => {
 					command.execute( { value: onlyBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( '[<image imageStyle="alignCenter" src="assets/sample.png"><caption></caption></image>]' );
+						.to.equal( '[<image imageStyle="alignCenter" src="assets/sample.png"></image>]' );
 				} );
 
 				it( 'should not change the image type if the requested type equals imageInline', () => {
