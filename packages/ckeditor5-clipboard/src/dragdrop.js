@@ -104,8 +104,8 @@ export default class DragDrop extends Plugin {
 		this._setupDropMarker();
 		this._setupDraggableAttributeHandling();
 
-		this.on( 'change:isEnabled', ( evt, data, isEnabled ) => {
-			if ( !isEnabled ) {
+		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
+			if ( value ) {
 				this._finalizeDragging( false );
 			}
 		} );
@@ -139,7 +139,7 @@ export default class DragDrop extends Plugin {
 
 		// The handler for the drag start, it's responsible for setting data transfer object.
 		this.listenTo( viewDocument, 'dragstart', ( evt, data ) => {
-			if ( !this.isEnabled ) {
+			if ( editor.isReadOnly ) {
 				return;
 			}
 
@@ -180,16 +180,12 @@ export default class DragDrop extends Plugin {
 		// even if it was completed in a different application.
 		// Note: This is not fired if source text node got removed while downcasting a marker.
 		this.listenTo( viewDocument, 'dragend', ( evt, data ) => {
-			if ( !this.isEnabled ) {
-				return;
-			}
-
 			this._finalizeDragging( !data.dataTransfer.isCanceled && data.dataTransfer.dropEffect == 'move' );
 		}, { priority: 'low' } );
 
 		// Dragging over the editable.
 		this.listenTo( viewDocument, 'dragenter', () => {
-			if ( !this.isEnabled ) {
+			if ( editor.isReadOnly ) {
 				return;
 			}
 
@@ -198,10 +194,6 @@ export default class DragDrop extends Plugin {
 
 		// Dragging out of the editable.
 		this.listenTo( viewDocument, 'dragleave', () => {
-			if ( !this.isEnabled ) {
-				return;
-			}
-
 			// We don't know if the mouse left the editor or just some element in it so lets wait a few milliseconds
 			// to check if 'dragover' is not fired.
 			this._removeDropMarkerDelayed();
@@ -209,17 +201,13 @@ export default class DragDrop extends Plugin {
 
 		// Handler for moving dragged content over the target area.
 		this.listenTo( viewDocument, 'dragging', ( evt, data ) => {
-			if ( !this.isEnabled ) {
-				return;
-			}
-
-			this._removeDropMarkerDelayed.cancel();
-
 			if ( editor.isReadOnly ) {
 				data.dataTransfer.dropEffect = 'none';
 
 				return;
 			}
+
+			this._removeDropMarkerDelayed.cancel();
 
 			const targetRange = findDropTargetRange( editor, data.targetRanges, data.target );
 
@@ -229,6 +217,7 @@ export default class DragDrop extends Plugin {
 				data.dataTransfer.dropEffect = 'copy';
 			}
 
+			/* istanbul ignore else */
 			if ( targetRange ) {
 				this._updateDropMarkerThrottled( targetRange );
 			}
@@ -247,7 +236,7 @@ export default class DragDrop extends Plugin {
 
 		// Update the event targetRanges and abort dropping if dropping over itself.
 		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
-			if ( !this.isEnabled || data.method != 'drop' ) {
+			if ( data.method != 'drop' ) {
 				return;
 			}
 
@@ -257,6 +246,7 @@ export default class DragDrop extends Plugin {
 			// the target lands on the marker itself.
 			this._removeDropMarker();
 
+			/* istanbul ignore if */
 			if ( !targetRange ) {
 				this._finalizeDragging( false );
 				evt.stop();
@@ -296,7 +286,7 @@ export default class DragDrop extends Plugin {
 		const clipboardPipeline = this.editor.plugins.get( ClipboardPipeline );
 
 		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
-			if ( !this.isEnabled || data.method !== 'drop' ) {
+			if ( this.editor.isReadOnly || data.method !== 'drop' ) {
 				return;
 			}
 
@@ -308,7 +298,7 @@ export default class DragDrop extends Plugin {
 		}, { priority: 'high' } );
 
 		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
-			if ( !this.isEnabled || data.method !== 'drop' ) {
+			if ( this.editor.isReadOnly || data.method !== 'drop' ) {
 				return;
 			}
 
@@ -339,7 +329,7 @@ export default class DragDrop extends Plugin {
 		this.listenTo( viewDocument, 'mousedown', ( evt, data ) => {
 			// The lack of data can be caused by editor tests firing fake mouse events. This should not occur
 			// in real-life scenarios but this greatly simplifies editor tests that would otherwise fail a lot.
-			if ( !this.isEnabled || !data ) {
+			if ( editor.isReadOnly || !data ) {
 				return;
 			}
 
@@ -426,8 +416,8 @@ export default class DragDrop extends Plugin {
 				return writer.createUIElement( 'span', { class: 'ck ck-clipboard-drop-target-position' }, function( domDocument ) {
 					const domElement = this.toDomElement( domDocument );
 
-					// Using zero width no-break space to make this marker as high as text and also making text not break on marker.
-					domElement.innerHTML = '&#65279;<span></span>&#65279;';
+					// Using word joiner to make this marker as high as text and also making text not break on marker.
+					domElement.innerHTML = '&NoBreak;<span></span>&NoBreak;';
 
 					return domElement;
 				} );
