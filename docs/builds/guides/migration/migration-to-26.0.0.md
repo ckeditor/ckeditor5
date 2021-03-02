@@ -5,19 +5,19 @@ order: 20
 
 # Migration to 26.0.0
 
-For the entire list of changes introduced in version 26.0.0 see the [changelog for CKEditor 5 v26.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2600-2021-03-01).
+For the entire list of changes introduced in version 26.0.0, see the [changelog for CKEditor 5 v26.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2600-2021-03-01).
 
-Listed below are the most important changes that require your attention when upgrading to 26.0.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v26.0.0.
 
 ## Soft requirements
 
-While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8395) with additional plugins without rebuilding the bundle (concept also called "DLLs"), certain sets of plugins had to be decoupled. This has lead to the introduction of the "soft requirements".
+While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8395) with additional plugins without rebuilding the bundle (a concept also called "DLLs"), certain sets of plugins had to be decoupled. This has lead to the introduction of the "soft requirements".
 
-Normally, each plugin had its direct requirements that would be automatically loaded by the editor before that plugin is loaded. Those plugins were specified in `static get() {}` callback of a plugin class in the form of plugin constructors (dependencies).
+Before, each plugin had its direct requirements that would be automatically loaded by the editor before the plugin is loaded. These plugins were specified in the `static get() {}` callback of a plugin class in the form of plugin constructors (dependencies).
 
-Starting from 26.0.0 not all plugins can be directly imported by other plugins. However, a plugin can define that it requires another plugin (called for example `'Foo'`) by returning a string from `static get() {}`. This tells the editor that such a plugin must be provided by the integrator (you) either prior to building (via {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}) or when creating a new instance of the editor (e.g. via {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`}).
+Starting from v26.0.0 not all plugins can be directly imported by other plugins. However, a plugin can define that it requires another plugin (called for example `'Foo'`) by returning a string from `static get() {}`. This tells the editor that such a plugin must be provided by the integrator (you) either prior to building (via {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}) or when creating a new instance of the editor (e.g. via {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`}).
 
-Therefore, when upgrading to version 26.0.0 you may stumble upon `plugincollection-soft-required` error. This tells you that some dependencies are now missing and you need to provide them.
+Therefore, when upgrading to version 26.0.0, you may stumble upon the {@link framework/guides/support/error-codes#error-plugincollection-soft-required `plugincollection-soft-required`} error. This tells you that some dependencies are now missing and you need to provide them.
 
 ### List of known soft requirements
 
@@ -180,9 +180,11 @@ ClassicEditor
 	} );
 ```
 
-## Keystrokes
+## Keystrokes for macOS
 
-Starting from 26.0.0 the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} is not automatically binding to both <kbd>Ctrl</kbd> and <kbd>Cmd</kbd> keys on macOS as before. Instead, it is translating <kbd>Ctrl</kbd> key to <kbd>Cmd</kbd> key and handling this keystroke only. So if there was a registered keystroke `Ctrl+A` it is translated to `Cmd+A` on macOS. To be able to disable translation of some keystroke you should use the forced modifier: `Ctrl!+A` (note the exclamation mark).
+Starting from v26.0.0, the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} is not automatically binding to both <kbd>Ctrl</kbd> and <kbd>Cmd</kbd> keys on macOS as before. Instead, it is translating the <kbd>Ctrl</kbd> key to the <kbd>Cmd</kbd> key and handling this keystroke only.
+
+For example, a registered keystroke `Ctrl+A` will now be translated to `Cmd+A` on macOS. To disable the translation of some keystroke, use the forced modifier: `Ctrl!+A` (note the exclamation mark).
 
 ## Unified button and command naming convention
 
@@ -190,9 +192,9 @@ The naming conventions for both buttons and commands have been reviewed and unif
 
 All buttons follow the **verb + noun** (i.e. `insertTable`, `selectAll`) or the **noun** (i.e. `bold`, `mediaEmbed`) convention.
 
-It was trickier for commands, because there are more possible name combinations than there are for buttons. For commands, the proper name should start with the **action** followed by the **feature** name (i.e. `checkTodoList`, `insertTable`), in most cases.
+It was trickier for commands, because there are more possible name combinations than there are for buttons. For commands, the proper name should in most cases start with the **action** followed by the **feature** name (i.e. `checkTodoList`, `insertTable`).
 
-Toolbar buttons name changes (before → after):
+Toolbar button name changes (before → after):
 
 * `imageUpload` → `uploadImage`
 * `imageResize` → `resizeImage`
@@ -207,12 +209,12 @@ Command name changes (before → after):
 * `forwardDelete` → `deleteForward`
 * `todoListCheck` → `checkTodoList`
 
-The `TodoListCheckCommand` module has been moved to {@link module:list/checktodolistcommand~CheckTodoListCommand `CheckTodoListCommand`}.
+The `TodoListCheckCommand` module was moved to {@link module:list/checktodolistcommand~CheckTodoListCommand `CheckTodoListCommand`}.
 
-The `ImageInsertCommand` module has been moved to {@link module:image/image/insertimagecommand~InsertImageCommand `InsertImageCommand`}.
+The `ImageInsertCommand` module was moved to {@link module:image/image/insertimagecommand~InsertImageCommand `InsertImageCommand`}.
 
-The `ImageResizeCommand` module has been moved to {@link module:image/imageresize/resizeimagecommand~ResizeImageCommand `ResizeImageCommand`}.
+The `ImageResizeCommand` module was moved to {@link module:image/imageresize/resizeimagecommand~ResizeImageCommand `ResizeImageCommand`}.
 
-The `ImageUploadCommand` module has been moved to {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `UploadImageCommand`}.
+The `ImageUploadCommand` module was moved to {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `UploadImageCommand`}.
 
-Old names are still available as aliases.
+The old names are still available as aliases.
