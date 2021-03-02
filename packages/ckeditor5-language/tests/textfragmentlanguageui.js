@@ -14,7 +14,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'TextFragmentLanguageUI', () => {
-	let editor, editorElement, dropdown;
+	let editor, editorElement, dropdown, command;
 
 	testUtils.createSinonSandbox();
 
@@ -30,6 +30,8 @@ describe( 'TextFragmentLanguageUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
+
+				command = editor.commands.get( 'textFragmentLanguage' );
 
 				// Set data so the commands will be enabled.
 				setData( editor.model, '<paragraph>[foo]</paragraph>' );
@@ -54,18 +56,18 @@ describe( 'TextFragmentLanguageUI', () => {
 		} );
 
 		it( 'should execute textFragmentLanguage command on model (no language selected)', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = testUtils.sinon.spy( command, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'textFragmentLanguage',
+			sinon.assert.calledWithExactly( executeSpy,
 				{ languageCode: undefined, textDirection: undefined } );
 		} );
 
 		it( 'should execute textFragmentLanguage command on model (language selected)', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = testUtils.sinon.spy( command, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 			dropdown.languageCode = 'fr';
@@ -73,7 +75,7 @@ describe( 'TextFragmentLanguageUI', () => {
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'textFragmentLanguage',
+			sinon.assert.calledWithExactly( executeSpy,
 				{ languageCode: 'fr', textDirection: 'ltr' } );
 		} );
 
@@ -96,12 +98,6 @@ describe( 'TextFragmentLanguageUI', () => {
 		} );
 
 		describe( 'model to command binding', () => {
-			let command;
-
-			beforeEach( () => {
-				command = editor.commands.get( 'textFragmentLanguage' );
-			} );
-
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
 

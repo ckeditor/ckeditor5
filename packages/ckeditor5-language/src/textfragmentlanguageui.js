@@ -105,7 +105,7 @@ export default class TextFragmentLanguageUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
-				editor.execute( 'textFragmentLanguage', {
+				languageCommand.execute( {
 					languageCode: evt.source.languageCode,
 					textDirection: evt.source.textDirection
 				} );
