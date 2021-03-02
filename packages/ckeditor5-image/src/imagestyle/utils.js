@@ -350,8 +350,9 @@ function extendStyle( source, style ) {
 // @param {Object} info
 function warnInvalidStyle( info ) {
 	/**
-	 * The custom image style you provided is not valid.
+	 * The custom image style definition you provided is invalid.
 	 * Check if it implements properly one of the following formats:
+	 *
 	 * * {@link module:image/imagestyle~ImageStyleArrangementFormat image style arrangement format},
 	 * * {@link module:image/imagestyle~ImageStyleGroupFormat image style group format}
 	 *
