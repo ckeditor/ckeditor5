@@ -40,43 +40,15 @@ export default class TextFragmentLanguage extends Plugin {
 }
 
 /**
- * The configuration of the text fragment language feature.
- * Introduced by the {@link module:language/textfragmentlanguageediting~TextFragmentLanguageEditing} feature.
- *
- * Read more in {@link module:language/textfragmentlanguage~TextFragmentLanguageConfig}.
- *
- * @member {module:language/textfragmentlanguage~TextFragmentLanguageConfig}
- * module:core/editor/editorconfig~EditorConfig#textFragmentLanguage
- */
-
-/**
- * The configuration of the text fragment language feature.
- * The option is used by the {@link module:language/textfragmentlanguageediting~TextFragmentLanguageEditing} feature.
- *
- *		ClassicEditor
- *			.create( {
- * 				textFragmentLanguage: ... // Text fragment language feature config.
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface TextFragmentLanguageConfig
- */
-
-/**
  * The available text fragment language options.
  *
  * The default value is:
  *
- *		const config = {
- *			options: [
- *				{ title: 'Arabic', languageCode: 'ar' },
- *				{ title: 'French', languageCode: 'fr' },
- *				{ title: 'Spanish', languageCode: 'es' }
- *			]
- *		};
+ *		const config = [
+ *			{ title: 'Arabic', languageCode: 'ar' },
+ *			{ title: 'French', languageCode: 'fr' },
+ *			{ title: 'Spanish', languageCode: 'es' }
+ *		];
  *
  * The `title` property will be used by the text fragment language dropdown to render available options.
  *
@@ -89,7 +61,7 @@ export default class TextFragmentLanguage extends Plugin {
  * specify text direction by itself.
  *
  * @member {Array.<module:language/textfragmentlanguage~TextFragmentLanguageOption>}
- * module:language/textfragmentlanguage~TextFragmentLanguageConfig#options
+ * module:core/editor/editorconfig~LanguageConfig#textFragmentLanguage
  */
 
 /**
@@ -98,6 +70,5 @@ export default class TextFragmentLanguage extends Plugin {
  * @typedef {Object} module:language/textfragmentlanguage~TextFragmentLanguageOption
  * @property {String} title The user-readable title of the option.
  * @property {String} languageCode The language code in ISO 639 format.
- * @property {Strint} [textDirection] The language text direction. Automatically detected if omitted.
- * @extends module:engine/conversion/conversion~ConverterDefinition
+ * @property {String} [textDirection] The language text direction. Automatically detected if omitted.
  */

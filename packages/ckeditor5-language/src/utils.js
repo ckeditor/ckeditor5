@@ -17,12 +17,14 @@ import { getLanguageDirection } from 'ckeditor5/src/utils';
  * * `languageCode` - The language code used for the lang attribute in ISO 639 format.
  * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
  *
- * See {@link module:language/language~LanguageConfig language config} for more information about language properties.
+ * See {@link module:core/editor/editorconfig~LanguageConfig#textFragmentLanguage text fragment config}
+ * for more information about language properties.
  *
  * If `textDirection` argument is omitted, it will be automatically detected based on `languageCode`.
  *
  * @param {String} languageCode The language code in ISO 639 format.
  * @param {String} [textDirection] Language text direction. Automatically detected if omitted.
+ * @returns {String}
  */
 export function stringifyLanguageAttribute( languageCode, textDirection ) {
 	textDirection = textDirection || getLanguageDirection( languageCode );
@@ -34,9 +36,9 @@ export function stringifyLanguageAttribute( languageCode, textDirection ) {
  * {@link module:language/utils~stringifyLanguageAttribute stringifyLanguageAttribute} function.
  *
  * @param {String} str Attribute value.
- * @returns result
- * @returns result.languageCode The language code in ISO 639 format.
- * @returns result.textDirection Language text direction.
+ * @returns {Object} result
+ * @returns {String} result.languageCode The language code in ISO 639 format.
+ * @returns {String} result.textDirection Language text direction.
  */
 export function parseLanguageAttribute( str ) {
 	const parts = str.split( ':' );
