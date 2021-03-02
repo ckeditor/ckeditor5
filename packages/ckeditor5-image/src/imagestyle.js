@@ -44,8 +44,6 @@ export default class ImageStyle extends Plugin {
  */
 
 /**
- * # **Basic description**
- *
  * The {@link module:image/imagestyle imageStyle} plugin requires a list of the image arrangements and groups
  * to work properly. It provides a default configuration, which can be customized while creating the editor instance.
  *
@@ -138,7 +136,7 @@ export default class ImageStyle extends Plugin {
  *			} );
  *
  * 	Note: Custom arrangements will override the arrangements array only,
- * 	the groups will stay as in the default configuration. The sam goes for applying the custom groups.
+ * 	the groups will stay as in the default configuration. The same goes for applying the custom groups.
  *
  * 	Note: Every item in the referenced groups must be defined in the provided arrangements.
  *
