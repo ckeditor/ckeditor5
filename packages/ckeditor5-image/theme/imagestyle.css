@@ -5,6 +5,7 @@
 
 :root {
 	--ck-image-style-spacing: 1.5em;
+	--ck-inline-image-style-spacing: --ck-image-style-spacing / 2;
 }
 
 .ck-content {
@@ -40,12 +41,11 @@
 	}
 }
 
-/* ASK: How to adjust the default margins properly? */
 .ck-content .image-inline {
 	&.image-style-align-left,
 	&.image-style-align-right {
-		margin-top: var(--ck-image-style-spacing);
-		margin-bottom: var(--ck-image-style-spacing);
+		margin-top: var(--ck-inline-image-style-spacing);
+		margin-bottom: var(--ck-inline-image-style-spacing);
 	}
 }
 
