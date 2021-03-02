@@ -40,6 +40,7 @@ ClassicEditor
 				'|',
 				'resizeImage',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		},

@@ -61,6 +61,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'|',
 				'resizeImage',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		};
