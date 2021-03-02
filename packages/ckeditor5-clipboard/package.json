@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-code-block": "^25.0.0",
     "@ckeditor/ckeditor5-easy-image": "^25.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^25.0.0",
+    "@ckeditor/ckeditor5-enter": "^25.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^25.0.0",
     "@ckeditor/ckeditor5-image": "^25.0.0",
     "@ckeditor/ckeditor5-link": "^25.0.0",
