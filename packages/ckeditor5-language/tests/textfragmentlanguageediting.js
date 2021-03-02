@@ -96,6 +96,33 @@ describe( 'TextFragmentLanguageEditing', () => {
 				{ title: 'Spanish', languageCode: 'es' }
 			] );
 		} );
+
+		it( 'should be customizable', async () => {
+			const languageConfig = {
+				ui: 'pl',
+				content: 'pl',
+				textFragmentLanguage: [
+					{ title: 'Hebrew', languageCode: 'he' },
+					{ title: 'Polish', languageCode: 'pl' }
+				]
+			};
+
+			await createCustomConfigEditor( languageConfig );
+
+			expect( editor.config.get( 'language' ) ).to.deep.equal( languageConfig );
+		} );
+
+		function createCustomConfigEditor( languageConfig ) {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ TextFragmentLanguageEditing, Paragraph ],
+					language: languageConfig
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+				} );
+		}
 	} );
 } );
 
