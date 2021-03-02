@@ -15,16 +15,24 @@ import { toArray } from 'ckeditor5/src/utils';
  *
  * Data schema is represented by data schema definitions. To add new definition, use {@link #register} method:
  *
- *		dataSchema.register( { view: 'section', model: 'my-section' }, {
- *			inheritAllFrom: '$block'
+ *		dataSchema.register( {
+ *			view: 'section',
+ *			model: 'my-section',
+ *			schema: {
+ *				inheritAllFrom: '$block'
+ *			}
  *		} );
- *
- * Once registered, definition can be enabled in editor's model:
- *
- *		dataSchema.enable( 'my-section' );
  */
 export default class DataSchema {
 	constructor() {
+		/**
+		 * A map of registered data schema definitions via {@link #register} method.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Map<string, module:content-compatibility/dataschema~DataSchemaDefinition>}
+		 * module:content-compatibility/dataschema~DataSchema#_definitions
+		 */
 		this._definitions = new Map();
 
 		// Add block elements.
@@ -120,14 +128,14 @@ export default class DataSchema {
 	/**
 	 * Returns all definitions matching the given view name.
 	 *
-	 * @param {String} viewName
+	 * @param {String|RegExp} viewName
 	 * @param {Boolean} [includeReferences] Indicates if this method should also include definitions of referenced models.
-	 * @returns {Set<*>}
+	 * @returns {Set<module:content-compatibility/dataschema~DataSchemaDefinition>}
 	 */
 	getDefinitionsForView( viewName, includeReferences ) {
 		const definitions = new Set();
 
-		for ( const definition of this._filterViewDefinitions( viewName ) ) {
+		for ( const definition of this._getMatchingViewDefinitions( viewName ) ) {
 			if ( includeReferences ) {
 				for ( const reference of this._getReferences( definition.model ) ) {
 					definitions.add( reference );
@@ -141,13 +149,13 @@ export default class DataSchema {
 	}
 
 	/**
-	 * Filters definitions matching the given view name.
+	 * Returns definitions matching the given view name.
 	 *
 	 * @private
-	 * @param {String} viewName
+	 * @param {String|RegExp} viewName
 	 * @returns {Array}
 	 */
-	_filterViewDefinitions( viewName ) {
+	_getMatchingViewDefinitions( viewName ) {
 		return Array.from( this._definitions.values() )
 			.filter( def => def.view && testViewName( viewName, def.view ) );
 	}
@@ -157,7 +165,7 @@ export default class DataSchema {
 	 *
 	 * @private
 	 * @param {String} modelName Data schema model name.
-	 * @returns {Iterable<String>}
+	 * @returns {Iterable<module:content-compatibility/dataschema~DataSchemaDefinition>}
 	 */
 	* _getReferences( modelName ) {
 		const { schema } = this._definitions.get( modelName );
@@ -202,7 +210,7 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} [view] Name of the view element.
  * @property {String} model Name of the model element.
- * @property {String|module:engine/model/schema~SchemaItemDefinition} schema Name of the schema to inherit
+ * @property {module:engine/model/schema~SchemaItemDefinition} Model schema item definition describing registered model.
  * @property {String|Array} allowChildren Extends the given children list to allow definition model.
  * or custom schema item definition.
  */

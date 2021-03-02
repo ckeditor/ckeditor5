@@ -45,9 +45,36 @@ export default class DataFilter {
 	constructor( editor, dataSchema ) {
 		this.editor = editor;
 
+		/**
+		 * An instance of the {@link module:content-compatibility/dataschema~DataSchema}.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {module:content-compatibility/dataschema~DataSchema} module:content-compatibility/datafilter~DataFilter#_dataSchema
+		 */
 		this._dataSchema = dataSchema;
 
+		/**
+		 * A map of registered {@link module:engine/view/matcher~Matcher Matcher} instances.
+		 *
+		 * Describes rules upon which content attributes should be allowed.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Map<string, module:engine/view/matcher~Matcher>} module:content-compatibility/datafilter~DataFilter#_allowedAttributes
+		 */
 		this._allowedAttributes = new Map();
+
+		/**
+		 * A map of registered {@link module:engine/view/matcher~Matcher Matcher} instances.
+		 *
+		 * Describes rules upon which content attributes should be disallowed.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Map<string, module:engine/view/matcher~Matcher>}
+		 * module:content-compatibility/datafilter~DataFilter#_disallowedAttributes
+		 */
 		this._disallowedAttributes = new Map();
 	}
 
@@ -87,7 +114,7 @@ export default class DataFilter {
 	 *
 	 * @private
 	 * @param {module:engine/view/matcher~MatcherPattern} config
-	 * @param {Map} rules Rules map holding matchers.
+	 * @param {Map<string, module:engine/view/matcher~Matcher>} rules Rules map holding matchers.
 	 */
 	_addAttributeMatcher( config, rules ) {
 		const viewName = config.name;
