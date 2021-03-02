@@ -145,7 +145,7 @@ const DEFAULT_GROUPS = {
  * Default image arrangement icons provided by the plugin that can be referred in the
  * {@link module:image/image~ImageConfig#styles} configuration.
  *
- * There are 7 icons available: `'full'`, `'left'`, `'inLineLeft'`, `'center'`, `'right'`, `'inLineRight'`, and `'inLine'`.
+ * There are 7 icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  *
  * @readonly
  * @type {Object.<String,String>}
@@ -155,9 +155,9 @@ const DEFAULT_ICONS = {
 	left: objectLeft,
 	right: objectRight,
 	center: objectCenter,
-	inLineLeft: objectInlineLeft,
-	inLineRight: objectInlineRight,
-	inLine: objectInline
+	inlineLeft: objectInlineLeft,
+	inlineRight: objectInlineRight,
+	inline: objectInline
 };
 
 /**

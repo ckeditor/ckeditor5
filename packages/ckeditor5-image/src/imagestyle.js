@@ -40,7 +40,6 @@ export default class ImageStyle extends Plugin {
 /**
  * The image style configuration {@link module:image/imagestyle~ImageStylesConfig}.
  * @member {Object} module:image/image~ImageConfig#styles
- *
  */
 
 /**
@@ -90,29 +89,31 @@ export default class ImageStyle extends Plugin {
  * the following arrangements and groups will be available for the toolbar configuration:
  *
  *		const imageConfig = {
- *			arrangements: [
- *				'inline', 'alignLeft', 'alignRight',
- *				'alignCenter', 'alignBlockLeft', 'alignBlockRight'
- *			],
- *			groups: [ 'wrapText', 'breakText' ]
+ *			styles: {
+ *				arrangements: [
+ *					'inline', 'alignLeft', 'alignRight',
+ *					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+ *				],
+ *				groups: [ 'wrapText', 'breakText' ]
+ *			}
  *		};
  *
  * * If only the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin is loaded,
- * the following arrangements will be available for the toolbar configuration:
+ * the following arrangements and groups will be available for the toolbar configuration:
  *
  *		const imageConfig = {
  *			styles: {
- *	 			arrangements: [ 'full', 'side' ],
+ *				arrangements: [ 'full', 'side' ],
  *				groups: []
  *			}
  *		};
  *
  * * If only the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin is loaded,
- * the following arrangements will available for the toolbar configuration:
+ * the following arrangements and groups will available for the toolbar configuration:
  *
  *		const imageConfig = {
  *			styles: {
- *	 			arrangements: [ 'inline', 'alignLeft', 'alignRight' ],
+ *				arrangements: [ 'inline', 'alignLeft', 'alignRight' ],
  *				groups: []
  *			}
  *		};
@@ -135,10 +136,10 @@ export default class ImageStyle extends Plugin {
  *				}
  *			} );
  *
- * 	Note: Custom arrangements will override the arrangements array only,
- * 	the groups will stay as in the default configuration. The same goes for applying the custom groups.
+ * **Note**: Custom arrangements will override the arrangements array only,
+ * the groups will stay as in the default configuration. The same goes for applying the custom groups.
  *
- * 	Note: Every item in the referenced groups must be defined in the provided arrangements.
+ * **Note**: Every item in the referenced groups must be defined in the provided arrangements.
  *
  * * Each of the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} can be customized,
  * e.g. to change the `icon`, `title` or CSS `className` of the arrangement. The feature also provides several
@@ -150,18 +151,18 @@ export default class ImageStyle extends Plugin {
  *
  *		ClassicEditor.create( editorElement, { image:
  *			styles: {
- *	 			arrangements: {
+ *				arrangements: {
  *					// This will only customize the icon of the "full" style.
  *					// Note: 'right' is one of default icons provided by the feature.
  *					{
- *	 					name: 'full',
+ *						name: 'full',
  *						icon: 'right'
  *					},
  *
  *					// This will customize the icon, title
  *					// and CSS class of the default "side" style.
  *					{
- *	 					name: 'side',
+ *						name: 'side',
  *						icon: customIcon,
  *						title: 'My side style',
  *						className: 'custom-side-image'
@@ -178,18 +179,18 @@ export default class ImageStyle extends Plugin {
  *				// The 'full' and 'side' arrangements are used in the 'breakText' group,
  *				// so they must be defined as the arrangements.
  *				arrangements: [ 'full', 'side' ],
- *	 			groups: {
+ *				groups: {
  *					// This will only customize the default item.
  *					// Note: 'alignRight' is one of items defined in the default group.
  *					{
- *	 					name: 'wrapText',
+ *						name: 'wrapText',
  *						defaultItem: 'alignRight'
  *					},
  *
  *					// This will customize the title
  *					// and the items list of the default group.
  *					{
- *	 					name: 'breakText',
+ *						name: 'breakText',
  *						title: 'My break text title',
  *						items: [ 'full', 'side' ]
  *					}
@@ -198,53 +199,50 @@ export default class ImageStyle extends Plugin {
  *		} );
  *
  * * If none of the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} or
- * 	{@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} is good enough,
+ * 	{@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} works for the integration,
  * 	it is possible to define independent custom styles, too.
  *
  * 	See the documentation about the image
  * 	{@link module:image/imagestyle~ImageStyleArrangementFormat arrangements} and
  * 	{@link module:image/imagestyle~ImageStyleGroupFormat groups} to define the custom image style configuration properly.
  *
- *		import { icons } from 'ckeditor5/src/core';
  *		import redIcon from 'red-icon.svg';
  *		import blueIcon from 'blue-icon.svg';
- *
- *		const regularIcon = icons.objectCenter;
  *
  *		// ...
  *
  *		ClassicEditor.create( editorElement, { image:
  *			styles: {
- *	 			// A list of completely custom arrangements.
- *	 			arrangements: [
+ *				// A list of completely custom arrangements.
+ *				arrangements: [
  *					{
- *	 					name: 'regular',
+ *						name: 'regular',
  *						modelElements: [ 'image', 'imageInline' ],
  *						title: 'Regular image',
- *						icon: regularIcon,
+ *						icon: 'full',
  *						isDefault: true
  *					}, {
- *	 					name: 'blue',
+ *						name: 'blue',
  *						modelElements: [ 'imageInline' ],
  *						title: 'Blue image',
  *						icon: blueIcon,
  *						className: 'image-blue'
  *					}, {
- *	 					name: 'red',
+ *						name: 'red',
  *						modelElements: [ 'image' ],
  *						title: 'Red image',
  *						icon: redIcon,
  *						className: 'image-red'
  *					}
  *				],
- * 				// A list of completely custom groups.
+ *				// A list of completely custom groups.
  *				groups: [
  *					{
-	 					name: 'Colorful',
-						title: 'Colorful images',
-						defaultItem: 'blue',
-						items: [ 'blue', 'red' ]
-					}
+ *						name: 'Colorful',
+ *						title: 'Colorful images',
+ *						defaultItem: 'blue',
+ *						items: [ 'blue', 'red' ]
+ *					}
  *				]
  *			}
  *		} );
@@ -281,19 +279,19 @@ export default class ImageStyle extends Plugin {
  *
  * @property {String} name The unique name of the arrangement. It will be used to:
  *
- * * Store the chosen arrangement in the model by setting the `imageStyle` attribute of the `<image>` element.
- * * As a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
+ * * store the chosen arrangement in the model by setting the `imageStyle` attribute of the model image element,
+ * * as a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
  * * when registering a button for each of the arrangements (`'imageStyle:{name}'`) in the
  * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
  * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin).
  *
  * @property {Boolean} [isDefault] When set, the arrangement will be used as the default one for the model elements
- * listed in the modelElements property. A default arrangement does not apply any CSS class to the view element.
+ * listed in the `modelElements` property. A default arrangement does not apply any CSS class to the view element.
  *
  * @property {String} icon One of the following to be used when creating the arrangement's button:
  *
- * * An SVG icon source (as an XML string).
- * * One of {@link module:image/imagestyle/utils~DEFAULT_ICONS} to use a default icon provided by the plugin.
+ * * an SVG icon source (as an XML string),
+ * * one of the keys in {@link module:image/imagestyle/utils~DEFAULT_ICONS} to use one of default icons provided by the plugin.
  *
  * @property {String} title The arrangement's title. Setting `title` to one of
  * {@link module:image/imagestyle/imagestyleui~ImageStyleUI#localizedDefaultStylesTitles}
@@ -303,16 +301,16 @@ export default class ImageStyle extends Plugin {
  *
  * @property {Array.<String>} modelElements The list of the names of the model elements that are supported by the arrangement.
  * The possible values are:
- * * `[ 'image' ]` if the arrangement can be handled by the
+ * * `[ 'image' ]` if the arrangement can be applied to the image type introduced by the
  * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin,
- * * `[ 'imageInline' ]` if the arrangement can be handled by the
+ * * `[ 'imageInline' ]` if the arrangement can be applied to the image type introduced by the
  * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin,
- * * `[ 'imageInline', 'image' ]` if the arrangement can be handled by both of the plugins mentioned above.
+ * * `[ 'imageInline', 'image' ]` if the arrangement can be applied to both image types introduced by the plugins mentioned above.
  *
- * It will by used to determine whether the `image` element should be transitioned into the `imageInline` element or vice versa
- * while executing the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle`} command.
- * The transition will occur if the current model element is not listed in the `modelElements` property of the requested arrangement.
- *
+ * This property determines which model element names work with the arrangement. If the model element name of the currently selected
+ * image is different, upon executing the
+ * {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle`} command the image type (model element name)
+ * will automatically change.
  */
 
 /**
