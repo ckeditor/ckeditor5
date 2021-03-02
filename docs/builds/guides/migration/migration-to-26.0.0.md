@@ -179,3 +179,8 @@ ClassicEditor
 		console.error( error );
 	} );
 ```
+
+## Keystrokes
+
+Starting from 26.0.0 the {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} is not automatically binding to both <kbd>Ctrl</kbd> and <kbd>Cmd</kbd> keys on macOS as before, it's translating <kbd>Ctrl</kbd> key to <kbd>Cmd</kbd> key and handling only that keystroke. So if there was a registered keystroke `Ctrl+A` it is translated to `Cmd+A` on macOS. To be able to disable translation of some keystroke the forced modifier should be used: `Ctrl!+A` (note the exclamation mark). 
+

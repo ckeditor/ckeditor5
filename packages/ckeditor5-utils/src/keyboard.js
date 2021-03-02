@@ -93,6 +93,10 @@ export function getCode( key ) {
  *
  * Note: Only keystrokes with a single non-modifier key are supported (e.g. `ctrl+A` is OK, but `ctrl+A+B` is not).
  *
+ * Note: On macOS keystrokes handling is translating `Ctrl` key to `Cmd` key and handling only that keystroke.
+ * So if there was a registered keystroke `Ctrl+A` it is translated to `Cmd+A` on macOS. To be able to disable
+ * translation of some keystroke the forced modifier should be used: `Ctrl!+A` (note the exclamation mark).
+ *
  * @param {String|Array.<Number|String>} keystroke Keystroke definition.
  * @returns {Number} Keystroke code.
  */
