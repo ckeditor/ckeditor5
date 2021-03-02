@@ -37,10 +37,11 @@
 }
 
 /*
- * Since the caption placeholder for images disappears when focused, it does not require special treatment
- * and can go with a position that follows text alignment of an .image out-of-the-box (center by default).
- * See https://github.com/ckeditor/ckeditor5/issues/8689.
+ * Inhertit the content styles padding of the <figcaption> in case the integration overrides `text-align: center`
+ * of `.image` (e.g. to the left/right). This ensures the placeholder stays at the padding just like the native
+ * caret does, and not at the edge of <figcaption>.
  */
 .ck.ck-editor__editable .image > figcaption.ck-placeholder::before {
-	position: static;
+	padding-left: inherit;
+	padding-right: inherit;
 }
