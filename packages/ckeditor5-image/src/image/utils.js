@@ -98,10 +98,14 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 
 	imageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
 
+	if ( imageType === 'imageInline' ) {
+		attributes = { ...Object.fromEntries( selection.getAttributes() ), ...attributes };
+	}
+
 	model.change( writer => {
 		const imageElement = writer.createElement( imageType, attributes );
 
-		if ( !selectable && imageType != 'imageInline' && !selection.getSelectedElement() ) {
+		if ( !selectable && imageType !== 'imageInline' && !selection.getSelectedElement() ) {
 			selectable = findOptimalInsertionPosition( selection, model );
 		}
 

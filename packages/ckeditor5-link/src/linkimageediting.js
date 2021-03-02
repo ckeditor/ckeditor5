@@ -97,8 +97,7 @@ export default class LinkImageEditing extends Plugin {
 				editor.model.schema.extend( 'imageInline', { allowAttributes: decorator.id } );
 			}
 
-			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( manualDecorators, decorator, 'image' ) );
-			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( manualDecorators, decorator, 'imageInline' ) );
+			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( manualDecorators, decorator ) );
 			editor.conversion.for( 'upcast' ).add( upcastImageLinkManualDecorator( manualDecorators, decorator ) );
 		}
 	}
@@ -241,9 +240,9 @@ function downcastImageLink( options, imageType ) {
 //
 // @private
 // @returns {Function}
-function downcastImageLinkManualDecorator( manualDecorators, decorator, imageType ) {
+function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 	return dispatcher => {
-		dispatcher.on( `attribute:${ decorator.id }:${ imageType }`, ( evt, data, conversionApi ) => {
+		dispatcher.on( `attribute:${ decorator.id }:image`, ( evt, data, conversionApi ) => {
 			const attributes = manualDecorators.get( decorator.id ).attributes;
 
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
@@ -271,7 +270,7 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
-			const imageInLink = getFirstImage( viewLink ) || getFirstImageInline( viewLink );
+			const imageInLink = getFirstImage( viewLink );
 
 			// We need to check whether an image is inside a link because the converter handles
 			// only manual decorators for linked images. See #7975.

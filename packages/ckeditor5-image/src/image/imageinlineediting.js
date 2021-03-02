@@ -44,6 +44,7 @@ export default class ImageInlineEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
+		const selection = editor.model.document.selection;
 		const t = editor.t;
 		const conversion = editor.conversion;
 
@@ -52,13 +53,14 @@ export default class ImageInlineEditing extends Plugin {
 			isObject: true,
 			isInline: true,
 			allowWhere: '$text',
+			allowAttributesOf: '$text',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'imageInline',
-				view: ( modelElement, { writer } ) => writer.createEmptyElement( 'img' )
+				view: ( modelElement, { writer } ) => writer.createEmptyElement( 'img', null, { isAllowedInsideAttributeElement: true } )
 			} );
 
 		conversion.for( 'editingDowncast' )
@@ -78,7 +80,10 @@ export default class ImageInlineEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImageTypeMatcher( 'imageInline', editor ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
+				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', {
+					...Object.fromEntries( selection.getAttributes() ),
+					src: viewImage.getAttribute( 'src' )
+				} )
 			} );
 	}
 }
