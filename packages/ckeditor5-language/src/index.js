@@ -4,7 +4,7 @@
  */
 
 /**
- * @module block-quote
+ * @module language
  */
 
 import TextFragmentLanguage from './textfragmentlanguage';

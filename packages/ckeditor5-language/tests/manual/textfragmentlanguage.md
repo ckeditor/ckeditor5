@@ -1,4 +1,4 @@
-## Language feature
+## Text fragment language feature
 
 1. The data should be loaded with four paragraph. Each paragraph style with applied language should be italic.
 2. Put selection in each paragraph and check if language dropdown label is changing properly.

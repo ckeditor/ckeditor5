@@ -50,7 +50,7 @@ describe( 'TextFragmentLanguageCommand', () => {
 				writer.setSelectionAttribute( attrKey, 'fr:ltr' );
 			} );
 
-			expect( command.value ).to.eql( 'fr:ltr' );
+			expect( command.value ).to.equal( 'fr:ltr' );
 		} );
 
 		it( 'is false when collapsed selection does not have the attribute', () => {
@@ -68,13 +68,13 @@ describe( 'TextFragmentLanguageCommand', () => {
 		it( 'includes language when the first item that allows attribute has the attribute #1', () => {
 			setData( model, '<p><$text language="fr:ltr">fo[o</$text></p><h1>b]ar</h1>' );
 
-			expect( command.value ).to.eql( 'fr:ltr' );
+			expect( command.value ).to.equal( 'fr:ltr' );
 		} );
 
 		it( 'includes language when the first item that allows attribute has the attribute #2', () => {
 			setData( model, '<h1>fo[o</h1><p><$text language="fr:ltr">f</$text>o]o</p>' );
 
-			expect( command.value ).to.eql( 'fr:ltr' );
+			expect( command.value ).to.equal( 'fr:ltr' );
 		} );
 
 		it( 'is false when the selection does not have the attribute', () => {
@@ -111,9 +111,9 @@ describe( 'TextFragmentLanguageCommand', () => {
 			expect( command.value ).to.be.false;
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
-			expect( command.value ).to.eql( 'fr:ltr' );
+			expect( command.value ).to.equal( 'fr:ltr' );
 
-			expect( getData( model ) ).equal(
+			expect( getData( model ) ).to.equal(
 				'<p>[<img><caption><$text language="fr:ltr">Some caption inside the image.</$text></caption></img>]</p>'
 			);
 		} );
@@ -166,7 +166,7 @@ describe( 'TextFragmentLanguageCommand', () => {
 
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
-			expect( getData( model ) ).equal( '<p>fo[ob]ar</p>' );
+			expect( getData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
 		} );
 
 		it( 'should add attribute on selected nodes if the command value was not set', () => {
@@ -176,30 +176,32 @@ describe( 'TextFragmentLanguageCommand', () => {
 
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
-			expect( command.value ).to.eql( 'fr:ltr' );
-			expect( getData( model ) ).equal( '<p>a[<$text language="fr:ltr">bcfo]obar</$text>xyz</p>' );
+			expect( command.value ).to.equal( 'fr:ltr' );
+			expect( getData( model ) ).to.equal( '<p>a[<$text language="fr:ltr">bcfo]obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute from selected nodes if the command value was not set', () => {
 			setData( model, '<p>abc[<$text language="fr:ltr">foo]bar</$text>xyz</p>' );
 
-			expect( command.value ).to.eql( 'fr:ltr' );
+			expect( command.value ).to.equal( 'fr:ltr' );
 
 			command.execute();
 
-			expect( getData( model ) ).equal( '<p>abc[foo]<$text language="fr:ltr">bar</$text>xyz</p>' );
+			expect( getData( model ) ).to.equal( '<p>abc[foo]<$text language="fr:ltr">bar</$text>xyz</p>' );
 			expect( command.value ).to.be.false;
 		} );
 
 		it( 'should replace attribute on selected nodes if execute parameter was set', () => {
 			setData( model, '<p>abc<$text language="fr:ltr">foob[ar</$text>x]yz</p>' );
 
-			expect( command.value ).to.eql( 'fr:ltr' );
+			expect( command.value ).to.equal( 'fr:ltr' );
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
-			expect( command.value ).to.eql( 'ar:rtl' );
-			expect( getData( model ) ).equal( '<p>abc<$text language="fr:ltr">foob</$text>[<$text language="ar:rtl">arx</$text>]yz</p>' );
+			expect( command.value ).to.equal( 'ar:rtl' );
+			expect( getData( model ) ).to.equal(
+				'<p>abc<$text language="fr:ltr">foob</$text>[<$text language="ar:rtl">arx</$text>]yz</p>'
+			);
 		} );
 
 		it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
@@ -208,7 +210,7 @@ describe( 'TextFragmentLanguageCommand', () => {
 			command.execute( { languageCode: false } );
 
 			expect( command.value ).to.be.false;
-			expect( getData( model ) ).equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
+			expect( getData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute on selected nodes if execute parameter was set to null', () => {
@@ -217,7 +219,7 @@ describe( 'TextFragmentLanguageCommand', () => {
 			command.execute( { languageCode: null } );
 
 			expect( command.value ).to.be.false;
-			expect( getData( model ) ).equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
+			expect( getData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
@@ -227,8 +229,8 @@ describe( 'TextFragmentLanguageCommand', () => {
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
-			expect( command.value ).to.eql( 'ar:rtl' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.eql( 'ar:rtl' );
+			expect( command.value ).to.equal( 'ar:rtl' );
+			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:rtl' );
 
 			command.execute( { languageCode: false } );
 
@@ -265,8 +267,8 @@ describe( 'TextFragmentLanguageCommand', () => {
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
-			expect( command.value ).to.eql( 'ar:rtl' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.eql( 'ar:rtl' );
+			expect( command.value ).to.equal( 'ar:rtl' );
+			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:rtl' );
 
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
@@ -282,7 +284,7 @@ describe( 'TextFragmentLanguageCommand', () => {
 			} );
 
 			// Attribute should be restored.
-			expect( command.value ).to.eql( 'ar:rtl' );
+			expect( command.value ).to.equal( 'ar:rtl' );
 
 			command.execute( { languageCode: false } );
 
@@ -295,8 +297,8 @@ describe( 'TextFragmentLanguageCommand', () => {
 
 			command.execute( { languageCode: 'ar', textDirection: 'ltr' } );
 
-			expect( command.value ).to.eql( 'ar:ltr' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.eql( 'ar:ltr' );
+			expect( command.value ).to.equal( 'ar:ltr' );
+			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:ltr' );
 		} );
 
 		it( 'should detect language text direction if textDirection was not set', () => {
@@ -304,8 +306,8 @@ describe( 'TextFragmentLanguageCommand', () => {
 
 			command.execute( { languageCode: 'ar' } );
 
-			expect( command.value ).to.eql( 'ar:rtl' );
-			expect( doc.selection.getAttribute( 'language' ) ).to.eql( 'ar:rtl' );
+			expect( command.value ).to.equal( 'ar:rtl' );
+			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:rtl' );
 		} );
 
 		describe( 'model change event', () => {
