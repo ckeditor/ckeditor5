@@ -17,13 +17,13 @@ const notBaseDLL = name => name !== 'ckeditor5-dll';
 const hasDLLBuild = name => {
 	const scripts = require( path.join( process.cwd(), 'packages', name, 'package.json' ) ).scripts;
 
-	return scripts && scripts[ 'build:dll' ];
+	return scripts && scripts[ 'dll:build' ];
 };
 
 const buildDll = fullPackageName => {
 	console.log( `Running "${ fullPackageName }" build...` );
 
-	const yarnArguments = [ 'run', 'build:dll' ];
+	const yarnArguments = [ 'run', 'dll:build' ];
 
 	if ( IS_DEVELOPMENT_MODE ) {
 		yarnArguments.push( '--dev' );
@@ -45,10 +45,6 @@ const packages = childProcess.execSync( 'ls -1 packages', {
 	encoding: 'utf8',
 	cwd: ROOT_DIRECTORY
 } ).toString().trim().split( '\n' );
-
-console.log( '----------------------' );
-console.log( 'Running full DLL build' );
-console.log( '----------------------' );
 
 packages
 	.filter( notBaseDLL )

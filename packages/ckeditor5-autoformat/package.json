@@ -55,6 +55,6 @@
     "eslint-plugin-ckeditor5-rules"
   ],
   "scripts": {
-    "build:dll": "webpack"
+    "dll:build": "webpack"
   }
 }
