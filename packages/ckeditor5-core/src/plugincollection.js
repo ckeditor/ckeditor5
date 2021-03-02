@@ -314,7 +314,7 @@ export default class PluginCollection {
 				 * {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}) or when
 				 * creating a new instance of the editor (e.g. via
 				 * {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`}), you need to provide
-				 * some of the dependencies of other plugins that you used.
+				 * some of the dependencies for other plugins that you used.
 				 *
 				 * This error is thrown when one of these dependencies was not provided. The name of the missing plugin
 				 * can be found in `missingPlugin` and the plugin that required it in `requiredBy`.
