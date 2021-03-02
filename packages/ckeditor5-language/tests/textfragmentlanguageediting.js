@@ -90,7 +90,7 @@ describe( 'TextFragmentLanguageEditing', () => {
 
 	describe( 'config', () => {
 		it( 'should be set', () => {
-			expect( editor.config.get( 'languageList.options' ) ).to.deep.equal( [
+			expect( editor.config.get( 'language.textFragmentLanguage' ) ).to.deep.equal( [
 				{ title: 'Arabic', languageCode: 'ar' },
 				{ title: 'French', languageCode: 'fr' },
 				{ title: 'Spanish', languageCode: 'es' }

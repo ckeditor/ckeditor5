@@ -35,7 +35,7 @@ export default class TextFragmentLanguageUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const options = editor.config.get( 'languageList.options' );
+		const options = editor.config.get( 'language.textFragmentLanguage' );
 		const defaultTitle = t( 'Choose language' );
 		const removeTitle = t( 'Remove language' );
 		const dropdownTooltip = t( 'Language' );

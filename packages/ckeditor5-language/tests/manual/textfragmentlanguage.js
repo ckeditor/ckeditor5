@@ -7,15 +7,15 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Language from '../../src/language';
+import TextFragmentLanguage from '../../src/textfragmentlanguage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet,
-			Language
+			TextFragmentLanguage
 		],
-		toolbar: [ 'language', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+		toolbar: [ 'textFragmentLanguage', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
