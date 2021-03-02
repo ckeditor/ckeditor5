@@ -87,12 +87,15 @@ export default class ImageStyleCommand extends Command {
 		const requestedArrangement = options.value;
 		const model = this.editor.model;
 
-		const imageElement = model.document.selection.getSelectedElement();
+		let imageElement = model.document.selection.getSelectedElement();
 		const supportedTypes = this._arrangements.get( requestedArrangement ).modelElements;
 
 		// Change the image type if a style requires it.
 		if ( !supportedTypes.includes( imageElement.name ) ) {
 			this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
+
+			// Update the imageElement to the newly created image.
+			imageElement = model.document.selection.getSelectedElement();
 		}
 
 		model.change( writer => {
