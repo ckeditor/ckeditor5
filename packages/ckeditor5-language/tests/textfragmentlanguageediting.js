@@ -4,19 +4,19 @@
  */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LanguageEditing from '../src/languageediting';
-import LanguageCommand from '../src/languagecommand';
+import TextFragmentLanguageEditing from '../src/textfragmentlanguageediting';
+import TextFragmentLanguageCommand from '../src/textfragmentlanguagecommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'LanguageEditing', () => {
+describe( 'TextFragmentLanguageEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ LanguageEditing, Paragraph ]
+				plugins: [ TextFragmentLanguageEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -25,11 +25,11 @@ describe( 'LanguageEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( LanguageEditing.pluginName ).to.equal( 'LanguageEditing' );
+		expect( TextFragmentLanguageEditing.pluginName ).to.equal( 'TextFragmentLanguageEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( LanguageEditing ) ).to.be.instanceOf( LanguageEditing );
+		expect( editor.plugins.get( TextFragmentLanguageEditing ) ).to.be.instanceOf( TextFragmentLanguageEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -44,9 +44,9 @@ describe( 'LanguageEditing', () => {
 	} );
 
 	describe( 'command', () => {
-		it( 'should register language command', () => {
-			const command = editor.commands.get( 'language' );
-			expect( command ).to.be.instanceOf( LanguageCommand );
+		it( 'should register textFragmentLanguage command', () => {
+			const command = editor.commands.get( 'textFragmentLanguage' );
+			expect( command ).to.be.instanceOf( TextFragmentLanguageCommand );
 		} );
 	} );
 

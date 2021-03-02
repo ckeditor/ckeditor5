@@ -4,7 +4,7 @@
  */
 
 /**
- * @module language/languagecommand
+ * @module language/textfragmentlanguagecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -13,11 +13,11 @@ import { stringifyLanguageAttribute } from './utils';
 const ATTRIBUTE_KEY = 'language';
 
 /**
- * The language command plugin.
+ * The text fragment language command plugin.
  *
  * @extends module:core/command~Command
  */
-export default class LanguageCommand extends Command {
+export default class TextFragmentLanguageCommand extends Command {
 	/**
 	 * If the selection starts in a language attribute the value is set to
 	 * the value of that language in a format:

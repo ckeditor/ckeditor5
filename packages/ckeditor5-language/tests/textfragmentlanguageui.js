@@ -7,13 +7,13 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LanguageEditing from '../src/languageediting';
-import LanguageUI from '../src/languageui';
+import TextFragmentLanguageEditing from '../src/textfragmentlanguageediting';
+import TextFragmentLanguageUI from '../src/textfragmentlanguageui';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'LanguageUI', () => {
+describe( 'TextFragmentLanguageUI', () => {
 	let editor, editorElement, dropdown;
 
 	testUtils.createSinonSandbox();
@@ -24,12 +24,12 @@ describe( 'LanguageUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ LanguageUI, LanguageEditing, Paragraph ],
-				toolbar: [ 'language' ]
+				plugins: [ TextFragmentLanguageUI, TextFragmentLanguageEditing, Paragraph ],
+				toolbar: [ 'textFragmentLanguage' ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				dropdown = editor.ui.componentFactory.create( 'language' );
+				dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 				// Set data so the commands will be enabled.
 				setData( editor.model, '<paragraph>[foo]</paragraph>' );
@@ -44,7 +44,7 @@ describe( 'LanguageUI', () => {
 
 	describe( 'init()', () => {
 		it( 'should register options feature component', () => {
-			const dropdown = editor.ui.componentFactory.create( 'language' );
+			const dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
@@ -53,33 +53,33 @@ describe( 'LanguageUI', () => {
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
 		} );
 
-		it( 'should execute language command on model (no language selected)', () => {
+		it( 'should execute textFragmentLanguage command on model (no language selected)', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-			const dropdown = editor.ui.componentFactory.create( 'language' );
+			const dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'language',
+			sinon.assert.calledWithExactly( executeSpy, 'textFragmentLanguage',
 				{ languageCode: undefined, textDirection: undefined } );
 		} );
 
-		it( 'should execute language command on model (language selected)', () => {
+		it( 'should execute textFragmentLanguage command on model (language selected)', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-			const dropdown = editor.ui.componentFactory.create( 'language' );
+			const dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 			dropdown.languageCode = 'fr';
 			dropdown.textDirection = 'ltr';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'language',
+			sinon.assert.calledWithExactly( executeSpy, 'textFragmentLanguage',
 				{ languageCode: 'fr', textDirection: 'ltr' } );
 		} );
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const dropdown = editor.ui.componentFactory.create( 'language' );
+			const dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 			dropdown.languageCode = 'fr';
 			dropdown.fire( 'execute' );
@@ -88,18 +88,18 @@ describe( 'LanguageUI', () => {
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'language' );
+			const dropdown = editor.ui.componentFactory.create( 'textFragmentLanguage' );
 
 			dropdown.render();
 
-			expect( dropdown.element.classList.contains( 'ck-language-dropdown' ) ).to.be.true;
+			expect( dropdown.element.classList.contains( 'ck-text-fragment-language-dropdown' ) ).to.be.true;
 		} );
 
 		describe( 'model to command binding', () => {
 			let command;
 
 			beforeEach( () => {
-				command = editor.commands.get( 'language' );
+				command = editor.commands.get( 'textFragmentLanguage' );
 			} );
 
 			it( 'isEnabled', () => {

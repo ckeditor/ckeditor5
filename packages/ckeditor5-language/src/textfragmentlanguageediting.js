@@ -4,28 +4,28 @@
  */
 
 /**
- * @module language/languageediting
+ * @module language/textfragmentlanguageediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import LanguageCommand from './languagecommand';
+import TextFragmentLanguageCommand from './textfragmentlanguagecommand';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
 
-const LANGUAGE = 'language';
+const ATTRIBUTE_KEY = 'language';
 
 /**
- * The language editing.
+ * The text fragment language editing.
  *
- * Introduces the `'language'` command and the `'language'` model element.
+ * Introduces the `'textFragmentLanguage'` command and the `'language'` model element attribute.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class LanguageEditing extends Plugin {
+export default class TextFragmentLanguageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'LanguageEditing';
+		return 'TextFragmentLanguageEditing';
 	}
 
 	/**
@@ -34,7 +34,7 @@ export default class LanguageEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		// Language options are only used to ensure that the feature works by default.
+		// Text fragment language options are only used to ensure that the feature works by default.
 		// In the real usage it should be reconfigured by a developer. We are not providing
 		// translations for `title` properties on purpose, as it's only an example configuration.
 		editor.config.define( 'languageList', {
@@ -52,14 +52,14 @@ export default class LanguageEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.model.schema.extend( '$text', { allowAttributes: LANGUAGE } );
-		editor.model.schema.setAttributeProperties( LANGUAGE, {
+		editor.model.schema.extend( '$text', { allowAttributes: ATTRIBUTE_KEY } );
+		editor.model.schema.setAttributeProperties( ATTRIBUTE_KEY, {
 			copyOnEnter: true
 		} );
 
 		this._defineConverters();
 
-		editor.commands.add( LANGUAGE, new LanguageCommand( editor ) );
+		editor.commands.add( 'textFragmentLanguage', new TextFragmentLanguageCommand( editor ) );
 	}
 
 	/**
@@ -70,7 +70,7 @@ export default class LanguageEditing extends Plugin {
 
 		conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
-				key: LANGUAGE,
+				key: ATTRIBUTE_KEY,
 				value: viewElement => {
 					const languageCode = viewElement.getAttribute( 'lang' );
 					const textDirection = viewElement.getAttribute( 'dir' );
@@ -85,7 +85,7 @@ export default class LanguageEditing extends Plugin {
 		} );
 
 		conversion.for( 'downcast' ).attributeToElement( {
-			model: LANGUAGE,
+			model: ATTRIBUTE_KEY,
 			view: ( attributeValue, { writer } ) => {
 				if ( !attributeValue ) {
 					return;

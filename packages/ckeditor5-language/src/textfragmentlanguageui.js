@@ -4,7 +4,7 @@
  */
 
 /**
- * @module language/languageui
+ * @module language/textfragmentlanguageui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -15,18 +15,18 @@ import { stringifyLanguageAttribute } from './utils';
 import '../theme/language.css';
 
 /**
- * The language UI plugin.
+ * The text fragment language UI plugin.
  *
  * It introduces the `'language'` button.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class LanguageUI extends Plugin {
+export default class TextFragmentLanguageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'LanguageUI';
+		return 'TextFragmentLanguageUI';
 	}
 
 	/**
@@ -41,11 +41,11 @@ export default class LanguageUI extends Plugin {
 		const dropdownTooltip = t( 'Language' );
 
 		// Register UI component.
-		editor.ui.componentFactory.add( 'language', locale => {
+		editor.ui.componentFactory.add( 'textFragmentLanguage', locale => {
 			const itemDefinitions = new Collection();
 			const titles = {};
 
-			const languageCommand = editor.commands.get( 'language' );
+			const languageCommand = editor.commands.get( 'textFragmentLanguage' );
 
 			for ( const option of options ) {
 				const def = {
@@ -93,7 +93,7 @@ export default class LanguageUI extends Plugin {
 			dropdownView.extendTemplate( {
 				attributes: {
 					class: [
-						'ck-language-dropdown'
+						'ck-text-fragment-language-dropdown'
 					]
 				}
 			} );
@@ -105,7 +105,7 @@ export default class LanguageUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
-				editor.execute( 'language', {
+				editor.execute( 'textFragmentLanguage', {
 					languageCode: evt.source.languageCode,
 					textDirection: evt.source.textDirection
 				} );

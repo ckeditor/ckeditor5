@@ -4,10 +4,10 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import LanguageCommand from '../src/languagecommand';
+import TextFragmentLanguageCommand from '../src/textfragmentlanguagecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'LanguageCommand', () => {
+describe( 'TextFragmentLanguageCommand', () => {
 	const attrKey = 'language';
 	let editor, command, model, doc, root;
 
@@ -20,7 +20,7 @@ describe( 'LanguageCommand', () => {
 				doc = model.document;
 				root = doc.getRoot();
 
-				command = new LanguageCommand( editor );
+				command = new TextFragmentLanguageCommand( editor );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 				model.schema.register( 'h1', { inheritAllFrom: '$block' } );
