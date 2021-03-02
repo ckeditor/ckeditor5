@@ -91,7 +91,7 @@ describe( 'ImageStyle utils', () => {
 
 		it( 'should have the #DEFAULT_ICONS properly defined', () => {
 			expect( DEFAULT_ICONS ).to.be.an( 'object' ).that.has.all.keys( [
-				'full', 'left', 'right', 'center', 'inLineLeft', 'inLineRight', 'inLine'
+				'full', 'left', 'right', 'center', 'inlineLeft', 'inlineRight', 'inline'
 			] );
 		} );
 	} );
@@ -278,7 +278,7 @@ describe( 'ImageStyle utils', () => {
 						name: 'alignLeft',
 						title: 'customTitle',
 						modelElements: [ 'image' ],
-						icon: 'inLine',
+						icon: 'inline',
 						isDefault: true,
 						className: 'custom-class',
 						customProp: 'customProp'
@@ -288,7 +288,7 @@ describe( 'ImageStyle utils', () => {
 
 					expect( normalizedStyles.arrangements[ 0 ] ).to.not.equal( DEFAULT_ARRANGEMENTS.alignLeft );
 					expect( normalizedStyles ).to.deep.equal(
-						{ arrangements: [ { ...arrangement, icon: DEFAULT_ICONS.inLine } ], groups: [] }
+						{ arrangements: [ { ...arrangement, icon: DEFAULT_ICONS.inline } ], groups: [] }
 					);
 
 					sinon.assert.notCalled( console.warn );
