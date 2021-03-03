@@ -45,14 +45,15 @@ export default function upcastTable() {
 				return;
 			}
 
-			if ( caption ) {
-				conversionApi.convertItem( caption, conversionApi.writer.createPositionAt( table, 0 ) );
-			}
-
 			conversionApi.consumable.consume( viewTable, { name: true } );
 
 			// Upcast table rows in proper order (heading rows first).
 			rows.forEach( row => conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) ) );
+
+			if ( caption ) {
+				// Convert table > caption.
+				conversionApi.convertItem( caption, conversionApi.writer.createPositionAt( table, 'end' ) );
+			}
 
 			// Create one row and one table cell for empty table.
 			if ( table.isEmpty ) {

@@ -46,17 +46,17 @@ describe.only( 'TableCaptionEditing', () => {
 
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
-			it( 'should convert to figure > figcaption + table', () => {
+			it( 'should convert to figure > table + figcaption', () => {
 				setModelData( model,
 					'<table>' +
-						'<caption>' +
-							'Foo caption' +
-						'</caption>' +
 						'<tableRow>' +
 							'<tableCell>' +
 								'<paragraph>foobar</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
+						'<caption>' +
+							'Foo caption' +
+						'</caption>' +
 					'</table>'
 				);
 
@@ -95,12 +95,12 @@ describe.only( 'TableCaptionEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( String(
 						'<table>' +
-							'<caption>Foo caption</caption>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>foobar</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<caption>Foo caption</caption>' +
 						'</table>'
 					)	);
 			} );
@@ -108,7 +108,6 @@ describe.only( 'TableCaptionEditing', () => {
 			it( 'should convert a table inside <figure> with <figcaption> preceding the table', () => {
 				editor.setData(
 					'<figure class="table">' +
-						'<figcaption>Foo caption</figcaption>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -118,20 +117,21 @@ describe.only( 'TableCaptionEditing', () => {
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
+						'<figcaption>Foo caption</figcaption>' +
 					'</figure>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( String(
 						'<table>' +
-							'<caption>' +
-								'Foo caption' +
-							'</caption>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>foobar</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<caption>' +
+								'Foo caption' +
+							'</caption>' +
 						'</table>'
 					) );
 			} );
@@ -140,7 +140,6 @@ describe.only( 'TableCaptionEditing', () => {
 			it( 'should convert a table inside <figure> with <figcaption> preceding the table - <figcaption> has higher priority', () => {
 				editor.setData(
 					'<figure class="table">' +
-						'<figcaption>Foo caption</figcaption>' +
 						'<table>' +
 							'<caption>Bar caption</caption>' +
 							'<tbody>' +
@@ -151,6 +150,7 @@ describe.only( 'TableCaptionEditing', () => {
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
+						'<figcaption>Foo caption</figcaption>' +
 					'</figure>'
 				);
 
@@ -158,12 +158,12 @@ describe.only( 'TableCaptionEditing', () => {
 					.to.equal( String(
 						'<paragraph>Foo caption</paragraph>' +
 						'<table>' +
-							'<caption>Bar caption</caption>' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'foobar' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<caption>Bar caption</caption>' +
 						'</table>'
 					) );
 			} );

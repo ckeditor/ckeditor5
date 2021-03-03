@@ -59,9 +59,7 @@ export function downcastInsertTable( options = {} ) {
 
 			const tableRow = table.getChild( row );
 
-			// Ignore caption models.
-			// FIXME: This shouldn't be hardcoded.
-			if ( tableRow.name === 'caption' ) {
+			if ( !tableRow.is( 'element', 'tableRow' ) ) {
 				continue;
 			}
 
@@ -81,8 +79,7 @@ export function downcastInsertTable( options = {} ) {
 		for ( const tableRow of table.getChildren() ) {
 			const rowIndex = tableRow.index;
 
-			// FIXME: This shouldn't be hardcoded.
-			if ( tableRow.name == 'caption' ) {
+			if ( !tableRow.is( 'element', 'tableRow' ) ) {
 				continue;
 			}
 
