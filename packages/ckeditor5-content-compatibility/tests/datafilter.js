@@ -11,7 +11,7 @@ import DataFilter from '../src/datafilter';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DataFilter', () => {
-	let editor, model, dataFilter;
+	let editor, model, dataFilter, dataSchema;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,7 +22,8 @@ describe( 'DataFilter', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				dataFilter = new DataFilter( editor, new DataSchema() );
+				dataSchema = new DataSchema();
+				dataFilter = new DataFilter( editor, dataSchema );
 			} );
 	} );
 
@@ -304,6 +305,68 @@ describe( 'DataFilter', () => {
 			'<section><p>foo</p></section>' +
 			'<section><p>bar</p></section>'
 		);
+	} );
+
+	it( 'should extend allowed children only if specified model schema exists', () => {
+		dataSchema.register( {
+			view: 'xyz',
+			model: 'ghsXyz',
+			allowChildren: 'not-exists',
+			schema: {
+				inheritAllFrom: '$ghsBlock'
+			}
+		} );
+
+		expect( () => {
+			dataFilter.allowElement( { name: 'xyz' } );
+		} ).to.not.throw();
+	} );
+
+	it( 'should not consume attribute already consumed (upcast)', () => {
+		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( 'element:section', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { attributes: [ 'data-foo' ] } );
+			} );
+		} );
+
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': true } } );
+
+		editor.setData( '<section data-foo><p>foo</p></section>' );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data: '<ghsSection><paragraph>foo</paragraph></ghsSection>',
+			attributes: {}
+		} );
+
+		expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
+	} );
+
+	it( 'should not consume attribute already consumed (downcast)', () => {
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( 'attribute:ghsAttributes:ghsSection', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			}, { priority: 'high' } );
+		} );
+
+		dataFilter.allowElement( { name: 'section' } );
+		dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': true } } );
+
+		editor.setData( '<section data-foo><p>foo</p></section>' );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data: '<ghsSection ghsAttributes="(1)"><paragraph>foo</paragraph></ghsSection>',
+			// At this point, attribute should still be in the model, as we are testing downcast conversion.
+			attributes: {
+				1: {
+					attributes: {
+						'data-foo': ''
+					}
+				}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
 	} );
 } );
 
