@@ -3,10 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import utils from '../../src/imagestyle/utils';
+import ImageToolbar from '../../src/imagetoolbar';
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
 import ImageStyleUI from '../../src/imagestyle/imagestyleui';
 import ImageBlockEditing from '../../src/image/imageblockediting';
@@ -215,6 +219,8 @@ describe( 'ImageStyleUI', () => {
 	describe( 'drop-downs', () => {
 		let groups;
 
+		testUtils.createSinonSandbox();
+
 		beforeEach( () => {
 			groups = allGroups.map( group => {
 				const view = factory.create( `imageStyle:${ group.name }` );
@@ -283,6 +289,74 @@ describe( 'ImageStyleUI', () => {
 			const dropdownView = customEditor.ui.componentFactory.create( 'imageStyle:foo' );
 
 			expect( dropdownView.buttonView.label ).to.equal( 'Custom title' );
+
+			customEditorElement.remove();
+			await customEditor.destroy();
+		} );
+
+		it( 'should warn and filter out the items that are not defined as the arrangements while creating a toolbar', async () => {
+			sinon.stub( console, 'warn' );
+
+			const customEditorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( customEditorElement );
+
+			const customEditor = await ClassicTestEditor.create( customEditorElement, {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageToolbar, ImageStyleEditing, ImageStyleUI ],
+				image: {
+					styles: {
+						arrangements: allArrangements,
+						groups: [ { name: 'breakText', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' } ]
+					},
+					toolbar: [ 'imageStyle:breakText' ]
+				}
+			} );
+
+			sinon.assert.calledOnce( console.warn );
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( /^image-style-configuration-definition-invalid/ ),
+				{ group:
+					{ name: 'breakText', title: 'Break text', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' }
+				},
+				sinon.match.string // Link to the documentation
+			);
+
+			customEditorElement.remove();
+			await customEditor.destroy();
+		} );
+
+		it( 'should warn and filter out the items that are not supported by the loaded plugins while creating a toolbar', async () => {
+			sinon.stub( console, 'warn' );
+
+			const customEditorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( customEditorElement );
+
+			const customEditor = await ClassicTestEditor.create( customEditorElement, {
+				plugins: [ ImageBlockEditing, ImageToolbar, ImageStyleEditing, ImageStyleUI ],
+				image: {
+					styles: {
+						arrangements: [ { name: 'foo', modelElements: [ 'imageInline' ] }, 'alignLeft' ],
+						groups: [ { name: 'breakText', items: [ 'alignLeft', 'foo' ], defaultItem: 'alignLeft' } ]
+					},
+					toolbar: [ 'imageStyle:breakText' ]
+				}
+			} );
+
+			sinon.assert.calledTwice( console.warn );
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( /^image-style-missing-dependency/ ),
+				{
+					arrangement: { name: 'foo', modelElements: [ 'imageInline' ] },
+					missingPlugins: [ 'ImageInlineEditing' ]
+				},
+				sinon.match.string // Link to the documentation
+			);
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( /^image-style-configuration-definition-invalid/ ),
+				{ group:
+					{ name: 'breakText', title: 'Break text', items: [ 'alignLeft', 'foo' ], defaultItem: 'alignLeft' }
+				},
+				sinon.match.string // Link to the documentation
+			);
 
 			customEditorElement.remove();
 			await customEditor.destroy();

@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 import ImageStyleEditing from './imagestyleediting';
+import utils from './utils';
 
 import '../../theme/imagestyle.css';
 
@@ -100,10 +101,17 @@ export default class ImageStyleUI extends Plugin {
 
 		factory.add( getUIComponentName( dropdownConfig.name ), locale => {
 			const { defaultItem, items, title, icon } = dropdownConfig;
+			const buttonViews = items
+				.filter( itemName => definedArrangements.find( definedArrangements => definedArrangements.name === itemName ) )
+				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
+
+			if ( !buttonViews.length || dropdownConfig.items.length !== buttonViews.length ) {
+				utils.warnInvalidStyle( { group: dropdownConfig } );
+			}
+
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
 			const defaultIcon = definedArrangements.find( item => item.name === defaultItem ).icon;
-			const buttonViews = items.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
 
 			addToolbarToDropdown( dropdownView, buttonViews );
 

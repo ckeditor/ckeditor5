@@ -192,8 +192,7 @@ function normalizeStyles( options ) {
 
 	const groups = configuredGroups
 		.map( group => normalizeDefinition( DEFAULT_GROUPS, group, 'group' ) )
-		.map( group => validateGroupItems( group, arrangements ) )
-		.filter( group => !!group.items.length );
+		.filter( group => group.items && group.items.length );
 
 	return { arrangements, groups };
 }
@@ -295,7 +294,19 @@ function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginL
 
 		// Check if arrangement is supported by any of the loaded plugins.
 		if ( !modelElements.some( elementName => supportedElements.includes( elementName ) ) ) {
-			warnInvalidStyle( {
+			/**
+			 * One of the custom defined or default {@link module:image/imagestyle~ImageStyleArrangementDefinition arrangements}
+			 * can be applied only to model element that is not supported by the loaded image editing plugins.
+			 * Model elements to which the arrangement can be applied should be defined in the
+			 * {@link module:image/imagestyle~ImageStyleArrangementDefinition `modelElements`} property.
+			 *
+			 * Explore the warning in the console to find out which arrangement is not supported and which plugins are missing.
+			 *
+			 * @error image-style-missing-dependency
+			 * @param {String} [missingPlugins] The names of the plugins one of which has to be loaded for the particular arrangement
+			 * @param {String} [arrangement] The name of the invalid arrangement
+			 */
+			logWarning( 'image-style-missing-dependency', {
 				arrangement,
 				missingPlugins: modelElements.map( name => name === 'image' ? 'ImageBlockEditing' : 'ImageInlineEditing' )
 			} );
@@ -305,28 +316,6 @@ function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginL
 	}
 
 	return true;
-}
-
-// Validates the groupItems property of the group {module:image/imagestyle~ImageStyleGroupDefinition}:
-// * Sets the property to empty array if it is missing,
-// * Filters out the items that are not defined as the arrangements
-// It also displays a warning if the property was not set or some of the items was defined.
-//
-// @param {module:image/imagestyle~ImageStyleGroupDefinition} originalGroup
-// @param {Array.<{module:image/imagestyle~ImageStyleArrangementDefinition}>} arrangements
-//
-// @returns {module:image/imagestyle~ImageStyleGroupDefinition}
-function validateGroupItems( originalGroup, arrangements ) {
-	const group = { ...originalGroup, items: originalGroup.items || [] };
-	const validItems = group.items.filter( item => !!arrangements.find( arrangement => arrangement.name === item ) );
-
-	if ( !validItems.length || group.items.length !== validItems.length ) {
-		warnInvalidStyle( { group: originalGroup } );
-
-		return { ...originalGroup, items: validItems };
-	}
-
-	return group;
 }
 
 // Extends the default style with a style provided by the developer.
@@ -348,7 +337,7 @@ function extendStyle( source, style ) {
 	return extendedStyle;
 }
 
-// Displays a console warning with the 'image-style-invalid' error.
+// Displays a console warning with the 'image-style-configuration-definition-invalid' error.
 // @param {Object} info
 function warnInvalidStyle( info ) {
 	/**
@@ -358,19 +347,17 @@ function warnInvalidStyle( info ) {
 	 * * {@link module:image/imagestyle~ImageStyleArrangementDefinition image style arrangement definition},
 	 * * {@link module:image/imagestyle~ImageStyleGroupDefinition image style group definition}
 	 *
-	 * and if the {@link module:image/imagestyle~ImageStyleArrangementDefinition#modelElements required plugins} are loaded.
-	 *
-	 * @error image-style-invalid
-	 * @param {String} [group] Name of a invalid group
-	 * @param {String} [arrangement] Name of a invalid arrangement
-	 * @param {String} [missingPlugins] Names of the plugins that have to be loaded for a particular arrangement
+	 * @error image-style-configuration-definition-invalid
+	 * @param {String} [group] The name of the invalid group
+	 * @param {String} [arrangement] The name of the invalid arrangement
 	 */
-	logWarning( 'image-style-invalid', info );
+	logWarning( 'image-style-configuration-definition-invalid', info );
 }
 
 export default {
 	normalizeStyles,
 	getDefaultStylesConfiguration,
+	warnInvalidStyle,
 	DEFAULT_ARRANGEMENTS,
 	DEFAULT_GROUPS,
 	DEFAULT_ICONS

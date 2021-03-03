@@ -177,7 +177,7 @@ describe( 'ImageStyle utils', () => {
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
-						sinon.match( /^image-style-invalid/ ),
+						sinon.match( /^image-style-configuration-definition-invalid/ ),
 						{ arrangement: { name: 'foo' } },
 						sinon.match.string // Link to the documentation
 					);
@@ -234,7 +234,7 @@ describe( 'ImageStyle utils', () => {
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
-						sinon.match( /^image-style-invalid/ ),
+						sinon.match( /^image-style-configuration-definition-invalid/ ),
 						{ arrangement },
 						sinon.match.string // Link to the documentation
 					);
@@ -251,7 +251,7 @@ describe( 'ImageStyle utils', () => {
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
-						sinon.match( /^image-style-invalid/ ),
+						sinon.match( /^image-style-configuration-definition-invalid/ ),
 						{ arrangement },
 						sinon.match.string // Link to the documentation
 					);
@@ -268,7 +268,7 @@ describe( 'ImageStyle utils', () => {
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
-						sinon.match( /^image-style-invalid/ ),
+						sinon.match( /^image-style-missing-dependency/ ),
 						{ arrangement, missingPlugins: [ 'ImageBlockEditing' ] },
 						sinon.match.string // Link to the documentation
 					);
@@ -318,13 +318,6 @@ describe( 'ImageStyle utils', () => {
 					) ).to.deep.equal(
 						{ groups: [], arrangements: allArrangements }
 					);
-
-					sinon.assert.calledOnce( console.warn );
-					sinon.assert.calledWithExactly( console.warn,
-						sinon.match( /^image-style-invalid/ ),
-						{ group: { name: 'foo' } },
-						sinon.match.string // Link to the documentation
-					);
 				} );
 			} );
 
@@ -342,76 +335,23 @@ describe( 'ImageStyle utils', () => {
 						sinon.assert.notCalled( console.warn );
 					} );
 
-					it( 'should warn and omit if no valid #items are present', () => {
-						const group = { name: 'breakText', items: [ 'foo' ] };
-
+					it( 'should omit if no #items are present', () => {
 						expect( normalizeStyles(
-							allArrangements, [ group ]
+							allArrangements, [ { name: 'breakText', items: null } ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
 						);
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							sinon.match.string // Link to the documentation
-						);
 					} );
 
-					it( 'should warn and omit if no #items are present', () => {
-						const group = { name: 'breakText', items: null };
-
+					it( 'should omit if #items are empty', () => {
 						expect( normalizeStyles(
-							allArrangements, [ group ]
+							allArrangements, [ { name: 'breakText', items: [] } ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
 						);
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							sinon.match.string // Link to the documentation
-						);
 					} );
 
-					it( 'should warn and omit if #items are empty', () => {
-						const group = { name: 'breakText', items: [] };
-
-						expect( normalizeStyles(
-							allArrangements, [ group ]
-						) ).to.deep.equal(
-							{ arrangements: allArrangements, groups: [] }
-						);
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group: { ...DEFAULT_GROUPS.breakText, ...group } },
-							sinon.match.string // Link to the documentation
-						);
-					} );
-
-					it( 'should warn and filter out the items that are not defined as the arrangements', () => {
-						expect( normalizeStyles(
-							allArrangements, [ { name: 'breakText', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' } ]
-						) ).to.deep.equal( {
-							arrangements: allArrangements,
-							groups: [ { ...DEFAULT_GROUPS.breakText, items: [ 'alignLeft' ], defaultItem: 'alignLeft' } ]
-						} );
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group:
-								{ name: 'breakText', title: 'Break text', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' }
-							},
-							sinon.match.string // Link to the documentation
-						);
-					} );
-
-					it( 'should warn and filter out the items which are not supported by any of the loaded editing plugins', () => {
+					it( 'should warn about items not supported by any of the loaded editing plugins', () => {
 						const arrangement = { name: 'foo', modelElements: [ 'imageInline' ] };
 
 						expect( normalizeStyles(
@@ -421,18 +361,13 @@ describe( 'ImageStyle utils', () => {
 							false // ImageInlineEditing plugin is not loaded
 						) ).to.deep.equal( {
 							arrangements: [ DEFAULT_ARRANGEMENTS.alignLeft ],
-							groups: [ { name: 'wrapText', defaultItem: 'alignLeft', title: 'Wrap text', items: [ 'alignLeft' ] } ]
+							groups: [ { name: 'wrapText', defaultItem: 'alignLeft', title: 'Wrap text', items: [ 'foo', 'alignLeft' ] } ]
 						} );
 
-						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledOnce( console.warn );
 						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
+							sinon.match( /^image-style-missing-dependency/ ),
 							{ arrangement, missingPlugins: [ 'ImageInlineEditing' ] },
-							sinon.match.string // Link to the documentation
-						);
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group: { name: 'wrapText', defaultItem: 'alignLeft', title: 'Wrap text', items: [ 'foo', 'alignLeft' ] } },
 							sinon.match.string // Link to the documentation
 						);
 					} );
@@ -451,95 +386,40 @@ describe( 'ImageStyle utils', () => {
 						sinon.assert.notCalled( console.warn );
 					} );
 
-					it( 'should warn and omit if no valid #items are present', () => {
-						const invalidGroup = { name: 'foo', items: [ 'foo' ], defaultItem: 'foo' };
-
+					it( 'should omit if no #items are present', () => {
 						expect( normalizeStyles(
-							allArrangements, [ invalidGroup, 'wrapText' ]
-						) ).to.deep.equal(
-							{ arrangements: allArrangements, groups: [ DEFAULT_GROUPS.wrapText ] }
-						);
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group: invalidGroup },
-							sinon.match.string // Link to the documentation
-						);
-					} );
-
-					it( 'should warn and omit if no #items are present', () => {
-						const group = { name: 'foo' };
-
-						expect( normalizeStyles(
-							allArrangements, [ group ]
+							allArrangements, [ { name: 'foo' } ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
 						);
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group },
-							sinon.match.string // Link to the documentation
-						);
 					} );
 
-					it( 'should warn and omit if #items are empty', () => {
-						const group = { name: 'foo', items: [] };
-
+					it( 'should omit if #items are empty', () => {
 						expect( normalizeStyles(
-							allArrangements, [ group ]
+							allArrangements, [ { name: 'foo', items: [] } ]
 						) ).to.deep.equal(
 							{ arrangements: allArrangements, groups: [] }
-						);
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group },
-							sinon.match.string // Link to the documentation
-						);
-					} );
-
-					it( 'should warn and filter out the items that are not defined as the arrangements', () => {
-						expect( normalizeStyles(
-							allArrangements, [ { name: 'foo', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' } ]
-						) ).to.deep.equal( {
-							arrangements: allArrangements,
-							groups: [ { name: 'foo', items: [ 'alignLeft' ], defaultItem: 'alignLeft' } ]
-						} );
-
-						sinon.assert.calledOnce( console.warn );
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group: { name: 'foo', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' } },
-							sinon.match.string // Link to the documentation
 						);
 					} );
 
 					it( 'should warn and filter out the items which are not supported by any of the loaded editing plugins', () => {
 						const arrangement = { name: 'foo', modelElements: [ 'imageInline' ] };
+						const groups = [ { name: 'bar', defaultItem: 'alignLeft', items: [ 'foo', 'alignLeft' ] } ];
 
 						expect( normalizeStyles(
 							[ arrangement, 'alignLeft' ],
-							[ { name: 'bar', defaultItem: 'alignLeft', items: [ 'foo', 'alignLeft' ] } ],
+							groups,
 							true,
 							false // ImageInlineEditing plugin is not loaded
 						) ).to.deep.equal( {
 							arrangements: [ DEFAULT_ARRANGEMENTS.alignLeft ],
-							groups: [ { name: 'bar', defaultItem: 'alignLeft', items: [ 'alignLeft' ] } ]
+							groups
 						} );
 
-						sinon.assert.calledTwice( console.warn );
+						sinon.assert.calledOnce( console.warn );
 						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
+							sinon.match( /^image-style-missing-dependency/ ),
 							{ arrangement, missingPlugins: [ 'ImageInlineEditing' ] },
-							sinon.match.string // Link to the documentation
-						);
-						sinon.assert.calledWithExactly( console.warn,
-							sinon.match( /^image-style-invalid/ ),
-							{ group: { name: 'bar', defaultItem: 'alignLeft', items: [ 'foo', 'alignLeft' ] } },
 							sinon.match.string // Link to the documentation
 						);
 					} );
