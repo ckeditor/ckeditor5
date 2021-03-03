@@ -10,10 +10,11 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
+import InsertImage from '@ckeditor/ckeditor5-image/src/imageinsert';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, InsertImage ],
 		toolbar: [
 			'heading',
 			'|',
@@ -67,7 +68,8 @@ function pasteFromClipboard() {
 		const viewDocument = editor.editing.view.document;
 		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
 		const dataTransfer = new DataTransfer( {
-			getData: () => text
+			getData: () => text,
+            types: clipboardItem.types
 		} );
 		const targetRanges = Array.from( viewDocument.selection.getRanges() );
 
