@@ -52,6 +52,6 @@
     "build"
   ],
   "scripts": {
-    "build:dll": "webpack"
+    "dll:build": "webpack"
   }
 }

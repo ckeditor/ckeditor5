@@ -55,6 +55,6 @@
     "block-elements"
   ],
   "scripts": {
-    "build:dll": "webpack"
+    "dll:build": "webpack"
   }
 }
