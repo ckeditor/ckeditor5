@@ -37,11 +37,17 @@ export default class TableCaptionEditing extends Plugin {
 		const view = editor.editing.view;
 		const t = editor.t;
 
-		schema.register( 'caption', {
-			allowIn: 'table',
-			allowContentOf: '$block',
-			isLimit: true
-		} );
+		if ( !schema.isRegistered( 'caption' ) ) {
+			schema.register( 'caption', {
+				allowIn: 'table',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+		} else {
+			schema.extend( 'caption', {
+				allowIn: 'table'
+			} );
+		}
 
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' )
@@ -52,18 +58,20 @@ export default class TableCaptionEditing extends Plugin {
 			.add( viewFigureToModel() );
 
 		// Model -> view converter for the data pipeline.
-		editor.conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'caption',
-			view: ( modelElement, { writer } ) => {
-				if ( !isTable( modelElement.parent ) ) {
-					return null;
-				}
 
-				return writer.createContainerElement( 'figcaption' );
-			}
-		} );
+		// editor.conversion.for( 'dataDowncast' ).elementToElement( {
+		// 	model: 'caption',
+		// 	view: ( modelElement, { writer } ) => {
+		// 		if ( !isTable( modelElement.parent ) ) {
+		// 			return null;
+		// 		}
+
+		// 		return writer.createContainerElement( 'figcaption' );
+		// 	}
+		// } );
 
 		// Model -> view converter for the editing pipeline.
+
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
@@ -72,55 +80,18 @@ export default class TableCaptionEditing extends Plugin {
 				}
 
 				const figcaptionElement = writer.createEditableElement( 'figcaption' );
-				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
+				writer.setCustomProperty( 'tableCaption', true, figcaptionElement );
 
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter image caption' )
+					text: t( 'Enter table caption' )
 				} );
 
 				return toWidgetEditable( figcaptionElement, writer );
 			}
 		} );
-
-		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
-		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
-
-		editor.editing.mapper.on( 'modelToViewPosition',
-			( evt, data ) => {
-				const modelPosition = data.modelPosition;
-				const parent = modelPosition.parent;
-
-				if ( !parent.is( 'element', 'caption' ) ) {
-					return;
-				}
-
-				// Place the caption's content next to the table.
-				const viewContainer = data.mapper.toViewElement( parent.parent );
-
-				data.viewPosition = data.mapper.findPositionIn( viewContainer, modelPosition.offset );
-			}
-		);
 	}
-}
-
-// @private
-// @param {module:engine/view/view~View} editingView
-// @returns {Function}
-function mapModelPositionToView( editingView ) {
-	return ( evt, data ) => {
-		const modelPosition = data.modelPosition;
-		const parent = modelPosition.parent;
-
-		if ( !parent.is( 'element', 'table' ) ) {
-			return;
-		}
-
-		const viewElement = data.mapper.toViewElement( parent );
-
-		data.viewPosition = editingView.createPositionAt( viewElement, modelPosition.offset + 1 );
-	};
 }
 
 /**
@@ -155,44 +126,46 @@ export function isTable( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'table' );
 }
 
+// TODO: Move to tableediting.
 export function viewFigureToModel() {
 	return dispatcher => {
-		dispatcher.on( 'element:figure', converter );
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Do not convert if this is not an "table figure".
+			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
+				return;
+			}
+
+			// Find an table element inside the figure element.
+			const viewTable = getViewTableFromFigure( data.viewItem );
+
+			// Do not convert if table element is absent or was already converted.
+			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return;
+			}
+
+			// Convert view table to model table.
+			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
+
+			// Get table element from conversion result.
+			const modelTable = first( conversionResult.modelRange.getItems() );
+
+			// When table wasn't successfully converted then finish conversion.
+			if ( !modelTable ) {
+				return;
+			}
+
+			// Consume the figure view element.
+			if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'table' } ) ) {
+				return;
+			}
+
+			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
+			conversionApi.updateConversionResult( modelTable, data );
+		} );
 	};
-
-	function converter( evt, data, conversionApi ) {
-		// Do not convert if this is not an "table figure".
-		if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
-			return;
-		}
-
-		// Find an table element inside the figure element.
-		const viewTable = getViewTableFromFigure( data.viewItem );
-
-		// Do not convert if table element is absent, is missing src attribute or was already converted.
-		if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
-			return;
-		}
-
-		// Convert view table to model table.
-		const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
-
-		// Get table element from conversion result.
-		const modelTable = first( conversionResult.modelRange.getItems() );
-
-		// When table wasn't successfully converted then finish conversion.
-		if ( !modelTable ) {
-			return;
-		}
-
-		// Convert rest of the figure element's children as an table children.
-		conversionApi.convertChildren( data.viewItem, modelTable );
-
-		conversionApi.updateConversionResult( modelTable, data );
-	}
 }
 
-export function getViewTableFromFigure( figureView ) {
+function getViewTableFromFigure( figureView ) {
 	if ( figureView.is( 'element', 'table' ) ) {
 		return figureView;
 	}
