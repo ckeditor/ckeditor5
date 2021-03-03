@@ -37,9 +37,9 @@ import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
 
 const ALIGNMENT_ICONS = {
-	left: icons.objectInlineLeft,
+	left: icons.objectLeft,
 	center: icons.objectCenter,
-	right: icons.objectInlineRight
+	right: icons.objectRight
 };
 
 /**

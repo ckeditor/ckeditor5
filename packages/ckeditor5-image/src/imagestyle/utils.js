@@ -14,7 +14,7 @@ const {
 	objectFullWidth,
 	objectInline,
 	objectLeft,	objectRight, objectCenter,
-	objectInlineLeft, objectInlineRight
+	objectBlockLeft, objectBlockRight
 } = icons;
 
 /**
@@ -52,7 +52,7 @@ const DEFAULT_ARRANGEMENTS = {
 	alignLeft: {
 		name: 'alignLeft',
 		title: 'Left aligned image',
-		icon: objectInlineLeft,
+		icon: objectLeft,
 		modelElements: [ 'image', 'imageInline' ],
 		className: 'image-style-align-left'
 	},
@@ -61,7 +61,7 @@ const DEFAULT_ARRANGEMENTS = {
 	alignBlockLeft: {
 		name: 'alignBlockLeft',
 		title: 'Left aligned image',
-		icon: objectLeft,
+		icon: objectBlockLeft,
 		modelElements: [ 'image' ],
 		className: 'image-style-block-align-left'
 	},
@@ -79,7 +79,7 @@ const DEFAULT_ARRANGEMENTS = {
 	alignRight: {
 		name: 'alignRight',
 		title: 'Right aligned image',
-		icon: objectInlineRight,
+		icon: objectRight,
 		modelElements: [ 'image', 'imageInline' ],
 		className: 'image-style-align-right'
 	},
@@ -88,7 +88,7 @@ const DEFAULT_ARRANGEMENTS = {
 	alignBlockRight: {
 		name: 'alignBlockRight',
 		title: 'Right aligned image',
-		icon: objectRight,
+		icon: objectBlockRight,
 		modelElements: [ 'image' ],
 		className: 'image-style-block-align-right'
 	},
@@ -106,7 +106,7 @@ const DEFAULT_ARRANGEMENTS = {
 	side: {
 		name: 'side',
 		title: 'Side image',
-		icon: objectInlineRight,
+		icon: objectRight,
 		modelElements: [ 'image' ],
 		className: 'image-style-side'
 	}
@@ -152,11 +152,11 @@ const DEFAULT_GROUPS = {
  */
 const DEFAULT_ICONS = {
 	full: objectFullWidth,
-	left: objectLeft,
-	right: objectRight,
+	left: objectBlockLeft,
+	right: objectBlockRight,
 	center: objectCenter,
-	inlineLeft: objectInlineLeft,
-	inlineRight: objectInlineRight,
+	inlineLeft: objectLeft,
+	inlineRight: objectRight,
 	inline: objectInline
 };
 
@@ -249,7 +249,6 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 function normalizeDefinition( defaults, definition, definitionType ) {
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
-		// Warn because probably it's a mistake. TODO
 		if ( !defaults[ definition ] ) {
 			// Normalize the style anyway to prevent errors.
 			definition = { name: definition };

@@ -38,13 +38,13 @@ import alignCenter from './../theme/icons/align-center.svg';
 import alignRight from './../theme/icons/align-right.svg';
 import alignJustify from './../theme/icons/align-justify.svg';
 
-import objectLeft from './../theme/icons/object-left.svg';
+import objectBlockLeft from './../theme/icons/object-left.svg';
 import objectCenter from './../theme/icons/object-center.svg';
-import objectRight from './../theme/icons/object-right.svg';
+import objectBlockRight from './../theme/icons/object-right.svg';
 import objectFullWidth from './../theme/icons/object-full-width.svg';
 import objectInline from './../theme/icons/object-inline.svg';
-import objectInlineLeft from './../theme/icons/object-inline-left.svg';
-import objectInlineRight from './../theme/icons/object-inline-right.svg';
+import objectLeft from './../theme/icons/object-inline-left.svg';
+import objectRight from './../theme/icons/object-inline-right.svg';
 
 import objectSizeFull from './../theme/icons/object-size-full.svg';
 import objectSizeLarge from './../theme/icons/object-size-large.svg';
@@ -76,8 +76,8 @@ export const icons = {
 	objectRight,
 	objectFullWidth,
 	objectInline,
-	objectInlineLeft,
-	objectInlineRight,
+	objectBlockLeft,
+	objectBlockRight,
 
 	objectSizeFull,
 	objectSizeLarge,
