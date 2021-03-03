@@ -40,8 +40,8 @@ export default class DataSchema {
 			model: '$ghsBlock',
 			allowChildren: '$block',
 			schema: {
-				inheritAllFrom: '$block',
-				allowIn: '$ghsBlock'
+				allowIn: [ '$root', '$ghsBlock' ],
+				isBlock: true
 			}
 		} );
 
@@ -73,11 +73,10 @@ export default class DataSchema {
 
 		this.register( {
 			model: '$ghsDatalist',
-			allowChildren: '$text',
+			allowChildren: '$block',
 			schema: {
 				allowIn: 'ghsDl',
-				isBlock: true,
-				allowContentOf: '$ghsBlock'
+				isBlock: true
 			}
 		} );
 
