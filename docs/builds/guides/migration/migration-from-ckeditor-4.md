@@ -4,8 +4,8 @@
 # * Underline that migrating is a complex and important task.
 # * List and clarify the things that need attention when migrating.
 
-category: builds-guides
-order: 260
+category: builds-migration
+order: 10
 ---
 
 # Migration from CKEditor 4
