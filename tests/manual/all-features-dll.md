@@ -2,7 +2,7 @@
 
 **This DLL sample test requires that the DLL core and DLL packages are built.**
 
-To build the DLL core and packages, run `yarn run build:dll` and then refresh this page.
+To build the DLL core and packages, run `yarn run dll:build` and then refresh this page.
 
 Expected results:
 * There should be no errors in the console.
