@@ -115,7 +115,10 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					arrangements: [ 'inline', 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight' ],
+					arrangements: [
+						'inline', 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+						'full', 'side'
+					],
 					groups: [ { name: 'wrapText' } ]
 				} );
 
@@ -131,7 +134,8 @@ describe( 'ImageStyleEditing', () => {
 					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
 						arrangements: [
 							'inline', 'alignLeft', 'alignRight',
-							'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+							'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+							'full', 'side'
 						],
 						groups: [ 'wrapText', 'breakText' ]
 					} );

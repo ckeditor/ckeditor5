@@ -218,7 +218,9 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 		return {
 			arrangements: [
 				'inline', 'alignLeft', 'alignRight',
-				'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+				'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+				// Added to serve the builds with these arrangements in the toolbar
+				'full', 'side'
 			],
 			groups: [ 'wrapText', 'breakText' ]
 		};

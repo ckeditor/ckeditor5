@@ -103,7 +103,8 @@ describe( 'ImageStyle utils', () => {
 			expect( config ).to.deep.equal( {
 				arrangements: [
 					'inline', 'alignLeft', 'alignRight',
-					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+					'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+					'full', 'side'
 				],
 				groups: [ 'wrapText', 'breakText' ]
 			} );
