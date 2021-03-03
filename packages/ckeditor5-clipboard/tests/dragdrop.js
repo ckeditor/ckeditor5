@@ -15,6 +15,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -40,7 +42,7 @@ describe( 'Drag and Drop', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ DragDrop, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter ]
+				plugins: [ DragDrop, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter, BlockQuote, Bold ]
 			} );
 
 			model = editor.model;
@@ -1085,6 +1087,287 @@ describe( 'Drag and Drop', () => {
 				viewDocument.fire( 'dragenter' );
 
 				expect( stubFocus.calledOnce ).to.be.false;
+			} );
+		} );
+
+		describe( 'dragover', () => {
+			it( 'should put drop target marker inside a text node', () => {
+				setModelData( model, '<paragraph>[]foobar</paragraph>' );
+
+				const dataTransferMock = createDataTransfer();
+				const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
+
+				fireDragging( dataTransferMock, targetPosition );
+
+				expectDraggingMarker( targetPosition );
+			} );
+
+			it( 'should put drop target marker inside and attribute element', () => {
+				setModelData( model, '<paragraph>[]foo<$text bold="true">bar</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer();
+
+				const viewElement = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				expect( viewElement.is( 'attributeElement' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					targetRanges: [ view.createRange( view.createPositionAt( viewElement.getChild( 0 ), 2 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createPositionAt( root.getChild( 0 ), 5 ) );
+			} );
+
+			it( 'should find ancestor widget while hovering over the selection handle (UIElement)', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const viewElement = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+			} );
+
+			it( 'should find ancestor widget while hovering over inner content of widget (but not nested editable)', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const modelElement = root.getNodeByPath( [ 1, 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				expect( viewElement.is( 'element', 'tr' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+			} );
+
+			it( 'should find drop position while hovering over empty nested editable', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const modelElement = root.getNodeByPath( [ 1, 0, 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				expect( viewElement.is( 'element', 'td' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createPositionAt( root.getNodeByPath( [ 1, 0, 0, 0 ] ), 0 ) );
+			} );
+
+			it( 'should find drop position while hovering over space between blocks', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const viewElement = rootElement;
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				const nestedModelParagraph = root.getNodeByPath( [ 1, 0, 0, 0 ] );
+				const nestedViewParagraph = mapper.toViewElement( nestedModelParagraph );
+
+				expect( viewElement.is( 'rootElement' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: rootElement,
+					targetRanges: [ view.createRange( view.createPositionAt( nestedViewParagraph, 0 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+			} );
+
+			it( 'should find drop position while hovering over table figure', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const modelElement = root.getNodeByPath( [ 1, 0, 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				expect( viewElement.is( 'element', 'td' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 1 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+			} );
+
+			it( 'should find drop position while hovering over table with target range inside figure', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const modelElement = root.getNodeByPath( [ 1, 0, 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 1 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+			} );
+
+			it( 'should find drop position while hovering over table with target range inside tr', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const modelElement = root.getNodeByPath( [ 1, 0, 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				const tableRow = root.getNodeByPath( [ 1, 0 ] );
+				const tableRowView = mapper.toViewElement( tableRow );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					targetRanges: [ view.createRange( view.createPositionAt( tableRowView, 0 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+			} );
+
+			it( 'should find drop position while hovering over space between blocks but the following element is not an object', () => {
+				setModelData( model,
+					'<paragraph>[]foo</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const viewElement = rootElement;
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				expect( viewElement.is( 'rootElement' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: rootElement,
+					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 0 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 0 ) );
+			} );
+
+			it( 'should find drop position while hovering over a widget without content (not Firefox)', () => {
+				const originalEnvGecko = env.isGecko;
+
+				env.isGecko = false;
+
+				setModelData( model,
+					'<paragraph>[]foo</paragraph>' +
+					'<horizontalLine></horizontalLine>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const domNode = domConverter.mapViewToDom( rootElement );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: rootElement,
+					targetRanges: [ view.createRange( view.createPositionAt( rootElement, 2 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+
+				env.isGecko = originalEnvGecko;
+			} );
+
+			it( 'should find drop position while hovering over a widget without content (in Firefox)', () => {
+				const originalEnvGecko = env.isGecko;
+
+				env.isGecko = true;
+
+				setModelData( model,
+					'<paragraph>[]foo</paragraph>' +
+					'<blockQuote><horizontalLine></horizontalLine></blockQuote>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const domNode = domConverter.mapViewToDom( rootElement );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: rootElement,
+					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 0 ) ) ],
+					dataTransfer: dataTransferMock
+				} );
+
+				expectDraggingMarker( model.createRangeOn( root.getNodeByPath( [ 1, 0 ] ) ) );
+
+				env.isGecko = originalEnvGecko;
 			} );
 		} );
 	} );

@@ -333,13 +333,18 @@ export default class DragDrop extends Plugin {
 				return;
 			}
 
+			// Check if this is mousedown over the widget (but not nested editable).
 			this._draggableElement = findDraggableWidget( data.target );
 
-			// This wasn't a widget so we should check if we need to drag some text content.
+			// Note: There is a limitation that if there is more than a widget selected (widget and some text)
+			// and dragging starts on widget, then only a widget is dragged.
+
+			// If this was not a widget so we should check if we need to drag some text content.
+			// In Chrome set a 'draggable' attribute on closest editable to allow immediate dragging of the selected text range.
+			// In Firefox this is not needed. In Safari it makes the whole editable draggable (not just textual content).
 			if ( env.isBlink && !this._draggableElement && !viewDocument.selection.isCollapsed ) {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
-				// Set attribute 'draggable' on editable to allow immediate dragging of the selected text range.
 				if ( !selectedElement || !isWidget( selectedElement ) ) {
 					this._draggableElement = viewDocument.selection.editableElement;
 				}
@@ -480,29 +485,7 @@ export default class DragDrop extends Plugin {
 
 		// Delete moved content.
 		if ( moved ) {
-			model.change( () => {
-				// TODO: The commented out code will be useful when dropping between blocks will be supported.
-
-				// const startPosition = LivePosition.fromPosition( this._draggedRange.start, 'toPrevious' );
-				// const endPosition = LivePosition.fromPosition( this._draggedRange.end, 'toNext' );
-
-				model.deleteContent( model.createSelection( this._draggedRange ), { doNotAutoparagraph: true } );
-
-				// // Remove the parent blocks if all content of the block was moved.
-				// const startParent = startPosition.parent;
-				// const endParent = endPosition.parent;
-				//
-				// startPosition.detach();
-				// endPosition.detach();
-				//
-				// if ( startParent.isEmpty ) {
-				// 	writer.remove( startParent );
-				// }
-				//
-				// if ( endParent.isEmpty && startParent != endParent ) {
-				// 	model.remove( endParent );
-				// }
-			} );
+			model.deleteContent( model.createSelection( this._draggedRange ), { doNotAutoparagraph: true } );
 		}
 
 		this._draggedRange.detach();
@@ -650,7 +633,7 @@ function findDropTargetRangeBetweenBlocks( editor, targetModelPosition, targetMo
 //
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/model/element~Element} element
-// @returns {module:engine/model/range~Range|null}
+// @returns {module:engine/model/range~Range}
 function findDropTargetRangeOnAncestorObject( editor, element ) {
 	const model = editor.model;
 
@@ -661,8 +644,6 @@ function findDropTargetRangeOnAncestorObject( editor, element ) {
 
 		element = element.parent;
 	}
-
-	return null;
 }
 
 // Returns the closest model element for the specified view element.
