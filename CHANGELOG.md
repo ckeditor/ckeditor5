@@ -9,17 +9,17 @@ We are happy to announce the release of CKEditor 5 v26.0.0.
 
 This release brings some new features:
 
-* [Allow adding plugins to a CKEditor 5 build](https://github.com/ckeditor/ckeditor5/issues/8395)
-* [Make the editor placeholder behave like a native input placeholder](https://github.com/ckeditor/ckeditor5/issues/8058)
-* [Inline widget styling](https://github.com/ckeditor/ckeditor5/issues/1633)
+* [It's now possible to add plugins to CKEditor 5 builds](https://github.com/ckeditor/ckeditor5/issues/8395). Read more in the [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html) guide.
+* [The editor placeholder behaves like a native input placeholder now](https://github.com/ckeditor/ckeditor5/issues/8058).
+* [It's now possible to style inline widgets (e.g. with bold)](https://github.com/ckeditor/ckeditor5/issues/1633).
 
 There were also some important bug fixes:
 
-* [Autoformat creates a code block when typing in bulleted/numbered lists](https://github.com/ckeditor/ckeditor5/issues/8633)
-* [HTML elements with `<font>` tag cannot be loaded into CKEditor](https://github.com/ckeditor/ckeditor5/issues/8621)
-* [Indent buttons order is misleading in all default build configurations](https://github.com/ckeditor/ckeditor5/issues/8884)
-* [Crash when copying nested table which was pasted into the editor](https://github.com/ckeditor/ckeditor5/issues/8917)
-* [A period does not stick to the preceding word during word-wrap](https://github.com/ckeditor/ckeditor5/issues/8852)
+* [Autoformat will not create a code block when typing in bulleted/numbered lists](https://github.com/ckeditor/ckeditor5/issues/8633).
+* [The font feature now supports loading legacy `<font>` elements](https://github.com/ckeditor/ckeditor5/issues/8621).
+* [Indent buttons order is misleading in all default build configurations](https://github.com/ckeditor/ckeditor5/issues/8884).
+* [Crash when copying nested table which was pasted into the editor](https://github.com/ckeditor/ckeditor5/issues/8917).
+* [A period does not stick to the preceding word during word-wrap](https://github.com/ckeditor/ckeditor5/issues/8852).
 
 <!-- TODO: Read more in the blog post: [URL]. -->
 
@@ -29,15 +29,8 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core)**: The package has been merged into `@ckeditor/ckeditor5-cloud-services`. All classes that were available in the `@ckeditor/ckeditor-cloud-services-core` package have been moved to the `@ckeditor/ckeditor5-cloud-services` package. They should now be instantiated via factory methods on the `CloudServicesCore` plugin that's located in `@ckeditor/ckeditor5-cloud-services`. See [#8811](https://github.com/ckeditor/ckeditor5/issues/8811).
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The following modules have been moved (before → after):
-  - `image/image/imageinsertcommand~ImageInsertCommand` → `image/image/insertimagecommand~InsertImageCommand`
-  - `image/imageresize/imageresizecommand~ImageResizeCommand` → `image/imageresize/resizeimagecommand~ResizeImageCommand`
-  - `image/imageupload/imageuploadcommand~ImageUploadCommand` → `image/imageupload/uploadimagecommand~UploadImageCommand`
+**Note:** Check out the [Migration to 26.0.0](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-26.0.0.html) guide for more detailed information on how to upgrade to this version.
 
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The to-do list item toggle keystroke changed to <kbd>Ctrl</kbd>+<kbd>Enter</kbd> (<kbd>Cmd</kbd>+<kbd>Enter</kbd> on Mac).
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The following module `list/todolistcheckedcommand~TodoListCheckCommand` has been moved to `list/checktodolistcommand~CheckTodoListCommand`.
-* Keystrokes with the <kbd>Ctrl</kbd> modifier will not be handled on macOS, unless the modifier is registered as a forced one (for example: `Ctrl!+A` will not be translated to `Cmd+A` on macOS).
 * Several plugins are not loaded automatically as dependencies of other plugins anymore. From now on, they need to be provided by the editor creator manually (via `config.plugins`). This list includes:
   - The `CloudServicesUploadAdapter` plugin no longer loads `CloudServices`. Make sure to add `CloudServices` to the editor plugins when using the `CloudServicesUploadAdapter` or `EasyImage` features.
   - The `EasyImage` plugin no longer loads `Image` and `ImageUpload`. Make sure to add `Image` and `ImageUpload` to the editor plugins when using the `EasyImage` feature.
@@ -48,6 +41,15 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
   - The `LinkImageUI` plugin no longer loads `Image`. Make sure to add `Image` to the editor plugins when using the `LinkImage` feature.
   - The `ExportPdf` plugin no longer loads `CloudServices`. Make sure to add `CloudServices` to the editor plugins when using the `ExportPdf` feature.
   - The `ExportWord` plugin no longer loads `CloudServices`. Make sure to add `CloudServices` to the editor plugins when using the `ExportWord` feature.
+* **[cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core)**: The package has been merged into `@ckeditor/ckeditor5-cloud-services`. All classes that were available in the `@ckeditor/ckeditor-cloud-services-core` package have been moved to the `@ckeditor/ckeditor5-cloud-services` package. They should now be instantiated via factory methods on the `CloudServicesCore` plugin that's located in `@ckeditor/ckeditor5-cloud-services`. See [#8811](https://github.com/ckeditor/ckeditor5/issues/8811).
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The following modules have been moved (before → after):
+  - `image/image/imageinsertcommand~ImageInsertCommand` → `image/image/insertimagecommand~InsertImageCommand`
+  - `image/imageresize/imageresizecommand~ImageResizeCommand` → `image/imageresize/resizeimagecommand~ResizeImageCommand`
+  - `image/imageupload/imageuploadcommand~ImageUploadCommand` → `image/imageupload/uploadimagecommand~UploadImageCommand`
+
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The to-do list item toggle keystroke changed to <kbd>Ctrl</kbd>+<kbd>Enter</kbd> (<kbd>Cmd</kbd>+<kbd>Enter</kbd> on Mac).
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The following module `list/todolistcheckedcommand~TodoListCheckCommand` has been moved to `list/checktodolistcommand~CheckTodoListCommand`.
+* Keystrokes with the <kbd>Ctrl</kbd> modifier will not be handled on macOS, unless the modifier is registered as a forced one (for example: `Ctrl!+A` will not be translated to `Cmd+A` on macOS).
 
 ### Features
 
@@ -78,6 +80,7 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### Other changes
 
+* Enabled creating builds that can be extended (with more plugins) without the need to recompile. This required splitting the project into the so-called DLL part and consumers of this DLL. Under the hood, the mechanism is based on [webpack DLLs](https://webpack.js.org/plugins/dll-plugin/). This is the first part of the required changes and it contains the necessary breaking changes (see the "MAJOR BREAKING CHANGES" section above). For more information see the ["DLL builds"](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html) guide. Closes [[#8395](https://github.com/ckeditor/ckeditor5/issues/8395)](https://github.com/ckeditor/ckeditor5/issues/8395). ([commit](https://github.com/ckeditor/ckeditor5/commit/b278fde89d1eb635be7e4e3a57d8dba2bd0f98a6))
 * **[cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core)**: All classes available in the `@ckeditor/ckeditor-cloud-services-core` package have been moved to the `@ckeditor/ckeditor5-cloud-services` package. They should now be instantiated via factory methods on the `CloudServicesCore` plugin. Closes [#8811](https://github.com/ckeditor/ckeditor5/issues/8811). ([commit](https://github.com/ckeditor/ckeditor5/commit/959c1d6d56d43468f01afed6c27637a449f78515))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `KeyObserver` should provide information about `metaKey` being pressed. ([commit](https://github.com/ckeditor/ckeditor5/commit/8dac3a98bb93cc6e1d0bfa8d2db8a5d9a6f89988))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Add WEBP support to the inline pasting of images from source URLs. ([commit](https://github.com/ckeditor/ckeditor5/commit/48ad51d61e10473bab106c17d83b6e05188cd915))
@@ -99,8 +102,6 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
   - `imageResize` → `resizeImage`
   - `forwardDelete` → `deleteForward`
   - `todoListCheck` → `checkTodoList`
-
-* Enabled creating builds that can be extended (with more plugins) without the need to recompile. This required splitting the project into the so-called DLL part and consumers of this DLL. Under the hood, the mechanism is based on [webpack DLLs](https://webpack.js.org/plugins/dll-plugin/). This is the first part of the required changes and it contains the necessary breaking changes (see the "MAJOR BREAKING CHANGES" section above). For more information see the ["DLL builds"](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html) guide. Closes [[#8395](https://github.com/ckeditor/ckeditor5/issues/8395)](https://github.com/ckeditor/ckeditor5/issues/8395). ([commit](https://github.com/ckeditor/ckeditor5/commit/b278fde89d1eb635be7e4e3a57d8dba2bd0f98a6))
 
 ### Released packages
 
