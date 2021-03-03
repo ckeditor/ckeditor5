@@ -92,8 +92,8 @@ export default class ImageStyleUI extends Plugin {
 	 * Creates a dropdown and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle~ImageStyleGroupFormat} dropdownConfig
-	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} definedArrangements
+	 * @param {module:image/imagestyle~ImageStyleGroupDefinition} dropdownConfig
+	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} definedArrangements
 	 */
 	_createDropdown( dropdownConfig, definedArrangements ) {
 		const factory = this.editor.ui.componentFactory;
@@ -147,7 +147,7 @@ export default class ImageStyleUI extends Plugin {
 	 * Creates a button and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle~ImageStyleArrangementFormat} buttonConfig
+	 * @param {module:image/imagestyle~ImageStyleArrangementDefinition} buttonConfig
 	 */
 	_createButton( buttonConfig ) {
 		const buttonName = buttonConfig.name;
@@ -179,10 +179,10 @@ export default class ImageStyleUI extends Plugin {
 
 // Returns the translated `title` from the passed styles array.
 //
-// @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat|module:image/imagestyle~ImageStyleGroupFormat>} styles
+// @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition|module:image/imagestyle~ImageStyleGroupDefinition>} styles
 // @param {Object.<String,String>} titles
 //
-// @returns {Array.<module:image/imagestyle~ImageStyleArrangementFormat|module:image/imagestyle~ImageStyleGroupFormat>}
+// @returns {Array.<module:image/imagestyle~ImageStyleArrangementDefinition|module:image/imagestyle~ImageStyleGroupDefinition>}
 function translateStyles( styles, titles ) {
 	for ( const style of styles ) {
 		// Localize the titles of the styles, if a title corresponds with

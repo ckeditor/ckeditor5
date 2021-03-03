@@ -12,7 +12,7 @@ import { first } from 'ckeditor5/src/utils';
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
- * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} arrangements
+ * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} arrangements
  * An array containing available arrangements.
  * @returns {Function} A model-to-view attribute converter.
  */
@@ -42,7 +42,7 @@ export function modelToViewStyleAttribute( arrangements ) {
 /**
  * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} arrangements
+ * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} arrangements
  * Arrangements for which the converter is created.
  * @returns {Function} A view-to-model converter.
  */
@@ -81,8 +81,8 @@ export function viewToModelStyleAttribute( arrangements ) {
 // Returns the style with a given `name` from an array of arrangements.
 //
 // @param {String} name
-// @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat> } styles
-// @returns {module:image/imagestyle~ImageStyleArrangementFormat|undefined}
+// @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition> } styles
+// @returns {module:image/imagestyle~ImageStyleArrangementDefinition|undefined}
 function getArrangementDefinitionByName( name, styles ) {
 	for ( const style of styles ) {
 		if ( style.name === name ) {

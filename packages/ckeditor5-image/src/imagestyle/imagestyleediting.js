@@ -45,12 +45,13 @@ export default class ImageStyleEditing extends Plugin {
 		 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} or
 		 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`}) are filtered out.
 		 *
-		 * * The groups with no {@link module:image/imagestyle~ImageStyleGroupFormat#items items} are filtered out.
+		 * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
 		 *
 		 * * All of the group items not defined in the arrangements are filtered out.
 		 *
+		 * @protected
 		 * @readonly
-		 * @type {module:image/imagestyle~ImageStyleFormat}
+		 * @type {module:image/imagestyle~ImageStyleConfig}
 		 */
 		this.normalizedStyles = normalizeStyles( {
 			configuredStyles: editor.config.get( 'image.styles' ),

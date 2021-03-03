@@ -36,7 +36,7 @@ const {
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
  *
  * @readonly
- * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementFormat>}
+ * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementDefinition>}
  */
 const DEFAULT_ARRANGEMENTS = {
 	// This style represents an image placed in the line of text.
@@ -123,7 +123,7 @@ const DEFAULT_ARRANGEMENTS = {
  * those that breaks the text around the image.
  *
  * @readonly
- * @type {Object.<String,module:image/imagestyle~ImageStyleGroupFormat>}
+ * @type {Object.<String,module:image/imagestyle~ImageStyleGroupDefinition>}
  */
 const DEFAULT_GROUPS = {
 	wrapText: {
@@ -172,14 +172,14 @@ const DEFAULT_ICONS = {
  * @param {Boolean} options.isBlockPluginLoaded
  * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
  *
- * @param {module:image/imagestyle~ImageStyleFormat} options.configuredStyles
+ * @param {module:image/imagestyle~ImageStyleConfig} options.configuredStyles
  * The image styles configuration provided in the image styles {@link module:image/image~ImageConfig#styles configuration}
  * as a default or custom value.
  *
- * @returns {module:image/imagestyle~ImageStyleFormat}
+ * @returns {module:image/imagestyle~ImageStyleConfig}
  * * Each of arrangements contains a complete icon markup.
- * * The arrangements not supported by any of the loaded plugins are filtered out. TODO: plugins
- * * The groups with no {@link module:image/imagestyle~ImageStyleGroupFormat#items items} are filtered out.
+ * * The arrangements not supported by any of the loaded plugins are filtered out.
+ * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
  * * All of the group items not defined in the arrangements are filtered out.
  */
 function normalizeStyles( options ) {
@@ -236,13 +236,14 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 }
 
 // Normalizes an image arrangement or group provided in the {@link module:image/image~ImageConfig#styles}
-// and returns it in a {@link module:image/imagestyle~ImageStyleArrangementFormat}/{@link module:image/imagestyle~ImageStyleGroupFormat}.
+// and returns it in a {@link module:image/imagestyle~ImageStyleArrangementDefinition}/
+// {@link module:image/imagestyle~ImageStyleGroupDefinition}.
 //
 // @param {DEFAULT_ARRANGEMENTS|DEFAULT_GROUPS} defaults
 // @param {Object|String} definition
 // @param {'arrangement'|'group'} definitionType
 //
-// @returns {module:image/imagestyle~ImageArragementFormat}|{module:image/imagestyle~ImageStyleGroupFormat}
+// @returns {module:image/imagestyle~ImageArrangementDefinition}|{module:image/imagestyle~ImageStyleGroupDefinition}
 function normalizeDefinition( defaults, definition, definitionType ) {
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
@@ -277,7 +278,7 @@ function normalizeDefinition( defaults, definition, definitionType ) {
 // * if the defined modelElements are supported by any of the loaded image editing plugins.
 // It also displays a console warning these conditions are not met.
 //
-// @param {module:image/imagestyle~ImageStyleArrangementFormat} arrangement
+// @param {module:image/imagestyle~ImageStyleArrangementDefinition} arrangement
 // @param {Object.<String,Boolean>} { isBlockPluginLoaded, isInlinePluginLoaded }
 //
 // @returns Boolean
@@ -305,15 +306,15 @@ function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginL
 	return true;
 }
 
-// Validates the groupItems property of the group {module:image/imagestyle~ImageStyleGroupFormat}:
+// Validates the groupItems property of the group {module:image/imagestyle~ImageStyleGroupDefinition}:
 // * Sets the property to empty array if it is missing,
 // * Filters out the items that are not defined as the arrangements
 // It also displays a warning if the property was not set or some of the items was defined.
 //
-// @param {module:image/imagestyle~ImageStyleGroupFormat} originalGroup
-// @param {Array.<{module:image/imagestyle~ImageStyleArrangementFormat}>} arrangements
+// @param {module:image/imagestyle~ImageStyleGroupDefinition} originalGroup
+// @param {Array.<{module:image/imagestyle~ImageStyleArrangementDefinition}>} arrangements
 //
-// @returns {module:image/imagestyle~ImageStyleGroupFormat}
+// @returns {module:image/imagestyle~ImageStyleGroupDefinition}
 function validateGroupItems( originalGroup, arrangements ) {
 	const group = { ...originalGroup, items: originalGroup.items || [] };
 	const validItems = group.items.filter( item => !!arrangements.find( arrangement => arrangement.name === item ) );
@@ -330,10 +331,10 @@ function validateGroupItems( originalGroup, arrangements ) {
 // Extends the default style with a style provided by the developer.
 // Note: Don't override the custom–defined style object, clone it instead.
 //
-// @param {module:image/imagestyle~ImageStyleGroupFormat|module:image/imagestyle~ImageStyleArrangementFormat} source
+// @param {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleArrangementDefinition} source
 // @param {Object} style
 //
-// @returns {module:image/imagestyle~ImageStyleGroupFormat|module:image/imagestyle~ImageStyleArrangementFormat}
+// @returns {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleArrangementDefinition}
 function extendStyle( source, style ) {
 	const extendedStyle = { ...style };
 
@@ -351,12 +352,12 @@ function extendStyle( source, style ) {
 function warnInvalidStyle( info ) {
 	/**
 	 * The custom image style definition you provided is invalid.
-	 * Check if it implements properly one of the following formats:
+	 * Check if it implements properly one of the following definitions:
 	 *
-	 * * {@link module:image/imagestyle~ImageStyleArrangementFormat image style arrangement format},
-	 * * {@link module:image/imagestyle~ImageStyleGroupFormat image style group format}
+	 * * {@link module:image/imagestyle~ImageStyleArrangementDefinition image style arrangement definition},
+	 * * {@link module:image/imagestyle~ImageStyleGroupDefinition image style group definition}
 	 *
-	 * and if the {@link module:image/imagestyle~ImageStyleArrangementFormat#modelElements required plugins} are loaded.
+	 * and if the {@link module:image/imagestyle~ImageStyleArrangementDefinition#modelElements required plugins} are loaded.
 	 *
 	 * @error image-style-invalid
 	 * @param {String} [group] Name of a invalid group

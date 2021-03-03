@@ -21,7 +21,7 @@ export default class ImageStyleCommand extends Command {
 	 * Creates an instance of the image style command. Each command instance is handling one arrangement.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementFormat>} arrangements
+	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} arrangements
 	 * The arrangements that this command supports.
 	 */
 	constructor( editor, arrangements ) {
@@ -32,7 +32,7 @@ export default class ImageStyleCommand extends Command {
 		 * if it is present. If there is no default arrangement for the given image type, it is set to `false`.
 		 *
 		 * @private
-		 * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementFormat#name>}
+		 * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementDefinition#name>}
 		 */
 		this._defaultArrangements = {
 			image: false,
@@ -43,7 +43,7 @@ export default class ImageStyleCommand extends Command {
 		 * The arrangements handled by this command.
 		 *
 		 * @private
-		 * @type {Array.<module:image/imagestyle~ImageStyleArrangementFormat>}
+		 * @type {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>}
 		 */
 		this._arrangements = new Map( arrangements.map( arrangement => {
 			if ( arrangement.isDefault ) {
