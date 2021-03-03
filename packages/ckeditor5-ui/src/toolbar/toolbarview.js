@@ -19,8 +19,8 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
+import { icons } from 'ckeditor5/src/core';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -932,7 +932,7 @@ class DynamicGrouping {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: verticalDotsIcon
+			icon: icons.threeVerticalDots
 		} );
 
 		// 1:1 pass–through binding.

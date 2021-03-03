@@ -7,7 +7,7 @@
  * @module table/commands/insertcolumncommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 
 /**

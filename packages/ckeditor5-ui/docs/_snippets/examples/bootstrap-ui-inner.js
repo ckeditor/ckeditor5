@@ -40,6 +40,9 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
 // The easy image integration.
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 // Extending the Editor class, which brings base editor API.
@@ -299,7 +302,7 @@ class BootstrapEditorUI extends EditorUI {
 BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
-			Clipboard, Enter, Typing, Paragraph, EasyImage,
+			Clipboard, Enter, Typing, Paragraph, EasyImage, Image, ImageUpload, CloudServices,
 			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
 		],
 		cloudServices: CS_CONFIG

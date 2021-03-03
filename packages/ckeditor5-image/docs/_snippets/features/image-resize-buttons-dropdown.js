@@ -16,17 +16,17 @@ ClassicEditor
 		image: {
 			resizeOptions: [
 				{
-					name: 'imageResize:original',
+					name: 'resizeImage:original',
 					label: 'Original',
 					value: null
 				},
 				{
-					name: 'imageResize:50',
+					name: 'resizeImage:50',
 					label: '50%',
 					value: '50'
 				},
 				{
-					name: 'imageResize:75',
+					name: 'resizeImage:75',
 					label: '75%',
 					value: '75'
 				}
@@ -41,7 +41,7 @@ ClassicEditor
 				'imageStyle:alignCenter',
 				'imageStyle:alignRight',
 				'|',
-				'imageResize'
+				'resizeImage'
 			]
 		},
 		cloudServices: CS_CONFIG

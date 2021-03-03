@@ -9,7 +9,7 @@
 
 import { createUIComponent } from './utils';
 import todoListIcon from '../theme/icons/todolist.svg';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * The to-do list UI feature. It introduces the `'todoList'` button that
@@ -18,6 +18,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * @extends module:core/plugin~Plugin
  */
 export default class TodoListUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'TodoListUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

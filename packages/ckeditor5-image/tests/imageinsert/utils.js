@@ -14,6 +14,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import { prepareIntegrations, createLabeledInputView } from '../../src/imageinsert/utils';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 describe( 'Upload utils', () => {
 	describe( 'prepareIntegrations()', () => {
@@ -24,10 +25,12 @@ describe( 'Upload utils', () => {
 			const editor = await ClassicEditor
 				.create( editorElement, {
 					plugins: [
-						CKFinder,
 						Paragraph,
+						Link,
 						Image,
-						ImageUploadUI
+						ImageUploadUI,
+						CKFinderUploadAdapter,
+						CKFinder
 					],
 					image: {
 						insert: {

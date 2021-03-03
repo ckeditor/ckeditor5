@@ -7,17 +7,17 @@
  * @module image/autoimage
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { Plugin } from 'ckeditor5/src/core';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
+import { Undo } from 'ckeditor5/src/undo';
+import { global } from 'ckeditor5/src/utils';
+
 import { insertImage } from './image/utils';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
 const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+(\.[\w-]+)+[\w._~:/?#[\]@!$&'()*+,;=%-]+/.source +
-	/\.(jpg|jpeg|png|gif|ico|JPG|JPEG|PNG|GIF|ICO)\??[\w._~:/#[\]@!$&'()*+,;=%-]*$/.source ) );
+	/\.(jpg|jpeg|png|gif|ico|webp|JPG|JPEG|PNG|GIF|ICO|WEBP)\??[\w._~:/#[\]@!$&'()*+,;=%-]*$/.source ) );
 
 /**
  * The auto-image plugin. It recognizes image links in the pasted content and embeds
@@ -142,7 +142,7 @@ export default class AutoImage extends Plugin {
 			// Do nothing if image element cannot be inserted at the current position.
 			// See https://github.com/ckeditor/ckeditor5/issues/2763.
 			// Condition must be checked after timeout - pasting may take place on an element, replacing it. The final position matters.
-			const imageCommand = editor.commands.get( 'imageInsert' );
+			const imageCommand = editor.commands.get( 'insertImage' );
 
 			if ( !imageCommand.isEnabled ) {
 				urlRange.detach();

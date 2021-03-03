@@ -8,8 +8,8 @@
  */
 
 import TableWalker from './../tablewalker';
-import { setHighlightHandling, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import { setHighlightHandling, toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
+import { toArray } from 'ckeditor5/src/utils';
 
 /**
  * Model table element to view table element conversion helper.
@@ -379,7 +379,7 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 	conversionApi.mapper.bindElements( tableCell, cellElement );
 
 	// Additional requirement for data pipeline to have backward compatible data tables.
-	if ( !asWidget && !hasAnyAttribute( firstChild ) && isSingleParagraph ) {
+	if ( !asWidget && isSingleParagraph && !hasAnyAttribute( firstChild ) ) {
 		const innerParagraph = tableCell.getChild( 0 );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );

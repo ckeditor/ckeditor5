@@ -7,26 +7,31 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageResize from '../../src/imageresize';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+import ImageResize from '../../src/imageresize';
+import ImageUpload from '../../src/imageupload';
 
 const commonConfig = {
 	plugins: [
 		ArticlePluginSet,
+		ImageUpload,
 		ImageResize,
 		Indent,
 		IndentBlock,
+		CloudServices,
 		EasyImage
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
 	image: {
 		resizeUnit: 'px',
-		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'imageResize' ],
+		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'resizeImage' ],
 		styles: [
 			'alignLeft',
 			'alignCenter',
