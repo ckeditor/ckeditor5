@@ -1,168 +1,108 @@
 ---
-menu-title: DLL
+menu-title: DLL builds
 category: builds-development
 order: 30
 ---
 
 # CKEditor 5 DLL builds
 
-CKEditor 5 can be integrated into the application using DLL compatible builds. A DLL builds uses [DLL webpack plugin](https://webpack.js.org/plugins/dll-plugin/) to provide a CKEditor 5 base DLL and set of [DLL consumer plugins](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin). In contrary to the approach of {@link builds/guides/development/custom-builds creating custom builds}, when using DLL builds you don't have to build everything from sources. To use CKEditor 5 base DLL and editor features you need to add proper `<scritp>` tags to the page.
+The purpose of a DLL build is to allow adding plugins to an editor build without having to rebuild (recompile) the build itself.
 
-A minimal example of an editor using `ClassicEditor` build is presented below:
+So far, the two most common integration methods included:
 
-```html
-<html>
-<head>
-	<title>Example CKEditor 5 DLL page</title>
-</head>
-<body>
-<div id="editor"></div>
+* Using pre-compiled builds. This can be either one of the official builds or a custom build. In this case, adding a plugin requires recompiling the entire build.
+* Integrating the editor from source. In this case, if you want to add a plugin, your application needs to be recompiled.
 
-<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
-<script src="/path/to/ckeditor5-dll.js"></script>
+In some advanced use cases, the list of available plugins cannot be limited &mdash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
 
-<!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
-<script src="/path/to/dll-classic.js"></script>
+This is where the DLL builds come to the rescue.
 
-<!-- Editor features as DLL consumer builds exposed as CKEditor5[featureName] -->
-<script src="/path/to/dll-basic-styles.js"></script>
+DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plugin/) plugin that provides a CKEditor 5 **base DLL** and a set of **[DLL consumer plugins](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin)**.
 
-<script>
-	// Use ClassicEditor and BasicStyles from the CKEditor 5 global object.
-	const { ClassicEditor, basicStyles } = CKEditor5;
-	const { Bold, Italic } = basicStyles;
+Currently, CKEditor 5 does not come with a ready-to-use DLL build. Using this integration method requires creating it on your own, based on the tools available in the {@link framework/guides/contributing/development-environment CKEditor 5 development environment}.
 
-	const config = {
-		// All required essentials plugins are bundled into the editor.
-		extraPlugins: [ Bold, Italic ],
-		toolbar: [
-			'bold',
-			'italic',
-			'|',
-			'undo',
-			'redo'
-		]
-	};
+Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍&nbsp;).
 
-	// ClassicEditor is exposed by the ckeditor5-dll-classic:
-	ClassicEditor.create( document.querySelector( '#editor' ), config )
-			.then( editor => {
-				window.editor = editor;
-			} );
-</script>
-</body>
-</html>
+## Anatomy of a DLL build
+
+A DLL build of the editor consists of two parts:
+
+* **Base DLL build**. It is a single JavaScript file that combines contents of several core CKEditor 5 packages: utils, core, engine, ui, clipboard, enter, paragraph, select-all, typing, undo, upload, and widget. These packages are either the framework core, or are features used by nearly all editor installations.
+* **DLL-compatible package builds**. Every package that is not part of the Base DLL build is built into a DLL-compatible JavaScript file.
+
+In order to load an editor you need to use the base DLL build plus several DLL-compatible package builds. You will see how to do that later on.
+
+## Creating a DLL build
+
+In order to create your own base DLL build and DLL-compatible packages builds, all you need to is:
+
+1. Setup the {@link framework/guides/contributing/development-environment CKEditor 5 development environment} locally.
+2. Run `npm run dll:build`.
+
+The base DLL build can be found in `./build/ckeditor5-dll.js`.
+
+The DLL-compatible builds of other packages can be found in `./packages/ckeditor5-*/build/<pkg-name>.js`. For example: `./packages/ckeditor5-image/build/image.js`.
+
+This is it.
+
+## Using a DLL build
+
+The exact way to use a DLL build will depend on your system. Presented in this guide is the simplest method that uses the `<script>` tags.
+
+In order to run the editor you need to load the necessary files (base DLL + editor creator + features). These files expose their content in the `CKEditor5` global, using the following format:
+
+```
+CKEditor5.packageName.moduleName
 ```
 
-<info-box>
-	The DLL builds bundles full plugins code even if not used by the editor. To create a size-optimized file use a {@link builds/guides/development/custom-builds creating custom build}.
-</info-box>
-
-## DLL packages anatomy
-
-To use DLL compatible editor you need to use the base DLL build, a DLL-consumer editor build, and a DLL-consumer editor features build for every package.
-
-### Base DLL bundle
-
-The base DLL build contains:
-
-* Core editor plugins:
-	* `@ckeditor/ckeditor5-engine`
-	* `@ckeditor/ckeditor5-core`
-	* `@ckeditor/ckeditor5-ui`
-	* `@ckeditor/ckeditor5-utils`
-* The essential plugins:
-	* `@ckeditor/ckeditor5-enter`
-	* `@ckeditor/ckeditor5-paragraph`
-	* `@ckeditor/ckeditor5-select-all`
-	* `@ckeditor/ckeditor5-typing`
-	* `@ckeditor/ckeditor5-undo`
-	* `@ckeditor/ckeditor5-widget`
-* Other, frequently required plugins:
-	* `@ckeditor/ckeditor5-upload`
-
-### The editor bundles
-
-Each DLL-consumer editor build has a limited set of bundled features that are required for a base editing experience:
-
-```js
-const builtinPlugins = [
-	Clipboard,
-	Enter,
-	Paragraph,
-	SelectAll,
-	ShiftEnter,
-	Typing,
-	Undo
-];
-```
-
-<info-box>
-	The DLL-consumer editor builds differ from standard editor builds and do not bundle any other feature.
-</info-box>
-
-### The editor features bundles
-
-As explained above, the editor dll build contains only bare minimum set of plugins required to provide plain-text editing. To add other features, like bold, table, or image you need to add them to the editor configuration and attach their `<script>` tags to the webpage.
-
-Every package is build as `build/feature-name.js` in their npm repository.
-
-An example classic editor build configuration using dll bundles:
+For example:
 
 ```html
-<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
-<script src="/path/to/ckeditor5/build/ckeditor5-dll.js"></script>
+<!-- Base DLL build. -->
+<!-- Note: it includes ckeditor5-paragraph too. -->
+<script src="path/to/ckeditor5/build/ckeditor5-dll.js"></script>
 
-<!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
-<script src="/path/to/@ckeditor/ckeditor5-dll-classic/build/classic.js"></script>
+<!-- DLL-compatible build of ckeditor5-editor-classic. -->
+<script src="path/to/ckeditor5/packages/ckeditor5-editor-classic/build/editor-classic.js"></script>
 
-<!-- Editor features as DLL consumer builds exposed as CKEditor5[featureName] -->
-<script src="/path/to/@ckeditor/ckeditor5-adapter-ckfinder/build/adapter-ckfinder.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-ckfinder/build/ckfinder.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-easy-image/build/easy-image.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-heading/build/heading.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-image/build/image.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-indent/build/indent.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-link/build/link.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-list/build/list.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
-<script src="/path/to/@ckeditor/ckeditor5-table/build/table.js"></script>
+<!-- DLL-compatible builds of editor features. -->
+<script src="path/to/ckeditor5/packages/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-essentials/build/essentials.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-heading/build/heading.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-image/build/image.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-indent/build/indent.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-link/build/link.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-list/build/list.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-table/build/table.js"></script>
 
 <script>
-	const {
-		ClassicEditor, autoformat, basicStyles, ckfinder, blockQuote, easyImage,
-		heading, image, indent, link, list, table, mediaEmbed, pasteFromOffice
-	} = CKEditor5;
-
 	const config = {
-		// All required essentials plugins are bundled into the editor.
-		extraPlugins: [
-			basicStyles.Bold,
-			basicStyles.Italic
-			ckfinder.UploadAdapter,
-			autoformat.Autoformat,
-			basicStyles.Bold,
-			basicStyles.Italic,
-			blockQuote.BlockQuote,
-			ckfinder.CKFinder,
-			easyImage.EasyImage,
-			heading.Heading,
-			image.Image,
-			image.ImageCaption,
-			image.ImageStyle,
-			image.ImageToolbar,
-			image.ImageUpload,
-			indent.Indent,
-			link.Link,
-			list.List,
-			mediaEmbed.MediaEmbed,
-			pasteFromOffice.PasteFromOffice,
-			table.Table,
-			table.TableToolbar
+		plugins: [
+			CKEditor5.basicStyles.Bold,
+			CKEditor5.basicStyles.Italic,
+			CKEditor5.autoformat.Autoformat,
+			CKEditor5.basicStyles.Bold,
+			CKEditor5.basicStyles.Italic,
+			CKEditor5.blockQuote.BlockQuote,
+			CKEditor5.essentials.Essentials,
+			CKEditor5.heading.Heading,
+			CKEditor5.image.Image,
+			CKEditor5.image.ImageCaption,
+			CKEditor5.image.ImageStyle,
+			CKEditor5.image.ImageToolbar,
+			CKEditor5.image.ImageUpload,
+			CKEditor5.indent.Indent,
+			CKEditor5.link.Link,
+			CKEditor5.list.List,
+			CKEditor5.mediaEmbed.MediaEmbed,
+			CKEditor5.paragraph.Paragraph,
+			CKEditor5.pasteFromOffice.PasteFromOffice,
+			CKEditor5.table.Table,
+			CKEditor5.table.TableToolbar
 		],
 		toolbar: {
 			items: [
@@ -202,277 +142,19 @@ An example classic editor build configuration using dll bundles:
 		}
 	};
 
-	// ClassicEditor is exposed by the `@ckeditor/ckeditor5-dll-classic` package.
-	ClassicEditor.create( document.querySelector( '#editor' ), config )
-			.then( editor => {
-				window.editor = editor;
-			} );
-</script>
-```
-
-## DLL developer guide
-
-The CKEditor 5 DLL build can be used to add plugins to existing editor build in two ways:
-
-1. Using webpack to create a DLL consumer plugin.
-2. Using DLL directly from a script.
-
-TODO: Mention about using the `@ckeditor/ckeditor5-dev-utils` package.
-
-### Creating DLL consumer plugins
-
-To create a DLL consumer plugin using webpack you need to use provide DLL manifest in your build:
-
-```js
-
-const path = require( 'path' );
-const webpack = require( 'webpack' );
-
-module.exports = {
-	mode: 'development',
-	optimization: {
-		minimize: false,
-		moduleIds: 'named'
-	},
-	entry: {
-		path: path.resolve( __dirname, 'src/dllconsumerplugin.js' )
-	},
-	output: {
-		path: path.resolve( __dirname, 'build' ),
-		filename: 'dll-consumer-plugin.js',
-		library: 'DLLConsumerPlugin',
-		libraryTarget: 'umd',
-		libraryExport: 'default'
-	},
-	plugins: [
-		new webpack.DllReferencePlugin( {
-			manifest: require( 'node_modules/ckeditor5/build/ckeditor5-dll.manifest.json' ),
-			scope: 'ckeditor5/src'
-		} )
-	]
-};
-```
-
-In the above example webpack config we use [`DLLReferencePlugin`](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin) to tell the bundler that all packages from `ckeditor5/src` will be loaded during the run-time using the `window.CKEditor5.dll()`. Every imported dependency from base CKEditor 5 DLL should be loaded from `ckeditor5` package:
-
-```js
-import { Plugin, Command } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-
-class ExampleCommand extends Command {
-	execute() {
-		const model = this.editor.model;
-
-		model.change( writer => {
-			model.insertContent( writer.createText( 'The cake is a lie!' ) );
-		} );
-	}
-}
-
-class DLLConsumerPlugin extends Plugin {
-	constructor( editor ) {
-		super( editor );
-
-		editor.commands.add( 'example-command', new ExampleCommand( editor ) );
-
-		editor.ui.componentFactory.add( 'example-button', locale => {
-			const button = new ButtonView( locale );
-
-			const command = editor.commands.get( 'example-command' );
-
-			button.set( {
-				withText: true,
-				icon: false,
-				label: 'Click me!'
-			} );
-
-			button.bind( 'isEnabled' ).to( command );
-
-			button.on( 'execute', () => editor.execute( 'example-command' ) );
-
-			return button;
-		} );
-	}
-}
-
-export default DLLConsumerPlugin;
-```
-
-After building your plugin using webpack, you can then use it together with the editor DLL build:
-
-```html
-<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
-<script src="./node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
-
-<!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
-<script src="./node_modules/@ckeditor/ckeditor5-dll-classic/build/dll-classic.js"></script>
-
-<!-- Editor features as DLL consumer builds exposed as CKEditor5[FeatureName] -->
-<script src="./node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
-
-<!-- Finally, this is a end-user plugin that uses DLL -->
-<script src="./build/dll-consumer-plugin.js"></script>
-
-<script>
-	// Import Bold, Italic from the CKEditor 5 global.
-	const { ClassicEditor, basicStyles } = CKEditor5;
-	const { Bold, Italic } = basicStyles;
-
-	const config = {
-		extraPlugins: [
-			Bold,
-			Italic,
-			DLLConsumerPlugin // exposed by the dll-consumer-plugin.js
-		],
-		toolbar: [
-			'bold',
-			'italic',
-			'|',
-			'htmlEmbed',
-			'|',
-			'example-button',
-			'|',
-			'undo',
-			'redo'
-		]
-	};
-
-	// ClassicEditor is exposed by the ckeditor5-dll-classic:
-	ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
+	CKEditor5.editorClassic.ClassicEditor
+		.create( document.querySelector( '#editor' ), config )
 		.then( editor => {
 			window.editor = editor;
 		} );
-
-</script>
 ```
 
-### Using DLL directly from a script.
+<!--
 
-The code bundled in the DLL can be used directly in a `<script>` tag:
+## Known limitations
 
-```html
-<!-- This adds the CKEditor5.dll() in the global scope, so it is possible to reference its contents -->
-<script src="./node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
+## Creating DLL-compatible plugins
 
-<!-- Those are stripped-down editors with Essentials plugins loaded from a DLL, exposed on CKEditor global -->
-<script src="./node_modules/@ckeditor/ckeditor5-dll-classic/build/dll-classic.js"></script>
+## Runtime plugins
 
-<!-- Editor features as DLL consumer builds exposed as CKEditor5[FeatureName] -->
-<script src="./node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
-
-<!-- Finally, this is a end-user plugin that uses DLL -->
-<script src="./build/dll-consumer-plugin.js"></script>
-
-<script>
-	// Import Bold, Italic from the CKEditor 5 global.
-	const { ClassicEditor, basicStyles, core, ui } = CKEditor5;
-	const { Bold, Italic } = basicStyles;
-
-	const { Plugin, Command } = core;
-	const { ButtonView } = ui;
-
-	class ExampleCommand extends Command {
-		execute() {
-			const model = this.editor.model;
-
-			model.change( writer => {
-				model.insertContent( writer.createText( 'The cake is a lie!' ) );
-			} );
-		}
-	}
-
-	class DLLConsumerPlugin extends Plugin {
-		constructor( editor ) {
-			super( editor );
-
-			editor.commands.add( 'example-command', new ExampleCommand( editor ) );
-
-			editor.ui.componentFactory.add( 'example-button', locale => {
-				const button = new ButtonView( locale );
-
-				const command = editor.commands.get( 'example-command' );
-
-				button.set( {
-					withText: true,
-					icon: false,
-					label: 'Click me!'
-				} );
-
-				button.bind( 'isEnabled' ).to( command );
-
-				button.on( 'execute', () => editor.execute( 'example-command' ) );
-
-				return button;
-			} );
-		}
-	}
-
-	const config = {
-		extraPlugins: [
-			Bold,
-			Italic,
-			DLLConsumerPlugin
-		],
-		toolbar: [
-			'bold',
-			'italic',
-			'|',
-			'htmlEmbed',
-			'|',
-			'example-button',
-			'|',
-			'undo',
-			'redo'
-		]
-	};
-
-	// ClassicEditor is exposed by the ckeditor5-dll-classic:
-	ClassicEditor.create( document.querySelector( '#editor-classic' ), config )
-		.then( editor => {
-			window.editor = editor;
-		} );
-
-</script>
-```
-
-## Building DLL and writing for DLLs
-
-### Code guidelines
-
-To allow simultaneous development of standard and DLL builds you need to follow the below rules:
-
-1. You are allowed to import only from base DLL packages listed in [Base DLL bundle](#base-dll-bundle) using `ckeditor5` package.
-   For instance, import public API from the `ckeditor5` package:
-   ```js
-   import { Plugin } from 'ckeditor5/core';
-   ```
-   Do not import by a full path:
-   ```js
-   import Plugin from '@ckeditor5-core/src/plugin';
-   ```
-2. Do not import anything from other packages.
-   Imports from other packages are disallowed. Their API should be provided on the editor plugin:
-   Do not:
-   ```js
-   import { doBar } from '@ckeditor/ckeditor5-foo-bar/src/utils/bar';
-
-   doBar();
-   ```
-   Do instead:
-   ```js
-   editor.plugins.get( 'Foo' ).doBar();
-   ```
-
-### Building the DLL builds
-
-In the main repo you can run `build:dll` task which will build the base DLL build and all DLL-enabled builds:
-
-```shell
-yarn run build:dll
-```
-
-This script will look for `build:dll` script inside any packages from `./packages` folder.
-
-The full rebuild is not necessary for the DLL consumer plugins if the main DLL bundle has not changed. You can run `yarn run build:dll` in the DLL consumer plugin after changes.
-
-Additionally, if the main bundle has been changed but its exports remain the same (ie bugfix in `ckeditor5-core`), the rebuild of DLL consumer plugins is not needed.
+-->
