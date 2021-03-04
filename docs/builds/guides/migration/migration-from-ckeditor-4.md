@@ -633,12 +633,12 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-title">title</a></td>
-			<td>N/A</td>
+			<td>Refer to the {@link features/title title guide} to learn more about handling title in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbar">toolbar</a></td>
 			<td>
-				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.</p>
+				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}. Refer to the {@link features/toolbar toolbar guide} to learn more about managing toolbar in CKEditor 5.</p>
 				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link features/blocktoolbar block toolbar} feature.</p>
 			</td>
 		</tr>
@@ -648,7 +648,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroupCycling">toolbarGroupCycling</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroups">toolbarGroups</a></td>
-			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into multiple lines by using <code>'-'</code>.</td>
+			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into multiple lines by using <code>'-'</code>. Refer to the {@link features/toolbar toolbar guide} to learn more about managing toolbar items behavior in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarLocation">toolbarLocation</a></td>
