@@ -2598,10 +2598,10 @@ describe( 'TableKeyboard', () => {
 							] ) );
 						} );
 
-						it( 'should not move the caret if it\'s just before the last space in the line next to last one', () => {
+						it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
 							setModelData( model, modelTable( [
 								[ '00', '01', '02' ],
-								[ '10', text.substring( 0, text.length - 1 ) + '[]d word word word', '12' ],
+								[ '10', text.substring( 0, text.length - 2 ) + '[]od word word word', '12' ],
 								[ '20', '21', '22' ]
 							] ) );
 
