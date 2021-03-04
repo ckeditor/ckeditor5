@@ -11,6 +11,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -30,7 +31,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		global.document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Image, ImageCaption, HorizontalLine, BlockQuote, BlockWidgetWithNestedEditable ]
+			plugins: [ Paragraph, Image, ImageCaption, HorizontalLine, BlockQuote, Bold, BlockWidgetWithNestedEditable ]
 		} );
 
 		model = editor.model;
@@ -639,6 +640,19 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
 			} );
 
+			it( 'should not prevent default browser behavior if caret is in the middle line of a text with formatting', () => {
+				setModelData( model,
+					'<widget><nested><paragraph>' +
+					'word word word[] word <$text bold="true">bolded</$text> word ' + text +
+					'</paragraph></nested></widget>'
+				);
+
+				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+				sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
+				sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+			} );
+
 			it( 'should move caret to beginning of nested editable content if caret is in the first line of a text', () => {
 				setModelData( model, `<widget><nested><paragraph>${ 'word[] word' + text }</paragraph></nested></widget>` );
 
@@ -801,10 +815,10 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					);
 				} );
 
-				it( 'should not move the caret if it\'s just before the last space in the line next to last one', () => {
+				it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
 					setModelData( model,
 						'<widget><nested><paragraph>' +
-							text.substring( 0, text.length - 1 ) + '[]d word word word' +
+							text.substring( 0, text.length - 2 ) + '[]rd word word word' +
 						'</paragraph></nested></widget>'
 					);
 
