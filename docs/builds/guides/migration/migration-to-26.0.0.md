@@ -1,6 +1,6 @@
 ---
 category: builds-migration
-order: 20
+order: 30
 ---
 
 # Migration to 26.0.0
