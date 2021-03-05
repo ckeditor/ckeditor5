@@ -7,7 +7,7 @@ order: 20
 
 For the entire list of changes introduced in version 25.0.0, see the [changelog for CKEditor 5 v25.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2500-2021-01-25).
 
-This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v25.0.0 due to changes introduced in the {@link features/collaboration Collaboration Features} and the handling of annotations.
+This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v25.0.0 due to changes introduced in the [Collaboration Features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) and the handling of annotations.
 
 ## Reason for changes in the Annotations API
 
