@@ -1,3 +1,5 @@
 {
-	"Language": "Toolbar button tooltip for the Text Fragment Language feature."
+	"Language": "Toolbar button tooltip for the text fragment language feature.",
+	"Choose language": "Default label for the text fragment language dropdown.",
+	"Remove language": "The label of the remove language option for the text fragment language dropdown."
 }
