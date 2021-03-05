@@ -16,6 +16,46 @@ import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';
 import viewToPlainText from './utils/viewtoplaintext.js';
 
+// Output pipeline events overview:
+//
+//              ┌──────────────────────┐          ┌──────────────────────┐
+//              │     view.Document    │          │     view.Document    │
+//              │         paste        │          │         drop         │
+//              └───────────┬──────────┘          └───────────┬──────────┘
+//							│								  │
+//                          └────────────────┌────────────────┘
+//											 │
+//                                 ┌─────────V────────┐
+//								   │   view.Document  │   Retrieves text/html or text/plain from data.dataTransfer
+//                                 │  clipboardInput  │   and processes it to view.DocumentFragment.
+//                                 └─────────┬────────┘
+//											 │
+//                               ┌───────────V───────────┐
+//                               │   ClipboardPipeline   │   Converts view.DocumentFragment to model.DocumentFragment.
+//                               │  inputTransformation  │
+//                               └───────────┬───────────┘
+//											 │
+//                                ┌──────────V──────────┐
+//                                │  ClipboardPipeline  │   Calls model.insertContent().
+//                                │   contentInsertion  │
+//                                └─────────────────────┘
+//
+//
+// Input pipeline events overview:
+//
+//              ┌──────────────────────┐          ┌──────────────────────┐
+//              │     view.Document    │          │     view.Document    │   Retrieves the selected model.DocumentFragment
+//              │         copy         │          │          cut         │   and converts it to view.DocumentFragment.
+//              └───────────┬──────────┘          └───────────┬──────────┘
+//							│								  │
+//                          └────────────────┌────────────────┘
+//											 │
+//                                 ┌─────────V────────┐
+//								   │   view.Document  │   Processes view.DocumentFragment to text/html and text/plain
+//                                 │  clipboardOutput │   and stores results in data.dataTransfer.
+//                                 └──────────────────┘
+//
+
 /**
  * The clipboard feature. It is responsible for intercepting the `paste` and `drop` events and
  * passing the pasted content through the clipboard pipeline in order to insert it into the editor's content.
