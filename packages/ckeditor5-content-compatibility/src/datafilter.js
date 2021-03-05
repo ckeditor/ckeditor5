@@ -7,10 +7,10 @@
  * @module content-compatibility/datafilter
  */
 
-import { cloneDeep } from 'lodash-es';
-
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, toArray } from 'ckeditor5/src/utils';
+
+import { cloneDeep } from 'lodash-es';
 
 const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
 
@@ -257,16 +257,14 @@ export default class DataFilter {
 	}
 }
 
-/**
- * Helper function restoring matcher for the given key from `rules` object.
- *
- * If matcher for the given key does not exist, this function will create a new one
- * inside `rules` object under the given key.
- *
- * @private
- * @param {String} key
- * @param {Map} rules
- */
+// Helper function restoring matcher for the given key from `rules` object.
+
+// If matcher for the given key does not exist, this function will create a new one
+// inside `rules` object under the given key.
+
+// @private
+// @param {String} key
+// @param {Map.<String, module:engine/view/matcher~Matcher>} rules
 function getOrCreateMatcher( key, rules ) {
 	if ( !rules.has( key ) ) {
 		rules.set( key, new Matcher() );
@@ -275,33 +273,29 @@ function getOrCreateMatcher( key, rules ) {
 	return rules.get( key );
 }
 
-/**
- * Alias for {@link module:engine/view/matcher~Matcher#matchAll matchAll}.
- *
- * @private
- * @param {module:engine/view/element~Element} viewElement
- * @param {Map} rules Rules map holding matchers.
- * @returns {Object} result
- * @returns {Array} result.attributes Array with matched attribute names.
- * @returns {Array} result.classes Array with matched class names.
- * @returns {Array} result.styles Array with matched style names.
- */
+// Alias for {@link module:engine/view/matcher~Matcher#matchAll matchAll}.
+
+// @private
+// @param {module:engine/view/element~Element} viewElement
+// @param {Map} rules Rules map holding matchers.
+// @returns {Object} result
+// @returns {Array.<String>} result.attributes Array with matched attribute names.
+// @returns {Array.<String>} result.classes Array with matched class names.
+// @returns {Array.<String>} result.styles Array with matched style names.
 function matchAll( viewElement, rules ) {
 	const matcher = getOrCreateMatcher( viewElement.name, rules );
 
 	return matcher.matchAll( viewElement ) || [];
 }
 
-/**
- * Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
- *
- * @private
- * @param {Array} matches
- * @returns {Object} result
- * @returns {Array} result.attributes Array with matched attribute names.
- * @returns {Array} result.classes Array with matched class names.
- * @returns {Array} result.styles Array with matched style names.
- */
+// Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
+
+// @private
+// @param {Array} matches
+// @returns {Object} result
+// @returns {Array.<String>} result.attributes Array with matched attribute names.
+// @returns {Array.<String>} result.classes Array with matched class names.
+// @returns {Array.<String>} result.styles Array with matched style names.
 function mergeMatchResults( matches ) {
 	const matchResult = {
 		attributes: new Set(),
@@ -319,14 +313,12 @@ function mergeMatchResults( matches ) {
 	return matchResult;
 }
 
-/**
- * Convertes the given iterable object into an object.
- *
- * @private
- * @param {Iterable.<String>} iterable
- * @param {Function} getValue Shoud result with value for the given object key.
- * @returns {Object}
- */
+// Convertes the given iterable object into an object.
+
+// @private
+// @param {Iterable.<String>} iterable
+// @param {Function} getValue Shoud result with value for the given object key.
+// @returns {Object}
 function iterableToObject( iterable, getValue ) {
 	const attributesObject = {};
 

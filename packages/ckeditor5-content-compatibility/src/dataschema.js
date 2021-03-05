@@ -182,14 +182,12 @@ export default class DataSchema {
 	}
 }
 
-/**
- * Test view name against the given pattern.
- *
- * @private
- * @param {String|RegExp} pattern
- * @param {String} viewName
- * @returns {Boolean}
- */
+// Test view name against the given pattern.
+
+// @private
+// @param {String|RegExp} pattern
+// @param {String} viewName
+// @returns {Boolean}
 function testViewName( pattern, viewName ) {
 	if ( typeof pattern === 'string' ) {
 		return pattern === viewName;
