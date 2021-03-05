@@ -11,8 +11,6 @@ import { Plugin } from 'ckeditor5/src/core';
 import TextFragmentLanguageCommand from './textfragmentlanguagecommand';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
 
-const ATTRIBUTE_KEY = 'language';
-
 /**
  * The text fragment language editing.
  *
@@ -52,8 +50,8 @@ export default class TextFragmentLanguageEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.model.schema.extend( '$text', { allowAttributes: ATTRIBUTE_KEY } );
-		editor.model.schema.setAttributeProperties( ATTRIBUTE_KEY, {
+		editor.model.schema.extend( '$text', { allowAttributes: 'language' } );
+		editor.model.schema.setAttributeProperties( 'language', {
 			copyOnEnter: true
 		} );
 
@@ -70,7 +68,7 @@ export default class TextFragmentLanguageEditing extends Plugin {
 
 		conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
-				key: ATTRIBUTE_KEY,
+				key: 'language',
 				value: viewElement => {
 					const languageCode = viewElement.getAttribute( 'lang' );
 					const textDirection = viewElement.getAttribute( 'dir' );
@@ -85,7 +83,7 @@ export default class TextFragmentLanguageEditing extends Plugin {
 		} );
 
 		conversion.for( 'downcast' ).attributeToElement( {
-			model: ATTRIBUTE_KEY,
+			model: 'language',
 			view: ( attributeValue, { writer } ) => {
 				if ( !attributeValue ) {
 					return;

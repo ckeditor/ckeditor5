@@ -9,7 +9,6 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import TextFragmentLanguageCommand from '../src/textfragmentlanguagecommand';
 
 describe( 'TextFragmentLanguageCommand', () => {
-	const attrKey = 'language';
 	let editor, command, model, doc, root;
 
 	beforeEach( () => {
@@ -48,7 +47,7 @@ describe( 'TextFragmentLanguageCommand', () => {
 	describe( 'value', () => {
 		it( 'includes language when collapsed selection has the attribute', () => {
 			model.change( writer => {
-				writer.setSelectionAttribute( attrKey, 'fr:ltr' );
+				writer.setSelectionAttribute( 'language', 'fr:ltr' );
 			} );
 
 			expect( command.value ).to.equal( 'fr:ltr' );
@@ -56,11 +55,11 @@ describe( 'TextFragmentLanguageCommand', () => {
 
 		it( 'is false when collapsed selection does not have the attribute', () => {
 			model.change( writer => {
-				writer.setSelectionAttribute( attrKey, 'fr:ltr' );
+				writer.setSelectionAttribute( 'language', 'fr:ltr' );
 			} );
 
 			model.change( writer => {
-				writer.removeSelectionAttribute( attrKey );
+				writer.removeSelectionAttribute( 'language' );
 			} );
 
 			expect( command.value ).to.be.false;

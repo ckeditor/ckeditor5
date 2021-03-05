@@ -10,8 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 import { stringifyLanguageAttribute } from './utils';
 
-const ATTRIBUTE_KEY = 'language';
-
 /**
  * The text fragment language command plugin.
  *
@@ -45,7 +43,7 @@ export default class TextFragmentLanguageCommand extends Command {
 		const doc = model.document;
 
 		this.value = this._getValueFromFirstAllowedNode();
-		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, ATTRIBUTE_KEY );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'language' );
 	}
 
 	/**
@@ -78,18 +76,18 @@ export default class TextFragmentLanguageCommand extends Command {
 		model.change( writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
-					writer.setSelectionAttribute( ATTRIBUTE_KEY, value );
+					writer.setSelectionAttribute( 'language', value );
 				} else {
-					writer.removeSelectionAttribute( ATTRIBUTE_KEY );
+					writer.removeSelectionAttribute( 'language' );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), ATTRIBUTE_KEY );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'language' );
 
 				for ( const range of ranges ) {
 					if ( value ) {
-						writer.setAttribute( ATTRIBUTE_KEY, value, range );
+						writer.setAttribute( 'language', value, range );
 					} else {
-						writer.removeAttribute( ATTRIBUTE_KEY, range );
+						writer.removeAttribute( 'language', range );
 					}
 				}
 			}
@@ -109,13 +107,13 @@ export default class TextFragmentLanguageCommand extends Command {
 		const selection = model.document.selection;
 
 		if ( selection.isCollapsed ) {
-			return selection.getAttribute( ATTRIBUTE_KEY ) || false;
+			return selection.getAttribute( 'language' ) || false;
 		}
 
 		for ( const range of selection.getRanges() ) {
 			for ( const item of range.getItems() ) {
-				if ( schema.checkAttribute( item, ATTRIBUTE_KEY ) ) {
-					return item.getAttribute( ATTRIBUTE_KEY ) || false;
+				if ( schema.checkAttribute( item, 'language' ) ) {
+					return item.getAttribute( 'language' ) || false;
 				}
 			}
 		}
