@@ -94,8 +94,12 @@ export default class HighlightUI extends Plugin {
 	 */
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
+		const command = this.editor.commands.get( 'highlight' );
 
-		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser );
+		function decorateHighlightButton( button ) {
+			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		}
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, decorateHighlightButton );
 	}
 
 	/**
