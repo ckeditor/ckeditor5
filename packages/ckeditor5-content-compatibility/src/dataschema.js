@@ -30,7 +30,7 @@ export default class DataSchema {
 		 *
 		 * @readonly
 		 * @private
-         * @member {Map.<String, module:content-compatibility/dataschema~DataSchemaDefinition>} #_definitions
+		 * @member {Map.<String, module:content-compatibility/dataschema~DataSchemaDefinition>} #_definitions
 		 */
 		this._definitions = new Map();
 
