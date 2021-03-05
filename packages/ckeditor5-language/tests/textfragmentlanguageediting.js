@@ -4,11 +4,12 @@
  */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import TextFragmentLanguageEditing from '../src/textfragmentlanguageediting';
-import TextFragmentLanguageCommand from '../src/textfragmentlanguagecommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+import TextFragmentLanguageEditing from '../src/textfragmentlanguageediting';
+import TextFragmentLanguageCommand from '../src/textfragmentlanguagecommand';
 
 describe( 'TextFragmentLanguageEditing', () => {
 	let editor, model;
@@ -22,6 +23,10 @@ describe( 'TextFragmentLanguageEditing', () => {
 				editor = newEditor;
 				model = editor.model;
 			} );
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -107,21 +112,14 @@ describe( 'TextFragmentLanguageEditing', () => {
 				]
 			};
 
-			await createCustomConfigEditor( languageConfig );
+			const customEditor = await VirtualTestEditor.create( {
+				plugins: [ TextFragmentLanguageEditing ],
+				language: languageConfig
+			} );
 
-			expect( editor.config.get( 'language' ) ).to.deep.equal( languageConfig );
+			expect( customEditor.config.get( 'language' ) ).to.deep.equal( languageConfig );
+
+			customEditor.destroy();
 		} );
-
-		function createCustomConfigEditor( languageConfig ) {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ TextFragmentLanguageEditing, Paragraph ],
-					language: languageConfig
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-				} );
-		}
 	} );
 } );

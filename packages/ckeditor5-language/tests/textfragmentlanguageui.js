@@ -7,11 +7,12 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import TextFragmentLanguageEditing from '../src/textfragmentlanguageediting';
-import TextFragmentLanguageUI from '../src/textfragmentlanguageui';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import TextFragmentLanguageEditing from '../src/textfragmentlanguageediting';
+import TextFragmentLanguageUI from '../src/textfragmentlanguageui';
 
 describe( 'TextFragmentLanguageUI', () => {
 	let editor, editorElement, dropdown, command;
