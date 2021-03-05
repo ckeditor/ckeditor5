@@ -101,7 +101,7 @@ export default class TextFragmentLanguageCommand extends Command {
 	 * For the collapsed selection returns the selection attribute.
 	 *
 	 * @private
-	 * @returns {Object} The attribute value.
+	 * @returns {Boolean|String} The attribute value.
 	 */
 	_getValueFromFirstAllowedNode() {
 		const model = this.editor.model;

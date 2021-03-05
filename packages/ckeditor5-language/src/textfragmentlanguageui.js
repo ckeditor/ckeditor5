@@ -17,7 +17,7 @@ import '../theme/language.css';
 /**
  * The text fragment language UI plugin.
  *
- * It introduces the `'language'` button.
+ * It introduces the `'language'` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */

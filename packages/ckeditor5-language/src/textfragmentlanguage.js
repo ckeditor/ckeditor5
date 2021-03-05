@@ -20,8 +20,7 @@ import TextFragmentLanguageUI from './textfragmentlanguageui';
  * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
  * to learn more.
  *
- * To change UI editor language, refer to [Setting the UI language](https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html)
- * guide.
+ * To change UI editor language, refer to {@glink features/ui-language setting the UI language} guide.
  *
  * For more information about this feature check the {@glink api/textfragmentlanguage package page}.
  *
@@ -53,8 +52,7 @@ export default class TextFragmentLanguage extends Plugin {
  * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
  * to learn more.
  *
- * To change UI editor languge, refer to [Setting the UI language](https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html)
- * guide.
+ * To change UI editor language, refer to {@glink features/ui-language setting the UI language} guide.
  *
  * The default value is:
  *
