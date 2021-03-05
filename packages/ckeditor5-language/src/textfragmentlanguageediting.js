@@ -80,7 +80,7 @@ export default class TextFragmentLanguageEditing extends Plugin {
 			},
 			view: {
 				name: 'span',
-				attributes: { lang: /[^]/ }
+				attributes: { lang: /[\s\S]+/ }
 			}
 		} );
 
