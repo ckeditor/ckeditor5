@@ -50,7 +50,7 @@ export default class DataFilter {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {module:content-compatibility/dataschema~DataSchema} module:content-compatibility/datafilter~DataFilter#_dataSchema
+		 * @member {module:content-compatibility/dataschema~DataSchema} #_dataSchema
 		 */
 		this._dataSchema = dataSchema;
 
@@ -61,7 +61,7 @@ export default class DataFilter {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Map<string, module:engine/view/matcher~Matcher>} module:content-compatibility/datafilter~DataFilter#_allowedAttributes
+		 * @member {Map.<String, module:engine/view/matcher~Matcher>} #_allowedAttributes
 		 */
 		this._allowedAttributes = new Map();
 
@@ -72,8 +72,7 @@ export default class DataFilter {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Map<string, module:engine/view/matcher~Matcher>}
-		 * module:content-compatibility/datafilter~DataFilter#_disallowedAttributes
+		 * @member {Map.<String, module:engine/view/matcher~Matcher>} #_disallowedAttributes
 		 */
 		this._disallowedAttributes = new Map();
 	}
@@ -114,7 +113,7 @@ export default class DataFilter {
 	 *
 	 * @private
 	 * @param {module:engine/view/matcher~MatcherPattern} config
-	 * @param {Map<string, module:engine/view/matcher~Matcher>} rules Rules map holding matchers.
+	 * @param {Map.<String, module:engine/view/matcher~Matcher>} rules Rules map holding matchers.
 	 */
 	_addAttributeMatcher( config, rules ) {
 		const viewName = config.name;
@@ -324,7 +323,7 @@ function mergeMatchResults( matches ) {
  * Convertes the given iterable object into an object.
  *
  * @private
- * @param {Iterable<String>} iterable
+ * @param {Iterable.<String>} iterable
  * @param {Function} getValue Shoud result with value for the given object key.
  * @returns {Object}
  */
