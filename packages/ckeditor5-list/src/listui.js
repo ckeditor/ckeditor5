@@ -12,7 +12,7 @@ import { createUIComponent } from './utils';
 import numberedListIcon from '../theme/icons/numberedlist.svg';
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
@@ -21,6 +21,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * @extends module:core/plugin~Plugin
  */
 export default class ListUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'ListUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

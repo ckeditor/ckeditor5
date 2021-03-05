@@ -9,7 +9,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-ckfinder-upload-only' ), {
 		toolbar: {
 			items: [
-				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|', 'imageUpload'
+				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|', 'uploadImage'
 			],
 			viewportTopOffset: 100
 		},

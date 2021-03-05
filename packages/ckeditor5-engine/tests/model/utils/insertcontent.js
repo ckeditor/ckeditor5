@@ -465,6 +465,7 @@ describe( 'DataController utils', () => {
 					inheritAllFrom: '$block',
 					allowAttributes: [ 'listType', 'listIndent' ]
 				} );
+				schema.extend( '$text', { allowAttributes: 'foo' } );
 			} );
 
 			it( 'inserts one text node', () => {
@@ -838,31 +839,14 @@ describe( 'DataController utils', () => {
 					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx]oo</paragraph>' );
 				} );
 
-				// This is the expected result, but it was so hard to achieve at this stage that I
-				// decided to go with the what the next test represents.
-				// it( 'inserts paragraph + text + inlineWidget + text', () => {
-				// 	setData( model, '<paragraph>f[]oo</paragraph>' );
-				// 	insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
-				// 	expect( getData( model ) )
-				// 		.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
-				// } );
-
-				// See the comment above.
 				it( 'inserts paragraph + text + inlineWidget + text', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
 
-					expect( getData( model ) ).to.equal(
-						'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph>' +
-						'<paragraph><inlineWidget></inlineWidget></paragraph>' +
-						'<paragraph>zzz[]oo</paragraph>'
-					);
-
-					expect( stringify( root, affectedRange ) ).to.equal(
-						'<paragraph>f[yyy</paragraph><paragraph>xxx</paragraph>' +
-						'<paragraph><inlineWidget></inlineWidget></paragraph>' +
-						'<paragraph>zzz]oo</paragraph>'
-					);
+					expect( getData( model ) )
+						.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
+					expect( stringify( root, affectedRange ) )
+						.to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz]oo</paragraph>' );
 				} );
 
 				it( 'inserts paragraph + text + paragraph', () => {
@@ -1056,6 +1040,23 @@ describe( 'DataController utils', () => {
 
 					expect( stringify( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<paragraph><inlineWidget></inlineWidget></paragraph>]<paragraph>bar</paragraph>'
+					);
+				} );
+
+				it( 'inserts multiple text nodes with different attribute values', () => {
+					setData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					const affectedRange = insertHelper( '<$text foo="a">yyy</$text><$text foo="b">xxx</$text>' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						'<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx[]</$text></paragraph>' +
+						'<paragraph>bar</paragraph>'
+					);
+
+					expect( stringify( root, affectedRange ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						'[<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx</$text></paragraph>]' +
+						'<paragraph>bar</paragraph>'
 					);
 				} );
 			} );

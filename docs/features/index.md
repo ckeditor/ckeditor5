@@ -69,6 +69,12 @@ Additionally, CKEditor 5 offers the {@link features/restricted-editing restricte
 
 {@img assets/img/features-collaboration.png 800 CKEditor 5 features.}
 
+### Customizable user experience
+
+Work as you like it - choose user interface approach from {@link examples/index several preconfigured build}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link builds/guides/development/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
+
+{@img assets/img/toolbar.png 800 CKEditor 5 features.}
+
 ### Cross-platform interoperability
 
 Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-word from MS Word}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
@@ -85,7 +91,7 @@ If you need to share the document, use [export to PDF feature](https://ckeditor.
 
 ## Backwards feature compatibility
 
-If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link builds/guides/migrate migration guide} for all the features that are already covered by the modern version.
+If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link builds/guides/migration/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 
 ## Feature examples
 
@@ -97,7 +103,7 @@ Each rich-text editor feature is presented on a separate page, with one or more 
 
 ## Looking for more?
 
-The examples on the left do not present all features included in CKEditor 5. For example, some end-user features like bulleted and numbered lists or undo and redo are quite self-explanatory.
+The examples on the left do not present all features included in CKEditor 5. For example, some end-user features like undo and redo are quite self-explanatory.
 
 CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍&nbsp; to show your support.
 

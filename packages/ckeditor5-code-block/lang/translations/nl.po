@@ -22,4 +22,4 @@ msgstr "Codeblok invoegen"
 
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
-msgstr ""
+msgstr "Platte tekst"

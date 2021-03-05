@@ -236,7 +236,7 @@ describe( 'placeholder', () => {
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
-		it( 'should not set attributes/class when multiple children (isDirectHost=false)', () => {
+		it( 'should not set class when multiple children (isDirectHost=false)', () => {
 			setData( view, '<p></p><p></p>' );
 			viewDocument.isFocused = false;
 
@@ -247,7 +247,80 @@ describe( 'placeholder', () => {
 				isDirectHost: false
 			} );
 
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/9009
+		it( 'should not set class when multiple children and some other element has content (isDirectHost=false)', () => {
+			setData( view, '<p></p><p>foobar</p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo bar baz',
+				isDirectHost: false
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/9046
+		it( 'should set attribute for the direct placeholder even if there is also indirect one (isDirectHost=false)', () => {
+			setData( view, '<p></p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo',
+				isDirectHost: false
+			} );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot.getChild( 0 ),
+				text: 'bar',
+				isDirectHost: true
+			} );
+
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
+			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
+		it( 'should not trigger infinite post-fixers loop (isDirectHost=false)', () => {
+			setData( view, '<p></p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo bar baz',
+				isDirectHost: false
+			} );
+
+			view.forceRender();
+
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
+		it( 'should not set class when there is no children (isDirectHost=false)', () => {
+			setData( view, '<p></p><p>foobar</p>' );
+			viewDocument.isFocused = false;
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot.getChild( 0 ),
+				text: 'foo bar baz',
+				isDirectHost: false
+			} );
+
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).isEmpty ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -263,6 +336,58 @@ describe( 'placeholder', () => {
 			} );
 
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
+		it( 'should keep the placeholder visible when the host element is focused (keepOnFocus = true)', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			enablePlaceholder( {
+				view,
+				element,
+				text: 'foo bar baz',
+				keepOnFocus: true
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			view.change( writer => {
+				writer.setSelection( ViewRange._createIn( element ) );
+
+				// Here we are before rendering - placeholder is visible in first element;
+				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
+		it( 'should hide the placeholder when the host element is focused (keepOnFocus = false)', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			enablePlaceholder( {
+				view,
+				element,
+				text: 'foo bar baz'
+				// Defaults: keepOnFocus = false
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			view.change( writer => {
+				writer.setSelection( ViewRange._createIn( element ) );
+
+				// Here we are before rendering - placeholder is visible in first element;
+				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			} );
+
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 	} );
@@ -399,6 +524,15 @@ describe( 'placeholder', () => {
 			expect( needsPlaceholder( element ) ).to.be.true;
 		} );
 
+		it( 'should return false if element has content other than UI elements', () => {
+			setData( view, '<p>{moo}<ui:span></ui:span></p>' );
+			viewDocument.isFocused = true;
+
+			const element = viewRoot.getChild( 0 );
+
+			expect( needsPlaceholder( element ) ).to.be.false;
+		} );
+
 		it( 'should return true if element hosts UI elements only and document is blurred', () => {
 			setData( view, '<p><ui:span></ui:span></p>' );
 			viewDocument.isFocused = false;
@@ -415,6 +549,15 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			expect( needsPlaceholder( element ) ).to.be.true;
+		} );
+
+		it( 'should return true if we want to keep placeholder when element is focused', () => {
+			setData( view, '<p><ui:span></ui:span></p>' );
+			viewDocument.isFocused = true;
+
+			const element = viewRoot.getChild( 0 );
+
+			expect( needsPlaceholder( element, true ) ).to.be.true;
 		} );
 	} );
 } );

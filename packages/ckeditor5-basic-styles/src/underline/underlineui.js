@@ -7,8 +7,8 @@
  * @module basic-styles/underline/underlineui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from 'ckeditor5/src/core';
+import { ButtonView } from 'ckeditor5/src/ui';
 
 import underlineIcon from '../../theme/icons/underline.svg';
 
@@ -20,6 +20,13 @@ const UNDERLINE = 'underline';
  * @extends module:core/plugin~Plugin
  */
 export default class UnderlineUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'UnderlineUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

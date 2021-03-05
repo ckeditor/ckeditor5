@@ -7,7 +7,7 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { findOptimalInsertionPosition, checkSelectionOnObject, isWidget, toWidget } from 'ckeditor5/src/widget';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
@@ -140,15 +140,6 @@ function isImageAllowedInParent( selection, schema, model ) {
 	const parent = getInsertImageParent( selection, model );
 
 	return schema.checkChild( parent, 'image' );
-}
-
-// Check if selection is on object.
-//
-// @returns {Boolean}
-function checkSelectionOnObject( selection, schema ) {
-	const selectedElement = selection.getSelectedElement();
-
-	return selectedElement && schema.isObject( selectedElement );
 }
 
 // Checks if selection is placed in other image (ie. in caption).

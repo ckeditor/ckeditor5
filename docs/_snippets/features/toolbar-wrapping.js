@@ -21,7 +21,7 @@ ClassicEditor
 				'bulletedList', 'numberedList', 'todoList', '|',
 				'code', 'codeBlock', '|',
 				'insertTable', '|',
-				'imageUpload', 'blockQuote', '|',
+				'uploadImage', 'blockQuote', '|',
 				'undo', 'redo'
 			],
 			shouldNotGroupWhenFull: true,

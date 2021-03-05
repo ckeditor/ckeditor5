@@ -7,32 +7,28 @@
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import Image from '../../src/image';
-import ImageStyle from '../../src/imagestyle';
-import ImageToolbar from '../../src/imagetoolbar';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
-import ImageTextAlternative from '../../src/imagetextalternative';
-
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Table from '@ckeditor/ckeditor5-table/src/table';
 import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
-
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
 import {
 	focusEditor,
 	resizerMouseSimulator,
 	getWidgetDomParts,
 	getHandleCenterPoint
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils';
+
+import Image from '../../src/image';
+import ImageToolbar from '../../src/imagetoolbar';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
+import ImageTextAlternative from '../../src/imagetextalternative';
+import ImageStyle from '../../src/imagestyle';
 
 describe( 'ImageResizeHandles', () => {
 	let widget, editor, view, viewDocument, editorElement;
@@ -59,7 +55,7 @@ describe( 'ImageResizeHandles', () => {
 			plugins: [ Image, ImageResizeEditing, ImageResizeHandles ]
 		} );
 
-		const attachToSpy = sinon.spy( localEditor.plugins.get( WidgetResize ), 'attachTo' );
+		const attachToSpy = sinon.spy( localEditor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 		await setModelAndWaitForImages( localEditor, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -76,7 +72,7 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		it( 'uses the command on commit', async () => {
-			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
+			const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
 
 			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -92,36 +88,34 @@ describe( 'ImageResizeHandles', () => {
 
 		it( 'disables the resizer if the command is disabled', async () => {
 			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			// Enforce selection on an image. See: https://github.com/ckeditor/ckeditor5/issues/8617.
+			editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' ) );
 
 			const resizer = getSelectedImageResizer( editor );
 
 			let isEnabled = false;
 
-			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+			editor.commands.get( 'resizeImage' ).on( 'set:isEnabled', evt => {
 				evt.return = isEnabled;
 				evt.stop();
 			}, { priority: 'highest' } );
 
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 			expect( resizer.isEnabled ).to.be.false;
 
 			isEnabled = true;
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 			expect( resizer.isEnabled ).to.be.true;
 		} );
 
 		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
-			setData( editor.model, '<paragraph>foo[]</paragraph>' );
-
-			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+			editor.commands.get( 'resizeImage' ).on( 'set:isEnabled', evt => {
 				evt.return = false;
 				evt.stop();
 			}, { priority: 'highest' } );
-			editor.commands.get( 'imageResize' ).refresh();
+			editor.commands.get( 'resizeImage' ).refresh();
 
-			editor.model.change( writer => {
-				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );
-			} );
+			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			await waitForAllImagesLoaded( editor );
 
@@ -181,6 +175,8 @@ describe( 'ImageResizeHandles', () => {
 			editor = await createEditor();
 
 			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			// Enforce selection on an image. See: https://github.com/ckeditor/ckeditor5/issues/8617.
+			editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' ) );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 		} );
@@ -399,6 +395,9 @@ describe( 'ImageResizeHandles', () => {
 
 			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
+			// Enforce selection on an image. See: https://github.com/ckeditor/ckeditor5/issues/8617.
+			editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' ) );
+
 			widget = viewDocument.getRoot().getChild( 1 );
 
 			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
@@ -458,7 +457,7 @@ describe( 'ImageResizeHandles', () => {
 				}
 			} );
 
-			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 			setData( editor.model, '[<rawHtml></rawHtml>]' );
 
@@ -502,20 +501,20 @@ describe( 'ImageResizeHandles', () => {
 		);
 	}
 
-	function createEditor( config ) {
-		return ClassicEditor.create( editorElement, config || {
-			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
+	async function createEditor( config ) {
+		const newEditor = await ClassicEditor.create( editorElement, config || {
+			plugins: [ Widget, Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
 			image: {
 				resizeUnit: 'px'
 			}
-		} ).then( newEditor => {
-			view = newEditor.editing.view;
-			viewDocument = view.document;
-
-			focusEditor( newEditor );
-
-			return newEditor;
 		} );
+
+		view = newEditor.editing.view;
+		viewDocument = view.document;
+
+		await focusEditor( newEditor );
+
+		return newEditor;
 	}
 
 	async function setModelAndWaitForImages( editor, data ) {
