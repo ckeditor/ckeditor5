@@ -46,19 +46,20 @@ describe( 'PageBreakEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'pageBreak' ) ).to.be.false;
 	} );
 
-	it( 'should register imageInsert command', () => {
+	it( 'should register pageBreak command', () => {
 		expect( editor.commands.get( 'pageBreak' ) ).to.be.instanceOf( PageBreakCommand );
 	} );
 
-	// https://github.com/ckeditor/ckeditor5/issues/8788.
+	// https://github.com/ckeditor/ckeditor5/issues/8880.
+	// (Formerly it was a UIElement https://github.com/ckeditor/ckeditor5/issues/8788)
 	// Proper integration testing of this is too complex.
 	// Making sure the label is no longer a regular text element should be enough.
-	it( 'should have label as a UIElement', () => {
+	it( 'should have label as a RawElement', () => {
 		setModelData( model, '[<pageBreak></pageBreak>]' );
-		const textNode = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
-		expect( textNode.is( 'uiElement' ) ).to.be.true;
-		expect( textNode.hasClass( 'page-break__label' ) ).to.be.true;
+		expect( element.is( 'rawElement' ) ).to.be.true;
+		expect( element.hasClass( 'page-break__label' ) ).to.be.true;
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -268,7 +269,7 @@ describe( 'PageBreakEditing', () => {
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label"></span></div>'
 				);
 
-				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label">Page break</span></div>'
 				);
 			} );

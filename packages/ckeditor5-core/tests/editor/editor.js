@@ -937,6 +937,115 @@ describe( 'Editor', () => {
 			} );
 		} );
 
+		describe( '"substitutePlugins" config', () => {
+			it( 'should substitute a plugin when passed as "config.plugins', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const editor = new TestEditor( {
+					plugins: [ ErrorPlugin ],
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+					} );
+			} );
+
+			it( 'should substitute a plugin when passed as "config.extraPlugins', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const editor = new TestEditor( {
+					extraPlugins: [ ErrorPlugin ],
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+					} );
+			} );
+
+			it( 'should substitute a plugin when it is a built-in plugin in the editor class', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const originalBuiltinPlugins = Editor.builtinPlugins;
+
+				Editor.builtinPlugins = [ ErrorPlugin ];
+
+				const editor = new TestEditor( {
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+
+						Editor.builtinPlugins = originalBuiltinPlugins;
+					} );
+			} );
+		} );
+
 		it( 'should not call "afterInit" method if plugin does not have this method', () => {
 			const editor = new TestEditor( {
 				plugins: [ PluginA, PluginE ]

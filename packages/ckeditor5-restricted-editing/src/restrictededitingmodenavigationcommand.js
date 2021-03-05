@@ -7,7 +7,7 @@
  * @module restricted-editing/restrictededitingmodenavigationcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 /**
  * The command that allows navigation across the exceptions in the edited document.

@@ -7,13 +7,13 @@
  * @module media-embed/automediaembed
  */
 
+import { Plugin } from 'ckeditor5/src/core';
+import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
+import { Clipboard } from 'ckeditor5/src/clipboard';
+import { Undo } from 'ckeditor5/src/undo';
+import { global } from 'ckeditor5/src/utils';
+
 import MediaEmbedEditing from './mediaembedediting';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { insertMedia } from './utils';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=%]+$/;

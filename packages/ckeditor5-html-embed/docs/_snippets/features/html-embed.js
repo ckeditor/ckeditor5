@@ -92,7 +92,7 @@ ClassicEditor
 				'codeBlock',
 				'blockQuote',
 				'link',
-				'imageUpload',
+				'uploadImage',
 				'mediaEmbed',
 				'insertTable',
 				'|',

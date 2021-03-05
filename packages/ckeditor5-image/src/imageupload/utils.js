@@ -9,7 +9,7 @@
 
 /* global fetch, File */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { global } from 'ckeditor5/src/utils';
 
 /**
  * Creates a regular expression used to test for image files.

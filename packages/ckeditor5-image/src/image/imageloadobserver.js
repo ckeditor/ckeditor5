@@ -7,7 +7,7 @@
  * @module image/image/imageloadobserver
  */
 
-import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
+import { Observer } from 'ckeditor5/src/engine';
 
 /**
  * Observes all new images added to the {@link module:engine/view/document~Document},

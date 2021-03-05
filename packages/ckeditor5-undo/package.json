@@ -1,29 +1,31 @@
 {
   "name": "@ckeditor/ckeditor5-undo",
-  "version": "25.0.0",
+  "version": "26.0.0",
   "description": "Undo manager for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin"
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^25.0.0",
-    "@ckeditor/ckeditor5-engine": "^25.0.0",
-    "@ckeditor/ckeditor5-ui": "^25.0.0"
+    "@ckeditor/ckeditor5-core": "^26.0.0",
+    "@ckeditor/ckeditor5-engine": "^26.0.0",
+    "@ckeditor/ckeditor5-ui": "^26.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^25.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^25.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^25.0.0",
-    "@ckeditor/ckeditor5-enter": "^25.0.0",
-    "@ckeditor/ckeditor5-heading": "^25.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^25.0.0",
-    "@ckeditor/ckeditor5-typing": "^25.0.0",
-    "@ckeditor/ckeditor5-utils": "^25.0.0",
-    "@ckeditor/ckeditor5-table": "^25.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^26.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^26.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^26.0.0",
+    "@ckeditor/ckeditor5-enter": "^26.0.0",
+    "@ckeditor/ckeditor5-heading": "^26.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^26.0.0",
+    "@ckeditor/ckeditor5-typing": "^26.0.0",
+    "@ckeditor/ckeditor5-table": "^26.0.0",
+    "@ckeditor/ckeditor5-utils": "^26.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

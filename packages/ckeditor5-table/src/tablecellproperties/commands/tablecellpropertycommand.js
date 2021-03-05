@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/commands/tablecellpropertycommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 import { getSelectionAffectedTableCells } from '../../utils/selection';
 
 /**
