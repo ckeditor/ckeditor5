@@ -27,6 +27,11 @@ import ImageInline from '../../src/imageinline';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+
+import ConversionEnhancements from './conversionenhancements';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
@@ -44,6 +49,9 @@ ClassicEditor
 			List,
 			MediaEmbed,
 			Paragraph,
+			ConversionEnhancements,
+			TableProperties,
+			TableCellProperties,
 			Table,
 			TableToolbar,
 			ImageInsert,
