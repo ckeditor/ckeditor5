@@ -23,7 +23,7 @@ import { getLanguageDirection } from 'ckeditor5/src/utils';
  * If `textDirection` argument is omitted, it will be automatically detected based on `languageCode`.
  *
  * @param {String} languageCode The language code in ISO 639 format.
- * @param {String} [textDirection] Language text direction. Automatically detected if omitted.
+ * @param {'ltr'|'rtl'} [textDirection] Language text direction. Automatically detected if omitted.
  * @returns {String}
  */
 export function stringifyLanguageAttribute( languageCode, textDirection ) {
@@ -41,6 +41,7 @@ export function stringifyLanguageAttribute( languageCode, textDirection ) {
  * @returns {String} result.textDirection Language text direction.
  */
 export function parseLanguageAttribute( str ) {
-	const parts = str.split( ':' );
-	return { languageCode: parts[ 0 ], textDirection: parts[ 1 ] };
+    const [ languageCode, textDirection ] = str.split( ':' );
+    
+    return { languageCode, textDirection };
 }

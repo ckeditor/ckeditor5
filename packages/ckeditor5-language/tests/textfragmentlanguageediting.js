@@ -37,7 +37,7 @@ describe( 'TextFragmentLanguageEditing', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'language' ) ).to.be.true;
 	} );
 
-	it( 'its attribute is marked with a copOnEnter property', () => {
+	it( 'its attribute is marked with a copyOnEnter property', () => {
 		expect( model.schema.getAttributeProperties( 'language' ) ).to.include( {
 			copyOnEnter: true
 		} );
@@ -125,4 +125,3 @@ describe( 'TextFragmentLanguageEditing', () => {
 		}
 	} );
 } );
-

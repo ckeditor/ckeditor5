@@ -47,7 +47,8 @@ export default class TextFragmentLanguage extends Plugin {
 }
 
 /**
- * The available {@link module:language/textfragmentlanguage} options allowing setting language of parts of the content.
+ * The available {@link module:language/textfragmentlanguage~TextFragmentLanguage
+} options allowing setting language of parts of the content.
  *
  * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
  * to learn more.
@@ -82,5 +83,5 @@ export default class TextFragmentLanguage extends Plugin {
  * @typedef {Object} module:language/textfragmentlanguage~TextFragmentLanguageOption
  * @property {String} title The user-readable title of the option.
  * @property {String} languageCode The language code in ISO 639 format.
- * @property {String} [textDirection] The language text direction. Automatically detected if omitted.
+ * @property {'ltr'|'rtl'} [textDirection] The language text direction. Automatically detected if omitted.
  */
