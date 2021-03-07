@@ -38,6 +38,7 @@ export default class ToggleImageTypeCommand extends Command {
 		const src = imageElement.getAttribute( 'src' );
 		const alt = imageElement.getAttribute( 'alt' );
 		const srcset = imageElement.getAttribute( 'srcset' );
+		const caption = imageElement.getAttribute( 'caption' );
 		const imageType = isImage( imageElement ) ? 'imageInline' : 'image';
 
 		if ( !src ) {
@@ -52,6 +53,10 @@ export default class ToggleImageTypeCommand extends Command {
 
 		if ( srcset ) {
 			attrs.srcset = srcset;
+		}
+
+		if ( caption ) {
+			attrs.caption = caption;
 		}
 
 		insertImage( this.editor, attrs, selection, imageType );

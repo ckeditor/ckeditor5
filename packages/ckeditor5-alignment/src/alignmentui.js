@@ -10,7 +10,7 @@
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
-import { isSupported } from './utils';
+import { isSupported, normalizeAlignmentOptions } from './utils';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],
@@ -67,9 +67,10 @@ export default class AlignmentUI extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		const options = editor.config.get( 'alignment.options' );
+		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) );
 
 		options
+			.map( option => option.name )
 			.filter( isSupported )
 			.forEach( option => this._addButton( option ) );
 
@@ -77,7 +78,7 @@ export default class AlignmentUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 
 			// Add existing alignment buttons to dropdown's toolbar.
-			const buttons = options.map( option => componentFactory.create( `alignment:${ option }` ) );
+			const buttons = options.map( option => componentFactory.create( `alignment:${ option.name }` ) );
 			addToolbarToDropdown( dropdownView, buttons );
 
 			// Configure dropdown properties an behavior.

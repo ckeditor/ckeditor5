@@ -227,7 +227,7 @@ export default class Conversion {
 	 *		editor.conversion.elementToElement( {
 	 *			model: 'heading',
 	 *			view: 'h2',
-	 *			// Convert "headling-like" paragraphs to headings.
+	 *			// Convert "heading-like" paragraphs to headings.
 	 *			upcastAlso: viewElement => {
 	 *				const fontSize = viewElement.getStyle( 'font-size' );
 	 *

@@ -14,7 +14,9 @@ DecoupledEditor
 		extraPlugins: [ ImageResize ],
 		cloudServices: CS_CONFIG,
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]
+			toolbar: [
+				'toggleImageCaption', 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight'
+			]
 		}
 	} )
 	.then( editor => {

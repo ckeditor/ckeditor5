@@ -7,40 +7,7 @@
  * @module image/imagecaption/utils
  */
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
-import { toWidgetEditable } from 'ckeditor5/src/widget';
-
-/**
- * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.
- *
- * @param {module:engine/view/view~View} view
- * @param {String} placeholderText The text to be displayed when the caption is empty.
- * @returns {Function}
- */
-export function captionElementCreator( view, placeholderText ) {
-	return writer => {
-		const editable = writer.createEditableElement( 'figcaption' );
-		writer.setCustomProperty( 'imageCaption', true, editable );
-
-		enablePlaceholder( {
-			view,
-			element: editable,
-			text: placeholderText
-		} );
-
-		return toWidgetEditable( editable, writer );
-	};
-}
-
-/**
- * Returns `true` if a given view element is the image caption editable.
- *
- * @param {module:engine/view/element~Element} viewElement
- * @returns {Boolean}
- */
-export function isCaption( viewElement ) {
-	return !!viewElement.getCustomProperty( 'imageCaption' );
-}
+import { isImage } from '../image/utils';
 
 /**
  * Returns the caption model element from a given image element. Returns `null` if no caption is found.
@@ -48,11 +15,31 @@ export function isCaption( viewElement ) {
  * @param {module:engine/model/element~Element} imageModelElement
  * @returns {module:engine/model/element~Element|null}
  */
-export function getCaptionFromImage( imageModelElement ) {
+export function getCaptionFromImageModelElement( imageModelElement ) {
 	for ( const node of imageModelElement.getChildren() ) {
 		if ( !!node && node.is( 'element', 'caption' ) ) {
 			return node;
 		}
+	}
+
+	return null;
+}
+
+/**
+ * Returns the caption model element for a model selection. Returns `null` if the selection has no caption element ancestor.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {module:engine/model/element~Element|null}
+ */
+export function getCaptionFromModelSelection( selection ) {
+	const captionElement = selection.getFirstPosition().findAncestor( 'caption' );
+
+	if ( !captionElement ) {
+		return null;
+	}
+
+	if ( isImage( captionElement.parent ) ) {
+		return captionElement;
 	}
 
 	return null;
@@ -66,7 +53,7 @@ export function getCaptionFromImage( imageModelElement ) {
  * @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
  * cannot be matched.
  */
-export function matchImageCaption( element ) {
+export function matchImageCaptionViewElement( element ) {
 	const parent = element.parent;
 
 	// Convert only captions for images.

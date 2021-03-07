@@ -12,6 +12,7 @@ import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
@@ -788,7 +789,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -802,7 +804,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -816,7 +819,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: preventDefaultSpy,
 				stopPropagation: stopPropagationSpy
 			} );
@@ -837,7 +841,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -859,7 +864,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -868,7 +874,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -1162,7 +1169,8 @@ describe( 'LinkUI', () => {
 			it( 'should add the #formView upon Ctrl+K keystroke press', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.k,
-					ctrlKey: true,
+					ctrlKey: !env.isMac,
+					metaKey: env.isMac,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};

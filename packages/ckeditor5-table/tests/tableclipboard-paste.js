@@ -3796,7 +3796,7 @@ describe( 'table clipboard', () => {
 			] );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '<image src="/assets/sample.png"><caption></caption></image>', 'ab', '02' ],
+				[ '<image src="/assets/sample.png"></image>', 'ab', '02' ],
 				[ 'ba', 'bb', '12' ],
 				[ '02', '21', '22' ]
 			] ) );
@@ -3827,7 +3827,7 @@ describe( 'table clipboard', () => {
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[
-					'<image src="/assets/sample.png"><caption></caption></image>' +
+					'<image src="/assets/sample.png"></image>' +
 					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
 					'<blockQuote>' +
