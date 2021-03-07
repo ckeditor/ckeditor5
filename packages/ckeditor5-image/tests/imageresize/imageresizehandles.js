@@ -723,40 +723,35 @@ describe( 'ImageResizeHandles', () => {
 			beforeEach( async () => {
 				editor = await createEditor();
 
-				editor.setData(
-					`<p><span class="image-inline">
-					<img src="${ imageBaseUrl }"
-						srcset="${ imageBaseUrl }?a 110w,
-							${ imageBaseUrl }?b 440w,
-							${ imageBaseUrl }?c 1025w"
-						sizes="100vw" width="96">
-				</span></p>`
+				await setModelAndWaitForImages( editor,
+					'<paragraph>' +
+					'[<imageInline ' +
+					`src="${ imageBaseUrl }" srcset="${ imageBaseUrl }?a 110w, ${ imageBaseUrl }?b 440w, ${ imageBaseUrl }?c 1025w" ` +
+					'sizes="100vw" width="96"></imageInline>]' +
+					'</paragraph>'
 				);
-
-				await waitForAllImagesLoaded( editor );
 
 				widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 				model = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
-				editor.model.change( writer => writer.setSelection( model, 'on' ) );
 			} );
 
 			it( 'works with images containing srcset', async () => {
 				const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 				const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
-				const finalPointerPosition = initialPosition.clone().moveBy( -20, 0 );
+				const finalPointerPosition = initialPosition.clone().moveBy( -20, -20 );
 
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, {
 					from: initialPosition,
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'width' ) ).to.equal( '73px' );
+				expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
 			} );
 
 			it( 'retains width after removing srcset', async () => {
 				const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 				const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
-				const finalPointerPosition = initialPosition.clone().moveBy( -20, 0 );
+				const finalPointerPosition = initialPosition.clone().moveBy( -20, -20 );
 
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, {
 					from: initialPosition,
@@ -767,7 +762,7 @@ describe( 'ImageResizeHandles', () => {
 					writer.removeAttribute( 'srcset', model );
 				} );
 
-				const expectedHtml = '<p><img class="image_resized" style="width:73px;" src="/assets/sample.png"></p>';
+				const expectedHtml = '<p><img class="image_resized" style="width:76px;" src="/assets/sample.png"></p>';
 				expect( editor.getData() ).to.equal( expectedHtml );
 			} );
 
