@@ -17,6 +17,9 @@ import '../../theme/imagestyle.css';
 /**
  * The image style UI plugin.
  *
+ * It creates buttons and drop-downs corresponding to the {@link module:image/image~ImageConfig#styles configuration} of the
+ * {@link module:image/imagestyle~ImageStyle} plugin.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageStyleUI extends Plugin {
@@ -90,7 +93,7 @@ export default class ImageStyleUI extends Plugin {
 	}
 
 	/**
-	 * Creates a dropdown and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+	 * Creates a dropdown and stores it in the editor {@link module:ui/componentfactory~ComponentFactory}.
 	 *
 	 * @private
 	 * @param {module:image/imagestyle~ImageStyleGroupDefinition} dropdownConfig
@@ -152,7 +155,7 @@ export default class ImageStyleUI extends Plugin {
 	}
 
 	/**
-	 * Creates a button and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+	 * Creates a button and stores it in the editor {@link module:ui/componentfactory~ComponentFactory}.
 	 *
 	 * @private
 	 * @param {module:image/imagestyle~ImageStyleArrangementDefinition} buttonConfig

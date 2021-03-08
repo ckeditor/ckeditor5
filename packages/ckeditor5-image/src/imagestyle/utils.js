@@ -18,8 +18,8 @@ const {
 } = icons;
 
 /**
- * Default image arrangements provided by the plugin that can be referred in the
- * {@link module:image/image~ImageConfig#styles} configuration.
+ * Default image style arrangements provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * configuration.
  *
  * There are available 5 styles focused on formatting:
  *
@@ -113,8 +113,9 @@ const DEFAULT_ARRANGEMENTS = {
 };
 
 /**
- * Default image groups provided by the plugin that can be referred in the
- * {@link module:image/image~ImageConfig#styles} configuration.
+ * Default image style arrangement groups provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * configuration. The groups are containers for {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements} and
+ * correspond to available drop-down button created by the {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin.
  *
  * There are 2 groups available:
  *
@@ -142,10 +143,12 @@ const DEFAULT_GROUPS = {
 };
 
 /**
- * Default image arrangement icons provided by the plugin that can be referred in the
- * {@link module:image/image~ImageConfig#styles} configuration.
+ * Default image style arrangement icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * configuration.
  *
- * There are 7 icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
+ * See {@link module:image/imagestyle~ImageStyleArrangementDefinition#icon} to learn more.
+ *
+ * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  *
  * @readonly
  * @type {Object.<String,String>}
@@ -162,20 +165,16 @@ const DEFAULT_ICONS = {
 
 /**
  * Returns lists of the normalized and validated arrangements and groups.
+ *
  * @protected
- *
  * @param {Object} options
- *
  * @param {Boolean} options.isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
- *
  * @param {Boolean} options.isBlockPluginLoaded
  * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
- *
  * @param {module:image/imagestyle~ImageStyleConfig} options.configuredStyles
  * The image styles configuration provided in the image styles {@link module:image/image~ImageConfig#styles configuration}
  * as a default or custom value.
- *
  * @returns {module:image/imagestyle~ImageStyleConfig}
  * * Each of arrangements contains a complete icon markup.
  * * The arrangements not supported by any of the loaded plugins are filtered out.
@@ -292,19 +291,22 @@ function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginL
 	} else {
 		const supportedElements = [ isBlockPluginLoaded ? 'image' : null, isInlinePluginLoaded ? 'imageInline' : null ];
 
-		// Check if arrangement is supported by any of the loaded plugins.
+		// Check if the arrangement is supported by any of the loaded plugins.
 		if ( !modelElements.some( elementName => supportedElements.includes( elementName ) ) ) {
 			/**
-			 * One of the custom defined or default {@link module:image/imagestyle~ImageStyleArrangementDefinition arrangements}
-			 * can be applied only to model element that is not supported by the loaded image editing plugins.
-			 * Model elements to which the arrangement can be applied should be defined in the
-			 * {@link module:image/imagestyle~ImageStyleArrangementDefinition `modelElements`} property.
+			 * In order to work correctly, each image {@link module:image/imagestyle~ImageStyleArrangementDefinition style arrangement}
+			 * requires specific model elements (also: types of images) to be supported by the editor.
 			 *
-			 * Explore the warning in the console to find out which arrangement is not supported and which plugins are missing.
+			 * Model element names to which the arrangement can be applied are defined in the
+			 * {@link module:image/imagestyle~ImageStyleArrangementDefinition#modelElements} property of the style arrangement
+			 * definition.
+			 *
+			 * Explore the warning in the console to find out precisely which arrangement is not supported and which editor plugins
+			 * are missing. Make sure these plugins are loaded in your editor to get this style arrangement working.
 			 *
 			 * @error image-style-missing-dependency
-			 * @param {String} [missingPlugins] The names of the plugins one of which has to be loaded for the particular arrangement
-			 * @param {String} [arrangement] The name of the invalid arrangement
+			 * @param {String} [arrangement] The name of the unsupported arrangement.
+			 * @param {String} [missingPlugins] The names of the plugins one of which has to be loaded for the particular arrangement.
 			 */
 			logWarning( 'image-style-missing-dependency', {
 				arrangement,
@@ -341,8 +343,9 @@ function extendStyle( source, style ) {
 // @param {Object} info
 function warnInvalidStyle( info ) {
 	/**
-	 * The custom image style definition you provided is invalid.
-	 * Check if it implements properly one of the following definitions:
+	 * The image style definition provided in the configuration is invalid.
+	 *
+	 * Please make sure the definition implements properly one of the following:
 	 *
 	 * * {@link module:image/imagestyle~ImageStyleArrangementDefinition image style arrangement definition},
 	 * * {@link module:image/imagestyle~ImageStyleGroupDefinition image style group definition}
