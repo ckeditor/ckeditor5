@@ -93,9 +93,15 @@ function parseArguments( args ) {
 
 	return {
 		url: options.url,
-		depth: options.depth ? Number( options.depth ) : Infinity,
-		exclusions: options.exclusions ? toArray( options.exclusions ) : [],
-		concurrency: options.concurrency ? Number( options.concurrency ) : 1
+		depth: options.depth ?
+			Number( options.depth ) :
+			Infinity,
+		exclusions: options.exclusions ?
+			toArray( options.exclusions ).filter( exclusion => exclusion.length > 0 ) :
+			[],
+		concurrency: options.concurrency ?
+			Number( options.concurrency ) :
+			1
 	};
 }
 
