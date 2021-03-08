@@ -5,6 +5,7 @@
 
 :root {
 	--ck-image-style-spacing: 1.5em;
+	--ck-inline-image-style-spacing: calc(var(--ck-image-style-spacing) / 2);
 }
 
 .ck-content {
@@ -27,5 +28,58 @@
 	& .image-style-align-right {
 		float: right;
 		margin-left: var(--ck-image-style-spacing);
+	}
+
+	& .image-style-block-align-right {
+		margin-right: 0;
+		margin-left: auto;
+	}
+
+	& .image-style-block-align-left {
+		margin-left: 0;
+		margin-right: auto;
+	}
+
+	& .image-inline {
+		&.image-style-align-left,
+		&.image-style-align-right {
+			margin-top: var(--ck-inline-image-style-spacing);
+			margin-bottom: var(--ck-inline-image-style-spacing);
+		}
+
+		&.image-style-align-left {
+			margin-right: var(--ck-inline-image-style-spacing);
+		}
+
+		&.image-style-align-right {
+			margin-left: var(--ck-inline-image-style-spacing);
+		}
+	}
+}
+
+.ck.ck-splitbutton {
+	/* The button should display as a regular drop-down if the action button
+	is forced to fire the same action as the arrow button. */
+	&.ck-splitbutton_flatten {
+		&:hover,
+		&.ck-splitbutton_open {
+			& > .ck-splitbutton__action:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
+				background-color: var(--ck-color-button-on-background);
+
+				&::after {
+					display: none;
+				}
+			}
+		}
+
+		&.ck-splitbutton_open:hover {
+			& > .ck-splitbutton__action:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled),
+			& > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
+				background-color: var(--ck-color-button-on-hover-background);
+			}
+		}
 	}
 }

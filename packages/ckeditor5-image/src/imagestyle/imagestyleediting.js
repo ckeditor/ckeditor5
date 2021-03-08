@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageStyleCommand from './imagestylecommand';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import { normalizeImageStyles } from './utils';
+import utils from './utils';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -30,71 +30,73 @@ export default class ImageStyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const { normalizeStyles, getDefaultStylesConfiguration } = utils;
+		const editor = this.editor;
+		const isBlockPluginLoaded = editor.plugins.has( 'ImageBlockEditing' );
+		const isInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
+
+		editor.config.define( 'image.styles', getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) );
+
+		/**
+		 * It contains lists of the normalized and validated style arrangements and style groups.
+		 *
+		 * * Each arrangement contains a complete icon markup.
+		 * * The arrangements not supported by any of the loaded image editing plugins (
+		 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} or
+		 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`}) are filtered out.
+		 * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
+		 * * All of the group items not defined in the arrangements are filtered out.
+		 *
+		 * @protected
+		 * @readonly
+		 * @type {module:image/imagestyle~ImageStyleConfig}
+		 */
+		this.normalizedStyles = normalizeStyles( {
+			configuredStyles: editor.config.get( 'image.styles' ),
+			isBlockPluginLoaded,
+			isInlinePluginLoaded
+		} );
+
+		this._setupConversion( isBlockPluginLoaded, isInlinePluginLoaded );
+
+		// Register imageStyle command.
+		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, this.normalizedStyles.arrangements ) );
+	}
+
+	/**
+	 * Sets the editor conversion taking the presence of
+	 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`}
+	 * and {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugins into consideration.
+	 *
+	 * @private
+	 * @param {Boolean} isBlockPluginLoaded
+	 * @param {Boolean} isInlinePluginLoaded
+	 */
+	_setupConversion( isBlockPluginLoaded, isInlinePluginLoaded ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const data = editor.data;
-		const editing = editor.editing;
+		const arrangements = this.normalizedStyles.arrangements;
 
-		// Define default configuration.
-		editor.config.define( 'image.styles', [ 'full', 'side' ] );
+		const modelToViewConverter = modelToViewStyleAttribute( arrangements );
+		const viewToModelConverter = viewToModelStyleAttribute( arrangements );
 
-		// Get configuration.
-		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ) );
+		editor.editing.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
+		editor.data.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
 
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
-		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
+		if ( isBlockPluginLoaded ) {
 			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
+
+			// Converter for figure element from view to model.
+			editor.data.upcastDispatcher.on( 'element:figure', viewToModelConverter, { priority: 'low' } );
 		}
 
-		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
+		if ( isInlinePluginLoaded ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
+
+			// Converter for the img element from view to model.
+			editor.data.upcastDispatcher.on( 'element:img', viewToModelConverter, { priority: 'low' } );
 		}
-
-		// Converters for imageStyle attribute from model to view.
-		const modelToViewConverter = modelToViewStyleAttribute( styles );
-		editing.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
-		data.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
-
-		// Converter for figure element from view to model.
-		data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
-
-		// Register imageStyle command.
-		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );
 	}
 }
-
-/**
- * The image style format descriptor.
- *
- *		import fullSizeIcon from 'path/to/icon.svg';
- *
- *		const imageStyleFormat = {
- *			name: 'fullSize',
- *			icon: fullSizeIcon,
- *			title: 'Full size image',
- *			className: 'image-full-size'
- *		}
- *
- * @typedef {Object} module:image/imagestyle/imagestyleediting~ImageStyleFormat
- *
- * @property {String} name The unique name of the style. It will be used to:
- *
- * * Store the chosen style in the model by setting the `imageStyle` attribute of the `<image>` element.
- * * As a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
- * * when registering a button for each of the styles (`'imageStyle:{name}'`) in the
- * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
- * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin).
- *
- * @property {Boolean} [isDefault] When set, the style will be used as the default one.
- * A default style does not apply any CSS class to the view element.
- *
- * @property {String} icon One of the following to be used when creating the style's button:
- *
- * * An SVG icon source (as an XML string).
- * * One of {@link module:image/imagestyle/utils~defaultIcons} to use a default icon provided by the plugin.
- *
- * @property {String} title The style's title.
- *
- * @property {String} className The CSS class used to represent the style in the view.
- */

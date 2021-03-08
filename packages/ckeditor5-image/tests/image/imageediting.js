@@ -16,7 +16,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ImageEditing from '../../src/image/imageediting';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import InsertImageCommand from '../../src/image/insertimagecommand';
-import ToggleImageTypeCommand from '../../src/image/toggleimagetypecommand';
+import ImageTypeCommand from '../../src/image/imagetypecommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { isImageWidget } from '../../src/image/utils';
@@ -86,8 +86,9 @@ describe( 'ImageEditing', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
 	} );
 
-	it( 'should register the toggleImageType command', () => {
-		expect( editor.commands.get( 'toggleImageType' ) ).to.be.instanceOf( ToggleImageTypeCommand );
+	it( 'should register the imageTypeBlock and imageTypeInline commands', () => {
+		expect( editor.commands.get( 'imageTypeBlock' ) ).to.be.instanceOf( ImageTypeCommand );
+		expect( editor.commands.get( 'imageTypeInline' ) ).to.be.instanceOf( ImageTypeCommand );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.

@@ -12,6 +12,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
 import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
 import ImageEditing from './imageediting';
+import ImageTypeCommand from './imagetypecommand';
 
 /**
  * The image block plugin.
@@ -19,7 +20,9 @@ import ImageEditing from './imageediting';
  * It registers:
  *
  * * `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
- * * converters for editing and data pipelines.
+ * * converters for editing and data pipelines.,
+ * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeBlock'`} command that converts inline images into
+ * block images.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -81,5 +84,9 @@ export default class ImageBlockEditing extends Plugin {
 				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel() );
+
+		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
+			editor.commands.add( 'imageTypeBlock', new ImageTypeCommand( this.editor, 'image' ) );
+		}
 	}
 }
