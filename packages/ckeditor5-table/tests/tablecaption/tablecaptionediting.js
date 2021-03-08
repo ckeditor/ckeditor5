@@ -6,12 +6,41 @@
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { Plugin } from 'ckeditor5/src/core';
 
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
 import TableEditing from '../../src/tableediting';
 
 describe( 'TableCaptionEditing', () => {
 	let editor, model;
+
+	class FakePlugin extends Plugin {
+		init() {
+			const conversion = this.editor.conversion;
+			const schema = this.editor.model.schema;
+
+			schema.register( 'foo', {
+				isObject: true,
+				isBlock: true,
+				allowWhere: '$block'
+			} );
+			schema.register( 'caption', {
+				allowIn: 'foo',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+
+			conversion.elementToElement( {
+				view: 'foo',
+				model: 'foo'
+			} );
+
+			conversion.elementToElement( {
+				view: 'caption',
+				model: 'caption'
+			} );
+		}
+	}
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -34,18 +63,47 @@ describe( 'TableCaptionEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		// Table:
-		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
-		expect( model.schema.isObject( 'table' ) ).to.be.true;
-		expect( model.schema.isBlock( 'table' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table', 'caption' ], '$text' ) ).to.be.true;
+		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table', 'caption' ], 'caption' ) ).to.be.false;
+	} );
+
+	it( 'should extend caption if schema for it is already registered', async () => {
+		const { model } = await VirtualTestEditor
+			.create( {
+				plugins: [ FakePlugin, TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing ]
+			} );
+
+		expect( model.schema.isRegistered( 'caption' ) ).to.be.true;
+		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'table' ], 'caption' ) ).to.be.true;
 	} );
 
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
+			it( 'should not convert caption outside of the table', async () => {
+				const editor = await VirtualTestEditor
+					.create( {
+						plugins: [
+							FakePlugin,
+							TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing ]
+					} );
+
+				setModelData( editor.model,
+					'<foo>' +
+						'<caption>Foo caption</caption>' +
+					'</foo>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<foo>' +
+						'<caption>Foo caption</caption>' +
+					'</foo>'
+				);
+			} );
+
 			it( 'should convert to figure > table + figcaption', () => {
 				setModelData( model,
 					'<table>' +
@@ -74,6 +132,35 @@ describe( 'TableCaptionEditing', () => {
 		} );
 
 		describe( 'view to model', () => {
+			it( 'should not convert figure without "table" class', () => {
+				editor.setData(
+					'<figure>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>' +
+										'foobar' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<figcaption>Foo caption</figcaption>' +
+					'</figure>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( String(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foobar</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+						'<paragraph>Foo caption</paragraph>'
+					) );
+			} );
+
 			it( 'should convert a table with <caption>', () => {
 				editor.setData(
 					'<table>' +

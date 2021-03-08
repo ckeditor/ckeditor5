@@ -10,7 +10,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
-import { first } from 'ckeditor5/src/utils';
 
 /**
  * The table caption engine plugin.
@@ -54,8 +53,7 @@ export default class TableCaptionEditing extends Plugin {
 			.elementToElement( {
 				view: matchTableCaptionViewElement,
 				model: 'caption'
-			} )
-			.add( viewFigureToModel() );
+			} );
 
 		// Model -> view converter for the data pipeline.
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
@@ -122,61 +120,4 @@ export function matchTableCaptionViewElement( element ) {
  */
 export function isTable( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'table' );
-}
-
-// TODO: Move to tableediting.
-export function viewFigureToModel() {
-	return dispatcher => {
-		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			// Do not convert if this is not an "table figure".
-			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
-				return;
-			}
-
-			// Find an table element inside the figure element.
-			const viewTable = getViewTableFromFigure( data.viewItem );
-
-			// Do not convert if table element is absent or was already converted.
-			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
-				return;
-			}
-
-			// Convert view table to model table.
-			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
-
-			// Get table element from conversion result.
-			const modelTable = first( conversionResult.modelRange.getItems() );
-
-			// When table wasn't successfully converted then finish conversion.
-			if ( !modelTable ) {
-				return;
-			}
-
-			// Consume the figure view element.
-			if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'table' } ) ) {
-				return;
-			}
-
-			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
-			conversionApi.updateConversionResult( modelTable, data );
-		} );
-	};
-}
-
-function getViewTableFromFigure( figureView ) {
-	if ( figureView.is( 'element', 'table' ) ) {
-		return figureView;
-	}
-
-	const figureChildren = [];
-
-	for ( const figureChild of figureView.getChildren() ) {
-		figureChildren.push( figureChild );
-
-		if ( figureChild.is( 'element' ) ) {
-			figureChildren.push( ...figureChild.getChildren() );
-		}
-	}
-
-	return figureChildren.find( viewChild => viewChild.is( 'element', 'table' ) );
 }

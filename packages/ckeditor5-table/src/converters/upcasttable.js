@@ -8,6 +8,7 @@
  */
 
 import { createEmptyTableCell } from '../utils/common';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * View table element to model table element conversion helper.
@@ -112,6 +113,77 @@ export function ensureParagraphInTableCell( elementName ) {
 			}
 		}, { priority: 'low' } );
 	};
+}
+
+/**
+ * Returns a function that converts the image view representation:
+ *
+ *		<figure class="table"><table>...</table></figure>
+ *
+ * to the model representation:
+ *
+ *		<table></table>
+ *
+ * @returns {Function}
+ */
+export function upcastFigureWithTable() {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Do not convert if this is not an "table figure".
+			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
+				return;
+			}
+
+			// Find an table element inside the figure element.
+			const viewTable = getViewTableFromFigure( data.viewItem );
+
+			// Do not convert if table element is absent or was already converted.
+			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return;
+			}
+
+			// Convert view table to model table.
+			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
+
+			// Get table element from conversion result.
+			const modelTable = first( conversionResult.modelRange.getItems() );
+
+			// When table wasn't successfully converted then finish conversion.
+			if ( !modelTable ) {
+				return;
+			}
+
+			// Consume the figure view element.
+			if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'table' } ) ) {
+				return;
+			}
+
+			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
+			conversionApi.updateConversionResult( modelTable, data );
+		} );
+	};
+}
+
+// Get view `<table>` element from the view widget (`<figure>`).
+//
+// @param {module:engine/view/element~Element} figureView
+// @returns {module:engine/view/element~Element}
+function getViewTableFromFigure( figureView ) {
+	if ( figureView.is( 'element', 'table' ) ) {
+		return figureView;
+	}
+
+	const figureChildren = [];
+
+	for ( const figureChild of figureView.getChildren() ) {
+		figureChildren.push( figureChild );
+
+		if ( figureChild.is( 'element' ) ) {
+			figureChildren.push( ...figureChild.getChildren() );
+		}
+	}
+
+	return figureChildren.find( viewChild => viewChild.is( 'element', 'table' ) );
 }
 
 // Scans table rows and extracts required metadata from the table:
