@@ -22,19 +22,19 @@ import viewToPlainText from './utils/viewtoplaintext.js';
 //              │     view.Document    │          │     view.Document    │
 //              │         paste        │          │         drop         │
 //              └───────────┬──────────┘          └───────────┬──────────┘
-//							│								  │
+//                          │                                 │
 //                          └────────────────┌────────────────┘
-//											 │
+//                                           │
 //                                 ┌─────────V────────┐
-//								   │   view.Document  │   Retrieves text/html or text/plain from data.dataTransfer
+//                                 │   view.Document  │   Retrieves text/html or text/plain from data.dataTransfer
 //                                 │  clipboardInput  │   and processes it to view.DocumentFragment.
 //                                 └─────────┬────────┘
-//											 │
+//                                           │
 //                               ┌───────────V───────────┐
 //                               │   ClipboardPipeline   │   Converts view.DocumentFragment to model.DocumentFragment.
 //                               │  inputTransformation  │
 //                               └───────────┬───────────┘
-//											 │
+//                                           │
 //                                ┌──────────V──────────┐
 //                                │  ClipboardPipeline  │   Calls model.insertContent().
 //                                │   contentInsertion  │
@@ -47,11 +47,11 @@ import viewToPlainText from './utils/viewtoplaintext.js';
 //              │     view.Document    │          │     view.Document    │   Retrieves the selected model.DocumentFragment
 //              │         copy         │          │          cut         │   and converts it to view.DocumentFragment.
 //              └───────────┬──────────┘          └───────────┬──────────┘
-//							│								  │
+//                          │                                 │
 //                          └────────────────┌────────────────┘
-//											 │
+//                                           │
 //                                 ┌─────────V────────┐
-//								   │   view.Document  │   Processes view.DocumentFragment to text/html and text/plain
+//                                 │   view.Document  │   Processes view.DocumentFragment to text/html and text/plain
 //                                 │  clipboardOutput │   and stores results in data.dataTransfer.
 //                                 └──────────────────┘
 //
