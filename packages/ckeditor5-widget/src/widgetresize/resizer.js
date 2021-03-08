@@ -521,7 +521,13 @@ class SizeView extends View {
 			}
 		);
 
-		this.bind( 'activeHandlePosition' ).to( resizerState );
+		this.bind( 'activeHandlePosition' ).to(
+			resizerState,
+			resizerState, 'proposedHandleHostWidth',
+			resizerState, 'proposedHandleHostHeight',
+			// If the image is too small to contain the size label, display the label above.
+			( position, width, height ) => width > 50 && height > 50 ? position : 'above-center'
+		);
 	}
 
 	dismiss() {
