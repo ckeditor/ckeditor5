@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow } from './converters/upcasttable';
+import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastFigureWithTable } from './converters/upcasttable';
 import {
 	convertParagraphInTableCell,
 	downcastInsertCell,
@@ -91,6 +91,9 @@ export default class TableEditing extends Plugin {
 			}
 		} );
 
+		// Figure conversion.
+		conversion.for( 'upcast' ).add( upcastFigureWithTable() );
+
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 
@@ -113,7 +116,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'paragraph',
 			view: convertParagraphInTableCell,
 			converterPriority: 'high'
@@ -152,7 +155,6 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
-		// FIXME: Fix postfixers :D
 		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model, editor.editing.mapper );

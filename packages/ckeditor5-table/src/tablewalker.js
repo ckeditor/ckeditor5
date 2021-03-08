@@ -212,7 +212,8 @@ export default class TableWalker {
 		const row = this._table.getChild( this._row );
 
 		// Iterator is done when there's no row (table ended) or the row is after `endRow` limit.
-		if ( !row || this._isOverEndRow() ) {
+		// We assume here that any non-row element might happen at the end of the table.
+		if ( !row || !row.is( 'element', 'tableRow' ) || this._isOverEndRow() ) {
 			return { done: true };
 		}
 

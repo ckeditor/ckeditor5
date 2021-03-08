@@ -325,10 +325,9 @@ function fixTableRowsSizes( table, writer ) {
 
 		for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
 			const columnsToInsert = maxColumns - size;
-			const isTableRow = table.getChild( rowIndex ).is( 'element', 'tableRow' );
 
 			// Table can hold models other than rows - we shouldn't fix them.
-			if ( isTableRow && columnsToInsert ) {
+			if ( columnsToInsert ) {
 				for ( let i = 0; i < columnsToInsert; i++ ) {
 					createEmptyTableCell( writer, writer.createPositionAt( table.getChild( rowIndex ), 'end' ) );
 				}
@@ -380,7 +379,11 @@ function findCellsToTrim( table ) {
 // @returns {Array.<Number>}
 function getRowsLengths( table ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
-	const lengths = new Array( table.childCount ).fill( 0 );
+	const count = Array.from( table.getChildren() ).reduce(
+		( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count,
+		0
+	);
+	const lengths = new Array( count ).fill( 0 );
 
 	for ( const { row } of new TableWalker( table, { includeAllSlots: true } ) ) {
 		lengths[ row ]++;
