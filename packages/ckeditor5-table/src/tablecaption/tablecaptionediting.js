@@ -58,20 +58,18 @@ export default class TableCaptionEditing extends Plugin {
 			.add( viewFigureToModel() );
 
 		// Model -> view converter for the data pipeline.
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'caption',
+			view: ( modelElement, { writer } ) => {
+				if ( !isTable( modelElement.parent ) ) {
+					return null;
+				}
 
-		// editor.conversion.for( 'dataDowncast' ).elementToElement( {
-		// 	model: 'caption',
-		// 	view: ( modelElement, { writer } ) => {
-		// 		if ( !isTable( modelElement.parent ) ) {
-		// 			return null;
-		// 		}
-
-		// 		return writer.createContainerElement( 'figcaption' );
-		// 	}
-		// } );
+				return writer.createContainerElement( 'figcaption' );
+			}
+		} );
 
 		// Model -> view converter for the editing pipeline.
-
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {

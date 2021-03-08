@@ -70,10 +70,10 @@ function fixTable( table, writer ) {
 	let wasFixed = false;
 
 	for ( const row of table.getChildren() ) {
-		// Ignore caption model.
-		if ( row.name === 'caption' ) {
+		if ( !row.is( 'element', 'tableRow' ) ) {
 			continue;
 		}
+
 		wasFixed = fixTableRow( row, writer ) || wasFixed;
 	}
 
@@ -86,6 +86,10 @@ function fixTable( table, writer ) {
 // @param {module:engine/model/writer~Writer} writer
 function fixTableRow( tableRow, writer ) {
 	let wasFixed = false;
+
+	if ( !tableRow.is( 'element', 'tableRow' ) ) {
+		return false;
+	}
 
 	for ( const tableCell of tableRow.getChildren() ) {
 		wasFixed = fixTableCellContent( tableCell, writer ) || wasFixed;
