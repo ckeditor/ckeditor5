@@ -10,7 +10,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
 import TableEditing from '../../src/tableediting';
 
-describe.only( 'TableCaptionEditing', () => {
+describe( 'TableCaptionEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
@@ -54,9 +54,7 @@ describe.only( 'TableCaptionEditing', () => {
 								'<paragraph>foobar</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
-						'<caption>' +
-							'Foo caption' +
-						'</caption>' +
+						'<caption>Foo caption</caption>' +
 					'</table>'
 				);
 
@@ -69,9 +67,7 @@ describe.only( 'TableCaptionEditing', () => {
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
-						'<figcaption>' +
-							'Foo caption' +
-						'</figcaption>' +
+						'<figcaption>Foo caption</figcaption>' +
 					'</figure>'
 				);
 			} );
@@ -136,8 +132,7 @@ describe.only( 'TableCaptionEditing', () => {
 					) );
 			} );
 
-			// eslint-disable-next-line max-len
-			it( 'should convert a table inside <figure> with <figcaption> preceding the table - <figcaption> has higher priority', () => {
+			it( 'should convert a doubled captions', () => {
 				editor.setData(
 					'<figure class="table">' +
 						'<table>' +
@@ -156,14 +151,14 @@ describe.only( 'TableCaptionEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( String(
-						'<paragraph>Foo caption</paragraph>' +
 						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'foobar' +
+									'<paragraph>foobar</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
 							'<caption>Bar caption</caption>' +
+							'<caption>Foo caption</caption>' +
 						'</table>'
 					) );
 			} );
