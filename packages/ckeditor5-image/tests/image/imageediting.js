@@ -86,7 +86,7 @@ describe( 'ImageEditing', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
 	} );
 
-	it( 'should register the imageType command', () => {
+	it( 'should register the imageTypeBlock and imageTypeInline commands', () => {
 		expect( editor.commands.get( 'imageTypeBlock' ) ).to.be.instanceOf( ImageTypeCommand );
 		expect( editor.commands.get( 'imageTypeInline' ) ).to.be.instanceOf( ImageTypeCommand );
 	} );

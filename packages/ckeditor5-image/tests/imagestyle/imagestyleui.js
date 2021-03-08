@@ -362,7 +362,7 @@ describe( 'ImageStyleUI', () => {
 			await customEditor.destroy();
 		} );
 
-		describe( 'one of the nested buttons are on', () => {
+		describe( 'when at least one of the nested buttons is on', () => {
 			beforeEach( () => {
 				groups = groups.map( group => {
 					const activeButton = group.view.toolbarView.items.first;
@@ -410,7 +410,7 @@ describe( 'ImageStyleUI', () => {
 			} );
 		} );
 
-		describe( 'none of the selected buttons are on', () => {
+		describe( 'when none of the nested buttons are on', () => {
 			it( 'should inherit the icon of the defaultItem', () => {
 				for ( const { buttonView, config } of groups ) {
 					expect( buttonView.icon ).to.equal( DEFAULT_ARRANGEMENTS[ config.defaultItem ].icon );

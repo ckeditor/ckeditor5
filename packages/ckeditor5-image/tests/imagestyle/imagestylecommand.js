@@ -58,14 +58,14 @@ describe( 'ImageStyleCommand', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should set default arrangements properly if both of them are defined in the config', () => {
+		it( 'should set default arrangement names properly if both of them are defined in the config', () => {
 			expect( command._defaultArrangements ).to.deep.equal( {
 				image: defaultBlock.name,
 				imageInline: defaultInline.name
 			} );
 		} );
 
-		it( 'should set default arrangements properly if one of them is missing in the config', async () => {
+		it( 'should set default arrangements names properly if one of them is missing in the config', async () => {
 			const customElement = document.createElement( 'div' );
 
 			document.body.appendChild( customElement );
@@ -122,7 +122,7 @@ describe( 'ImageStyleCommand', () => {
 			expect( command.value ).to.equal( anyImage.name );
 		} );
 
-		describe( 'an inline image is selected', () => {
+		describe( 'when an inline image is selected', () => {
 			it( 'should match the imageStyle attribute if it is present', () => {
 				setData( model, `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
 
@@ -161,7 +161,7 @@ describe( 'ImageStyleCommand', () => {
 			} );
 		} );
 
-		describe( 'a block image is selected', () => {
+		describe( 'when a block image is selected', () => {
 			it( 'should match the imageStyle attribute if it is present', () => {
 				setData( model, `[<image imageStyle="${ anyImage.name }"></image>]` );
 
@@ -235,7 +235,7 @@ describe( 'ImageStyleCommand', () => {
 
 	describe( 'execute()', () => {
 		describe( 'converting image type', () => {
-			describe( 'on the inline image', () => {
+			describe( 'when an inline image is selected', () => {
 				it( 'should change the image type if the requested type is other than imageInline', () => {
 					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
 					command.execute( { value: onlyBlock.name } );
@@ -262,7 +262,7 @@ describe( 'ImageStyleCommand', () => {
 				} );
 			} );
 
-			describe( 'on the block image', () => {
+			describe( 'when a block image is selected', () => {
 				it( 'should change the image type if the requested type is other than imageBlock', () => {
 					setData( model, '[<image src="assets/sample.png"></image>]' );
 					command.execute( { value: onlyInline.name } );
@@ -290,7 +290,7 @@ describe( 'ImageStyleCommand', () => {
 		} );
 
 		describe( 'converting image arrangement', () => {
-			describe( 'on the inline image', () => {
+			describe( 'when an inline image is selected', () => {
 				it( 'should remove the imageStyle attribute if the requested arrangement is set as default', () => {
 					setData( model, `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
 					command.execute( { value: defaultInline.name } );
@@ -340,7 +340,7 @@ describe( 'ImageStyleCommand', () => {
 				} );
 			} );
 
-			describe( 'on the block image', () => {
+			describe( 'when a block image is selected', () => {
 				it( 'should remove the imageStyle attribute if the requested arrangement is set as default', () => {
 					setData( model, `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
 					command.execute( { value: defaultBlock.name } );
