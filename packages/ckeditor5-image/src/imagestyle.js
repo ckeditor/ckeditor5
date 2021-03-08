@@ -38,36 +38,39 @@ export default class ImageStyle extends Plugin {
 }
 
 /**
- * The configuration for the `ImageStyle` plugin that should be provided while creating the editor instance.
+ * The configuration for the {@link module:image/imagestyle~ImageStyle} plugin that should be provided
+ * while creating the editor instance.
  *
- * A detailed information about the default configuration and customization can be found in the
+ * A detailed information about the default configuration and customization can be found in
  * {@link module:image/image~ImageConfig#styles `ImageConfig#styles`}.
  *
  * @interface ImageStyleConfig
  */
 
 /**
- * @member {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} module:image/imagestyle~ImageStyleConfig#arrangements
  * A list of the image style arrangements.
- */
-
-/**
- * @member {Array.<module:image/imagestyle~ImageStyleGroupDefinition>} module:image/imagestyle~ImageStyleConfig#groups
- * A list of the image style groups.
- */
-
-/**
- * @member {module:image/imagestyle~ImageStyleConfig} module:image/image~ImageConfig#styles
  *
- * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the image arrangements and groups
- * to work properly. It provides a default configuration, which can be customized while creating the editor instance.
+ * @member {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} module:image/imagestyle~ImageStyleConfig#arrangements
+ */
+
+/**
+ * A list of the image style groups.
+ *
+ * @member {Array.<module:image/imagestyle~ImageStyleGroupDefinition>} module:image/imagestyle~ImageStyleConfig#groups
+ */
+
+/**
+ * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the image
+ * {@link module:image/imagestyle~ImageStyleConfig#arrangements} and {@link module:image/imagestyle~ImageStyleConfig#groups}
+ * to work properly. It provides the default configuration (listed below), which can be customized while creating the editor instance.
  *
  * The feature creates the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `imageStyle`}
- * command based on defined arrangements, so you can change the arrangement of a selected image by executing the following command:
+ * command based on defined {@link module:image/imagestyle~ImageStyleConfig#arrangements}, so you can change the arrangement of a
+ * selected image by executing the following command:
  *
  *		editor.execute( 'imageStyle' { value: 'alignLeft' } );
  *
- * The feature also creates buttons that execute the commands. So, assuming that you use the
+ * The feature also creates buttons that execute the command with different values. Assuming that you use the
  * default image arrangements setting, you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
  * (or any other toolbar) to contain these options:
  *
@@ -89,20 +92,20 @@ export default class ImageStyle extends Plugin {
  *				}
  *			} );
  *
- * Each of the drop-downs added to the toolbar will be displayed as the split button. The arrangement applied on click will be the one
- * specified in the {@link module:image/imagestyle~ImageStyleGroupDefinition#defaultItem `defaultItem`} property.
+ * Each of the drop-downs added to the toolbar will be displayed as the split button. The arrangement applied on click will correspond to
+ * the one specified in the {@link module:image/imagestyle~ImageStyleGroupDefinition#defaultItem `defaultItem`} property.
  *
  * Read more about styling images in the {@glink features/image#image-styles Image styles guide}.
  *
  * # **Default configuration**
  *
- * If custom configuration is not provided, the default configuration will be used depending on the loaded
+ * If the custom configuration is not provided, the default configuration will be used depending on the loaded
  * image editing plugins.
  *
  * * If both {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} and
  * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugins are loaded
- * (which is usually the default editor configuration),
- * the following arrangements and groups will be available for the toolbar configuration:
+ * (which is usually the default editor configuration), the following arrangements and groups will be available for the toolbar
+ * configuration:
  *
  *		const imageDefaultConfig = {
  *			styles: {
@@ -152,11 +155,11 @@ export default class ImageStyle extends Plugin {
  *				}
  *			} );
  *
- * 	**Note**: Custom arrangements will override the arrangements array only,
- * 	the groups will stay as in the default configuration. The same goes for applying the custom groups.
+ * **Note**: Custom arrangements will override the arrangements array only, the groups will stay as in the default configuration.
+ * The same goes for applying the custom groups.
  *
- * 	**Note**: Every {@link module:image/imagestyle~ImageStyleGroupDefinition#items item} in the referenced groups
- * 	must be listed in the provided arrangements.
+ * **Note**: Every {@link module:image/imagestyle~ImageStyleGroupDefinition#items item} in the referenced groups
+ * must be listed in the provided arrangements.
  *
  * * Each of the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} can be customized,
  * e.g. to change the `icon`, `title` or CSS `className` of the arrangement. The feature also provides several
@@ -176,8 +179,7 @@ export default class ImageStyle extends Plugin {
  *						icon: 'right'
  *					},
  *
- *					// This will customize the icon, title
- *					// and CSS class of the default "side" style.
+ *					// This will customize the icon, title and CSS class of the default "side" style.
  *					{
  *						name: 'side',
  *						icon: customIcon,
@@ -216,12 +218,15 @@ export default class ImageStyle extends Plugin {
  *		} );
  *
  * * If none of the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} or
- * 	{@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} works for the integration,
- * 	it is possible to define independent custom styles, too.
+ * {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} works for the integration,
+ * it is possible to define independent custom styles, too.
  *
- * 	See the documentation about the image
- * 	{@link module:image/imagestyle~ImageStyleArrangementDefinition arrangements} and
- * 	{@link module:image/imagestyle~ImageStyleGroupDefinition groups} to define the custom image style configuration properly.
+ * See the documentation about the image
+ *
+ * * {@link module:image/imagestyle~ImageStyleArrangementDefinition arrangements} and
+ * * {@link module:image/imagestyle~ImageStyleGroupDefinition groups}
+ *
+ * to define the custom image style configuration properly.
  *
  *		import redIcon from 'red-icon.svg';
  *		import blueIcon from 'blue-icon.svg';
@@ -263,14 +268,15 @@ export default class ImageStyle extends Plugin {
  *				]
  *			}
  *		} );
+ *
+ * @member {module:image/imagestyle~ImageStyleConfig} module:image/image~ImageConfig#styles
  */
 
 /**
- * @typedef {Object} module:image/imagestyle~ImageStyleArrangementDefinition
- *
  * The image arrangement definition descriptor.
  *
  * This definition should be implemented in the `Image` plugin {@link module:image/image~ImageConfig#styles configuration} for:
+ *
  * * customizing one of the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} by providing the proper name
  * of the default arrangement and the properties that should be overridden,
  * * or defining a completely custom arrangement by providing a custom name and implementing the following properties.
@@ -285,8 +291,7 @@ export default class ImageStyle extends Plugin {
  *			modelElements: [ 'image', 'imageInline' ]
  *		}
  *
- * The arrangement will be registered
- * as the button under the name `'imageStyle:{name}'` in the
+ * The arrangement will be registered as the button under the name `'imageStyle:{name}'` in the
  * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
  * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin).
  *
@@ -339,18 +344,17 @@ export default class ImageStyle extends Plugin {
  *
  * If this property is not defined, its value is inherited
  * from the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangement} addressed in the name property.
+ *
+ * @typedef {Object} module:image/imagestyle~ImageStyleArrangementDefinition
  */
 
 /**
- * @typedef {Object} module:image/imagestyle~ImageStyleGroupDefinition
- *
  * The image group definition descriptor.
  *
  * This definition should be implemented in the `Image` plugin {@link module:image/image~ImageConfig#styles configuration} for:
  * * customizing one of the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} by providing the proper name
  * of the default group and the properties to be overridden,
  * * or defining a completely custom group by providing a custom name and implementing all of the following properties.
- *
  *
  *		const imageStyleGroupDefinition = {
  *			name: 'wrapText',
@@ -389,4 +393,6 @@ export default class ImageStyle extends Plugin {
  *
  * If this property is not defined, its value is inherited
  * from the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default group} addressed in the name property.
+ *
+ * @typedef {Object} module:image/imagestyle~ImageStyleGroupDefinition
  */
