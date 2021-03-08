@@ -13,6 +13,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^26.0.0",
     "@ckeditor/ckeditor5-engine": "^26.0.0",
+    "@ckeditor/ckeditor5-enter": "^26.0.0",
     "@ckeditor/ckeditor5-ui": "^26.0.0",
     "@ckeditor/ckeditor5-utils": "^26.0.0",
     "@ckeditor/ckeditor5-typing": "^26.0.0",
@@ -24,7 +25,6 @@
     "@ckeditor/ckeditor5-clipboard": "^26.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "^26.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^26.0.0",
-    "@ckeditor/ckeditor5-enter": "^26.0.0",
     "@ckeditor/ckeditor5-essentials": "^26.0.0",
     "@ckeditor/ckeditor5-heading": "^26.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^26.0.0",
