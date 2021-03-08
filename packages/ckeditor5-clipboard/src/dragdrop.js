@@ -29,77 +29,77 @@ import '../theme/clipboard.css';
 //                ┌──────────────────┐
 //                │     mousedown    │   Setting draggable attribute.
 //                └─────────┬────────┘
-//							│
-//							└─────────────────────┐
-//			                │			          │
-//			                │           ┌─────────V────────┐
-//				            │          	│	   mouseup     │   Dragging not started so removing draggable attribute.
+//                          │
+//                          └─────────────────────┐
+//                          │                     │
+//                          │           ┌─────────V────────┐
+//                          │           │      mouseup     │   Dragging not started so removing draggable attribute.
 //                          │           └──────────────────┘
-//							│
-// 				  ┌─────────V────────┐   Retrieves the selected model.DocumentFragment
-// 				  │     dragstart    │   and converts it to view.DocumentFragment.
-// 				  └─────────┬────────┘
-//							│
-// 				  ┌─────────V────────┐   Processes view.DocumentFragment to text/html and text/plain
-// 				  │  clipboardOutput │   and stores results in data.dataTransfer.
-// 				  └─────────┬────────┘
-//							│
-//							│   DOM dragover
-//							┌────────────┐
-//							│			 │
-// 				  ┌─────────V────────┐   │
-// 				  │     dragging     │   │   Updates drop target marker.
-// 				  └─────────┬────────┘	 │
+//                          │
+//                ┌─────────V────────┐   Retrieves the selected model.DocumentFragment
+//                │     dragstart    │   and converts it to view.DocumentFragment.
+//                └─────────┬────────┘
+//                          │
+//                ┌─────────V────────┐   Processes view.DocumentFragment to text/html and text/plain
+//                │  clipboardOutput │   and stores results in data.dataTransfer.
+//                └─────────┬────────┘
+//                          │
+//                          │   DOM dragover
+//                          ┌────────────┐
 //                          │            │
-//			  ┌─────────────└────────────┘
-//			  │				│            │
-// 			  │	  ┌─────────V────────┐   │
-// 			  │	  │     dragleave    │   │   Removes drop target marker.
-// 			  │	  └─────────┬────────┘	 │
+//                ┌─────────V────────┐   │
+//                │     dragging     │   │   Updates drop target marker.
+//                └─────────┬────────┘   │
+//                          │            │
+//            ┌─────────────└────────────┘
+//            │             │            │
+//            │   ┌─────────V────────┐   │
+//            │   │     dragleave    │   │   Removes drop target marker.
+//            │   └─────────┬────────┘   │
 //            │             │            │
 //        ┌───│─────────────┘            │
 //        │   │             │            │
-// 		  │	  │	  ┌─────────V────────┐   │
-// 		  │	  │	  │     dragenter    │   │   Focuses the editor view.
-// 		  │	  │	  └─────────┬────────┘	 │
+//        │   │   ┌─────────V────────┐   │
+//        │   │   │     dragenter    │   │   Focuses the editor view.
+//        │   │   └─────────┬────────┘   │
 //        │   │             │            │
-//		  │	  │				└────────────┘
-//		  │	  │
-//		  │	  └─────────────┐
-//		  │	  │				│
-// 		  │   │	  ┌─────────V────────┐
-// 		  └───┐	  │       drop       │   ( Default of clipboard pipeline ).
-// 			  │	  └─────────┬────────┘
-//			  │				│
-// 			  │	  ┌─────────V────────┐   Resolves final data.targetRanges.
-// 			  │	  │  clipboardInput  │	 Aborts if dropping on dragged content.
-// 			  │	  └─────────┬────────┘
-//			  │				│
-// 			  │	  ┌─────────V────────┐
-// 			  │	  │  clipboardInput  │   ( Default of clipboard pipeline ).
-// 			  │	  └─────────┬────────┘
-//			  │				│
+//        │   │             └────────────┘
+//        │   │
+//        │   └─────────────┐
+//        │   │             │
+//        │   │   ┌─────────V────────┐
+//        └───┐   │       drop       │   ( Default of clipboard pipeline ).
+//            │   └─────────┬────────┘
+//            │             │
+//            │   ┌─────────V────────┐   Resolves final data.targetRanges.
+//            │   │  clipboardInput  │   Aborts if dropping on dragged content.
+//            │   └─────────┬────────┘
+//            │             │
+//            │   ┌─────────V────────┐
+//            │   │  clipboardInput  │   ( Default of clipboard pipeline ).
+//            │   └─────────┬────────┘
+//            │             │
 //            │ ┌───────────V───────────┐
 //            │ │  inputTransformation  │   ( Default of clipboard pipeline ).
 //            │ └───────────┬───────────┘
-//			  │				│
+//            │             │
 //            │  ┌──────────V──────────┐
 //            │  │   contentInsertion  │   Updates the document selection to drop range.
 //            │  └──────────┬──────────┘
-//			  │				│
+//            │             │
 //            │  ┌──────────V──────────┐
 //            │  │   contentInsertion  │   ( Default of clipboard pipeline ).
 //            │  └──────────┬──────────┘
-//			  │				│
+//            │             │
 //            │  ┌──────────V──────────┐
 //            │  │   contentInsertion  │   Removes content from original range if insertion succeeded.
 //            │  └──────────┬──────────┘
-//			  │			    │
-//			  └─────────────┐
-//						    │
-// 			   	  ┌─────────V────────┐
-// 			   	  │      dragend     │   Removes drop marker and cleans state.
-// 			   	  └──────────────────┘
+//            │             │
+//            └─────────────┐
+//                          │
+//                ┌─────────V────────┐
+//                │      dragend     │   Removes drop marker and cleans state.
+//                └──────────────────┘
 //
 
 /**
