@@ -211,7 +211,8 @@ export default class DragDrop extends Plugin {
 	 */
 	_setupDragging() {
 		const editor = this.editor;
-		const modelDocument = editor.model.document;
+		const model = editor.model;
+		const modelDocument = model.document;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
@@ -222,17 +223,9 @@ export default class DragDrop extends Plugin {
 			}
 
 			const selection = modelDocument.selection;
-			const domConverter = editor.editing.view.domConverter;
-
-			// Don't start dragging if nothing is selected.
-			if ( selection.isCollapsed ) {
-				data.preventDefault();
-
-				return;
-			}
 
 			// Don't drag the editable element itself.
-			if ( data.domTarget.nodeType == 1 && domConverter.mapDomToView( data.domTarget ).is( 'rootElement' ) ) {
+			if ( data.target && data.target.is( 'rootElement' ) ) {
 				data.preventDefault();
 
 				return;
@@ -242,14 +235,37 @@ export default class DragDrop extends Plugin {
 			//  selection outline, WTA buttons, etc.
 			// data.dataTransfer._native.setDragImage( data.domTarget, 0, 0 );
 
-			// Store original selection range for later removing moved content.
-			this._draggedRange = LiveRange.fromRange( modelDocument.selection.getFirstRange() );
+			// Check if this is dragstart over the widget (but not nested editable).
+			const draggableWidget = data.target ? findDraggableWidget( data.target ) : null;
+
+			if ( draggableWidget ) {
+				const modelElement = editor.editing.mapper.toModelElement( draggableWidget );
+
+				this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
+			}
+
+			// If this was not a widget so we should check if we need to drag some text content.
+			else if ( !viewDocument.selection.isCollapsed ) {
+				const selectedElement = viewDocument.selection.getSelectedElement();
+
+				if ( !selectedElement || !isWidget( selectedElement ) ) {
+					this._draggedRange = LiveRange.fromRange( selection.getFirstRange() );
+				}
+			}
+
+			if ( !this._draggedRange ) {
+				data.preventDefault();
+
+				return;
+			}
+
 			this._draggingUid = uid();
 
 			data.dataTransfer.effectAllowed = 'copyMove';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
-			const content = editor.data.toView( editor.model.getSelectedContent( modelDocument.selection ) );
+			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
+			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
 
 			viewDocument.fire( 'clipboardOutput', { dataTransfer: data.dataTransfer, content, method: evt.name } );
 		}, { priority: 'low' } );
