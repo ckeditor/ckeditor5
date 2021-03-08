@@ -24,6 +24,84 @@ import { throttle } from 'lodash-es';
 
 import '../theme/clipboard.css';
 
+// Drag and Drop events overview:
+//
+//                ┌──────────────────┐
+//                │     mousedown    │   Setting draggable attribute.
+//                └─────────┬────────┘
+//							│
+//							└─────────────────────┐
+//			                │			          │
+//			                │           ┌─────────V────────┐
+//				            │          	│	   mouseup     │   Dragging not started so removing draggable attribute.
+//                          │           └──────────────────┘
+//							│
+// 				  ┌─────────V────────┐   Retrieves the selected model.DocumentFragment
+// 				  │     dragstart    │   and converts it to view.DocumentFragment.
+// 				  └─────────┬────────┘
+//							│
+// 				  ┌─────────V────────┐   Processes view.DocumentFragment to text/html and text/plain
+// 				  │  clipboardOutput │   and stores results in data.dataTransfer.
+// 				  └─────────┬────────┘
+//							│
+//							│   DOM dragover
+//							┌────────────┐
+//							│			 │
+// 				  ┌─────────V────────┐   │
+// 				  │     dragging     │   │   Updates drop target marker.
+// 				  └─────────┬────────┘	 │
+//                          │            │
+//			  ┌─────────────└────────────┘
+//			  │				│            │
+// 			  │	  ┌─────────V────────┐   │
+// 			  │	  │     dragleave    │   │   Removes drop target marker.
+// 			  │	  └─────────┬────────┘	 │
+//            │             │            │
+//        ┌───│─────────────┘            │
+//        │   │             │            │
+// 		  │	  │	  ┌─────────V────────┐   │
+// 		  │	  │	  │     dragenter    │   │   Focuses the editor view.
+// 		  │	  │	  └─────────┬────────┘	 │
+//        │   │             │            │
+//		  │	  │				└────────────┘
+//		  │	  │
+//		  │	  └─────────────┐
+//		  │	  │				│
+// 		  │   │	  ┌─────────V────────┐
+// 		  └───┐	  │       drop       │   ( Default of clipboard pipeline ).
+// 			  │	  └─────────┬────────┘
+//			  │				│
+// 			  │	  ┌─────────V────────┐   Resolves final data.targetRanges.
+// 			  │	  │  clipboardInput  │	 Aborts if dropping on dragged content.
+// 			  │	  └─────────┬────────┘
+//			  │				│
+// 			  │	  ┌─────────V────────┐
+// 			  │	  │  clipboardInput  │   ( Default of clipboard pipeline ).
+// 			  │	  └─────────┬────────┘
+//			  │				│
+//            │ ┌───────────V───────────┐
+//            │ │  inputTransformation  │   ( Default of clipboard pipeline ).
+//            │ └───────────┬───────────┘
+//			  │				│
+//            │  ┌──────────V──────────┐
+//            │  │   contentInsertion  │   Updates the document selection to drop range.
+//            │  └──────────┬──────────┘
+//			  │				│
+//            │  ┌──────────V──────────┐
+//            │  │   contentInsertion  │   ( Default of clipboard pipeline ).
+//            │  └──────────┬──────────┘
+//			  │				│
+//            │  ┌──────────V──────────┐
+//            │  │   contentInsertion  │   Removes content from original range if insertion succeeded.
+//            │  └──────────┬──────────┘
+//			  │			    │
+//			  └─────────────┐
+//						    │
+// 			   	  ┌─────────V────────┐
+// 			   	  │      dragend     │   Removes drop marker and cleans state.
+// 			   	  └──────────────────┘
+//
+
 /**
  * The drag and drop feature. It works on top of {@link module:clipboard/clipboardpipeline~ClipboardPipeline}.
  *
@@ -133,7 +211,8 @@ export default class DragDrop extends Plugin {
 	 */
 	_setupDragging() {
 		const editor = this.editor;
-		const modelDocument = editor.model.document;
+		const model = editor.model;
+		const modelDocument = model.document;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
@@ -144,17 +223,9 @@ export default class DragDrop extends Plugin {
 			}
 
 			const selection = modelDocument.selection;
-			const domConverter = editor.editing.view.domConverter;
-
-			// Don't start dragging if nothing is selected.
-			if ( selection.isCollapsed ) {
-				data.preventDefault();
-
-				return;
-			}
 
 			// Don't drag the editable element itself.
-			if ( data.domTarget.nodeType == 1 && domConverter.mapDomToView( data.domTarget ).is( 'rootElement' ) ) {
+			if ( data.target && data.target.is( 'rootElement' ) ) {
 				data.preventDefault();
 
 				return;
@@ -164,14 +235,37 @@ export default class DragDrop extends Plugin {
 			//  selection outline, WTA buttons, etc.
 			// data.dataTransfer._native.setDragImage( data.domTarget, 0, 0 );
 
-			// Store original selection range for later removing moved content.
-			this._draggedRange = LiveRange.fromRange( modelDocument.selection.getFirstRange() );
+			// Check if this is dragstart over the widget (but not nested editable).
+			const draggableWidget = data.target ? findDraggableWidget( data.target ) : null;
+
+			if ( draggableWidget ) {
+				const modelElement = editor.editing.mapper.toModelElement( draggableWidget );
+
+				this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
+			}
+
+			// If this was not a widget so we should check if we need to drag some text content.
+			else if ( !viewDocument.selection.isCollapsed ) {
+				const selectedElement = viewDocument.selection.getSelectedElement();
+
+				if ( !selectedElement || !isWidget( selectedElement ) ) {
+					this._draggedRange = LiveRange.fromRange( selection.getFirstRange() );
+				}
+			}
+
+			if ( !this._draggedRange ) {
+				data.preventDefault();
+
+				return;
+			}
+
 			this._draggingUid = uid();
 
 			data.dataTransfer.effectAllowed = 'copyMove';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
-			const content = editor.data.toView( editor.model.getSelectedContent( modelDocument.selection ) );
+			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
+			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
 
 			viewDocument.fire( 'clipboardOutput', { dataTransfer: data.dataTransfer, content, method: evt.name } );
 		}, { priority: 'low' } );

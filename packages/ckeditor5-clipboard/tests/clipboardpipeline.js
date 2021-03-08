@@ -95,10 +95,10 @@ describe( 'ClipboardPipeline feature', () => {
 				const preventDefaultSpy = sinon.spy();
 
 				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
-					expect( data.modelFragment ).is.instanceOf( ModelDocumentFragment );
+					expect( data.content ).is.instanceOf( ModelDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyModel( data.modelFragment ) ).to.equal( '<paragraph>x</paragraph>' );
+					expect( stringifyModel( data.content ) ).to.equal( '<paragraph>x</paragraph>' );
 
 					done();
 				} );
@@ -155,10 +155,10 @@ describe( 'ClipboardPipeline feature', () => {
 				const preventDefaultSpy = sinon.spy();
 
 				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
-					expect( data.modelFragment ).is.instanceOf( ModelDocumentFragment );
+					expect( data.content ).is.instanceOf( ModelDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyModel( data.modelFragment ) ).to.equal( '<paragraph>x</paragraph><paragraph>y  z</paragraph>' );
+					expect( stringifyModel( data.content ) ).to.equal( '<paragraph>x</paragraph><paragraph>y  z</paragraph>' );
 
 					done();
 				} );
@@ -210,10 +210,10 @@ describe( 'ClipboardPipeline feature', () => {
 				} );
 
 				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
-					expect( data.modelFragment ).is.instanceOf( ModelDocumentFragment );
+					expect( data.content ).is.instanceOf( ModelDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyModel( data.modelFragment ) ).to.equal( '<paragraph>foo</paragraph>' );
+					expect( stringifyModel( data.content ) ).to.equal( '<paragraph>foo</paragraph>' );
 
 					done();
 				} );

@@ -55,7 +55,7 @@ export default class PastePlainText extends Plugin {
 		editor.plugins.get( ClipboardPipeline ).on( 'contentInsertion', ( evt, data ) => {
 			// Plain text can be determined based on event flag (#7799) or auto-detection (#1006). If detected,
 			// preserve selection attributes on pasted items.
-			if ( !shiftPressed && !isPlainTextFragment( data.modelFragment, model.schema ) ) {
+			if ( !shiftPressed && !isPlainTextFragment( data.content, model.schema ) ) {
 				return;
 			}
 
@@ -73,7 +73,7 @@ export default class PastePlainText extends Plugin {
 				// of a link.
 				textAttributes.push( ...selection.getAttributes() );
 
-				const range = writer.createRangeIn( data.modelFragment );
+				const range = writer.createRangeIn( data.content );
 
 				for ( const item of range.getItems() ) {
 					if ( item.is( '$textProxy' ) ) {

@@ -759,6 +759,58 @@ describe( 'Drag and Drop', () => {
 				);
 			} );
 
+			it( 'should start dragging the selected text fragment', () => {
+				setModelData( model,
+					'<paragraph>[foo]bar</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+				const spyClipboardOutput = sinon.spy();
+				const spyClipboardInput = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+				const viewNode = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+				const domNode = domConverter.findCorrespondingDomText( viewNode );
+
+				viewDocument.fire( 'mousedown', {
+					domTarget: domNode.parentNode,
+					target: viewNode.parent,
+					domEvent: {}
+				} );
+
+				viewDocument.fire( 'dragstart', {
+					domTarget: domNode,
+					target: null, // text node
+					domEvent: {},
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'foo' );
+
+				expect( spyClipboardOutput.called ).to.be.true;
+				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
+				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( 'foo' );
+
+				dataTransferMock.dropEffect = 'move';
+				const targetPosition = model.createPositionAt( root.getChild( 0 ), 4 );
+				fireDrop( dataTransferMock, targetPosition );
+
+				expect( spyClipboardInput.called ).to.be.true;
+				expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
+				expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+
+				fireDragEnd( dataTransferMock );
+				expectFinalized();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>bfoo[]ar</paragraph>'
+				);
+			} );
+
 			it( 'should start dragging by grabbing a widget nested element (but not nested editable)', () => {
 				setModelData( model,
 					'<paragraph>[]foobar</paragraph>' +
@@ -838,6 +890,41 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: editableDomNode,
 					target: editableElement,
+					domEvent: {}
+				};
+
+				viewDocument.fire( 'mousedown', {
+					...eventData
+				} );
+
+				viewDocument.fire( 'dragstart', {
+					...eventData,
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {},
+					preventDefault: () => {}
+				} );
+
+				expect( spyClipboardOutput.notCalled ).to.be.true;
+				expect( dataTransferMock.getData( 'text/html' ) ).to.be.undefined;
+			} );
+
+			it( 'should not start dragging a widget if it is not a target for an event (but it was selected)', () => {
+				setModelData( model,
+					'<paragraph>foobar</paragraph>' +
+					'[<horizontalLine></horizontalLine>]'
+				);
+
+				const dataTransferMock = createDataTransfer();
+				const spyClipboardOutput = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+
+				const targetElement = viewDocument.getRoot().getChild( 0 );
+				const targetDomNode = domConverter.mapViewToDom( targetElement );
+
+				const eventData = {
+					domTarget: targetDomNode,
+					target: targetElement,
 					domEvent: {}
 				};
 
@@ -1368,6 +1455,32 @@ describe( 'Drag and Drop', () => {
 				expectDraggingMarker( model.createRangeOn( root.getNodeByPath( [ 1, 0 ] ) ) );
 
 				env.isGecko = originalEnvGecko;
+			} );
+		} );
+
+		describe( 'drop', () => {
+			it( 'should update targetRanges', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<horizontalLine></horizontalLine>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+				const spyClipboardInput = sinon.spy();
+
+				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+				dataTransferMock.dropEffect = 'move';
+				const targetPosition = model.createPositionAt( root.getChild( 1 ), 0 );
+				fireDrop( dataTransferMock, targetPosition );
+
+				expect( spyClipboardInput.called ).to.be.true;
+
+				const data = spyClipboardInput.firstCall.firstArg;
+				expect( data.method ).to.equal( 'drop' );
+				expect( data.dataTransfer ).to.equal( dataTransferMock );
+				expect( data.targetRanges.length ).to.equal( 1 );
+				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
 			} );
 		} );
 	} );
