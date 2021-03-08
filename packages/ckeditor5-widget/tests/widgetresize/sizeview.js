@@ -18,29 +18,29 @@ describe( 'SizeView', () => {
 			sizeView.render();
 		} );
 
-		it( 'should have valid `activeHandlePosition` property and class if the widget width is smaller than 50px', () => {
+		it( 'should have valid `viewPosition` property and class if the widget width is smaller than 50px', () => {
 			state.activeHandlePosition = 'top-right';
 			state.update( {
 				handleHostWidth: 49,
 				handleHostHeight: 200
 			} );
 
-			expect( sizeView.activeHandlePosition ).to.equal( 'above-center' );
+			expect( sizeView.viewPosition ).to.equal( 'above-center' );
 			expect( sizeView.element.classList.contains( 'ck-orientation-above-center' ) ).to.be.true;
 		} );
 
-		it( 'should have the proper `activeHandlePosition` property and class if the widget height is smaller than 50px', () => {
+		it( 'should have valid `viewPosition` property and class if the widget height is smaller than 50px', () => {
 			state.activeHandlePosition = 'top-right';
 			state.update( {
 				handleHostWidth: 200,
 				handleHostHeight: 49
 			} );
 
-			expect( sizeView.activeHandlePosition ).to.equal( 'above-center' );
+			expect( sizeView.viewPosition ).to.equal( 'above-center' );
 			expect( sizeView.element.classList.contains( 'ck-orientation-above-center' ) ).to.be.true;
 		} );
 
-		it( 'should have the proper `activeHandlePosition` property and class if the widget width is bigger than 50px/50px', () => {
+		it( 'should have valid `viewPosition` property and class if the widget width is bigger than 50px/50px', () => {
 			const position = 'top-right';
 
 			state.activeHandlePosition = position;
@@ -49,7 +49,7 @@ describe( 'SizeView', () => {
 				handleHostHeight: 200
 			} );
 
-			expect( sizeView.activeHandlePosition ).to.equal( position );
+			expect( sizeView.viewPosition ).to.equal( position );
 			expect( sizeView.element.classList.contains( `ck-orientation-${ position }` ) ).to.be.true;
 		} );
 	} );

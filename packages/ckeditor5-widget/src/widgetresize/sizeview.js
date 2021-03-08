@@ -12,6 +12,14 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
  */
 export default class SizeView extends View {
 	constructor() {
+		/**
+		 * The position of the view defined based on the host size and active handle position.
+		 *
+		 * @private
+		 * @observable
+		 * @member {String} #viewPosition
+		 */
+
 		super();
 
 		const bind = this.bindTemplate;
@@ -22,7 +30,7 @@ export default class SizeView extends View {
 				class: [
 					'ck',
 					'ck-size-view',
-					bind.to( 'activeHandlePosition', value => value ? `ck-orientation-${ value }` : '' )
+					bind.to( 'viewPosition', value => value ? `ck-orientation-${ value }` : '' )
 				],
 				style: {
 					display: bind.if( 'isVisible', 'none', visible => !visible )
@@ -51,15 +59,12 @@ export default class SizeView extends View {
 			}
 		);
 
-		this.bind( 'activeHandlePosition' ).to(
-			resizerState,
+		this.bind( 'viewPosition' ).to(
+			resizerState, 'activeHandlePosition',
 			resizerState, 'proposedHandleHostWidth',
 			resizerState, 'proposedHandleHostHeight',
 			// If the image is too small to contain the size label, display the label above.
-			( position, width, height ) => {
-				const res = width < 50 || height < 50 ? 'above-center' : position;
-				return res;
-			}
+			( position, width, height ) => width < 50 || height < 50 ? 'above-center' : position
 		);
 	}
 
