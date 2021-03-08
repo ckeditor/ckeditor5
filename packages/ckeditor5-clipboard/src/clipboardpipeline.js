@@ -46,13 +46,13 @@ import viewToPlainText from './utils/viewtoplaintext.js';
  * 1. Converts {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} from `data.content` field to
  *    {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`},
  * 2. and fires {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`}
- *    event with model DocumentFragment in `data.modelFragment` event field.
+ *    event with model DocumentFragment in `data.content` event field.
  *    **Note**: The `ClipboardPipeline#contentInsertion` event is fired within a model change block to allow other handlers
  *    to run in the same block without post-fixers called in between (i.e., the selection post-fixer).
  *
  * ## Event: `ClipboardPipeline#contentInsertion`
  *
- * 1. Calls {@link module:engine/model/model~Model#insertContent `model.insertContent()`} to insert `data.modelFragment`
+ * 1. Calls {@link module:engine/model/model~Model#insertContent `model.insertContent()`} to insert `data.content`
  *    at the current selection position.
  *
  * # Output pipeline
