@@ -7,7 +7,6 @@
  * @module widget/widgetresize/resizer
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
@@ -16,6 +15,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import ResizeState from './resizerstate';
+import SizeView from './sizeview';
 
 /**
  * Represents a resizer for a single resizable object.
@@ -474,67 +474,6 @@ export default class Resizer {
 }
 
 mix( Resizer, ObservableMixin );
-
-/**
- * A view displaying the proposed new element size during the resizing.
- *
- * @extends {module:ui/view~View}
- */
-class SizeView extends View {
-	constructor() {
-		super();
-
-		const bind = this.bindTemplate;
-
-		this.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-size-view',
-					bind.to( 'activeHandlePosition', value => value ? `ck-orientation-${ value }` : '' )
-				],
-				style: {
-					display: bind.if( 'isVisible', 'none', visible => !visible )
-				}
-			},
-			children: [ {
-				text: bind.to( 'label' )
-			} ]
-		} );
-	}
-
-	bindToState( options, resizerState ) {
-		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
-			width !== null && height !== null );
-
-		this.bind( 'label' ).to(
-			resizerState, 'proposedHandleHostWidth',
-			resizerState, 'proposedHandleHostHeight',
-			resizerState, 'proposedWidthPercents',
-			( width, height, widthPercents ) => {
-				if ( options.unit === 'px' ) {
-					return `${ width }×${ height }`;
-				} else {
-					return `${ widthPercents }%`;
-				}
-			}
-		);
-
-		this.bind( 'activeHandlePosition' ).to(
-			resizerState,
-			resizerState, 'proposedHandleHostWidth',
-			resizerState, 'proposedHandleHostHeight',
-			// If the image is too small to contain the size label, display the label above.
-			( position, width, height ) => width > 50 && height > 50 ? position : 'above-center'
-		);
-	}
-
-	dismiss() {
-		this.unbind();
-		this.isVisible = false;
-	}
-}
 
 // @private
 // @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
