@@ -161,7 +161,7 @@ export default class ClipboardPipeline extends Plugin {
 			// without post-fixers called in between (i.e., the selection post-fixer).
 			model.change( () => {
 				this.fire( 'contentInsertion', {
-					modelFragment,
+					content: modelFragment,
 					method: data.method,
 					dataTransfer: data.dataTransfer,
 					targetRanges: data.targetRanges
@@ -170,7 +170,7 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'low' } );
 
 		this.listenTo( this, 'contentInsertion', ( evt, data ) => {
-			data.resultRange = model.insertContent( data.modelFragment );
+			data.resultRange = model.insertContent( data.content );
 		}, { priority: 'low' } );
 	}
 
@@ -242,7 +242,7 @@ export default class ClipboardPipeline extends Plugin {
  */
 
 /**
- * Fired with a `modelFragment`, `dataTransfer`, `method` and `targetRanges` properties. The `modelFragment` which comes from the clipboard
+ * Fired with a `content`, `dataTransfer`, `method` and `targetRanges` properties. The `content` which comes from the clipboard
  * (was pasted or dropped) should be processed in order to be inserted into the editor. The `dataTransfer` object is available
  * in case the transformation functions need access to raw clipboard data. The `method` indicates the original DOM event
  * (for example 'drop', 'paste') and the `targetRanges` is an array of view ranges (it is available only for 'drop').
@@ -258,7 +258,7 @@ export default class ClipboardPipeline extends Plugin {
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
  * @event module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion
  * @param {Object} data Event data.
- * @param {module:engine/model/documentfragment~DocumentFragment} data.modelFragment Event data. Content to be inserted into the editor.
+ * @param {module:engine/model/documentfragment~DocumentFragment} data.content Event data. Content to be inserted into the editor.
  * Read more about the clipboard pipelines in {@glink framework/guides/deep-dive/clipboard "Clipboard" deep dive}.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
