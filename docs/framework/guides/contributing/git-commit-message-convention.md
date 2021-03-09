@@ -89,14 +89,14 @@ Type: Message 1.
 Type: Message 2.
 ```
 
-An example of invalid commit messages with incorrectly separated lines (the second line will just be treated as a part of the first line):
+An example of invalid commit message with incorrectly separated lines (the second line will just be treated as a part of the first line):
 
 ```
 Type: Message 1.
 Type: Message 2.
 ```
 
-An example of invalid comment message a wrong section order (the "internal" message will be treated as a part of the BREAKING CHANGE message):
+An example of invalid comment message with a wrong section order (the "internal" message will be treated as a part of the BREAKING CHANGE message):
 
 ```
 Public: Message 1.
