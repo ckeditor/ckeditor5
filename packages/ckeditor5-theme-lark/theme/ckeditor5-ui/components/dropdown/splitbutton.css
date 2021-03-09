@@ -14,7 +14,8 @@
 	/*
 	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
 	 */
-	& > .ck-splitbutton__action {
+	&:hover > .ck-splitbutton__action,
+	&.ck-splitbutton_open > .ck-splitbutton__action {
 		@nest [dir="ltr"] & {
 			/* Don't round the action button on the right side */
 			border-top-right-radius: unset;
@@ -35,10 +36,8 @@
 
 		@nest [dir="ltr"] & {
 			/* Don't round the arrow button on the left side */
-			@mixin ck-rounded-corners {
-				border-top-left-radius: unset;
-				border-bottom-left-radius: unset;
-			}
+			border-top-left-radius: unset;
+			border-bottom-left-radius: unset;
 		}
 
 		@nest [dir="rtl"] & {
@@ -62,15 +61,25 @@
 			background: var(--ck-color-split-button-hover-background);
 		}
 
+		/* Splitbutton separator needs to be set with the ::after pseudoselector
+		to display properly the borders on focus */
+		& > .ck-splitbutton__arrow:not(.ck-disabled)::after {
+			content: '';
+			position: absolute;
+			width: 1px;
+			height: 100%;
+			background-color: var(--ck-color-split-button-hover-border);
+		}
+
 		@nest [dir="ltr"] & {
-			& > .ck-splitbutton__arrow:not(.ck-disabled) {
-				border-left-color: var(--ck-color-split-button-hover-border);
+			& > .ck-splitbutton__arrow:not(.ck-disabled)::after {
+				left: -1px;
 			}
 		}
 
 		@nest [dir="rtl"] & {
-			& > .ck-splitbutton__arrow:not(.ck-disabled) {
-				border-right-color: var(--ck-color-split-button-hover-border);
+			& > .ck-splitbutton__arrow:not(.ck-disabled)::after {
+				right: -1px;
 			}
 		}
 	}

@@ -8,7 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { priorities } from 'ckeditor5/src/utils';
+import { Enter } from 'ckeditor5/src/enter';
+import { Delete } from 'ckeditor5/src/typing';
 
 import BlockQuoteCommand from './blockquotecommand';
 
@@ -25,6 +26,13 @@ export default class BlockQuoteEditing extends Plugin {
 	 */
 	static get pluginName() {
 		return 'BlockQuoteEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Enter, Delete ];
 	}
 
 	/**
@@ -110,8 +118,6 @@ export default class BlockQuoteEditing extends Plugin {
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
-		//
-		// Priority normal - 10 to override default handler but not list's feature listener.
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
 			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
@@ -126,12 +132,10 @@ export default class BlockQuoteEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: priorities.normal - 10 } );
+		}, { context: 'blockquote' } );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed in first empty block inside a quote, break the quote.
-		//
-		// Priority high + 5 to override widget's feature listener but not list's feature listener.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			if ( data.direction != 'backward' || !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
@@ -146,6 +150,6 @@ export default class BlockQuoteEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: priorities.high + 5 } );
+		}, { context: 'blockquote' } );
 	}
 }

@@ -1,77 +1,48 @@
+/* eslint-disable no-undef */
 /**
  * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import utils from '../../src/imagestyle/utils';
 
 describe( 'ImageStyleCommand', () => {
-	const defaultStyle = { name: 'defaultStyle', title: 'foo bar', icon: 'icon-1', isDefault: true };
-	const otherStyle = { name: 'otherStyle', title: 'baz', icon: 'icon-2', className: 'other-class-name' };
+	const {
+		inline: defaultInline,
+		full: defaultBlock,
+		alignLeft: anyImage,
+		inline: onlyInline,
+		alignCenter: onlyBlock
+	} = utils.DEFAULT_ARRANGEMENTS;
 
-	let model, command;
+	let editor, model, command, editorElement;
 
-	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				model = newEditor.model;
-				command = new ImageStyleCommand( newEditor, [ defaultStyle, otherStyle ] );
+	beforeEach( async () => {
+		editorElement = document.createElement( 'div' );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+		document.body.appendChild( editorElement );
 
-				model.schema.register( 'image', {
-					isObject: true,
-					isBlock: true,
-					allowWhere: '$block',
-					allowAttributes: 'imageStyle'
-				} );
-			} );
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ ArticlePluginSet ],
+			image: {
+				styles: {
+					arrangements: [ 'full', 'inline', 'alignLeft', 'alignCenter' ],
+					groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
+				},
+				toolbar: [ 'imageStyle:full' ]
+			}
+		} );
+
+		model = editor.model;
+		command = editor.commands.get( 'imageStyle' );
 	} );
 
-	it( 'should have defaultStyle property correctly set', () => {
-		expect( command.defaultStyle ).to.equal( 'defaultStyle' );
-	} );
-
-	it( 'command value should be false if no image is selected', () => {
-		setData( model, '<p>[]</p><image></image>' );
-
-		expect( command.value ).to.be.false;
-	} );
-
-	it( 'should match default style if no imageStyle attribute is present', () => {
-		setData( model, '[<image></image>]' );
-
-		expect( command.value ).to.equal( 'defaultStyle' );
-	} );
-
-	it( 'proper command should have true value when imageStyle attribute is present', () => {
-		setData( model, '[<image imageStyle="otherStyle"></image>]' );
-
-		expect( command.value ).to.equal( 'otherStyle' );
-	} );
-
-	it( 'should have false value if style does not match', () => {
-		setData( model, '[<image imageStyle="foo"></image>]' );
-
-		expect( command.value ).to.be.false;
-	} );
-
-	it( 'should set proper value when executed', () => {
-		setData( model, '[<image></image>]' );
-
-		command.execute( { value: 'otherStyle' } );
-
-		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
-	} );
-
-	it( 'should do nothing when attribute already present', () => {
-		setData( model, '[<image imageStyle="otherStyle"></image>]' );
-
-		command.execute( { value: 'otherStyle' } );
-
-		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
+	afterEach( async () => {
+		editorElement.remove();
+		return editor.destroy();
 	} );
 
 	it( 'should use parent batch', () => {
@@ -80,42 +51,343 @@ describe( 'ImageStyleCommand', () => {
 		model.change( writer => {
 			expect( writer.batch.operations ).to.length( 0 );
 
-			command.execute( { value: 'otherStyle' } );
+			command.execute( { value: anyImage.name } );
 
 			expect( writer.batch.operations ).to.length.above( 0 );
 		} );
 	} );
 
-	it( 'should be enabled on image element', () => {
-		setData( model, '[<image></image>]' );
+	describe( 'constructor()', () => {
+		it( 'should set default arrangement names properly if both of them are defined in the config', () => {
+			expect( command._defaultArrangements ).to.deep.equal( {
+				image: defaultBlock.name,
+				imageInline: defaultInline.name
+			} );
+		} );
 
-		expect( command.isEnabled ).to.be.true;
+		it( 'should set default arrangements names properly if one of them is missing in the config', async () => {
+			const customElement = document.createElement( 'div' );
+
+			document.body.appendChild( customElement );
+
+			const customEditor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ ArticlePluginSet ],
+				image: {
+					styles: {
+						arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+						groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
+					},
+					toolbar: [ 'imageStyle:full' ]
+				}
+			} );
+
+			const customCommand = customEditor.commands.get( 'imageStyle' );
+
+			expect( customCommand._defaultArrangements ).to.deep.equal( {
+				image: defaultBlock.name,
+				imageInline: false
+			} );
+
+			customElement.remove();
+			await customEditor.destroy();
+		} );
+
+		it( 'should set the supported arrangements properly', () => {
+			expect( command._arrangements ).to.deep.equal( new Map( [
+				[ onlyBlock.name, onlyBlock ],
+				[ onlyInline.name, onlyInline ],
+				[ anyImage.name, anyImage ],
+				[ defaultInline.name, defaultInline ],
+				[ defaultBlock.name, defaultBlock ]
+			] ) );
+		} );
 	} );
 
-	it( 'should be disabled when not placed on image', () => {
-		setData( model, '[<p></p>]' );
+	describe( 'value', () => {
+		it( 'should be false if no element is selected', () => {
+			setData( model, '<paragraph>[]</paragraph><image></image>' );
 
-		expect( command.isEnabled ).to.be.false;
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'should be false if no image is selected', () => {
+			setData( model, '[<media></media>]' );
+
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'should match the imageStyle attribute if a block image is selected', () => {
+			setData( model, `[<image imageStyle="${ anyImage.name }"></image>]` );
+
+			expect( command.value ).to.equal( anyImage.name );
+		} );
+
+		describe( 'when an inline image is selected', () => {
+			it( 'should match the imageStyle attribute if it is present', () => {
+				setData( model, `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
+
+				expect( command.value ).to.equal( anyImage.name );
+			} );
+
+			it( 'should match the proper default arrangement if the imageStyle attribute is not present', () => {
+				setData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+
+				expect( command.value ).to.equal( defaultInline.name );
+			} );
+
+			it( 'should be false if the imageStyle attribute is not present and no default arrangement is provided', async () => {
+				const customElement = document.createElement( 'div' );
+
+				document.body.appendChild( customElement );
+
+				const customEditor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ ArticlePluginSet ],
+					image: {
+						styles: {
+							arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+							groups: []
+						},
+						toolbar: [ 'imageStyle:full' ]
+					}
+				} );
+
+				const currentCommand = customEditor.commands.get( 'imageStyle' );
+
+				setData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+				expect( currentCommand.value ).to.equal( false );
+
+				customElement.remove();
+				await customEditor.destroy();
+			} );
+		} );
+
+		describe( 'when a block image is selected', () => {
+			it( 'should match the imageStyle attribute if it is present', () => {
+				setData( model, `[<image imageStyle="${ anyImage.name }"></image>]` );
+
+				expect( command.value ).to.equal( anyImage.name );
+			} );
+
+			it( 'should match the proper default arrangement if the imageStyle attribute is not present', () => {
+				setData( model, '[<image></image>]' );
+
+				expect( command.value ).to.equal( defaultBlock.name );
+			} );
+
+			it( 'should be false if the imageStyle attribute is not present and no default arrangement is provided', async () => {
+				const customElement = document.createElement( 'div' );
+
+				document.body.appendChild( customElement );
+
+				const customEditor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ ArticlePluginSet ],
+					image: {
+						styles: {
+							arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+							groups: []
+						},
+						toolbar: [ 'imageStyle:full' ]
+					}
+				} );
+
+				const currentCommand = customEditor.commands.get( 'imageStyle' );
+
+				setData( model, '[<image></image>]' );
+				expect( currentCommand.value ).to.equal( false );
+
+				customElement.remove();
+				await customEditor.destroy();
+			} );
+		} );
 	} );
 
-	it( 'should be disabled when not placed directly on image', () => {
-		setData( model, '[<p></p><image></image>]' );
+	describe( 'isEnabled', () => {
+		it( 'should be enabled if an inline image is selected', () => {
+			setData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
-		expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be enabled if a block image is selected', () => {
+			setData( model, '[<image></image>]' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be disabled if no image is selected', () => {
+			setData( model, '[<paragraph></paragraph>]' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be disabled if selection is not directly on the block image', () => {
+			setData( model, '[<paragraph></paragraph><image></image>]' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be disabled if selection is not directly on the inline image', () => {
+			setData( model, '[<paragraph></paragraph><paragraph><imageInline></imageInline></paragraph>]' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
-	it( 'default style should be active after executing it after another style', () => {
-		setData( model, '[<image></image>]' );
+	describe( 'execute()', () => {
+		describe( 'converting image type', () => {
+			describe( 'when an inline image is selected', () => {
+				it( 'should change the image type if the requested type is other than imageInline', () => {
+					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+					command.execute( { value: onlyBlock.name } );
 
-		expect( command.value ).to.equal( 'defaultStyle' );
+					expect( getData( model ) )
+						.to.equal( '[<image imageStyle="alignCenter" src="assets/sample.png"></image>]' );
+				} );
 
-		command.execute( { value: 'otherStyle' } );
+				it( 'should not change the image type if the requested type equals imageInline', () => {
+					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+					command.execute( { value: defaultInline.name } );
 
-		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
+					expect( getData( model ) )
+						.to.equal( '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+				} );
 
-		command.execute( { value: 'defaultStyle' } );
+				it( 'should not change the image type if the requested type is not specified', () => {
+					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+					command.execute( { value: anyImage.name } );
 
-		expect( getData( model ) ).to.equal( '[<image></image>]' );
-		expect( command.value ).to.equal( 'defaultStyle' );
+					expect( getData( model ) ).to.equal(
+						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="assets/sample.png"></imageInline>]</paragraph>`
+					);
+				} );
+			} );
+
+			describe( 'when a block image is selected', () => {
+				it( 'should change the image type if the requested type is other than imageBlock', () => {
+					setData( model, '[<image src="assets/sample.png"></image>]' );
+					command.execute( { value: onlyInline.name } );
+
+					expect( getData( model ) )
+						.to.equal( '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+				} );
+
+				it( 'should not change the image type if the requested type equals imageBlock', () => {
+					setData( model, '[<image src="assets/sample.png"><caption></caption></image>]' );
+					command.execute( { value: onlyBlock.name } );
+
+					expect( getData( model ) )
+						.to.equal( `[<image imageStyle="${ onlyBlock.name }" src="assets/sample.png"><caption></caption></image>]` );
+				} );
+
+				it( 'should not change the image type if the requested type is not specified', () => {
+					setData( model, '[<image src="assets/sample.png"><caption></caption></image>]' );
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `[<image imageStyle="${ anyImage.name }" src="assets/sample.png"><caption></caption></image>]` );
+				} );
+			} );
+		} );
+
+		describe( 'converting image arrangement', () => {
+			describe( 'when an inline image is selected', () => {
+				it( 'should remove the imageStyle attribute if the requested arrangement is set as default', () => {
+					setData( model, `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
+					command.execute( { value: defaultInline.name } );
+
+					expect( getData( model ) )
+						.to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+				} );
+
+				it( 'should set properly the imageStyle attribute if it is present', () => {
+					setData( model, `<paragraph>[<imageInline imageStyle="${ onlyInline.name }"></imageInline>]</paragraph>` );
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
+				} );
+
+				it( 'should set properly the imageStyle attribute if it is not present', () => {
+					setData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
+				} );
+
+				it( 'should do nothing if requested attribute is already present', () => {
+					setData( model, `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
+				} );
+
+				it( 'should set default style if executing it after another style', () => {
+					setData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+
+					expect( command.value ).to.equal( defaultInline.name );
+
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
+
+					command.execute( { value: defaultInline.name } );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+					expect( command.value ).to.equal( defaultInline.name );
+				} );
+			} );
+
+			describe( 'when a block image is selected', () => {
+				it( 'should remove the imageStyle attribute if the requested arrangement is set as default', () => {
+					setData( model, `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+					command.execute( { value: defaultBlock.name } );
+
+					expect( getData( model ) )
+						.to.equal( '[<image><caption></caption></image>]' );
+				} );
+
+				it( 'should set properly the imageStyle attribute if it is present', () => {
+					setData( model, `[<image imageStyle="${ onlyBlock.name }"><caption></caption></image>]` );
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+				} );
+
+				it( 'should set properly the imageStyle attribute if it is not present', () => {
+					setData( model, '[<image><caption></caption></image>]' );
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+				} );
+
+				it( 'should do nothing if requested attribute is already present', () => {
+					setData( model, `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) )
+						.to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+				} );
+
+				it( 'should set default style if executing it after another style', () => {
+					setData( model, '[<image><caption></caption></image>]' );
+
+					expect( command.value ).to.equal( defaultBlock.name );
+
+					command.execute( { value: anyImage.name } );
+
+					expect( getData( model ) ).to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+
+					command.execute( { value: defaultBlock.name } );
+
+					expect( getData( model ) ).to.equal( '[<image><caption></caption></image>]' );
+					expect( command.value ).to.equal( defaultBlock.name );
+				} );
+			} );
+		} );
 	} );
 } );
