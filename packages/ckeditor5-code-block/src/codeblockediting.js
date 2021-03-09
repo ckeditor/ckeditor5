@@ -226,7 +226,7 @@ export default class CodeBlockEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		} );
+		}, { context: 'pre' } );
 	}
 }
 

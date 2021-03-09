@@ -1175,7 +1175,7 @@ describe( 'Input feature - Android', () => {
 			}, { priority: 'lowest' } );
 
 			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
-			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+			viewDocument.fire( 'beforeinput', { keyCode: 229, domEvent: { inputType: 'insertText' } } );
 		} );
 
 		it( 'should remove contents and merge blocks', () => {
@@ -1186,11 +1186,11 @@ describe( 'Input feature - Android', () => {
 			}, { priority: 'lowest' } );
 
 			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
-			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+			viewDocument.fire( 'beforeinput', { keyCode: 229, domEvent: { inputType: 'insertText' } } );
 		} );
 
 		it( 'should do nothing if selection is collapsed', () => {
-			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+			viewDocument.fire( 'beforeinput', { keyCode: 229, domEvent: { inputType: 'insertText' } } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
@@ -1201,7 +1201,7 @@ describe( 'Input feature - Android', () => {
 			editor.commands.get( 'input' ).isEnabled = false;
 
 			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
-			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+			viewDocument.fire( 'beforeinput', { keyCode: 229, domEvent: { inputType: 'insertText' } } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
@@ -1212,7 +1212,7 @@ describe( 'Input feature - Android', () => {
 			editor.commands.get( 'input' ).isEnabled = false;
 
 			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
-			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+			viewDocument.fire( 'beforeinput', { keyCode: 229, domEvent: { inputType: 'insertText' } } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );

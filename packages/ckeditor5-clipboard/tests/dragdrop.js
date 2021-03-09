@@ -461,6 +461,56 @@ describe( 'Drag and Drop', () => {
 			expect( getViewData( view ) ).to.equal( '<p>fooabc{}bar</p>' );
 		} );
 
+		it( 'should not remove dragged range if insert into drop target was not allowed', () => {
+			editor.model.schema.register( 'caption', {
+				allowIn: '$root',
+				allowContentOf: '$block',
+				isObject: true
+			} );
+
+			editor.conversion.elementToElement( {
+				view: 'caption',
+				model: 'caption'
+			} );
+
+			setModelData( model,
+				'<caption>foo</caption>' +
+				'[<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>]'
+			);
+
+			const dataTransferMock = createDataTransfer();
+			const viewElement = viewDocument.getRoot().getChild( 1 );
+			const domNode = domConverter.mapViewToDom( viewElement );
+
+			const eventData = {
+				domTarget: domNode,
+				target: viewElement,
+				domEvent: {}
+			};
+
+			viewDocument.fire( 'mousedown', {
+				...eventData
+			} );
+
+			viewDocument.fire( 'dragstart', {
+				...eventData,
+				dataTransfer: dataTransferMock,
+				stopPropagation: () => {}
+			} );
+
+			expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+				'<figure class="table"><table><tbody><tr><td>bar</td></tr></tbody></table></figure>'
+			);
+
+			const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
+			fireDrop( dataTransferMock, targetPosition );
+
+			expect( getModelData( model ) ).to.equal(
+				'<caption>fo[]o</caption>' +
+				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
+			);
+		} );
+
 		it( 'should properly move content even if dragend event is not fired', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
