@@ -1190,7 +1190,7 @@ function _changesInGraveyardFilter( entry ) {
  */
 
 /**
- *  The type of diff item.
+ * The type of diff item.
  *
  * @member {'insert'} module:engine/model/differ~DiffItemInsert#type
  */
@@ -1221,7 +1221,7 @@ function _changesInGraveyardFilter( entry ) {
  */
 
 /**
- *  The type of diff item.
+ * The type of diff item.
  *
  * @member {'remove'} module:engine/model/differ~DiffItemRemove#type
  */
@@ -1252,7 +1252,7 @@ function _changesInGraveyardFilter( entry ) {
  */
 
 /**
- *  The type of diff item.
+ * The type of diff item.
  *
  * @member {'attribute'} module:engine/model/differ~DiffItemAttribute#type
  */
