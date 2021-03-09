@@ -15,6 +15,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
 
@@ -736,25 +737,28 @@ describe( 'TwoStepCaretMovement()', () => {
 		} );
 	} );
 
-	it( 'should listen with the high+1 priority on view.document#keydown', () => {
+	it( 'should listen with the higher priority than widget type around', () => {
+		const highestPlusPrioritySpy = sinon.spy().named( 'highestPrioritySpy' );
 		const highestPrioritySpy = sinon.spy().named( 'highestPrioritySpy' );
 		const highPrioritySpy = sinon.spy().named( 'highPrioritySpy' );
 		const normalPrioritySpy = sinon.spy().named( 'normalPrioritySpy' );
 
 		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
-		emitter.listenTo( view.document, 'keydown', highestPrioritySpy, { priority: 'highest' } );
-		emitter.listenTo( view.document, 'keydown', highPrioritySpy, { priority: 'high' } );
-		emitter.listenTo( view.document, 'keydown', normalPrioritySpy, { priority: 'normal' } );
+		emitter.listenTo( view.document, 'arrowKey', highestPlusPrioritySpy, { context: '$text', priority: priorities.highest + 1 } );
+		emitter.listenTo( view.document, 'arrowKey', highestPrioritySpy, { context: '$text', priority: 'highest' } );
+		emitter.listenTo( view.document, 'arrowKey', highPrioritySpy, { context: '$text', priority: 'high' } );
+		emitter.listenTo( view.document, 'arrowKey', normalPrioritySpy, { context: '$text', priority: 'normal' } );
 
 		fireKeyDownEvent( {
 			keyCode: keyCodes.arrowright,
 			preventDefault: preventDefaultSpy
 		} );
 
-		expect( highestPrioritySpy ).to.be.calledOnce;
-		expect( preventDefaultSpy ).to.be.calledImmediatelyAfter( highestPrioritySpy );
+		expect( highestPlusPrioritySpy ).to.be.calledOnce;
+		expect( preventDefaultSpy ).to.be.calledImmediatelyAfter( highestPlusPrioritySpy );
 
+		expect( highestPrioritySpy ).not.to.be.called;
 		expect( highPrioritySpy ).not.to.be.called;
 		expect( normalPrioritySpy ).not.to.be.called;
 	} );

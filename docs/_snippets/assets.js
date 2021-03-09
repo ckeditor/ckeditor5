@@ -77,7 +77,6 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		maxWidth: 280,
 		showOnCreate: true,
 		interactive: true,
-		touch: 'hold',
 		zIndex: 1,
 		appendTo: () => document.body,
 		...tippyOptions

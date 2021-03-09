@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Widget from '../src/widget';
 import WidgetTypeAround from '../src/widgettypearound/widgettypearound';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { toWidget } from '../src/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
@@ -132,8 +133,8 @@ describe( 'Widget', () => {
 		expect( view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
 	} );
 
-	it( 'should require the WidgetTypeAround plugin', () => {
-		expect( Widget.requires ).to.have.members( [ WidgetTypeAround ] );
+	it( 'should require the WidgetTypeAround and Delete plugins', () => {
+		expect( Widget.requires ).to.have.members( [ WidgetTypeAround, Delete ] );
 	} );
 
 	it( 'should create selection over clicked widget', () => {
@@ -430,7 +431,7 @@ describe( 'Widget', () => {
 				viewDocument.fire( 'keydown', domEventDataMock );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
-				sinon.assert.calledTwice( domEventDataMock.preventDefault );
+				sinon.assert.called( domEventDataMock.preventDefault );
 				sinon.assert.notCalled( keydownHandler );
 			} );
 
@@ -448,7 +449,7 @@ describe( 'Widget', () => {
 				viewDocument.fire( 'keydown', domEventDataMock );
 
 				expect( getModelData( model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
-				sinon.assert.calledTwice( domEventDataMock.preventDefault );
+				sinon.assert.called( domEventDataMock.preventDefault );
 				sinon.assert.notCalled( keydownHandler );
 			} );
 
