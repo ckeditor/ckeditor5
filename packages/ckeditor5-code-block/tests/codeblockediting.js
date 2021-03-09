@@ -242,6 +242,28 @@ describe( 'CodeBlockEditing', () => {
 			sinon.assert.notCalled( shiftEnterCommand.execute );
 		} );
 
+		it( 'should execute enter command when pressing enter in an element nested inside a codeBlock', () => {
+			model.schema.register( 'codeBlockSub', { allowIn: 'codeBlock', isInline: true } );
+			model.schema.extend( '$text', { allowIn: 'codeBlockSub' } );
+			editor.conversion.elementToElement( { model: 'codeBlockSub', view: 'codeBlockSub' } );
+
+			const enterCommand = editor.commands.get( 'enter' );
+			const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
+
+			sinon.spy( enterCommand, 'execute' );
+			sinon.spy( shiftEnterCommand, 'execute' );
+
+			setModelData( model, '<codeBlock>foo<codeBlockSub>b[]a</codeBlockSub>r</codeBlock>' );
+
+			viewDoc.fire( 'enter', getEvent() );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock>foo<codeBlockSub>b</codeBlockSub><codeBlockSub>[]a</codeBlockSub>r</codeBlock>'
+			);
+			sinon.assert.calledOnce( enterCommand.execute );
+			sinon.assert.notCalled( shiftEnterCommand.execute );
+		} );
+
 		describe( 'indentation retention', () => {
 			it( 'should work when indentation is with spaces', () => {
 				setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
