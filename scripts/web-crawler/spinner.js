@@ -16,7 +16,6 @@ const ora = require( 'ora' );
  */
 function createSpinner() {
 	return ora( {
-		indent: 2,
 		spinner: {
 			frames: [ '⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽' ]
 		}
