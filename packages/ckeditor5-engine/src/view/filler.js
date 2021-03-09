@@ -122,7 +122,7 @@ export function getDataWithoutFiller( domText ) {
  * @param {module:engine/view/view~View} view View controller instance we should inject quirks handling on.
  */
 export function injectQuirksHandling( view ) {
-	view.document.on( 'keydown', jumpOverInlineFiller );
+	view.document.on( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
 }
 
 // Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.

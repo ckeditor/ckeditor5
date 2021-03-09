@@ -16,6 +16,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { isImageWidget } from '../../src/image/utils';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageTypeCommand from '../../src/image/imagetypecommand';
 import InsertImageCommand from '../../src/image/insertimagecommand';
 
 describe( 'ImageInlineEditing', () => {
@@ -69,6 +71,22 @@ describe( 'ImageInlineEditing', () => {
 
 	it( 'should register the imageInsert command as an alias for the insertImage command', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
+	} );
+
+	describe( 'imageTypeInline command', () => {
+		it( 'should be registered if ImageBlockEditing is loaded', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageInlineEditing, ImageBlockEditing ]
+			} );
+
+			expect( editor.commands.get( 'imageTypeInline' ) ).to.be.instanceOf( ImageTypeCommand );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not be registered if ImageBlockEditing is not loaded', () => {
+			expect( editor.commands.get( 'imageTypeInline' ) ).to.be.undefined;
+		} );
 	} );
 
 	it( 'should update the ui after inline image has been loaded in the DOM', async () => {

@@ -15,6 +15,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import { isImageWidget } from '../../src/image/utils';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
+import ImageTypeCommand from '../../src/image/imagetypecommand';
 import InsertImageCommand from '../../src/image/insertimagecommand';
 
 describe( 'ImageBlockEditing', () => {
@@ -68,6 +70,22 @@ describe( 'ImageBlockEditing', () => {
 
 	it( 'should register the imageInsert command as an alias for the insertImage command', () => {
 		expect( editor.commands.get( 'imageInsert' ) ).to.equal( editor.commands.get( 'insertImage' ) );
+	} );
+
+	describe( 'imageTypeBlock command', () => {
+		it( 'should be registered if ImageInlineEditing is loaded', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing ]
+			} );
+
+			expect( editor.commands.get( 'imageTypeBlock' ) ).to.be.instanceOf( ImageTypeCommand );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not be registered if ImageInlineEditing is not loaded', () => {
+			expect( editor.commands.get( 'imageTypeBlock' ) ).to.be.undefined;
+		} );
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-image/issues/142.

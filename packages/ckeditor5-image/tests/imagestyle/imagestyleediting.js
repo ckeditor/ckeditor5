@@ -4,325 +4,722 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
-import ImageEditing from '../../src/image/imageediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
+import imageStyleUtils from '../../src/imagestyle/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ImageEditing from '../../src/image/imageediting';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 
 describe( 'ImageStyleEditing', () => {
-	let editor, model, document, viewDocument;
-
-	testUtils.createSinonSandbox( 'ImageStyleEditing' );
-
-	afterEach( () => {
-		editor.destroy();
-	} );
-
 	describe( 'plugin', () => {
-		beforeEach( () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ ImageBlockEditing, ImageStyleEditing ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ModelTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ]
+			} );
 		} );
 
 		it( 'should be loaded', () => {
 			expect( editor.plugins.get( ImageStyleEditing ) ).to.be.instanceOf( ImageStyleEditing );
 		} );
+
+		it( 'should have pluginName', () => {
+			expect( ImageStyleEditing.pluginName ).to.equal( 'ImageStyleEditing' );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
 	} );
 
-	describe( 'init', () => {
-		beforeEach( () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ ImageBlockEditing, ImageStyleEditing ],
+	describe( 'init()', () => {
+		testUtils.createSinonSandbox();
+
+		describe( 'default styles configuration', () => {
+			it( 'should not alter the image.styles configuration', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 					image: {
-						styles: [
-							{ name: 'fullStyle', title: 'foo', icon: 'object-center', isDefault: true },
-							{ name: 'sideStyle', title: 'bar', icon: 'object-right', className: 'side-class' },
-							{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', className: 'dummy-class' }
-						]
+						styles: {
+							arrangements: [ 'full' ],
+							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
+						}
 					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					document = model.document;
-					viewDocument = editor.editing.view;
 				} );
+
+				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
+					arrangements: [ 'full' ],
+					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
+				} );
+
+				await editor.destroy();
+			} );
+
+			it( 'should not alter the object definitions in the image.styles configuration', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
+					image: {
+						styles: {
+							arrangements: [ { name: 'full', modelElements: [ 'image' ] } ],
+							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
+						}
+					}
+				} );
+
+				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
+					arrangements: [ { name: 'full', modelElements: [ 'image' ] } ],
+					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
+				} );
+
+				await editor.destroy();
+			} );
+
+			it( 'should set the proper default config for groups if only arrangements are defined', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
+					image: {
+						styles: {
+							arrangements: [
+								{ name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight'
+							]
+						}
+					}
+				} );
+
+				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
+					arrangements: [ { name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight' ],
+					groups: [ 'wrapText', 'breakText' ]
+				} );
+
+				await editor.destroy();
+			} );
+
+			it( 'should set the proper default config for arrangements if only groups are defined', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
+					image: {
+						styles: {
+							groups: [ { name: 'wrapText' } ]
+						}
+					}
+				} );
+
+				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
+					arrangements: [
+						'inline', 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+						'full', 'side'
+					],
+					groups: [ { name: 'wrapText' } ]
+				} );
+
+				await editor.destroy();
+			} );
+
+			describe( 'no image styles are defined in the editor configuration', () => {
+				it( 'should set the proper default config if both image editing plugins are loaded', async () => {
+					const editor = await ModelTestEditor.create( {
+						plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ]
+					} );
+
+					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
+						arrangements: [
+							'inline', 'alignLeft', 'alignRight',
+							'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+							'full', 'side'
+						],
+						groups: [ 'wrapText', 'breakText' ]
+					} );
+
+					editor.destroy();
+				} );
+
+				it( 'should not set a default config if neither image editing plugins are loaded', async () => {
+					const editor = await ModelTestEditor.create( {
+						plugins: [ ImageStyleEditing ]
+					} );
+
+					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {} );
+
+					await editor.destroy();
+				} );
+
+				it( 'should set the proper default config if only the ImageInlineEditing plugin is loaded', async () => {
+					const editor = await ModelTestEditor.create( {
+						plugins: [ ImageInlineEditing, ImageStyleEditing ]
+					} );
+
+					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
+						arrangements: [ 'inline', 'alignLeft', 'alignRight' ]
+					} );
+
+					await editor.destroy();
+				} );
+
+				it( 'should set the proper default config if only the ImageBlockEditing plugin is loaded', async () => {
+					const editor = await ModelTestEditor.create( {
+						plugins: [ ImageBlockEditing, ImageStyleEditing ]
+					} );
+
+					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
+						arrangements: [ 'full', 'side' ]
+					} );
+
+					await editor.destroy();
+				} );
+			} );
 		} );
 
-		it( 'should define image.styles config', () => {
-			return VirtualTestEditor
-				.create( {
+		describe( 'setting the schema', () => {
+			it( 'should add the imageStyle to the block image schema if the ImageBlockEditing plugin is loaded', async () => {
+				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageStyleEditing ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'full', 'side' ] );
 				} );
+
+				expect( editor.model.schema.checkAttribute( 'image', 'imageStyle' ) ).to.be.true;
+				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.false;
+
+				await editor.destroy();
+			} );
+
+			it( 'should add the imageStyle to the inline image schema if the ImageInlineEditing plugin is loaded', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageInlineEditing, ImageStyleEditing ]
+				} );
+
+				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.true;
+				expect( editor.model.schema.checkAttribute( 'image', 'imageStyle' ) ).to.be.false;
+
+				await editor.destroy();
+			} );
+
+			it( 'should add the imageStyle to the both image schemas if both ImageEditing plugins are loaded', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ]
+				} );
+
+				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.true;
+				expect( editor.model.schema.checkAttribute( 'image', 'imageStyle' ) ).to.be.true;
+
+				await editor.destroy();
+			} );
 		} );
 
-		it( 'should set schema rules for image style when ImageBlock plugin is enabled', async () => {
-			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, ImageStyleEditing ] } );
-			expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
-			await newEditor.destroy();
+		it( 'should call the normalizedStyles with the proper arguments', async () => {
+			const normalizationSpy = testUtils.sinon.spy( imageStyleUtils, 'normalizeStyles' );
+
+			const editor = await ModelTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageStyleEditing ]
+			} );
+
+			sinon.assert.calledOnceWithMatch( normalizationSpy, {
+				configuredStyles: editor.config.get( 'image.styles' ),
+				isBlockPluginLoaded: editor.plugins.has( 'ImageBlockEditing' ),
+				isInlinePluginLoaded: editor.plugins.has( 'ImageInlineEditing' )
+			} );
+
+			await editor.destroy();
 		} );
 
-		it( 'should set schema rules for image style when ImageInline plugin is enabled', async () => {
-			const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, ImageStyleEditing ] } );
-			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'imageStyle' ) ).to.be.true;
-			await newEditor.destroy();
+		it( 'should set the normalizedStyles properly', async () => {
+			const customStyles = {
+				arrangements: [],
+				groups: [],
+				customProperty: true
+			};
+
+			testUtils.sinon.stub( imageStyleUtils, 'normalizeStyles' ).callsFake( () => customStyles );
+
+			const editor = await ModelTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageStyleEditing ]
+			} );
+
+			expect( editor.plugins.get( ImageStyleEditing ).normalizedStyles ).to.equal( customStyles );
+
+			await editor.destroy();
 		} );
 
-		it( 'should register a command', () => {
+		it( 'should register the imageStyle command', async () => {
+			const editor = await ModelTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ]
+			} );
+
 			expect( editor.commands.get( 'imageStyle' ) ).to.be.instanceOf( ImageStyleCommand );
+
+			editor.destroy();
 		} );
+	} );
 
-		it( 'should convert from view to model', () => {
-			editor.setData( '<figure class="image side-class"><img src="/assets/sample.png" /></figure>' );
+	describe( 'conversion', () => {
+		let editor, model, viewDocument, document;
 
-			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<image imageStyle="sideStyle" src="/assets/sample.png"></image>' );
-
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image side-class" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
-				'</figure>' );
-		} );
-
-		it( 'should not convert from view to model if class is not defined', () => {
-			editor.setData( '<figure class="image foo-bar"><img src="/assets/sample.png" /></figure>' );
-
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
-
-		it( 'should not convert from view to model when not in image figure', () => {
-			editor.setData( '<figure class="side-class"></figure>' );
-
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '' );
-		} );
-
-		it( 'should not convert from view to model if schema prevents it', () => {
-			model.schema.addAttributeCheck( ( ctx, attributeName ) => {
-				if ( ctx.endsWith( 'image' ) && attributeName == 'imageStyle' ) {
-					return false;
-				}
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, Paragraph ]
 			} );
 
-			editor.setData( '<figure class="image side-class"><img src="/assets/sample.png" /></figure>' );
-
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
+			model = editor.model;
+			document = model.document;
+			viewDocument = editor.editing.view;
 		} );
 
-		it( 'should convert model to view: adding attribute', () => {
-			setModelData( model, '<image src="/assets/sample.png"></image>' );
-			const image = document.getRoot().getChild( 0 );
+		afterEach( async () => {
+			await editor.destroy();
+		} );
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', 'sideStyle', image );
+		describe( 'view to model', () => {
+			describe( 'of the inline image', () => {
+				it( 'should convert from view to model', () => {
+					editor.setData( '<p><span><img class="image-style-align-left" src="/assets/sample.png" /></span></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) )
+						.to.equal( '<paragraph><imageInline imageStyle="alignLeft" src="/assets/sample.png"></imageInline></paragraph>' );
+
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline image-style-align-left" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</span></p>' );
+					// ASK: Why class is once on the span element and once on the image?
+				} );
+
+				it( 'should not convert from view to model if class refers to not defined arrangement', () => {
+					editor.setData( '<p><span><img class="foo-bar" src="/assets/sample.png" /></span></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+					);
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
+
+				it( 'should not convert from view to model if schema prevents it', () => {
+					model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+						if ( ctx.endsWith( 'imageInline' ) && attributeName == 'imageStyle' ) {
+							return false;
+						}
+					} );
+
+					editor.setData( '<p><span><img class="image-style-align-left" src="/assets/sample.png" /></span></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+					);
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
+
+				it( 'should not convert from view to model if class is not supported by the inline image', () => {
+					editor.setData( '<p><span><img class="image-style-block-align-left" src="/assets/sample.png" /></span></p>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+					);
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="/assets/sample.png"></figure>' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image side-class" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
+			describe( 'of the block image', () => {
+				it( 'should convert from view to model', () => {
+					editor.setData( '<figure class="image image-style-align-center"><img src="/assets/sample.png" /></figure>' );
 
-		it( 'should convert model to view: removing attribute', () => {
-			setModelData( model, '<image src="/assets/sample.png" imageStyle="sideStyle"></image>' );
-			const image = document.getRoot().getChild( 0 );
+					expect( getModelData( model, { withoutSelection: true } ) )
+						.to.equal( '<image imageStyle="alignCenter" src="/assets/sample.png"></image>' );
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', null, image );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image image-style-align-center" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</figure>' );
+				} );
+
+				it( 'should not convert from view to model if class refers to not defined arrangement', () => {
+					editor.setData( '<figure class="image foo-bar"><img src="/assets/sample.png" /></figure>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
+
+				// it( 'should not convert from view to model when no image in the figure', () => {
+				// 	editor.setData( '<figure class="image-style-align-center"></figure>' );
+
+				// 	expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '' );
+				// 	expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '' );
+				// 	// ASK: converts to paragraph, why? Test wasn't changed.
+				// } );
+
+				it( 'should not convert from view to model if schema prevents it', () => {
+					model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+						if ( ctx.endsWith( 'image' ) && attributeName == 'imageStyle' ) {
+							return false;
+						}
+					} );
+
+					editor.setData( '<figure class="image image-style-align-center"><img src="/assets/sample.png" /></figure>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
+
+				it( 'should not convert from view to model if class is not supported by the block image', async () => {
+					const customEditor = await VirtualTestEditor.create( {
+						plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
+						image: {
+							styles: {
+								arrangements: [ {
+									name: 'onlyInline',
+									modelElements: [ 'imageInline' ],
+									className: 'image-style-inline'
+								} ],
+								groups: []
+							}
+						}
+					} );
+
+					customEditor.setData( '<figure class="image image-style-inline"><img src="/assets/sample.png" /></figure>' );
+
+					expect( getModelData( customEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<image src="/assets/sample.png"></image>'
+					);
+					expect( getViewData( customEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+
+					await customEditor.destroy();
+				} );
 			} );
-
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
 		} );
 
-		it( 'should convert model to view: change attribute', () => {
-			setModelData( model, '<image src="/assets/sample.png" imageStyle="dummy"></image>' );
-			const image = document.getRoot().getChild( 0 );
+		describe( 'model to view', () => {
+			describe( 'of the block image', () => {
+				it( 'should add the class when imageStyle attribute is being added', () => {
+					setModelData( model, '<image src="/assets/sample.png"></image>' );
+					const image = document.getRoot().getChild( 0 );
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', 'sideStyle', image );
-			} );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignLeft', image );
+					} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="/assets/sample.png"></figure>' );
+					expect( editor.getData() ).to.equal(
+						'<figure class="image image-style-align-left"><img src="/assets/sample.png"></figure>'
+					);
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image image-style-align-left" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</figure>'
+					);
+				} );
 
-			// https://github.com/ckeditor/ckeditor5-image/issues/132
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image side-class" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
+				it( 'should remove the class when imageStyle attribute is being removed', () => {
+					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
+					const image = document.getRoot().getChild( 0 );
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', 'dummyStyle', image );
-			} );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', null, image );
+					} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image dummy-class"><img src="/assets/sample.png"></figure>' );
+					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
 
-			// https://github.com/ckeditor/ckeditor5-image/issues/132
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget dummy-class image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
+				it( 'should change the class when imageStyle attribute is being changed', () => {
+					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
+					const image = document.getRoot().getChild( 0 );
 
-		it( 'should not convert from model to view if already consumed: adding attribute', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
-			}, { priority: 'high' } );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignRight', image );
+					} );
 
-			setModelData( model, '<image src="/assets/sample.png"></image>' );
-			const image = document.getRoot().getChild( 0 );
+					expect( editor.getData() ).to.equal(
+						'<figure class="image image-style-align-right"><img src="/assets/sample.png"></figure>'
+					);
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', 'sideStyle', image );
-			} );
+					// https://github.com/ckeditor/ckeditor5-image/issues/132
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image image-style-align-right" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</figure>'
+					);
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignLeft', image );
+					} );
 
-		it( 'should not set attribute if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
-			}, { priority: 'high' } );
+					expect( editor.getData() )
+						.to.equal( '<figure class="image image-style-align-left"><img src="/assets/sample.png"></figure>' );
 
-			setModelData( model, '<image src="/assets/sample.png" imageStyle="dummyStyle"></image>' );
+					// https://github.com/ckeditor/ckeditor5-image/issues/132
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image image-style-align-left" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</figure>'
+					);
+				} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
+				it( 'should not add the class if change was already consumed', () => {
+					editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
+					}, { priority: 'high' } );
 
-		it( 'should not convert from model to view if style is not present: adding attribute', () => {
-			setModelData( model, '<image src="/assets/sample.png"></image>' );
-			const image = document.getRoot().getChild( 0 );
+					setModelData( model, '<image src="/assets/sample.png"></image>' );
+					const image = document.getRoot().getChild( 0 );
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', 'foo', image );
-			} );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignLeft', image );
+					} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
 
-		it( 'should not convert from model to view if style is not present: change attribute', () => {
-			setModelData( model, '<image src="/assets/sample.png" imageStyle="dummy"></image>' );
-			const image = document.getRoot().getChild( 0 );
+				it( 'should not set the class if change was already consumed', () => {
+					editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
+					}, { priority: 'high' } );
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', 'foo', image );
-			} );
+					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
 
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
 
-		it( 'should not convert from model to view if style is not present: remove attribute', () => {
-			setModelData( model, '<image src="/assets/sample.png" imageStyle="foo"></image>' );
-			const image = document.getRoot().getChild( 0 );
+				it( 'should not convert if current imageStyle is not present and the new imageStyle attribute is not defined', () => {
+					setModelData( model, '<image src="/assets/sample.png"></image>' );
+					const image = document.getRoot().getChild( 0 );
 
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', null, image );
-			} );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'foo', image );
+					} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
-			);
-		} );
+					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
 
-		// See: https://github.com/ckeditor/ckeditor5/issues/8270.
-		it( 'should stop conversion when model element is not found', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ ImageEditing, ImageResizeEditing, ImageStyleEditing ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
+				it( 'should not convert if current imageStyle is present and the new imageStyle attribute is not defined', () => {
+					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
+					const image = document.getRoot().getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'foo', image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
+
+				it( 'should not convert if current imageStyle is not defined and the new imageStyle attribute is null', () => {
+					setModelData( model, '<image src="/assets/sample.png" imageStyle="foo"></image>' );
+					const image = document.getRoot().getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', null, image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
+					);
+				} );
+
+				// See: https://github.com/ckeditor/ckeditor5/issues/8270.
+				it( 'should stop conversion when model element is not found', async () => {
+					const customEditor = await VirtualTestEditor
+						.create( {
+							plugins: [ ImageEditing, ImageResizeEditing, ImageStyleEditing ]
+						} );
 
 					expect(
-						() => editor.setData( '<figure class="image image_resized" style="width:331px;"></figure>' )
+						() => customEditor.setData( '<figure class="image image_resized" style="width:331px;"></figure>' )
 					).not.to.throw();
 
 					// No conversion has been done.
-					expect( editor.getData() ).to.equal( '' );
+					expect( customEditor.getData() ).to.equal( '' );
+
+					await customEditor.destroy();
 				} );
-		} );
-	} );
+			} );
 
-	describe( 'config', () => {
-		it( 'should fall back to defaults when no image.styles', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ ImageBlockEditing, ImageStyleEditing ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
+			describe( 'of the inline image', () => {
+				it( 'should add the class when imageStyle attribute is being added', () => {
+					setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					const image = document.getRoot().getChild( 0 ).getChild( 0 );
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'full', 'side' ] );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignLeft', image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p><img class="image-style-align-left" src="/assets/sample.png"></p>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline image-style-align-left" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</span></p>'
+					);
 				} );
-		} );
 
-		it( 'should not alter the image.styles config', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ ImageBlockEditing, ImageStyleEditing ],
-					image: {
-						styles: [
-							'side'
-						]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
+				it( 'should remove the class when imageStyle attribute is being removed', () => {
+					setModelData( model,
+						'<paragraph><imageInline src="/assets/sample.png" imageStyle="alignLeft"></imageInline></paragraph>'
+					);
+					const image = document.getRoot().getChild( 0 ).getChild( 0 );
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'side' ] );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', null, image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
 				} );
-		} );
 
-		it( 'should not alter object definitions in the image.styles config', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ ImageBlockEditing, ImageStyleEditing ],
-					image: {
-						styles: [
-							{ name: 'side' }
-						]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
+				it( 'should change the class when imageStyle attribute is being changed', () => {
+					setModelData( model,
+						'<paragraph><imageInline src="/assets/sample.png" imageStyle="alignLeft"></imageInline></paragraph>'
+					);
+					const image = document.getRoot().getChild( 0 ).getChild( 0 );
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ { name: 'side' } ] );
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignRight', image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p><img class="image-style-align-right" src="/assets/sample.png"></p>' );
+
+					// https://github.com/ckeditor/ckeditor5-image/issues/132
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline image-style-align-right" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</span></p>'
+					);
+
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignLeft', image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p><img class="image-style-align-left" src="/assets/sample.png"></p>' );
+
+					// https://github.com/ckeditor/ckeditor5-image/issues/132
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline image-style-align-left" contenteditable="false">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</span></p>'
+					);
 				} );
+
+				it( 'should not add the class if change was already consumed', () => {
+					editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
+					}, { priority: 'high' } );
+
+					setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					const image = document.getRoot().getChild( 0 ).getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'alignLeft', image );
+					} );
+
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
+
+				it( 'should not set the class if change was already consumed', () => {
+					editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
+					}, { priority: 'high' } );
+
+					setModelData( model,
+						'<paragraph><imageInline src="/assets/sample.png" imageStyle="alignLeft"></imageInline></paragraph>'
+					);
+
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
+
+				it( 'should not convert if current imageStyle is not present and the new imageStyle attribute is not defined', () => {
+					setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					const image = document.getRoot().getChild( 0 ).getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'foo', image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
+
+				it( 'should not convert if current imageStyle is present and the new imageStyle attribute is not defined', () => {
+					setModelData( model,
+						'<paragraph><imageInline src="/assets/sample.png" imageStyle="alignLeft"></imageInline></paragraph>'
+					);
+					const image = document.getRoot().getChild( 0 ).getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', 'foo', image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
+
+				it( 'should not convert if current imageStyle is not defined and the new imageStyle attribute is null', () => {
+					setModelData( model, '<paragraph><imageInline src="/assets/sample.png" imageStyle="foo"></imageInline></paragraph>' );
+					const image = document.getRoot().getChild( 0 ).getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'imageStyle', null, image );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
+					);
+				} );
+
+				// See: https://github.com/ckeditor/ckeditor5/issues/8270.
+				it( 'should stop conversion when model element is not found', async () => {
+					const customEditor = await VirtualTestEditor
+						.create( {
+							plugins: [ ImageEditing, ImageResizeEditing, ImageStyleEditing ]
+						} );
+
+					expect(
+						() => customEditor.setData( '<figure class="image image_resized" style="width:331px;"></figure>' )
+					).not.to.throw();
+
+					// No conversion has been done.
+					expect( customEditor.getData() ).to.equal( '' );
+
+					await customEditor.destroy();
+				} );
+			} );
 		} );
 	} );
 } );

@@ -115,7 +115,7 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Convert imageInline -> image first.
 		if ( isImageInline( selectedImage ) ) {
-			this.editor.execute( 'toggleImageType' );
+			this.editor.execute( 'imageTypeBlock' );
 
 			// Executing the command created a new model element. Let's pick it again.
 			selectedImage = selection.getSelectedElement();
