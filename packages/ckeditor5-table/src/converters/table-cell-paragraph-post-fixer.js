@@ -87,10 +87,6 @@ function fixTable( table, writer ) {
 function fixTableRow( tableRow, writer ) {
 	let wasFixed = false;
 
-	if ( !tableRow.is( 'element', 'tableRow' ) ) {
-		return false;
-	}
-
 	for ( const tableCell of tableRow.getChildren() ) {
 		wasFixed = fixTableCellContent( tableCell, writer ) || wasFixed;
 	}

@@ -132,35 +132,6 @@ describe( 'TableCaptionEditing', () => {
 		} );
 
 		describe( 'view to model', () => {
-			it( 'should not convert figure without "table" class', () => {
-				editor.setData(
-					'<figure>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td>' +
-										'foobar' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-						'<figcaption>Foo caption</figcaption>' +
-					'</figure>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( String(
-						'<table>' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>foobar</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-						'</table>' +
-						'<paragraph>Foo caption</paragraph>'
-					) );
-			} );
-
 			it( 'should convert a table with <caption>', () => {
 				editor.setData(
 					'<table>' +

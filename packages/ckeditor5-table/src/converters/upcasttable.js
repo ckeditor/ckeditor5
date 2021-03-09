@@ -11,6 +11,50 @@ import { createEmptyTableCell } from '../utils/common';
 import { first } from 'ckeditor5/src/utils';
 
 /**
+ * Returns a function that converts the image view representation:
+ *
+ *		<figure class="table"><table>...</table></figure>
+ *
+ * to the model representation:
+ *
+ *		<table></table>
+ *
+ * @returns {Function}
+ */
+export function upcastFigureWithTable() {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Do not convert if this is not an "table figure".
+			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
+				return;
+			}
+
+			// Find an table element inside the figure element.
+			const viewTable = getViewTableFromFigure( data.viewItem );
+
+			// Do not convert if table element is absent or was already converted.
+			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return;
+			}
+
+			// Convert view table to model table.
+			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
+
+			// Get table element from conversion result.
+			const modelTable = first( conversionResult.modelRange.getItems() );
+
+			// When table wasn't successfully converted then finish conversion.
+			if ( !modelTable ) {
+				return;
+			}
+
+			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
+			conversionApi.updateConversionResult( modelTable, data );
+		} );
+	};
+}
+
+/**
  * View table element to model table element conversion helper.
  *
  * This conversion helper converts the table element as well as table rows.
@@ -27,7 +71,7 @@ export default function upcastTable() {
 				return;
 			}
 
-			const { caption, rows, headingRows, headingColumns } = scanTable( viewTable );
+			const { rows, headingRows, headingColumns } = scanTable( viewTable );
 
 			// Only set attributes if values is greater then 0.
 			const attributes = {};
@@ -51,10 +95,8 @@ export default function upcastTable() {
 			// Upcast table rows in proper order (heading rows first).
 			rows.forEach( row => conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) ) );
 
-			if ( caption ) {
-				// Convert table > caption.
-				conversionApi.convertItem( caption, conversionApi.writer.createPositionAt( table, 'end' ) );
-			}
+			// Convert everything else.
+			conversionApi.convertChildren( viewTable, conversionApi.writer.createPositionAt( table, 'end' ) );
 
 			// Create one row and one table cell for empty table.
 			if ( table.isEmpty ) {
@@ -115,64 +157,11 @@ export function ensureParagraphInTableCell( elementName ) {
 	};
 }
 
-/**
- * Returns a function that converts the image view representation:
- *
- *		<figure class="table"><table>...</table></figure>
- *
- * to the model representation:
- *
- *		<table></table>
- *
- * @returns {Function}
- */
-export function upcastFigureWithTable() {
-	return dispatcher => {
-		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			// Do not convert if this is not an "table figure".
-			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
-				return;
-			}
-
-			// Find an table element inside the figure element.
-			const viewTable = getViewTableFromFigure( data.viewItem );
-
-			// Do not convert if table element is absent or was already converted.
-			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
-				return;
-			}
-
-			// Convert view table to model table.
-			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
-
-			// Get table element from conversion result.
-			const modelTable = first( conversionResult.modelRange.getItems() );
-
-			// When table wasn't successfully converted then finish conversion.
-			if ( !modelTable ) {
-				return;
-			}
-
-			// Consume the figure view element.
-			if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'table' } ) ) {
-				return;
-			}
-
-			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
-			conversionApi.updateConversionResult( modelTable, data );
-		} );
-	};
-}
-
 // Get view `<table>` element from the view widget (`<figure>`).
 //
 // @param {module:engine/view/element~Element} figureView
 // @returns {module:engine/view/element~Element}
 function getViewTableFromFigure( figureView ) {
-	if ( figureView.is( 'element', 'table' ) ) {
-		return figureView;
-	}
-
 	const figureChildren = [];
 
 	for ( const figureChild of figureView.getChildren() ) {
@@ -196,7 +185,6 @@ function getViewTableFromFigure( figureView ) {
 // @returns {{headingRows, headingColumns, rows}}
 function scanTable( viewTable ) {
 	const tableMeta = {
-		caption: undefined,
 		headingRows: 0,
 		headingColumns: 0
 	};
@@ -249,10 +237,6 @@ function scanTable( viewTable ) {
 					}
 				}
 			}
-		}
-		// Separate caption from other table elements.
-		else if ( tableChild.name === 'caption' ) {
-			tableMeta.caption = tableChild;
 		}
 	}
 

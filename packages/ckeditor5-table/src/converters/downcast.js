@@ -56,12 +56,7 @@ export function downcastInsertTable( options = {} ) {
 
 		for ( const tableSlot of tableWalker ) {
 			const { row, cell } = tableSlot;
-
 			const tableRow = table.getChild( row );
-
-			if ( !tableRow.is( 'element', 'tableRow' ) ) {
-				continue;
-			}
 
 			const trElement = viewRows.get( row ) || createTr( tableElement, tableRow, row, tableAttributes, conversionApi );
 			viewRows.set( row, trElement );

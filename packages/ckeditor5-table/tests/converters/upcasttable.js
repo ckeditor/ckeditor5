@@ -70,9 +70,22 @@ describe( 'upcastTable()', () => {
 	} );
 
 	it( 'should not convert empty figure', () => {
-		'<figure class="table"></figure>';
+		editor.setData( '<figure class="table"></figure>' );
 
 		expectModel( '<paragraph></paragraph>' );
+	} );
+
+	it( 'should not convert if table was not converted', () => {
+		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+
+				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+			}, { priority: 'highest' } );
+		} );
+		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
+
+		expectModel( '<paragraph>xyz</paragraph>' );
 	} );
 
 	it( 'should convert if figure do not have class="table" attribute', () => {
