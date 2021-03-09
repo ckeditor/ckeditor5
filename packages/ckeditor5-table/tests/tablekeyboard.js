@@ -445,6 +445,19 @@ describe( 'TableKeyboard', () => {
 			assertEqualMarkup( getModelData( model ), modelData );
 		} );
 
+		it( 'should do nothing if the selection is on a table', () => {
+			const modelData = '<paragraph>foobar</paragraph>[' + modelTable( [ [ '00', '01' ] ] ) + ']';
+
+			setModelData( model, modelData );
+
+			editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+			sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+			sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+
+			assertEqualMarkup( getModelData( model ), modelData );
+		} );
+
 		describe( '#_navigateFromCellInDirection (finding a proper cell to move the selection to)', () => {
 			describe( 'with no col/row-spanned cells', () => {
 				beforeEach( () => {
@@ -2585,10 +2598,10 @@ describe( 'TableKeyboard', () => {
 							] ) );
 						} );
 
-						it( 'should not move the caret if it\'s just before the last space in the line next to last one', () => {
+						it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
 							setModelData( model, modelTable( [
 								[ '00', '01', '02' ],
-								[ '10', text.substring( 0, text.length - 1 ) + '[]d word word word', '12' ],
+								[ '10', text.substring( 0, text.length - 2 ) + '[]od word word word', '12' ],
 								[ '20', '21', '22' ]
 							] ) );
 

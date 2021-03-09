@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-list",
-  "version": "25.0.0",
+  "version": "26.0.0",
   "description": "Ordered and unordered lists feature to CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -11,31 +11,31 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^25.0.0"
+    "ckeditor5": "^26.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^25.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^25.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^25.0.0",
-    "@ckeditor/ckeditor5-core": "^25.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^26.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^26.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^26.0.0",
+    "@ckeditor/ckeditor5-core": "^26.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^25.0.0",
-    "@ckeditor/ckeditor5-engine": "^25.0.0",
-    "@ckeditor/ckeditor5-enter": "^25.0.0",
-    "@ckeditor/ckeditor5-essentials": "^25.0.0",
-    "@ckeditor/ckeditor5-font": "^25.0.0",
-    "@ckeditor/ckeditor5-heading": "^25.0.0",
-    "@ckeditor/ckeditor5-highlight": "^25.0.0",
-    "@ckeditor/ckeditor5-indent": "^25.0.0",
-    "@ckeditor/ckeditor5-link": "^25.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^25.0.0",
-    "@ckeditor/ckeditor5-remove-format": "^25.0.0",
-    "@ckeditor/ckeditor5-table": "^25.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^25.0.0",
-    "@ckeditor/ckeditor5-typing": "^25.0.0",
-    "@ckeditor/ckeditor5-ui": "^25.0.0",
-    "@ckeditor/ckeditor5-undo": "^25.0.0",
-    "@ckeditor/ckeditor5-utils": "^25.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^26.0.0",
+    "@ckeditor/ckeditor5-engine": "^26.0.0",
+    "@ckeditor/ckeditor5-enter": "^26.0.0",
+    "@ckeditor/ckeditor5-essentials": "^26.0.0",
+    "@ckeditor/ckeditor5-font": "^26.0.0",
+    "@ckeditor/ckeditor5-heading": "^26.0.0",
+    "@ckeditor/ckeditor5-highlight": "^26.0.0",
+    "@ckeditor/ckeditor5-indent": "^26.0.0",
+    "@ckeditor/ckeditor5-link": "^26.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^26.0.0",
+    "@ckeditor/ckeditor5-remove-format": "^26.0.0",
+    "@ckeditor/ckeditor5-table": "^26.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^26.0.0",
+    "@ckeditor/ckeditor5-typing": "^26.0.0",
+    "@ckeditor/ckeditor5-ui": "^26.0.0",
+    "@ckeditor/ckeditor5-undo": "^26.0.0",
+    "@ckeditor/ckeditor5-utils": "^26.0.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
@@ -59,6 +59,6 @@
     "build"
   ],
   "scripts": {
-    "build:dll": "webpack"
+    "dll:build": "webpack"
   }
 }
