@@ -90,14 +90,16 @@ export default class TableCaptionEditing extends Plugin {
 	}
 }
 
-/**
- * {@link module:engine/view/matcher~Matcher} pattern. Checks if a given element is a `<figcaption>` element that is placed
- * inside the image `<figure>` element.
- *
- * @param {module:engine/view/element~Element} element
- * @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
- * cannot be matched.
- */
+// {@link module:engine/view/matcher~Matcher} pattern. Checks if a given element is a caption.
+//
+// There are two possible forms of the valid caption:
+//  - A `<figcaption>` element inside a `<figure class="table">` element.
+//  - A `<caption>` inside a <table>.
+//
+// @private
+// @param {module:engine/view/element~Element} element
+// @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
+// cannot be matched.
 export function matchTableCaptionViewElement( element ) {
 	const parent = element.parent;
 
@@ -112,12 +114,11 @@ export function matchTableCaptionViewElement( element ) {
 	return null;
 }
 
-/**
- * Checks if the provided model element is a `table`.
- *
- * @param {module:engine/model/element~Element} modelElement
- * @returns {Boolean}
- */
-export function isTable( modelElement ) {
+// Checks if the provided model element is a `table`.
+//
+// @private
+// @param {module:engine/model/element~Element} modelElement
+// @returns {Boolean}
+function isTable( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'table' );
 }

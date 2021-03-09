@@ -11,7 +11,7 @@ import { createEmptyTableCell } from '../utils/common';
 import { first } from 'ckeditor5/src/utils';
 
 /**
- * Returns a function that converts the image view representation:
+ * Returns a function that converts the table view representation:
  *
  *		<figure class="table"><table>...</table></figure>
  *
@@ -159,6 +159,7 @@ export function ensureParagraphInTableCell( elementName ) {
 
 // Get view `<table>` element from the view widget (`<figure>`).
 //
+// @private
 // @param {module:engine/view/element~Element} figureView
 // @returns {module:engine/view/element~Element}
 function getViewTableFromFigure( figureView ) {
@@ -181,6 +182,7 @@ function getViewTableFromFigure( figureView ) {
 // headingColumns - The maximum number of row headings.
 // rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
 //
+// @private
 // @param {module:engine/view/element~Element} viewTable
 // @returns {{headingRows, headingColumns, rows}}
 function scanTable( viewTable ) {
@@ -252,6 +254,7 @@ function scanTable( viewTable ) {
 // - For body rows:
 //     - Calculates the number of column headings.
 //
+// @private
 // @param {module:engine/view/element~Element} tr
 // @returns {Number}
 function scanRowForHeadingColumns( tr ) {
