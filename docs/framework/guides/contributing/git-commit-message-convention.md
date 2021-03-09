@@ -24,8 +24,8 @@ Type (another-package-name): If the change affects more than one package, it's p
 
 Optional description.
 
-BREAKING CHANGE (package-name): If any breaking changes were done, they need to be listed here.
-BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
+MAJOR BREAKING CHANGE (package-name): If any breaking changes were done, they need to be listed here.
+MINOR BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
 ```
 
 ### Commit types
@@ -43,14 +43,18 @@ BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
 
 Each commit can contain additional notes that will be inserted into the changelog:
 
-* `MAJOR BREAKING CHANGE` (alias: `BREAKING CHANGE`),
+* `MAJOR BREAKING CHANGE`,
 * `MINOR BREAKING CHANGE`.
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will be marked as `major` automatically.
 
 For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
 
-Each `BREAKING CHANGE` note must be followed by the package name.
+Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
+
+<info-box>
+	Remember to always specify whether the breaking change is `major` or `minor`. If you fail to do so, the system will assume all unspecified breaking changes are `major`.
+</info-box>
 
 ### Package name
 
@@ -58,9 +62,49 @@ Most commits are related to one or more packages. Each affected package should b
 
 It is, however, possible to skip this part if many packages are affected. This usually indicates a generic change. In this case having all the packages listed would reduce the changelog readability.
 
-The package name is based on the npm package name, however, it has the `@ckeditor/ckeditor(5)-` prefix stripped.
+The package name is based on the npm package name, however, it has the `@ckeditor/ckeditor5-` prefix stripped.
 
 If your change is related to the main package only, use `ckeditor5` as the package name.
+
+<info-box>
+	If the commit introduces a breaking change across the entire project (a generic change), the package name does not have to be specified.
+</info-box>
+
+### Entries ordering
+
+The proper order for sections is as follows:
+* Public
+* Internal
+* MAJOR/MINOR BREAKING CHANGES
+
+All entries must be separated with `\n`, otherwise the lines will not be treated separately.
+
+### Examples of proper and improper message formatting
+
+Example of a proper commit message:
+
+```
+Type: Message 1.
+
+Type: Message 2.
+```
+
+An example of invalid commit messages with incorrectly separated lines (the second line will just be treated as a part of the first line):
+
+```
+Type: Message 1.
+Type: Message 2.
+```
+
+An example of invalid comment message a wrong section order (the "internal" message will be treated as a part of the BREAKING CHANGE message):
+
+```
+Public: Message 1.
+
+BREAKING CHANGE: A description.
+
+Internal: Message 2.
+```
 
 ### Example commits
 
