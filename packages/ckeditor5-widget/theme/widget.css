@@ -84,7 +84,7 @@
 		left: var(--ck-resizer-tooltip-offset);
 	}
 
-	/* Class applied if the image is too small to contain the size label */
+	/* Class applied if the widget is too small to contain the size label */
 	&.ck-orientation-above-center {
 		top: calc(var(--ck-resizer-tooltip-height) * -1);
 		left: 50%;

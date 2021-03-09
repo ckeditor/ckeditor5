@@ -68,7 +68,7 @@ export default class SizeView extends View {
 			resizerState, 'activeHandlePosition',
 			resizerState, 'proposedHandleHostWidth',
 			resizerState, 'proposedHandleHostHeight',
-			// If the image is too small to contain the size label, display the label above.
+			// If the widget is too small to contain the size label, display the label above.
 			( position, width, height ) => width < 50 || height < 50 ? 'above-center' : position
 		);
 	}
