@@ -190,6 +190,35 @@ describe( 'TableCaptionEditing', () => {
 					) );
 			} );
 
+			it( 'should not convert a <figcaption> inside <figure> that has no class="table"', () => {
+				editor.setData(
+					'<figure>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>' +
+										'foobar' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<figcaption>Foo caption</figcaption>' +
+					'</figure>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( String(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foobar</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+						'<paragraph>Foo caption</paragraph>'
+					) );
+			} );
+
 			it( 'should convert a doubled captions', () => {
 				editor.setData(
 					'<figure class="table">' +
