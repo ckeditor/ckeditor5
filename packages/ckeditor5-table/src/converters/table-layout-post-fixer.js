@@ -326,7 +326,6 @@ function fixTableRowsSizes( table, writer ) {
 		for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
 			const columnsToInsert = maxColumns - size;
 
-			// Table can hold models other than rows - we shouldn't fix them.
 			if ( columnsToInsert ) {
 				for ( let i = 0; i < columnsToInsert; i++ ) {
 					createEmptyTableCell( writer, writer.createPositionAt( table.getChild( rowIndex ), 'end' ) );
