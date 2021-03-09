@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module widget/widgetresize/sizeview
+ */
+
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 /**
@@ -10,6 +14,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
  *
  * @extends {module:ui/view~View}
  */
+
 export default class SizeView extends View {
 	constructor() {
 		/**

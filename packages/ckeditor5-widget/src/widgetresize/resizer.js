@@ -41,7 +41,7 @@ export default class Resizer {
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {module:widget/widgetresize/resizer~SizeView} #_sizeUI
+		 * @member {module:widget/widgetresize/sizeview} #_sizeUI
 		 */
 
 		/**
