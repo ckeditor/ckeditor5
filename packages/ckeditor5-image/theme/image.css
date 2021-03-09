@@ -34,6 +34,10 @@
 			display: block;
 			max-width: 100%;
 		}
+
+		&.ck-widget_selected {
+			z-index: 1;
+		}
 	}
 }
 
