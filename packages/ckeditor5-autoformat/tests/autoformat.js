@@ -118,7 +118,7 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should be converted from a checked to-do list', () => {
-			setData( model, '<listItem listIndent="0" listType="todo">*[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">*[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -219,7 +219,7 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should be converted from a checked to-do list', () => {
-			setData( model, '<listItem listIndent="0" listType="todo">1.[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">1.[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -308,6 +308,24 @@ describe( 'Autoformat', () => {
 			it( 'should replace square brackets with "x"', () => {
 				setData( model, '[]' );
 				insertBrackets( 'x' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
+
+				setData( model, '[]' );
+				insertBrackets( ' x ' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
+
+				setData( model, '[]' );
+				insertBrackets( 'x ' );
+				insertSpace();
+
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
+
+				setData( model, '[]' );
+				insertBrackets( ' x' );
 				insertSpace();
 
 				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
