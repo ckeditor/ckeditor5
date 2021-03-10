@@ -16,8 +16,8 @@ describe( 'TableCaptionEditing', () => {
 
 	class FakePlugin extends Plugin {
 		init() {
-			const conversion = this.editor.conversion;
 			const schema = this.editor.model.schema;
+			const conversion = this.editor.conversion;
 
 			schema.register( 'foo', {
 				isObject: true,
@@ -34,7 +34,6 @@ describe( 'TableCaptionEditing', () => {
 				view: 'foo',
 				model: 'foo'
 			} );
-
 			conversion.elementToElement( {
 				view: 'caption',
 				model: 'caption'

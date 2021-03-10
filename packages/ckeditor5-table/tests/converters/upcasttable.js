@@ -76,6 +76,8 @@ describe( 'upcastTable()', () => {
 	} );
 
 	it( 'should not convert if table was not converted', () => {
+		// Test a case when a conversion of a table inside a figure is not returning anything.
+		// Either because of a failed conversion or if the table was already consumed.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );
