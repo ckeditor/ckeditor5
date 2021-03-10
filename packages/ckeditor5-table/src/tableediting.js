@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastFigureWithTable } from './converters/upcasttable';
+import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import {
 	convertParagraphInTableCell,
 	downcastInsertCell,
@@ -92,7 +92,7 @@ export default class TableEditing extends Plugin {
 		} );
 
 		// Figure conversion.
-		conversion.for( 'upcast' ).add( upcastFigureWithTable() );
+		conversion.for( 'upcast' ).add( upcastTableFigure() );
 
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );

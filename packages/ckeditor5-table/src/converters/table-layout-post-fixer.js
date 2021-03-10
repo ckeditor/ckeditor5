@@ -378,11 +378,10 @@ function findCellsToTrim( table ) {
 // @returns {Array.<Number>}
 function getRowsLengths( table ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
-	const count = Array.from( table.getChildren() ).reduce(
-		( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count,
-		0
-	);
-	const lengths = new Array( count ).fill( 0 );
+	const rowCount = Array.from( table.getChildren() )
+		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
+
+	const lengths = new Array( rowCount ).fill( 0 );
 
 	for ( const { row } of new TableWalker( table, { includeAllSlots: true } ) ) {
 		lengths[ row ]++;

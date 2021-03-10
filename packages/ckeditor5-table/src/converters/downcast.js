@@ -56,8 +56,8 @@ export function downcastInsertTable( options = {} ) {
 
 		for ( const tableSlot of tableWalker ) {
 			const { row, cell } = tableSlot;
-			const tableRow = table.getChild( row );
 
+			const tableRow = table.getChild( row );
 			const trElement = viewRows.get( row ) || createTr( tableElement, tableRow, row, tableAttributes, conversionApi );
 			viewRows.set( row, trElement );
 
@@ -74,11 +74,8 @@ export function downcastInsertTable( options = {} ) {
 		for ( const tableRow of table.getChildren() ) {
 			const rowIndex = tableRow.index;
 
-			if ( !tableRow.is( 'element', 'tableRow' ) ) {
-				continue;
-			}
-
-			if ( !viewRows.has( rowIndex ) ) {
+			// Make sure that this is a table row and not some other element (i.e., caption).
+			if ( tableRow.is( 'element', 'tableRow' ) && !viewRows.has( rowIndex ) ) {
 				viewRows.set( rowIndex, createTr( tableElement, tableRow, rowIndex, tableAttributes, conversionApi ) );
 			}
 		}

@@ -21,10 +21,10 @@ import { first } from 'ckeditor5/src/utils';
  *
  * @returns {Function}
  */
-export function upcastFigureWithTable() {
+export function upcastTableFigure() {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			// Do not convert if this is not an "table figure".
+			// Do not convert if this is not a "table figure".
 			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
 				return;
 			}
@@ -163,17 +163,11 @@ export function ensureParagraphInTableCell( elementName ) {
 // @param {module:engine/view/element~Element} figureView
 // @returns {module:engine/view/element~Element}
 function getViewTableFromFigure( figureView ) {
-	const figureChildren = [];
-
 	for ( const figureChild of figureView.getChildren() ) {
-		figureChildren.push( figureChild );
-
-		if ( figureChild.is( 'element' ) ) {
-			figureChildren.push( ...figureChild.getChildren() );
+		if ( figureChild.is( 'element', 'table' ) ) {
+			return figureChild;
 		}
 	}
-
-	return figureChildren.find( viewChild => viewChild.is( 'element', 'table' ) );
 }
 
 // Scans table rows and extracts required metadata from the table:

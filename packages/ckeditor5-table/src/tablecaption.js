@@ -11,6 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import TableCaptionEditing from './tablecaption/tablecaptionediting';
 
 /**
+ * The table caption plugin.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class TableCaption extends Plugin {

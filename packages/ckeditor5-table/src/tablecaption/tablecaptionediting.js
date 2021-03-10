@@ -12,10 +12,7 @@ import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 /**
- * The table caption engine plugin.
- *
- * It registers proper converters. It takes care of adding a caption element if the table without it is inserted
- * to the model document.
+ * The table caption editing plugin.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -49,11 +46,10 @@ export default class TableCaptionEditing extends Plugin {
 		}
 
 		// View -> model converter for the data pipeline.
-		editor.conversion.for( 'upcast' )
-			.elementToElement( {
-				view: matchTableCaptionViewElement,
-				model: 'caption'
-			} );
+		editor.conversion.for( 'upcast' ).elementToElement( {
+			view: matchTableCaptionViewElement,
+			model: 'caption'
+		} );
 
 		// Model -> view converter for the data pipeline.
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
