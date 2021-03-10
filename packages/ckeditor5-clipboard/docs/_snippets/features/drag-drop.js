@@ -64,7 +64,6 @@ class HCardEditing extends Plugin {
 			allowWhere: '$text',
 			isInline: true,
 			isObject: true,
-			allowAttributesOf: '$text',
 			allowAttributes: [ 'email', 'name', 'tel' ]
 		} );
 	}
@@ -98,12 +97,7 @@ class HCardEditing extends Plugin {
 			const name = modelItem.getAttribute( 'name' );
 			const tel = modelItem.getAttribute( 'tel' );
 
-			const cardView = viewWriter.createContainerElement( 'span', {
-				class: 'h-card'
-			}, {
-				isAllowedInsideAttributeElement: true
-			} );
-
+			const cardView = viewWriter.createContainerElement( 'span', { class: 'h-card' } );
 			const linkView = viewWriter.createContainerElement( 'a', { href: `mailto:${ email }`, class: 'p-name u-email' } );
 			const phoneView = viewWriter.createContainerElement( 'span', { class: 'p-tel' } );
 
@@ -118,9 +112,10 @@ class HCardEditing extends Plugin {
 	}
 
 	_defineClipboardInputOutput() {
-		const document = this.editor.editing.view.document;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 
-		this.listenTo( document, 'clipboardInput', ( evt, data ) => {
+		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
 			const contactData = data.dataTransfer.getData( 'contact' );
 
 			if ( !contactData ) {
@@ -128,7 +123,7 @@ class HCardEditing extends Plugin {
 			}
 
 			const contact = JSON.parse( contactData );
-			const writer = new UpcastWriter( document );
+			const writer = new UpcastWriter( viewDocument );
 			const fragment = writer.createDocumentFragment();
 
 			writer.appendChild(
