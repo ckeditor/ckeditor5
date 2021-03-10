@@ -53,31 +53,12 @@ export default class ImageTypeCommand extends Command {
 	 */
 	execute() {
 		const selection = this.editor.model.document.selection;
-		const imageElement = selection.getSelectedElement();
+		const attributes = Object.fromEntries( selection.getSelectedElement().getAttributes() );
 
-		const src = imageElement.getAttribute( 'src' );
-		const alt = imageElement.getAttribute( 'alt' );
-		const srcset = imageElement.getAttribute( 'srcset' );
-		const caption = imageElement.getAttribute( 'caption' );
-
-		if ( !src ) {
+		if ( !attributes.src ) {
 			return;
 		}
 
-		const attrs = { src };
-
-		if ( alt ) {
-			attrs.alt = alt;
-		}
-
-		if ( srcset ) {
-			attrs.srcset = srcset;
-		}
-
-		if ( caption ) {
-			attrs.caption = caption;
-		}
-
-		insertImage( this.editor, attrs, selection, this._modelElementName );
+		insertImage( this.editor, attributes, selection, this._modelElementName );
 	}
 }
