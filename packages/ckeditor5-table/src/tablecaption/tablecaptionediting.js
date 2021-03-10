@@ -100,7 +100,7 @@ export default class TableCaptionEditing extends Plugin {
 // @param {module:engine/view/element~Element} element
 // @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
 // cannot be matched.
-export function matchTableCaptionViewElement( element ) {
+function matchTableCaptionViewElement( element ) {
 	const parent = element.parent;
 
 	if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'table' ) ) {
