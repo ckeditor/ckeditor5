@@ -70,7 +70,7 @@ If your change is related to the main package only, use `ckeditor5` as the packa
 	If the commit introduces a breaking change across the entire project (a generic change), the package name does not have to be specified.
 </info-box>
 
-### Entries ordering
+### Order of entries
 
 The proper order for sections is as follows:
 * Public
