@@ -7,12 +7,10 @@
  * @module image/imagecaption/imagecaptionui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 
 import { getCaptionFromModelSelection } from './utils';
-
-import captionIcon from '../../theme/icons/imagecaption.svg';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
@@ -40,7 +38,7 @@ export default class ImageCaptionUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				icon: captionIcon,
+				icon: icons.caption,
 				tooltip: true,
 				isToggleable: true
 			} );
