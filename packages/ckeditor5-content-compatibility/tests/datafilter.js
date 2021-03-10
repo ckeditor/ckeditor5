@@ -40,7 +40,7 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<ghsArticle><paragraph>section1section2</paragraph></ghsArticle>'
+			'<htmlArticle><paragraph>section1section2</paragraph></htmlArticle>'
 		);
 
 		expect( editor.getData() ).to.equal(
@@ -55,9 +55,9 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<ghsArticle>' +
-			'<ghsSection><paragraph>section1</paragraph></ghsSection>' +
-			'<ghsSection><paragraph>section2</paragraph></ghsSection></ghsArticle>'
+			'<htmlArticle>' +
+			'<htmlSection><paragraph>section1</paragraph></htmlSection>' +
+			'<htmlSection><paragraph>section2</paragraph></htmlSection></htmlArticle>'
 		);
 
 		expect( editor.getData() ).to.equal(
@@ -78,10 +78,10 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<ghsSection><paragraph>1</paragraph>' +
-			'<ghsSection><paragraph>2</paragraph>' +
-			'<ghsSection><paragraph>3</paragraph>' +
-			'</ghsSection></ghsSection></ghsSection>'
+			'<htmlSection><paragraph>1</paragraph>' +
+			'<htmlSection><paragraph>2</paragraph>' +
+			'<htmlSection><paragraph>3</paragraph>' +
+			'</htmlSection></htmlSection></htmlSection>'
 		);
 
 		expect( editor.getData() ).to.equal(
@@ -101,7 +101,7 @@ describe( 'DataFilter', () => {
 		editor.setData( '<section data-foo="foobar"><p>foobar</p></section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection ghsAttributes="(1)"><paragraph>foobar</paragraph></ghsSection>',
+			data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 			attributes: {
 				1: {
 					attributes: {
@@ -126,7 +126,7 @@ describe( 'DataFilter', () => {
 		editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection ghsAttributes="(1)"><paragraph>foobar</paragraph></ghsSection>',
+			data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 			attributes: {
 				1: {
 					styles: {
@@ -149,7 +149,7 @@ describe( 'DataFilter', () => {
 		editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection ghsAttributes="(1)"><paragraph>foobar</paragraph></ghsSection>',
+			data: '<htmlSection htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlSection>',
 			attributes: {
 				1: { classes: [ 'foo', 'bar' ] }
 			}
@@ -171,10 +171,10 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsArticle ghsAttributes="(1)">' +
-				'<ghsSection ghsAttributes="(2)"><paragraph>section1</paragraph></ghsSection>' +
-				'<ghsSection ghsAttributes="(3)"><paragraph>section2</paragraph></ghsSection>' +
-				'</ghsArticle>',
+			data: '<htmlArticle htmlAttributes="(1)">' +
+				'<htmlSection htmlAttributes="(2)"><paragraph>section1</paragraph></htmlSection>' +
+				'<htmlSection htmlAttributes="(3)"><paragraph>section2</paragraph></htmlSection>' +
+				'</htmlArticle>',
 			attributes: {
 				1: {
 					attributes: {
@@ -207,8 +207,8 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection ghsAttributes="(1)"><paragraph>foo</paragraph></ghsSection>' +
-				'<ghsArticle ghsAttributes="(2)"><paragraph>bar</paragraph></ghsArticle>',
+			data: '<htmlSection htmlAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
+				'<htmlArticle htmlAttributes="(2)"><paragraph>bar</paragraph></htmlArticle>',
 			attributes: {
 				1: {
 					attributes: {
@@ -240,8 +240,8 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection ghsAttributes="(1)"><paragraph>foo</paragraph></ghsSection>' +
-				'<ghsSection><paragraph>bar</paragraph></ghsSection>',
+			data: '<htmlSection htmlAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
+				'<htmlSection><paragraph>bar</paragraph></htmlSection>',
 			attributes: {
 				1: {
 					attributes: {
@@ -268,8 +268,8 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection ghsAttributes="(1)"><paragraph>foo</paragraph></ghsSection>' +
-				'<ghsSection><paragraph>bar</paragraph></ghsSection>',
+			data: '<htmlSection htmlAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
+				'<htmlSection><paragraph>bar</paragraph></htmlSection>',
 			attributes: {
 				1: {
 					styles: {
@@ -296,8 +296,8 @@ describe( 'DataFilter', () => {
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection><paragraph>foo</paragraph></ghsSection>' +
-				'<ghsSection><paragraph>bar</paragraph></ghsSection>',
+			data: '<htmlSection><paragraph>foo</paragraph></htmlSection>' +
+				'<htmlSection><paragraph>bar</paragraph></htmlSection>',
 			attributes: {}
 		} );
 
@@ -310,10 +310,10 @@ describe( 'DataFilter', () => {
 	it( 'should extend allowed children only if specified model schema exists', () => {
 		dataSchema.register( {
 			view: 'xyz',
-			model: 'ghsXyz',
+			model: 'htmlXyz',
 			allowChildren: 'not-exists',
 			schema: {
-				inheritAllFrom: '$ghsBlock'
+				inheritAllFrom: '$htmlBlock'
 			}
 		} );
 
@@ -335,7 +335,7 @@ describe( 'DataFilter', () => {
 		editor.setData( '<section data-foo><p>foo</p></section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection><paragraph>foo</paragraph></ghsSection>',
+			data: '<htmlSection><paragraph>foo</paragraph></htmlSection>',
 			attributes: {}
 		} );
 
@@ -344,7 +344,7 @@ describe( 'DataFilter', () => {
 
 	it( 'should not consume attribute already consumed (downcast)', () => {
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'attribute:ghsAttributes:ghsSection', ( evt, data, conversionApi ) => {
+			dispatcher.on( 'attribute:htmlAttributes:htmlSection', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, evt.name );
 			}, { priority: 'high' } );
 		} );
@@ -355,7 +355,7 @@ describe( 'DataFilter', () => {
 		editor.setData( '<section data-foo><p>foo</p></section>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<ghsSection ghsAttributes="(1)"><paragraph>foo</paragraph></ghsSection>',
+			data: '<htmlSection htmlAttributes="(1)"><paragraph>foo</paragraph></htmlSection>',
 			// At this point, attribute should still be in the model, as we are testing downcast conversion.
 			attributes: {
 				1: {
@@ -373,16 +373,16 @@ describe( 'DataFilter', () => {
 function getModelDataWithAttributes( model, options ) {
 	// Simplify GHS attributes as they are not very readable at this point due to object structure.
 	let counter = 1;
-	const data = getModelData( model, options ).replace( /ghsAttributes="{(.*?)}"/g, () => {
-		return `ghsAttributes="(${ counter++ })"`;
+	const data = getModelData( model, options ).replace( /htmlAttributes="{(.*?)}"/g, () => {
+		return `htmlAttributes="(${ counter++ })"`;
 	} );
 
 	const range = model.createRangeIn( model.document.getRoot() );
 
 	let attributes = [];
 	for ( const item of range.getItems() ) {
-		if ( item.hasAttribute && item.hasAttribute( 'ghsAttributes' ) ) {
-			attributes.push( item.getAttribute( 'ghsAttributes' ) );
+		if ( item.hasAttribute && item.hasAttribute( 'htmlAttributes' ) ) {
+			attributes.push( item.getAttribute( 'htmlAttributes' ) );
 		}
 	}
 

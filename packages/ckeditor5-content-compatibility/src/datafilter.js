@@ -12,7 +12,7 @@ import { priorities, toArray } from 'ckeditor5/src/utils';
 
 import { cloneDeep } from 'lodash-es';
 
-const DATA_SCHEMA_ATTRIBUTE_KEY = 'ghsAttributes';
+const DATA_SCHEMA_ATTRIBUTE_KEY = 'htmlAttributes';
 
 /**
  * Allows to validate elements and element attributes registered by {@link module:content-compatibility/dataschema~DataSchema}.
