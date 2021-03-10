@@ -65,9 +65,7 @@ export default class TextFragmentLanguage extends Plugin {
  *
  * The `title` property will be used by the text fragment language dropdown to render available options.
  *
- * The `languageCode` property is used for the lang attribute in ISO 639 format. Language codes can be found
- * [here](http://www.loc.gov/standards/iso639-2/php/English_list.php). You can use both 2-letter ISO-639-1 codes
- * and 3-letter ISO-639-2 codes, though for consistency it is recommended to stick to ISO-639-1 2-letter codes.
+ * The `languageCode` property is used for the lang attribute in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
  *
  * You can also specify optional `textDirection` property indicating the reading direction of the language.
  * Correct values are `ltr` and `rtl`. When `textDirection` property is missing, the text fragment language feature will

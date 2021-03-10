@@ -22,7 +22,7 @@ export default class TextFragmentLanguageCommand extends Command {
 	 *
 	 *		<languageCode>:<textDirection>
 	 *
-	 * * `languageCode` - The language code used for the lang attribute in ISO 639 format.
+	 * * `languageCode` - The language code used for the lang attribute in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
 	 *
 	 * See {@link module:core/editor/editorconfig~LanguageConfig#textFragmentLanguage text fragment config}

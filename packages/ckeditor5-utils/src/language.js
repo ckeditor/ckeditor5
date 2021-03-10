@@ -18,7 +18,7 @@ const RTL_LANGUAGE_CODES = [
 /**
  * Helps determine whether a language text direction is LTR or RTL.
  *
- * @param {String} language The ISO 639 language code.
+ * @param {String} language The ISO 639-1 or ISO 639-2 language code.
  * @returns {'ltr'|'rtl'}
  */
 export function getLanguageDirection( languageCode ) {
