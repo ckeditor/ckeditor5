@@ -128,10 +128,11 @@ export default class HighlightUI extends Plugin {
 	 * @param {String} name The name of the button.
 	 * @param {String} label The label for the button.
 	 * @param {String} icon The button icon.
-	 * @param {Function} [decorateButton=()=>{}] Additional method for extending the button.
+	 * @param value
+	 * @param {Function} decorateButton
 	 * @private
 	 */
-	_addButton( name, label, icon, value, decorateButton = () => {} ) {
+	_addButton( name, label, icon, value, decorateButton ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, locale => {
