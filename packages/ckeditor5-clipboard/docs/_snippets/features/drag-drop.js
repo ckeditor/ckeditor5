@@ -261,7 +261,8 @@ const contacts = [
 ];
 
 contactsContainer.addEventListener( 'dragstart', event => {
-	const draggable = event.target.closest( '[draggable]' );
+	const target = event.target.nodeType == 1 ? event.target : event.target.parentElement;
+	const draggable = target.closest( '[draggable]' );
 
 	event.dataTransfer.setData( 'text/plain', draggable.innerText );
 	event.dataTransfer.setData( 'text/html', draggable.innerText );
