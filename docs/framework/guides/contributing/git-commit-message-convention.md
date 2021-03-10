@@ -89,7 +89,7 @@ Type: Message 1.
 Type: Message 2.
 ```
 
-An example of invalid commit message with incorrectly separated lines (the second line will just be treated as a part of the first line):
+An example of an invalid commit message with incorrectly separated lines (the second line will just be treated as a part of the first line):
 
 ```
 Type: Message 1.
