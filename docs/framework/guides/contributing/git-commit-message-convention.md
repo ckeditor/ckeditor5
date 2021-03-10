@@ -96,7 +96,7 @@ Type: Message 1.
 Type: Message 2.
 ```
 
-An example of invalid comment message with a wrong section order (the "internal" message will be treated as a part of the BREAKING CHANGE message):
+An example of an invalid commit message with an incorrect section order (the "internal" message will be treated as a part of the BREAKING CHANGE message):
 
 ```
 Public: Message 1.
