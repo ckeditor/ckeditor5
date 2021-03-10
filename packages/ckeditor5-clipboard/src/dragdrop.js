@@ -68,7 +68,7 @@ import '../theme/clipboard.css';
 //        │   └─────────────┐
 //        │   │             │
 //        │   │   ┌─────────V────────┐
-//        └───┐   │       drop       │   ( Default of clipboard pipeline ).
+//        └───┐   │       drop       │   ( Default handler of the clipboard pipeline ).
 //            │   └─────────┬────────┘
 //            │             │
 //            │   ┌─────────V────────┐   Resolves final data.targetRanges.
@@ -76,11 +76,11 @@ import '../theme/clipboard.css';
 //            │   └─────────┬────────┘
 //            │             │
 //            │   ┌─────────V────────┐
-//            │   │  clipboardInput  │   ( Default of clipboard pipeline ).
+//            │   │  clipboardInput  │   ( Default handler of the clipboard pipeline ).
 //            │   └─────────┬────────┘
 //            │             │
 //            │ ┌───────────V───────────┐
-//            │ │  inputTransformation  │   ( Default of clipboard pipeline ).
+//            │ │  inputTransformation  │   ( Default handler of the clipboard pipeline ).
 //            │ └───────────┬───────────┘
 //            │             │
 //            │  ┌──────────V──────────┐
@@ -88,7 +88,7 @@ import '../theme/clipboard.css';
 //            │  └──────────┬──────────┘
 //            │             │
 //            │  ┌──────────V──────────┐
-//            │  │   contentInsertion  │   ( Default of clipboard pipeline ).
+//            │  │   contentInsertion  │   ( Default handler of the clipboard pipeline ).
 //            │  └──────────┬──────────┘
 //            │             │
 //            │  ┌──────────V──────────┐
