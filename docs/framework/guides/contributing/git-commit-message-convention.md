@@ -72,7 +72,7 @@ If your change is related to the main package only, use `ckeditor5` as the packa
 
 ### Order of entries
 
-The proper order for sections is as follows:
+The proper order for sections of a commit message is as follows:
 * Public
 * Internal
 * MAJOR/MINOR BREAKING CHANGES
