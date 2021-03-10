@@ -53,7 +53,7 @@ For reference on how to identify minor or major breaking change see the {@link f
 Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
 
 <info-box>
-	Remember to always specify whether the breaking change is `major` or `minor`. If you fail to do so, the system will assume all unspecified breaking changes are `major`.
+	Remember to always specify whether the breaking change is major or minor. If you fail to do so, the system will assume all unspecified breaking changes are major.
 </info-box>
 
 ### Package name
@@ -77,7 +77,7 @@ The proper order for sections of a commit message is as follows:
 * Internal
 * MAJOR/MINOR BREAKING CHANGES
 
-All entries must be separated with `\n`, otherwise the lines will not be treated separately.
+All entries must be separated with `\n` (a blank line), otherwise the lines will not be treated separately.
 
 ### Examples of proper and improper message formatting
 
