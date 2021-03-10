@@ -56,13 +56,10 @@ class HCardEditing extends Plugin {
 	}
 
 	_defineSchema() {
-		const schema = this.editor.model.schema;
-
-		schema.register( 'h-card', {
+		this.editor.model.schema.register( 'h-card', {
 			allowWhere: '$text',
 			isInline: true,
 			isObject: true,
-			allowAttributesOf: '$text',
 			allowAttributes: [ 'email', 'name', 'tel' ]
 		} );
 	}
@@ -75,33 +72,28 @@ class HCardEditing extends Plugin {
 				name: 'span',
 				classes: [ 'h-card' ]
 			},
-			model: ( viewElement, { writer, consumable } ) => {
-				return writer.createElement( 'h-card', getAndConsumeHCardViewElement( viewElement, consumable ) );
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( 'h-card', getCardDataFromViewElement( viewElement ) );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'h-card',
-			view: ( modelItem, { writer: viewWriter } ) => toWidget( createView( modelItem, viewWriter ), viewWriter )
+			view: ( modelItem, { writer: viewWriter } ) => toWidget( createCardView( modelItem, viewWriter ), viewWriter )
 		} );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'h-card',
-			view: ( modelItem, { writer: viewWriter } ) => createView( modelItem, viewWriter )
+			view: ( modelItem, { writer: viewWriter } ) => createCardView( modelItem, viewWriter )
 		} );
 
 		// Helper method for both downcast converters.
-		function createView( modelItem, viewWriter ) {
+		function createCardView( modelItem, viewWriter ) {
 			const email = modelItem.getAttribute( 'email' );
 			const name = modelItem.getAttribute( 'name' );
 			const tel = modelItem.getAttribute( 'tel' );
 
-			const cardView = viewWriter.createContainerElement( 'span', {
-				class: 'h-card'
-			}, {
-				isAllowedInsideAttributeElement: true
-			} );
-
+			const cardView = viewWriter.createContainerElement( 'span', { class: 'h-card' } );
 			const linkView = viewWriter.createContainerElement( 'a', { href: `mailto:${ email }`, class: 'p-name u-email' } );
 			const phoneView = viewWriter.createContainerElement( 'span', { class: 'p-tel' } );
 
@@ -116,9 +108,10 @@ class HCardEditing extends Plugin {
 	}
 
 	_defineClipboardInputOutput() {
-		const document = this.editor.editing.view.document;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 
-		this.listenTo( document, 'clipboardInput', ( evt, data ) => {
+		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
 			const contactData = data.dataTransfer.getData( 'contact' );
 
 			if ( !contactData ) {
@@ -126,7 +119,7 @@ class HCardEditing extends Plugin {
 			}
 
 			const contact = JSON.parse( contactData );
-			const writer = new UpcastWriter( document );
+			const writer = new UpcastWriter( viewDocument );
 			const fragment = writer.createDocumentFragment();
 
 			writer.appendChild(
@@ -148,42 +141,27 @@ class HCardEditing extends Plugin {
 			const viewElement = data.content.getChild( 0 );
 
 			if ( viewElement.is( 'element', 'span' ) && viewElement.hasClass( 'h-card' ) ) {
-				data.dataTransfer.setData( 'contact', JSON.stringify( getAndConsumeHCardViewElement( viewElement ) ) );
+				data.dataTransfer.setData( 'contact', JSON.stringify( getCardDataFromViewElement( viewElement ) ) );
 			}
 		} );
 	}
 }
 
-function getAndConsumeHCardViewElement( viewElement, consumable ) {
+function getCardDataFromViewElement( viewElement ) {
 	const children = Array.from( viewElement.getChildren() );
 	const linkElement = children.find( element => element.is( 'element', 'a' ) && element.hasClass( 'p-name' ) );
 	const telElement = children.find( element => element.is( 'element', 'span' ) && element.hasClass( 'p-tel' ) );
 
-	if ( consumable ) {
-		consumable.consume( linkElement, { name: true, attributes: [ 'href' ], classes: [ 'p-name', 'u-email' ] } );
-		consumable.consume( telElement, { name: true, classes: 'p-tel' } );
-	}
-
 	return {
-		name: getAndConsumeText( linkElement, consumable ),
-		tel: getAndConsumeText( telElement, consumable ),
+		name: getText( linkElement ),
+		tel: getText( telElement ),
 		email: linkElement.getAttribute( 'href' ).replace( /^mailto:/i, '' )
 	};
 }
 
-function getAndConsumeText( viewElement, consumable ) {
+function getText( viewElement ) {
 	return Array.from( viewElement.getChildren() )
-		.map( node => {
-			if ( !node.is( '$text' ) ) {
-				return '';
-			}
-
-			if ( consumable ) {
-				consumable.consume( node );
-			}
-
-			return node.data;
-		} )
+		.map( node => node.is( '$text' ) ? node.data : '' )
 		.join( '' );
 }
 
