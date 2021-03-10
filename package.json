@@ -111,7 +111,7 @@
     "popper": "^1.0.1",
     "postcss-loader": "^3.0.0",
     "progress-bar-webpack-plugin": "^2.1.0",
-    "puppeteer": "^5.5.0",
+    "puppeteer": "^8.0.0",
     "raw-loader": "^4.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
