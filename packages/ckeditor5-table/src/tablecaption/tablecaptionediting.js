@@ -99,33 +99,36 @@ export default class TableCaptionEditing extends Plugin {
 	_insertMissingModelCaptionElement( writer ) {
 		const model = this.editor.model;
 		const changes = model.document.differ.getChanges();
-
-		const imagesWithoutCaption = [];
+		let allCaptions = [];
 
 		for ( const entry of changes ) {
-			if ( entry.type == 'insert' && entry.name != '$text' ) {
-				const item = entry.position.nodeAfter;
+			if ( entry.type != 'insert' ) {
+				continue;
+			}
 
-				if ( item.is( 'element', 'image' ) && !getCaptionFromImage( item ) ) {
-					imagesWithoutCaption.push( item );
+			const positionParent = entry.position.parent;
+
+			if ( positionParent.is( 'element', 'table' ) || entry.name == 'table' ) {
+				const table = entry.position.findAncestor( 'table' );
+
+				// Not a caption in a table.
+				if ( !table ) {
+					return;
 				}
 
-				// Check elements with children for nested images.
-				if ( !item.is( 'element', 'image' ) && item.childCount ) {
-					for ( const nestedItem of model.createRangeIn( item ).getItems() ) {
-						if ( nestedItem.is( 'element', 'image' ) && !getCaptionFromImage( nestedItem ) ) {
-							imagesWithoutCaption.push( nestedItem );
-						}
-					}
+				allCaptions = Array.from( table.getChildren() )
+					.filter( child => child.is( 'element', 'caption' ) );
+
+				const firstCaption = allCaptions.shift();
+
+				for ( const caption of allCaptions ) {
+					writer.move( writer.createRangeIn( caption ), firstCaption, 'end' );
+					writer.remove( caption );
 				}
 			}
 		}
 
-		for ( const image of imagesWithoutCaption ) {
-			writer.appendElement( 'caption', image );
-		}
-
-		return !!imagesWithoutCaption.length;
+		return !!allCaptions.length;
 	}
 }
 
@@ -148,21 +151,6 @@ function matchTableCaptionViewElement( element ) {
 
 	if ( element.name == 'caption' && parent && parent.name == 'table' ) {
 		return { name: true };
-	}
-
-	return null;
-}
-
-// Returns the caption model element from a given image element. Returns `null` if no caption is found.
-//
-// @private
-// @param {module:engine/model/element~Element} imageModelElement
-// @returns {module:engine/model/element~Element|null}
-function getCaptionFromImage( imageModelElement ) {
-	for ( const node of imageModelElement.getChildren() ) {
-		if ( !!node && node.is( 'element', 'caption' ) ) {
-			return node;
-		}
 	}
 
 	return null;
