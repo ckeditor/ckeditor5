@@ -103,7 +103,7 @@ An example of an invalid commit message with an incorrect section order (the "in
 ```
 Feature (package-name): Message 1.
 
-BREAKING CHANGE: A description.
+MINOR BREAKING CHANGE (package-name): A description.
 
 Internal: Message 2.
 ```
