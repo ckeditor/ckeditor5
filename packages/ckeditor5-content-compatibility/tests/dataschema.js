@@ -9,45 +9,45 @@ import DataSchema from '../src/dataschema';
 const fakeDefinitions = [
 	{
 		view: 'def1',
-		model: 'ghsDef1',
-		allowChildren: [ 'ghsDef2', 'ghsDef3' ],
+		model: 'htmlDef1',
+		allowChildren: [ 'htmlDef2', 'htmlDef3' ],
 		schema: {
 			inheritAllFrom: '$block'
 		}
 	},
 	{
 		view: 'def2',
-		model: 'ghsDef2',
+		model: 'htmlDef2',
 		schema: {
-			inheritAllFrom: 'ghsDef1'
+			inheritAllFrom: 'htmlDef1'
 		}
 	},
 	{
 		view: 'def3',
-		model: 'ghsDef3',
+		model: 'htmlDef3',
 		schema: {
-			inheritTypesFrom: 'ghsDef2'
+			inheritTypesFrom: 'htmlDef2'
 		}
 	},
 	{
 		view: 'def4',
-		model: 'ghsDef4',
+		model: 'htmlDef4',
 		schema: {
-			allowWhere: 'ghsDef3'
+			allowWhere: 'htmlDef3'
 		}
 	},
 	{
 		view: 'def5',
-		model: 'ghsDef5',
+		model: 'htmlDef5',
 		schema: {
-			allowContentOf: 'ghsDef4'
+			allowContentOf: 'htmlDef4'
 		}
 	},
 	{
 		view: 'def6',
-		model: 'ghsDef6',
+		model: 'htmlDef6',
 		schema: {
-			allowAttributesOf: 'ghsDef5'
+			allowAttributesOf: 'htmlDef5'
 		}
 	}
 ];
