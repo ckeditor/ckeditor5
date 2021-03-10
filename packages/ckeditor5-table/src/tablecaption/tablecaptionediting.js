@@ -83,6 +83,49 @@ export default class TableCaptionEditing extends Plugin {
 				return toWidgetEditable( figcaptionElement, writer );
 			}
 		} );
+
+		// Add caption element to each image inserted without it.
+		editor.model.document.registerPostFixer( writer => this._insertMissingModelCaptionElement( writer ) );
+	}
+
+	/**
+	 * Checks whether the data inserted to the model document have an image element that has no caption element inside it.
+	 * If there is none, it adds it to the image element.
+	 *
+	 * @private
+	 * @param {module:engine/model/writer~Writer} writer The writer to make changes with.
+	 * @returns {Boolean} `true` if any change was applied, `false` otherwise.
+	 */
+	_insertMissingModelCaptionElement( writer ) {
+		const model = this.editor.model;
+		const changes = model.document.differ.getChanges();
+
+		const imagesWithoutCaption = [];
+
+		for ( const entry of changes ) {
+			if ( entry.type == 'insert' && entry.name != '$text' ) {
+				const item = entry.position.nodeAfter;
+
+				if ( item.is( 'element', 'image' ) && !getCaptionFromImage( item ) ) {
+					imagesWithoutCaption.push( item );
+				}
+
+				// Check elements with children for nested images.
+				if ( !item.is( 'element', 'image' ) && item.childCount ) {
+					for ( const nestedItem of model.createRangeIn( item ).getItems() ) {
+						if ( nestedItem.is( 'element', 'image' ) && !getCaptionFromImage( nestedItem ) ) {
+							imagesWithoutCaption.push( nestedItem );
+						}
+					}
+				}
+			}
+		}
+
+		for ( const image of imagesWithoutCaption ) {
+			writer.appendElement( 'caption', image );
+		}
+
+		return !!imagesWithoutCaption.length;
 	}
 }
 
@@ -105,6 +148,21 @@ function matchTableCaptionViewElement( element ) {
 
 	if ( element.name == 'caption' && parent && parent.name == 'table' ) {
 		return { name: true };
+	}
+
+	return null;
+}
+
+// Returns the caption model element from a given image element. Returns `null` if no caption is found.
+//
+// @private
+// @param {module:engine/model/element~Element} imageModelElement
+// @returns {module:engine/model/element~Element|null}
+function getCaptionFromImage( imageModelElement ) {
+	for ( const node of imageModelElement.getChildren() ) {
+		if ( !!node && node.is( 'element', 'caption' ) ) {
+			return node;
+		}
 	}
 
 	return null;
