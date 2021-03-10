@@ -168,7 +168,7 @@ describe( 'DataFilter', () => {
 
 	it( 'should allow nested attributes', () => {
 		dataFilter.allowElement( { name: /article|section/ } );
-		dataFilter.allowAttributes( { name: /[^]/, attributes: { 'data-foo': /foo|bar/ } } );
+		dataFilter.allowAttributes( { name: /[\s\S]+/, attributes: { 'data-foo': /foo|bar/ } } );
 
 		editor.setData( '<article data-foo="foo">' +
 			'<section data-foo="bar"><p>section1</p></section>' +
@@ -237,7 +237,7 @@ describe( 'DataFilter', () => {
 
 	it( 'should disallow attributes', () => {
 		dataFilter.allowElement( { name: 'section' } );
-		dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': /[^]/ } } );
+		dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': /[\s\S]+/ } } );
 		dataFilter.disallowAttributes( { name: 'section', attributes: { 'data-foo': 'bar' } } );
 
 		editor.setData(
@@ -265,7 +265,7 @@ describe( 'DataFilter', () => {
 
 	it( 'should disallow attributes (styles)', () => {
 		dataFilter.allowElement( { name: 'section' } );
-		dataFilter.allowAttributes( { name: 'section', styles: { color: /[^]/ } } );
+		dataFilter.allowAttributes( { name: 'section', styles: { color: /[\s\S]+/ } } );
 		dataFilter.disallowAttributes( { name: 'section', styles: { color: 'red' } } );
 
 		editor.setData(
