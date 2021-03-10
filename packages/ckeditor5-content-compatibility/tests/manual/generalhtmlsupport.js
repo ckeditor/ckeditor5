@@ -53,12 +53,18 @@ class ExtendHTMLSupport extends Plugin {
 
 		// Let's extend 'section' with some attributes. Data filter will take care of
 		// creating proper converters and attribute matchers:
-		dataFilter.allowAttributes( { name: 'section', attributes: { id: /[^]/ } } );
-		dataFilter.allowAttributes( { name: 'section', classes: /[^]/ } );
+		dataFilter.allowAttributes( { name: 'section', attributes: { id: /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'section', classes: /[\s\S]+/ } );
 		dataFilter.allowAttributes( { name: 'section', styles: { color: 'red' } } );
 
 		// but disallow setting id attribute if it start with `_` prefix:
 		dataFilter.disallowAttributes( { name: 'section', attributes: { id: /^_.*/ } } );
+
+		// Let's also add some inline elements support:
+		dataFilter.allowElement( { name: 'span' } );
+		dataFilter.allowAttributes( { name: 'span', attributes: { 'data-foo': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'span', styles: { color: /[\s\S]+/ } } );
+		dataFilter.disallowAttributes( { name: 'span', styles: { color: 'red' } } );
 	}
 }
 

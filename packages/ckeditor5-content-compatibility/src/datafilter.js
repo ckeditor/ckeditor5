@@ -37,7 +37,7 @@ const DATA_SCHEMA_ATTRIBUTE_KEY = 'htmlAttributes';
  *		dataFilter.disallowedAttributes( {
  *			name: 'section',
  *			styles: {
- *				color: /[^]/
+ *				color: /[\s\S]+/
  *			}
  *		} );
  */
@@ -133,15 +133,47 @@ export default class DataFilter {
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	_registerElement( definition ) {
+		if ( definition.isInline ) {
+			this._defineInlineElement( definition );
+		} else {
+			this._defineBlockElement( definition );
+		}
+	}
+
+	/**
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 */
+	_defineBlockElement( definition ) {
 		if ( this.editor.model.schema.isRegistered( definition.model ) ) {
 			return;
 		}
 
 		this._defineSchema( definition );
 
-		if ( definition.view ) {
-			this._defineConverters( definition );
+		if ( !definition.view ) {
+			return;
 		}
+
+		this._defineBlockElementConverters( definition );
+	}
+
+	/**
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 */
+	_defineInlineElement( definition ) {
+		const schema = this.editor.model.schema;
+
+		schema.extend( '$text', {
+			allowAttributes: definition.model
+		} );
+
+		schema.setAttributeProperties( definition.model, {
+			copyOnEnter: true
+		} );
+
+		this._defineInlineElementConverters( definition );
 	}
 
 	/**
@@ -168,53 +200,58 @@ export default class DataFilter {
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
-	_defineConverters( definition ) {
+	_defineInlineElementConverters( definition ) {
 		const conversion = this.editor.conversion;
 		const viewName = definition.view;
 		const modelName = definition.model;
 
-		// Consumes disallowed element attributes to prevent them of being processed by other converters.
-		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-				for ( const match of matchAll( data.viewItem, this._disallowedAttributes ) ) {
-					conversionApi.consumable.consume( data.viewItem, match.match );
-				}
-			}, { priority: 'high' } );
+		this._addDisallowedAttributesConverter( viewName );
+
+		conversion.for( 'upcast' ).elementToAttribute( {
+			view: viewName,
+			model: {
+				key: modelName,
+				value: this._matchAndConsumeAttributes.bind( this )
+			},
+			converterPriority: 'low'
 		} );
+
+		conversion.for( 'downcast' ).attributeToElement( {
+			model: modelName,
+			view: ( attributeValue, conversionApi ) => {
+				if ( !attributeValue ) {
+					return;
+				}
+
+				const { writer } = conversionApi;
+				const viewElement = writer.createAttributeElement( viewName );
+
+				setAttributesOn( writer, attributeValue, viewElement );
+
+				return viewElement;
+			}
+		} )
+	}
+
+	/**
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition}
+	 */
+	_defineBlockElementConverters( definition ) {
+		const conversion = this.editor.conversion;
+		const viewName = definition.view;
+		const modelName = definition.model;
+
+		this._addDisallowedAttributesConverter( viewName );
 
 		// Stash unused, allowed element attributes, so they can be reapplied later in data conversion.
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
 			model: ( viewElement, conversionApi ) => {
-				const matches = [];
-
-				for ( const match of matchAll( viewElement, this._allowedAttributes ) ) {
-					if ( conversionApi.consumable.consume( viewElement, match.match ) ) {
-						matches.push( match );
-					}
-				}
-
-				const { attributes, styles, classes } = mergeMatchResults( matches );
-				const viewAttributes = {};
-
-				// Stash attributes.
-				if ( attributes.size ) {
-					viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
-				}
-
-				// Stash styles.
-				if ( styles.size ) {
-					viewAttributes.styles = iterableToObject( styles, key => viewElement.getStyle( key ) );
-				}
-
-				// Stash classes.
-				if ( classes.size ) {
-					viewAttributes.classes = Array.from( classes );
-				}
-
 				const element = conversionApi.writer.createElement( modelName );
+				const viewAttributes = this._matchAndConsumeAttributes( viewElement, conversionApi );
 
-				if ( Object.keys( viewAttributes ).length ) {
+				if ( viewAttributes ) {
 					conversionApi.writer.setAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes, element );
 				}
 
@@ -241,21 +278,92 @@ export default class DataFilter {
 				const viewWriter = conversionApi.writer;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-				if ( viewAttributes.attributes ) {
-					for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
-						viewWriter.setAttribute( key, value, viewElement );
-					}
-				}
-
-				if ( viewAttributes.styles ) {
-					viewWriter.setStyle( viewAttributes.styles, viewElement );
-				}
-
-				if ( viewAttributes.classes ) {
-					viewWriter.addClass( viewAttributes.classes, viewElement );
-				}
+				setAttributesOn( viewWriter, viewAttributes, viewElement );
 			} );
 		} );
+	}
+
+	/**
+	 * Adds converter responsible for consuming disallowed view attributes.
+	 *
+	 * @private
+	 * @param {String} viewName
+	 */
+	_addDisallowedAttributesConverter( viewName ) {
+		const conversion = this.editor.conversion;
+
+		// Consumes disallowed element attributes to prevent them of being processed by other converters.
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
+				for ( const match of matchAll( data.viewItem, this._disallowedAttributes ) ) {
+					conversionApi.consumable.consume( data.viewItem, match.match );
+				}
+			}, { priority: 'high' } );
+		} );
+	}
+
+	/**
+	 * Matches and consumes allowed view attributes.
+	 *
+	 * @private
+	 * @param {module:engine/view/element~Element} viewElement
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+	 * @returns {Object} [result]
+	 * @returns {Array.<String>} result.attributes Array with matched attribute names.
+	 * @returns {Array.<String>} result.classes Array with matched class names.
+	 * @returns {Array.<String>} result.styles Array with matched style names.
+	 */
+	_matchAndConsumeAttributes( viewElement, { consumable } ) {
+		const matches = [];
+		for ( const match of matchAll( viewElement, this._allowedAttributes ) ) {
+			if ( consumable.consume( viewElement, match.match ) ) {
+				matches.push( match );
+			}
+		}
+
+		const { attributes, styles, classes } = mergeMatchResults( matches );
+		const viewAttributes = {};
+
+		if ( attributes.size ) {
+			viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
+		}
+
+		if ( styles.size ) {
+			viewAttributes.styles = iterableToObject( styles, key => viewElement.getStyle( key ) );
+		}
+
+		if ( classes.size ) {
+			viewAttributes.classes = Array.from( classes );
+		}
+
+		if ( !Object.keys( viewAttributes ).length ) {
+			return null;
+		}
+
+		return viewAttributes;
+	}
+}
+
+// Helper function for downcast converter. Sets attributes on the given view element.
+//
+// @private
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {Object} viewAttributes
+// @param {module:engine/view/element~Element} viewElement
+// on all elements in the range.
+function setAttributesOn( writer, viewAttributes, viewElement ) {
+	if ( viewAttributes.attributes ) {
+		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
+			writer.setAttribute( key, value, viewElement );
+		}
+	}
+
+	if ( viewAttributes.styles ) {
+		writer.setStyle( viewAttributes.styles, viewElement );
+	}
+
+	if ( viewAttributes.classes ) {
+		writer.addClass( viewAttributes.classes, viewElement );
 	}
 }
 

@@ -112,6 +112,13 @@ export default class DataSchema {
 				allowIn: 'htmlDetails'
 			}
 		} );
+
+		// Inline elements.
+		this.register( {
+			view: 'span',
+			model: 'htmlSpan',
+			isInline: true
+		} );
 	}
 
 	/**
@@ -167,6 +174,11 @@ export default class DataSchema {
 	 */
 	* _getReferences( modelName ) {
 		const { schema } = this._definitions.get( modelName );
+
+		if ( !schema ) {
+			return;
+		}
+
 		const inheritProperties = [ 'inheritAllFrom', 'inheritTypesFrom', 'allowWhere', 'allowContentOf', 'allowAttributesOf' ];
 
 		for ( const property of inheritProperties ) {
