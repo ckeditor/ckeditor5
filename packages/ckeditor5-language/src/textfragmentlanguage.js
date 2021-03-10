@@ -13,21 +13,6 @@ import TextFragmentLanguageEditing from './textfragmentlanguageediting';
 import TextFragmentLanguageUI from './textfragmentlanguageui';
 
 /**
- * The text fragment language plugin.
- *
- * This feature allows setting language of parts of the content using simple dropdown button. For example,
- * use it when you would like to indicate that the specific quote is in different language than the rest of the content.
- * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
- * to learn more.
- *
- * To change UI editor language, refer to {@glink features/ui-language setting the UI language} guide.
- *
- * For more information about this feature check the {@glink api/textfragmentlanguage package page}.
- *
- * This is a "glue" plugin which loads the {@link module:language/textfragmentlanguageediting~TextFragmentLanguageEditing
- * text fragment language editing feature} and
- * {@link module:language/textfragmentlanguageui~TextFragmentLanguageUI text fragment language UI feature}.
- *
  * @extends module:core/plugin~Plugin
  */
 export default class TextFragmentLanguage extends Plugin {
@@ -47,8 +32,8 @@ export default class TextFragmentLanguage extends Plugin {
 }
 
 /**
- * The available {@link module:language/textfragmentlanguage~TextFragmentLanguage
-} options allowing setting language of parts of the content.
+ * The available {@link module:language/textfragmentlanguage~TextFragmentLanguage}
+ * options allowing setting language of parts of the content.
  *
  * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
  * to learn more.
