@@ -84,10 +84,11 @@ All entries must be separated with `\n` (a blank line), otherwise the lines will
 Example of a proper commit message:
 
 ```
-Type: Message 1.
+Feature (scope-1): Message 1.
 
-Type: Message 2.
-```
+Fix (scope-2): Message 2.
+
+Tests: The change across the entire project.
 
 An example of an invalid commit message with incorrectly separated lines (the second line will just be treated as a part of the first line):
 
