@@ -4,7 +4,7 @@
  */
 
 /**
- * Set of utils related to keyboard support.
+ * A set of utilities related to keyboard support.
  *
  * @module utils/keyboard
  */
@@ -26,7 +26,7 @@ const modifiersToGlyphsNonMac = {
 };
 
 /**
- * Object with `keyName => keyCode` pairs for a set of known keys.
+ * An object with `keyName => keyCode` pairs for a set of known keys.
  *
  * Contains:
  *
@@ -44,11 +44,11 @@ const keyCodeNames = Object.fromEntries(
 );
 
 /**
- * Converts a key name or a {@link module:utils/keyboard~KeystrokeInfo keystroke info} into a key code.
+ * Converts a key name or {@link module:utils/keyboard~KeystrokeInfo keystroke info} into a key code.
  *
  * Note: Key names are matched with {@link module:utils/keyboard~keyCodes} in a case-insensitive way.
  *
- * @param {String|module:utils/keyboard~KeystrokeInfo} Key name (see {@link module:utils/keyboard~keyCodes})
+ * @param {String|module:utils/keyboard~KeystrokeInfo} A key name (see {@link module:utils/keyboard~keyCodes})
  * or a keystroke data object.
  * @returns {Number} Key or keystroke code.
  */
@@ -60,7 +60,7 @@ export function getCode( key ) {
 
 		if ( !keyCode ) {
 			/**
-			 * Unknown key name. Only key names contained by the {@link module:utils/keyboard~keyCodes} can be used.
+			 * Unknown key name. Only key names included in the {@link module:utils/keyboard~keyCodes} can be used.
 			 *
 			 * @error keyboard-unknown-key
 			 * @param {String} key
@@ -79,8 +79,8 @@ export function getCode( key ) {
 }
 
 /**
- * Parses keystroke and returns a keystroke code that will match the code returned by
- * link {@link module:utils/keyboard~getCode} for a corresponding {@link module:utils/keyboard~KeystrokeInfo keystroke info}.
+ * Parses the keystroke and returns a keystroke code that will match the code returned by
+ * {@link module:utils/keyboard~getCode} for the corresponding {@link module:utils/keyboard~KeystrokeInfo keystroke info}.
  *
  * The keystroke can be passed in two formats:
  *
@@ -93,7 +93,11 @@ export function getCode( key ) {
  *
  * Note: Only keystrokes with a single non-modifier key are supported (e.g. `ctrl+A` is OK, but `ctrl+A+B` is not).
  *
- * @param {String|Array.<Number|String>} keystroke Keystroke definition.
+ * Note: On macOS, keystroke handling is translating the `Ctrl` key to the `Cmd` key and handling only that keystroke.
+ * For example, a registered keystroke `Ctrl+A` will be translated to `Cmd+A` on macOS. To disable the translation of some keystroke,
+ * use the forced modifier: `Ctrl!+A` (note the exclamation mark).
+ *
+ * @param {String|Array.<Number|String>} keystroke The keystroke definition.
  * @returns {Number} Keystroke code.
  */
 export function parseKeystroke( keystroke ) {
@@ -107,11 +111,11 @@ export function parseKeystroke( keystroke ) {
 }
 
 /**
- * It translates any keystroke string text like `"CTRL+A"` to an
- * environment–specific keystroke, i.e. `"⌘A"` on Mac OSX.
+ * Translates any keystroke string text like `"Ctrl+A"` to an
+ * environment–specific keystroke, i.e. `"⌘A"` on macOS.
  *
- * @param {String} keystroke Keystroke text.
- * @returns {String} Keystroke text specific for the environment.
+ * @param {String} keystroke The keystroke text.
+ * @returns {String} The keystroke text specific for the environment.
  */
 export function getEnvKeystrokeText( keystroke ) {
 	let keystrokeCode = parseKeystroke( keystroke );
@@ -146,9 +150,9 @@ export function isArrowKeyCode( keyCode ) {
 
 /**
  * Returns the direction in which the {@link module:engine/model/documentselection~DocumentSelection selection}
- * will move when a provided arrow key code is pressed considering the language direction of the editor content.
+ * will move when the provided arrow key code is pressed considering the language direction of the editor content.
  *
- * For instance, in right–to–left (RTL) content languages, pressing the left arrow means moving selection right (forward)
+ * For instance, in right–to–left (RTL) content languages, pressing the left arrow means moving the selection right (forward)
  * in the model structure. Similarly, pressing the right arrow moves the selection left (backward).
  *
  * @param {Number} keyCode A key code as in {@link module:utils/keyboard~KeystrokeInfo#keyCode}.
@@ -255,7 +259,7 @@ function splitKeystrokeText( keystroke ) {
 }
 
 /**
- * Information about a keystroke.
+ * Information about the keystroke.
  *
  * @interface module:utils/keyboard~KeystrokeInfo
  */
