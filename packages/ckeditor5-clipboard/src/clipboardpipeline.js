@@ -16,7 +16,7 @@ import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';
 import viewToPlainText from './utils/viewtoplaintext.js';
 
-// Output pipeline events overview:
+// Input pipeline events overview:
 //
 //              ┌──────────────────────┐          ┌──────────────────────┐
 //              │     view.Document    │          │     view.Document    │
@@ -41,7 +41,7 @@ import viewToPlainText from './utils/viewtoplaintext.js';
 //                                └─────────────────────┘
 //
 //
-// Input pipeline events overview:
+// Output pipeline events overview:
 //
 //              ┌──────────────────────┐          ┌──────────────────────┐
 //              │     view.Document    │          │     view.Document    │   Retrieves the selected model.DocumentFragment
