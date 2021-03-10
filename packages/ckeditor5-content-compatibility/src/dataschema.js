@@ -36,80 +36,80 @@ export default class DataSchema {
 
 		// Add block elements.
 		this.register( {
-			model: '$ghsBlock',
+			model: '$htmlBlock',
 			allowChildren: '$block',
 			schema: {
-				allowIn: [ '$root', '$ghsBlock' ],
+				allowIn: [ '$root', '$htmlBlock' ],
 				isBlock: true
 			}
 		} );
 
 		this.register( {
 			view: 'article',
-			model: 'ghsArticle',
+			model: 'htmlArticle',
 			schema: {
-				inheritAllFrom: '$ghsBlock'
+				inheritAllFrom: '$htmlBlock'
 			}
 		} );
 
 		this.register( {
 			view: 'section',
-			model: 'ghsSection',
+			model: 'htmlSection',
 			schema: {
-				inheritAllFrom: '$ghsBlock'
+				inheritAllFrom: '$htmlBlock'
 			}
 		} );
 
 		// Add data list elements.
 		this.register( {
 			view: 'dl',
-			model: 'ghsDl',
+			model: 'htmlDl',
 			schema: {
-				allowIn: [ '$ghsBlock', '$root' ],
+				allowIn: [ '$htmlBlock', '$root' ],
 				isBlock: true
 			}
 		} );
 
 		this.register( {
-			model: '$ghsDatalist',
+			model: '$htmlDatalist',
 			allowChildren: '$block',
 			schema: {
-				allowIn: 'ghsDl',
+				allowIn: 'htmlDl',
 				isBlock: true
 			}
 		} );
 
 		this.register( {
 			view: 'dt',
-			model: 'ghsDt',
+			model: 'htmlDt',
 			schema: {
-				inheritAllFrom: '$ghsDatalist'
+				inheritAllFrom: '$htmlDatalist'
 			}
 		} );
 
 		this.register( {
 			view: 'dd',
-			model: 'ghsDd',
+			model: 'htmlDd',
 			schema: {
-				inheritAllFrom: '$ghsDatalist'
+				inheritAllFrom: '$htmlDatalist'
 			}
 		} );
 
 		// Add details elements.
 		this.register( {
 			view: 'details',
-			model: 'ghsDetails',
+			model: 'htmlDetails',
 			schema: {
-				inheritAllFrom: '$ghsBlock'
+				inheritAllFrom: '$htmlBlock'
 			}
 		} );
 
 		this.register( {
 			view: 'summary',
-			model: 'ghsSummary',
+			model: 'htmlSummary',
 			allowChildren: '$text',
 			schema: {
-				allowIn: 'ghsDetails'
+				allowIn: 'htmlDetails'
 			}
 		} );
 	}
