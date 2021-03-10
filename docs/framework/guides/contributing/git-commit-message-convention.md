@@ -101,7 +101,7 @@ Tests: Message 3.
 An example of an invalid commit message with an incorrect section order (the "internal" message will be treated as a part of the BREAKING CHANGE message):
 
 ```
-Public: Message 1.
+Feature (package-name): Message 1.
 
 BREAKING CHANGE: A description.
 
