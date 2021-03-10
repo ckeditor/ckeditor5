@@ -73,9 +73,9 @@ If your change is related to the main package only, use `ckeditor5` as the packa
 ### Order of entries
 
 The proper order for sections of a commit message is as follows:
-* Public
-* Internal
-* MAJOR/MINOR BREAKING CHANGES
+* Entries that should be added to the changelog
+* Entries that will not be added to the changelog
+* Breaking changes notes
 
 All entries must be separated with `\n` (a blank line), otherwise the lines will not be treated separately.
 
