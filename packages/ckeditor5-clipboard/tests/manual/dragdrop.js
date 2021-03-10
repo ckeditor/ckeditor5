@@ -266,4 +266,6 @@ dropArea.addEventListener( 'drop', event => {
 		'-- text/html --\n' + event.dataTransfer.getData( 'text/html' ) + '\n\n' +
 		'-- contact --\n' + ( contact ? JSON.stringify( JSON.parse( contact ), 0, 2 ) : '' ) + '\n';
 	dropArea.classList.remove( 'dragover' );
+
+	event.preventDefault();
 } );
