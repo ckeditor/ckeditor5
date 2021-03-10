@@ -111,11 +111,11 @@ export default class ImageUploadEditing extends Plugin {
 
 			evt.stop();
 
-			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );
-
 			editor.model.change( writer => {
 				// Set selection to paste target.
-				writer.setSelection( ranges );
+				if ( data.targetRanges ) {
+					writer.setSelection( data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) ) );
+				}
 
 				// Upload images after the selection has changed in order to ensure the command's state is refreshed.
 				editor.model.enqueueChange( 'default', () => {

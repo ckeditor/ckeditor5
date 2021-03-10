@@ -104,6 +104,21 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should insert image when is pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: null } );
+
+		const id = fileRepository.getLoader( fileMock ).id;
+		expect( getModelData( model ) ).to.equal(
+			`<paragraph>foo</paragraph>[<image uploadId="${ id }" uploadStatus="reading"></image>]`
+		);
+		expect( eventInfo.stop.called ).to.be.true;
+	} );
+
+	it( 'should insert image when is dropped', () => {
+		const fileMock = createNativeFileMock();
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
