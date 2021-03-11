@@ -6,54 +6,54 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import DataSchema from '../src/dataschema';
 
-const fakeDefinitions = [
-	{
-		view: 'def1',
-		model: 'htmlDef1',
-		allowChildren: [ 'htmlDef2', 'htmlDef3' ],
-		schema: {
-			inheritAllFrom: '$block'
-		}
-	},
-	{
-		view: 'def2',
-		model: 'htmlDef2',
-		schema: {
-			inheritAllFrom: 'htmlDef1'
-		}
-	},
-	{
-		view: 'def3',
-		model: 'htmlDef3',
-		schema: {
-			inheritTypesFrom: 'htmlDef2'
-		}
-	},
-	{
-		view: 'def4',
-		model: 'htmlDef4',
-		schema: {
-			allowWhere: 'htmlDef3'
-		}
-	},
-	{
-		view: 'def5',
-		model: 'htmlDef5',
-		schema: {
-			allowContentOf: 'htmlDef4'
-		}
-	},
-	{
-		view: 'def6',
-		model: 'htmlDef6',
-		schema: {
-			allowAttributesOf: 'htmlDef5'
-		}
-	}
-];
-
 describe( 'DataSchema', () => {
 	let editor, dataSchema;
+
+	const fakeDefinitions = [
+		{
+			view: 'def1',
+			model: 'htmlDef1',
+			allowChildren: [ 'htmlDef2', 'htmlDef3' ],
+			schema: {
+				inheritAllFrom: '$block'
+			}
+		},
+		{
+			view: 'def2',
+			model: 'htmlDef2',
+			schema: {
+				inheritAllFrom: 'htmlDef1'
+			}
+		},
+		{
+			view: 'def3',
+			model: 'htmlDef3',
+			schema: {
+				inheritTypesFrom: 'htmlDef2'
+			}
+		},
+		{
+			view: 'def4',
+			model: 'htmlDef4',
+			schema: {
+				allowWhere: 'htmlDef3'
+			}
+		},
+		{
+			view: 'def5',
+			model: 'htmlDef5',
+			schema: {
+				allowContentOf: 'htmlDef4'
+			}
+		},
+		{
+			view: 'def6',
+			model: 'htmlDef6',
+			schema: {
+				allowAttributesOf: 'htmlDef5'
+			}
+		}
+	];
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -142,12 +142,12 @@ describe( 'DataSchema', () => {
 
 		expect( result.size ).to.equal( 0 );
 	} );
+
+	function registerMany( dataSchema, definitions ) {
+		definitions.forEach( def => dataSchema.register( def ) );
+	}
+
+	function getFakeDefinitions( ...viewNames ) {
+		return fakeDefinitions.filter( def => viewNames.includes( def.view ) );
+	}
 } );
-
-function registerMany( dataSchema, definitions ) {
-	definitions.forEach( def => dataSchema.register( def ) );
-}
-
-function getFakeDefinitions( ...viewNames ) {
-	return fakeDefinitions.filter( def => viewNames.includes( def.view ) );
-}
