@@ -95,7 +95,8 @@ describe( 'DataFilter', () => {
 	it( 'should allow attributes', () => {
 		dataFilter.allowElement( { name: 'section' } );
 		dataFilter.allowAttributes( {
-			name: 'section', attributes: {
+			name: 'section',
+			attributes: {
 				'data-foo': 'foobar'
 			}
 		} );
@@ -121,7 +122,8 @@ describe( 'DataFilter', () => {
 	it( 'should allow attributes (styles)', () => {
 		dataFilter.allowElement( { name: 'section' } );
 		dataFilter.allowAttributes( {
-			name: 'section', styles: {
+			name: 'section',
+			styles: {
 				'color': 'red',
 				'background-color': 'blue'
 			}
