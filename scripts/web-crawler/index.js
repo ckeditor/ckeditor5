@@ -11,6 +11,8 @@ const puppeteer = require( 'puppeteer' );
 
 const chalk = require( 'chalk' );
 
+const stripAnsiEscapeCodes = require( 'strip-ansi' );
+
 const { getBaseUrl, getFirstLineFromErrorMessage, parseArguments, toArray } = require( './utils' );
 
 const { createSpinner, getProgressHandler } = require( './spinner' );
@@ -218,13 +220,12 @@ async function openLink( browser, { baseUrl, link, foundLinks, exclusions, onPro
 		await page.goto( link.url, { waitUntil: [ 'load', 'networkidle0' ] } );
 	} catch ( error ) {
 		const errorMessage = error.message || 'Unknown navigation error';
-		const ignoredMessages = [
-			// Aborted navigation is already covered by the "request" or "response" error handlers, so it should not be also reported
-			// as the "console error".
-			'net::ERR_ABORTED'
-		];
 
-		if ( ignoredMessages.every( ignoredMessage => !errorMessage.startsWith( ignoredMessage ) ) ) {
+		// All navigation errors starting with the `net::` prefix are already covered by the "request" error handler, so it should
+		// not be also reported as the "navigation error".
+		const ignoredMessage = 'net::';
+
+		if ( !errorMessage.startsWith( ignoredMessage ) ) {
 			onError( {
 				pageUrl: link.url,
 				type: ERROR_TYPES.NAVIGATION_ERROR,
@@ -364,7 +365,7 @@ function markErrorsAsIgnored( errors, errorIgnorePatterns ) {
 				return true;
 			}
 
-			if ( error.message.includes( pattern ) ) {
+			if ( stripAnsiEscapeCodes( error.message ).includes( pattern ) ) {
 				return true;
 			}
 
@@ -481,13 +482,11 @@ function registerErrorHandlers( page, { link, onError } ) {
 	} );
 
 	page.on( ERROR_TYPES.CONSOLE_ERROR.event, async message => {
-		const ignoredMessages = [
-			// The resource loading failure is already covered by the "request" or "response" error handlers, so it should
-			// not be also reported as the "console error".
-			'Failed to load resource:'
-		];
+		// The resource loading failure is already covered by the "request" or "response" error handlers, so it should
+		// not be also reported as the "console error".
+		const ignoredMessage = 'Failed to load resource:';
 
-		if ( ignoredMessages.some( ignoredMessage => message.text().startsWith( ignoredMessage ) ) ) {
+		if ( message.text().startsWith( ignoredMessage ) ) {
 			return;
 		}
 

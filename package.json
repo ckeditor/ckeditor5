@@ -115,6 +115,7 @@
     "raw-loader": "^4.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "strip-ansi": "^6.0.0",
     "style-loader": "^1.2.1",
     "stylelint": "^13.5.0",
     "stylelint-config-ckeditor5": "^2.0.0",

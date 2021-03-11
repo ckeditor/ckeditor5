@@ -151,34 +151,59 @@ yarn run docs:verify -e -c 2 -q
 
 #### Defining exclusions for web crawler
 
-The crawler supports exclusions provided as text patterns, which are then searched for in the error messages as a substrings. This pattern is just a plain text, not a regular expression. When a pattern (substring) is found, such an error is ignored - it is not listed after the finished scan and it does not mark the entire scan as failed. Only non-ignored errors are logged at the end of the scan.
+The crawler supports exclusions provided as text patterns, which are then searched for in the error messages as substrings. This pattern is just a plain text, not a regular expression. When a pattern (substring) is found, such an error is ignored - it is not listed after the finished scan and it does not mark the entire scan as failed. Only non-ignored errors are logged at the end of the scan.
 
-The pattern for ignoring an error must be defined in `<meta>` tag on a page, where an error occurs. This `<meta>` tag must have `x-cke-crawler-ignore-patterns` name and `content` value provided as JSON object. Each key in this object defines text patterns for a separate type of errors, that can be detected by the crawler. Each value is the text or an array of texts, that are used for finding a match in error messages. The special wildcard value `*` is used to ignore all errors that are found for given error type.
+The pattern for ignoring an error must be defined in `<meta>` tag on a page, where an error occurs. This `<meta>` tag must have `x-cke-crawler-ignore-patterns` name and `content` value provided as JSON object, where:
+
+* Each key is the error type, that can be detected by the crawler.
+* Each value is the text or an array of texts, that are used for finding a match in error messages. The special wildcard value `*` can be used to ignore all errors for given error type.
 
 The following error types are supported: `uncaught-exception`, `request-failure`, `response-failure`, `console-error`, `navigation-error` and `page-crash`:
 
 * `uncaught-exception` &ndash; As the name suggests, these are uncaught exceptions from the page.
-* `request-failure` &ndash; It can occur, when the request has not been sent (e.g. it was blocked by the browser) or has not received any response (e.g. due to a timeout). HTTP error responses, such as 404 or 500, are considered as successful ones from HTTP standpoint, so such requests will not be logged as request failures, but as response failures.
+* `request-failure` &ndash; This error occurs, when the request has not been sent (e.g. it was blocked by the browser) or has not received any response (e.g. due to a timeout or in case the remote server is unreachable). HTTP error responses, such as 404 or 500, are considered as successful ones from HTTP standpoint, so such requests will not be logged as request failures, but as response failures.
 * `response-failure` &ndash; Each HTTP response with status code equal or greater than 400 is treated as failed one.
 * `console-error` &ndash; All `console.error()` calls are treated as an error.
 * `navigation-error` &ndash; The navigation error may happen, when:
 	* there's an SSL error (e.g. in case of self-signed certificate or expired one),
 	* target URL is invalid,
-	* the remote server does not respond or is unreachable,
 	* the timeout is exceeded during navigation to a page, so the `load` event is not emmited (e.g. due to an infinite loop in the JavaScript code).
 * `page-crash` &ndash; The general page malfunction, that does not fit to other categories (e.g. running out of a RAM).
 
-Example exclusions:
+| Error&nbsp;type      | Example              |
+|----------------------|----------------------|
+| `uncaught-exception` | `"uncaught-exception": "ckeditor-duplicated-modules"`<br> This pattern ignores only the `ckeditor-duplicated-modules` exception. |
+| `request-failure`    | `"request-failure": "missing-file.jpg"`<br> All requests containing the `missing-file.jpg` in the URL are ignored. |
+| `response-failure`   | `"response-failure": "HTTP response status code: 401"`<br> All requests requiring authorization are ignored. |
+| `console-error`      | `"console-error": "Example error message"`<br> All console errors containing "Example error message" substring are ignored. |
+| `navigation-error`   | `"navigation-error": "Navigation timeout of 15000 ms exceeded"`<br> Links, which are not completely loaded, are ignored. |
+| `page-crash`         | `"page-crash": "Error: Page crashed!"`<br> This general text pattern ignores all page crashes. |
+
+These patterns are simply added as keys and values in a JSON object to the `<meta>` tag on a page, where they should be active:
 
 ```html
 <meta name="x-cke-crawler-ignore-patterns" content='{
-    "page-crash": "*",
+    "page-crash": "Error: Page crashed!",
     "uncaught-exception": "ckeditor-duplicated-modules",
-    "console-error": [ "example error", "another error" ]
+    "console-error": "Example error message"
 }'>
 ```
 
-In the above example, the `"page-crash": "*"` pattern ignores all page crashes. The `"uncaught-exception": "ckeditor-duplicated-modules"` pattern ignores only the `ckeditor-duplicated-modules` exception. And finally, the `"console-error": [ "example error", "another error" ]` pattern ignores all errors, that contain "example error" or "another error" in the message.
+Please note that the pattern (regardless of the type of error) does not have to be a string, but can also be defined as an array of strings (patterns) to ignore many different errors:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "console-error": [ "Error 1", "Error 2", "Error 3" ]
+}'>
+```
+
+To ignore all errors, use the special wildcard value `*`:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "console-error": "*"
+}'>
+```
 
 In addition to the possibility of defining exclusions in the `<meta>` tag, it is also possible to specify that the link cannot be visited by the crawler by adding a `data-cke-crawler-skip` attribute:
 
