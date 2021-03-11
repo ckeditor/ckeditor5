@@ -84,6 +84,11 @@ describe( 'TableCaptionEditing', () => {
 
 	describe( 'data pipeline', () => {
 		describe( 'model to view', () => {
+			// TODO:
+			// - Inserting many captions
+			// - Inserting table with many captions
+			// - Inserting caption at the beginning of the table
+
 			it( 'should not convert caption outside of the table', async () => {
 				const editor = await VirtualTestEditor
 					.create( {

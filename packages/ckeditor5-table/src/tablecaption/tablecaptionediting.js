@@ -84,22 +84,21 @@ export default class TableCaptionEditing extends Plugin {
 			}
 		} );
 
-		// Add caption element to each image inserted without it.
-		editor.model.document.registerPostFixer( writer => this._insertMissingModelCaptionElement( writer ) );
+		// Merge doubled captions in a table. Make sure they land at the end of the table.
+		editor.model.document.registerPostFixer( writer => this._mergeCaptionModels( writer ) );
 	}
 
 	/**
-	 * Checks whether the data inserted to the model document have an image element that has no caption element inside it.
-	 * If there is none, it adds it to the image element.
+	 * Makes sure duplicated caption models are merged and placed at the end of the table.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer The writer to make changes with.
 	 * @returns {Boolean} `true` if any change was applied, `false` otherwise.
 	 */
-	_insertMissingModelCaptionElement( writer ) {
+	_mergeCaptionModels( writer ) {
 		const model = this.editor.model;
 		const changes = model.document.differ.getChanges();
-		let allCaptions = [];
+		let wasFixed = false;
 
 		for ( const entry of changes ) {
 			if ( entry.type != 'insert' ) {
@@ -109,26 +108,39 @@ export default class TableCaptionEditing extends Plugin {
 			const positionParent = entry.position.parent;
 
 			if ( positionParent.is( 'element', 'table' ) || entry.name == 'table' ) {
-				const table = entry.position.findAncestor( 'table' );
+				const table = entry.name == 'table' ? entry.position.nodeAfter : entry.position.findAncestor( 'table' );
 
-				// Not a caption in a table.
 				if ( !table ) {
 					return;
 				}
 
-				allCaptions = Array.from( table.getChildren() )
+				const captionsToMerge = Array.from( table.getChildren() )
 					.filter( child => child.is( 'element', 'caption' ) );
 
-				const firstCaption = allCaptions.shift();
+				const firstCaption = captionsToMerge.shift();
 
-				for ( const caption of allCaptions ) {
+				if ( !firstCaption ) {
+					return;
+				}
+
+				// Move all the contents of the captions to the first one.
+				for ( const caption of captionsToMerge ) {
 					writer.move( writer.createRangeIn( caption ), firstCaption, 'end' );
 					writer.remove( caption );
 				}
+
+				// Make sure the final caption is at the end of the table.
+				if ( firstCaption.nextSibling ) {
+					writer.move( writer.createRangeOn( firstCaption ), table, 'end' );
+					wasFixed = true;
+				}
+
+				// Do we merged captions and/or moved the single caption to the end of the table?
+				wasFixed = !!captionsToMerge.length || wasFixed;
 			}
 		}
 
-		return !!allCaptions.length;
+		return wasFixed;
 	}
 }
 

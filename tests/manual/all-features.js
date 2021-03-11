@@ -41,6 +41,7 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import TableCaptionEditing from '@ckeditor/ckeditor5-table/src/tablecaption';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -49,7 +50,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
-			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties,
+			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties, TableCaptionEditing,
 			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
