@@ -57,8 +57,8 @@ import viewToPlainText from './utils/viewtoplaintext.js';
 //
 
 /**
- * The clipboard feature. It is responsible for intercepting the `paste` and `drop` events and
- * passing the pasted content through the clipboard pipeline in order to insert it into the editor's content.
+ * The clipboard pipeline feature. It is responsible for intercepting the `paste` and `drop` events and
+ * passing the pasted content through the series of events in order to insert it into the editor's content.
  * It also handles the `cut` and `copy` events to fill the native clipboard with serialized editor's data.
  *
  * Read more about the clipboard integration in {@glink framework/guides/deep-dive/clipboard "Clipboard" deep dive} guide.
