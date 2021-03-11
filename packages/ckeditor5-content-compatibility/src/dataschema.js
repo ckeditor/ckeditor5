@@ -113,10 +113,16 @@ export default class DataSchema {
 			}
 		} );
 
-		// Inline elements.
+		// Add inline elements.
 		this.register( {
 			view: 'span',
 			model: 'htmlSpan',
+			isInline: true
+		} );
+
+		this.register( {
+			view: 'cite',
+			model: 'htmlCite',
 			isInline: true
 		} );
 	}
@@ -220,4 +226,5 @@ function testViewName( pattern, viewName ) {
  * @property {String} model Name of the model element.
  * @property {module:engine/model/schema~SchemaItemDefinition} schema The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
+ * @property {Boolean} [isInline] Indicates if the element decribed by data schema definition is inline.
  */
