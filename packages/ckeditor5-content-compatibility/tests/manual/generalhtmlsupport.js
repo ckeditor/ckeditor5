@@ -61,10 +61,10 @@ class ExtendHTMLSupport extends Plugin {
 		dataFilter.disallowAttributes( { name: 'section', attributes: { id: /^_.*/ } } );
 
 		// Let's also add some inline elements support:
-		dataFilter.allowElement( { name: 'span' } );
-		dataFilter.allowAttributes( { name: 'span', attributes: { 'data-foo': /[\s\S]+/ } } );
-		dataFilter.allowAttributes( { name: 'span', styles: { color: /[\s\S]+/ } } );
-		dataFilter.disallowAttributes( { name: 'span', styles: { color: 'red' } } );
+		dataFilter.allowElement( { name: /^span|cite$/ } );
+		dataFilter.allowAttributes( { name: /^span|cite$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^span|cite$/, styles: { color: /[\s\S]+/ } } );
+		dataFilter.disallowAttributes( { name: /^span|cite$/, styles: { color: 'red' } } );
 	}
 }
 

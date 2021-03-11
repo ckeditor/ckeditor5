@@ -10,7 +10,7 @@
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, toArray } from 'ckeditor5/src/utils';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, uniq } from 'lodash-es';
 
 const DATA_SCHEMA_ATTRIBUTE_KEY = 'htmlAttributes';
 
@@ -203,21 +203,33 @@ export default class DataFilter {
 	_defineInlineElementConverters( definition ) {
 		const conversion = this.editor.conversion;
 		const viewName = definition.view;
-		const modelName = definition.model;
+		const attributeKey = definition.model;
 
 		this._addDisallowedAttributesConverter( viewName );
 
-		conversion.for( 'upcast' ).elementToAttribute( {
-			view: viewName,
-			model: {
-				key: modelName,
-				value: this._matchAndConsumeAttributes.bind( this )
-			},
-			converterPriority: 'low'
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
+				const viewAttributes = this._matchAndConsumeAttributes( data.viewItem, conversionApi );
+
+				// Convert children and set conversion result as a current data.
+				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+
+				// Set attribute on each item in range according to Schema.
+				for ( const node of data.modelRange.getItems() ) {
+					if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
+						// Node's children are converter recursively, so node can already include model attribute.
+						// We want to extend it, not replace.
+						const attributesToAdd = mergeAttributes( node.getAttribute( attributeKey ), viewAttributes );
+						conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
+					}
+				}
+			}, {
+				priority: 'low'
+			} );
 		} );
 
 		conversion.for( 'downcast' ).attributeToElement( {
-			model: modelName,
+			model: attributeKey,
 			view: ( attributeValue, conversionApi ) => {
 				if ( !attributeValue ) {
 					return;
@@ -230,7 +242,7 @@ export default class DataFilter {
 
 				return viewElement;
 			}
-		} )
+		} );
 	}
 
 	/**
@@ -436,4 +448,24 @@ function iterableToObject( iterable, getValue ) {
 	}
 
 	return attributesObject;
+}
+
+// Merges attribute objects.
+//
+// @private
+// @param {Object} oldValue
+// @param {Object} newValue
+// @returns {Object}
+function mergeAttributes( oldValue, newValue ) {
+	const result = cloneDeep( newValue );
+
+	for ( const key in oldValue ) {
+		if ( Array.isArray( oldValue[ key ] ) ) {
+			result[ key ] = uniq( [ ...oldValue[ key ], ...newValue[ key ] ] );
+		} else {
+			result[ key ] = Object.assign( {}, oldValue[ key ], newValue[ key ] );
+		}
+	}
+
+	return result;
 }
