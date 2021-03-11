@@ -5,10 +5,10 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
 import DataSchema from '../src/dataschema';
 import DataFilter from '../src/datafilter';
-
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DataFilter', () => {
 	let editor, model, dataFilter, dataSchema;
