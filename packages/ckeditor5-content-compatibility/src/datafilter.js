@@ -166,7 +166,7 @@ export default class DataFilter {
 
 	/**
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition}
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	_defineConverters( definition ) {
 		const conversion = this.editor.conversion;
@@ -220,7 +220,7 @@ export default class DataFilter {
 
 				return element;
 			},
-			// With a `low` priority, `paragraph` plugin autoparagraphing mechanism is executed. Make sure
+			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 			// this listener is called before it. If not, some elements will be transformed into a paragraph.
 			converterPriority: priorities.get( 'low' ) + 1
 		} );
@@ -314,11 +314,11 @@ function mergeMatchResults( matches ) {
 	return matchResult;
 }
 
-// Convertes the given iterable object into an object.
+// Converts the given iterable object into an object.
 //
 // @private
 // @param {Iterable.<String>} iterable
-// @param {Function} getValue Shoud result with value for the given object key.
+// @param {Function} getValue Should result with value for the given object key.
 // @returns {Object}
 function iterableToObject( iterable, getValue ) {
 	const attributesObject = {};

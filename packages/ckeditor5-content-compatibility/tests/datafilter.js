@@ -94,9 +94,11 @@ describe( 'DataFilter', () => {
 
 	it( 'should allow attributes', () => {
 		dataFilter.allowElement( { name: 'section' } );
-		dataFilter.allowAttributes( { name: 'section', attributes: {
-			'data-foo': 'foobar'
-		} } );
+		dataFilter.allowAttributes( {
+			name: 'section', attributes: {
+				'data-foo': 'foobar'
+			}
+		} );
 
 		editor.setData( '<section data-foo="foobar"><p>foobar</p></section>' );
 
@@ -118,10 +120,12 @@ describe( 'DataFilter', () => {
 
 	it( 'should allow attributes (styles)', () => {
 		dataFilter.allowElement( { name: 'section' } );
-		dataFilter.allowAttributes( { name: 'section', styles: {
-			'color': 'red',
-			'background-color': 'blue'
-		} } );
+		dataFilter.allowAttributes( {
+			name: 'section', styles: {
+				'color': 'red',
+				'background-color': 'blue'
+			}
+		} );
 
 		editor.setData( '<section style="background-color:blue;color:red;"><p>foobar</p></section>' );
 
@@ -368,28 +372,28 @@ describe( 'DataFilter', () => {
 
 		expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
 	} );
-} );
 
-function getModelDataWithAttributes( model, options ) {
-	// Simplify GHS attributes as they are not very readable at this point due to object structure.
-	let counter = 1;
-	const data = getModelData( model, options ).replace( /htmlAttributes="{(.*?)}"/g, () => {
-		return `htmlAttributes="(${ counter++ })"`;
-	} );
+	function getModelDataWithAttributes( model, options ) {
+		// Simplify GHS attributes as they are not very readable at this point due to object structure.
+		let counter = 1;
+		const data = getModelData( model, options ).replace( /htmlAttributes="{(.*?)}"/g, () => {
+			return `htmlAttributes="(${ counter++ })"`;
+		} );
 
-	const range = model.createRangeIn( model.document.getRoot() );
+		const range = model.createRangeIn( model.document.getRoot() );
 
-	let attributes = [];
-	for ( const item of range.getItems() ) {
-		if ( item.hasAttribute && item.hasAttribute( 'htmlAttributes' ) ) {
-			attributes.push( item.getAttribute( 'htmlAttributes' ) );
+		let attributes = [];
+		for ( const item of range.getItems() ) {
+			if ( item.hasAttribute && item.hasAttribute( 'htmlAttributes' ) ) {
+				attributes.push( item.getAttribute( 'htmlAttributes' ) );
+			}
 		}
+
+		attributes = attributes.reduce( ( prev, cur, index ) => {
+			prev[ index + 1 ] = cur;
+			return prev;
+		}, {} );
+
+		return { data, attributes };
 	}
-
-	attributes = attributes.reduce( ( prev, cur, index ) => {
-		prev[ index + 1 ] = cur;
-		return prev;
-	}, {} );
-
-	return { data, attributes };
-}
+} );
