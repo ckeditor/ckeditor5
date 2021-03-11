@@ -207,6 +207,5 @@ function testViewName( pattern, viewName ) {
  * @property {String} [view] Name of the view element.
  * @property {String} model Name of the model element.
  * @property {module:engine/model/schema~SchemaItemDefinition} schema The model schema item definition describing registered model.
- * @property {String|Array.<String>} allowChildren Extends the given children list to allow definition model.
- * or custom schema item definition.
+ * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
  */
