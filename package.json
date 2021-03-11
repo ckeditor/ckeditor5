@@ -124,6 +124,7 @@
     "tippy.js": "^6.2.7",
     "umberto": "^1.6.2",
     "upath": "^2.0.0",
+    "wait-on": "^5.2.1",
     "webpack": "^4.43.0",
     "wrapper-webpack-plugin": "^2.1.0"
   },
