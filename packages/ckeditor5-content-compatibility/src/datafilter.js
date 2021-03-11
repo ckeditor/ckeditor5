@@ -100,7 +100,7 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Disallowe the given attributes for view element allowed by {@link #allowElement} method.
+	 * Disallow the given attributes for view element allowed by {@link #allowElement} method.
 	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be disallowed.
 	 */
