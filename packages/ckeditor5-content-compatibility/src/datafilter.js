@@ -119,6 +119,7 @@ export default class DataFilter {
 		const viewName = config.name;
 
 		config = cloneDeep( config );
+
 		// We don't want match by name when matching attributes. Matcher will be already attached to specific definition.
 		delete config.name;
 
