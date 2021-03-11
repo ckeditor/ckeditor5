@@ -110,14 +110,14 @@ describe( 'image widget utils', () => {
 	describe( 'getImageWidgetAncestor()', () => {
 		let frag, caption;
 
-		describe( 'selection is inside the caption', () => {
+		describe( 'the selection is inside a caption', () => {
 			beforeEach( () => {
 				caption = writer.createContainerElement( 'figcaption' );
 				writer.insert( writer.createPositionAt( element, 1 ), caption );
 				frag = new ViewDocumentFragment( viewDocument, [ element ] );
 			} );
 
-			it( 'should return the widget element if selection is not collapsed', () => {
+			it( 'should return the widget element if the selection is not collapsed', () => {
 				const text = writer.createText( 'foo' );
 				writer.insert( ViewPosition._createAt( caption, 0 ), text );
 
@@ -126,7 +126,7 @@ describe( 'image widget utils', () => {
 				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
 			} );
 
-			it( 'should return the widget element if selection is collapsed', () => {
+			it( 'should return the widget element if the selection is collapsed', () => {
 				const selection = writer.createSelection( caption, 'in' );
 
 				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
@@ -142,7 +142,7 @@ describe( 'image widget utils', () => {
 			expect( getImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
-		it( 'should return null if image is part of the selection', () => {
+		it( 'should return null if an image is a part of the selection', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			frag = new ViewDocumentFragment( viewDocument, [ element, notWidgetizedElement ] );
@@ -152,7 +152,7 @@ describe( 'image widget utils', () => {
 			expect( getImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
-		it( 'should return null if non-widgetized element is the only element in the selection', () => {
+		it( 'should return null if a non-widgetized element is the only element in the selection', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			// We need to create a container for the element to be able to create a Range on this element.
@@ -161,6 +161,22 @@ describe( 'image widget utils', () => {
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
 			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+		} );
+
+		it( 'should return null if the selection is inside a figure element, which is not an image', () => {
+			const innerContainer = writer.createContainerElement( 'p' );
+
+			viewDocument = new ViewDocument( new StylesProcessor() );
+			writer = new ViewDowncastWriter( viewDocument );
+			element = writer.createContainerElement( 'figure' );
+
+			writer.insert( writer.createPositionAt( element, 1 ), innerContainer );
+
+			frag = new ViewDocumentFragment( viewDocument, [ element ] );
+
+			const selection = writer.createSelection( innerContainer, 'in' );
+
+			expect( getImageWidgetAncestor( selection ) ).to.be.false;
 		} );
 	} );
 
