@@ -19,6 +19,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'ImageCaptionEditing', () => {
 	let editor, model, doc, view;
 
+	// FakePlugin helps check if the plugin under test extends existing schema correctly.
 	class FakePlugin extends Plugin {
 		init() {
 			const schema = this.editor.model.schema;

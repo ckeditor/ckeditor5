@@ -14,6 +14,7 @@ import TableEditing from '../../src/tableediting';
 describe( 'TableCaptionEditing', () => {
 	let editor, model;
 
+	// FakePlugin helps check if the plugin under test extends existing schema correctly.
 	class FakePlugin extends Plugin {
 		init() {
 			const schema = this.editor.model.schema;
@@ -215,37 +216,6 @@ describe( 'TableCaptionEditing', () => {
 							'</tableRow>' +
 						'</table>' +
 						'<paragraph>Foo caption</paragraph>'
-					) );
-			} );
-
-			it( 'should convert a doubled captions', () => {
-				editor.setData(
-					'<figure class="table">' +
-						'<table>' +
-							'<caption>Bar caption</caption>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td>' +
-										'foobar' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-						'<figcaption>Foo caption</figcaption>' +
-					'</figure>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( String(
-						'<table>' +
-							'<tableRow>' +
-								'<tableCell>' +
-									'<paragraph>foobar</paragraph>' +
-								'</tableCell>' +
-							'</tableRow>' +
-							'<caption>Bar caption</caption>' +
-							'<caption>Foo caption</caption>' +
-						'</table>'
 					) );
 			} );
 		} );
