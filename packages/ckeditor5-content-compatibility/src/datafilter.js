@@ -292,13 +292,13 @@ function matchAll( viewElement, rules ) {
 }
 
 // Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
-
+//
 // @private
 // @param {Array} matches
 // @returns {Object} result
-// @returns {Array.<String>} result.attributes Array with matched attribute names.
-// @returns {Array.<String>} result.classes Array with matched class names.
-// @returns {Array.<String>} result.styles Array with matched style names.
+// @returns {Set.<String>} result.attributes Set with matched attribute names.
+// @returns {Set.<String>} result.classes Set with matched class names.
+// @returns {Set.<String>} result.styles Set with matched style names.
 function mergeMatchResults( matches ) {
 	const matchResult = {
 		attributes: new Set(),
@@ -309,6 +309,7 @@ function mergeMatchResults( matches ) {
 	for ( const match of matches ) {
 		for ( const key in matchResult ) {
 			const values = match.match[ key ] || [];
+
 			values.forEach( value => matchResult[ key ].add( value ) );
 		}
 	}
@@ -317,7 +318,7 @@ function mergeMatchResults( matches ) {
 }
 
 // Convertes the given iterable object into an object.
-
+//
 // @private
 // @param {Iterable.<String>} iterable
 // @param {Function} getValue Shoud result with value for the given object key.
