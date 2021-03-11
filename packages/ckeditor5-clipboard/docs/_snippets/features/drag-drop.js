@@ -116,6 +116,12 @@ class HCardEditing extends Plugin {
 		const viewDocument = view.document;
 
 		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
+			// The clipboard content was already processed by the listener on the higher priority
+			// (for example while pasting into code-block).
+			if ( data.content ) {
+				return;
+			}
+
 			const contactData = data.dataTransfer.getData( 'contact' );
 
 			if ( !contactData ) {
