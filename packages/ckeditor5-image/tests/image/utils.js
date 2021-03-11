@@ -176,7 +176,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( innerContainer, 'in' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.false;
+			expect( getImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 	} );
 
