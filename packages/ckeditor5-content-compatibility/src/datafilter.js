@@ -281,10 +281,7 @@ function getOrCreateMatcher( key, rules ) {
 // @private
 // @param {module:engine/view/element~Element} viewElement
 // @param {Map.<String, module:engine/view/matcher~Matcher>} rules Rules map holding matchers.
-// @returns {Object} result
-// @returns {Array.<String>} result.attributes Array with matched attribute names.
-// @returns {Array.<String>} result.classes Array with matched class names.
-// @returns {Array.<String>} result.styles Array with matched style names.
+// @returns {Array.<Object>} Array with match information about found elements.
 function matchAll( viewElement, rules ) {
 	const matcher = getOrCreateMatcher( viewElement.name, rules );
 
