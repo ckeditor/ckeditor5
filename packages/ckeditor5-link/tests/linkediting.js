@@ -158,6 +158,22 @@ describe( 'LinkEditing', () => {
 			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
 		} );
 
+		it( 'should remove linkTarget attribute when pasting a link', () => {
+			editor.model.schema.extend( '$text', { allowAttributes: 'linkTarget' } );
+
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'ckeditor.com', linkTarget: '_blank' } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo<$text linkHref="ckeditor.com" linkTarget="_blank">INSERTED</$text>[]</paragraph>'
+			);
+
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+		} );
+
 		it( 'should remove all attributes starting with "link" (e.g. decorator attributes) when pasting a link', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 

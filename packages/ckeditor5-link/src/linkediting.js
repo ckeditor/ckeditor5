@@ -516,6 +516,7 @@ export default class LinkEditing extends Plugin {
 // @param {module:utils/collection~Collection} manualDecorators
 function removeLinkAttributesFromSelection( writer, manualDecorators ) {
 	writer.removeSelectionAttribute( 'linkHref' );
+	writer.removeSelectionAttribute( 'linkTarget' );
 
 	for ( const decorator of manualDecorators ) {
 		writer.removeSelectionAttribute( decorator.id );
