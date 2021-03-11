@@ -27,3 +27,14 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// Due to unknown reasons, Travis cannot load video from Vimeo. Let's ignore this error.
+const metaElement = document.createElement( 'meta' );
+
+metaElement.name = 'x-cke-crawler-ignore-patterns';
+metaElement.content = JSON.stringify( {
+	'response-failure': 'vimeo.com',
+	'console-error': '<svg> attribute preserveAspectRatio'
+} );
+
+document.head.appendChild( metaElement );
