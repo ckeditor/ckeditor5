@@ -6,13 +6,14 @@
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { Plugin } from 'ckeditor5/src/core';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
 import TableEditing from '../../src/tableediting';
 
 describe( 'TableCaptionEditing', () => {
-	let editor, model;
+	let editor, model, view;
 
 	// FakePlugin helps check if the plugin under test extends existing schema correctly.
 	class FakePlugin extends Plugin {
@@ -49,7 +50,7 @@ describe( 'TableCaptionEditing', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
+				view = editor.editing.view;
 				model = editor.model;
 			} );
 	} );
@@ -81,7 +82,7 @@ describe( 'TableCaptionEditing', () => {
 		expect( model.schema.checkChild( [ 'table' ], 'caption' ) ).to.be.true;
 	} );
 
-	describe( 'conversion in data pipeline', () => {
+	describe( 'data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should not convert caption outside of the table', async () => {
 				const editor = await VirtualTestEditor
@@ -217,6 +218,35 @@ describe( 'TableCaptionEditing', () => {
 						'</table>' +
 						'<paragraph>Foo caption</paragraph>'
 					) );
+			} );
+		} );
+	} );
+
+	describe( 'editing pipeline', () => {
+		describe( 'model to view', () => {
+			it( 'should convert caption element to figcaption contenteditable', () => {
+				setModelData( model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
+				);
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">xyz</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+								'contenteditable="true" data-placeholder="Enter table caption">' +
+							'Foo caption' +
+						'</figcaption>' +
+					'</figure>'
+				);
 			} );
 		} );
 	} );
