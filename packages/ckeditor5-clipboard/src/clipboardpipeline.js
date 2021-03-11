@@ -220,14 +220,16 @@ export default class ClipboardPipeline extends Plugin {
 }
 
 /**
- * Fired with a `content`, `dataTransfer`, `method` and `targetRanges` properties. The `content` which comes from the clipboard
- * (was pasted or dropped) should be processed in order to be inserted into the editor. The `dataTransfer` object is available
- * in case the transformation functions need access to raw clipboard data. The `method` indicates the original DOM event
- * (for example 'drop', 'paste') and the `targetRanges` is an array of view ranges (it is available only for 'drop').
+ * Fired with the `content`, `dataTransfer`, `method`, and `targetRanges` properties:
+ *
+ * * The `content` which comes from the clipboard (was pasted or dropped) should be processed in order to be inserted into the editor.
+ * * The `dataTransfer` object is available in case transformation functions need access to the raw clipboard data.
+ * * The `method` indicates the original DOM event (for example `'drop'` or `'paste'`).
+ * * The `targetRanges` is an array of view ranges (it is available only for `'drop'`).
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
- * *Note*: You should not stop this event if you want to change the input data, instead you should modify the `content` property.
+ * **Note**: You should not stop this event if you want to change the input data. You should modify the `content` property instead.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
@@ -242,16 +244,18 @@ export default class ClipboardPipeline extends Plugin {
  */
 
 /**
- * Fired with a `content`, `dataTransfer`, `method` and `targetRanges` properties. The `content` which comes from the clipboard
- * (was pasted or dropped) should be processed in order to be inserted into the editor. The `dataTransfer` object is available
- * in case the transformation functions need access to raw clipboard data. The `method` indicates the original DOM event
- * (for example 'drop', 'paste') and the `targetRanges` is an array of view ranges (it is available only for 'drop').
+ * Fired with the `content`, `dataTransfer`, `method`, and `targetRanges` properties:
+ *
+ * * The `content` which comes from the clipboard (was pasted or dropped) should be processed in order to be inserted into the editor.
+ * * The `dataTransfer` object is available in case transformation functions need access to the raw clipboard data.
+ * * The `method` indicates the original DOM event (for example `'drop'` or `'paste'`).
+ * * The `targetRanges` is an array of view ranges (it is available only for `'drop'`).
  *
  * Event handlers can modify the content according to the final insertion position.
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
- * **Note**: You should not stop this event if you want to change the input data, instead you should modify the `content` property.
+ * **Note**: You should not stop this event if you want to change the input data. You should modify the `content` property instead.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
