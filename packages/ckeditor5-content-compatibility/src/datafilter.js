@@ -260,10 +260,10 @@ export default class DataFilter {
 }
 
 // Helper function restoring matcher for the given key from `rules` object.
-
+//
 // If matcher for the given key does not exist, this function will create a new one
 // inside `rules` object under the given key.
-
+//
 // @private
 // @param {String} key
 // @param {Map.<String, module:engine/view/matcher~Matcher>} rules
