@@ -267,6 +267,7 @@ export default class DataFilter {
 // @private
 // @param {String} key
 // @param {Map.<String, module:engine/view/matcher~Matcher>} rules
+// @returns {module:engine/view/matcher~Matcher}
 function getOrCreateMatcher( key, rules ) {
 	if ( !rules.has( key ) ) {
 		rules.set( key, new Matcher() );
@@ -276,10 +277,10 @@ function getOrCreateMatcher( key, rules ) {
 }
 
 // Alias for {@link module:engine/view/matcher~Matcher#matchAll matchAll}.
-
+//
 // @private
 // @param {module:engine/view/element~Element} viewElement
-// @param {Map} rules Rules map holding matchers.
+// @param {Map.<String, module:engine/view/matcher~Matcher>} rules Rules map holding matchers.
 // @returns {Object} result
 // @returns {Array.<String>} result.attributes Array with matched attribute names.
 // @returns {Array.<String>} result.classes Array with matched class names.
