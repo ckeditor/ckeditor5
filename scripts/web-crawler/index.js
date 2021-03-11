@@ -11,7 +11,7 @@ const puppeteer = require( 'puppeteer' );
 
 const chalk = require( 'chalk' );
 
-const { getBaseUrl, parseArguments, toArray } = require( './utils' );
+const { getBaseUrl, getFirstLineFromErrorMessage, parseArguments, toArray } = require( './utils' );
 
 const { createSpinner, getProgressHandler } = require( './spinner' );
 
@@ -39,18 +39,21 @@ startCrawler( options );
  * @param {Number} options.depth Defines how many nested page levels should be examined. Infinity by default.
  * @param {Array.<String>} options.exclusions An array of patterns to exclude links. Empty array by default to not exclude anything.
  * @param {Number} options.concurrency Number of concurrent pages (browser tabs) to be used during crawling. One by default.
+ * @param {Boolean} options.quit Terminates the scan as soon as an error is found. False (off) by default.
  * @returns {Promise} Promise is resolved, when the crawler has finished the whole crawling procedure.
  */
-async function startCrawler( { url, depth, exclusions, concurrency } ) {
+async function startCrawler( { url, depth, exclusions, concurrency, quit } ) {
 	console.log( chalk.bold( '\n🔎 Starting the Crawler\n' ) );
 
 	const spinner = createSpinner();
 
-	spinner.start( 'Checking pages…' );
-
 	const errors = new Map();
 
 	const browser = await createBrowser();
+
+	spinner.start( 'Checking pages…' );
+
+	let status = 'Done';
 
 	await openLinks( browser, {
 		baseUrl: getBaseUrl( url ),
@@ -58,11 +61,14 @@ async function startCrawler( { url, depth, exclusions, concurrency } ) {
 		foundLinks: [ url ],
 		exclusions,
 		concurrency,
+		quit,
 		onError: getErrorHandler( errors ),
 		onProgress: getProgressHandler( spinner )
+	} ).catch( () => {
+		status = 'Terminated on first error';
 	} );
 
-	spinner.succeed( `Checking pages… ${ chalk.bold( 'Done' ) }` );
+	spinner.succeed( `Checking pages… ${ chalk.bold( status ) }` );
 
 	await browser.close();
 
@@ -102,16 +108,18 @@ function getErrorHandler( errors ) {
 			errors.set( error.type, new Map() );
 		}
 
+		const message = getFirstLineFromErrorMessage( error.message );
+
 		const errorCollection = errors.get( error.type );
 
-		if ( !errorCollection.has( error.message ) ) {
-			errorCollection.set( error.message, {
+		if ( !errorCollection.has( message ) ) {
+			errorCollection.set( message, {
 				// Store only unique pages, because given error can occur multiple times on the same page.
 				pages: new Set()
 			} );
 		}
 
-		errorCollection.get( error.message ).pages.add( error.page );
+		errorCollection.get( message ).pages.add( error.pageUrl );
 	};
 }
 
@@ -125,11 +133,12 @@ function getErrorHandler( errors ) {
  * @param {Array.<String>} data.foundLinks An array of all links, which have been already discovered.
  * @param {Array.<String>} data.exclusions An array of patterns to exclude links. Empty array by default to not exclude anything.
  * @param {Number} data.concurrency Number of concurrent pages (browser tabs) to be used during crawling.
+ * @param {Boolean} data.quit Terminates the scan as soon as an error is found.
  * @param {Function} data.onError Callback called ever time an error has been found.
  * @param {Function} data.onProgress Callback called every time just before opening a new link.
  * @returns {Promise} Promise is resolved, when all links have been visited.
  */
-async function openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions, concurrency, onError, onProgress } ) {
+async function openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions, concurrency, quit, onError, onProgress } ) {
 	const numberOfOpenPages = ( await browser.pages() ).length;
 
 	// Check if the limit of simultaneously opened pages in the browser has been reached.
@@ -148,22 +157,25 @@ async function openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions
 					links: newLinks
 				} = await openLink( browser, { baseUrl, link, foundLinks, exclusions, onProgress } );
 
-				newErrors
-					.filter( newError => !newError.ignored )
-					.forEach( newError => onError( newError ) );
+				newErrors.forEach( newError => onError( newError ) );
 
-				newLinks
-					.forEach( newLink => {
-						foundLinks.push( newLink );
+				newLinks.forEach( newLink => {
+					foundLinks.push( newLink );
 
-						linksQueue.push( {
-							url: newLink,
-							remainingNestedLevels: link.remainingNestedLevels - 1
-						} );
+					linksQueue.push( {
+						url: newLink,
+						parentUrl: link.url,
+						remainingNestedLevels: link.remainingNestedLevels - 1
 					} );
+				} );
+
+				// Terminate the scan as soon as an error is found, if `--quit` or `-q` CLI argument has been set.
+				if ( newErrors.length > 0 && quit ) {
+					return Promise.reject();
+				}
 
 				// When currently examined link has been checked, try to open new links up to the concurrency limit.
-				return openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions, concurrency, onError, onProgress } );
+				return openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions, concurrency, quit, onError, onProgress } );
 			} )
 	);
 }
@@ -195,19 +207,16 @@ async function openLink( browser, { baseUrl, link, foundLinks, exclusions, onPro
 	const onError = error => errors.push( error );
 
 	// Create dedicated page for current link.
-	const page = await createPage( browser, onError );
+	const page = await createPage( browser, { link, onError } );
 
 	try {
 		// Consider navigation to be finished when the `load` event is fired and there are no network connections for at least 500 ms.
 		await page.goto( link.url, { waitUntil: [ 'load', 'networkidle0' ] } );
 	} catch ( error ) {
-		// Navigation has failed, so get first line from the error message.
-		const errorMessage = error.message.match( /^.*$/m );
-
 		onError( {
-			page: page.url(),
+			pageUrl: page.url(),
 			type: ERROR_TYPES.NAVIGATION_ERROR,
-			message: errorMessage ? errorMessage[ 0 ] : 'Unknown navigation error'
+			message: error.message || 'Unknown navigation error'
 		} );
 
 		await page.close();
@@ -224,23 +233,15 @@ async function openLink( browser, { baseUrl, link, foundLinks, exclusions, onPro
 	// Iterates over recently found errors to mark them as ignored ones, if they match the patterns.
 	markErrorsAsIgnored( errors, errorIgnorePatterns );
 
-	// Skip crawling deeper, if the bottom has been reached.
-	if ( link.remainingNestedLevels === 0 ) {
-		await page.close();
-
-		return {
-			errors,
-			links: []
-		};
-	}
-
-	// Get all unique links from the page body.
-	const links = await getLinksFromPage( page, { baseUrl, foundLinks, exclusions } );
+	// Skip crawling deeper, if the bottom has been reached, or get all unique links from the page body otherwise.
+	const links = link.remainingNestedLevels === 0 ?
+		[] :
+		await getLinksFromPage( page, { baseUrl, foundLinks, exclusions } );
 
 	await page.close();
 
 	return {
-		errors,
+		errors: errors.filter( error => !error.ignored ),
 		links
 	};
 }
@@ -354,6 +355,10 @@ function markErrorsAsIgnored( errors, errorIgnorePatterns ) {
 				return true;
 			}
 
+			if ( error.failedResourceUrl && error.failedResourceUrl.includes( pattern ) ) {
+				return true;
+			}
+
 			return false;
 		};
 
@@ -368,10 +373,12 @@ function markErrorsAsIgnored( errors, errorIgnorePatterns ) {
  * Creates a new page in Puppeteer's browser instance.
  *
  * @param {Object} browser The headless browser instance from Puppeteer.
- * @param {Function} onError Callback called every time just before opening a new link.
+ * @param {Object} data All data needed for creating a new page.
+ * @param {Link} data.link A link to crawl.
+ * @param {Function} data.onError Callback called every time just before opening a new link.
  * @returns {Promise.<Object>} A promise, which resolves to the page instance from Puppeteer.
  */
-async function createPage( browser, onError ) {
+async function createPage( browser, { link, onError } ) {
 	const page = await browser.newPage();
 
 	page.setDefaultTimeout( DEFAULT_TIMEOUT );
@@ -380,7 +387,7 @@ async function createPage( browser, onError ) {
 
 	dismissDialogs( page );
 
-	registerErrorHandlers( page, onError );
+	registerErrorHandlers( page, { link, onError } );
 
 	await registerRequestInterception( page );
 
@@ -402,17 +409,19 @@ function dismissDialogs( page ) {
  * Registers all error handlers on given page instance.
  *
  * @param {Object} page The page instance from Puppeteer.
- * @param {Function} onError Called each time an error has been found.
+ * @param {Object} data All data needed for registering error handlers.
+ * @param {Link} data.link A link to crawl associated with Puppeteer's page.
+ * @param {Function} data.onError Called each time an error has been found.
  */
-function registerErrorHandlers( page, onError ) {
+function registerErrorHandlers( page, { link, onError } ) {
 	page.on( ERROR_TYPES.PAGE_CRASH.event, error => onError( {
-		page: page.url(),
+		pageUrl: page.url(),
 		type: ERROR_TYPES.PAGE_CRASH,
 		message: error.message
 	} ) );
 
 	page.on( ERROR_TYPES.UNCAUGHT_EXCEPTION.event, error => onError( {
-		page: page.url(),
+		pageUrl: page.url(),
 		type: ERROR_TYPES.UNCAUGHT_EXCEPTION,
 		message: error.message
 	} ) );
@@ -422,20 +431,37 @@ function registerErrorHandlers( page, onError ) {
 
 		// Do not log errors explicitly aborted by the crawler.
 		if ( errorText !== 'net::ERR_BLOCKED_BY_CLIENT.Inspector' ) {
+			const url = request.url();
+			const host = new URL( url ).host;
+
 			onError( {
-				page: page.url(),
+				pageUrl: page.url(),
 				type: ERROR_TYPES.REQUEST_FAILURE,
-				message: `${ errorText } for ${ request.url() }`
+				message: `Failed to load resource from ${ chalk.bold( host ) } (failure message: ${ chalk.bold( errorText ) })`,
+				failedResourceUrl: url
 			} );
 		}
 	} );
 
 	page.on( ERROR_TYPES.RESPONSE_FAILURE.event, response => {
-		if ( response.status() > 399 ) {
+		const responseStatus = response.status();
+
+		if ( responseStatus > 399 ) {
+			const url = response.url();
+			const host = new URL( url ).host;
+			const isNavigationRequest = response.request().isNavigationRequest();
+			const message = isNavigationRequest ?
+				`Failed to open link ${ chalk.bold( url ) }` :
+				`Failed to load resource from ${ chalk.bold( host ) }`;
+
 			onError( {
-				page: page.url(),
+				// If the request associated with this failed response was a navigation request, the `page.url()` method
+				// would return 'about:blank', because every link is opened in a new page. For this case, to log something
+				// more useful, we store the parent URL for each found link.
+				pageUrl: isNavigationRequest ? link.parentUrl : page.url(),
 				type: ERROR_TYPES.RESPONSE_FAILURE,
-				message: `HTTP code ${ response.status() } for ${ response.url() }`
+				message: `${ message } (HTTP response status code: ${ chalk.bold( responseStatus ) })`,
+				failedResourceUrl: url
 			} );
 		}
 	} );
@@ -473,7 +499,7 @@ function registerErrorHandlers( page, onError ) {
 		const serializedArguments = await Promise.all( message.args().map( serializeArguments ) );
 
 		onError( {
-			page: page.url(),
+			pageUrl: page.url(),
 			type: ERROR_TYPES.CONSOLE_ERROR,
 			message: serializedArguments.length ? serializedArguments.join( '. ' ) : message.text()
 		} );
@@ -527,7 +553,7 @@ function logErrors( errors ) {
 
 			console.log( chalk.red( `\n…found on the following ${ error.pages.size > 1 ? 'pages' : 'page' }:` ) );
 
-			error.pages.forEach( page => console.log( chalk.gray( `➥  ${ page }` ) ) );
+			error.pages.forEach( pageUrl => console.log( chalk.gray( `➥  ${ pageUrl }` ) ) );
 
 			console.groupEnd();
 		} );
@@ -542,6 +568,7 @@ function logErrors( errors ) {
 /**
  * @typedef {Object.<String, String|Number>} Link
  * @property {String} url The URL associated with the link.
+ * @property {String} parentUrl The page on which the link was found.
  * @property {Number} remainingNestedLevels The remaining number of nested levels to be checked. If this value is 0, the
  * requested traversing depth has been reached and nested links from the URL associated with this link are not collected anymore.
  */
@@ -554,9 +581,10 @@ function logErrors( errors ) {
 
 /**
  * @typedef {Object.<String, String|Boolean|ErrorType>} Error
- * @property {String} page The URL, where error has occurred.
+ * @property {String} pageUrl The URL, where error has occurred.
  * @property {ErrorType} type Error type.
  * @property {String} message Error message.
+ * @property {String} [failedResourceUrl] Full resource URL, that has failed. Necessary for matching against exclusion patterns.
  * @property {Boolean} [ignored] Indicates that error should be ignored, because its message matches the exclusion pattern.
  */
 

@@ -16,21 +16,21 @@ import DataTransfer from './datatransfer';
  *
  * Fires the following events:
  *
- * * {@link module:engine/view/document~Document#event:clipboardInput}
- * * {@link module:engine/view/document~Document#event:paste}
- * * {@link module:engine/view/document~Document#event:copy}
- * * {@link module:engine/view/document~Document#event:cut}
- * * {@link module:engine/view/document~Document#event:drop}
- * * {@link module:engine/view/document~Document#event:dragover}
- * * {@link module:engine/view/document~Document#event:dragging}
- * * {@link module:engine/view/document~Document#event:dragstart}
- * * {@link module:engine/view/document~Document#event:dragend}
- * * {@link module:engine/view/document~Document#event:dragenter}
- * * {@link module:engine/view/document~Document#event:dragleave}
+ * * {@link module:engine/view/document~Document#event:clipboardInput},
+ * * {@link module:engine/view/document~Document#event:paste},
+ * * {@link module:engine/view/document~Document#event:copy},
+ * * {@link module:engine/view/document~Document#event:cut},
+ * * {@link module:engine/view/document~Document#event:drop},
+ * * {@link module:engine/view/document~Document#event:dragover},
+ * * {@link module:engine/view/document~Document#event:dragging},
+ * * {@link module:engine/view/document~Document#event:dragstart},
+ * * {@link module:engine/view/document~Document#event:dragend},
+ * * {@link module:engine/view/document~Document#event:dragenter},
+ * * {@link module:engine/view/document~Document#event:dragleave}.
  *
- * Note that this observer is not available by default (it is not added by the engine).
- * To make it available, it needs to be added to {@link module:engine/view/document~Document} by
- * the {@link module:engine/view/view~View#addObserver `View#addObserver()`} method. You can also load the
+ * **Note**: This observer is not available by default (ckeditor5-engine does not add it on its own).
+ * To make it available, it needs to be added to {@link module:engine/view/document~Document} by using
+ * the {@link module:engine/view/view~View#addObserver `View#addObserver()`} method. Alternatively, you can load the
  * {@link module:clipboard/clipboard~Clipboard} plugin which adds this observer automatically (because it uses it).
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
@@ -113,12 +113,13 @@ function getDropViewRange( view, domEvent ) {
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
- * Fired with a `dataTransfer` which comes from the clipboard and whose content should be processed
+ * This event carries a `dataTransfer` object which comes from the clipboard and which content should be processed
  * and inserted into the editor.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
@@ -129,18 +130,19 @@ function getDropViewRange( view, domEvent ) {
  * @param {module:engine/view/element~Element} target The tree view element representing the target.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
  * (usually – into which the content should be inserted).
- * If clipboard input was triggered by a paste operation, then this property is not set. If by a drop operation,
+ * If the clipboard input was triggered by a paste operation, then this property is not set. If by a drop operation,
  * then it is the drop position (which can be different than the selection at the moment of drop).
  */
 
 /**
- * Fired when the user drags the content over one of the editables.
+ * Fired when the user drags the content over one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:dragover
@@ -148,13 +150,14 @@ function getDropViewRange( view, domEvent ) {
  */
 
 /**
- * Fired when the user dropped the content into one of the editables.
+ * Fired when the user dropped the content into one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:drop
@@ -163,13 +166,14 @@ function getDropViewRange( view, domEvent ) {
  */
 
 /**
- * Fired when the user pasted the content into one of the editables.
+ * Fired when the user pasted the content into one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:paste
@@ -177,13 +181,14 @@ function getDropViewRange( view, domEvent ) {
  */
 
 /**
- * Fired when the user copied the content from one of the editables.
+ * Fired when the user copied the content from one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @event module:engine/view/document~Document#event:copy
@@ -191,13 +196,14 @@ function getDropViewRange( view, domEvent ) {
  */
 
 /**
- * Fired when the user cut the content from one of the editables.
+ * Fired when the user cut the content from one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @event module:engine/view/document~Document#event:cut
@@ -226,12 +232,13 @@ function getDropViewRange( view, domEvent ) {
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
- * Fired with a `dataTransfer` which comes from the clipboard and whose content should be processed
+ * This event carries a `dataTransfer` object which comes from the clipboard and which content should be processed
  * and inserted into the editor.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
@@ -245,13 +252,14 @@ function getDropViewRange( view, domEvent ) {
  */
 
 /**
- * Fired when the user starts dragging the content in one of the editables.
+ * Fired when the user starts dragging the content in one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:dragstart
@@ -263,9 +271,10 @@ function getDropViewRange( view, domEvent ) {
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:dragend
@@ -273,13 +282,14 @@ function getDropViewRange( view, domEvent ) {
  */
 
 /**
- * Fired when the user drags the content into one of the editables.
+ * Fired when the user drags the content into one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:dragenter
@@ -287,13 +297,14 @@ function getDropViewRange( view, domEvent ) {
  */
 
 /**
- * Fired when the user drags the content out of one of the editables.
+ * Fired when the user drags the content out of one of the editing roots of the editor.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
- * Note that this event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
- * This is done by the {@link module:clipboard/clipboard~Clipboard} feature. If it is not loaded, it must be done manually.
+ * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
+ * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * the observer must be added manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:dragleave

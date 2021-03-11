@@ -30,7 +30,7 @@ export default class MouseObserver extends DomEventObserver {
 }
 
 /**
- * Fired when mouse button is pressed down on one of the editables.
+ * Fired when mouse button is pressed down on one of the editing roots of the editor.
  *
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
@@ -43,7 +43,7 @@ export default class MouseObserver extends DomEventObserver {
  */
 
 /**
- * Fired when the mouse button is released over one of the editables.
+ * Fired when the mouse button is released over one of the editing roots of the editor.
  *
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *

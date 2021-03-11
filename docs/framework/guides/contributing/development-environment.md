@@ -175,6 +175,5 @@ The script reduces the icon size up to 70%, depending on the software used to cr
 
 **Note**: You may still need to tweak the source code of the SVG files manually after using the script:
 
-* The icons should have the `viewBox` attribute (instead of `width` and `height`). The `removeDimensions` SVGO plugin will not remove `width` and `height` if there is no `viewBox` attribute so make sure it is present.
-* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source.
+* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source and running `clean-up-svg-icons` again usually does that.
 * Make sure the number of `<path>` elements is minimal. Merge paths whenever possible in the image processor before saving the file.

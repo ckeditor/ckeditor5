@@ -27,13 +27,13 @@ import '../theme/clipboard.css';
 // Drag and Drop events overview:
 //
 //                ┌──────────────────┐
-//                │     mousedown    │   Setting draggable attribute.
+//                │     mousedown    │   Setting the draggable attribute.
 //                └─────────┬────────┘
 //                          │
 //                          └─────────────────────┐
 //                          │                     │
 //                          │           ┌─────────V────────┐
-//                          │           │      mouseup     │   Dragging not started so removing draggable attribute.
+//                          │           │      mouseup     │   Dragging did not start so removing the draggable attribute.
 //                          │           └──────────────────┘
 //                          │
 //                ┌─────────V────────┐   Retrieves the selected model.DocumentFragment
@@ -48,13 +48,13 @@ import '../theme/clipboard.css';
 //                          ┌────────────┐
 //                          │            │
 //                ┌─────────V────────┐   │
-//                │     dragging     │   │   Updates drop target marker.
+//                │     dragging     │   │   Updates the drop target marker.
 //                └─────────┬────────┘   │
 //                          │            │
 //            ┌─────────────└────────────┘
 //            │             │            │
 //            │   ┌─────────V────────┐   │
-//            │   │     dragleave    │   │   Removes drop target marker.
+//            │   │     dragleave    │   │   Removes the drop target marker.
 //            │   └─────────┬────────┘   │
 //            │             │            │
 //        ┌───│─────────────┘            │
@@ -92,13 +92,13 @@ import '../theme/clipboard.css';
 //            │  └──────────┬──────────┘
 //            │             │
 //            │  ┌──────────V──────────┐
-//            │  │   contentInsertion  │   Removes content from original range if insertion succeeded.
+//            │  │   contentInsertion  │   Removes content from the original range if insertion was successful.
 //            │  └──────────┬──────────┘
 //            │             │
 //            └─────────────┐
 //                          │
 //                ┌─────────V────────┐
-//                │      dragend     │   Removes drop marker and cleans state.
+//                │      dragend     │   Removes the drop marker and cleans state.
 //                └──────────────────┘
 //
 

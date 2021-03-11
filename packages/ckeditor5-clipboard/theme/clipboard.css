@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck {
+.ck.ck-editor__editable {
 	/*
 	 * Vertical drop target (in text).
 	 */
 	& .ck.ck-clipboard-drop-target-position {
 		display: inline;
 		position: relative;
+		pointer-events: none;
 
 		& span {
 			position: absolute;

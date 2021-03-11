@@ -18,10 +18,10 @@ import PastePlainText from './pasteplaintext';
  *
  * Read more about the clipboard integration in {@glink framework/guides/deep-dive/clipboard "Clipboard" deep dive} guide.
  *
- * This is a "glue" plugin which loads:
- * * {@link module:clipboard/clipboardpipeline~ClipboardPipeline} plugin
- * * {@link module:clipboard/dragdrop~DragDrop} plugin
- * * {@link module:clipboard/pasteplaintext~PastePlainText} plugin
+ * This is a "glue" plugin which loads the following plugins:
+ * * {@link module:clipboard/clipboardpipeline~ClipboardPipeline}
+ * * {@link module:clipboard/dragdrop~DragDrop}
+ * * {@link module:clipboard/pasteplaintext~PastePlainText}
  *
  * @extends module:core/plugin~Plugin
  */
