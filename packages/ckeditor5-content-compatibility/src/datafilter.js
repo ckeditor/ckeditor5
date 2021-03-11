@@ -187,6 +187,7 @@ export default class DataFilter {
 			view: viewName,
 			model: ( viewElement, conversionApi ) => {
 				const matches = [];
+
 				for ( const match of matchAll( viewElement, this._allowedAttributes ) ) {
 					if ( conversionApi.consumable.consume( viewElement, match.match ) ) {
 						matches.push( match );
