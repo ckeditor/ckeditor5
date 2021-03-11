@@ -18,6 +18,7 @@ before_install:
 - npm i -g yarn
 install:
 - yarn install
+- yarn run dll:build
 script:
 - ./scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
 #- node ./scripts/continuous-integration-script.js
