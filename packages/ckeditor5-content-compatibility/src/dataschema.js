@@ -183,7 +183,7 @@ export default class DataSchema {
 }
 
 // Test view name against the given pattern.
-
+//
 // @private
 // @param {String|RegExp} pattern
 // @param {String} viewName
@@ -201,7 +201,7 @@ function testViewName( pattern, viewName ) {
 }
 
 /**
- * A definition of {@link module:content-compatibility/dataschema data schema}.
+ * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema}.
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} [view] Name of the view element.
