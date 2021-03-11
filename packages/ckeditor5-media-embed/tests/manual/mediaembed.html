@@ -1,12 +1,20 @@
-<style>
-	input {
-		width: 500px;
-	}
+<head>
+	<!-- For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI. -->
+	<meta name="x-cke-crawler-ignore-patterns" content='{
+		"response-failure": "vimeo.com",
+		"console-error": "vimeo.com"
+	}'>
 
-	body {
-		width: 700px;
-	}
-</style>
+	<style>
+		input {
+			width: 500px;
+		}
+
+		body {
+			width: 700px;
+		}
+	</style>
+</head>
 
 <h2>Example URLs</h2>
 <ul>
