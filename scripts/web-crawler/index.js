@@ -11,6 +11,8 @@ const puppeteer = require( 'puppeteer' );
 
 const chalk = require( 'chalk' );
 
+const stripAnsiEscapeCodes = require( 'strip-ansi' );
+
 const { getBaseUrl, getFirstLineFromErrorMessage, parseArguments, toArray } = require( './utils' );
 
 const { createSpinner, getProgressHandler } = require( './spinner' );
@@ -57,7 +59,11 @@ async function startCrawler( { url, depth, exclusions, concurrency, quit } ) {
 
 	await openLinks( browser, {
 		baseUrl: getBaseUrl( url ),
-		linksQueue: [ { url, remainingNestedLevels: depth } ],
+		linksQueue: [ {
+			url,
+			parentUrl: '(none)',
+			remainingNestedLevels: depth
+		} ],
 		foundLinks: [ url ],
 		exclusions,
 		concurrency,
@@ -213,11 +219,19 @@ async function openLink( browser, { baseUrl, link, foundLinks, exclusions, onPro
 		// Consider navigation to be finished when the `load` event is fired and there are no network connections for at least 500 ms.
 		await page.goto( link.url, { waitUntil: [ 'load', 'networkidle0' ] } );
 	} catch ( error ) {
-		onError( {
-			pageUrl: page.url(),
-			type: ERROR_TYPES.NAVIGATION_ERROR,
-			message: error.message || 'Unknown navigation error'
-		} );
+		const errorMessage = error.message || 'Unknown navigation error';
+
+		// All navigation errors starting with the `net::` prefix are already covered by the "request" error handler, so it should
+		// not be also reported as the "navigation error".
+		const ignoredMessage = 'net::';
+
+		if ( !errorMessage.startsWith( ignoredMessage ) ) {
+			onError( {
+				pageUrl: link.url,
+				type: ERROR_TYPES.NAVIGATION_ERROR,
+				message: errorMessage
+			} );
+		}
 
 		await page.close();
 
@@ -351,7 +365,7 @@ function markErrorsAsIgnored( errors, errorIgnorePatterns ) {
 				return true;
 			}
 
-			if ( error.message.includes( pattern ) ) {
+			if ( stripAnsiEscapeCodes( error.message ).includes( pattern ) ) {
 				return true;
 			}
 
@@ -433,11 +447,15 @@ function registerErrorHandlers( page, { link, onError } ) {
 		if ( errorText !== 'net::ERR_BLOCKED_BY_CLIENT.Inspector' ) {
 			const url = request.url();
 			const host = new URL( url ).host;
+			const isNavigation = isNavigationRequest( request );
+			const message = isNavigation ?
+				`Failed to open link ${ chalk.bold( url ) }` :
+				`Failed to load resource from ${ chalk.bold( host ) }`;
 
 			onError( {
-				pageUrl: page.url(),
+				pageUrl: isNavigation ? link.parentUrl : page.url(),
 				type: ERROR_TYPES.REQUEST_FAILURE,
-				message: `Failed to load resource from ${ chalk.bold( host ) } (failure message: ${ chalk.bold( errorText ) })`,
+				message: `${ message } (failure message: ${ chalk.bold( errorText ) })`,
 				failedResourceUrl: url
 			} );
 		}
@@ -449,16 +467,13 @@ function registerErrorHandlers( page, { link, onError } ) {
 		if ( responseStatus > 399 ) {
 			const url = response.url();
 			const host = new URL( url ).host;
-			const isNavigationRequest = response.request().isNavigationRequest();
-			const message = isNavigationRequest ?
+			const isNavigation = isNavigationRequest( response.request() );
+			const message = isNavigation ?
 				`Failed to open link ${ chalk.bold( url ) }` :
 				`Failed to load resource from ${ chalk.bold( host ) }`;
 
 			onError( {
-				// If the request associated with this failed response was a navigation request, the `page.url()` method
-				// would return 'about:blank', because every link is opened in a new page. For this case, to log something
-				// more useful, we store the parent URL for each found link.
-				pageUrl: isNavigationRequest ? link.parentUrl : page.url(),
+				pageUrl: isNavigation ? link.parentUrl : page.url(),
 				type: ERROR_TYPES.RESPONSE_FAILURE,
 				message: `${ message } (HTTP response status code: ${ chalk.bold( responseStatus ) })`,
 				failedResourceUrl: url
@@ -467,13 +482,11 @@ function registerErrorHandlers( page, { link, onError } ) {
 	} );
 
 	page.on( ERROR_TYPES.CONSOLE_ERROR.event, async message => {
-		const ignoredMessages = [
-			// The resource loading failure is already covered by the `response` or `requestfailed` events, so it should
-			// not be also reported as the "console error".
-			'Failed to load resource:'
-		];
+		// The resource loading failure is already covered by the "request" or "response" error handlers, so it should
+		// not be also reported as the "console error".
+		const ignoredMessage = 'Failed to load resource:';
 
-		if ( ignoredMessages.some( ignoredMessage => message.text().includes( ignoredMessage ) ) ) {
+		if ( message.text().startsWith( ignoredMessage ) ) {
 			return;
 		}
 
@@ -504,6 +517,17 @@ function registerErrorHandlers( page, { link, onError } ) {
 			message: serializedArguments.length ? serializedArguments.join( '. ' ) : message.text()
 		} );
 	} );
+}
+
+/**
+ * Checks, if HTTP request was a navigation one, i.e. request that is driving frame's navigation. Requests sent from child frames
+ * (i.e. from <iframe>) are not treated as a navigation. Only a request from a top-level frame is navigation.
+ *
+ * @param {Object} request The Puppeteer's HTTP request instance.
+ * @returns {Boolean}
+ */
+function isNavigationRequest( request ) {
+	return request.isNavigationRequest() && request.frame().parentFrame() === null;
 }
 
 /**
