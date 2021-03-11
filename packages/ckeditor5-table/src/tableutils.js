@@ -7,6 +7,7 @@
  * @module table/tableutils
  */
 
+import { find } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
 import TableWalker from './tablewalker';
@@ -261,6 +262,11 @@ export default class TableUtils extends Plugin {
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns === insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
+					// Ignore non-row elements inside the table (e.g. caption).
+					if ( !tableRow.is( 'element', 'tableRow' ) ) {
+						continue;
+					}
+
 					createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
 				}
 
@@ -718,7 +724,7 @@ export default class TableUtils extends Plugin {
 	 */
 	getColumns( table ) {
 		// Analyze first row only as all the rows should have the same width.
-		const row = table.getChild( 0 );
+		const row = find( table.getChildren(), child => child.is( 'element', 'tableRow' ) );
 
 		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
 			const columnWidth = parseInt( row.getAttribute( 'colspan' ) || 1 );
@@ -728,7 +734,7 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Returns the number of rows for a given table.
+	 * Returns the number of rows for a given table. Any other element present in the table model is omitted.
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).getRows( table );
 	 *
@@ -736,8 +742,12 @@ export default class TableUtils extends Plugin {
 	 * @returns {Number}
 	 */
 	getRows( table ) {
-		// Simple row counting, not including rowspan due to #6427.
-		return table.childCount;
+		// Rowspan not included due to #6427.
+		return Array.from( table.getChildren() )
+			.reduce(
+				( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount,
+				0
+			);
 	}
 }
 
