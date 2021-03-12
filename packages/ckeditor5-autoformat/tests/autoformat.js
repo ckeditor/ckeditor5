@@ -313,19 +313,25 @@ describe( 'Autoformat', () => {
 				insertSpace();
 
 				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
+			} );
 
+			it( 'should replace square brackets with " x "', () => {
 				setData( model, '[]' );
 				insertBrackets( ' x ' );
 				insertSpace();
 
 				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
+			} );
 
+			it( 'should replace square brackets with "x "', () => {
 				setData( model, '[]' );
 				insertBrackets( 'x ' );
 				insertSpace();
 
 				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo" todoListChecked="true">[]</listItem>' );
+			} );
 
+			it( 'should replace square brackets with " x"', () => {
 				setData( model, '[]' );
 				insertBrackets( ' x' );
 				insertSpace();
