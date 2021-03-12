@@ -69,7 +69,7 @@ export function getImageWidgetAncestor( selection ) {
 	let parent = selection.getFirstPosition().parent;
 
 	while ( parent ) {
-		if ( parent.name === 'figure' && parent.getCustomProperty( 'image' ) ) {
+		if ( parent.is( 'element' ) && isImageWidget( parent ) ) {
 			return parent;
 		}
 

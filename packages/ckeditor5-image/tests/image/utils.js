@@ -8,7 +8,6 @@
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import {
 	toImageWidget,
@@ -28,6 +27,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 
 describe( 'image widget utils', () => {
 	let element, image, writer, viewDocument;
@@ -78,7 +78,7 @@ describe( 'image widget utils', () => {
 
 		it( 'should return true when image widget is the only element in the selection', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( viewDocument, [ element ] );
+			frag = writer.createDocumentFragment( element );
 
 			const selection = writer.createSelection( element, 'on' );
 
@@ -89,7 +89,7 @@ describe( 'image widget utils', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( viewDocument, [ notWidgetizedElement ] );
+			frag = writer.createDocumentFragment( notWidgetizedElement );
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
@@ -99,7 +99,7 @@ describe( 'image widget utils', () => {
 		it( 'should return false when widget element is not the only element in the selection', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
-			frag = new ViewDocumentFragment( viewDocument, [ element, notWidgetizedElement ] );
+			frag = writer.createDocumentFragment( [ element, notWidgetizedElement ] );
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
@@ -110,16 +110,16 @@ describe( 'image widget utils', () => {
 	describe( 'getImageWidgetAncestor()', () => {
 		let frag, caption;
 
-		describe( 'the selection is inside a caption', () => {
+		describe( 'when the selection is inside a caption', () => {
 			beforeEach( () => {
 				caption = writer.createContainerElement( 'figcaption' );
 				writer.insert( writer.createPositionAt( element, 1 ), caption );
-				frag = new ViewDocumentFragment( viewDocument, [ element ] );
+				frag = writer.createDocumentFragment( element );
 			} );
 
 			it( 'should return the widget element if the selection is not collapsed', () => {
 				const text = writer.createText( 'foo' );
-				writer.insert( ViewPosition._createAt( caption, 0 ), text );
+				writer.insert( writer.createPositionAt( caption, 0 ), text );
 
 				const selection = writer.createSelection( writer.createRangeIn( caption ) );
 
@@ -135,7 +135,7 @@ describe( 'image widget utils', () => {
 
 		it( 'should return null if an image is selected', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( viewDocument, [ element ] );
+			frag = writer.createDocumentFragment( element );
 
 			const selection = writer.createSelection( element, 'on' );
 
@@ -145,7 +145,7 @@ describe( 'image widget utils', () => {
 		it( 'should return null if an image is a part of the selection', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
-			frag = new ViewDocumentFragment( viewDocument, [ element, notWidgetizedElement ] );
+			frag = writer.createDocumentFragment( [ element, notWidgetizedElement ] );
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
@@ -156,7 +156,7 @@ describe( 'image widget utils', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( viewDocument, [ notWidgetizedElement ] );
+			frag = writer.createDocumentFragment( notWidgetizedElement );
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
@@ -166,13 +166,11 @@ describe( 'image widget utils', () => {
 		it( 'should return null if the selection is inside a figure element, which is not an image', () => {
 			const innerContainer = writer.createContainerElement( 'p' );
 
-			viewDocument = new ViewDocument( new StylesProcessor() );
-			writer = new ViewDowncastWriter( viewDocument );
 			element = writer.createContainerElement( 'figure' );
 
 			writer.insert( writer.createPositionAt( element, 1 ), innerContainer );
 
-			frag = new ViewDocumentFragment( viewDocument, [ element ] );
+			frag = writer.createDocumentFragment( element );
 
 			const selection = writer.createSelection( innerContainer, 'in' );
 
