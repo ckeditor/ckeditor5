@@ -14,7 +14,6 @@ import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -28,9 +27,7 @@ describe( 'ImageUploadProgress', () => {
 
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	// eslint-disable-next-line max-len
-	const base64BigSample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAM6ADAAQAAAABAAAAMwAAAADPDU1YAAAAm0lEQVRoBe2S0QnAMBCFLt1/yUzSQEfwQ0ow//I4zdoz71zynkvu+M7omL/WrExlBAN9M0EymqgM0iZAlREko4nKIG0CVBlBMpqoDNImQJURJKOJyiBtAlQZQTKaqAzSJkCVESSjicogbQJUGUEymqgM0iZAlREko4nKIG0CVBlBMpqoDNImQJURJKOJyiBtAlQZQTKaqAzSJkAH3tsCRsE/bDEAAAAASUVORK5CYII=';
-	let editorElement, editor, model, doc, fileRepository, view, nativeReaderMock, loader, adapterMock;
+	let editor, model, doc, fileRepository, view, nativeReaderMock, loader, adapterMock;
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -47,17 +44,14 @@ describe( 'ImageUploadProgress', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = window.document.createElement( 'div' );
-		window.document.body.appendChild( editorElement );
-
 		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
 
 			return nativeReaderMock;
 		} );
 
-		return ClassicTestEditor
-			.create( editorElement, {
+		return VirtualTestEditor
+			.create( {
 				plugins: [
 					ImageBlockEditing, ImageInlineEditing, Paragraph, ImageUploadEditing,
 					ImageUploadProgress, UploadAdapterPluginMock, ClipboardPipeline
@@ -77,11 +71,6 @@ describe( 'ImageUploadProgress', () => {
 					return adapterMock;
 				};
 			} );
-	} );
-
-	afterEach( async () => {
-		editorElement.remove();
-		await editor.destroy();
 	} );
 
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {
@@ -259,7 +248,7 @@ describe( 'ImageUploadProgress', () => {
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
-	it( 'should convert image\'s "complete" uploadStatus attribute and display temporary complete icon', done => {
+	it( 'should convert image\'s "complete" uploadStatus attribute and display temporary icon', done => {
 		const clock = testUtils.sinon.useFakeTimers();
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -283,30 +272,6 @@ describe( 'ImageUploadProgress', () => {
 						'</span>}foo</p>'
 					);
 
-					done();
-				} catch ( err ) {
-					done( err );
-				}
-			}, { priority: 'lowest' } );
-
-			loader.file.then( () => adapterMock.mockSuccess( { default: 'image.png' } ) );
-		} );
-
-		loader.file.then( () => nativeReaderMock.mockSuccess( base64BigSample ) );
-	} );
-
-	it( 'should not display complete icon if image is smaller than 50px/50px', done => {
-		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
-
-		model.document.once( 'change', () => {
-			model.document.once( 'change', () => {
-				try {
-					expect( getViewData( view ) ).to.equal(
-						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
-							'<img src="image.png"></img>' +
-						'</span>}foo</p>'
-					);
 					done();
 				} catch ( err ) {
 					done( err );

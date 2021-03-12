@@ -12,7 +12,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { FileRepository } from 'ckeditor5/src/upload';
 import { getViewImageFromWidget } from '../image/utils';
-import { Rect } from 'ckeditor5/src/utils';
 
 import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 
@@ -86,7 +85,6 @@ export default class ImageUploadProgress extends Plugin {
 		const placeholder = this.placeholder;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 		const viewWriter = conversionApi.writer;
-		const view = editor.editing.view;
 
 		if ( status == 'reading' ) {
 			// Start "appearing" effect and show placeholder with infinite progress bar on the top
@@ -112,7 +110,7 @@ export default class ImageUploadProgress extends Plugin {
 			} else {
 				// Hide placeholder and initialize progress bar showing upload progress.
 				_hidePlaceholder( viewFigure, viewWriter );
-				_showProgressBar( viewFigure, viewWriter, loader, view );
+				_showProgressBar( viewFigure, viewWriter, loader, editor.editing.view );
 				_displayLocalImage( viewFigure, viewWriter, loader );
 			}
 
@@ -120,12 +118,7 @@ export default class ImageUploadProgress extends Plugin {
 		}
 
 		if ( status == 'complete' && fileRepository.loaders.get( uploadId ) ) {
-			const { width, height } = new Rect( view.domConverter.mapViewToDom( viewFigure ) );
-
-			// Show complete icon if the image is not to small to contain it.
-			if ( width > 50 && height > 50 ) {
-				_showCompleteIcon( viewFigure, viewWriter, view );
-			}
+			_showCompleteIcon( viewFigure, viewWriter, editor.editing.view );
 		}
 
 		// Clean up.
