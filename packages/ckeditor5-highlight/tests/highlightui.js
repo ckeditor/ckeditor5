@@ -67,33 +67,7 @@ describe( 'HighlightUI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'highlight Remove', () => {
-		let removeButton;
-
-		beforeEach( () => {
-			command = editor.commands.get( 'highlight' );
-			removeButton = editor.ui.componentFactory.create( 'removeHighlight' );
-		} );
-
-		it( 'removeButton has the base properties', () => {
-			expect( editor.ui.componentFactory.has( 'removeHighlight' ) ).to.be.true;
-			expect( removeButton ).to.have.property( 'tooltip', true );
-			expect( removeButton ).to.have.property( 'label', 'Remove highlight' );
-			expect( removeButton ).to.have.property( 'icon', eraserIcon );
-		} );
-
-		describe( 'model to command binding', () => {
-			it( 'isEnabled', () => {
-				command.isEnabled = false;
-				expect( removeButton.isEnabled ).to.be.false;
-
-				command.isEnabled = true;
-				expect( removeButton.isEnabled ).to.be.true;
-			} );
-		} );
-	} );
-
-	describe( 'highlight Dropdown', () => {
+	describe( 'highlight dropdown', () => {
 		let dropdown;
 
 		beforeEach( () => {
@@ -270,6 +244,32 @@ describe( 'HighlightUI', () => {
 						return newEditor.destroy();
 					} );
 			}
+		} );
+	} );
+
+	describe( 'highlight remove', () => {
+		let removeButton;
+
+		beforeEach( () => {
+			command = editor.commands.get( 'highlight' );
+			removeButton = editor.ui.componentFactory.create( 'removeHighlight' );
+		} );
+
+		it( 'removeButton has the base properties', () => {
+			expect( editor.ui.componentFactory.has( 'removeHighlight' ) ).to.be.true;
+			expect( removeButton ).to.have.property( 'tooltip', true );
+			expect( removeButton ).to.have.property( 'label', 'Remove highlight' );
+			expect( removeButton ).to.have.property( 'icon', eraserIcon );
+		} );
+
+		describe( 'model to command binding', () => {
+			it( 'isEnabled', () => {
+				command.isEnabled = false;
+				expect( removeButton.isEnabled ).to.be.false;
+
+				command.isEnabled = true;
+				expect( removeButton.isEnabled ).to.be.true;
+			} );
 		} );
 	} );
 } );
