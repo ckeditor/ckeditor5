@@ -132,7 +132,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
-			`<paragraph>foo</paragraph>[<image uploadId="${ id }" uploadStatus="reading"></image>]`
+			`<paragraph>foo[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]</paragraph>`
 		);
 		expect( eventInfo.stop.called ).to.be.true;
 	} );
