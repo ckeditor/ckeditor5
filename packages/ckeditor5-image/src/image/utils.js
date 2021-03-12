@@ -85,7 +85,8 @@ export function isImageInline( modelElement ) {
  *		insertImage( model, { src: 'path/to/image.jpg' } );
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {Object} [attributes={}] Attributes of inserted image
+ * @param {Object} [attributes={}] Attributes of the inserted image.
+ * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~Schema}.
  * @param {module:engine/model/selection~Selectable} [selectable] Place to insert the image. If not specified,
  * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied for the block images
  * and `model.document.selection` for the inline images.
@@ -97,6 +98,12 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 	const selection = model.document.selection;
 
 	imageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
+
+	for ( const attributeName in attributes ) {
+		if ( !model.schema.checkAttribute( imageType, attributeName ) ) {
+			delete attributes[ attributeName ];
+		}
+	}
 
 	model.change( writer => {
 		const imageElement = writer.createElement( imageType, attributes );
