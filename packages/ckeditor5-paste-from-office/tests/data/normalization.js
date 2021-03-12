@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '../../src/pastefromoffice';
 
@@ -12,7 +12,7 @@ import { generateTests } from '../_utils/utils';
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 
 const editorConfig = {
-	plugins: [ Clipboard, PasteFromOffice, Paragraph ]
+	plugins: [ ClipboardPipeline, PasteFromOffice, Paragraph ]
 };
 
 describe( 'PasteFromOffice - normalization', () => {

@@ -14,14 +14,28 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^26.0.0",
     "@ckeditor/ckeditor5-engine": "^26.0.0",
-    "@ckeditor/ckeditor5-utils": "^26.0.0"
+    "@ckeditor/ckeditor5-utils": "^26.0.0",
+    "@ckeditor/ckeditor5-widget": "^26.0.0",
+    "lodash-es": "^4.17.11"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": "^26.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^26.0.0",
     "@ckeditor/ckeditor5-block-quote": "^26.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "^26.0.0",
+    "@ckeditor/ckeditor5-code-block": "^26.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^26.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^26.0.0",
+    "@ckeditor/ckeditor5-enter": "^26.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^26.0.0",
+    "@ckeditor/ckeditor5-image": "^26.0.0",
     "@ckeditor/ckeditor5-link": "^26.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^26.0.0"
+    "@ckeditor/ckeditor5-page-break": "^26.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^26.0.0",
+    "@ckeditor/ckeditor5-paste-from-office": "^26.0.0",
+    "@ckeditor/ckeditor5-remove-format": "^26.0.0",
+    "@ckeditor/ckeditor5-table": "^26.0.0",
+    "@ckeditor/ckeditor5-typing": "^26.0.0"
   },
   "engines": {
     "node": ">=12.0.0",
