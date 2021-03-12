@@ -18,10 +18,13 @@ before_install:
 - npm i -g yarn
 install:
 - yarn install
+# The "./manual/all-features-dll.js" test requires building DLL.
+- yarn run dll:build
 script:
 - node ./scripts/continuous-integration-script.js
 - yarn run lint
 - yarn run stylelint
+- ./scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
 - yarn run docs --strict
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait 30 yarn run docs:build-and-publish-nightly;

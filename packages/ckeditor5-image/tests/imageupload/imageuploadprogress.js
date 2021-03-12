@@ -13,7 +13,7 @@ import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
@@ -60,7 +60,7 @@ describe( 'ImageUploadProgress', () => {
 			.create( editorElement, {
 				plugins: [
 					ImageBlockEditing, ImageInlineEditing, Paragraph, ImageUploadEditing,
-					ImageUploadProgress, UploadAdapterPluginMock, Clipboard
+					ImageUploadProgress, UploadAdapterPluginMock, ClipboardPipeline
 				]
 			} )
 			.then( newEditor => {
@@ -378,7 +378,7 @@ describe( 'ImageUploadProgress', () => {
 		const newEditor = await VirtualTestEditor.create( {
 			plugins: [
 				ImageInlineEditing, Paragraph, ImageUploadEditing,
-				ImageUploadProgress, UploadAdapterPluginMock, Clipboard
+				ImageUploadProgress, UploadAdapterPluginMock, ClipboardPipeline
 			]
 		} );
 
@@ -399,7 +399,7 @@ describe( 'ImageUploadProgress', () => {
 		const newEditor = await VirtualTestEditor.create( {
 			plugins: [
 				ImageBlockEditing, Paragraph, ImageUploadEditing,
-				ImageUploadProgress, UploadAdapterPluginMock, Clipboard
+				ImageUploadProgress, UploadAdapterPluginMock, ClipboardPipeline
 			]
 		} );
 
