@@ -7,23 +7,23 @@
 
 while getopts f:r:i: flag
 do
-    case "${flag}" in
-        f) FILES=${OPTARG};;
-        r) REPOSITORY=${OPTARG};;
-        i) IDENTITY_FILE=${OPTARG};;
-    esac
+  case "${flag}" in
+    f) FILES=${OPTARG};;
+    r) REPOSITORY=${OPTARG};;
+    i) IDENTITY_FILE=${OPTARG};;
+  esac
 done
 
 MANUAL_TEST_SERVER_OPTIONS="--silent -r $REPOSITORY"
 
 if [ ! -z "$FILES" ]
 then
-      MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS -f $FILES"
+  MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS -f $FILES"
 fi
 
 if [ ! -z "$IDENTITY_FILE" ]
 then
-      MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS -i $IDENTITY_FILE"
+  MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS -i $IDENTITY_FILE"
 fi
 
 echo "Starting the manual test server..."
