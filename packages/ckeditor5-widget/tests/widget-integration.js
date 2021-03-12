@@ -289,8 +289,6 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
-
 		expect( getViewData( view ) ).to.equal(
 			'<p>Foo{<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>}Bar</p>'
 		);

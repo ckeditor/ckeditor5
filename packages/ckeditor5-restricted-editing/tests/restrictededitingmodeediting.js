@@ -15,7 +15,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
@@ -721,8 +721,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, BlockQuoteEditing, LinkEditing, Typing, Clipboard,
-					RestrictedEditingModeEditing
+				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, BlockQuoteEditing, LinkEditing, Typing,
+					ClipboardPipeline, RestrictedEditingModeEditing
 				]
 			} );
 			model = editor.model;
