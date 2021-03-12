@@ -34,10 +34,6 @@
 			display: block;
 			max-width: 100%;
 		}
-
-		&.ck-widget_selected {
-			z-index: 1;
-		}
 	}
 }
 
@@ -46,7 +42,13 @@
  * of `.image` (e.g. to the left/right). This ensures the placeholder stays at the padding just like the native
  * caret does, and not at the edge of <figcaption>.
  */
-.ck.ck-editor__editable .image > figcaption.ck-placeholder::before {
-	padding-left: inherit;
-	padding-right: inherit;
+.ck.ck-editor__editable {
+	& .image > figcaption.ck-placeholder::before {
+		padding-left: inherit;
+		padding-right: inherit;
+	}
+
+	& .image-inline.ck-widget_selected {
+		z-index: 1;
+	}
 }
