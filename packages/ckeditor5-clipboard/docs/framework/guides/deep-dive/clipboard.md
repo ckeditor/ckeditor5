@@ -21,7 +21,7 @@ When the user pastes or drops content into the editor, the browser fires an even
 
 1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns that event into a synthetic {@link module:engine/view/document~Document#event:paste `view.Document#paste`} or {@link module:engine/view/document~Document#event:drop `view.Document#drop`}.
 2. Since the content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a very simillar effect, both events are turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
-3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:clipboard/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `Clipboard#inputTransformation`} event with the retrieved content.
+3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:clipboard/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event with the retrieved content.
 4. Finally, the clipboard feature listens to the `Clipboard#inputTransformation` event, takes the processed content and {@link module:engine/model/model~Model#insertContent inserts} it into the editor.
 
 The clipboard feature listens to the `view.Document#clipboardInput` and `Clipboard#inputTransformation` events using low priority listeners. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior.
@@ -61,7 +61,7 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 
 ### Processing input content
 
-The {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `view.Document#inputTransformation`} event lets you process the content which is going to be inserted into the editor.
+The {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `view.Document#inputTransformation`} event lets you process the content which is going to be inserted into the editor.
 
 The default action is to {@link module:engine/model/model~Model#insertContent insert} the content (`data.content`, represented by a {@link module:engine/view/documentfragment~DocumentFragment}) to the editor if the data is not empty.
 
@@ -70,7 +70,7 @@ At this stage the pasted content can be processed by the features. For example, 
 ```js
 const writer = new UpcastWriter( editor.editing.view.document );
 
-editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 	if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
 		const linkUrl = data.content.getChild( 0 ).data;
 
@@ -88,7 +88,7 @@ editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
 The default action (inserting the content into the editor) is performed by a low priority listener, so it can be overridden by a normal one. With the `lowest` priority you can also execute actions after the content was already inserted.
 
 ```js
-editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 	console.log( 'Content was inserted.' );
 }, { priority: 'lowest' } );
 ```
@@ -128,7 +128,7 @@ class PastePlainText extends Plugin {
 		editor.commands.add( 'pastePlainText', new PastePlainTextCommand( editor ) );
 
 		// Logic responsible for converting HTML to plain text.
-		const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+		const clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
 		const command = editor.commands.get( 'pastePlainText' );
 		const editingView = editor.editing.view;
 
