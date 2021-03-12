@@ -85,7 +85,8 @@ export default class TableWalker {
 	 * Can't be used together with `startColumn` and `endColumn`.
 	 * @param {Number} [options.startColumn=0] A column index from which this iterator should start. Can't be used together with `column`.
 	 * @param {Number} [options.endColumn] A column index at which this iterator should end. Can't be used together with `column`.
-	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
+	 * @param {Boolean} [options.includeAllSlots=false] Return values for spanned cells.
+	 * @param {Boolean} [options.includeAllElements=false] Also return values for other table elements (e.g. caption).
 	 */
 	constructor( table, options = {} ) {
 		/**
@@ -141,6 +142,15 @@ export default class TableWalker {
 		 * @private
 		 */
 		this._includeAllSlots = !!options.includeAllSlots;
+
+		/**
+		 * Enables output of all elements in the table, e.g. caption.
+		 *
+		 * @readonly
+		 * @member {Boolean}
+		 * @private
+		 */
+		this._includeAllElements = !!options.includeAllElements;
 
 		/**
 		 * Row indexes to skip from the iteration.

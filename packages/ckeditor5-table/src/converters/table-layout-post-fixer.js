@@ -346,7 +346,8 @@ function fixTableRowsSizes( table, writer ) {
 // @returns {Array.<{{cell, rowspan}}>}
 function findCellsToTrim( table ) {
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
-	const maxRows = table.childCount;
+	const maxRows = Array.from( table.getChildren() )
+		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
 
 	const cellsToTrim = [];
 

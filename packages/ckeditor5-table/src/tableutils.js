@@ -7,7 +7,6 @@
  * @module table/tableutils
  */
 
-import { find } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
 import TableWalker from './tablewalker';
@@ -724,7 +723,8 @@ export default class TableUtils extends Plugin {
 	 */
 	getColumns( table ) {
 		// Analyze first row only as all the rows should have the same width.
-		const row = find( table.getChildren(), child => child.is( 'element', 'tableRow' ) );
+		// We expect TODO
+		const row = table.getChild( 0 );
 
 		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
 			const columnWidth = parseInt( row.getAttribute( 'colspan' ) || 1 );
@@ -744,10 +744,7 @@ export default class TableUtils extends Plugin {
 	getRows( table ) {
 		// Rowspan not included due to #6427.
 		return Array.from( table.getChildren() )
-			.reduce(
-				( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount,
-				0
-			);
+			.reduce( ( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount, 0 );
 	}
 }
 

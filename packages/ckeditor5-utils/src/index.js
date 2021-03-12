@@ -32,7 +32,6 @@ export * from './language';
 export { default as Locale } from './locale';
 export { default as Collection } from './collection';
 export { default as first } from './first';
-export { default as find } from './find';
 export { default as FocusTracker } from './focustracker';
 export { default as KeystrokeHandler } from './keystrokehandler';
 export { default as toArray } from './toarray';
