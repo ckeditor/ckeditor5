@@ -11,7 +11,8 @@ import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 
 import { Plugin } from 'ckeditor5/src/core';
-import { priorities } from 'ckeditor5/src/utils';
+import { Enter } from 'ckeditor5/src/enter';
+import { Delete } from 'ckeditor5/src/typing';
 
 import {
 	cleanList,
@@ -43,6 +44,13 @@ export default class ListEditing extends Plugin {
 	 */
 	static get pluginName() {
 		return 'ListEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Enter, Delete ];
 	}
 
 	/**
@@ -123,12 +131,10 @@ export default class ListEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { context: 'li' } );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		//
-		// Priority high + 10 to override widget and blockquote feature listener.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			// Check conditions from those that require less computations like those immediately available.
 			if ( data.direction !== 'backward' ) {
@@ -163,7 +169,7 @@ export default class ListEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		}, { priority: priorities.high + 10 } );
+		}, { context: 'li' } );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {

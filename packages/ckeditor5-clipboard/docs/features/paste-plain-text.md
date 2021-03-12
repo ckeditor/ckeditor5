@@ -8,7 +8,7 @@ order: 30
 
 # Pasting plain text
 
-The plain text pasting feature is implemented by the {@link module:clipboard/clipboard~PastePlainText} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} plugin.
+The plain text pasting feature is implemented by the {@link module:clipboard/pasteplaintext~PastePlainText} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} plugin.
 
 It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &mdash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
 
@@ -51,7 +51,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-The {@link module:clipboard/clipboard~PastePlainText `PastePlainText`} plugin will activate along with the clipboard plugin.
+The {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText`} plugin will activate along with the clipboard plugin.
 
 ## Support for other applications
 
