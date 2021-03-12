@@ -182,7 +182,7 @@ describe( 'ImageResizeHandles', () => {
 				widget = viewDocument.getRoot().getChild( 1 );
 			} );
 
-			it( 'has correct border size after undo', async () => {
+			it( 'has correct border size after undo', () => {
 				const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 				const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' );
 				const finalPointerPosition = initialPosition.clone().moveBy( 0, 10 );
@@ -612,7 +612,7 @@ describe( 'ImageResizeHandles', () => {
 				widget = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 			} );
 
-			it( 'has correct border size after undo', async () => {
+			it( 'has correct border size after undo', () => {
 				const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 				const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' );
 				const finalPointerPosition = initialPosition.clone().moveBy( 0, 10 );
