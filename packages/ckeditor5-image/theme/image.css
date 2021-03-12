@@ -28,11 +28,23 @@
 	}
 
 	& .image-inline {
-		display: inline-block;
+		/*
+		 * Normally, the .image-inline would have "display: inline-block" and "img { width: 100% }" (to follow the wrapper while resizing).
+		 * Unfortunately, together with "srcset", it gets automatically stretched up to the width of the editing root.
+		 * This strange behavior does not happen with inline-flex.
+		 */
+		display: inline-flex;
+
+		/* While being resized, don't allow the image to exceed the width of the editing root. */
+		max-width: 100%;
 
 		& img {
-			display: block;
-			width: 100%;
+			/* This is necessary for the img to span the entire .image-inline wrapper and to resize properly. */
+			flex-grow: 1;
+			flex-shrink: 1;
+
+			/* Prevents overflowing the editing root boundaries when an inline image is very wide. */
+			max-width: 100%;
 		}
 	}
 }
