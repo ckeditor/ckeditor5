@@ -240,68 +240,70 @@ describe( 'Autoformat', () => {
 			} );
 		}
 
-		it( 'should replace empty square brackets', () => {
-			setData( model, '[]' );
-			insertBrackets();
-			insertSpace();
+		describe( 'unchecked', () => {
+			it( 'should replace empty square brackets', () => {
+				setData( model, '[]' );
+				insertBrackets();
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]</listItem>' );
-		} );
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]</listItem>' );
+			} );
 
-		it( 'should replace square brackets with space inside', () => {
-			setData( model, '[]' );
-			insertBrackets( ' ' );
-			insertSpace();
+			it( 'should replace square brackets with space inside', () => {
+				setData( model, '[]' );
+				insertBrackets( ' ' );
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]</listItem>' );
-		} );
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]</listItem>' );
+			} );
 
-		it( 'should be converted from a paragraph', () => {
-			setData( model, '<paragraph>[]Sample text</paragraph>' );
-			insertBrackets();
-			insertSpace();
+			it( 'should be converted from a paragraph', () => {
+				setData( model, '<paragraph>[]Sample text</paragraph>' );
+				insertBrackets();
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Sample text</listItem>' );
-		} );
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Sample text</listItem>' );
+			} );
 
-		it( 'should be converted from a header', () => {
-			setData( model, '<heading1>[]Header text</heading1>' );
-			insertBrackets( ' ' );
-			insertSpace();
+			it( 'should be converted from a header', () => {
+				setData( model, '<heading1>[]Header text</heading1>' );
+				insertBrackets( ' ' );
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Header text</listItem>' );
-		} );
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Header text</listItem>' );
+			} );
 
-		it( 'should be converted from a numbered list', () => {
-			setData( model, '<listItem listIndent="0" listType="numbered">[]Sample text</listItem>' );
-			insertBrackets();
-			insertSpace();
+			it( 'should be converted from a numbered list', () => {
+				setData( model, '<listItem listIndent="0" listType="numbered">[]Sample text</listItem>' );
+				insertBrackets();
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Sample text</listItem>' );
-		} );
+				expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Sample text</listItem>' );
+			} );
 
-		it( 'should not replace the brackets if is not at the beginning of the line', () => {
-			setData( model, '<paragraph>Sample text []</paragraph>' );
-			insertBrackets( ' ' );
-			insertSpace();
+			it( 'should not replace the brackets if is not at the beginning of the line', () => {
+				setData( model, '<paragraph>Sample text []</paragraph>' );
+				insertBrackets( ' ' );
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<paragraph>Sample text [ ] []</paragraph>' );
-		} );
+				expect( getData( model ) ).to.equal( '<paragraph>Sample text [ ] []</paragraph>' );
+			} );
 
-		it( 'should not replace the brackets if it contains a text', () => {
-			setData( model, '[]' );
-			insertBrackets( 'Foo' );
-			insertSpace();
+			it( 'should not replace the brackets if it contains a text', () => {
+				setData( model, '[]' );
+				insertBrackets( 'Foo' );
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<paragraph>[Foo] []</paragraph>' );
-		} );
+				expect( getData( model ) ).to.equal( '<paragraph>[Foo] []</paragraph>' );
+			} );
 
-		it( 'should not replace the brackets after <softBreak>', () => {
-			setData( model, '<paragraph>Foo<softBreak></softBreak>[]</paragraph>' );
-			insertBrackets();
-			insertSpace();
+			it( 'should not replace the brackets after <softBreak>', () => {
+				setData( model, '<paragraph>Foo<softBreak></softBreak>[]</paragraph>' );
+				insertBrackets();
+				insertSpace();
 
-			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[] []</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>[] []</paragraph>' );
+			} );
 		} );
 
 		describe( 'checked', () => {
