@@ -386,9 +386,12 @@ describe( 'Autoformat', () => {
 				} )
 				.then( editor => {
 					const model = editor.model;
+					const doc = model.document;
 
 					setData( model, '<paragraph>#[]</paragraph>' );
-					insertSpace();
+					model.change( writer => {
+						writer.insertText( ' ', doc.selection.getFirstPosition() );
+					} );
 
 					sinon.assert.calledOnce( spy );
 					sinon.assert.calledWithExactly( spy, { value: 'heading1' } );
@@ -396,7 +399,9 @@ describe( 'Autoformat', () => {
 					spy.resetHistory();
 
 					setData( model, '<paragraph>######[]</paragraph>' );
-					insertSpace();
+					model.change( writer => {
+						writer.insertText( ' ', doc.selection.getFirstPosition() );
+					} );
 
 					sinon.assert.calledOnce( spy );
 					sinon.assert.calledWithExactly( spy, { value: 'heading6' } );
