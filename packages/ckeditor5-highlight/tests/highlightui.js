@@ -58,6 +58,7 @@ describe( 'HighlightUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				command = editor.commands.get( 'highlight' );
 			} );
 	} );
 
@@ -71,7 +72,6 @@ describe( 'HighlightUI', () => {
 		let dropdown;
 
 		beforeEach( () => {
-			command = editor.commands.get( 'highlight' );
 			dropdown = editor.ui.componentFactory.create( 'highlight' );
 		} );
 
@@ -251,7 +251,6 @@ describe( 'HighlightUI', () => {
 		let removeButton;
 
 		beforeEach( () => {
-			command = editor.commands.get( 'highlight' );
 			removeButton = editor.ui.componentFactory.create( 'removeHighlight' );
 		} );
 
