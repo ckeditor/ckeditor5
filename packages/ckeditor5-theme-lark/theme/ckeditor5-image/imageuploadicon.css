@@ -26,7 +26,7 @@
 	animation-delay: 0ms, 3000ms;
 
 	/*
-	 * Use CSS math to similate container queries.
+	 * Use CSS math to simulate container queries.
 	 * https://css-tricks.com/the-raven-technique-one-step-closer-to-container-queries/#what-about-showing-and-hiding-things
 	 */
 	overflow: hidden;
