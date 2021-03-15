@@ -517,7 +517,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>' +
-				'<cite data-bar="bar" data-foo="foo">cite</cite>' +
+				'<cite data-foo="foo" data-bar="bar">cite</cite>' +
 				'<cite data-foo="foo"><span data-bar="bar">span</span></cite>' +
 				'</p>' );
 		} );
@@ -675,14 +675,32 @@ describe( 'DataFilter', () => {
 						classes: [ 'foo' ]
 					},
 					2: {
-						classes: [ 'bar', 'foo' ]
+						classes: [ 'foo', 'bar' ]
 					},
 					3: {
-						classes: [ 'baz', 'bar', 'foo' ]
+						classes: [ 'foo', 'bar', 'baz' ]
 					}
 				}
 			} );
 		} );
+	} );
+
+	it( 'should correctly resolve attributes nesting order', () => {
+		dataFilter.allowElement( { name: 'span' } );
+		dataFilter.allowAttributes( { name: 'span', styles: { color: /[\s\S]+/ } } );
+
+		editor.setData( '<p><span style="color:red;"><span style="color:blue;">foobar</span></span>' );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
+			attributes: {
+				1: {
+					styles: { color: 'blue' }
+				}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal( '<p><span style="color:blue;">foobar</span></p>' );
 	} );
 
 	function getModelDataWithAttributes( model, options ) {
