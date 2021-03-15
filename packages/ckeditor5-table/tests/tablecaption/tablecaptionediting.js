@@ -130,6 +130,67 @@ describe( 'TableCaptionEditing', () => {
 					'</figure>'
 				);
 			} );
+
+			it( 'should merge many captions into one', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>xyz</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>foo</caption>' +
+						'<caption>bar</caption>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>xyz</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<figcaption>foobar</figcaption>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should place new caption at the end of the table model', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>xyz</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const caption = writer.createElement( 'caption' );
+
+					writer.insertText( 'foobar', caption, 'end' );
+
+					// Insert new caption at the beginning of the table (before first row).
+					writer.insert( caption, writer.createPositionFromPath( editor.model.document.getRoot(), [ 0, 0 ] ) );
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>xyz</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<figcaption>foobar</figcaption>' +
+					'</figure>'
+				);
+			} );
 		} );
 
 		describe( 'view to model', () => {
