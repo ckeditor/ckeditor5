@@ -6,7 +6,9 @@ order: 40
 
 # Drag and drop
 
-The drag and drop feature is implemented by the {@link module:clipboard/dragdrop~DragDrop} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} plugin.
+The drag and drop feature is implemented by the {@link module:clipboard/dragdrop~DragDrop} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} feature.
+
+{@img assets/img/drag-drop.gif Drag & drop demo.}
 
 ## Demo
 
@@ -15,6 +17,8 @@ The sample below allows you to drag contacts from the list on the right-hand sid
 {@snippet features/drag-drop}
 
 Photos: [Wikipedia.org](http://en.wikipedia.org).
+
+Source code of the above snippet is available here: [`drag-drop.js`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.js), [`drag-drop.html`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.html).
 
 ## Related features
 

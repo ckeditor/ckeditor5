@@ -43,6 +43,10 @@ import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/cked
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
+//
+// The H-Card editor plugin.
+//
+
 class HCardEditing extends Plugin {
 	static get requires() {
 		return [ Widget ];
@@ -53,6 +57,8 @@ class HCardEditing extends Plugin {
 		this._defineConverters();
 		this._defineClipboardInputOutput();
 
+		// View to model position mapping is needed because h-card element in model is represented by a single element,
+		// but in the view it is a more complex structure.
 		this.editor.editing.mapper.on(
 			'viewToModelPosition',
 			viewToModelPositionOutsideModelElement( this.editor.model, viewElement => viewElement.hasClass( 'h-card' ) )
@@ -71,6 +77,7 @@ class HCardEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
+		// Data to model conversion.
 		conversion.for( 'upcast' ).elementToElement( {
 			view: {
 				name: 'span',
@@ -81,14 +88,16 @@ class HCardEditing extends Plugin {
 			}
 		} );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'h-card',
-			view: ( modelItem, { writer: viewWriter } ) => toWidget( createCardView( modelItem, viewWriter ), viewWriter )
-		} );
-
+		// Model to data conversion.
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'h-card',
 			view: ( modelItem, { writer: viewWriter } ) => createCardView( modelItem, viewWriter )
+		} );
+
+		// Model to view conversion.
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'h-card',
+			view: ( modelItem, { writer: viewWriter } ) => toWidget( createCardView( modelItem, viewWriter ), viewWriter )
 		} );
 
 		// Helper method for both downcast converters.
@@ -111,10 +120,12 @@ class HCardEditing extends Plugin {
 		}
 	}
 
+	// Integration with the clipboard pipeline.
 	_defineClipboardInputOutput() {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
+		// Processing pasted/dropped content.
 		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
 			// The clipboard content was already processed by the listener on the higher priority
 			// (for example while pasting into code-block).
@@ -128,7 +139,10 @@ class HCardEditing extends Plugin {
 				return;
 			}
 
+			// Use JSON data encoded in the DataTransfer.
 			const contact = JSON.parse( contactData );
+
+			// Translate h-card data to a view fragment.
 			const writer = new UpcastWriter( viewDocument );
 			const fragment = writer.createDocumentFragment();
 
@@ -140,9 +154,11 @@ class HCardEditing extends Plugin {
 				fragment
 			);
 
+			// Provide the content to the clipboard pipeline for further processing.
 			data.content = fragment;
 		} );
 
+		// Processing copied/pasted/dragged content.
 		this.listenTo( document, 'clipboardOutput', ( evt, data ) => {
 			if ( data.content.childCount != 1 ) {
 				return;
@@ -156,6 +172,10 @@ class HCardEditing extends Plugin {
 		} );
 	}
 }
+
+//
+// H-Card helper functions.
+//
 
 function getCardDataFromViewElement( viewElement ) {
 	const children = Array.from( viewElement.getChildren() );
@@ -174,6 +194,10 @@ function getText( viewElement ) {
 		.map( node => node.is( '$text' ) ? node.data : '' )
 		.join( '' );
 }
+
+//
+// Editor initialization.
+//
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-drag-drop' ), {
@@ -236,18 +260,19 @@ ClassicEditor
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 			supportAllValues: true
 		},
-		placeholder: 'Paste the content here to test the feature.',
+		placeholder: 'Drop the content here to test the feature.',
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
-		// Prevent showing a warning notification when user is pasting a content from MS Word or Google Docs.
-		window.preventPasteFromOfficeNotification = false;
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
+//
+// Draggable H-Cards list.
+//
 const contactsContainer = document.querySelector( '#contactList' );
 
 const contacts = [
