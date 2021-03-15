@@ -38,6 +38,9 @@
 		/* While being resized, don't allow the image to exceed the width of the editing root. */
 		max-width: 100%;
 
+		/* This is required by Safari to resize images in a sensible way. Without this, the browser breaks the ratio. */
+		align-items: flex-start;
+
 		& img {
 			/* This is necessary for the img to span the entire .image-inline wrapper and to resize properly. */
 			flex-grow: 1;
