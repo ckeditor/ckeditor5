@@ -37,17 +37,21 @@
 	}
 }
 
-/*
- * Inhertit the content styles padding of the <figcaption> in case the integration overrides `text-align: center`
- * of `.image` (e.g. to the left/right). This ensures the placeholder stays at the padding just like the native
- * caret does, and not at the edge of <figcaption>.
- */
 .ck.ck-editor__editable {
+	/*
+	 * Inhertit the content styles padding of the <figcaption> in case the integration overrides `text-align: center`
+	 * of `.image` (e.g. to the left/right). This ensures the placeholder stays at the padding just like the native
+	 * caret does, and not at the edge of <figcaption>.
+	 */
 	& .image > figcaption.ck-placeholder::before {
 		padding-left: inherit;
 		padding-right: inherit;
 	}
 
+	/*
+	 * Make sure the selected inline image always stays on top of its siblings.
+	 * See https://github.com/ckeditor/ckeditor5/issues/9108.
+	 */
 	& .image-inline.ck-widget_selected {
 		z-index: 1;
 	}
