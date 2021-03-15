@@ -64,7 +64,7 @@ class ExtendHTMLSupport extends Plugin {
 		dataFilter.allowElement( { name: /^span|cite$/ } );
 		dataFilter.allowAttributes( { name: /^span|cite$/, attributes: { 'data-foo': /[\s\S]+/ } } );
 		dataFilter.allowAttributes( { name: /^span|cite$/, styles: { color: /[\s\S]+/ } } );
-		// dataFilter.disallowAttributes( { name: /^span|cite$/, styles: { color: 'red' } } );
+		dataFilter.disallowAttributes( { name: /^span|cite$/, styles: { color: 'red' } } );
 	}
 }
 
