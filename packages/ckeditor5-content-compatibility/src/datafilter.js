@@ -234,7 +234,7 @@ export default class DataFilter {
 						// Node's children are converter recursively, so node can already include model attribute.
 						// We want to extend it, not replace.
 						const nodeAttributes = node.getAttribute( attributeKey );
-						const attributesToAdd = mergeAttributes( nodeAttributes, viewAttributes || {} );
+						const attributesToAdd = mergeAttributes( viewAttributes || {}, nodeAttributes || {} );
 
 						conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 					}
@@ -472,11 +472,11 @@ function iterableToObject( iterable, getValue ) {
 // @param {Object} newValue
 // @returns {Object}
 function mergeAttributes( oldValue, newValue ) {
-	const result = cloneDeep( newValue );
+	const result = cloneDeep( oldValue );
 
-	for ( const key in oldValue ) {
+	for ( const key in newValue ) {
 		// Merge classes.
-		if ( Array.isArray( oldValue[ key ] ) ) {
+		if ( Array.isArray( newValue[ key ] ) ) {
 			result[ key ] = uniq( [ ...oldValue[ key ], ...newValue[ key ] ] );
 		// Merge attributes or styles.
 		} else {
