@@ -644,6 +644,45 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
+
+		it( 'should not preserve span with no attributes', () => {
+			dataFilter.allowElement( { name: 'span' } );
+
+			editor.setData( '<p><span>foo</span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo</paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+		} );
+
+		it( 'should correctly merge class names', () => {
+			dataFilter.allowElement( { name: 'span' } );
+			dataFilter.allowAttributes( { name: 'span', classes: /[\s\S]+/ } );
+
+			editor.setData( '<p><span class="foo">foo<span class="bar">bar<span class="baz">baz</span></span></span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foo</$text>' +
+						'<$text htmlSpan="(2)">bar</$text>' +
+						'<$text htmlSpan="(3)">baz</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					},
+					2: {
+						classes: [ 'bar', 'foo' ]
+					},
+					3: {
+						classes: [ 'baz', 'bar', 'foo' ]
+					}
+				}
+			} );
+		} );
 	} );
 
 	function getModelDataWithAttributes( model, options ) {
