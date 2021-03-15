@@ -29,7 +29,7 @@ To test how Paste from Office works, download the [sample Word document](../../a
 {@snippet features/paste-from-office}
 
 ## Related features
- 
+
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
@@ -64,6 +64,9 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+## Known issues
+
+Sometimes if the document pasted contains both styled headers and images, it may happen that the images are not pasted properly. This was noted on certain macOS configurations and should not cause problems for Windows, however. Refer to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2493#issuecomment-749507634) for more details.
 
 ## Support for other applications
 
