@@ -66,7 +66,7 @@ ClassicEditor
 ```
 ## Known issues
 
-Sometimes if the document pasted contains both styled headers and images, it may happen that the images are not pasted properly. This was noted on certain macOS configurations and should not cause problems for Windows, however. Refer to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2493#issuecomment-749507634) for more details.
+Sometimes if the document pasted contains both images and styled text (e.g. headers), it may happen that the images are not pasted properly. This was noted on certain macOS configurations and should not cause problems for Windows, however. Refer to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2493#issuecomment-749507634) for more details.
 
 ## Support for other applications
 
