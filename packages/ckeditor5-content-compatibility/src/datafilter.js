@@ -10,7 +10,7 @@
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, toArray } from 'ckeditor5/src/utils';
 
-import { cloneDeep, uniq } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 
 const DATA_SCHEMA_ATTRIBUTE_KEY = 'htmlAttributes';
 
@@ -477,7 +477,7 @@ function mergeAttributes( oldValue, newValue ) {
 	for ( const key in newValue ) {
 		// Merge classes.
 		if ( Array.isArray( newValue[ key ] ) ) {
-			result[ key ] = uniq( [ ...oldValue[ key ], ...newValue[ key ] ] );
+			result[ key ] = Array.from( new Set( [ ...oldValue[ key ], ...newValue[ key ] ] ) );
 		// Merge attributes or styles.
 		} else {
 			result[ key ] = Object.assign( {}, oldValue[ key ], newValue[ key ] );
