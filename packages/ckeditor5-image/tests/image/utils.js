@@ -5,7 +5,6 @@
 
 /* global console */
 
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
@@ -27,7 +26,6 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 
 describe( 'image widget utils', () => {
 	let element, image, writer, viewDocument;
