@@ -75,6 +75,15 @@ export default class DataFilter {
 		 * @member {Map.<String, module:engine/view/matcher~Matcher>} #_disallowedAttributes
 		 */
 		this._disallowedAttributes = new Map();
+
+		/**
+		 * A set of inline elements which should not be preserved during conversion if
+		 * they are missing attributes.
+		 *
+		 * @readonly
+		 * @member {Set.<String>} #transparentElements
+		 */
+		this.transparentElements = new Set( [ 'span' ] );
 	}
 
 	/**
@@ -211,6 +220,11 @@ export default class DataFilter {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 				const viewAttributes = this._matchAndConsumeAttributes( data.viewItem, conversionApi );
 
+				// Skip information about transparent element type if there is no attribute to convert.
+				if ( !viewAttributes && this.transparentElements.has( viewName ) ) {
+					return;
+				}
+
 				// Convert children and set conversion result as a current data.
 				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 
@@ -219,7 +233,9 @@ export default class DataFilter {
 					if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
 						// Node's children are converter recursively, so node can already include model attribute.
 						// We want to extend it, not replace.
-						const attributesToAdd = mergeAttributes( node.getAttribute( attributeKey ), viewAttributes );
+						const nodeAttributes = node.getAttribute( attributeKey );
+						const attributesToAdd = mergeAttributes( nodeAttributes, viewAttributes || {} );
+
 						conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 					}
 				}

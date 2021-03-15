@@ -383,11 +383,266 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><cite>foobar</cite></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>'
-			);
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {}
+				}
+			} );
 
 			expect( editor.getData() ).to.equal( '<p><cite>foobar</cite></p>' );
+		} );
+
+		it( 'should allow deeply nested structure', () => {
+			dataFilter.allowElement( { name: 'cite' } );
+
+			editor.setData( '<p><cite>foo<cite>bar<cite>baz</cite></cite></cite>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foobarbaz</$text></paragraph>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><cite>foobarbaz</cite></p>' );
+		} );
+
+		it( 'should allow attributes', () => {
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( {
+				name: 'cite',
+				attributes: {
+					'data-foo': 'foobar'
+				}
+			} );
+
+			editor.setData( '<p><cite data-foo="foobar">foobar</cite></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foobar'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><cite data-foo="foobar">foobar</cite></p>' );
+		} );
+
+		it( 'should allow attributes (styles)', () => {
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( {
+				name: 'cite',
+				styles: {
+					'color': 'red',
+					'background-color': 'blue'
+				}
+			} );
+
+			editor.setData( '<p><cite style="background-color:blue;color:red;">foobar</cite></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'background-color': 'blue',
+							color: 'red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p><cite style="background-color:blue;color:red;">foobar</cite></p>'
+			);
+		} );
+
+		it( 'should allow attributes (classes)', () => {
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( { name: 'cite', classes: [ 'foo', 'bar' ] } );
+
+			editor.setData( '<p><cite class="foo bar">foobar</cite></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: { classes: [ 'foo', 'bar' ] }
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><cite class="foo bar">foobar</cite></p>' );
+		} );
+
+		it( 'should allow nested attributes', () => {
+			dataFilter.allowElement( { name: /span|cite/ } );
+			dataFilter.allowAttributes( { name: /span|cite/, attributes: { 'data-foo': 'foo' } } );
+			dataFilter.allowAttributes( { name: /span|cite/, attributes: { 'data-bar': 'bar' } } );
+
+			editor.setData( '<p><cite data-foo="foo">' +
+					'<cite data-bar="bar">cite</cite>' +
+					'<span data-bar="bar">span</span>' +
+				'</cite></p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+					'<$text htmlCite="(1)">cite</$text>' +
+					'<$text htmlCite="(2)" htmlSpan="(3)">span</$text>' +
+				'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foo',
+							'data-bar': 'bar'
+						}
+					},
+					2: {
+						attributes: {
+							'data-foo': 'foo'
+						}
+					},
+					3: {
+						attributes: {
+							'data-bar': 'bar'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>' +
+				'<cite data-bar="bar" data-foo="foo">cite</cite>' +
+				'<cite data-foo="foo"><span data-bar="bar">span</span></cite>' +
+				'</p>' );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( { name: 'cite', attributes: { 'data-foo': /[\s\S]+/ } } );
+			dataFilter.disallowAttributes( { name: 'cite', attributes: { 'data-foo': 'bar' } } );
+
+			editor.setData( '<p><cite data-foo="foo">foo</cite><cite data-bar="bar">bar</cite></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foo</$text><$text htmlCite="(2)">bar</$text></paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foo'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><cite data-foo="foo">foo</cite><cite>bar</cite></p>' );
+		} );
+
+		it( 'should disallow attributes (styles)', () => {
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( { name: 'cite', styles: { color: /[\s\S]+/ } } );
+			dataFilter.disallowAttributes( { name: 'cite', styles: { color: 'red' } } );
+
+			editor.setData(
+				'<p>' +
+				'<cite style="color:blue;">foo</cite>' +
+				'<cite style="color:red;">bar</cite>' +
+				'</p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foo</$text><$text htmlCite="(2)">bar</$text></paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							color: 'blue'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p><cite style="color:blue;">foo</cite><cite>bar</cite></p>'
+			);
+		} );
+
+		it( 'should disallow attributes (classes)', () => {
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( { name: 'cite', classes: [ 'foo', 'bar' ] } );
+			dataFilter.disallowAttributes( { name: 'cite', classes: [ 'bar' ] } );
+
+			editor.setData(
+				'<p>' +
+				'<cite class="foo bar">foo</cite>' +
+				'<cite class="bar">bar</cite>' +
+				'</p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><cite>foobar</cite></p>' );
+		} );
+
+		it( 'should not consume attribute already consumed (upcast)', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:cite', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { attributes: [ 'data-foo' ] } );
+				} );
+			} );
+
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( { name: 'cite', attributes: { 'data-foo': true } } );
+
+			editor.setData( '<p><cite data-foo>foo</cite></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foo</$text></paragraph>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><cite>foo</cite></p>' );
+		} );
+
+		it( 'should not consume attribute already consumed (downcast)', () => {
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				dispatcher.on( 'attribute:htmlCite:$text', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, evt.name );
+				}, { priority: 'high' } );
+			} );
+
+			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowAttributes( { name: 'cite', attributes: { 'data-foo': true } } );
+
+			editor.setData( '<p><cite data-foo>foo</cite></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCite="(1)">foo</$text></paragraph>',
+				// At this point, attribute should still be in the model, as we are testing downcast conversion.
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': ''
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 	} );
 
@@ -402,7 +657,7 @@ describe( 'DataFilter', () => {
 
 		let attributes = [];
 		for ( const item of range.getItems() ) {
-			for ( const [ key, value ] of item.getAttributes() ) {
+			for ( const [ key, value ] of sortAttributes( item.getAttributes() ) ) {
 				if ( key.startsWith( 'html' ) ) {
 					attributes.push( value );
 				}
@@ -415,5 +670,24 @@ describe( 'DataFilter', () => {
 		}, {} );
 
 		return { data, attributes };
+	}
+
+	function sortAttributes( attributes ) {
+		attributes = Array.from( attributes );
+
+		return attributes.sort( ( attr1, attr2 ) => {
+			const key1 = attr1[ 0 ];
+			const key2 = attr2[ 0 ];
+
+			if ( key1 > key2 ) {
+				return 1;
+			}
+
+			if ( key1 < key2 ) {
+				return -1;
+			}
+
+			return 0;
+		} );
 	}
 } );
