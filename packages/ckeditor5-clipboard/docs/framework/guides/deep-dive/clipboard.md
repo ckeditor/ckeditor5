@@ -25,7 +25,32 @@ When the user pastes or drops content into the editor, the browser fires an even
 4. Then, the clipboard feature listens to the `ClipboardPipeline#inputTransformation` event, takes the processed content, transforms it to the {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event with the transformed content in the event data `content` property as a {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
 5. Finally, the clipboard feature listens to the `ClipboardPipeline#contentInsertion` event, takes the model fragment and {@link module:engine/model/model~Model#insertContent inserts} it into the editor and stores the range which contains all the performed changes in the `resultRange` property of the event data.
 
-The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using low priority listeners. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior. 
+The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using low priority listeners. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior.
+
+### Input pipeline events overview
+```plaintext
+ ┌──────────────────────┐          ┌──────────────────────┐
+ │     view.Document    │          │     view.Document    │
+ │         paste        │          │         drop         │
+ └───────────┬──────────┘          └───────────┬──────────┘
+             │                                 │
+             └────────────────┌────────────────┘
+                              │
+                    ┌─────────V────────┐
+                    │   view.Document  │   Retrieves text/html from data.dataTransfer
+                    │  clipboardInput  │   and processes it to view.DocumentFragment.
+                    └─────────┬────────┘
+                              │
+                  ┌───────────V───────────┐
+                  │   ClipboardPipeline   │   Converts view.DocumentFragment 
+                  │  inputTransformation  │   to model.DocumentFragment.
+                  └───────────┬───────────┘
+                              │
+                   ┌──────────V──────────┐
+                   │  ClipboardPipeline  │   Calls model.insertContent().
+                   │   contentInsertion  │
+                   └─────────────────────┘
+```
 
 ### Handling clipboard input differently
 
@@ -197,6 +222,21 @@ ClassicEditor
 
 The output pipeline is the equivalent of the input pipeline but for the copy and cut operations.
 It allows to process the content that will be then put into the clipboard or to override the whole process.
+
+### Output pipeline events overview
+```plaintext
+ ┌──────────────────────┐          ┌──────────────────────┐   Retrieves the selected 
+ │     view.Document    │          │     view.Document    │   model.DocumentFragment
+ │         copy         │          │          cut         │   and converts it to 
+ └───────────┬──────────┘          └───────────┬──────────┘   view.DocumentFragment.
+             │                                 │
+             └────────────────┌────────────────┘
+                              │
+                    ┌─────────V────────┐   Processes view.DocumentFragment  
+                    │   view.Document  │   to text/html and text/plain  
+                    │  clipboardOutput │   and stores results in data.dataTransfer.
+                    └──────────────────┘
+```
 
 ### 1. On {@link module:engine/view/document~Document#event:copy `view.Document#copy`} and {@link module:engine/view/document~Document#event:cut `view.Document#cut`}
 
