@@ -479,6 +479,43 @@ describe( 'image widget utils', () => {
 			await newEditor.destroy();
 			console.warn.restore();
 		} );
+
+		it( 'should pass the allowed custom attributes to the inserted block image', () => {
+			setModelData( model, '[]' );
+			model.schema.extend( 'image', { allowAttributes: 'customAttribute' } );
+
+			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+
+			expect( getModelData( model ) )
+				.to.equal( '[<image customAttribute="value" src="foo"></image>]' );
+		} );
+
+		it( 'should omit the disallowed attributes while inserting a block image', () => {
+			setModelData( model, '[]' );
+
+			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+
+			expect( getModelData( model ) )
+				.to.equal( '[<image src="foo"></image>]' );
+		} );
+
+		it( 'should pass the allowed custom attributes to the inserted inline image', () => {
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			model.schema.extend( 'imageInline', { allowAttributes: 'customAttribute' } );
+
+			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+
+			expect( getModelData( model ) )
+				.to.equal( '<paragraph>f[<imageInline customAttribute="value" src="foo"></imageInline>]o</paragraph>' );
+		} );
+
+		it( 'should omit the disallowed attributes while inserting an inline image', () => {
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
+		} );
 	} );
 
 	describe( 'getViewImageFromWidget()', () => {
