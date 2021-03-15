@@ -13,6 +13,19 @@ import TextFragmentLanguageEditing from './textfragmentlanguageediting';
 import TextFragmentLanguageUI from './textfragmentlanguageui';
 
 /**
+ * The text fragment language feature.
+ *
+ * This feature allows setting a language of the editor's text part to support
+ * [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
+ *
+ * To change UI editor language, refer to {@glink features/ui-language setting the UI language} guide.
+ *
+ * For more information about this feature check the {@glink api/language package page}.
+ *
+ * This is a "glue" plugin which loads the
+ * {@link module:language/textfragmentlanguageediting~TextFragmentLanguageEditing text fragment editing feature}
+ * and {@link module:language/textfragmentlanguageui~TextFragmentLanguageUI text fragment language UI feature}.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class TextFragmentLanguage extends Plugin {
@@ -34,6 +47,8 @@ export default class TextFragmentLanguage extends Plugin {
 /**
  * The available {@link module:language/textfragmentlanguage~TextFragmentLanguage}
  * options allowing setting language of parts of the content.
+ *
+ * This configuration option is available only with {@glink api/language language feature} enabled.
  *
  * Refer to [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification
  * to learn more.
