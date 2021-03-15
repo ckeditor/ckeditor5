@@ -271,6 +271,21 @@ describe( 'PasteFromOffice - filters', () => {
 						);
 					} );
 
+					// s/ckeditor5/3
+					it( 'should handle invalid style with repeated characters', () => {
+						const styles = '@list l0:level1\n' +
+							'{' + 'mso-level-number-format:'.repeat( 100000 ) + '}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
+
 					it( 'converts "arabic-leading-zero" style to proper CSS attribute', () => {
 						const styles = '@list l0:level1\n' +
 							'{mso-level-number-format:arabic-leading-zero;}';

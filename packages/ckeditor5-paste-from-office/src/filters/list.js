@@ -160,7 +160,7 @@ function findAllItemLikeElements( documentFragment, writer ) {
 // If it cannot be adjusted, the `null` value is returned.
 function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
-	const listStyleTypeRegex = /mso-level-number-format:([^;]*);/gi;
+	const listStyleTypeRegex = /mso-level-number-format:((?!mso-level-number-format:)[^;]*);/gi;
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 

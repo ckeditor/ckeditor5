@@ -109,7 +109,7 @@ export default class FontSizeEditing extends Plugin {
 		const editor = this.editor;
 
 		// If `fontSize.supportAllValues=true`, we do not allow to use named presets in the plugin's configuration.
-		const presets = definition.model.values.filter( value => !String( value ).match( /[\d.]+[\w%]+/ ) );
+		const presets = definition.model.values.filter( value => !String( value ).match( /^[\d.]+[a-zA-Z%]+$/ ) );
 
 		if ( presets.length ) {
 			/**
