@@ -153,6 +153,20 @@ describe( 'AutoImage - integration', () => {
 					);
 				} );
 			}
+
+			// s/ckeditor5/3
+			it( 'should handle invalid URL with repeated characters', () => {
+				const invalidURL = 'a.' + 'a'.repeat( 1000000 );
+
+				setData( editor.model, '<paragraph>[]</paragraph>' );
+				pasteHtml( editor, invalidURL );
+
+				clock.tick( 100 );
+
+				expect( getData( editor.model ) ).to.equal(
+					`<paragraph>${ invalidURL }[]</paragraph>`
+				);
+			} );
 		} );
 
 		it( 'works for URL that was pasted as a link', () => {
