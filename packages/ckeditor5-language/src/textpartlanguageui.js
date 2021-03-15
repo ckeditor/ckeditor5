@@ -4,7 +4,7 @@
  */
 
 /**
- * @module language/textfragmentlanguageui
+ * @module language/textpartlanguageui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -15,18 +15,18 @@ import { stringifyLanguageAttribute } from './utils';
 import '../theme/language.css';
 
 /**
- * The text fragment language UI plugin.
+ * The text part language UI plugin.
  *
  * It introduces the `'language'` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TextFragmentLanguageUI extends Plugin {
+export default class TextPartLanguageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'TextFragmentLanguageUI';
+		return 'TextPartLanguageUI';
 	}
 
 	/**
@@ -35,17 +35,17 @@ export default class TextFragmentLanguageUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const options = editor.config.get( 'language.textFragmentLanguage' );
+		const options = editor.config.get( 'language.textPartLanguage' );
 		const defaultTitle = t( 'Choose language' );
 		const removeTitle = t( 'Remove language' );
 		const dropdownTooltip = t( 'Language' );
 
 		// Register UI component.
-		editor.ui.componentFactory.add( 'textFragmentLanguage', locale => {
+		editor.ui.componentFactory.add( 'textPartLanguage', locale => {
 			const itemDefinitions = new Collection();
 			const titles = {};
 
-			const languageCommand = editor.commands.get( 'textFragmentLanguage' );
+			const languageCommand = editor.commands.get( 'textPartLanguage' );
 
 			for ( const option of options ) {
 				const def = {

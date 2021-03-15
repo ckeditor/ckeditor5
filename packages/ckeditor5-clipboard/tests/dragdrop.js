@@ -809,7 +809,7 @@ describe( 'Drag and Drop', () => {
 				);
 			} );
 
-			it( 'should start dragging the selected text fragment', () => {
+			it( 'should start dragging the selected text part', () => {
 				setModelData( model,
 					'<paragraph>[foo]bar</paragraph>'
 				);

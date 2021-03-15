@@ -4,26 +4,26 @@
  */
 
 /**
- * @module language/textfragmentlanguageediting
+ * @module language/textpartlanguageediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import TextFragmentLanguageCommand from './textfragmentlanguagecommand';
+import TextPartLanguageCommand from './textpartlanguagecommand';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils';
 
 /**
- * The text fragment language editing.
+ * The text part language editing.
  *
- * Introduces the `'textFragmentLanguage'` command and the `'language'` model element attribute.
+ * Introduces the `'textPartLanguage'` command and the `'language'` model element attribute.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TextFragmentLanguageEditing extends Plugin {
+export default class TextPartLanguageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'TextFragmentLanguageEditing';
+		return 'TextPartLanguageEditing';
 	}
 
 	/**
@@ -32,11 +32,11 @@ export default class TextFragmentLanguageEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		// Text fragment language options are only used to ensure that the feature works by default.
+		// Text part language options are only used to ensure that the feature works by default.
 		// In the real usage it should be reconfigured by a developer. We are not providing
 		// translations for `title` properties on purpose, as it's only an example configuration.
 		editor.config.define( 'language', {
-			textFragmentLanguage: [
+			textPartLanguage: [
 				{ title: 'Arabic', languageCode: 'ar' },
 				{ title: 'French', languageCode: 'fr' },
 				{ title: 'Spanish', languageCode: 'es' }
@@ -57,7 +57,7 @@ export default class TextFragmentLanguageEditing extends Plugin {
 
 		this._defineConverters();
 
-		editor.commands.add( 'textFragmentLanguage', new TextFragmentLanguageCommand( editor ) );
+		editor.commands.add( 'textPartLanguage', new TextPartLanguageCommand( editor ) );
 	}
 
 	/**

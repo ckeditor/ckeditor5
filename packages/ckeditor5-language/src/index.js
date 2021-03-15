@@ -7,12 +7,12 @@
  * @module language
  */
 
-import TextFragmentLanguage from './textfragmentlanguage';
-import TextFragmentLanguageEditing from './textfragmentlanguageediting';
-import TextFragmentLanguageUI from './textfragmentlanguageui';
+import TextPartLanguage from './textpartlanguage';
+import TextPartLanguageEditing from './textpartlanguageediting';
+import TextPartLanguageUI from './textpartlanguageui';
 
 export default {
-	TextFragmentLanguage,
-	TextFragmentLanguageEditing,
-	TextFragmentLanguageUI
+	TextPartLanguage,
+	TextPartLanguageEditing,
+	TextPartLanguageUI
 };

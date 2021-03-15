@@ -8,16 +8,16 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import TextFragmentLanguageEditing from '../src/textfragmentlanguageediting';
-import TextFragmentLanguageCommand from '../src/textfragmentlanguagecommand';
+import TextPartLanguageEditing from '../src/textpartlanguageediting';
+import TextPartLanguageCommand from '../src/textpartlanguagecommand';
 
-describe( 'TextFragmentLanguageEditing', () => {
+describe( 'TextPartLanguageEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TextFragmentLanguageEditing, Paragraph ]
+				plugins: [ TextPartLanguageEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -30,11 +30,11 @@ describe( 'TextFragmentLanguageEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TextFragmentLanguageEditing.pluginName ).to.equal( 'TextFragmentLanguageEditing' );
+		expect( TextPartLanguageEditing.pluginName ).to.equal( 'TextPartLanguageEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( TextFragmentLanguageEditing ) ).to.be.instanceOf( TextFragmentLanguageEditing );
+		expect( editor.plugins.get( TextPartLanguageEditing ) ).to.be.instanceOf( TextPartLanguageEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -49,9 +49,9 @@ describe( 'TextFragmentLanguageEditing', () => {
 	} );
 
 	describe( 'command', () => {
-		it( 'should register textFragmentLanguage command', () => {
-			const command = editor.commands.get( 'textFragmentLanguage' );
-			expect( command ).to.be.instanceOf( TextFragmentLanguageCommand );
+		it( 'should register textPartLanguage command', () => {
+			const command = editor.commands.get( 'textPartLanguage' );
+			expect( command ).to.be.instanceOf( TextPartLanguageCommand );
 		} );
 	} );
 
@@ -95,7 +95,7 @@ describe( 'TextFragmentLanguageEditing', () => {
 
 	describe( 'config', () => {
 		it( 'should be set', () => {
-			expect( editor.config.get( 'language.textFragmentLanguage' ) ).to.deep.equal( [
+			expect( editor.config.get( 'language.textPartLanguage' ) ).to.deep.equal( [
 				{ title: 'Arabic', languageCode: 'ar' },
 				{ title: 'French', languageCode: 'fr' },
 				{ title: 'Spanish', languageCode: 'es' }
@@ -106,14 +106,14 @@ describe( 'TextFragmentLanguageEditing', () => {
 			const languageConfig = {
 				ui: 'pl',
 				content: 'pl',
-				textFragmentLanguage: [
+				textPartLanguage: [
 					{ title: 'Hebrew', languageCode: 'he' },
 					{ title: 'Polish', languageCode: 'pl' }
 				]
 			};
 
 			const customEditor = await VirtualTestEditor.create( {
-				plugins: [ TextFragmentLanguageEditing ],
+				plugins: [ TextPartLanguageEditing ],
 				language: languageConfig
 			} );
 

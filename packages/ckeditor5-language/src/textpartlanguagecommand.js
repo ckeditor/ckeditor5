@@ -4,18 +4,18 @@
  */
 
 /**
- * @module language/textfragmentlanguagecommand
+ * @module language/textpartlanguagecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
 import { stringifyLanguageAttribute } from './utils';
 
 /**
- * The text fragment language command plugin.
+ * The text part language command plugin.
  *
  * @extends module:core/command~Command
  */
-export default class TextFragmentLanguageCommand extends Command {
+export default class TextPartLanguageCommand extends Command {
 	/**
 	 * If the selection starts in a language attribute the value is set to
 	 * the value of that language in a format:
@@ -25,7 +25,7 @@ export default class TextFragmentLanguageCommand extends Command {
 	 * * `languageCode` - The language code used for the lang attribute in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
 	 *
-	 * See {@link module:core/editor/editorconfig~LanguageConfig#textFragmentLanguage text fragment config}
+	 * See {@link module:core/editor/editorconfig~LanguageConfig#textPartLanguage text part config}
 	 * for more information about language properties.
 	 *
 	 * It is set to `false` otherwise.

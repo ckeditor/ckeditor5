@@ -7,9 +7,9 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import TextFragmentLanguageCommand from '../src/textfragmentlanguagecommand';
+import TextPartLanguageCommand from '../src/textpartlanguagecommand';
 
-describe( 'TextFragmentLanguageCommand', () => {
+describe( 'TextPartLanguageCommand', () => {
 	let editor, command, model, doc, root;
 
 	testUtils.createSinonSandbox();
@@ -23,7 +23,7 @@ describe( 'TextFragmentLanguageCommand', () => {
 				doc = model.document;
 				root = doc.getRoot();
 
-				command = new TextFragmentLanguageCommand( editor );
+				command = new TextPartLanguageCommand( editor );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 				model.schema.register( 'h1', { inheritAllFrom: '$block' } );
