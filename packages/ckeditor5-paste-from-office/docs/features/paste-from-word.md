@@ -64,10 +64,6 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-## Known issues
-
-Sometimes if the document pasted contains both images and styled text (e.g. headers), it may happen that the images are not pasted properly. This was noted on certain macOS configurations and should not cause problems for Windows, however. Refer to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2493#issuecomment-749507634) for more details.
-
 ## Support for other applications
 
 At the current stage, the focus of the `@ckeditor/ckeditor5-paste-from-office` package is on supporting content that comes from Microsoft Word and {@link features/paste-from-google-docs Google Docs}. However, it does not mean that pasting from other similar applications (such as Microsoft Excel) is not supported.
@@ -76,10 +72,18 @@ By default, CKEditor 5 will support pasting rich-text content from these applica
 
 You can find more information regarding compatibility with other applications in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1184#issuecomment-409828069).
 
-If you think that support for any of the applications needs improvements, please add 👍 and comments in the following issues:
+If you think that support for any of the applications needs improvements, please add 👍&nbsp; and comments in the following issues:
 
 * [Support pasting from Excel](https://github.com/ckeditor/ckeditor5/issues/2513).
 * [Support pasting from Libre Office](https://github.com/ckeditor/ckeditor5/issues/2520).
 * [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
+
+## Known issues
+
+Sometimes if the document pasted contains both images and styled text (e.g. headers), it may happen that the images are not pasted properly. This was noticed on certain macOS configurations and should not cause problems for Windows, however.
+
+If the image is included into the content with the `<v:shape><v:imagedata src="...."/></v:shape>` syntax it will not be pasted either, as this notation is not yet supported by CKEditor 5.
+
+We are currently working on handling this error. Refer to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2493#issuecomment-749507634) for more details.
