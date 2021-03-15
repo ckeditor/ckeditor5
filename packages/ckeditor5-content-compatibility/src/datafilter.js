@@ -378,7 +378,6 @@ export default class DataFilter {
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {Object} viewAttributes
 // @param {module:engine/view/element~Element} viewElement
-// on all elements in the range.
 function setAttributesOn( writer, viewAttributes, viewElement ) {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
@@ -476,8 +475,10 @@ function mergeAttributes( oldValue, newValue ) {
 	const result = cloneDeep( newValue );
 
 	for ( const key in oldValue ) {
+		// Merge classes.
 		if ( Array.isArray( oldValue[ key ] ) ) {
 			result[ key ] = uniq( [ ...oldValue[ key ], ...newValue[ key ] ] );
+		// Merge attributes or styles.
 		} else {
 			result[ key ] = Object.assign( {}, oldValue[ key ], newValue[ key ] );
 		}
