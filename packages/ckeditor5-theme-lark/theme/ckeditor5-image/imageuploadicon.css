@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "image.css";
-
 :root {
 	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
 	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
 
 	--ck-image-upload-icon-size: 20;
 	--ck-image-upload-icon-width: 2px;
-	--ck-image-upload-icon-is-visible: clamp(0px, 100% - var(--ck-breakpoint-image-small), 1px);
+	--ck-image-upload-icon-is-visible: clamp(0px, 100% - 50px, 1px);
 }
 
 .ck-image-upload-complete-icon {
