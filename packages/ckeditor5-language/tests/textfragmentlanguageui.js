@@ -137,9 +137,9 @@ describe( 'TextFragmentLanguageUI', () => {
 			} );
 		} );
 	} );
-} );
 
-function getListViewItems( listView ) {
-	// Let's drop separator.
-	return listView.items.filter( item => item.children );
-}
+	function getListViewItems( listView ) {
+		// Let's drop separator.
+		return listView.items.filter( item => item.children );
+	}
+} );
