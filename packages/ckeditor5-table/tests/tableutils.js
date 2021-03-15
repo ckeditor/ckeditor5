@@ -27,6 +27,16 @@ describe( 'TableUtils', () => {
 			model = editor.model;
 			root = model.document.getRoot( 'main' );
 			tableUtils = editor.plugins.get( TableUtils );
+
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+			editor.conversion.elementToElement( {
+				view: 'foo',
+				model: 'foo'
+			} );
 		} );
 	} );
 
@@ -596,6 +606,52 @@ describe( 'TableUtils', () => {
 				[ '', { rowspan: 2, contents: '21' }, '22' ],
 				[ '', '32' ]
 			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should ignore table element that is not a row', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>11[]</paragraph></tableCell>' +
+						'<tableCell><paragraph>12</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>21</paragraph></tableCell>' +
+						'<tableCell><paragraph>22</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>Bar</foo>' +
+				'</table>'
+			);
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>11[]</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>12</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>21</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>22</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<foo>Bar</foo>' +
+				'</table>'
+			);
 		} );
 	} );
 

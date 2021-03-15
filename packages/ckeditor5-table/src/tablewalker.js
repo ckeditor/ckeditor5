@@ -86,7 +86,6 @@ export default class TableWalker {
 	 * @param {Number} [options.startColumn=0] A column index from which this iterator should start. Can't be used together with `column`.
 	 * @param {Number} [options.endColumn] A column index at which this iterator should end. Can't be used together with `column`.
 	 * @param {Boolean} [options.includeAllSlots=false] Return values for spanned cells.
-	 * @param {Boolean} [options.includeAllElements=false] Also return values for other table elements (e.g. caption).
 	 */
 	constructor( table, options = {} ) {
 		/**
@@ -142,15 +141,6 @@ export default class TableWalker {
 		 * @private
 		 */
 		this._includeAllSlots = !!options.includeAllSlots;
-
-		/**
-		 * Enables output of all elements in the table, e.g. caption.
-		 *
-		 * @readonly
-		 * @member {Boolean}
-		 * @private
-		 */
-		this._includeAllElements = !!options.includeAllElements;
 
 		/**
 		 * Row indexes to skip from the iteration.
@@ -222,12 +212,11 @@ export default class TableWalker {
 		const row = this._table.getChild( this._row );
 
 		// Iterator is done when there's no row (table ended) or the row is after `endRow` limit.
-		// We assume here that any non-row element might happen at the end of the table.
-		if ( !row || !row.is( 'element', 'tableRow' ) || this._isOverEndRow() ) {
+		if ( !row || this._isOverEndRow() ) {
 			return { done: true };
 		}
 
-		if ( this._isOverEndColumn() ) {
+		if ( !row.is( 'element', 'tableRow' ) || this._isOverEndColumn() ) {
 			return this._advanceToNextRow();
 		}
 

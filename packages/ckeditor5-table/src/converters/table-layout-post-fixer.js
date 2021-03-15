@@ -291,12 +291,13 @@ function fixTableCellsRowspan( table, writer ) {
 function fixTableRowsSizes( table, writer ) {
 	let wasFixed = false;
 
-	const rowsLengths = getRowsLengths( table );
+	const childrenLengths = getChildrenLengths( table );
 	const rowsToRemove = [];
 
 	// Find empty rows.
-	for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
-		if ( !size ) {
+	for ( const [ rowIndex, size ] of childrenLengths.entries() ) {
+		// Ignore all non-row models.
+		if ( !size && table.getChild( rowIndex ).is( 'element', 'tableRow' ) ) {
 			rowsToRemove.push( rowIndex );
 		}
 	}
@@ -309,9 +310,12 @@ function fixTableRowsSizes( table, writer ) {
 
 		for ( const rowIndex of rowsToRemove.reverse() ) {
 			writer.remove( table.getChild( rowIndex ) );
-			rowsLengths.splice( rowIndex, 1 );
+			childrenLengths.splice( rowIndex, 1 );
 		}
 	}
+
+	// Filter out everything that's not a table row.
+	const rowsLengths = childrenLengths.filter( ( row, rowIndex ) => table.getChild( rowIndex ).is( 'element', 'tableRow' ) );
 
 	// Verify if all the rows have the same number of columns.
 	const tableSize = rowsLengths[ 0 ];
@@ -377,12 +381,9 @@ function findCellsToTrim( table ) {
 //
 // @param {module:engine/model/element~Element} table
 // @returns {Array.<Number>}
-function getRowsLengths( table ) {
+function getChildrenLengths( table ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
-	const rowCount = Array.from( table.getChildren() )
-		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
-
-	const lengths = new Array( rowCount ).fill( 0 );
+	const lengths = new Array( table.childCount ).fill( 0 );
 
 	for ( const { row } of new TableWalker( table, { includeAllSlots: true } ) ) {
 		lengths[ row ]++;
