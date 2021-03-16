@@ -99,7 +99,7 @@ Fix (package-name-2): Message 2.
 Tests: Message 3.
 ```
 
-An example of an invalid commit message with an incorrect section order (the "internal" message will be treated as a part of the BREAKING CHANGE message):
+An example of an invalid commit message with an incorrect section order (the "internal" message will be treated as a part of the breaking change message):
 
 ```
 Feature (package-name): Message 1.
