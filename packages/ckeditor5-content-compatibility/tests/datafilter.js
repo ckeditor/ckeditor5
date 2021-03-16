@@ -168,7 +168,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow nested attributes', () => {
-			dataFilter.allowElement( { name: /article|section/ } );
+			dataFilter.allowElement( { name: /^(article|section)$/ } );
 			dataFilter.allowAttributes( { name: /[\s\S]+/, attributes: { 'data-foo': /foo|bar/ } } );
 
 			editor.setData( '<article data-foo="foo">' +
@@ -203,10 +203,10 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes for all allowed definitions', () => {
-			dataFilter.allowElement( { name: /section|article/ } );
+			dataFilter.allowElement( { name: /^(section|article)$/ } );
 
-			dataFilter.allowAttributes( { name: /section|article/, attributes: { 'data-foo': 'foo' } } );
-			dataFilter.allowAttributes( { name: /section|article/, attributes: { 'data-bar': 'bar' } } );
+			dataFilter.allowAttributes( { name: /^(section|article)$/, attributes: { 'data-foo': 'foo' } } );
+			dataFilter.allowAttributes( { name: /^(section|article)$/, attributes: { 'data-bar': 'bar' } } );
 
 			editor.setData(
 				'<section data-foo="foo"><p>foo</p></section>' +
@@ -481,9 +481,9 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow nested attributes', () => {
-			dataFilter.allowElement( { name: /span|cite/ } );
-			dataFilter.allowAttributes( { name: /span|cite/, attributes: { 'data-foo': 'foo' } } );
-			dataFilter.allowAttributes( { name: /span|cite/, attributes: { 'data-bar': 'bar' } } );
+			dataFilter.allowElement( { name: /^(span|cite)$/ } );
+			dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-foo': 'foo' } } );
+			dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-bar': 'bar' } } );
 
 			editor.setData( '<p><cite data-foo="foo">' +
 					'<cite data-bar="bar">cite</cite>' +
