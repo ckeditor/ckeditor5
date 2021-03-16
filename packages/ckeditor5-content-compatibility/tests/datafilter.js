@@ -3,20 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* global document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import DataSchema from '../src/dataschema';
 import DataFilter from '../src/datafilter';
 
 describe( 'DataFilter', () => {
-	let editor, model, dataFilter, dataSchema;
+	let editor, model, dataFilter, dataSchema, element;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ Paragraph ]
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Paragraph, Font ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -28,6 +34,8 @@ describe( 'DataFilter', () => {
 	} );
 
 	afterEach( () => {
+		element.remove();
+
 		return editor.destroy();
 	} );
 
@@ -674,20 +682,57 @@ describe( 'DataFilter', () => {
 
 	it( 'should correctly resolve attributes nesting order', () => {
 		dataFilter.allowElement( { name: 'span' } );
-		dataFilter.allowAttributes( { name: 'span', styles: { color: /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'span', styles: { 'font-weight': /[\s\S]+/ } } );
 
-		editor.setData( '<p><span style="color:red;"><span style="color:blue;">foobar</span></span>' );
+		editor.setData( '<p><span style="font-weight:700;"><span style="font-weight:400;">foobar</span></span>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
 			attributes: {
 				1: {
-					styles: { color: 'blue' }
+					styles: { 'font-weight': '400' }
 				}
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><span style="color:blue;">foobar</span></p>' );
+		expect( editor.getData() ).to.equal( '<p><span style="font-weight:400;">foobar</span></p>' );
+	} );
+
+	it( 'should allow using attributes by other features', () => {
+		dataFilter.allowElement( { name: 'span' } );
+		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/ } } );
+
+		editor.setData( '<p><span style="color:blue;">foobar</span></p>' );
+
+		// Font feature should take over color CSS property.
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
+			attributes: {
+				1: {}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span>foobar</span></span></p>' );
+	} );
+
+	it( 'should preserve attributes not used by other features', () => {
+		dataFilter.allowElement( { name: 'span' } );
+		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'span', classes: [ 'foo', 'bar' ] } );
+
+		editor.setData( '<p><span style="color:blue;" class="foo bar">foobar</span></p>' );
+
+		// Font feature should take over color CSS property.
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
+			attributes: {
+				1: {
+					classes: [ 'foo', 'bar' ]
+				}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span class="foo bar">foobar</span></span></p>' );
 	} );
 
 	function getModelDataWithAttributes( model, options ) {
