@@ -47,8 +47,8 @@ class ExtendHTMLSupport extends Plugin {
 		// e.g. article -> ghsArticle
 		dataFilter.allowElement( { name: 'article' } );
 		dataFilter.allowElement( { name: 'section' } );
-		dataFilter.allowElement( { name: /^details|summary$/ } );
-		dataFilter.allowElement( { name: /^dl|dd|dt$/ } );
+		dataFilter.allowElement( { name: /^(details|summary)$/ } );
+		dataFilter.allowElement( { name: /^(dl|dd|dt)$/ } );
 		dataFilter.allowElement( { name: 'xyz' } );
 
 		// Let's extend 'section' with some attributes. Data filter will take care of
@@ -61,10 +61,10 @@ class ExtendHTMLSupport extends Plugin {
 		dataFilter.disallowAttributes( { name: 'section', attributes: { id: /^_.*/ } } );
 
 		// Let's also add some inline elements support:
-		dataFilter.allowElement( { name: /^span|cite$/ } );
-		dataFilter.allowAttributes( { name: /^span|cite$/, attributes: { 'data-foo': /[\s\S]+/ } } );
-		dataFilter.allowAttributes( { name: /^span|cite$/, styles: { color: /[\s\S]+/ } } );
-		dataFilter.disallowAttributes( { name: /^span|cite$/, styles: { color: 'red' } } );
+		dataFilter.allowElement( { name: /^(span|cite)$/ } );
+		dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(span|cite)$/, styles: { color: /[\s\S]+/ } } );
+		dataFilter.disallowAttributes( { name: /^(span|cite)$/, styles: { color: 'red' } } );
 	}
 }
 
