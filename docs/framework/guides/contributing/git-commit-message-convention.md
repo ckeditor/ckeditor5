@@ -88,7 +88,7 @@ Feature (package-name-1): Message 1.
 
 Fix (package-name-2): Message 2.
 
-Tests: The change across the entire project.
+Tests: A change across the entire project.
 ```
 
 An example of an invalid commit message with incorrectly separated lines (the second line will just be treated as a part of the first line):
