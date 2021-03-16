@@ -177,6 +177,25 @@
  */
 
 /**
+ * The configuration of the editor language.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				language: ... // Editor language configuration.
+ *			} )
+ *			.then( editor => {
+ *				console.log( editor );
+ *			} )
+ *			.catch( error => {
+ *				console.error( error );
+ *			} );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface LanguageConfig
+ */
+
+/**
  * The language of the editor UI and its content.
  *
  * Note: You do not have to specify this option if your build is optimized for one UI language or if it is
@@ -197,7 +216,7 @@
  *				console.error( error );
  *			} );
  *
- * Use different languages for the UI and the content using the object syntax:
+ * Use different languages for the UI and the content using the {@link module:core/editor/editorconfig~LanguageConfig configuration} syntax:
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -231,7 +250,23 @@
  *
  * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
  *
- * @member {String|Object} module:core/editor/editorconfig~EditorConfig#language
+ * @member {String|module:core/editor/editorconfig~LanguageConfig} module:core/editor/editorconfig~EditorConfig#language
+ */
+
+/**
+ * Allows to use different language for the editor UI.
+ *
+ * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+ *
+ * @member {String} module:core/editor/editorconfig~LanguageConfig#ui
+ */
+
+/**
+ * Allows to use different language of the editor content.
+ *
+ * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+ *
+ * @member {String} module:core/editor/editorconfig~LanguageConfig#content
  */
 
 /**
