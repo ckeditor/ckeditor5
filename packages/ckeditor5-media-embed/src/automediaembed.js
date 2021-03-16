@@ -16,7 +16,7 @@ import { global } from 'ckeditor5/src/utils';
 import MediaEmbedEditing from './mediaembedediting';
 import { insertMedia } from './utils';
 
-const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-][\w\-._~:/?#[\]@!$&'()*+,;=%]+$/;
+const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-][\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
 
 /**
  * The auto-media embed plugin. It recognizes media links in the pasted content and embeds

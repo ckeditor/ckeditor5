@@ -329,7 +329,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		// s/ckeditor5/3
 		it( 'should handle invalid URL with repeated characters', () => {
-			const invalidURL = 'a.' + 'a'.repeat( 1000000 ) + '^';
+			const invalidURL = 'a.' + 'a'.repeat( 100000 ) + '^';
 
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, invalidURL );

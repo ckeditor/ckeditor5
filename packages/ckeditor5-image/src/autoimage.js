@@ -16,8 +16,10 @@ import { global } from 'ckeditor5/src/utils';
 import { insertImage } from './image/utils';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
-const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w._~:/?#[\]@!$&'()*+,;=%-]+/.source +
-	/\.(jpg|jpeg|png|gif|ico|webp|JPG|JPEG|PNG|GIF|ICO|WEBP)(\?[\w._~:/#[\]@!$&'()*+,;=%-]*)?$/.source ) );
+const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\]@!$&'()*+,;=%-]+/.source +
+	/\.(jpg|jpeg|png|gif|ico|webp|JPG|JPEG|PNG|GIF|ICO|WEBP)/.source +
+	/(\?[\w.~:/[\]@!$&'()*+,;=%-]*)?/.source +
+	/(#[\w.~:/[\]@!$&'()*+,;=%-]*)?$/.source ) );
 
 /**
  * The auto-image plugin. It recognizes image links in the pasted content and embeds
