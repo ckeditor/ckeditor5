@@ -75,15 +75,6 @@ export default class DataFilter {
 		 * @member {Map.<String, module:engine/view/matcher~Matcher>} #_disallowedAttributes
 		 */
 		this._disallowedAttributes = new Map();
-
-		/**
-		 * A set of inline elements which should not be preserved during conversion if
-		 * they are missing attributes.
-		 *
-		 * @readonly
-		 * @member {Set.<String>} #transparentElements
-		 */
-		this.transparentElements = new Set( [ 'span' ] );
 	}
 
 	/**
@@ -219,11 +210,6 @@ export default class DataFilter {
 		conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 				const viewAttributes = this._matchAndConsumeAttributes( data.viewItem, conversionApi );
-
-				// Skip information about transparent element type if there is no attribute to convert.
-				if ( !viewAttributes && this.transparentElements.has( viewName ) ) {
-					return;
-				}
 
 				// Convert children and set conversion result as a current data.
 				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
