@@ -17,7 +17,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		const clipboard = editor.plugins.get( 'Clipboard' );
+		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		editor.editing.view.document.on( 'paste', ( evt, data ) => {
 			console.clear();

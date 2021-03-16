@@ -8,5 +8,6 @@
  */
 
 export { default as Clipboard } from './clipboard';
+export { default as ClipboardPipeline } from './clipboardpipeline';
+export { default as DragDrop } from './dragdrop';
 export { default as PastePlainText } from './pasteplaintext';
-

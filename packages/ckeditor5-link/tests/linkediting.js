@@ -12,6 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
@@ -35,7 +36,7 @@ describe( 'LinkEditing', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, LinkEditing, Enter ],
+			plugins: [ Paragraph, LinkEditing, Enter, Clipboard ],
 			link: {
 				decorators: {
 					isExternal: {
@@ -1152,8 +1153,8 @@ describe( 'LinkEditing', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should require Clipboard plugin', () => {
-			expect( LinkEditing.requires.includes( Clipboard ) ).to.equal( true );
+		it( 'should require ClipboardPipeline plugin', () => {
+			expect( LinkEditing.requires.includes( ClipboardPipeline ) ).to.equal( true );
 		} );
 
 		it( 'should require Input plugin', () => {

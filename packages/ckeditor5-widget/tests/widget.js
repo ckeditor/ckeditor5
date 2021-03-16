@@ -148,7 +148,6 @@ describe( 'Widget', () => {
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should create selection when clicked in nested element', () => {
@@ -163,7 +162,6 @@ describe( 'Widget', () => {
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should do nothing if clicked in non-widget element', () => {
@@ -193,7 +191,6 @@ describe( 'Widget', () => {
 		viewDocument.isFocused = true;
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 		sinon.assert.notCalled( focusSpy );
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
 	} );

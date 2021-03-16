@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import { Notification } from 'ckeditor5/src/ui';
-import { Clipboard } from 'ckeditor5/src/clipboard';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { FileRepository } from 'ckeditor5/src/upload';
 import { env } from 'ckeditor5/src/utils';
 
@@ -32,7 +32,7 @@ export default class ImageUploadEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FileRepository, Notification, Clipboard ];
+		return [ FileRepository, Notification, ClipboardPipeline ];
 	}
 
 	static get pluginName() {
@@ -105,20 +105,22 @@ export default class ImageUploadEditing extends Plugin {
 				return imageTypes.test( file.type );
 			} );
 
-			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );
+			if ( !images.length ) {
+				return;
+			}
+
+			evt.stop();
 
 			editor.model.change( writer => {
 				// Set selection to paste target.
-				writer.setSelection( ranges );
-
-				if ( images.length ) {
-					evt.stop();
-
-					// Upload images after the selection has changed in order to ensure the command's state is refreshed.
-					editor.model.enqueueChange( 'default', () => {
-						editor.execute( 'uploadImage', { file: images } );
-					} );
+				if ( data.targetRanges ) {
+					writer.setSelection( data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) ) );
 				}
+
+				// Upload images after the selection has changed in order to ensure the command's state is refreshed.
+				editor.model.enqueueChange( 'default', () => {
+					editor.execute( 'uploadImage', { file: images } );
+				} );
 			} );
 		} );
 
@@ -126,7 +128,7 @@ export default class ImageUploadEditing extends Plugin {
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
 			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
 				.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
