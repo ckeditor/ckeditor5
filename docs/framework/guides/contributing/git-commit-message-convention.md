@@ -79,7 +79,7 @@ The proper order for sections of a commit message is as follows:
 
 All entries must be separated with a blank line, otherwise the lines will not be treated separately.
 
-### Examples of proper and improper message formatting
+### Examples of correct and incorrect message formatting
 
 Example of a proper commit message:
 
