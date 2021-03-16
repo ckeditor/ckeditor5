@@ -46,7 +46,7 @@ Each commit can contain additional notes that will be inserted into the changelo
 * `MAJOR BREAKING CHANGE`,
 * `MINOR BREAKING CHANGE`.
 
-If any change contains the `MAJOR BREAKING CHANGE` note, the next release will be marked as `major` automatically.
+If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
 
 For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
 
