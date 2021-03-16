@@ -153,7 +153,7 @@ export default class Resizer {
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
 
-		this._sizeUI.bindToState( this._options, this.state );
+		this._sizeUI._bindToState( this._options, this.state );
 
 		this._initialViewWidth = this._options.viewElement.getStyle( 'width' );
 
@@ -307,8 +307,7 @@ export default class Resizer {
 	 * @protected
 	 */
 	_cleanup() {
-		this._sizeUI.dismiss();
-		this._sizeUI.isVisible = false;
+		this._sizeUI._dismiss();
 
 		const editingView = this._options.editor.editing.view;
 

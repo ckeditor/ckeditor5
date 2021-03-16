@@ -61,6 +61,11 @@
 	& .image > figcaption.ck-placeholder::before {
 		padding-left: inherit;
 		padding-right: inherit;
+
+		/* 
+		 * Make sure the image caption placeholder doesn't overflow the placeholder area.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9162.
+		 */
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;

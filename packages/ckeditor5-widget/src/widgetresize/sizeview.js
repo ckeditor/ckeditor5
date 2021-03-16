@@ -12,20 +12,40 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 /**
  * A view displaying the proposed new element size during the resizing.
  *
+ * @protected
  * @extends {module:ui/view~View}
  */
-
 export default class SizeView extends View {
 	constructor() {
+		super();
+
+		/**
+		 * The visibility of the view defined based on the existence of the host proposed dimensions.
+		 *
+		 * @private
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #_isVisible
+		 */
+
+		/**
+		 * The text that will be displayed in the `SizeView` child.
+		 * It can be formatted as the pixel values (e.g. 10x20) or the percentage value (e.g. 10%).
+		 *
+		 * @private
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #_label
+		 */
+
 		/**
 		 * The position of the view defined based on the host size and active handle position.
 		 *
 		 * @private
 		 * @observable
-		 * @member {String} #viewPosition
+		 * @readonly
+		 * @member {String} #_viewPosition
 		 */
-
-		super();
 
 		const bind = this.bindTemplate;
 
@@ -35,26 +55,35 @@ export default class SizeView extends View {
 				class: [
 					'ck',
 					'ck-size-view',
-					bind.to( 'viewPosition', value => value ? `ck-orientation-${ value }` : '' )
+					bind.to( '_viewPosition', value => value ? `ck-orientation-${ value }` : '' )
 				],
 				style: {
-					display: bind.if( 'isVisible', 'none', visible => !visible )
+					display: bind.if( '_isVisible', 'none', visible => !visible )
 				}
 			},
 			children: [ {
-				text: bind.to( 'label' )
+				text: bind.to( '_label' )
 			} ]
 		} );
 	}
 
-	bindToState( options, resizerState ) {
-		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
+	/**
+	 * A method used for binding the `SizeView` instance properties to the `ResizeState` instance observable properties.
+	 *
+	 * @protected
+	 * @param {module:widget/widgetresize~ResizerOptions} options
+	 * An object defining the resizer options, used for setting the proper size label.
+	 * @param {module:widget/widgetresize/resizerstate~ResizeState} resizeState
+	 * The `ResizeState` class instance, used for keeping the `SizeView` state up to date.
+	 */
+	_bindToState( options, resizeState ) {
+		this.bind( '_isVisible' ).to( resizeState, 'proposedWidth', resizeState, 'proposedHeight', ( width, height ) =>
 			width !== null && height !== null );
 
-		this.bind( 'label' ).to(
-			resizerState, 'proposedHandleHostWidth',
-			resizerState, 'proposedHandleHostHeight',
-			resizerState, 'proposedWidthPercents',
+		this.bind( '_label' ).to(
+			resizeState, 'proposedHandleHostWidth',
+			resizeState, 'proposedHandleHostHeight',
+			resizeState, 'proposedWidthPercents',
 			( width, height, widthPercents ) => {
 				if ( options.unit === 'px' ) {
 					return `${ width }×${ height }`;
@@ -64,17 +93,22 @@ export default class SizeView extends View {
 			}
 		);
 
-		this.bind( 'viewPosition' ).to(
-			resizerState, 'activeHandlePosition',
-			resizerState, 'proposedHandleHostWidth',
-			resizerState, 'proposedHandleHostHeight',
+		this.bind( '_viewPosition' ).to(
+			resizeState, 'activeHandlePosition',
+			resizeState, 'proposedHandleHostWidth',
+			resizeState, 'proposedHandleHostHeight',
 			// If the widget is too small to contain the size label, display the label above.
 			( position, width, height ) => width < 50 || height < 50 ? 'above-center' : position
 		);
 	}
 
-	dismiss() {
+	/**
+	 * A method used for cleaning up. It removes the bindings and hides the view.
+	 *
+	 * @protected
+	 */
+	_dismiss() {
 		this.unbind();
-		this.isVisible = false;
+		this._isVisible = false;
 	}
 }
