@@ -12,6 +12,12 @@ import { WidgetResize } from 'ckeditor5/src/widget';
 
 import ImageLoadObserver from '../image/imageloadobserver';
 
+const RESIZABLE_IMAGES_CSS_SELECTOR = 'figure.image.ck-widget > img,' +
+	'figure.image.ck-widget > a > img,' +
+	'span.image-inline.ck-widget > img';
+
+const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /(image|image-inline)/;
+
 /**
  * The image resize by handles feature.
  *
@@ -58,12 +64,12 @@ export default class ImageResizeHandles extends Plugin {
 
 		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
 			// The resizer must be attached only to images loaded by the `ImageInsert`, `ImageUpload` or `LinkImage` plugins.
-			if ( !domEvent.target.matches( 'figure.image.ck-widget > img, figure.image.ck-widget > a > img' ) ) {
+			if ( !domEvent.target.matches( RESIZABLE_IMAGES_CSS_SELECTOR ) ) {
 				return;
 			}
 
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
-			const widgetView = imageView.findAncestor( 'figure' );
+			const widgetView = imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } );
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 
 			if ( resizer ) {

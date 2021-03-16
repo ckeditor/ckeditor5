@@ -8,7 +8,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
@@ -61,7 +61,7 @@ describe( 'ImageUploadEditing', () => {
 			.create( {
 				plugins: [
 					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing,
-					Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard
+					Paragraph, UndoEditing, UploadAdapterPluginMock, ClipboardPipeline
 				]
 			} )
 			.then( newEditor => {
@@ -118,11 +118,26 @@ describe( 'ImageUploadEditing', () => {
 				]
 			} )
 			.then( editor => {
-				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
+				expect( editor.plugins.get( ClipboardPipeline ) ).to.be.instanceOf( ClipboardPipeline );
 			} );
 	} );
 
 	it( 'should insert image when is pasted', () => {
+		const fileMock = createNativeFileMock();
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: null } );
+
+		const id = fileRepository.getLoader( fileMock ).id;
+		expect( getModelData( model ) ).to.equal(
+			`<paragraph>foo[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]</paragraph>`
+		);
+		expect( eventInfo.stop.called ).to.be.true;
+	} );
+
+	it( 'should insert image when is dropped', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -224,7 +239,7 @@ describe( 'ImageUploadEditing', () => {
 			.create( {
 				plugins: [
 					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing,
-					Paragraph, UploadAdapterPluginMock, Clipboard
+					Paragraph, UploadAdapterPluginMock, ClipboardPipeline
 				]
 			} )
 			.then( editor => {
@@ -672,7 +687,7 @@ describe( 'ImageUploadEditing', () => {
 			preventDefault: spy
 		} );
 
-		expect( spy.calledOnce ).to.equal( true );
+		expect( spy.called ).to.equal( true );
 	} );
 
 	it( 'should upload image with base64 src', done => {
@@ -756,7 +771,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -813,7 +828,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -849,7 +864,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -887,7 +902,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		let content = null;
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+		editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 			content = data.content;
 		} );
 
@@ -1040,7 +1055,7 @@ describe( 'ImageUploadEditing', () => {
 			sinon.stub( HTMLCanvasElement.prototype, 'toBlob' ).callsFake( fn => fn( null ) );
 
 			let content = null;
-			editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+			editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 				content = data.content;
 			} );
 

@@ -776,6 +776,7 @@ class Placeholder extends Plugin {
 class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
 			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...

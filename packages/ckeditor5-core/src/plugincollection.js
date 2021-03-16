@@ -95,9 +95,9 @@ export default class PluginCollection {
 	 * Gets the plugin instance by its constructor or name.
 	 *
 	 *		// Check if 'Clipboard' plugin was loaded.
-	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
 	 *			// Get clipboard plugin instance
-	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 	 *
 	 *			this.listenTo( clipboard, 'inputTransformation', ( evt, data ) => {
 	 *				// Do something on clipboard input.
@@ -144,9 +144,9 @@ export default class PluginCollection {
 	 * Checks if a plugin is loaded.
 	 *
 	 *		// Check if the 'Clipboard' plugin was loaded.
-	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
 	 *			// Now use the clipboard plugin instance:
-	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 	 *
 	 *			// ...
 	 *		}
@@ -308,25 +308,32 @@ export default class PluginCollection {
 
 			if ( parentPluginConstructor ) {
 				/**
-				 * A required "soft" dependency was not found on plugin list.
+				 * A required "soft" dependency was not found on the plugin list.
 				 *
-				 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
-				 * This is usually done in CKEditor 5 builds by setting the
-				 * {@link module:core/editor/editor~Editor.builtinPlugins} property. Alternatively they can be provided using
-				 * {@link module:core/editor/editorconfig~EditorConfig#plugins} or
-				 * {@link module:core/editor/editorconfig~EditorConfig#extraPlugins} configuration.
+				 * When configuring the editor, either prior to building (via
+				 * {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}) or when
+				 * creating a new instance of the editor (e.g. via
+				 * {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`}), you need to provide
+				 * some of the dependencies for other plugins that you used.
 				 *
-				 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
-				 * that you didn't add the required plugin to the plugins list when loading the editor.
+				 * This error is thrown when one of these dependencies was not provided. The name of the missing plugin
+				 * can be found in `missingPlugin` and the plugin that required it in `requiredBy`.
+				 *
+				 * In order to resolve it, you need to import the missing plugin and add it to the
+				 * current list of plugins (`Editor.builtinPlugins` or `config.plugins`/`config.extraPlugins`).
+				 *
+				 * Soft requirements were introduced in version 26.0.0. If you happen to stumble upon this error
+				 * when upgrading to version 26.0.0, read also the
+				 * {@glink builds/guides/migration/migration-to-26.0.0 Migration to 26.0.0} guide.
 				 *
 				 * @error plugincollection-soft-required
-				 * @param {String} plugin The name of the required plugin.
-				 * @param {String} requiredBy The name of the plugin that was requiring other plugin.
+				 * @param {String} missingPlugin The name of the required plugin.
+				 * @param {String} requiredBy The name of the plugin that requires the other plugin.
 				 */
 				throw new CKEditorError(
 					'plugincollection-soft-required',
 					context,
-					{ plugin, requiredBy: getPluginName( parentPluginConstructor ) }
+					{ missingPlugin: plugin, requiredBy: getPluginName( parentPluginConstructor ) }
 				);
 			}
 

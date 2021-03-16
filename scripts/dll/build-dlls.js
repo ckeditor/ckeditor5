@@ -17,13 +17,13 @@ const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
 if ( IS_DEVELOPMENT_MODE ) {
 	console.log( '🛠️️  ' + chalk.yellow( 'Development mode is active.' ) );
 } else {
-	console.log( '⚠️  ' + chalk.magenta( 'Production mode is active.' ) );
+	console.log( '⚠️  ' + chalk.magenta( 'Production mode is active. Use --dev to build in the development mode.' ) );
 }
 
-// --------------------------------------------------------
-// -------------------------------------- Main package DLL.
+// -------------------------------------------------------------
+// ------------------------------------------- Base DLL build --
 
-console.log( '\n📍 ' + chalk.cyan.underline( 'Building DLL for the main package...\n' ) );
+console.log( '\n📍 ' + chalk.cyan.underline( 'Creating the base DLL build...\n' ) );
 
 const webpackArguments = [ '--config=./scripts/dll/webpack.config.dll.js' ];
 
@@ -39,10 +39,10 @@ childProcess.spawnSync( 'webpack', webpackArguments, {
 	stderr: 'inherit'
 } );
 
-// --------------------------------------------------------
-// ------------------------------ ckeditor5-* packages DLL.
+// -------------------------------------------------------------
+// ---------------------------- DLL-compatible package builds --
 
-console.log( '\n📍 ' + chalk.underline( 'Building DLLs for ckeditor5-* packages...\n' ) );
+console.log( '\n📍 ' + chalk.underline( 'Creating DLL-compatible package builds...\n' ) );
 
 const nodeArguments = [ './scripts/dll/build-packages-dlls.js' ];
 

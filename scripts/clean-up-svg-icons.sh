@@ -22,6 +22,6 @@ do
 	then
 		echo "\x1B[33m[clean-up-svg-icons]\x1B[0m Note: \"$i\" is blacklisted, skipping."
 	else
-		svgo --config=./scripts/svgo.config.json -i $i
+		svgo --config=./scripts/svgo.config.js -i $i
 	fi
 done

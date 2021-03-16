@@ -252,7 +252,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		describe( 'for an imageInline being selected', () => {
-			it( 'should execute the toggleImageType command and convert imageInline->image in the model', () => {
+			it( 'should execute the imageTypeBlock command and convert imageInline->image in the model', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
 				setModelData( model, '<paragraph>[<imageInline src="test.png"></imageInline>]</paragraph>' );
@@ -261,7 +261,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 
 				sinon.assert.calledTwice( spy );
 				sinon.assert.calledWithExactly( spy.firstCall, 'toggleImageCaption' );
-				sinon.assert.calledWithExactly( spy.secondCall, 'toggleImageType' );
+				sinon.assert.calledWithExactly( spy.secondCall, 'imageTypeBlock' );
 			} );
 
 			it( 'should add an empty caption element to the image', () => {
