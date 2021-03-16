@@ -198,7 +198,7 @@ export default class DataFilter {
 	_defineSchema( definition ) {
 		const schema = this.editor.model.schema;
 
-		schema.register( definition.model, definition.schema );
+		schema.register( definition.model, definition.modelSchema );
 
 		const allowedChildren = toArray( definition.allowChildren || [] );
 
