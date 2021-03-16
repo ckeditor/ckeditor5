@@ -40,7 +40,7 @@ const URL_REG_EXP = new RegExp(
 					// Do not allow `www.foo` - see https://github.com/ckeditor/ckeditor5/issues/8050.
 					'((?!www\\.)|(www\\.))' +
 					// Host & domain names.
-					'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
+					'(?![-_])(?:[-_a-z0-9\\u00a1-\\uffff]{1,63}[a-z0-9\\u00a1-\\uffff]\\.)+' +
 					// TLD identifier name.
 					'(?:[a-z\\u00a1-\\uffff]{2,})' +
 				')' +
