@@ -77,7 +77,7 @@ The proper order for sections of a commit message is as follows:
 * Entries that will not be added to the changelog
 * Breaking change notes
 
-All entries must be separated with a blank line, otherwise the lines will not be treated separately.
+All entries must be separated with a blank line, otherwise the lines will not be treated as separate entries.
 
 ### Examples of correct and incorrect message formatting
 
