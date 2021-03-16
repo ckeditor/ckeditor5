@@ -923,6 +923,8 @@ function onlyViewNameIsDefined( viewConfig, viewItem ) {
 // Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
 // to ensure proper model structure.
 //
+// If any node on the given range has already defined an attribute with the same name, its value will not be updated.
+//
 // @param {module:engine/model/range~Range} modelRange Model range on which attribute should be set.
 // @param {Object} modelAttribute Model attribute to set.
 // @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion API.
@@ -934,11 +936,17 @@ function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 
 	// Set attribute on each item in range according to Schema.
 	for ( const node of Array.from( modelRange.getItems( { shallow } ) ) ) {
-		if ( conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
-			conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
-
-			result = true;
+		if ( !conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
+			continue;
 		}
+
+		// Do not overwrite the attribute if a node has already specified it. See #8921.
+		if ( node.hasAttribute( modelAttribute.key ) ) {
+			continue;
+		}
+
+		conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
+		result = true;
 	}
 
 	return result;
