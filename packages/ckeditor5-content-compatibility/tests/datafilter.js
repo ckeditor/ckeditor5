@@ -645,19 +645,6 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
-		it( 'should not preserve span with no attributes', () => {
-			dataFilter.allowElement( { name: 'span' } );
-
-			editor.setData( '<p><span>foo</span></p>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph>foo</paragraph>',
-				attributes: {}
-			} );
-
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
-		} );
-
 		it( 'should correctly merge class names', () => {
 			dataFilter.allowElement( { name: 'span' } );
 			dataFilter.allowAttributes( { name: 'span', classes: /[\s\S]+/ } );
