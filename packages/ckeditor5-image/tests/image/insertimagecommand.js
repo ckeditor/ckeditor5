@@ -193,13 +193,61 @@ describe( 'InsertImageCommand', () => {
 			);
 		} );
 
-		it( 'should replace an existing image with another image', () => {
+		it( 'should replace a selected object with multiple block images', () => {
+			const imgSrc1 = 'foo/bar.jpg';
+			const imgSrc2 = 'foo/baz.jpg';
+
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
+
+			expect( getModelData( model ) ).to.equal(
+				`<paragraph>foo</paragraph><image src="${ imgSrc1 }"></image>[<image src="${ imgSrc2 }"></image>]<paragraph>bar</paragraph>`
+			);
+		} );
+
+		it( 'should replace a selected inline object with multiple inline images', () => {
+			const imgSrc1 = 'foo/bar.jpg';
+			const imgSrc2 = 'foo/baz.jpg';
+
+			model.schema.register( 'placeholder', {
+				allowWhere: '$text',
+				isInline: true,
+				isObject: true
+			} );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'placeholder', view: 'placeholder' } );
+
+			setModelData( model, '<paragraph>foo[<placeholder></placeholder>]bar</paragraph>' );
+
+			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo' +
+					`<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]` +
+				'bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace a selected block image with another block image', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<image src="foo/bar.jpg"></image>]<paragraph>bar</paragraph>' );
 
 			command.execute( { source: 'new/image.jpg' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>[<image src="new/image.jpg"></image>]<paragraph>bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace a selected inline image with another inline image', () => {
+			setModelData( model, '<paragraph>foo[<imageInline src="foo/bar.jpg"></imageInline>]bar</paragraph>' );
+
+			command.execute( { source: 'new/image.jpg' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo[<imageInline src="new/image.jpg"></imageInline>]bar</paragraph>'
 			);
 		} );
 	} );
