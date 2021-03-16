@@ -211,8 +211,11 @@ export default class DataFilter {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 				const viewAttributes = this._matchAndConsumeAttributes( data.viewItem, conversionApi );
 
-				// Convert children and set conversion result as a current data.
-				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+				// Since we are converting to attribute we need an range on which we will set the attribute.
+				// If the range is not created yet, we will create it.
+				if ( !data.modelRange ) {
+					data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+				}
 
 				// Set attribute on each item in range according to Schema.
 				for ( const node of data.modelRange.getItems() ) {
