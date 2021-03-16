@@ -64,25 +64,29 @@ describe( 'InsertImageCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be true when the selection is on other image', () => {
+		it( 'should be true when the selection is on another image', () => {
 			setModelData( model, '[<image></image>]' );
+
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is inside other image', () => {
+		it( 'should be false when the selection is inside another image', () => {
 			model.schema.register( 'caption', {
 				allowIn: 'image',
 				allowContentOf: '$block',
 				isLimit: true
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
+
 			setModelData( model, '<image><caption>[]</caption></image>' );
+
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true when the selection is on other object', () => {
+		it( 'should be true when the selection is on another object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
 			setModelData( model, '[<object></object>]' );
 
 			expect( command.isEnabled ).to.be.true;
@@ -174,6 +178,29 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: imgSrc } );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+		} );
+
+		it( 'should replace an existing selected object with an image', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+			command.execute( { source: 'foo/bar.jpg' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>[<image src="foo/bar.jpg"></image>]<paragraph>bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing image with another image', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<image src="foo/bar.jpg"></image>]<paragraph>bar</paragraph>' );
+
+			command.execute( { source: 'new/image.jpg' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>[<image src="new/image.jpg"></image>]<paragraph>bar</paragraph>'
+			);
 		} );
 	} );
 } );
