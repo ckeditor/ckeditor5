@@ -18,7 +18,7 @@ import { toArray } from 'ckeditor5/src/utils';
  *		dataSchema.register( {
  *			view: 'section',
  *			model: 'my-section',
- *			schema: {
+ *			modelSchema: {
  *				inheritAllFrom: '$block'
  *			}
  *		} );
@@ -38,7 +38,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			model: '$htmlBlock',
 			allowChildren: '$block',
-			schema: {
+			modelSchema: {
 				allowIn: [ '$root', '$htmlBlock' ],
 				isBlock: true
 			}
@@ -47,7 +47,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			view: 'article',
 			model: 'htmlArticle',
-			schema: {
+			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
 			}
 		} );
@@ -55,7 +55,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			view: 'section',
 			model: 'htmlSection',
-			schema: {
+			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
 			}
 		} );
@@ -64,7 +64,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			view: 'dl',
 			model: 'htmlDl',
-			schema: {
+			modelSchema: {
 				allowIn: [ '$htmlBlock', '$root' ],
 				isBlock: true
 			}
@@ -73,7 +73,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			model: '$htmlDatalist',
 			allowChildren: '$block',
-			schema: {
+			modelSchema: {
 				allowIn: 'htmlDl',
 				isBlock: true
 			}
@@ -82,7 +82,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			view: 'dt',
 			model: 'htmlDt',
-			schema: {
+			modelSchema: {
 				inheritAllFrom: '$htmlDatalist'
 			}
 		} );
@@ -90,7 +90,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			view: 'dd',
 			model: 'htmlDd',
-			schema: {
+			modelSchema: {
 				inheritAllFrom: '$htmlDatalist'
 			}
 		} );
@@ -99,7 +99,7 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			view: 'details',
 			model: 'htmlDetails',
-			schema: {
+			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
 			}
 		} );
@@ -108,7 +108,7 @@ export default class DataSchema {
 			view: 'summary',
 			model: 'htmlSummary',
 			allowChildren: '$text',
-			schema: {
+			modelSchema: {
 				allowIn: 'htmlDetails'
 			}
 		} );
@@ -188,16 +188,16 @@ export default class DataSchema {
 	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>}
 	 */
 	* _getReferences( modelName ) {
-		const { schema } = this._definitions.get( modelName );
+		const { modelSchema } = this._definitions.get( modelName );
 
-		if ( !schema ) {
+		if ( !modelSchema ) {
 			return;
 		}
 
 		const inheritProperties = [ 'inheritAllFrom', 'inheritTypesFrom', 'allowWhere', 'allowContentOf', 'allowAttributesOf' ];
 
 		for ( const property of inheritProperties ) {
-			for ( const referenceName of toArray( schema[ property ] || [] ) ) {
+			for ( const referenceName of toArray( modelSchema[ property ] || [] ) ) {
 				const definition = this._definitions.get( referenceName );
 
 				if ( referenceName !== modelName && definition ) {
@@ -233,7 +233,7 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
  * @property {String} [view] Name of the view element.
  * @property {String} model Name of the model element.
- * @property {module:engine/model/schema~SchemaItemDefinition} schema The model schema item definition describing registered model.
+ * @property {module:engine/model/schema~SchemaItemDefinition} modelSchema The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
  */
 

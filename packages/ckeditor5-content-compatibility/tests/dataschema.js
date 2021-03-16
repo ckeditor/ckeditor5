@@ -43,42 +43,42 @@ describe( 'DataSchema', () => {
 				view: 'def1',
 				model: 'htmlDef1',
 				allowChildren: [ 'htmlDef2', 'htmlDef3' ],
-				schema: {
+				modelSchema: {
 					inheritAllFrom: '$block'
 				}
 			},
 			{
 				view: 'def2',
 				model: 'htmlDef2',
-				schema: {
+				modelSchema: {
 					inheritAllFrom: 'htmlDef1'
 				}
 			},
 			{
 				view: 'def3',
 				model: 'htmlDef3',
-				schema: {
+				modelSchema: {
 					inheritTypesFrom: 'htmlDef2'
 				}
 			},
 			{
 				view: 'def4',
 				model: 'htmlDef4',
-				schema: {
+				modelSchema: {
 					allowWhere: 'htmlDef3'
 				}
 			},
 			{
 				view: 'def5',
 				model: 'htmlDef5',
-				schema: {
+				modelSchema: {
 					allowContentOf: 'htmlDef4'
 				}
 			},
 			{
 				view: 'def6',
 				model: 'htmlDef6',
-				schema: {
+				modelSchema: {
 					allowAttributesOf: 'htmlDef5'
 				}
 			}
