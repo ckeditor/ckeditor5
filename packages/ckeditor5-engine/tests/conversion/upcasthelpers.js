@@ -376,6 +376,104 @@ describe( 'UpcastHelpers', () => {
 				'<paragraph><$text bold="true">Foo</$text></paragraph>'
 			);
 		} );
+
+		// #8921.
+		describe( 'overwriting attributes while converting nested elements', () => {
+			beforeEach( () => {
+				schema.extend( '$text', {
+					allowAttributes: [ 'fontSize', 'fontColor' ]
+				} );
+
+				upcastHelpers.elementToAttribute( {
+					view: {
+						name: 'span',
+						styles: {
+							'font-size': /[\s\S]+/
+						}
+					},
+					model: {
+						key: 'fontSize',
+						value: viewElement => {
+							const fontSize = viewElement.getStyle( 'font-size' );
+							const value = fontSize.substr( 0, fontSize.length - 2 );
+
+							return Number( value );
+						}
+					}
+				} );
+
+				upcastHelpers.elementToAttribute( {
+					view: {
+						name: 'span',
+						styles: {
+							'color': /#[a-f0-9]{6}/
+						}
+					},
+					model: {
+						key: 'fontColor',
+						value: viewElement => viewElement.getStyle( 'color' )
+					}
+				} );
+			} );
+
+			it( 'should not overwrite attributes if nested elements have the same attribute but different values', () => {
+				const viewElement = viewParse( '<span style="font-size:9px"><span style="font-size:11px">Bar</span></span>' );
+
+				expectResult(
+					viewElement,
+					'<$text fontSize="11">Bar</$text>'
+				);
+			} );
+
+			it( 'should convert text before the nested duplicated attribute with the most outer value', () => {
+				const viewElement = viewParse( '<span style="font-size:9px">Foo<span style="font-size:11px">Bar</span></span>' );
+
+				expectResult(
+					viewElement,
+					'<$text fontSize="9">Foo</$text><$text fontSize="11">Bar</$text>'
+				);
+			} );
+
+			it( 'should convert text after the nested duplicated attribute with the most outer values', () => {
+				const viewElement = viewParse( '<span style="font-size:9px"><span style="font-size:11px">Bar</span>Bom</span>' );
+
+				expectResult(
+					viewElement,
+					'<$text fontSize="11">Bar</$text><$text fontSize="9">Bom</$text>'
+				);
+			} );
+
+			it( 'should convert texts before and after the nested duplicated attribute with the most outer value', () => {
+				const viewElement = viewParse( '<span style="font-size:9px">Foo<span style="font-size:11px">Bar</span>Bom</span>' );
+
+				expectResult(
+					viewElement,
+					'<$text fontSize="9">Foo</$text><$text fontSize="11">Bar</$text><$text fontSize="9">Bom</$text>'
+				);
+			} );
+
+			it( 'should work with multiple duplicated attributes', () => {
+				const viewElement = viewParse(
+					'<span style="font-size:9px;color: #0000ff"><span style="font-size:11px;color: #ff0000">Bar</span></span>'
+				);
+
+				expectResult(
+					viewElement,
+					'<$text fontColor="#ff0000" fontSize="11">Bar</$text>'
+				);
+			} );
+
+			it( 'should convert non-duplicated attributes from the most outer element', () => {
+				const viewElement = viewParse(
+					'<span style="font-size:9px;color: #0000ff"><span style="font-size:11px;">Bar</span></span>'
+				);
+
+				expectResult(
+					viewElement,
+					'<$text fontColor="#0000ff" fontSize="11">Bar</$text>'
+				);
+			} );
+		} );
 	} );
 
 	describe( 'attributeToAttribute()', () => {
