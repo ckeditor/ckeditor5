@@ -77,7 +77,7 @@ export function isImageBlock( modelElement ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
- export function isImageInline( modelElement ) {
+export function isImageInline( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'imageInline' );
 }
 
