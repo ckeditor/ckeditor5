@@ -323,7 +323,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should extend allowed children only if specified model schema exists', () => {
-			dataSchema.register( {
+			dataSchema.registerBlockElement( {
 				view: 'xyz',
 				model: 'htmlXyz',
 				allowChildren: 'not-exists',
