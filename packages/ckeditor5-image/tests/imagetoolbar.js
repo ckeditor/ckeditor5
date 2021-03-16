@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ImageToolbar from '../src/imagetoolbar';
+import ImageCaption from '../src/imagecaption';
 import Image from '../src/image';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -27,7 +28,7 @@ describe( 'ImageToolbar', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, ImageToolbar, FakeButton ],
+				plugins: [ Paragraph, Image, ImageToolbar, ImageCaption, FakeButton ],
 				image: {
 					toolbar: [ 'fake_button' ]
 				}
@@ -121,6 +122,30 @@ describe( 'ImageToolbar', () => {
 			editor.ui.focusTracker.isFocused = false;
 			expect( balloon.visibleView ).to.be.null;
 		} );
+
+		it( 'should show the toolbar when the editor gains focus and the selection is in a caption', () => {
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( model, '<image src=""><caption>[foo]</caption></image>' );
+
+			editor.ui.focusTracker.isFocused = false;
+			expect( balloon.visibleView ).to.be.null;
+
+			editor.ui.focusTracker.isFocused = true;
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
+
+		it( 'should hide the toolbar when the editor loses focus and the selection is in a caption', () => {
+			editor.ui.focusTracker.isFocused = false;
+
+			setData( model, '<image src=""><caption>[]foo</caption></image>' );
+
+			editor.ui.focusTracker.isFocused = true;
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			editor.ui.focusTracker.isFocused = false;
+			expect( balloon.visibleView ).to.be.null;
+		} );
 	} );
 
 	describe( 'integration with the editor selection', () => {
@@ -141,6 +166,30 @@ describe( 'ImageToolbar', () => {
 				// Select the [<image></image>]
 				writer.setSelection(
 					writer.createRangeOn( doc.getRoot().getChild( 1 ) )
+				);
+			} );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			// Make sure successive change does not throw, e.g. attempting
+			// to insert the toolbar twice.
+			editor.ui.fire( 'update' );
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
+
+		it( 'should show the toolbar on ui#update when the selection is in a caption', () => {
+			setData( model, '<paragraph>[foo]</paragraph><image src=""><caption>bar</caption></image>' );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			editor.ui.fire( 'update' );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			model.change( writer => {
+				// Select the <image><caption>[bar]</caption></image>
+				writer.setSelection(
+					writer.createRangeIn( doc.getRoot().getChild( 1 ).getChild( 0 ) )
 				);
 			} );
 
@@ -192,6 +241,66 @@ describe( 'ImageToolbar', () => {
 			// to remove the toolbar twice.
 			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.be.null;
+		} );
+
+		it( 'should hide the toolbar on ui#update if the selection is being moved outside of a caption', () => {
+			setData( model, '<paragraph>foo</paragraph><image src=""><caption>[]</caption></image>' );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			model.change( writer => {
+				// Select the <paragraph>[...]</paragraph>
+				writer.setSelection(
+					writer.createRangeIn( doc.getRoot().getChild( 0 ) )
+				);
+			} );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			// Make sure successive change does not throw, e.g. attempting
+			// to remove the toolbar twice.
+			editor.ui.fire( 'update' );
+			expect( balloon.visibleView ).to.be.null;
+		} );
+
+		it( 'should not hide the toolbar on ui#update if the selection is being moved from an image to a caption', () => {
+			setData( model, '[<image src=""><caption>bar</caption></image>]' );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			model.change( writer => {
+				// Select the <image><caption>[bar]</caption></image>
+				writer.setSelection(
+					writer.createRangeIn( doc.getRoot().getChild( 0 ).getChild( 0 ) )
+				);
+			} );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			// Make sure successive change does not throw, e.g. attempting
+			// to insert the toolbar twice.
+			editor.ui.fire( 'update' );
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
+
+		it( 'should not hide the toolbar on ui#update if the selection is being moved from a caption to an image', () => {
+			setData( model, '<image src=""><caption>[b]ar</caption></image>' );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			model.change( writer => {
+				// Select the <image><caption>[bar]</caption></image>
+				writer.setSelection(
+					writer.createRangeIn( doc.getRoot().getChild( 0 ) )
+				);
+			} );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			// Make sure successive change does not throw, e.g. attempting
+			// to insert the toolbar twice.
+			editor.ui.fire( 'update' );
+			expect( balloon.visibleView ).to.equal( toolbar );
 		} );
 	} );
 
