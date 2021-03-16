@@ -12,6 +12,9 @@
 		/* Make sure there is some space between the content and the image. Center image by default. */
 		margin: 1em auto;
 
+		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
+		min-width: 50px;
+
 		& img {
 			/* Prevent unnecessary margins caused by line-height (see #44). */
 			display: block;
@@ -21,9 +24,6 @@
 
 			/* Make sure the image never exceeds the size of the parent container (ckeditor/ckeditor5-ui#67). */
 			max-width: 100%;
-
-			/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
-			min-width: 50px;
 		}
 	}
 
@@ -61,6 +61,14 @@
 	& .image > figcaption.ck-placeholder::before {
 		padding-left: inherit;
 		padding-right: inherit;
+
+		/* 
+		 * Make sure the image caption placeholder doesn't overflow the placeholder area.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9162.
+		 */
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	/*
