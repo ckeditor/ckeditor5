@@ -11,8 +11,7 @@
 
 import toArray from './toarray';
 import { _translate } from './translation-service';
-
-const RTL_LANGUAGE_CODES = [ 'ar', 'fa', 'he', 'ku', 'ug' ];
+import { getLanguageDirection } from './language';
 
 /**
  * Represents the localization services.
@@ -174,12 +173,4 @@ function interpolateString( string, values ) {
 	return string.replace( /%(\d+)/g, ( match, index ) => {
 		return ( index < values.length ) ? values[ index ] : match;
 	} );
-}
-
-// Helps determine whether a language is LTR or RTL.
-//
-// @param {String} language The ISO 639-1 language code.
-// @returns {String} 'ltr' or 'rtl
-function getLanguageDirection( languageCode ) {
-	return RTL_LANGUAGE_CODES.includes( languageCode ) ? 'rtl' : 'ltr';
 }
