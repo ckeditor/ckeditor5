@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { insertImage, isImage, isImageInline } from './utils';
+import { insertImage, isImageBlock, isImageInline } from './utils';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
@@ -44,7 +44,7 @@ export default class ImageTypeCommand extends Command {
 		if ( this._modelElementName === 'image' ) {
 			this.isEnabled = isImageInline( element );
 		} else {
-			this.isEnabled = isImage( element );
+			this.isEnabled = isImageBlock( element );
 		}
 	}
 

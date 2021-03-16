@@ -62,21 +62,34 @@ export function getSelectedImageWidget( selection ) {
 /**
  * Checks if the provided model element is an `image`.
  *
+ * @protected
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isImage( modelElement ) {
+export function isImageBlock( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'image' );
 }
 
 /**
  * Checks if the provided model element is an `imageInline`.
  *
+ * @protected
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isImageInline( modelElement ) {
+ export function isImageInline( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'imageInline' );
+}
+
+/**
+ * Checks if the provided model element is an `image` or `imageInline`.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} modelElement
+ * @returns {Boolean}
+ */
+export function isImage( modelElement ) {
+	return isImageInline( modelElement ) || isImageBlock( modelElement );
 }
 
 /**

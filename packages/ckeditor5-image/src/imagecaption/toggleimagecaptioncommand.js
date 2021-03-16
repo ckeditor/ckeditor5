@@ -66,7 +66,7 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Block images support captions by default but the command should also be enabled for inline
 		// images because toggling the caption when one is selected should convert it into a block image.
-		this.isEnabled = isImage( selectedElement ) || isImageInline( selectedElement );
+		this.isEnabled = isImage( selectedElement );
 
 		if ( !this.isEnabled ) {
 			this.value = false;
