@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionRange, checkSelectionOnObject } from 'ckeditor5/src/widget';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
 
 /**
  * The page break command.
@@ -26,7 +26,11 @@ export default class PageBreakCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isPageBreakAllowed( this.editor.model );
+		const model = this.editor.model;
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		this.isEnabled = isPageBreakAllowedInParent( selection, schema, model );
 	}
 
 	/**
@@ -60,18 +64,6 @@ export default class PageBreakCommand extends Command {
 			}
 		} );
 	}
-}
-
-// Checks if the `pageBreak` element can be inserted at the current model selection.
-//
-// @param {module:engine/model/model~Model} model
-// @returns {Boolean}
-function isPageBreakAllowed( model ) {
-	const schema = model.schema;
-	const selection = model.document.selection;
-
-	return isPageBreakAllowedInParent( selection, schema, model ) &&
-		!checkSelectionOnObject( selection, schema );
 }
 
 // Checks if a page break is allowed by the schema in the optimal insertion parent.
