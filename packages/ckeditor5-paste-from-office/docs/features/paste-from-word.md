@@ -82,8 +82,8 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 
 ## Known issues
 
-Sometimes if the document pasted contains both images and styled text (e.g. headers), it may happen that the images are not pasted properly. This will not happen if the pasted content with an image does not contain styled elements.
+If the pasted document contains both images and styled text (e.g. headings), it may happen that the images are not pasted properly. Unfortunately, for some operating system, browser and Word versions the image data is not available in the clipboard in this case.
 
 It is advised to try and paste the image separately from the body of the text if this error occurs.
 
-If the image is included into the content with the VML syntax (like this one: `<v:shape><v:imagedata src="...."/></v:shape>`) it will not be pasted either, as this notation is not yet supported by CKEditor 5. If you'd like to see this feature implemented, add a 👍&nbsp; reaction to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/9245).
+If the image is represented in the Word content by the VML syntax (like this one: `<v:shape><v:imagedata src="...."/></v:shape>`) it will not be pasted either, as this notation is not supported by CKEditor 5. If you'd like to see this feature implemented, add a 👍&nbsp; reaction to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/9245).
