@@ -14,8 +14,13 @@ const fs = require( 'fs' );
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
 
 const CKEDITOR5_INTERNAL_PATH = path.resolve( __dirname, '..', '..', 'external', 'ckeditor5-internal' );
+const COLLABORATION_FEATURES_PATH = path.resolve( __dirname, '..', '..', 'external', 'collaboration-features' );
 
 if ( !fs.existsSync( CKEDITOR5_INTERNAL_PATH ) ) {
+	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
+}
+
+if ( !fs.existsSync( COLLABORATION_FEATURES_PATH ) ) {
 	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
 }
 
@@ -23,7 +28,7 @@ Promise.resolve()
 	.then( () => devEnv.generateChangelogForMonoRepository( {
 		cwd: process.cwd(),
 		packages: 'packages',
-		releaseBranch: 'release',
+		releaseBranch: 'i/ckeditor5-internal/652',
 		highlightsPlaceholder: true,
 		collaborationFeatures: true,
 		transformScope: name => {
@@ -41,7 +46,16 @@ Promise.resolve()
 			{
 				cwd: CKEDITOR5_INTERNAL_PATH,
 				packages: 'packages',
-				skipLinks: true
+				skipLinks: true,
+				// TODO: Remove the single line below.
+				releaseBranch: 'master'
+			},
+			{
+				cwd: COLLABORATION_FEATURES_PATH,
+				packages: 'packages',
+				skipLinks: true,
+				// TODO: Remove the single line below.
+				releaseBranch: 'master'
 			}
 		]
 	} ) )
