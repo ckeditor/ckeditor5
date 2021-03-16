@@ -127,7 +127,7 @@ export default class HighlightUI extends Plugin {
 	 * @param {String} name The name of the button.
 	 * @param {String} label The label for the button.
 	 * @param {String} icon The button icon.
-	 * @param {String/null} value The `value` property passed to the executed command.
+	 * @param {*} value The `value` property passed to the executed command.
 	 * @param {Function} decorateButton A callback getting ButtonView instance so that it can be further customized.
 	 * @private
 	 */
