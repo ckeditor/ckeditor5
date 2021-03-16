@@ -28,6 +28,7 @@ Promise.resolve()
 	.then( () => devEnv.generateChangelogForMonoRepository( {
 		cwd: process.cwd(),
 		packages: 'packages',
+		// TODO: Restore the "release" branch.
 		releaseBranch: 'i/ckeditor5-internal/652',
 		highlightsPlaceholder: true,
 		collaborationFeatures: true,
