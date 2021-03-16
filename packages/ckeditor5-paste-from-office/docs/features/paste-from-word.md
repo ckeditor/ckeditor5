@@ -82,8 +82,8 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 
 ## Known issues
 
-Sometimes if the document pasted contains both images and styled text (e.g. headers), it may happen that the images are not pasted properly. This was noticed on certain macOS configurations and should not cause problems for Windows, however.
+Sometimes if the document pasted contains both images and styled text (e.g. headers), it may happen that the images are not pasted properly. This will not happen if the pasted content with an image does not contain styled elements.
 
 If the image is included into the content with the `<v:shape><v:imagedata src="...."/></v:shape>` syntax it will not be pasted either, as this notation is not yet supported by CKEditor 5.
 
-We are currently working on handling this error. Refer to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2493#issuecomment-749507634) for more details.
+It is advised to try and paste the image separately from the body of the text if this error occurs.
