@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionRange, checkSelectionOnObject } from 'ckeditor5/src/widget';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
 import { getSelectedMediaModelWidget, insertMedia } from './utils';
 
 /**
@@ -29,14 +29,11 @@ export default class MediaEmbedCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const schema = model.schema;
 		const selectedMedia = getSelectedMediaModelWidget( selection );
 
 		this.value = selectedMedia ? selectedMedia.getAttribute( 'url' ) : null;
 
-		this.isEnabled = isMediaSelected( selection ) ||
-			isAllowedInParent( selection, model ) &&
-			!checkSelectionOnObject( selection, schema );
+		this.isEnabled = isMediaSelected( selection ) || isAllowedInParent( selection, model );
 	}
 
 	/**
