@@ -1,4 +1,6 @@
 <div class="snippet-drag-drop-wrapper">
+	<h3>List of contacts</h3>
+	<ul class="contacts tour-balloon-visible"></ul>
 	<div id="snippet-drag-drop">
 		<h2>The Annual Meeting of Fictional Characters</h2>
 		<h3>Technical Announcement</h3>
@@ -20,55 +22,46 @@
 			<span class="p-tel">+45 2345 234 235</span></span>
 		</p>
 	</div>
-	<div class="contacts">
-		<h3>List of Droppable Contacts</h3>
-		<ul id="contactList"></ul>
-	</div>
 </div>
 
 <style>
-	.snippet-drag-drop-wrapper {
+	ul.contacts {
 		display: flex;
-		width: 100%;
-	}
-	.contacts {
-		margin: 0 15px;
-		width: 100%;
-		box-sizing: border-box;
-	}
-	.contacts h3 {
-		margin-top: 0;
-	}
-	ul#contactList {
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
 		list-style-type: none;
-		padding: 0;
-		margin: 0;
+		padding: 10px;
+		margin: 20px 0;
 	}
-	ul#contactList li {
-		background: hsl(0, 0%, 98%);
-		margin-bottom: 1px;
-		height: 56px;
-		line-height: 56px;
+	ul.contacts li {
+		background: hsl(0deg 0% 100%);
+		border: 1px solid var(--ck-color-base-border);
+		box-shadow: 1px 1px 2px hsl(0deg 0% 0% / 12%);
+		height: 32px;
+		margin: 0 10px 10px 0;
+		line-height: 32px;
 		cursor: pointer;
+		border-radius: 100px;
+		overflow: hidden;
+		font-size: 0.9em;
 	}
-	ul#contactList li:nth-child(2n) {
-		background: hsl(0, 0%, 95%);
-	}
-	ul#contactList li:hover {
+	ul.contacts li:hover {
 		background: hsl(56, 100%, 95%);
-		border-left: 5px solid hsl(56, 28%, 81%);
-		margin-left: -5px;
 	}
-	.contacts .contact {
-		padding: 0 10px;
+	ul.contacts .contact {
+		padding: 0 10px 0 0;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	.contacts .contact .u-photo {
+	ul.contacts .contact .u-photo {
 		display: inline-block;
-		vertical-align: middle;
+		vertical-align: bottom;
 		margin-right: 10px;
+	}
+	ul.contacts.tour-balloon-visible li:not(:nth-child( 3 )) {
+		opacity: .4;
 	}
 
 	.ck-content .h-card {

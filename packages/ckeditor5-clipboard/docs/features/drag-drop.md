@@ -12,7 +12,7 @@ The drag and drop feature is implemented by the {@link module:clipboard/dragdrop
 
 ## Demo
 
-The sample below allows you to drag contacts from the list on the right-hand side to the editor on the left-hand side. They are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card).
+The sample below allows you to drag contacts from the list to the editor content. They are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card).
 
 {@snippet features/drag-drop}
 
@@ -27,7 +27,7 @@ CKEditor 5 supports dropping images from the file system by the {@link features/
 ## Installation
 
 <info-box info>
-	This feature is required by the clipboard plugin and is enabled by default in all official builds. The installation instructions are for developers interested in building their own custom rich-text editor.
+	This feature is enabled by default in all {@link builds/guides/overview ready-to-use editor builds} (a dependency of the {@link module:clipboard/clipboard~Clipboard} plugin). The installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:
