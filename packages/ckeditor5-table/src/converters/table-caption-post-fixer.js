@@ -40,9 +40,8 @@ function tableCaptionPostFixer( writer, model ) {
 		const positionParent = entry.position.parent;
 
 		if ( positionParent.is( 'element', 'table' ) || entry.name == 'table' ) {
-			const table = entry.name == 'table' ? entry.position.nodeAfter : entry.position.findAncestor( 'table' );
-			const captionsToMerge = Array.from( table.getChildren() )
-				.filter( child => child.is( 'element', 'caption' ) );
+			const table = entry.name == 'table' ? entry.position.nodeAfter : entry.position.parent;
+			const captionsToMerge = Array.from( table.getChildren() ).filter( child => child.is( 'element', 'caption' ) );
 			const firstCaption = captionsToMerge.shift();
 
 			if ( !firstCaption ) {

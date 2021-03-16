@@ -85,7 +85,7 @@ export default class TableWalker {
 	 * Can't be used together with `startColumn` and `endColumn`.
 	 * @param {Number} [options.startColumn=0] A column index from which this iterator should start. Can't be used together with `column`.
 	 * @param {Number} [options.endColumn] A column index at which this iterator should end. Can't be used together with `column`.
-	 * @param {Boolean} [options.includeAllSlots=false] Return values for spanned cells.
+	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
 	 */
 	constructor( table, options = {} ) {
 		/**
@@ -216,6 +216,7 @@ export default class TableWalker {
 			return { done: true };
 		}
 
+		// We step over current row when it is not a tableRow instance or we reached the end of it.
 		if ( !row.is( 'element', 'tableRow' ) || this._isOverEndColumn() ) {
 			return this._advanceToNextRow();
 		}
