@@ -41,7 +41,7 @@ export default class Resizer {
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {module:widget/widgetresize/sizeview} #_sizeUI
+		 * @member {module:widget/widgetresize/sizeview~SizeView} #_sizeView
 		 */
 
 		/**
@@ -153,7 +153,7 @@ export default class Resizer {
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
 
-		this._sizeUI._bindToState( this._options, this.state );
+		this._sizeView._bindToState( this._options, this.state );
 
 		this._initialViewWidth = this._options.viewElement.getStyle( 'width' );
 
@@ -307,7 +307,7 @@ export default class Resizer {
 	 * @protected
 	 */
 	_cleanup() {
-		this._sizeUI._dismiss();
+		this._sizeView._dismiss();
 
 		const editingView = this._options.editor.editing.view;
 
@@ -439,20 +439,18 @@ export default class Resizer {
 	}
 
 	/**
-	 * Sets up the {@link #_sizeUI} property and adds it to the passed `domElement`.
+	 * Sets up the {@link #_sizeView} property and adds it to the passed `domElement`.
 	 *
 	 * @private
 	 * @param {HTMLElement} domElement
 	 */
 	_appendSizeUI( domElement ) {
-		const sizeUI = new SizeView();
+		this._sizeView = new SizeView();
 
 		// Make sure icon#element is rendered before passing to appendChild().
-		sizeUI.render();
+		this._sizeView.render();
 
-		this._sizeUI = sizeUI;
-
-		domElement.appendChild( sizeUI.element );
+		domElement.appendChild( this._sizeView.element );
 	}
 
 	/**
