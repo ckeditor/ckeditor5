@@ -30,12 +30,12 @@ export default class DataSchema {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Map.<String, module:content-compatibility/dataschema~DataSchemaDefinition>} #_definitions
+		 * @member {Map.<String, module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+		 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>} #_definitions
 		 */
 		this._definitions = new Map();
 
-		// Add block elements.
-		this.register( {
+		this.registerBlockElement( {
 			model: '$htmlBlock',
 			allowChildren: '$block',
 			schema: {
@@ -44,7 +44,7 @@ export default class DataSchema {
 			}
 		} );
 
-		this.register( {
+		this.registerBlockElement( {
 			view: 'article',
 			model: 'htmlArticle',
 			schema: {
@@ -52,7 +52,7 @@ export default class DataSchema {
 			}
 		} );
 
-		this.register( {
+		this.registerBlockElement( {
 			view: 'section',
 			model: 'htmlSection',
 			schema: {
@@ -61,7 +61,7 @@ export default class DataSchema {
 		} );
 
 		// Add data list elements.
-		this.register( {
+		this.registerBlockElement( {
 			view: 'dl',
 			model: 'htmlDl',
 			schema: {
@@ -70,7 +70,7 @@ export default class DataSchema {
 			}
 		} );
 
-		this.register( {
+		this.registerBlockElement( {
 			model: '$htmlDatalist',
 			allowChildren: '$block',
 			schema: {
@@ -79,7 +79,7 @@ export default class DataSchema {
 			}
 		} );
 
-		this.register( {
+		this.registerBlockElement( {
 			view: 'dt',
 			model: 'htmlDt',
 			schema: {
@@ -87,7 +87,7 @@ export default class DataSchema {
 			}
 		} );
 
-		this.register( {
+		this.registerBlockElement( {
 			view: 'dd',
 			model: 'htmlDd',
 			schema: {
@@ -96,7 +96,7 @@ export default class DataSchema {
 		} );
 
 		// Add details elements.
-		this.register( {
+		this.registerBlockElement( {
 			view: 'details',
 			model: 'htmlDetails',
 			schema: {
@@ -104,7 +104,7 @@ export default class DataSchema {
 			}
 		} );
 
-		this.register( {
+		this.registerBlockElement( {
 			view: 'summary',
 			model: 'htmlSummary',
 			allowChildren: '$text',
@@ -113,27 +113,33 @@ export default class DataSchema {
 			}
 		} );
 
-		// Add inline elements.
-		this.register( {
+		this.registerInlineElement( {
 			view: 'span',
-			model: 'htmlSpan',
-			isInline: true
+			model: 'htmlSpan'
 		} );
 
-		this.register( {
+		this.registerInlineElement( {
 			view: 'cite',
-			model: 'htmlCite',
-			isInline: true
+			model: 'htmlCite'
 		} );
 	}
 
 	/**
-	 * Add new data schema definition.
+	 * Add new data schema definition for block element.
 	 *
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
-	register( definition ) {
-		this._definitions.set( definition.model, definition );
+	registerBlockElement( definition ) {
+		this._definitions.set( definition.model, { ...definition, isBlock: true } );
+	}
+
+	/**
+	 * Add new data schema definition for inline element.
+	 *
+	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 */
+	registerInlineElement( definition ) {
+		this._definitions.set( definition.model, { ...definition, isInline: true } );
 	}
 
 	/**
@@ -141,7 +147,8 @@ export default class DataSchema {
 	 *
 	 * @param {String|RegExp} viewName
 	 * @param {Boolean} [includeReferences] Indicates if this method should also include definitions of referenced models.
-	 * @returns {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>}
+	 * @returns {Set.<module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>}
 	 */
 	getDefinitionsForView( viewName, includeReferences ) {
 		const definitions = new Set();
@@ -164,7 +171,8 @@ export default class DataSchema {
 	 *
 	 * @private
 	 * @param {String|RegExp} viewName
-	 * @returns {Array.<module:content-compatibility/dataschema~DataSchemaDefinition>}
+	 * @returns {Array.<module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>}
 	 */
 	_getMatchingViewDefinitions( viewName ) {
 		return Array.from( this._definitions.values() )
@@ -176,7 +184,8 @@ export default class DataSchema {
 	 *
 	 * @private
 	 * @param {String} modelName Data schema model name.
-	 * @returns {Iterable.<module:content-compatibility/dataschema~DataSchemaDefinition>}
+	 * @returns {Iterable.<module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>}
 	 */
 	* _getReferences( modelName ) {
 		const { schema } = this._definitions.get( modelName );
@@ -219,12 +228,19 @@ function testViewName( pattern, viewName ) {
 }
 
 /**
- * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema}.
+ * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema} for block elements.
  *
- * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
+ * @typedef {Object} module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
  * @property {String} [view] Name of the view element.
  * @property {String} model Name of the model element.
  * @property {module:engine/model/schema~SchemaItemDefinition} schema The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
- * @property {Boolean} [isInline] Indicates if the element decribed by data schema definition is inline.
+ */
+
+/**
+ * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema} for inline elements.
+ *
+ * @typedef {Object} module:content-compatibility/dataschema~DataSchemaInlineElementDefinition
+ * @property {String} view Name of the view element.
+ * @property {String} model Name of the model attribute key.
  */

@@ -8,7 +8,7 @@
  */
 
 import { Matcher } from 'ckeditor5/src/engine';
-import { priorities, toArray } from 'ckeditor5/src/utils';
+import { priorities, toArray, CKEditorError } from 'ckeditor5/src/utils';
 
 import { cloneDeep } from 'lodash-es';
 
@@ -130,19 +130,32 @@ export default class DataFilter {
 
 	/**
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_registerElement( definition ) {
 		if ( definition.isInline ) {
 			this._defineInlineElement( definition );
-		} else {
+		} else if ( definition.isBlock ) {
 			this._defineBlockElement( definition );
+		} else {
+			/**
+			 * Only a definition marked as inline or block can be allowed.
+			 *
+			 * @error data-filter-invalid-definition-type
+			 */
+			throw new CKEditorError(
+				'data-filter-invalid-definition-type',
+				null,
+				{ definition }
+			);
 		}
 	}
 
 	/**
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_defineBlockElement( definition ) {
 		if ( this.editor.model.schema.isRegistered( definition.model ) ) {
@@ -160,7 +173,8 @@ export default class DataFilter {
 
 	/**
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_defineInlineElement( definition ) {
 		const schema = this.editor.model.schema;
@@ -178,7 +192,8 @@ export default class DataFilter {
 
 	/**
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_defineSchema( definition ) {
 		const schema = this.editor.model.schema;
@@ -198,7 +213,8 @@ export default class DataFilter {
 
 	/**
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_defineInlineElementConverters( definition ) {
 		const conversion = this.editor.conversion;
@@ -252,7 +268,8 @@ export default class DataFilter {
 
 	/**
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition}
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_defineBlockElementConverters( definition ) {
 		const conversion = this.editor.conversion;
