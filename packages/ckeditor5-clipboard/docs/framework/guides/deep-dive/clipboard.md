@@ -21,14 +21,40 @@ When the user pastes or drops content into the editor, the browser fires an even
 
 1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns that event into a synthetic {@link module:engine/view/document~Document#event:paste `view.Document#paste`} or {@link module:engine/view/document~Document#event:drop `view.Document#drop`}.
 2. Since the content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a very simillar effect, both events are turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
-3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:clipboard/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `Clipboard#inputTransformation`} event with the retrieved content.
-4. Finally, the clipboard feature listens to the `Clipboard#inputTransformation` event, takes the processed content and {@link module:engine/model/model~Model#insertContent inserts} it into the editor.
+3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:clipboard/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event with the retrieved content in the event data `content` property as a {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`}.
+4. Then, the clipboard feature listens to the `ClipboardPipeline#inputTransformation` event, takes the processed content, transforms it to the {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event with the transformed content in the event data `content` property as a {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
+5. Finally, the clipboard feature listens to the `ClipboardPipeline#contentInsertion` event, takes the model fragment and {@link module:engine/model/model~Model#insertContent inserts} it into the editor and stores the range which contains all the performed changes in the `resultRange` property of the event data.
 
-The clipboard feature listens to the `view.Document#clipboardInput` and `Clipboard#inputTransformation` events using low priority listeners. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior.
+The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using low priority listeners. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior.
+
+### Input pipeline events overview
+```plaintext
+ ┌──────────────────────┐          ┌──────────────────────┐
+ │     view.Document    │          │     view.Document    │
+ │         paste        │          │         drop         │
+ └───────────┬──────────┘          └───────────┬──────────┘
+             │                                 │
+             └────────────────┌────────────────┘
+                              │
+                    ┌─────────V────────┐
+                    │   view.Document  │   Retrieves text/html from data.dataTransfer
+                    │  clipboardInput  │   and processes it to view.DocumentFragment.
+                    └─────────┬────────┘
+                              │
+                  ┌───────────V───────────┐
+                  │   ClipboardPipeline   │   Converts view.DocumentFragment 
+                  │  inputTransformation  │   to model.DocumentFragment.
+                  └───────────┬───────────┘
+                              │
+                   ┌──────────V──────────┐
+                   │  ClipboardPipeline  │   Calls model.insertContent().
+                   │   contentInsertion  │
+                   └─────────────────────┘
+```
 
 ### Handling clipboard input differently
 
-By default the clipboard feature retrieves `text/html` or `text/plain` from the clipboard, normalizes that data a bit (e.g. cleans up the [mess with whitespaces](https://github.com/ckeditor/ckeditor5-clipboard/issues/2)), converts that to a {@link module:engine/view/documentfragment~DocumentFragment view `DocumentFragment`} and fires the `Clipboard#inputTransformation` event with that document fragment for further processing.
+By default the clipboard feature retrieves `text/html` or `text/plain` from the clipboard, normalizes that data a bit (e.g. cleans up the [mess with whitespaces](https://github.com/ckeditor/ckeditor5-clipboard/issues/2)), converts that to a {@link module:engine/view/documentfragment~DocumentFragment view `DocumentFragment`} and fires the `ClipboardPipeline#inputTransformation` event with that document fragment for further processing.
 
 The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event can be used to override this behavior. For example, you can use it to:
 
@@ -50,27 +76,24 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 		// Convert an RTF raw string to a view document fragment.
 		const viewContent = convertRtfStringToView( rtfContent );
 
-		// Just like the clipboard feature, trigger the inputTransformation event
+		// Pass the view fragment to the default clipboardInput handler
 		// to allow further processing of the content.
-		this.fire( 'inputTransformation', { content: viewContent, dataTransfer } );
-
-		editor.editing.view.scrollToTheSelection();
-		evt.stop();
+		data.content = viewContent;
 	} );
 	```
 
 ### Processing input content
 
-The {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `view.Document#inputTransformation`} event lets you process the content which is going to be inserted into the editor.
+The {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event lets you process the content which is going to be inserted into the editor.
 
-The default action is to {@link module:engine/model/model~Model#insertContent insert} the content (`data.content`, represented by a {@link module:engine/view/documentfragment~DocumentFragment}) to the editor if the data is not empty.
+The default action is to fire a {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event that will {@link module:engine/model/model~Model#insertContent insert} the content (`data.content`, represented by a {@link module:engine/view/documentfragment~DocumentFragment}) to the editor if the data is not empty.
 
 At this stage the pasted content can be processed by the features. For example, a feature that wants to transform the pasted text into a link can be implemented in this way:
 
 ```js
 const writer = new UpcastWriter( editor.editing.view.document );
 
-editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 	if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
 		const linkUrl = data.content.getChild( 0 ).data;
 
@@ -88,7 +111,7 @@ editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
 The default action (inserting the content into the editor) is performed by a low priority listener, so it can be overridden by a normal one. With the `lowest` priority you can also execute actions after the content was already inserted.
 
 ```js
-editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 	console.log( 'Content was inserted.' );
 }, { priority: 'lowest' } );
 ```
@@ -128,7 +151,7 @@ class PastePlainText extends Plugin {
 		editor.commands.add( 'pastePlainText', new PastePlainTextCommand( editor ) );
 
 		// Logic responsible for converting HTML to plain text.
-		const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+		const clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
 		const command = editor.commands.get( 'pastePlainText' );
 		const editingView = editor.editing.view;
 
@@ -139,11 +162,8 @@ class PastePlainText extends Plugin {
 
 			const dataTransfer = data.dataTransfer;
 			let content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
-			content = this.editor.data.htmlProcessor.toView( content );
-			clipboardPlugin.fire( 'inputTransformation', { content, dataTransfer } );
-			editingView.scrollToTheSelection();
-
-			evt.stop();
+			
+			data.content = this.editor.data.htmlProcessor.toView( content );
 		} );
 	}
 };
@@ -202,6 +222,21 @@ ClassicEditor
 
 The output pipeline is the equivalent of the input pipeline but for the copy and cut operations.
 It allows to process the content that will be then put into the clipboard or to override the whole process.
+
+### Output pipeline events overview
+```plaintext
+ ┌──────────────────────┐          ┌──────────────────────┐   Retrieves the selected 
+ │     view.Document    │          │     view.Document    │   model.DocumentFragment
+ │         copy         │          │          cut         │   and converts it to 
+ └───────────┬──────────┘          └───────────┬──────────┘   view.DocumentFragment.
+             │                                 │
+             └────────────────┌────────────────┘
+                              │
+                    ┌─────────V────────┐   Processes view.DocumentFragment  
+                    │   view.Document  │   to text/html and text/plain  
+                    │  clipboardOutput │   and stores results in data.dataTransfer.
+                    └──────────────────┘
+```
 
 ### 1. On {@link module:engine/view/document~Document#event:copy `view.Document#copy`} and {@link module:engine/view/document~Document#event:cut `view.Document#cut`}
 

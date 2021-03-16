@@ -28,6 +28,7 @@ export { default as setDataInElement } from './dom/setdatainelement';
 export { default as toUnit } from './dom/tounit';
 
 export * from './keyboard';
+export * from './language';
 export { default as Locale } from './locale';
 export { default as Collection } from './collection';
 export { default as first } from './first';

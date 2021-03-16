@@ -32,7 +32,7 @@ export default class MouseEventsObserver extends DomEventObserver {
 	constructor( view ) {
 		super( view );
 
-		this.domEventType = [ 'mousemove', 'mouseup', 'mouseleave' ];
+		this.domEventType = [ 'mousemove', 'mouseleave' ];
 	}
 
 	/**
@@ -42,20 +42,6 @@ export default class MouseEventsObserver extends DomEventObserver {
 		this.fire( domEvent.type, domEvent );
 	}
 }
-
-/**
- * Fired when the mouse button is released over one of the editables.
- *
- * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
- *
- * Note that this event is not available by default. To make it available,
- * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} needs to be added
- * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
- *
- * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
- * @event module:engine/view/document~Document#event:mouseup
- * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
- */
 
 /**
  * Fired when the mouse is moved over one of the editables.

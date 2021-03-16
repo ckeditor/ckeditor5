@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { MouseObserver } from 'ckeditor5/src/engine';
 import { Input, TwoStepCaretMovement, inlineHighlight, findAttributeRange } from 'ckeditor5/src/typing';
-import { Clipboard } from 'ckeditor5/src/clipboard';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { keyCodes } from 'ckeditor5/src/utils';
 
 import LinkCommand from './linkcommand';
@@ -46,7 +46,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	static get requires() {
 		// Clipboard is required for handling cut and paste events while typing over the link.
-		return [ TwoStepCaretMovement, Input, Clipboard ];
+		return [ TwoStepCaretMovement, Input, ClipboardPipeline ];
 	}
 
 	/**

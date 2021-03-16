@@ -75,7 +75,7 @@ export default class AutoImage extends Plugin {
 		// We need to listen on `Clipboard#inputTransformation` because we need to save positions of selection.
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
 		// into an image.
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange();
 
 			const leftLivePosition = LivePosition.fromPosition( firstRange.start );

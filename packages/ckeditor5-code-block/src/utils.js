@@ -118,6 +118,7 @@ export function getLeadingWhiteSpaces( textNode ) {
  *
  * @param {module:engine/model/writer~Writer} writer
  * @param {String} text The raw code text to be converted.
+ * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
 export function rawSnippetTextToModelDocumentFragment( writer, text ) {
 	const fragment = writer.createDocumentFragment();
@@ -131,6 +132,46 @@ export function rawSnippetTextToModelDocumentFragment( writer, text ) {
 			writer.appendElement( 'softBreak', fragment );
 		}
 	}
+
+	return fragment;
+}
+
+/**
+ * For a plain text containing the code (snippet), it returns a document fragment containing
+ * view text nodes separated by `<br>` elements (in place of new line characters "\n"), for instance:
+ *
+ * Input:
+ *
+ *		"foo()\n
+ *		bar()"
+ *
+ * Output:
+ *
+ *		<DocumentFragment>
+ *			"foo()"
+ *			<br/>
+ *			"bar()"
+ *		</DocumentFragment>
+ *
+ * @param {module:engine/view/upcastwriter~UpcastWriter} writer
+ * @param {String} text The raw code text to be converted.
+ * @returns {module:engine/view/documentfragment~DocumentFragment}
+ */
+export function rawSnippetTextToViewDocumentFragment( writer, text ) {
+	const fragment = writer.createDocumentFragment();
+	const textLines = text.split( '\n' );
+
+	const nodes = textLines.reduce( ( nodes, line, lineIndex ) => {
+		nodes.push( line );
+
+		if ( lineIndex < textLines.length - 1 ) {
+			nodes.push( writer.createElement( 'br' ) );
+		}
+
+		return nodes;
+	}, [] );
+
+	writer.appendChild( nodes, fragment );
 
 	return fragment;
 }
