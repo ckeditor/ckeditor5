@@ -42,8 +42,7 @@ export default class DataSchema {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Map.<String, module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-		 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>} #_definitions
+		 * @member {Map.<String, module:content-compatibility/dataschema~DataSchemaDefinition>} #_definitions
 		 */
 		this._definitions = new Map();
 
@@ -167,8 +166,7 @@ export default class DataSchema {
 	 *
 	 * @param {String|RegExp} viewName
 	 * @param {Boolean} [includeReferences] Indicates if this method should also include definitions of referenced models.
-	 * @returns {Set.<module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>}
+	 * @returns {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>}
 	 */
 	getDefinitionsForView( viewName, includeReferences ) {
 		const definitions = new Set();
@@ -191,8 +189,7 @@ export default class DataSchema {
 	 *
 	 * @private
 	 * @param {String|RegExp} viewName
-	 * @returns {Array.<module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>}
+	 * @returns {Array.<module:content-compatibility/dataschema~DataSchemaDefinition>}
 	 */
 	_getMatchingViewDefinitions( viewName ) {
 		return Array.from( this._definitions.values() )
@@ -204,8 +201,7 @@ export default class DataSchema {
 	 *
 	 * @private
 	 * @param {String} modelName Data schema model name.
-	 * @returns {Iterable.<module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition>}
+	 * @returns {Iterable.<module:content-compatibility/dataschema~DataSchemaDefinition>}
 	 */
 	* _getReferences( modelName ) {
 		const { modelSchema } = this._definitions.get( modelName );
@@ -248,13 +244,20 @@ function testViewName( pattern, viewName ) {
 }
 
 /**
+ * A base definition of {@link module:content-compatibility/dataschema~DataSchema data schema}.
+ *
+ * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
+ * @property {String} model Name of the model.
+ */
+
+/**
  * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema} for block elements.
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
  * @property {String} [view] Name of the view element.
- * @property {String} model Name of the model element.
  * @property {module:engine/model/schema~SchemaItemDefinition} modelSchema The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
+ * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
 
 /**
@@ -262,6 +265,6 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaInlineElementDefinition
  * @property {String} view Name of the view element.
- * @property {String} model Name of the model attribute key.
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
+ * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */

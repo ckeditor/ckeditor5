@@ -132,8 +132,7 @@ export default class DataFilter {
 	 * Registers element and attribute converters for the given data schema definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	_registerElement( definition ) {
 		if ( definition.isInline ) {
@@ -160,8 +159,7 @@ export default class DataFilter {
 	 * If the element model schema is already registered, this method will do nothing.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_defineBlockElement( definition ) {
 		if ( this.editor.model.schema.isRegistered( definition.model ) ) {
@@ -181,8 +179,7 @@ export default class DataFilter {
 	 * Extends `$text` model schema to allow the given definition model attribute and its properties.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_defineInlineElement( definition ) {
 		const schema = this.editor.model.schema;
@@ -202,8 +199,7 @@ export default class DataFilter {
 	 * Registers model schema definition for the given block element definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_defineBlockElementSchema( definition ) {
 		const schema = this.editor.model.schema;
@@ -225,8 +221,7 @@ export default class DataFilter {
 	 * Registers attribute converters for the given inline element definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_defineInlineElementConverters( definition ) {
 		const conversion = this.editor.conversion;
@@ -280,8 +275,7 @@ export default class DataFilter {
 	 * Registers attribute converters for the given block element definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
-	 * |module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_defineBlockElementConverters( definition ) {
 		const conversion = this.editor.conversion;
