@@ -154,7 +154,7 @@ export default class Autosave extends Plugin {
 			if ( !this._saveCallbacks.length ) {
 				return;
 			}
-			
+
 			// If the change is from another collaborative session from another user
 			// don't autosave.
 			if ( batch.type === 'transparent') {
