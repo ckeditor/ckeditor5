@@ -164,11 +164,9 @@ export default class DataFilter {
 
 		this._defineSchema( definition );
 
-		if ( !definition.view ) {
-			return;
+		if ( definition.view ) {
+			this._defineBlockElementConverters( definition );
 		}
-
-		this._defineBlockElementConverters( definition );
 	}
 
 	/**
@@ -183,9 +181,9 @@ export default class DataFilter {
 			allowAttributes: definition.model
 		} );
 
-		schema.setAttributeProperties( definition.model, {
-			copyOnEnter: true
-		} );
+		if ( definition.attributeProperties ) {
+			schema.setAttributeProperties( definition.model, definition.attributeProperties );
+		}
 
 		this._defineInlineElementConverters( definition );
 	}
@@ -225,7 +223,7 @@ export default class DataFilter {
 
 		conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-				const viewAttributes = this._matchAndConsumeAttributes( data.viewItem, conversionApi );
+				const viewAttributes = this._matchAndConsumeAllowedAttributes( data.viewItem, conversionApi );
 
 				// Since we are converting to attribute we need a range on which we will set the attribute.
 				// If the range is not created yet, we will create it.
@@ -281,7 +279,7 @@ export default class DataFilter {
 			view: viewName,
 			model: ( viewElement, conversionApi ) => {
 				const element = conversionApi.writer.createElement( modelName );
-				const viewAttributes = this._matchAndConsumeAttributes( viewElement, conversionApi );
+				const viewAttributes = this._matchAndConsumeAllowedAttributes( viewElement, conversionApi );
 
 				if ( viewAttributes ) {
 					conversionApi.writer.setAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes, element );
@@ -327,9 +325,7 @@ export default class DataFilter {
 		// Consumes disallowed element attributes to prevent them of being processed by other converters.
 		conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-				for ( const match of matchAll( data.viewItem, this._disallowedAttributes ) ) {
-					conversionApi.consumable.consume( data.viewItem, match.match );
-				}
+				consumeAttributeMatches( data.viewItem, conversionApi, this._disallowedAttributes );
 			}, { priority: 'high' } );
 		} );
 	}
@@ -341,18 +337,12 @@ export default class DataFilter {
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 	 * @returns {Object} [result]
-	 * @returns {Array.<String>} result.attributes Array with matched attribute names.
-	 * @returns {Array.<String>} result.classes Array with matched class names.
-	 * @returns {Array.<String>} result.styles Array with matched style names.
+	 * @returns {Set.<Object>} result.attributes Set with matched attribute names.
+	 * @returns {Set.<Object>} result.styles Set with matched style names.
+	 * @returns {Set.<String>} result.classes Set with matched class names.
 	 */
-	_matchAndConsumeAttributes( viewElement, { consumable } ) {
-		const matches = [];
-		for ( const match of matchAll( viewElement, this._allowedAttributes ) ) {
-			if ( consumable.consume( viewElement, match.match ) ) {
-				matches.push( match );
-			}
-		}
-
+	_matchAndConsumeAllowedAttributes( viewElement, conversionApi ) {
+		const matches = consumeAttributeMatches( viewElement, conversionApi, this._allowedAttributes );
 		const { attributes, styles, classes } = mergeMatchResults( matches );
 		const viewAttributes = {};
 
@@ -374,6 +364,26 @@ export default class DataFilter {
 
 		return viewAttributes;
 	}
+}
+
+// Consumes attributes matched for the given `rules`.
+//
+// Returns sucessfully consumed attribute matches.
+//
+// @private
+// @param {module:engine/view/element~Element} viewElement
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {Map.<String, module:engine/view/matcher~Matcher>} rules
+// @returns {Array.<Object>} Array with match information about found attributes.
+function consumeAttributeMatches( viewElement, { consumable }, rules ) {
+	const matches = [];
+	for ( const match of matchAll( viewElement, rules ) ) {
+		if ( consumable.consume( viewElement, match.match ) ) {
+			matches.push( match );
+		}
+	}
+
+	return matches;
 }
 
 // Helper function for downcast converter. Sets attributes on the given view element.
@@ -430,11 +440,11 @@ function matchAll( viewElement, rules ) {
 // Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
 //
 // @private
-// @param {Array} matches
+// @param {Array.<Object>} matches
 // @returns {Object} result
-// @returns {Set.<String>} result.attributes Set with matched attribute names.
+// @returns {Set.<Object>} result.attributes Set with matched attribute names.
+// @returns {Set.<Object>} result.styles Set with matched style names.
 // @returns {Set.<String>} result.classes Set with matched class names.
-// @returns {Set.<String>} result.styles Set with matched style names.
 function mergeMatchResults( matches ) {
 	const matchResult = {
 		attributes: new Set(),
