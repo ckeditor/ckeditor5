@@ -115,12 +115,18 @@ export default class DataSchema {
 
 		this.registerInlineElement( {
 			view: 'span',
-			model: 'htmlSpan'
+			model: 'htmlSpan',
+			attributeProperties: {
+				copyOnEnter: true
+			}
 		} );
 
 		this.registerInlineElement( {
 			view: 'cite',
-			model: 'htmlCite'
+			model: 'htmlCite',
+			attributeProperties: {
+				copyOnEnter: true
+			}
 		} );
 	}
 
@@ -243,4 +249,5 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaInlineElementDefinition
  * @property {String} view Name of the view element.
  * @property {String} model Name of the model attribute key.
+ * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
  */
