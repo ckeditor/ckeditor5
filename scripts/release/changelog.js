@@ -21,7 +21,7 @@ if ( !fs.existsSync( CKEDITOR5_INTERNAL_PATH ) ) {
 }
 
 if ( !fs.existsSync( COLLABORATION_FEATURES_PATH ) ) {
-	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
+	throw new Error( `The script assumes that the directory "${ COLLABORATION_FEATURES_PATH }" exists.` );
 }
 
 Promise.resolve()
