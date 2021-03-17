@@ -13,13 +13,25 @@ import { toArray } from 'ckeditor5/src/utils';
  * Holds representation of the extended HTML document type definitions to be used by the
  * editor in content compatibility support.
  *
- * Data schema is represented by data schema definitions. To add new definition, use {@link #register} method:
+ * Data schema is represented by data schema definitions.
  *
- *		dataSchema.register( {
+ * To add new definition for block element, use {@link #registerBlockElement} method:
+ *
+ *		dataSchema.registerBlockElement( {
  *			view: 'section',
  *			model: 'my-section',
  *			modelSchema: {
  *				inheritAllFrom: '$block'
+ *			}
+ *		} );
+ *
+ * To add new definition for inline element, use {@link #registerInlineElement} method:
+ *
+ *		dataSchema.registerInlineElement( {
+ *			view: 'span',
+ *			model: 'my-span',
+ *			attributeProperties: {
+ *				copyOnEnter: true
  *			}
  *		} );
  */
@@ -35,6 +47,7 @@ export default class DataSchema {
 		 */
 		this._definitions = new Map();
 
+		// Block elements.
 		this.registerBlockElement( {
 			model: '$htmlBlock',
 			allowChildren: '$block',
@@ -113,6 +126,7 @@ export default class DataSchema {
 			}
 		} );
 
+		// Inline elements.
 		this.registerInlineElement( {
 			view: 'span',
 			model: 'htmlSpan',
