@@ -35,6 +35,27 @@ describe( 'DataSchema', () => {
 				isInline: true
 			} ] );
 		} );
+
+		it( 'should include attribute properties', () => {
+			dataSchema.registerInlineElement( {
+				model: 'htmlDef',
+				view: 'def',
+				attributeProperties: {
+					copyOnEnter: true
+				}
+			} );
+
+			const result = dataSchema.getDefinitionsForView( 'def' );
+
+			expect( Array.from( result ) ).to.deep.equal( [ {
+				model: 'htmlDef',
+				view: 'def',
+				attributeProperties: {
+					copyOnEnter: true
+				},
+				isInline: true
+			} ] );
+		} );
 	} );
 
 	describe( 'registerBlockElement', () => {
