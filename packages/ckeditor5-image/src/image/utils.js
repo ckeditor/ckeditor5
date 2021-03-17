@@ -60,6 +60,26 @@ export function getSelectedImageWidget( selection ) {
 }
 
 /**
+ * Returns a image widget editing view element if one is among the selection's ancestors.
+ *
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {module:engine/view/element~Element|null}
+ */
+export function getImageWidgetAncestor( selection ) {
+	let parent = selection.getFirstPosition().parent;
+
+	while ( parent ) {
+		if ( parent.is( 'element' ) && isImageWidget( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+
+	return null;
+}
+
+/**
  * Checks if the provided model element is an `image`.
  *
  * @protected
