@@ -28,10 +28,8 @@ Promise.resolve()
 	.then( () => devEnv.generateChangelogForMonoRepository( {
 		cwd: process.cwd(),
 		packages: 'packages',
-		// TODO: Restore the "release" branch.
-		releaseBranch: 'i/ckeditor5-internal/652',
+		releaseBranch: 'release',
 		highlightsPlaceholder: true,
-		collaborationFeatures: true,
 		transformScope: name => {
 			if ( name === 'ckeditor5' ) {
 				return 'https://www.npmjs.com/package/ckeditor5';
@@ -51,16 +49,12 @@ Promise.resolve()
 			{
 				cwd: CKEDITOR5_INTERNAL_PATH,
 				packages: 'packages',
-				skipLinks: true,
-				// TODO: Remove the single line below.
-				releaseBranch: 'master'
+				skipLinks: true
 			},
 			{
 				cwd: COLLABORATION_FEATURES_PATH,
 				packages: 'packages',
-				skipLinks: true,
-				// TODO: Remove the single line below.
-				releaseBranch: 'master'
+				skipLinks: true
 			}
 		]
 	} ) )
