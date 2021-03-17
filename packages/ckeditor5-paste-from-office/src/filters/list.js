@@ -160,7 +160,7 @@ function findAllItemLikeElements( documentFragment, writer ) {
 // If it cannot be adjusted, the `null` value is returned.
 function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
-	const listStyleTypeRegex = /mso-level-number-format:([^;]*);/gi;
+	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
@@ -321,9 +321,9 @@ function getListItemData( element ) {
 	const listStyle = element.getStyle( 'mso-list' );
 
 	if ( listStyle ) {
-		const idMatch = listStyle.match( /(^|\s+)l(\d+)/i );
-		const orderMatch = listStyle.match( /\s*lfo(\d+)/i );
-		const indentMatch = listStyle.match( /\s*level(\d+)/i );
+		const idMatch = listStyle.match( /(^|\s{1,100})l(\d+)/i );
+		const orderMatch = listStyle.match( /\s{0,100}lfo(\d+)/i );
+		const indentMatch = listStyle.match( /\s{0,100}level(\d+)/i );
 
 		if ( idMatch && orderMatch && indentMatch ) {
 			data.id = idMatch[ 2 ];
