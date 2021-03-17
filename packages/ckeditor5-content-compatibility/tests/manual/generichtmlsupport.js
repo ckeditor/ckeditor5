@@ -33,7 +33,7 @@ class ExtendHTMLSupport extends Plugin {
 		// Extend schema with custom `xyz` element.
 		dataSchema.registerBlockElement( {
 			view: 'xyz',
-			model: 'ghsXyz',
+			model: 'htmlXyz',
 			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
 			}
