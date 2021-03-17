@@ -31,11 +31,11 @@ class ExtendHTMLSupport extends Plugin {
 		const dataSchema = new DataSchema();
 
 		// Extend schema with custom `xyz` element.
-		dataSchema.register( {
+		dataSchema.registerBlockElement( {
 			view: 'xyz',
 			model: 'ghsXyz',
-			schema: {
-				inheritAllFrom: '$ghsBlock'
+			modelSchema: {
+				inheritAllFrom: '$htmlBlock'
 			}
 		} );
 
