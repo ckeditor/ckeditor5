@@ -25,6 +25,7 @@ export { default as secureSourceElement } from './editor/utils/securesourceeleme
 export { default as PendingActions } from './pendingactions';
 
 import cancel from './../theme/icons/cancel.svg';
+import caption from './../theme/icons/caption.svg';
 import check from './../theme/icons/check.svg';
 import eraser from './../theme/icons/eraser.svg';
 import lowVision from './../theme/icons/low-vision.svg';
@@ -51,6 +52,7 @@ import threeVerticalDots from './../theme/icons/three-vertical-dots.svg';
 
 export const icons = {
 	cancel,
+	caption,
 	check,
 	eraser,
 	lowVision,

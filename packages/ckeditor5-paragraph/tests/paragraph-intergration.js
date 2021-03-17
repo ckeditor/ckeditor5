@@ -4,7 +4,7 @@
  */
 
 import Paragraph from '../src/paragraph';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -18,10 +18,10 @@ describe( 'Paragraph feature – integration', () => {
 	describe( 'with clipboard', () => {
 		it( 'pastes h1+h2+p as p+p+p when heading feature is not present', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard ] } )
+				.create( { plugins: [ Paragraph, ClipboardPipeline ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
+					const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
@@ -38,10 +38,10 @@ describe( 'Paragraph feature – integration', () => {
 		// Explainer: the heading feature is configured to handle h1-h4 elements, so h5 has no handler.
 		it( 'pastes h1+h2+h5+p as h1+h2+p+p when heading feature is present', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard, HeadingEditing ] } )
+				.create( { plugins: [ Paragraph, ClipboardPipeline, HeadingEditing ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
+					const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
@@ -57,10 +57,10 @@ describe( 'Paragraph feature – integration', () => {
 
 		it( 'pastes ul>li+li as p+p when list feature is not present', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard ] } )
+				.create( { plugins: [ Paragraph, ClipboardPipeline ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
+					const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
@@ -76,10 +76,10 @@ describe( 'Paragraph feature – integration', () => {
 		// handle the li element.
 		it( 'pastes ul>li>h2+h3+p as h2+h3+p when heading feature is present', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard, HeadingEditing ] } )
+				.create( { plugins: [ Paragraph, ClipboardPipeline, HeadingEditing ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
+					const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
@@ -98,10 +98,10 @@ describe( 'Paragraph feature – integration', () => {
 		// See 'should convert ul>li>ul>li+li (in clipboard holder)' in clipboard.js.
 		it( 'pastes ul>li>ul>li+li', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard ] } )
+				.create( { plugins: [ Paragraph, ClipboardPipeline ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
+					const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
@@ -120,10 +120,10 @@ describe( 'Paragraph feature – integration', () => {
 		// See 'should convert ul>li>p,text (in clipboard holder)' in clipboard.js.
 		it( 'pastes ul>li>p,text', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard ] } )
+				.create( { plugins: [ Paragraph, ClipboardPipeline ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
+					const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
