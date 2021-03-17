@@ -150,14 +150,14 @@ export default class Autosave extends Plugin {
 
 		this._pendingActions = editor.plugins.get( PendingActions );
 
-		this.listenTo( doc, 'change:data', (_e, batch) => {
+		this.listenTo( doc, 'change:data', ( _e, batch ) => {
 			if ( !this._saveCallbacks.length ) {
 				return;
 			}
 
 			// If the change is from another collaborative session from another user
 			// don't autosave.
-			if ( batch.type === 'transparent') {
+			if ( batch.type === 'transparent' ) {
 				return;
 			}
 
