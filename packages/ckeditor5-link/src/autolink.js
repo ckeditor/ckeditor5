@@ -42,7 +42,7 @@ const URL_REG_EXP = new RegExp(
 					// Host & domain names.
 					'(?![-_])(?:[-_a-z0-9\\u00a1-\\uffff]{1,63}\\.)+' +
 					// TLD identifier name.
-					'(?:[a-z\\u00a1-\\uffff]{2,})' +
+					'(?:[a-z\\u00a1-\\uffff]{2,63})' +
 				')' +
 			')' +
 			// port number (optional)
@@ -55,9 +55,9 @@ const URL_REG_EXP = new RegExp(
 		'(' +
 			'(www.|(\\S+@))' +
 			// Host & domain names.
-			'((?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.))+' +
+			'(?![-_])(?:[-_a-z0-9\\u00a1-\\uffff]{1,63}\\.)+' +
 			// TLD identifier name.
-			'(?:[a-z\\u00a1-\\uffff]{2,})' +
+			'(?:[a-z\\u00a1-\\uffff]{2,63})' +
 		')' +
 	')$', 'i' );
 
