@@ -255,8 +255,10 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
  * @property {String} [view] Name of the view element.
- * @property {module:engine/model/schema~SchemaItemDefinition} modelSchema The model schema item definition describing registered model.
+ * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
+ * @property {Boolean} isBlock Indicates that the definition describes block element.
+ * Set by {@link @link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
 
@@ -266,5 +268,7 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaInlineElementDefinition
  * @property {String} view Name of the view element.
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
+ * @property {Boolean} isInline Indicates that the definition descibes inline element.
+ * Set by {@link @link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
