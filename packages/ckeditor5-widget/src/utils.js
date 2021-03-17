@@ -124,14 +124,45 @@ export function toWidget( element, writer, options = {} ) {
 		addSelectionHandle( element, writer );
 	}
 
-	setHighlightHandling(
-		element,
-		writer,
-		( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
-		( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
-	);
+	setHighlightHandling( element, writer, addHighlight, removeHighlight );
 
 	return element;
+}
+
+// Default handler for adding a highlight on a widget.
+// It adds CSS class and attributes basing on the given highlight descriptor.
+//
+// @param {module:engine/view/element~Element} element
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+function addHighlight( element, descriptor, writer ) {
+	if ( descriptor.classes ) {
+		writer.addClass( toArray( descriptor.classes ), element );
+	}
+
+	if ( descriptor.attributes ) {
+		for ( const key in descriptor.attributes ) {
+			writer.setAttribute( key, descriptor.attributes[ key ], element );
+		}
+	}
+}
+
+// Default handler for removing a highlight from a widget.
+// It removes CSS class and attributes basing on the given highlight descriptor.
+//
+// @param {module:engine/view/element~Element} element
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+function removeHighlight( element, descriptor, writer ) {
+	if ( descriptor.classes ) {
+		writer.removeClass( toArray( descriptor.classes ), element );
+	}
+
+	if ( descriptor.attributes ) {
+		for ( const key in descriptor.attributes ) {
+			writer.removeAttribute( key, element );
+		}
+	}
 }
 
 /**

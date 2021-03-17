@@ -95,7 +95,7 @@ const regex = new RegExp(
 	/\b(?:(?:https?|ftp):\/\/|www\.)/.source +
 
 	// Domain name.
-	/(?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.)+(?:[a-z\u00a1-\uffff]{2,})/.source +
+	/(?![-_])(?:[-_a-z0-9\u00a1-\uffff]{1,63}\.)+(?:[a-z\u00a1-\uffff]{2,63})/.source +
 
 	// The rest.
 	/(?:[^\s<>]*)/.source,

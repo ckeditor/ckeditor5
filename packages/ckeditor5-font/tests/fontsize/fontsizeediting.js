@@ -76,7 +76,7 @@ describe( 'FontSizeEditing', () => {
 								'10px',
 								12,
 								{
-									model: 14,
+									model: '14px',
 									title: '14px'
 								}
 							]
