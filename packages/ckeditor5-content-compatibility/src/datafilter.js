@@ -237,7 +237,7 @@ export default class DataFilter {
 						// Node's children are converted recursively, so node can already include model attribute.
 						// We want to extend it, not replace.
 						const nodeAttributes = node.getAttribute( attributeKey );
-						const attributesToAdd = mergeAttributes( viewAttributes || {}, nodeAttributes || {} );
+						const attributesToAdd = mergeViewElementAttributes( viewAttributes || {}, nodeAttributes || {} );
 
 						conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 					}
@@ -255,7 +255,7 @@ export default class DataFilter {
 				const { writer } = conversionApi;
 				const viewElement = writer.createAttributeElement( viewName );
 
-				setAttributesOn( writer, attributeValue, viewElement );
+				setViewElementAttributes( writer, attributeValue, viewElement );
 
 				return viewElement;
 			}
@@ -308,7 +308,7 @@ export default class DataFilter {
 				const viewWriter = conversionApi.writer;
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-				setAttributesOn( viewWriter, viewAttributes, viewElement );
+				setViewElementAttributes( viewWriter, viewAttributes, viewElement );
 			} );
 		} );
 	}
@@ -377,6 +377,7 @@ export default class DataFilter {
 // @returns {Array.<Object>} Array with match information about found attributes.
 function consumeAttributeMatches( viewElement, { consumable }, rules ) {
 	const matches = [];
+
 	for ( const match of matchAll( viewElement, rules ) ) {
 		if ( consumable.consume( viewElement, match.match ) ) {
 			matches.push( match );
@@ -392,7 +393,7 @@ function consumeAttributeMatches( viewElement, { consumable }, rules ) {
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {Object} viewAttributes
 // @param {module:engine/view/element~Element} viewElement
-function setAttributesOn( writer, viewAttributes, viewElement ) {
+function setViewElementAttributes( writer, viewAttributes, viewElement ) {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.setAttribute( key, value, viewElement );
@@ -485,15 +486,15 @@ function iterableToObject( iterable, getValue ) {
 // @param {Object} oldValue
 // @param {Object} newValue
 // @returns {Object}
-function mergeAttributes( oldValue, newValue ) {
+function mergeViewElementAttributes( oldValue, newValue ) {
 	const result = cloneDeep( oldValue );
 
 	for ( const key in newValue ) {
 		// Merge classes.
 		if ( Array.isArray( newValue[ key ] ) ) {
 			result[ key ] = Array.from( new Set( [ ...oldValue[ key ], ...newValue[ key ] ] ) );
-		} 
-		
+		}
+
 		// Merge attributes or styles.
 		else {
 			result[ key ] = { ...oldValue[ key ], ...newValue[ key ] };
