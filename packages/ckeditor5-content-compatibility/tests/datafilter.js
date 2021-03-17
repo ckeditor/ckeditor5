@@ -8,6 +8,8 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Font from '@ckeditor/ckeditor5-font/src/font';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import DataSchema from '../src/dataschema';
@@ -15,6 +17,8 @@ import DataFilter from '../src/datafilter';
 
 describe( 'DataFilter', () => {
 	let editor, model, dataFilter, dataSchema, element;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -678,6 +682,57 @@ describe( 'DataFilter', () => {
 				}
 			} );
 		} );
+
+		describe( 'attribute properties', () => {
+			it( 'should set if given', () => {
+				dataSchema.registerInlineElement( {
+					view: 'xyz',
+					model: 'htmlXyz',
+					attributeProperties: {
+						copyOnEnter: true
+					}
+				} );
+
+				dataFilter.allowElement( { name: 'xyz' } );
+
+				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).to.deep.equal( { copyOnEnter: true } );
+			} );
+
+			it( 'should not set if missing', () => {
+				dataSchema.registerInlineElement( {
+					view: 'xyz',
+					model: 'htmlXyz'
+				} );
+
+				dataFilter.allowElement( { name: 'xyz' } );
+
+				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).to.deep.equal( {} );
+			} );
+		} );
+
+		it( 'should not set attribute if disallowed by schema', () => {
+			editor.model.schema.addAttributeCheck( ( context, attributeName ) => {
+				if ( context.endsWith( '$text' ) && attributeName === 'htmlXyz' ) {
+					return false;
+				}
+			} );
+
+			dataSchema.registerInlineElement( {
+				view: 'xyz',
+				model: 'htmlXyz',
+				attributeProperties: {
+					copyOnEnter: true
+				}
+			} );
+
+			dataFilter.allowElement( { name: 'xyz' } );
+
+			editor.setData( '<p><xyz>foobar</xyz></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			editor.getData( '<p>foobar</p>' );
+		} );
 	} );
 
 	it( 'should correctly resolve attributes nesting order', () => {
@@ -733,6 +788,19 @@ describe( 'DataFilter', () => {
 		} );
 
 		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span class="foo bar">foobar</span></span></p>' );
+	} );
+
+	it( 'should throw error if definition has no specified element type', () => {
+		const definition = {
+			view: 'xyz',
+			model: 'htmlXyz'
+		};
+
+		sinon.stub( dataSchema, 'getDefinitionsForView' ).returns( new Set( [ definition ] ) );
+
+		expectToThrowCKEditorError( () => {
+			dataFilter.allowElement( { name: 'xyz' } );
+		}, /data-filter-invalid-definition-type/, null, definition );
 	} );
 
 	function getModelDataWithAttributes( model, options ) {

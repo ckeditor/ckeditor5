@@ -149,7 +149,7 @@ export default class DataFilter {
 			throw new CKEditorError(
 				'data-filter-invalid-definition-type',
 				null,
-				{ definition }
+				definition
 			);
 		}
 	}
