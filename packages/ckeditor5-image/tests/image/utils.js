@@ -13,8 +13,9 @@ import {
 	toImageWidget,
 	isImageWidget,
 	getSelectedImageWidget,
-	isImage,
-	isImageInline,
+	_isImage,
+	_isInlineImage,
+	_isBlockImage,
 	isImageAllowed,
 	insertImage,
 	getViewImageFromWidget
@@ -105,41 +106,78 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'isImage()', () => {
-		it( 'should return true for image element', () => {
+	describe( '_isImage()', () => {
+		it( 'should return true for the block image element', () => {
 			const image = new ModelElement( 'image' );
 
-			expect( isImage( image ) ).to.be.true;
+			expect( _isImage( image ) ).to.be.true;
+		} );
+
+		it( 'should return true for the inline image element', () => {
+			const image = new ModelElement( 'imageInline' );
+
+			expect( _isImage( image ) ).to.be.true;
 		} );
 
 		it( 'should return false for different elements', () => {
 			const image = new ModelElement( 'foo' );
 
-			expect( isImage( image ) ).to.be.false;
+			expect( _isImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return false for null and undefined', () => {
-			expect( isImage( null ) ).to.be.false;
-			expect( isImage( undefined ) ).to.be.false;
+			expect( _isImage( null ) ).to.be.false;
+			expect( _isImage( undefined ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'isInlineImage()', () => {
-		it( 'should return true for inline image element', () => {
+	describe( '_isInlineImage()', () => {
+		it( 'should return true for the inline image element', () => {
 			const image = new ModelElement( 'imageInline' );
 
-			expect( isImageInline( image ) ).to.be.true;
+			expect( _isInlineImage( image ) ).to.be.true;
+		} );
+
+		it( 'should return false for the block image element', () => {
+			const image = new ModelElement( 'image' );
+
+			expect( _isInlineImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return false for different elements', () => {
 			const image = new ModelElement( 'foo' );
 
-			expect( isImageInline( image ) ).to.be.false;
+			expect( _isInlineImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return false for null and undefined', () => {
-			expect( isImageInline( null ) ).to.be.false;
-			expect( isImageInline( undefined ) ).to.be.false;
+			expect( _isInlineImage( null ) ).to.be.false;
+			expect( _isInlineImage( undefined ) ).to.be.false;
+		} );
+	} );
+
+	describe( '_isBlockImage()', () => {
+		it( 'should return false for the inline image element', () => {
+			const image = new ModelElement( 'imageInline' );
+
+			expect( _isBlockImage( image ) ).to.be.false;
+		} );
+
+		it( 'should return true for the block image element', () => {
+			const image = new ModelElement( 'image' );
+
+			expect( _isBlockImage( image ) ).to.be.true;
+		} );
+
+		it( 'should return false for different elements', () => {
+			const image = new ModelElement( 'foo' );
+
+			expect( _isBlockImage( image ) ).to.be.false;
+		} );
+
+		it( 'should return false for null and undefined', () => {
+			expect( _isBlockImage( null ) ).to.be.false;
+			expect( _isBlockImage( undefined ) ).to.be.false;
 		} );
 	} );
 

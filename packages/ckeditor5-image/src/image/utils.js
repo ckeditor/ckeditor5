@@ -66,7 +66,7 @@ export function getSelectedImageWidget( selection ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isImageBlock( modelElement ) {
+export function _isBlockImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'image' );
 }
 
@@ -77,7 +77,7 @@ export function isImageBlock( modelElement ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isImageInline( modelElement ) {
+export function _isInlineImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'imageInline' );
 }
 
@@ -88,8 +88,8 @@ export function isImageInline( modelElement ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isImage( modelElement ) {
-	return isImageInline( modelElement ) || isImageBlock( modelElement );
+export function _isImage( modelElement ) {
+	return _isInlineImage( modelElement ) || _isBlockImage( modelElement );
 }
 
 /**

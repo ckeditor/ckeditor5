@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import ImageInsertPanelView from './ui/imageinsertpanelview';
 import { prepareIntegrations } from './utils';
 
-import { isImage } from '../image/utils';
+import { _isImage } from '../image/utils';
 
 /**
  * The image insert dropdown plugin.
@@ -107,7 +107,7 @@ export default class ImageInsertUI extends Plugin {
 			if ( dropdownView.isOpen ) {
 				imageInsertView.focus();
 
-				if ( isImage( selectedElement ) ) {
+				if ( _isImage( selectedElement ) ) {
 					imageInsertView.imageURLInputValue = selectedElement.getAttribute( 'src' );
 					insertButtonView.label = t( 'Update' );
 					insertImageViaUrlForm.label = t( 'Update image URL' );
@@ -137,7 +137,7 @@ export default class ImageInsertUI extends Plugin {
 		function onSubmit() {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
-			if ( isImage( selectedElement ) ) {
+			if ( _isImage( selectedElement ) ) {
 				editor.model.change( writer => {
 					writer.setAttribute( 'src', imageInsertView.imageURLInputValue, selectedElement );
 					writer.removeAttribute( 'srcset', selectedElement );
