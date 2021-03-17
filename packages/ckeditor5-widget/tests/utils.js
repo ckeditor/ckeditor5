@@ -74,7 +74,7 @@ describe( 'widget utils', () => {
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
-		it( 'should set default highlight handling methods', () => {
+		it( 'should set default highlight handling methods - CSS class', () => {
 			toWidget( element, writer );
 
 			const set = element.getCustomProperty( 'addHighlight' );
@@ -106,6 +106,24 @@ describe( 'widget utils', () => {
 			remove( element, 'highlight', writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 			expect( element.hasClass( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should set default highlight handling methods - attributes', () => {
+			toWidget( element, writer );
+
+			const set = element.getCustomProperty( 'addHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+
+			set( element, { priority: 1, attributes: { foo: 'bar', abc: 'xyz' }, id: 'highlight' }, writer );
+			expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( element.getAttribute( 'abc' ) ).to.equal( 'xyz' );
+
+			remove( element, 'highlight', writer );
+			expect( element.hasAttribute( 'foo' ) ).to.be.false;
+			expect( element.hasAttribute( 'abc' ) ).to.be.false;
 		} );
 
 		it( 'should add element a selection handle to widget if hasSelectionHandle=true is passed', () => {

@@ -29,7 +29,7 @@ To test how Paste from Office works, download the [sample Word document](../../a
 {@snippet features/paste-from-office}
 
 ## Related features
- 
+
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
@@ -64,7 +64,6 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-
 ## Support for other applications
 
 At the current stage, the focus of the `@ckeditor/ckeditor5-paste-from-office` package is on supporting content that comes from Microsoft Word and {@link features/paste-from-google-docs Google Docs}. However, it does not mean that pasting from other similar applications (such as Microsoft Excel) is not supported.
@@ -73,10 +72,18 @@ By default, CKEditor 5 will support pasting rich-text content from these applica
 
 You can find more information regarding compatibility with other applications in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1184#issuecomment-409828069).
 
-If you think that support for any of the applications needs improvements, please add 👍 and comments in the following issues:
+If you think that support for any of the applications needs improvements, please add 👍&nbsp; and comments in the following issues:
 
 * [Support pasting from Excel](https://github.com/ckeditor/ckeditor5/issues/2513).
 * [Support pasting from Libre Office](https://github.com/ckeditor/ckeditor5/issues/2520).
 * [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
+
+## Known issues
+
+If the pasted document contains both images and styled text (e.g. headings), it may happen that the images are not pasted properly. Unfortunately, for some operating system, browser and Word versions the image data is not available in the clipboard in this case.
+
+It is advised to try and paste the image separately from the body of the text if this error occurs.
+
+If the image is represented in the Word content by the VML syntax (like this one: `<v:shape><v:imagedata src="...."/></v:shape>`), it will not be pasted either as this notation is not supported by CKEditor 5. If you'd like to see this feature implemented, add a 👍&nbsp; reaction to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/9245).
