@@ -227,16 +227,16 @@ export default class DataFilter {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 				const viewAttributes = this._matchAndConsumeAttributes( data.viewItem, conversionApi );
 
-				// Since we are converting to attribute we need an range on which we will set the attribute.
+				// Since we are converting to attribute we need a range on which we will set the attribute.
 				// If the range is not created yet, we will create it.
 				if ( !data.modelRange ) {
 					data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 				}
 
-				// Set attribute on each item in range according to Schema.
+				// Set attribute on each item in range according to the schema.
 				for ( const node of data.modelRange.getItems() ) {
 					if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
-						// Node's children are converter recursively, so node can already include model attribute.
+						// Node's children are converted recursively, so node can already include model attribute.
 						// We want to extend it, not replace.
 						const nodeAttributes = node.getAttribute( attributeKey );
 						const attributesToAdd = mergeAttributes( viewAttributes || {}, nodeAttributes || {} );
@@ -244,9 +244,7 @@ export default class DataFilter {
 						conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 					}
 				}
-			}, {
-				priority: 'low'
-			} );
+			}, { priority: 'low' } );
 		} );
 
 		conversion.for( 'downcast' ).attributeToElement( {
@@ -484,9 +482,11 @@ function mergeAttributes( oldValue, newValue ) {
 		// Merge classes.
 		if ( Array.isArray( newValue[ key ] ) ) {
 			result[ key ] = Array.from( new Set( [ ...oldValue[ key ], ...newValue[ key ] ] ) );
+		} 
+		
 		// Merge attributes or styles.
-		} else {
-			result[ key ] = Object.assign( {}, oldValue[ key ], newValue[ key ] );
+		else {
+			result[ key ] = { ...oldValue[ key ], ...newValue[ key ] };
 		}
 	}
 
