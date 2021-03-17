@@ -41,6 +41,10 @@ Promise.resolve()
 				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
 			}
 
+			if ( name === 'letters' ) {
+				return 'https://www.npmjs.com/package/@ckeditor/letters';
+			}
+
 			return 'https://www.npmjs.com/package/@ckeditor/ckeditor5-' + name;
 		},
 		externalRepositories: [
