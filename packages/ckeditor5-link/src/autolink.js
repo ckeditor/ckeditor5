@@ -55,7 +55,7 @@ const URL_REG_EXP = new RegExp(
 		'(' +
 			'(www.|(\\S+@))' +
 			// Host & domain names.
-			'(?![-_])(?:[-_a-z0-9\\u00a1-\\uffff]{1,63}\\.)+' +
+			'((?![-_])(?:[-_a-z0-9\\u00a1-\\uffff]{1,63}\\.))+' +
 			// TLD identifier name.
 			'(?:[a-z\\u00a1-\\uffff]{2,63})' +
 		')' +
