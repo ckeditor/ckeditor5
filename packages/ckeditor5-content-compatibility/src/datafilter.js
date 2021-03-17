@@ -490,7 +490,7 @@ function iterableToObject( iterable, getValue ) {
 	return attributesObject;
 }
 
-// Merges attribute objects.
+// Merges view element attribute objects.
 //
 // @private
 // @param {Object} oldValue
