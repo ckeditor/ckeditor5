@@ -205,7 +205,7 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
-	 * @param {Object} [options={}] Additional configuration passed to the conversion process.
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
 	stringify( modelElementOrFragment, options = {} ) {
@@ -224,7 +224,7 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
-	 * @param {Object} [options] Additional configuration that will be available through
+	 * @param {Object} [options={}] Additional configuration that will be available through
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
