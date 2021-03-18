@@ -205,7 +205,7 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
-	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * @param {Object} [options={}] Additional configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
 	stringify( modelElementOrFragment, options = {} ) {
