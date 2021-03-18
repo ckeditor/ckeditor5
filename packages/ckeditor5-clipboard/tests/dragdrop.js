@@ -17,11 +17,11 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'Drag and Drop', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
@@ -34,6 +34,26 @@ describe( 'Drag and Drop', () => {
 
 	it( 'has proper name', () => {
 		expect( DragDrop.pluginName ).to.equal( 'DragDrop' );
+	} );
+
+	it( 'should be disabled on Android', async () => {
+		env.isAndroid = true;
+
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ DragDrop ]
+		} );
+
+		const plugin = editor.plugins.get( 'DragDrop' );
+
+		expect( plugin.isEnabled ).to.be.false;
+
+		await editor.destroy();
+		await editorElement.remove();
+
+		env.isAndroid = false;
 	} );
 
 	describe( 'dragging', () => {
@@ -80,6 +100,7 @@ describe( 'Drag and Drop', () => {
 			// Dragging.
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
+			dataTransferMock.effectAllowed = 'copyMove';
 			fireDragging( dataTransferMock, targetPosition );
 			clock.tick( 100 );
 
@@ -91,6 +112,7 @@ describe( 'Drag and Drop', () => {
 			// Dragging.
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
+			dataTransferMock.effectAllowed = 'copy';
 			fireDragging( dataTransferMock, targetPosition );
 			clock.tick( 100 );
 
@@ -101,6 +123,7 @@ describe( 'Drag and Drop', () => {
 
 			// Dropping.
 
+			dataTransferMock.effectAllowed = 'copyMove';
 			dataTransferMock.dropEffect = 'move';
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
 			fireDrop( dataTransferMock, targetPosition );
@@ -202,6 +225,7 @@ describe( 'Drag and Drop', () => {
 			// Dragging.
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
+			dataTransferMock.effectAllowed = 'copy';
 			fireDragging( dataTransferMock, targetPosition );
 			clock.tick( 100 );
 
@@ -622,6 +646,84 @@ describe( 'Drag and Drop', () => {
 			expect( getViewData( view ) ).to.equal( '<p>foobarfoo{}</p>' );
 		} );
 
+		it( 'should not allow dropping if the plugin is disabled', () => {
+			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+
+			const plugin = editor.plugins.get( 'DragDrop' );
+			const clock = sinon.useFakeTimers();
+			const dataTransferMock = createDataTransfer();
+			const spyClipboardOutput = sinon.spy();
+			const spyClipboardInput = sinon.spy();
+			let targetPosition;
+
+			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+			fireDragStart( dataTransferMock );
+			expectDragStarted( dataTransferMock, 'foo', spyClipboardOutput );
+
+			// Dragging.
+
+			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
+			fireDragging( dataTransferMock, targetPosition );
+			clock.tick( 100 );
+
+			expectDraggingMarker( targetPosition );
+			expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
+				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
+			);
+
+			plugin.forceDisabled( 'test' );
+
+			// Dragging.
+
+			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
+			fireDragging( dataTransferMock, targetPosition );
+			clock.tick( 100 );
+
+			expect( dataTransferMock.dropEffect ).to.equal( 'none' );
+			expect( model.markers.has( 'drop-target' ) ).to.be.false;
+			expect( getViewData( view, { renderUIElements: true } ) ).to.equal( '<p>{foo}bar</p>' );
+
+			plugin.clearForceDisabled( 'test' );
+			// Dropping.
+
+			dataTransferMock.dropEffect = 'move';
+			targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
+			fireDrop( dataTransferMock, targetPosition );
+			clock.tick( 100 );
+
+			expect( spyClipboardInput.called ).to.be.true;
+			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
+			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+
+			fireDragEnd( dataTransferMock );
+			expectFinalized();
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foobarfoo[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foobarfoo{}</p>' );
+		} );
+
+		it( 'should do nothing if dragging on Android', () => {
+			env.isAndroid = true;
+
+			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+
+			const dataTransferMock = createDataTransfer();
+			const spyClipboardInput = sinon.spy();
+
+			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+			fireDragStart( dataTransferMock );
+
+			expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'foo' );
+			expect( dataTransferMock.effectAllowed ).to.equal( 'copyMove' );
+
+			expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
+
+			env.isAndroid = false;
+		} );
+
 		describe( 'dragstart', () => {
 			it( 'should not start dragging if the selection is collapsed', () => {
 				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
@@ -667,7 +769,7 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.notCalled ).to.be.true;
 			} );
 
-			it( 'should not start dragging if the editor is read-only', () => {
+			it( 'should mark allowed effect as "copy" if the editor is read-only', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 				const dataTransferMock = createDataTransfer();
@@ -679,9 +781,9 @@ describe( 'Drag and Drop', () => {
 
 				fireDragStart( dataTransferMock );
 
-				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
-				expect( viewDocument.getRoot().hasAttribute( 'spellcheck' ) ).to.be.false;
-				expect( spyClipboardOutput.notCalled ).to.be.true;
+				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.true;
+				expect( viewDocument.getRoot().hasAttribute( 'spellcheck' ) ).to.be.true;
+				expect( dataTransferMock.effectAllowed ).to.equal( 'copy' );
 			} );
 
 			it( 'should start dragging by grabbing the widget selection handle', () => {
@@ -1146,7 +1248,7 @@ describe( 'Drag and Drop', () => {
 			it( 'should focus the editor while dragging over the editable', () => {
 				const stubFocus = sinon.stub( view, 'focus' );
 
-				viewDocument.fire( 'dragenter' );
+				viewDocument.fire( 'dragenter', {} );
 
 				expect( stubFocus.calledOnce ).to.be.true;
 			} );
@@ -1159,6 +1261,15 @@ describe( 'Drag and Drop', () => {
 				viewDocument.fire( 'dragenter' );
 
 				expect( stubFocus.calledOnce ).to.be.false;
+			} );
+
+			it( 'should set "spellcheck" attribute on the entered root element', () => {
+				viewDocument.fire( 'dragenter', {
+					target: viewDocument.getRoot().getChild( 0 )
+				} );
+
+				expect( viewDocument.getRoot().hasAttribute( 'spellcheck' ) ).to.be.true;
+				expect( viewDocument.getRoot().getAttribute( 'spellcheck' ) ).to.equal( 'false' );
 			} );
 		} );
 
