@@ -208,7 +208,7 @@ export default class DataController {
 	 * @param {Object} [options] Additional configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElementOrFragment, options ) {
+	stringify( modelElementOrFragment, options = {} ) {
 		// Model -> view.
 		const viewDocumentFragment = this.toView( modelElementOrFragment, options );
 
@@ -228,7 +228,7 @@ export default class DataController {
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
-	toView( modelElementOrFragment, options ) {
+	toView( modelElementOrFragment, options = {} ) {
 		const viewDocument = this.viewDocument;
 		const viewWriter = this._viewWriter;
 
