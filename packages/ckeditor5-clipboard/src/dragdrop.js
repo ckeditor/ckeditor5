@@ -173,6 +173,14 @@ export default class DragDrop extends Plugin {
 		 */
 		this._removeDropMarkerDelayed = delay( () => this._removeDropMarker(), 40 );
 
+		/**
+		 * A delayed callback removing draggable attributes.
+		 *
+		 * @private
+		 * @type {Function}
+		 */
+		this._clearDraggableAttributesDelayed = delay( () => this._clearDraggableAttributes(), 40 );
+
 		view.addObserver( ClipboardObserver );
 		view.addObserver( MouseObserver );
 
@@ -210,6 +218,7 @@ export default class DragDrop extends Plugin {
 
 		this._updateDropMarkerThrottled.cancel();
 		this._removeDropMarkerDelayed.cancel();
+		this._clearDraggableAttributesDelayed.cancel();
 
 		return super.destroy();
 	}
@@ -290,15 +299,9 @@ export default class DragDrop extends Plugin {
 		}, { priority: 'low' } );
 
 		// Dragging over the editable.
-		this.listenTo( viewDocument, 'dragenter', ( evt, data ) => {
+		this.listenTo( viewDocument, 'dragenter', () => {
 			if ( editor.isReadOnly || !this.isEnabled ) {
 				return;
-			}
-
-			if ( data.target ) {
-				view.change( writer => {
-					writer.setAttribute( 'spellcheck', 'false', data.target.root );
-				} );
 			}
 
 			view.focus();
@@ -454,6 +457,8 @@ export default class DragDrop extends Plugin {
 				return;
 			}
 
+			this._clearDraggableAttributesDelayed.cancel();
+
 			// Check if this is mousedown over the widget (but not nested editable).
 			let draggableElement = findDraggableWidget( data.target );
 
@@ -474,7 +479,6 @@ export default class DragDrop extends Plugin {
 			if ( draggableElement ) {
 				view.change( writer => {
 					writer.setAttribute( 'draggable', 'true', draggableElement );
-					writer.setAttribute( 'spellcheck', 'false', draggableElement.root );
 				} );
 
 				// Keep the reference to the model element in case view element got removed while dragging.
@@ -484,7 +488,9 @@ export default class DragDrop extends Plugin {
 
 		// Remove the draggable attribute in case no dragging started (only mousedown + mouseup).
 		this.listenTo( viewDocument, 'mouseup', () => {
-			this._clearDraggableAttributes();
+			if ( !env.isAndroid ) {
+				this._clearDraggableAttributesDelayed();
+			}
 		} );
 	}
 
@@ -503,11 +509,6 @@ export default class DragDrop extends Plugin {
 			}
 
 			this._draggableElement = null;
-
-			// Remove 'spellcheck' attributes.
-			for ( const root of editing.view.document.roots ) {
-				writer.removeAttribute( 'spellcheck', root );
-			}
 		} );
 	}
 
