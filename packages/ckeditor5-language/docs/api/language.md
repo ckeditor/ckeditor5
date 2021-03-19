@@ -8,6 +8,18 @@ category: api-reference
 
 This package implements language features support for CKEditor 5.
 
+## Demo
+
+Check out the {@link features/language#demo demo in the Language feature} guide.
+
+## Documentation
+
+See the {@link features/language Language feature} guide.
+
+You can also check out the following plugins:
+
+* {@link module:language/textpartlanguage~TextPartLanguage}
+
 ## Installation
 
 ```
