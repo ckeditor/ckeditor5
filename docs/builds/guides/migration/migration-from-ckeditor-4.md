@@ -484,7 +484,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_color">magicline_color</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_everywhere">magicline_everywhere</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_holdDistance">magicline_holdDistance</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_keystrokeNext">magicline_keystrokeNext</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_keystrokePrevious">magicline_keystrokePrevious</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_tabuList">magicline_tabuList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-magicline_triggerOffset">magicline_triggerOffset</a></td>
-			<td>This features is managed by the {@link module:widget/widgettypearound~WidgetTypeAround <code>WidgetTypeAround</code>} class.</td>
+            <td>This functionality is covered by the {@link module:widget/widgettypearound~WidgetTypeAround <code>WidgetTypeAround</code>} plugin that allows users to type around widgets where normally it is impossible to place the caret due to limitations of web browsers.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxClass">mathJaxClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxLib">mathJaxLib</a></td>
