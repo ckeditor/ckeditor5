@@ -192,7 +192,9 @@ export default class DragDrop extends Plugin {
 
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => {
 			if ( isReadOnly ) {
-				this._finalizeDragging( false );
+				this.forceDisabled( 'readOnlyMode' );
+			} else {
+				this.clearForceDisabled( 'readOnlyMode' );
 			}
 		} );
 
@@ -276,7 +278,7 @@ export default class DragDrop extends Plugin {
 
 			this._draggingUid = uid();
 
-			data.dataTransfer.effectAllowed = editor.isReadOnly || !this.isEnabled ? 'copy' : 'copyMove';
+			data.dataTransfer.effectAllowed = this.isEnabled ? 'copyMove' : 'copy';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
@@ -284,7 +286,7 @@ export default class DragDrop extends Plugin {
 
 			viewDocument.fire( 'clipboardOutput', { dataTransfer: data.dataTransfer, content, method: evt.name } );
 
-			if ( editor.isReadOnly || !this.isEnabled ) {
+			if ( !this.isEnabled ) {
 				this._draggedRange.detach();
 				this._draggedRange = null;
 				this._draggingUid = '';
@@ -300,7 +302,7 @@ export default class DragDrop extends Plugin {
 
 		// Dragging over the editable.
 		this.listenTo( viewDocument, 'dragenter', () => {
-			if ( editor.isReadOnly || !this.isEnabled ) {
+			if ( !this.isEnabled ) {
 				return;
 			}
 
@@ -316,7 +318,7 @@ export default class DragDrop extends Plugin {
 
 		// Handler for moving dragged content over the target area.
 		this.listenTo( viewDocument, 'dragging', ( evt, data ) => {
-			if ( editor.isReadOnly || !this.isEnabled ) {
+			if ( !this.isEnabled ) {
 				data.dataTransfer.dropEffect = 'none';
 
 				return;
@@ -410,7 +412,7 @@ export default class DragDrop extends Plugin {
 		const clipboardPipeline = this.editor.plugins.get( ClipboardPipeline );
 
 		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
-			if ( this.editor.isReadOnly || !this.isEnabled || data.method !== 'drop' ) {
+			if ( !this.isEnabled || data.method !== 'drop' ) {
 				return;
 			}
 
@@ -422,7 +424,7 @@ export default class DragDrop extends Plugin {
 		}, { priority: 'high' } );
 
 		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
-			if ( this.editor.isReadOnly || !this.isEnabled || data.method !== 'drop' ) {
+			if ( !this.isEnabled || data.method !== 'drop' ) {
 				return;
 			}
 
@@ -613,7 +615,7 @@ export default class DragDrop extends Plugin {
 		}
 
 		// Delete moved content.
-		if ( moved && !editor.isReadOnly && this.isEnabled ) {
+		if ( moved && this.isEnabled ) {
 			model.deleteContent( model.createSelection( this._draggedRange ), { doNotAutoparagraph: true } );
 		}
 

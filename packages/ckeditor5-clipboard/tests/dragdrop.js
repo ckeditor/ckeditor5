@@ -782,7 +782,6 @@ describe( 'Drag and Drop', () => {
 				fireDragStart( dataTransferMock );
 
 				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.true;
-				expect( viewDocument.getRoot().hasAttribute( 'spellcheck' ) ).to.be.true;
 				expect( dataTransferMock.effectAllowed ).to.equal( 'copy' );
 			} );
 
@@ -1165,6 +1164,7 @@ describe( 'Drag and Drop', () => {
 					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
 				);
 
+				const clock = sinon.useFakeTimers();
 				const domNode = view.getDomRoot().querySelector( '.ck-widget__selection-handle' );
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const selectionHandleElement = widgetViewElement.getChild( 0 );
@@ -1184,6 +1184,7 @@ describe( 'Drag and Drop', () => {
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
 
 				viewDocument.fire( 'mouseup' );
+				clock.tick( 50 );
 
 				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
 			} );
@@ -1194,6 +1195,7 @@ describe( 'Drag and Drop', () => {
 					'<horizontalLine></horizontalLine>'
 				);
 
+				const clock = sinon.useFakeTimers();
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const viewElement = widgetViewElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
@@ -1213,13 +1215,51 @@ describe( 'Drag and Drop', () => {
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
 
 				viewDocument.fire( 'mouseup' );
+				clock.tick( 50 );
 
 				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
+			} );
+
+			it( 'should do nothing on mouseup on android', () => {
+				env.isAndroid = true;
+
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<horizontalLine></horizontalLine>'
+				);
+
+				const clock = sinon.useFakeTimers();
+				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
+				const viewElement = widgetViewElement.getChild( 0 );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				expect( viewElement.is( 'element', 'hr' ) ).to.be.true;
+
+				const eventData = {
+					domTarget: domNode,
+					target: viewElement,
+					domEvent: {},
+					preventDefault() {}
+				};
+
+				viewDocument.fire( 'mousedown', {
+					...eventData
+				} );
+
+				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
+
+				viewDocument.fire( 'mouseup' );
+				clock.tick( 50 );
+
+				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
+
+				env.isAndroid = false;
 			} );
 
 			it( 'should remove "draggable" attribute from editable element', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
+				const clock = sinon.useFakeTimers();
 				const editableElement = viewDocument.getRoot();
 				const viewElement = editableElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
@@ -1239,6 +1279,7 @@ describe( 'Drag and Drop', () => {
 				expect( editableElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
 
 				viewDocument.fire( 'mouseup' );
+				clock.tick( 50 );
 
 				expect( editableElement.hasAttribute( 'draggable' ) ).to.be.false;
 			} );
@@ -1261,15 +1302,6 @@ describe( 'Drag and Drop', () => {
 				viewDocument.fire( 'dragenter' );
 
 				expect( stubFocus.calledOnce ).to.be.false;
-			} );
-
-			it( 'should set "spellcheck" attribute on the entered root element', () => {
-				viewDocument.fire( 'dragenter', {
-					target: viewDocument.getRoot().getChild( 0 )
-				} );
-
-				expect( viewDocument.getRoot().hasAttribute( 'spellcheck' ) ).to.be.true;
-				expect( viewDocument.getRoot().getAttribute( 'spellcheck' ) ).to.equal( 'false' );
 			} );
 		} );
 
@@ -1720,7 +1752,6 @@ describe( 'Drag and Drop', () => {
 		expect( dataTransferMock.effectAllowed ).to.equal( effectAllowed );
 
 		expect( viewDocument.getRoot().getAttribute( 'draggable' ) ).to.equal( 'true' );
-		expect( viewDocument.getRoot().getAttribute( 'spellcheck' ) ).to.equal( 'false' );
 
 		if ( spyClipboardOutput ) {
 			expect( spyClipboardOutput.called ).to.be.true;
@@ -1743,7 +1774,6 @@ describe( 'Drag and Drop', () => {
 
 	function expectFinalized() {
 		expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
-		expect( viewDocument.getRoot().hasAttribute( 'spellcheck' ) ).to.be.false;
 
 		expect( model.markers.has( 'drop-target' ) ).to.be.false;
 	}
