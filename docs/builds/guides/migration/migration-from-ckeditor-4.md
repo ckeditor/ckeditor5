@@ -632,8 +632,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>N/A</td>
 		</tr>
 		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-title">title</a></td>
 			<td>N/A</td>
-			<td>Refer to the {@link features/title title guide} to learn more about handling title in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbar">toolbar</a></td>
