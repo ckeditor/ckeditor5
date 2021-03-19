@@ -3,7 +3,7 @@ category: builds-migration
 order: 30
 ---
 
-# Migration to 26.0.0
+# Migration to CKEditor 5 v26.0.0
 
 For the entire list of changes introduced in version 26.0.0, see the [changelog for CKEditor 5 v26.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2600-2021-03-01).
 
@@ -11,7 +11,7 @@ Listed below are the most important changes that require your attention when upg
 
 ## Soft requirements
 
-While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8395) with additional plugins without rebuilding the bundle (a concept also called "DLLs"), certain sets of plugins had to be decoupled. This has lead to the introduction of the "soft requirements".
+While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8395) with additional plugins without rebuilding the bundle (a concept also called {@link  builds/guides/development/dll-builds "DLLs"}), certain sets of plugins had to be decoupled. This has lead to the introduction of the "soft requirements".
 
 Before, each plugin had its direct requirements that would be automatically loaded by the editor before the plugin is loaded. These plugins were specified in the `static get() {}` callback of a plugin class in the form of plugin constructors (dependencies).
 

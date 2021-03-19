@@ -3,7 +3,7 @@ category: builds-migration
 order: 20
 ---
 
-# Migration to 25.0.0
+# Migration to CKEditor 5 v25.0.0
 
 For the entire list of changes introduced in version 25.0.0, see the [changelog for CKEditor 5 v25.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2500-2021-01-25).
 
