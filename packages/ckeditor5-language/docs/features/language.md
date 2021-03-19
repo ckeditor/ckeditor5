@@ -1,29 +1,28 @@
 ---
 category: features
-menu-title: Language
+menu-title: Text part language
 ---
 
-# Text Part Language
+# Text part language
 
-The {@link module:language/textpartlanguage~TextPartLanguage} feature makes working with multilingual content very convenient by providing the ability to set the text direction as well as mark the language of selected text fragments.
+The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to set the text direction as well as mark the language of selected text fragments. It makes working with multilingual content convenient and ensures that user agents can correctly present a content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
 
-This ensures that user agents can correctly present content written in multiple languages.
+This feature is especially useful when your content includes text sections written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
 
-The feature is especially useful when your text content includes text parts written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
-
-The text part language feature implements [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
+The text part language feature implements the [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
 
 ## Demo
 
-Use the editor below to see the text part language plugin in action.
+Use the editor below to see the text part language plugin in action. Select text part and use the toolbar dropdown to choose from predefined available languages.
 
 {@snippet features/textpartlanguage}
 
 ## Related features
 
-Here are some other CKEditor 5 features that also affects editor language:
+There are other language-related CKEditor 5 features you may want to check:
 
 * {@link features/ui-language UI Language}  &ndash; Set the UI language.
+* {@link features/spelling-and-grammar-checking Spelling and grammar checking} &ndash; Employ multi-language spellcheck for flawless content.
 
 ## Installation
 
@@ -53,10 +52,10 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:langauge/textpartlanguage~TextPartLanguage} plugin registers:
+The {@link module:language/textpartlanguage~TextPartLanguage} plugin registers:
 
-* the `'textPartLanguage'` UI dropdown component implemented by the {@link module:langauge/textpartlanguageui~TextPartLanguageUI text part language UI feature},
-* the `'textPartLanguage'` command implemented by the {@link module:langauge/textpartlanguageediting~TextPartLanguageEditing text part language editing feature}.
+* the `'textPartLanguage'` UI dropdown component implemented by the {@link module:language/textpartlanguageui~TextPartLanguageUI text part language UI feature},
+* the `'textPartLanguage'` command implemented by the {@link module:language/textpartlanguageediting~TextPartLanguageEditing text part language editing feature}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 

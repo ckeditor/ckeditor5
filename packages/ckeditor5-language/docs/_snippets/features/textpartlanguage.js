@@ -52,7 +52,10 @@ ClassicEditor
 				item => item.buttonView && item.buttonView.label && item.buttonView.label.startsWith( 'Choose language' )
 			),
 			text: 'Click to apply a language to text selection.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-start'
+			}
 		} );
 	} )
 	.catch( err => {
