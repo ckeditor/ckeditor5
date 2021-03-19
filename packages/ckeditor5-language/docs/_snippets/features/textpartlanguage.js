@@ -7,8 +7,11 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
+import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
 
-ClassicEditor.builtinPlugins.push( TextPartLanguage );
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+ClassicEditor.builtinPlugins.push( TextPartLanguage, WProofreader );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-text-part-language' ), {
@@ -20,6 +23,12 @@ ClassicEditor
 				{ title: 'Spanish', languageCode: 'es' }
 			]
 		},
+		wproofreader: {
+			serviceId: '1:Eebp63-lWHbt2-ASpHy4-AYUpy2-fo3mk4-sKrza1-NsuXy4-I1XZC2-0u2F54-aqYWd1-l3Qf14-umd',
+			lang: 'en_AI',
+			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
+		},
+		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'textPartLanguage',
@@ -36,6 +45,8 @@ ClassicEditor
 				'blockQuote',
 				'outdent',
 				'indent',
+				'|',
+				'wproofreader',
 				'|',
 				'undo',
 				'redo'
