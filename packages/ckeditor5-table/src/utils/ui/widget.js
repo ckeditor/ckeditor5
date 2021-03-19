@@ -32,10 +32,10 @@ export function getSelectedTableWidget( selection ) {
  * @returns {module:engine/view/element~Element|null}
  */
 export function getTableWidgetAncestor( selection ) {
-	const parentTable = findAncestor( 'table', selection.getFirstPosition() );
+	const parentTable = findAncestor( selection.getFirstPosition() );
 
-	if ( parentTable && isTableWidget( parentTable.parent ) ) {
-		return parentTable.parent;
+	if ( parentTable ) {
+		return parentTable;
 	}
 
 	return null;
@@ -49,11 +49,11 @@ function isTableWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
 }
 
-function findAncestor( parentName, positionOrElement ) {
+function findAncestor( positionOrElement ) {
 	let parent = positionOrElement.parent;
 
 	while ( parent ) {
-		if ( parent.name === parentName ) {
+		if ( parent.is( 'element' ) && isTableWidget( parent ) ) {
 			return parent;
 		}
 
