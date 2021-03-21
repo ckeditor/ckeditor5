@@ -127,6 +127,61 @@ describe( 'IconView', () => {
 				expect( view.element.children[ 1 ].style.fill ).to.equal( 'red' );
 			} );
 		} );
+
+		describe( 'stroke color', () => {
+			it( 'should be set intially based on view#fillColor', () => {
+				view.fillColor = 'red';
+				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">' +
+						'<path class="ck-icon__stroke"/>' +
+						'<path/>' +
+						'<path class="ck-icon__stroke"/>' +
+					'</svg>';
+
+				expect( view.element.children[ 0 ].style.stroke ).to.equal( 'red' );
+				expect( view.element.children[ 1 ].style.stroke ).to.equal( '' );
+				expect( view.element.children[ 2 ].style.stroke ).to.equal( 'red' );
+			} );
+
+			it( 'should react to changes in view#fillColor', () => {
+				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">' +
+						'<path class="ck-icon__stroke"/>' +
+						'<path/>' +
+						'<path class="ck-icon__stroke"/>' +
+					'</svg>';
+
+				expect( view.element.children[ 0 ].style.stroke ).to.equal( '' );
+				expect( view.element.children[ 1 ].style.stroke ).to.equal( '' );
+				expect( view.element.children[ 2 ].style.stroke ).to.equal( '' );
+
+				view.fillColor = 'red';
+
+				expect( view.element.children[ 0 ].style.stroke ).to.equal( 'red' );
+				expect( view.element.children[ 1 ].style.stroke ).to.equal( '' );
+				expect( view.element.children[ 2 ].style.stroke ).to.equal( 'red' );
+			} );
+
+			it( 'should react to changes in view#content', () => {
+				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">' +
+						'<path class="ck-icon__stroke"/>' +
+						'<path/>' +
+						'<path class="ck-icon__stroke"/>' +
+					'</svg>';
+
+				view.fillColor = 'red';
+
+				expect( view.element.children[ 0 ].style.stroke ).to.equal( 'red' );
+				expect( view.element.children[ 1 ].style.stroke ).to.equal( '' );
+				expect( view.element.children[ 2 ].style.stroke ).to.equal( 'red' );
+
+				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">' +
+						'<path/>' +
+						'<path class="ck-icon__stroke"/>' +
+					'</svg>';
+
+				expect( view.element.children[ 0 ].style.stroke ).to.equal( '' );
+				expect( view.element.children[ 1 ].style.stroke ).to.equal( 'red' );
+			} );
+		} );
 	} );
 } );
 
