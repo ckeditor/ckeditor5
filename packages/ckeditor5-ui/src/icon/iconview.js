@@ -121,6 +121,9 @@ export default class IconView extends View {
 			this.element.querySelectorAll( '.ck-icon__fill' ).forEach( path => {
 				path.style.fill = this.fillColor;
 			} );
+			this.element.querySelectorAll( '.ck-icon__stroke' ).forEach( path => {
+				path.style.stroke = this.fillColor;
+			} );
 		}
 	}
 }
