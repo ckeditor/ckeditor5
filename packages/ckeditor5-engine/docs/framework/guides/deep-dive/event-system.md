@@ -262,14 +262,14 @@ Fired events on contexts:
 1. `'$capture'`
 2. `'$text'`
 3. `'p'`
-3. `'td'`
-3. `'tr'`
-3. `'table'`
-3. `'figure'`
-2. *widget* (custom matcher)
-4. `'blockquote'`
-5. `'$root'`
-6. `'$document'`
+4. `'td'`
+5. `'tr'`
+6. `'table'`
+7. `'figure'`
+8. *widget* (custom matcher)
+9. `'blockquote'`
+10. `'$root'`
+11. `'$document'`
 
 ### `BubblingEventInfo` 
 
@@ -284,14 +284,14 @@ So the events from the above example would be extended with the following `event
 1. `'$capture'` - *capturing*
 2. `'$text'` - *atTarget*
 3. `'p'` - *bubbling*
-3. `'td'` - *bubbling*
-3. `'tr'` - *bubbling*
-3. `'table'` - *bubbling*
-3. `'figure'` - *bubbling*
-2. *widget* - *bubbling*
-4. `'blockquote'` - *bubbling*
-5. `'$root'` - *bubbling*
-6. `'$document'` - *bubbling*
+4. `'td'` - *bubbling*
+5. `'tr'` - *bubbling*
+6. `'table'` - *bubbling*
+7. `'figure'` - *bubbling*
+8. *widget* - *bubbling*
+9. `'blockquote'` - *bubbling*
+10. `'$root'` - *bubbling*
+11. `'$document'` - *bubbling*
 
 For the example with widget selected:
 ```
