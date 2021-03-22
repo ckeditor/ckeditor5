@@ -6,7 +6,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { logWarning, toArray } from 'ckeditor5/src/utils';
 
-import { insertImage, _isImage, isImageAllowed } from './utils';
+import { insertImage, isImage, isImageAllowed } from './utils';
 
 /**
  * @module image/image/insertimagecommand
@@ -92,7 +92,7 @@ export default class InsertImageCommand extends Command {
 
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
-			if ( index && selectedElement && _isImage( selectedElement ) ) {
+			if ( index && selectedElement && isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
 				insertImage( this.editor, { src }, position );

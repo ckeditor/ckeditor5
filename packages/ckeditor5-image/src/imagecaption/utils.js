@@ -7,7 +7,7 @@
  * @module image/imagecaption/utils
  */
 
-import { _isBlockImage } from '../image/utils';
+import { isBlockImage } from '../image/utils';
 
 /**
  * Returns the caption model element from a given image element. Returns `null` if no caption is found.
@@ -38,7 +38,7 @@ export function getCaptionFromModelSelection( selection ) {
 		return null;
 	}
 
-	if ( _isBlockImage( captionElement.parent ) ) {
+	if ( isBlockImage( captionElement.parent ) ) {
 		return captionElement;
 	}
 

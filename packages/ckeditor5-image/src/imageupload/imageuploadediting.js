@@ -19,7 +19,7 @@ import { env } from 'ckeditor5/src/utils';
 import UploadImageCommand from './uploadimagecommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
-import { getViewImageFromWidget, _isImage } from '../image/utils';
+import { getViewImageFromWidget, isImage } from '../image/utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
@@ -356,6 +356,6 @@ export function isHtmlIncluded( dataTransfer ) {
 
 function getImagesFromChangeItem( editor, item ) {
 	return Array.from( editor.model.createRangeOn( item ) )
-		.filter( value => _isImage( value.item ) )
+		.filter( value => isImage( value.item ) )
 		.map( value => value.item );
 }

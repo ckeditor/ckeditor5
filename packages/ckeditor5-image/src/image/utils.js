@@ -86,7 +86,7 @@ export function getImageWidgetAncestor( selection ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function _isBlockImage( modelElement ) {
+export function isBlockImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'image' );
 }
 
@@ -97,7 +97,7 @@ export function _isBlockImage( modelElement ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function _isInlineImage( modelElement ) {
+export function isInlineImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'imageInline' );
 }
 
@@ -108,8 +108,8 @@ export function _isInlineImage( modelElement ) {
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function _isImage( modelElement ) {
-	return _isInlineImage( modelElement ) || _isBlockImage( modelElement );
+export function isImage( modelElement ) {
+	return isInlineImage( modelElement ) || isBlockImage( modelElement );
 }
 
 /**

@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core';
 import { Element } from 'ckeditor5/src/engine';
 
 import ImageBlockEditing from '../image/imageblockediting';
-import { _isImage, _isInlineImage } from '../image/utils';
+import { isImage, isInlineImage } from '../image/utils';
 import { getCaptionFromImageModelElement, getCaptionFromModelSelection } from './utils';
 
 /**
@@ -66,7 +66,7 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Block images support captions by default but the command should also be enabled for inline
 		// images because toggling the caption when one is selected should convert it into a block image.
-		this.isEnabled = _isImage( selectedElement );
+		this.isEnabled = isImage( selectedElement );
 
 		if ( !this.isEnabled ) {
 			this.value = false;
@@ -114,7 +114,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		let newCaptionElement;
 
 		// Convert imageInline -> image first.
-		if ( _isInlineImage( selectedImage ) ) {
+		if ( isInlineImage( selectedImage ) ) {
 			this.editor.execute( 'imageTypeBlock' );
 
 			// Executing the command created a new model element. Let's pick it again.
