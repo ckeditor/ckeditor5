@@ -150,10 +150,10 @@ export default class DragDrop extends Plugin {
 		this._draggingUid = '';
 
 		/**
-		 * The reference to the view element that currently has a 'draggable' attribute set (it's set while dragging).
+		 * The reference to the model element that currently has a 'draggable' attribute set (it's set while dragging).
 		 *
 		 * @private
-		 * @type {module:engine/view/element~Element}
+		 * @type {module:engine/model/element~Element}
 		 */
 		this._draggableElement = null;
 
@@ -173,6 +173,14 @@ export default class DragDrop extends Plugin {
 		 */
 		this._removeDropMarkerDelayed = delay( () => this._removeDropMarker(), 40 );
 
+		/**
+		 * A delayed callback removing draggable attributes.
+		 *
+		 * @private
+		 * @type {Function}
+		 */
+		this._clearDraggableAttributesDelayed = delay( () => this._clearDraggableAttributes(), 40 );
+
 		view.addObserver( ClipboardObserver );
 		view.addObserver( MouseObserver );
 
@@ -182,11 +190,23 @@ export default class DragDrop extends Plugin {
 		this._setupDropMarker();
 		this._setupDraggableAttributeHandling();
 
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value ) {
+		this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => {
+			if ( isReadOnly ) {
+				this.forceDisabled( 'readOnlyMode' );
+			} else {
+				this.clearForceDisabled( 'readOnlyMode' );
+			}
+		} );
+
+		this.on( 'change:isEnabled', ( evt, name, isEnabled ) => {
+			if ( !isEnabled ) {
 				this._finalizeDragging( false );
 			}
 		} );
+
+		if ( env.isAndroid ) {
+			this.forceDisabled( 'noAndroidSupport' );
+		}
 	}
 
 	/**
@@ -200,6 +220,7 @@ export default class DragDrop extends Plugin {
 
 		this._updateDropMarkerThrottled.cancel();
 		this._removeDropMarkerDelayed.cancel();
+		this._clearDraggableAttributesDelayed.cancel();
 
 		return super.destroy();
 	}
@@ -218,10 +239,6 @@ export default class DragDrop extends Plugin {
 
 		// The handler for the drag start, it's responsible for setting data transfer object.
 		this.listenTo( viewDocument, 'dragstart', ( evt, data ) => {
-			if ( editor.isReadOnly ) {
-				return;
-			}
-
 			const selection = modelDocument.selection;
 
 			// Don't drag the editable element itself.
@@ -261,13 +278,19 @@ export default class DragDrop extends Plugin {
 
 			this._draggingUid = uid();
 
-			data.dataTransfer.effectAllowed = 'copyMove';
+			data.dataTransfer.effectAllowed = this.isEnabled ? 'copyMove' : 'copy';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
 			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
 
 			viewDocument.fire( 'clipboardOutput', { dataTransfer: data.dataTransfer, content, method: evt.name } );
+
+			if ( !this.isEnabled ) {
+				this._draggedRange.detach();
+				this._draggedRange = null;
+				this._draggingUid = '';
+			}
 		}, { priority: 'low' } );
 
 		// The handler for finalizing drag & drop. It should be triggered always after dragging completed
@@ -279,7 +302,7 @@ export default class DragDrop extends Plugin {
 
 		// Dragging over the editable.
 		this.listenTo( viewDocument, 'dragenter', () => {
-			if ( editor.isReadOnly ) {
+			if ( !this.isEnabled ) {
 				return;
 			}
 
@@ -295,7 +318,7 @@ export default class DragDrop extends Plugin {
 
 		// Handler for moving dragged content over the target area.
 		this.listenTo( viewDocument, 'dragging', ( evt, data ) => {
-			if ( editor.isReadOnly ) {
+			if ( !this.isEnabled ) {
 				data.dataTransfer.dropEffect = 'none';
 
 				return;
@@ -305,10 +328,19 @@ export default class DragDrop extends Plugin {
 
 			const targetRange = findDropTargetRange( editor, data.targetRanges, data.target );
 
-			// This is content being dragged from other editor or content.
-			// Moving out of current editor instance is not possible until 'dragend' event case will be fixed.
+			// If this is content being dragged from other editor moving out of current editor instance
+			// is not possible until 'dragend' event case will be fixed.
 			if ( !this._draggedRange ) {
 				data.dataTransfer.dropEffect = 'copy';
+			}
+
+			// In Firefox it's already set and effectAllowed remains the same as originally set.
+			if ( !env.isGecko ) {
+				if ( data.dataTransfer.effectAllowed == 'copy' ) {
+					data.dataTransfer.dropEffect = 'copy';
+				} else if ( [ 'all', 'copyMove' ].includes( data.dataTransfer.effectAllowed ) ) {
+					data.dataTransfer.dropEffect = 'move';
+				}
 			}
 
 			/* istanbul ignore else */
@@ -380,7 +412,7 @@ export default class DragDrop extends Plugin {
 		const clipboardPipeline = this.editor.plugins.get( ClipboardPipeline );
 
 		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
-			if ( this.editor.isReadOnly || data.method !== 'drop' ) {
+			if ( !this.isEnabled || data.method !== 'drop' ) {
 				return;
 			}
 
@@ -392,7 +424,7 @@ export default class DragDrop extends Plugin {
 		}, { priority: 'high' } );
 
 		clipboardPipeline.on( 'contentInsertion', ( evt, data ) => {
-			if ( this.editor.isReadOnly || data.method !== 'drop' ) {
+			if ( !this.isEnabled || data.method !== 'drop' ) {
 				return;
 			}
 
@@ -423,12 +455,14 @@ export default class DragDrop extends Plugin {
 		this.listenTo( viewDocument, 'mousedown', ( evt, data ) => {
 			// The lack of data can be caused by editor tests firing fake mouse events. This should not occur
 			// in real-life scenarios but this greatly simplifies editor tests that would otherwise fail a lot.
-			if ( editor.isReadOnly || !data ) {
+			if ( env.isAndroid || !data ) {
 				return;
 			}
 
+			this._clearDraggableAttributesDelayed.cancel();
+
 			// Check if this is mousedown over the widget (but not nested editable).
-			this._draggableElement = findDraggableWidget( data.target );
+			let draggableElement = findDraggableWidget( data.target );
 
 			// Note: There is a limitation that if there is more than a widget selected (widget and some text)
 			// and dragging starts on widget, then only a widget is dragged.
@@ -436,25 +470,29 @@ export default class DragDrop extends Plugin {
 			// If this was not a widget so we should check if we need to drag some text content.
 			// In Chrome set a 'draggable' attribute on closest editable to allow immediate dragging of the selected text range.
 			// In Firefox this is not needed. In Safari it makes the whole editable draggable (not just textual content).
-			if ( env.isBlink && !this._draggableElement && !viewDocument.selection.isCollapsed ) {
+			if ( env.isBlink && !draggableElement && !viewDocument.selection.isCollapsed ) {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
 				if ( !selectedElement || !isWidget( selectedElement ) ) {
-					this._draggableElement = viewDocument.selection.editableElement;
+					draggableElement = viewDocument.selection.editableElement;
 				}
 			}
 
-			if ( this._draggableElement ) {
+			if ( draggableElement ) {
 				view.change( writer => {
-					writer.setAttribute( 'draggable', 'true', this._draggableElement );
-					writer.setAttribute( 'spellcheck', 'false', this._draggableElement.root );
+					writer.setAttribute( 'draggable', 'true', draggableElement );
 				} );
+
+				// Keep the reference to the model element in case view element got removed while dragging.
+				this._draggableElement = editor.editing.mapper.toModelElement( draggableElement );
 			}
 		} );
 
 		// Remove the draggable attribute in case no dragging started (only mousedown + mouseup).
 		this.listenTo( viewDocument, 'mouseup', () => {
-			this._clearDraggableAttributes();
+			if ( !env.isAndroid ) {
+				this._clearDraggableAttributesDelayed();
+			}
 		} );
 	}
 
@@ -464,17 +502,16 @@ export default class DragDrop extends Plugin {
 	 * @private
 	 */
 	_clearDraggableAttributes() {
-		if ( !this._draggableElement ) {
-			return;
-		}
+		const editing = this.editor.editing;
 
-		// Remove 'draggable' and 'spellcheck' attributes.
-		this.editor.editing.view.change( writer => {
-			writer.removeAttribute( 'draggable', this._draggableElement );
-			writer.removeAttribute( 'spellcheck', this._draggableElement.root );
+		editing.view.change( writer => {
+			// Remove 'draggable' attribute.
+			if ( this._draggableElement && this._draggableElement.root.rootName != '$graveyard' ) {
+				writer.removeAttribute( 'draggable', editing.mapper.toViewElement( this._draggableElement ) );
+			}
+
+			this._draggableElement = null;
 		} );
-
-		this._draggableElement = null;
 	}
 
 	/**
@@ -578,7 +615,7 @@ export default class DragDrop extends Plugin {
 		}
 
 		// Delete moved content.
-		if ( moved ) {
+		if ( moved && this.isEnabled ) {
 			model.deleteContent( model.createSelection( this._draggedRange ), { doNotAutoparagraph: true } );
 		}
 
@@ -769,7 +806,7 @@ function getFinalDropEffect( dataTransfer ) {
 		return dataTransfer.dropEffect;
 	}
 
-	return dataTransfer.effectAllowed == 'copyMove' ? 'move' : 'copy';
+	return [ 'all', 'copyMove' ].includes( dataTransfer.effectAllowed ) ? 'move' : 'copy';
 }
 
 // Returns a function wrapper that will trigger a function after a specified wait time.
