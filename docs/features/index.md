@@ -17,6 +17,8 @@ Plenty of these features are included by default in {@link builds/guides/overvie
 
 However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML, or easily and conveniently added to a custom build in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
+We also offer the flexibility of the {@link builds/guides/development/dll-builds DLL builds}, enabling the addition of new plugins into an existing build without the need to rebuild the installation.
+
 ## CKEditor 5 WYSIWYG editor features and functions
 
 CKEditor 5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
