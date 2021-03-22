@@ -156,3 +156,157 @@ Listeners are triggered in the order of those priorities. For multiple listeners
 It is possible to use relative priorities {@link module:utils/priorities~priorities#get `priorities.get( 'high' ) + 10`} but this is strongly discouraged.
 
 ## Bubbling events
+
+The {@link module:engine/view/document~Document `view.Document`} is not only the {@link module:utils/observablemixin~Observable Observable} (and {@link module:utils/emittermixin~Emitter Emitter}) but it also implements {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface. This is the special interface that is implemented by the {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}. It provides a bubbling of the events over the virtual DOM tree. It is different from the bubbling that you know from the browser's DOM tree events bubbling. You don't register listeners on the exact instances of the elements in the view document tree, instead you can register handlers for the `context` (for example the {@link module:engine/view/element~Element view element} name, the virtual `'$capture'`, `'$text'`, `'$root'`, `'$document'` contexts, or by providing a callback that matches some view nodes).  
+
+### Listening to events
+
+Listeners registered in the context of the view element names:
+```js
+this.listenTo( view.document, 'enter', ( evt, data ) => {
+	// ...
+}, { context: 'blockquote' } );
+
+this.listenTo( view.document, 'enter', ( evt, data ) => {
+	// ...
+}, { context: 'li' } );
+```
+
+Listeners registered in the virtual contexts:
+```js
+this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// ...
+}, { context: '$text', priority: 'high' } );
+
+this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// ...
+}, { context: '$root' } );
+
+this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// ...
+}, { context: '$capture' } );
+```
+
+Listeners registered in the context of custom callback function:
+```js
+import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+
+this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// ...
+}, { context: isWidget } );
+
+this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
+	// ...
+}, { context: isWidget, priority: 'high' } );
+```
+
+**Note**: Without specifying `context`, events are bound to the `'$document'` context.
+
+### Bubbling
+
+Bubbling always starts from the virtual `'$capture'` context, all listeners attached for that context are triggered in the order of their priorities. Then the real bubbling starts from the deeper selection position end (either anchor or focus). If the first node accepts `'$text'` then all listeners for that context are triggered. If selected element matches the custom matcher callback, then those listeners are triggered. After calling listeners, and if an event was not stopped, events for its parent are triggered. This is continued until some listener stops the event or the `'$root'` element is reached. At the end the `'$document'` handlers are triggered. In all contexts listeners can be registered at desired priorities.     
+
+Example flow for selection in text:
+```
+<blockquote>
+    <p>
+        Foo[]bar
+    </p>
+</blockquote>
+```
+Fired events on contexts:
+1. `'$capture'`
+2. `'$text'`
+3. `'p'`
+4. `'blockquote'`
+5. `'$root'`
+6. `'$document'`
+
+Example flow for selection on an element (i.e., Widget):
+```
+<blockquote>
+    <p>
+        Foo
+        [<widget/>]
+        bar
+    </p>
+</blockquote>
+```
+
+Fired events on contexts:
+1. `'$capture'`
+2. *widget* (custom matcher)
+3. `'p'`
+4. `'blockquote'`
+5. `'$root'`
+6. `'$document'`
+
+Complex example:
+```
+<blockquote>
+    <figure class="table">
+        <table>
+            <tr>
+                <td>
+                    <p>
+                        foo[]bar
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </figure>
+</blockquote>
+```
+
+Fired events on contexts:
+1. `'$capture'`
+2. `'$text'`
+3. `'p'`
+3. `'td'`
+3. `'tr'`
+3. `'table'`
+3. `'figure'`
+2. *widget* (custom matcher)
+4. `'blockquote'`
+5. `'$root'`
+6. `'$document'`
+
+### `BubblingEventInfo` 
+
+Some events are triggered not as a standard `EventInfo` but as a {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo `BubblingEventInfo`} that is an extension that provides current {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo#eventPhase} and {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo#currentTarget}.
+
+Currently, that information is available for following events:
+* {@link module:engine/view/document~Document#event:enter `enter`},
+* {@link module:engine/view/document~Document#event:delete `delete`},
+* {@link module:engine/view/document~Document#event:arrowKey `arrowKey`}.
+
+So the events from the above example would be extended with the following `eventPhase` data:
+1. `'$capture'` - *capturing*
+2. `'$text'` - *atTarget*
+3. `'p'` - *bubbling*
+3. `'td'` - *bubbling*
+3. `'tr'` - *bubbling*
+3. `'table'` - *bubbling*
+3. `'figure'` - *bubbling*
+2. *widget* - *bubbling*
+4. `'blockquote'` - *bubbling*
+5. `'$root'` - *bubbling*
+6. `'$document'` - *bubbling*
+
+For the example with widget selected:
+```
+<blockquote>
+    <p>
+        Foo
+        [<widget/>]
+        bar
+    </p>
+</blockquote>
+```
+
+1. `'$capture'` - *capturing*
+2. *widget* - *atTarget*
+3. `'p'` - *bubbling*
+4. `'blockquote'` - *bubbling*
+5. `'$root'` - *bubbling*
+6. `'$document'` - *bubbling*
