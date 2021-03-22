@@ -15,7 +15,7 @@ import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 import ImageInlineEditing from '../image/imageinlineediting';
 import ImageBlockEditing from '../image/imageblockediting';
 
-import { isImage } from '../image/utils';
+import { isBlockImage } from '../image/utils';
 import { matchImageCaptionViewElement } from './utils';
 
 /**
@@ -75,7 +75,7 @@ export default class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isImage( modelElement.parent ) ) {
+				if ( !isBlockImage( modelElement.parent ) ) {
 					return null;
 				}
 
@@ -87,7 +87,7 @@ export default class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isImage( modelElement.parent ) ) {
+				if ( !isBlockImage( modelElement.parent ) ) {
 					return null;
 				}
 

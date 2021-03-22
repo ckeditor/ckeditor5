@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { isImage, isImageInline } from '../image/utils';
+import { isImage } from '../image/utils';
 
 /**
  * The image style command. It is used to apply {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements}
@@ -67,7 +67,7 @@ export default class ImageStyleCommand extends Command {
 	refresh() {
 		const element = this.editor.model.document.selection.getSelectedElement();
 
-		this.isEnabled = isImage( element ) || isImageInline( element );
+		this.isEnabled = isImage( element );
 
 		if ( !this.isEnabled ) {
 			this.value = false;

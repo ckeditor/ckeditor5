@@ -7,7 +7,7 @@ import { FileRepository } from 'ckeditor5/src/upload';
 import { Command } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 
-import { insertImage, isImage, isImageAllowed, isImageInline } from '../image/utils';
+import { insertImage, isImage, isImageAllowed } from '../image/utils';
 
 /**
  * @module image/imageupload/uploadimagecommand
@@ -50,7 +50,7 @@ export default class UploadImageCommand extends Command {
 		const selectedElement = this.editor.model.document.selection.getSelectedElement();
 
 		// TODO: This needs refactoring.
-		this.isEnabled = isImageAllowed( this.editor ) || isImage( selectedElement ) || isImageInline( selectedElement );
+		this.isEnabled = isImageAllowed( this.editor ) || isImage( selectedElement );
 	}
 
 	/**
@@ -70,7 +70,7 @@ export default class UploadImageCommand extends Command {
 
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
-			if ( index && selectedElement && ( isImageInline( selectedElement ) || isImage( selectedElement ) ) ) {
+			if ( index && selectedElement && isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
 				uploadImage( this.editor, fileRepository, file, position );
