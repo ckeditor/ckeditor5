@@ -33,6 +33,12 @@
 			border: 1px solid hsl(0, 0%, 75%);
 		}
 
+		/* Inline HTML elements nested in the span should always be dimensioned in relation to the whole cell width.
+		See https://github.com/ckeditor/ckeditor5/issues/9117. */
+		& td > span {
+			width: 100%;
+		}
+
 		& th {
 			font-weight: bold;
 			background: hsla(0, 0%, 0%, 5%);
