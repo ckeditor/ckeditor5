@@ -9,7 +9,6 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { Element } from 'ckeditor5/src/engine';
-
 import { getCaptionFromTableModelElement } from './utils';
 
 /**
@@ -42,14 +41,15 @@ export default class ToggleTableCaptionCommand extends Command {
 	refresh() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const tableParent = selection.getFirstPosition().findAncestor( 'table' );
+		const position = selection.getFirstPosition();
+		const tableElement = locateTable( position );
 
-		this.isEnabled = !!tableParent;
+		this.isEnabled = !!tableElement;
 
 		if ( !this.isEnabled ) {
 			this.value = false;
 		} else {
-			this.value = !!getCaptionFromTableModelElement( tableParent );
+			this.value = !!getCaptionFromTableModelElement( tableElement );
 		}
 	}
 
@@ -86,21 +86,22 @@ export default class ToggleTableCaptionCommand extends Command {
 	_showTableCaption( writer, focusCaptionOnShow ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const selectedTable = selection.getFirstPosition().findAncestor( 'table' );
+		const position = selection.getFirstPosition();
+		const tableElement = locateTable( position );
 
 		let newCaptionElement;
 
 		// Try restoring the caption from the attribute.
-		if ( selectedTable.hasAttribute( 'caption' ) ) {
-			newCaptionElement = Element.fromJSON( selectedTable.getAttribute( 'caption' ) );
+		if ( tableElement.hasAttribute( 'caption' ) ) {
+			newCaptionElement = Element.fromJSON( tableElement.getAttribute( 'caption' ) );
 
 			// The model attribute is no longer needed if the caption was created out of it.
-			writer.removeAttribute( 'caption', selectedTable );
+			writer.removeAttribute( 'caption', tableElement );
 		} else {
 			newCaptionElement = writer.createElement( 'caption' );
 		}
 
-		writer.append( newCaptionElement, selectedTable );
+		writer.append( newCaptionElement, tableElement );
 
 		if ( focusCaptionOnShow ) {
 			writer.setSelection( newCaptionElement, 'in' );
@@ -119,15 +120,31 @@ export default class ToggleTableCaptionCommand extends Command {
 	_hideTableCaption( writer ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const tableParent = selection.getFirstPosition().findAncestor( 'table' );
-		const captionElement = getCaptionFromTableModelElement( tableParent );
+		const position = selection.getFirstPosition();
+		const tableElement = locateTable( position );
+		const captionElement = getCaptionFromTableModelElement( tableElement );
 
 		// Store the caption content so it can be restored quickly if the user changes their mind.
 		if ( captionElement.childCount ) {
-			writer.setAttribute( 'caption', captionElement.toJSON(), tableParent );
+			writer.setAttribute( 'caption', captionElement.toJSON(), tableElement );
 		}
 
-		writer.setSelection( tableParent, 'on' );
+		writer.setSelection( tableElement, 'on' );
 		writer.remove( captionElement );
 	}
+}
+
+// Depending on the position of the selection we either return the table under cursor or look for the table higher in the hierarchy.
+//
+// @param {module:engine/model/position~Position} position
+// @returns {module:engine/model/element~Element}
+function locateTable( position ) {
+	const nodeAfter = position.nodeAfter;
+
+	// Is the command triggered from the `tableToolbar`?
+	if ( nodeAfter && nodeAfter.is( 'element', 'table' ) ) {
+		return nodeAfter;
+	}
+
+	return position.findAncestor( 'table' );
 }

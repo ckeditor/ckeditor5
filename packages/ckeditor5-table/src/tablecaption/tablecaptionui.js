@@ -43,7 +43,7 @@ export default class TableCaptionUI extends Plugin {
 				isToggleable: true
 			} );
 
-			// view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 			view.bind( 'label' ).to( command, 'value', value => value ? t( 'Toggle caption off' ) : t( 'Toggle caption on' ) );
 
 			this.listenTo( view, 'execute', () => {
@@ -57,7 +57,8 @@ export default class TableCaptionUI extends Plugin {
 					editingView.scrollToTheSelection();
 
 					editingView.change( writer => {
-						writer.addClass( 'image__caption_highlighted', figcaptionElement );
+						// TODO: Write CSS for that.
+						writer.addClass( 'table__caption_highlighted', figcaptionElement );
 					} );
 				}
 			} );
