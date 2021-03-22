@@ -5,23 +5,30 @@ Changelog
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+We are happy to announce the release of CKEditor 5 v27.0.0.
+
+Starting from this version, Collaboration features release notes will be included in CKEditor 5 changelog. Changes for the past releases are available on https://ckeditor.com/collaboration/changelog/.
+
+This release brings a new package and new features:
+
+* [The new package (`@ckeditor/ckeditor5-language`) supports setting text part language.](https://github.com/ckeditor/ckeditor5/issues/8989)
+* [Support for drag and dropping of textual content, and block objects (like images, and tables) within the editor.](https://github.com/ckeditor/ckeditor5/issues/9128)
+* [Support for dropping the HTML content from outside of the editor into the editor.](https://github.com/ckeditor/ckeditor5/issues/9128)
+* [Setting alignment can be done using classes.](https://github.com/ckeditor/ckeditor5/issues/8516)
+* [Typing `[x]` will insert a checked todo list item.](https://github.com/ckeditor/ckeditor5/issues/8877)
+* [Introduce bubbling of `view.Document` events.](https://github.com/ckeditor/ckeditor5/issues/8640)
+
+And also a single bug fix:
+
+* [“Remove highlight” follows the highlight command disabled state.](https://github.com/ckeditor/ckeditor5/issues/9174)
+
+<!-- TODO: Read more in the blog post: [URL]. -->
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: The `inputTransformation` event is no longer fired by the `Clipboard` plugin, now the `ClipboardPipeline` plugin is responsible for firing that event (see [#9128](https://github.com/ckeditor/ckeditor5/issues/9128)).
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: The `clipboardInput` and `inputTransformation` events should not be fired or stopped in the feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some content \[TODO migration guide link\] (see [#9128](https://github.com/ckeditor/ckeditor5/issues/9128)).
-* **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: We introduced bubbling of `view.Document` events, similar to how bubbling works in the DOM. That allowed us to reprioritize many listeners that previously had to rely on `priority`. However, it means that existing listeners that use priorities may now be executed in a wrong moment. The listeners to such events should be reviewed in terms of when they should be executed (in what context/element/phase). You can find more information regarding bubbling in the documentation: **\[TODO\]**. See [#8640](https://github.com/ckeditor/ckeditor5/issues/8640).
-
-Internal  The enter, delete and arrow key events handling moved to the usage of the bubbling observer.
-
-Internal (block-quote): The enter and delete events handling moved to the usage of the bubbling observer.
-
-Internal (code-block): The enter event handling moved to the usage of the bubbling observer.
-
-Internal (list): The enter and delete events handling moved to the usage of the bubbling observer.
-
-Internal (table): The arrow keys handling moved to the usage of the bubbling observer.
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: The `clipboardInput` and `inputTransformation` events should not be fired or stopped in the feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some content. [Read more more in the migration guide.](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-27.0.0.html) (see [#9128](https://github.com/ckeditor/ckeditor5/issues/9128)).
+* Introduced bubbling of `view.Document` events, similar to how bubbling works in the DOM. That allowed us to reprioritize many listeners that previously had to rely on the `priority` property. However, it means that existing listeners that use priorities may now be executed in a wrong moment. The listeners to such events should be reviewed in terms of when they should be executed (in what context/element/phase). You can find more information regarding bubbling in the documentation: **\[TODO\]**. See [#8640](https://github.com/ckeditor/ckeditor5/issues/8640).
 
 ### Features
 
@@ -32,8 +39,6 @@ Internal (table): The arrow keys handling moved to the usage of the bubbling obs
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Created the universal caption icon. Closes [#9196](https://github.com/ckeditor/ckeditor5/issues/9196). ([commit](https://github.com/ckeditor/ckeditor5/commit/6dce730c27db063c13c71d363458731cb57faac9))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced bubbling of `view.Document` events, similar to how bubbling works in the DOM. Bubbling allows listening on a view event on a specific kind of an element, hence simplifying code that needs to handle a specific event for only that element (e.g. `enter` in `blockquote`s only). Read more in the documentation: **\[TODO\]**. Closes [#8640](https://github.com/ckeditor/ckeditor5/issues/8640). ([commit](https://github.com/ckeditor/ckeditor5/commit/5527283324ad8bef5231acde0e49f9fc78df9c90))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `ArrowKeysObserver`. See [#8640](https://github.com/ckeditor/ckeditor5/issues/8640). ([commit](https://github.com/ckeditor/ckeditor5/commit/5527283324ad8bef5231acde0e49f9fc78df9c90))
-* New CLI switch `--quit` (`-q`) to terminate the web crawler scan as soon as the first error is found. ([commit](https://github.com/ckeditor/ckeditor5/commit/60b02328c354058456889bb4f27896a7d2fed44f))
-* Added support in the web-crawler for ignoring errors. Closes [#8800](https://github.com/ckeditor/ckeditor5/issues/8800). ([commit](https://github.com/ckeditor/ckeditor5/commit/5726c2d4fd561ed637e8328e8af782210bc2ed06))
 
 ### Bug fixes
 
@@ -44,13 +49,10 @@ Internal (table): The arrow keys handling moved to the usage of the bubbling obs
 
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: The paste as plain text feature was extracted to the dedicated `PastePlainText` plugin (see [#9128](https://github.com/ckeditor/ckeditor5/issues/9128)). ([commit](https://github.com/ckeditor/ckeditor5/commit/8461da5fd6d3e050b8fd15aecf4527a83d0899af))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `mouseup` event is fired by the `MouseObserver` (see [#9128](https://github.com/ckeditor/ckeditor5/issues/9128)). ([commit](https://github.com/ckeditor/ckeditor5/commit/8461da5fd6d3e050b8fd15aecf4527a83d0899af))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `mouseup` event is no longer fired by the `MouseEventsObserver` from the ckeditor5-table package (now handled by `MouseObserver`) (see [#9128](https://github.com/ckeditor/ckeditor5/issues/9128)). ([commit](https://github.com/ckeditor/ckeditor5/commit/8461da5fd6d3e050b8fd15aecf4527a83d0899af))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `mouseup` event is no longer fired by the `MouseEventsObserver` from the `@ckeditor/ckeditor5-table` package (now handled by `MouseObserver`) (see [#9128](https://github.com/ckeditor/ckeditor5/issues/9128)). ([commit](https://github.com/ckeditor/ckeditor5/commit/8461da5fd6d3e050b8fd15aecf4527a83d0899af))
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: The `TwoStepCaretMovement` feature is now using bubbling events. Closes [#7437](https://github.com/ckeditor/ckeditor5/issues/7437). ([commit](https://github.com/ckeditor/ckeditor5/commit/5527283324ad8bef5231acde0e49f9fc78df9c90))
 * Optimized icons. ([commit](https://github.com/ckeditor/ckeditor5/commit/358a653c18853f5bc4afba04da2ea3b883b5d1d6))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/eaed55a23dccd44c2a37dac5d820940458170903))
-* Decreased the size of output log from web crawler. Closes [#9062](https://github.com/ckeditor/ckeditor5/issues/9062). ([commit](https://github.com/ckeditor/ckeditor5/commit/60b02328c354058456889bb4f27896a7d2fed44f))
-* Improved performance of the crawler. Closes [#9041](https://github.com/ckeditor/ckeditor5/issues/9041). ([commit](https://github.com/ckeditor/ckeditor5/commit/9bdd424be8ccf542842cef1983091de8fa24b451))
-* Include Collaboration Features packages in the changelog. ([commit](https://github.com/ckeditor/ckeditor5/commit/b58f7fa1a057be4cac564cbd39885460e9959d4a))
 
 ### Released packages
 
@@ -58,6 +60,10 @@ Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/fra
 
 <details>
 <summary>Released packages (summary)</summary>
+
+New packages:
+
+* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language): v27.0.0
 
 Major releases (contain major breaking changes):
 
@@ -115,7 +121,6 @@ Other releases:
 * [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line): v26.0.0 => v27.0.0
 * [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed): v26.0.0 => v27.0.0
 * [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent): v26.0.0 => v27.0.0
-* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language): v26.0.0 => v27.0.0
 * [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor): v26.0.0 => v27.0.0
 * [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break): v26.0.0 => v27.0.0
 * [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination): v26.0.0 => v27.0.0
@@ -154,7 +159,7 @@ There were also some important bug fixes and improvements:
 * [A period now sticks to the preceding word during word wrap](https://github.com/ckeditor/ckeditor5/issues/8852).
 * [The <kbd>Ctrl</kbd> key is now translated to <kbd>Cmd</kbd> on macOS](https://github.com/ckeditor/ckeditor5/issues/5705) to avoid conflicts with some macOS keyboard shortcuts.
 
-<!-- TODO: Read more in the blog post: [URL]. -->
+Read more in the blog post: https://ckeditor.com/blog/ckeditor-5-v26.0.0-with-extensible-builds-inline-widget-styling-and-annotations-guides/.
 
 ### Collaboration features
 
