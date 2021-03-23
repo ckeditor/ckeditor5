@@ -62,14 +62,6 @@ The command can be executed using the {@link module:core/editor/editor~Editor#ex
 ```js
 // Applies language to the selected text part with the given language code.
 editor.execute( 'textPartLanguage', { languageCode: 'es' } );
-
-// Optionally, you can also provide text direction information ('ltr' or 'rtl'),
-// however, note that the feature will resolve text direction by itself, so in most
-// cases this option is redundant.
-editor.execute( 'textPartLanguage', {
-	languageCode: 'ar',
-	textDirection: 'rtl' // Optional text direction.
-} );
 ```
 
 <info-box>
