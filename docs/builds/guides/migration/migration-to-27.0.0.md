@@ -60,15 +60,21 @@ this.listenTo( view.document, 'delete', ( evt, data ) => {
 }, { context: 'blockquote' } );
 ```
 
+You should review your integration if some of your listeners were attached to the `delete` event.
+
+### The `enter` event
+
+The case for the {@link module:engine/view/document~Document#event:enter `enter`} event is similar to the `delete` event. 
+
 Example changes for widget:
 ```js
 // Old code.
-this.listenTo( view.document, 'enter', ( evt, domEventData ) => {
+this.listenTo( view.document, 'enter', ( evt, data ) => {
     ...
 } );
 
 // New code.
-this.listenTo( view.document, 'enter', ( evt, domEventData ) => {
+this.listenTo( view.document, 'enter', ( evt, data ) => {
 	// This event could be triggered from inside the widget but we are interested
 	// only when the widget is selected itself.
 	if ( evt.eventPhase != 'atTarget' ) {
@@ -79,12 +85,6 @@ this.listenTo( view.document, 'enter', ( evt, domEventData ) => {
     
 }, { context: isWidget } );
 ```
-
-You should review your integration if some of your listeners were attached to the `delete` event.
-
-### The `enter` event
-
-The case for the {@link module:engine/view/document~Document#event:enter `enter`} event is similar to the `delete` event. 
 
 You should review your integration if some of your listeners were attached to the `enter` event.
 
