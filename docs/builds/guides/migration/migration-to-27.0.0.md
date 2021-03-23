@@ -32,6 +32,7 @@ In v27.0.0 we introduced bubbling of the {@link module:engine/view/document~Docu
 Read more about bubbling events in the {@link framework/guides/deep-dive/event-system#bubbling-events event system guide}.
 
 ### The `delete` event
+
 Previously, the {@link module:engine/view/document~Document#event:delete `delete`} event was handled by different features on the different priority levels to ensure the precedence of for example list item over the block quote that is wrapping it. From v27.0.0 this precedence is handled by the events bubbling over the view document tree. Listeners registered for the deeper nested view elements are now triggered first, and then listeners for elements closer to the root element.     
 
 The `delete` listeners:
@@ -46,7 +47,38 @@ The `delete` listeners:
 
 Looking at this table, even if your listener was listening on the `highest` priority it will be triggered just before the last handler that is listening on the `$document` at the `low` priority because the `$document` is the default context for registering listeners.
 
-TODO examples before/after
+Example changes for block quote integration:
+```js
+// Old code.
+this.listenTo( view.document, 'delete', ( evt, data ) => {
+    ...
+}, { priority: priorities.high + 5 } );
+
+// New code.
+this.listenTo( view.document, 'delete', ( evt, data ) => {
+	...
+}, { context: 'blockquote' } );
+```
+
+Example changes for widget:
+```js
+// Old code.
+this.listenTo( view.document, 'enter', ( evt, domEventData ) => {
+    ...
+} );
+
+// New code.
+this.listenTo( view.document, 'enter', ( evt, domEventData ) => {
+	// This event could be triggered from inside the widget but we are interested
+	// only when the widget is selected itself.
+	if ( evt.eventPhase != 'atTarget' ) {
+		return;
+	}
+	
+	...
+    
+}, { context: isWidget } );
+```
 
 You should review your integration if some of your listeners were attached to the `delete` event.
 
@@ -61,3 +93,4 @@ You should review your integration if some of your listeners were attached to th
 This is a new event type that is introduced by the {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}. It listens to the `keydown` events at the `normal` priority and fires the {@link module:engine/view/document~Document#event:arrowKey `arrowKey`} events that bubble down the view document tree. This is similar behavior to the {@link module:enter/enterobserver~EnterObserver} and {@link module:typing/deleteobserver~DeleteObserver}.
 
 You should review your integration if some of your listeners were attached to the `keydown` event to handle arrow key presses.
+
