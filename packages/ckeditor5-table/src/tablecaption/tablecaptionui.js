@@ -54,8 +54,11 @@ export default class TableCaptionUI extends Plugin {
 					const modelCaptionElement = getCaptionFromModelSelection( editor.model.document.selection );
 					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
 
-					editingView.scrollToTheSelection();
+					if ( !figcaptionElement ) {
+						return;
+					}
 
+					editingView.scrollToTheSelection();
 					editingView.change( writer => {
 						// TODO: Write CSS for that.
 						writer.addClass( 'table__caption_highlighted', figcaptionElement );

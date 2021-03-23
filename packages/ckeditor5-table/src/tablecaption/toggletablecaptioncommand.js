@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { Element } from 'ckeditor5/src/engine';
-import { getCaptionFromTableModelElement } from './utils';
+import { getCaptionFromTableModelElement, locateTable } from './utils';
 
 /**
  * The toggle table caption command.
@@ -132,19 +132,4 @@ export default class ToggleTableCaptionCommand extends Command {
 		writer.setSelection( tableElement, 'on' );
 		writer.remove( captionElement );
 	}
-}
-
-// Depending on the position of the selection we either return the table under cursor or look for the table higher in the hierarchy.
-//
-// @param {module:engine/model/position~Position} position
-// @returns {module:engine/model/element~Element}
-function locateTable( position ) {
-	const nodeAfter = position.nodeAfter;
-
-	// Is the command triggered from the `tableToolbar`?
-	if ( nodeAfter && nodeAfter.is( 'element', 'table' ) ) {
-		return nodeAfter;
-	}
-
-	return position.findAncestor( 'table' );
 }

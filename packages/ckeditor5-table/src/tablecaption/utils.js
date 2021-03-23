@@ -40,18 +40,15 @@ export function getCaptionFromTableModelElement( tableModelElement ) {
  * @returns {module:engine/model/element~Element|null}
  */
 export function getCaptionFromModelSelection( selection ) {
-	const tableElement = selection.getFirstPosition().findAncestor( 'table' );
+	const tableElement = locateTable( selection.getFirstPosition() );
 	const captionElement = tableElement && getCaptionFromTableModelElement( tableElement );
 
-	if ( !captionElement ) {
+	// Make sure we are getting caption from the table and not, for example, image.
+	if ( !captionElement || !isTable( captionElement.parent ) ) {
 		return null;
 	}
 
-	if ( isTable( captionElement.parent ) ) {
-		return captionElement;
-	}
-
-	return null;
+	return captionElement;
 }
 
 /**
@@ -61,7 +58,6 @@ export function getCaptionFromModelSelection( selection ) {
  *  - A `<figcaption>` element inside a `<figure class="table">` element.
  *  - A `<caption>` inside a <table>.
  *
- * @private
  * @param {module:engine/view/element~Element} element
  * @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
  * cannot be matched.
@@ -78,4 +74,21 @@ export function matchTableCaptionViewElement( element ) {
 	}
 
 	return null;
+}
+
+/**
+ * Depending on the position of the selection we either return the table under cursor or look for the table higher in the hierarchy.
+ *
+ * @param {module:engine/model/position~Position} position
+ * @returns {module:engine/model/element~Element}
+ */
+export function locateTable( position ) {
+	const nodeAfter = position.nodeAfter;
+
+	// Is the command triggered from the `tableToolbar`?
+	if ( nodeAfter && nodeAfter.is( 'element', 'table' ) ) {
+		return nodeAfter;
+	}
+
+	return position.findAncestor( 'table' );
 }
