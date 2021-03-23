@@ -1322,19 +1322,11 @@ function forEachDomNodeAncestor( node, callback ) {
 function isNbspBlockFiller( domNode, blockElements ) {
 	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
 
-	if ( !isNBSP || !hasBlockParent( domNode, blockElements ) ) {
-		return false;
-	}
+	// `!!` to make sure that boolean is returned by this function, instead `null` could be returned.
+	const isOnlyChild = !!domNode.parentNode && domNode.parentNode.childNodes.length === 1;
+	const isLastAfterBr = !!domNode.previousSibling && domNode.previousSibling.tagName == 'BR' && !domNode.nextSibling;
 
-	if ( domNode.parentNode.childNodes.length === 1 ) {
-		return true;
-	}
-
-	if ( domNode.previousSibling && domNode.previousSibling.tagName == 'BR' && !domNode.nextSibling ) {
-		return true;
-	}
-
-	return false;
+	return isNBSP && hasBlockParent( domNode, blockElements ) && ( isOnlyChild || isLastAfterBr );
 }
 
 // Checks if domNode has block parent.
