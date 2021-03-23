@@ -88,7 +88,7 @@ Listeners are triggered in the order of those priorities. For multiple listeners
 
 It is possible to use relative priorities {@link module:utils/priorities~priorities#get `priorities.get( 'high' ) + 10`} but this is strongly discouraged.
 
-### `EventInfo`
+### Stopping events and returned value
 
 The first argument passed to an event handler is always an instance of the {@link module:utils/eventinfo~EventInfo}. There you can check the event {@link module:utils/eventinfo~EventInfo#name `name`}, {@link module:utils/eventinfo~EventInfo#source `source` emitter} of the event, and you could {@link module:utils/eventinfo~EventInfo#stop `stop()`} the event from further processing. 
 
@@ -138,7 +138,7 @@ All passed arguments will be available in all listeners that are added to that e
 
 **Note**: Most base classes (like the {@link module:core/command~Command} or the {@link module:core/plugin~Plugin}) already are {@link module:utils/emittermixin~Emitter emitters} and fire their own events.
 
-### Event stopping
+### Stopped events
 
 It is sometimes useful to know if an event was stopped by any of the listeners. There is an alternative way of firing event just for that:
 
@@ -280,7 +280,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 
 **Note**: Without specifying `context`, events are bound to the `'$document'` context.
 
-### Bubbling
+### Bubbling event flow
 
 Bubbling always starts from the virtual `'$capture'` context, all listeners attached for that context are triggered in the order of their priorities. Then the real bubbling starts from the deeper selection position end (either anchor or focus). If the first node accepts `'$text'` then all listeners for that context are triggered. If selected element matches the custom matcher callback, then those listeners are triggered. After calling listeners, and if an event was not stopped, events for its parent are triggered. This is continued until some listener stops the event or the `'$root'` element is reached. At the end the `'$document'` handlers are triggered. In all contexts listeners can be registered at desired priorities.
 
