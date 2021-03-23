@@ -26,3 +26,38 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 You can read about the whole input pipeline in details in {@link framework/guides/deep-dive/clipboard#input-pipeline clipboard pipeline guide}.
 
 ## The `view.Document` event bubbling
+
+In v27.0.0 we introduced bubbling of the {@link module:engine/view/document~Document `view.Document`} events, similar to how bubbling works in the DOM. That allowed us to reprioritize many listeners that previously had to rely on the `priority` property. However, it means that existing listeners that use priorities may now be executed at a wrong time (in the different order). The listeners to such events should be reviewed in terms of when they should be executed (in what context/element/phase).
+
+Read more about bubbling events in the {@link framework/guides/deep-dive/event-system#bubbling-events event system guide}.
+
+### The `delete` event
+Previously, the {@link module:engine/view/document~Document#event:delete `delete`} event was handled by different features on the different priority levels to ensure the precedence of for example list item over the block quote that is wrapping it. From v27.0.0 this precedence is handled by the events bubbling over the view document tree. Listeners registered for the deeper nested view elements are now triggered first, and then listeners for elements closer to the root element.     
+
+The `delete` listeners:
+
+| **Feature**        | **Priority before v27** | **Event context from v27** |
+| ---                | ---                     | ---                        |
+| List               | High + 10               | `li` @ Normal              |
+| BlockQuote         | High + 5                | `blockquote` @ Normal      |
+| Widget type around | High + 1                | *isWidget* @ Normal        |
+| Widget             | High                    | `$root` @ Normal           |
+| Delete             | Normal                  | `$document` @ Low          |
+
+Looking at this table, even if your listener was listening on the `highest` priority it will be triggered just before the last handler that is listening on the `$document` at the `low` priority because the `$document` is the default context for registering listeners.
+
+TODO examples before/after
+
+You should review your integration if some of your listeners were attached to the `delete` event.
+
+### The `enter` event
+
+The case for the {@link module:engine/view/document~Document#event:enter `enter`} event is similar to the `delete` event. 
+
+You should review your integration if some of your listeners were attached to the `enter` event.
+
+### The `arrowKey` event
+
+This is a new event type that is introduced by the {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}. It listens to the `keydown` events at the `normal` priority and fires the {@link module:engine/view/document~Document#event:arrowKey `arrowKey`} events that bubble down the view document tree. This is similar behavior to the {@link module:enter/enterobserver~EnterObserver} and {@link module:typing/deleteobserver~DeleteObserver}.
+
+You should review your integration if some of your listeners were attached to the `keydown` event to handle arrow key presses.
