@@ -4,7 +4,7 @@ category: framework-deep-dive
 
 # Event system
 
-{@link module:utils/emittermixin~Emitter Emitters} are objects that can fire events. They also provide means to bind into other emitters' events.
+{@link module:utils/emittermixin~Emitter Emitters} are objects that can fire events. They also provide means to listen to other emitters' events.
 
 Emitters are heavily used in the {@link framework/guides/architecture/editing-engine#conversion conversion}, {@link framework/guides/architecture/editing-engine#observers Observers} and are a base for the {@link framework/guides/deep-dive/observables Observables}.  
 

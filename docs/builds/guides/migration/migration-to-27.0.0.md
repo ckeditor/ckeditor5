@@ -24,3 +24,5 @@ From v27.0.0 the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `Cl
 The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired or stopped in your feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some specific content.
 
 You can read about the whole input pipeline in details in {@link framework/guides/deep-dive/clipboard#input-pipeline clipboard pipeline guide}.
+
+## The `view.Document` event bubbling
