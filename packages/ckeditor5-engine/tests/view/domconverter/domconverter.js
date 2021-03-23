@@ -329,7 +329,7 @@ describe( 'DomConverter', () => {
 				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
 			} );
 
-			it( 'should return false filler is placed in a non-block element', () => {
+			it( 'should return false if filler is placed in a non-block element', () => {
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 				const context = document.createElement( 'span' );
@@ -375,6 +375,13 @@ describe( 'DomConverter', () => {
 				context.innerHTML = '<br>&nbsp;';
 
 				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
+			} );
+
+			it( 'should return true for nbsp after <br>', () => {
+				const context = document.createElement( 'span' );
+				context.innerHTML = '<br>&nbsp;';
+
+				expect( converter.isBlockFiller( context.lastChild ) ).to.be.false;
 			} );
 		} );
 
