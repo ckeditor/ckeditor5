@@ -107,12 +107,17 @@ function extractStyles( htmlDocument ) {
 // @param {String} htmlString The HTML string to be cleaned.
 // @returns {String} The HTML string with leftover content removed.
 function cleanContentAfterBody( htmlString ) {
-	const regexp = /<\/body>(.*?)(<\/html>|$)/;
-	const match = htmlString.match( regexp );
+	const bodyCloseTag = '</body>';
+	const htmlCloseTag = '</html>';
 
-	if ( match && match[ 1 ] ) {
-		htmlString = htmlString.slice( 0, match.index ) + htmlString.slice( match.index ).replace( match[ 1 ], '' );
+	const bodyCloseIndex = htmlString.indexOf( bodyCloseTag );
+
+	if ( bodyCloseIndex < 0 ) {
+		return htmlString;
 	}
 
-	return htmlString;
+	const htmlCloseIndex = htmlString.indexOf( htmlCloseTag, bodyCloseIndex + bodyCloseTag.length );
+
+	return htmlString.substring( 0, bodyCloseIndex + bodyCloseTag.length ) +
+		( htmlCloseIndex >= 0 ? htmlString.substring( htmlCloseIndex ) : '' );
 }

@@ -255,7 +255,7 @@ function generateKnownKeyCodes() {
 }
 
 function splitKeystrokeText( keystroke ) {
-	return keystroke.split( /\s*\+\s*/ );
+	return keystroke.split( '+' ).map( key => key.trim() );
 }
 
 /**

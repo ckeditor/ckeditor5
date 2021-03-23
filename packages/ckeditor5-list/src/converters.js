@@ -445,12 +445,12 @@ export function cleanListItem( evt, data, conversionApi ) {
 			if ( child.is( '$text' ) ) {
 				// If this is the first node and it's a text node, left-trim it.
 				if ( firstNode ) {
-					child._data = child.data.replace( /^\s+/, '' );
+					child._data = child.data.trimStart();
 				}
 
 				// If this is the last text node before <ul> or <ol>, right-trim it.
 				if ( !child.nextSibling || isList( child.nextSibling ) ) {
-					child._data = child.data.replace( /\s+$/, '' );
+					child._data = child.data.trimEnd();
 				}
 			} else if ( isList( child ) ) {
 				// If this is a <ul> or <ol>, do not process it, just mark that we already visited list element.
