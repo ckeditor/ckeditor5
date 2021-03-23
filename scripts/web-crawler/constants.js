@@ -11,6 +11,8 @@ const DEFAULT_CONCURRENCY = require( 'os' ).cpus().length / 2;
 
 const DEFAULT_TIMEOUT = 15 * 1000;
 
+const DEFAULT_REMAINING_ATTEMPTS = 3;
+
 const ERROR_TYPES = {
 	PAGE_CRASH: {
 		event: 'error',
@@ -57,6 +59,7 @@ const DATA_ATTRIBUTE_NAME = 'data-cke-crawler-skip';
 module.exports = {
 	DEFAULT_CONCURRENCY,
 	DEFAULT_TIMEOUT,
+	DEFAULT_REMAINING_ATTEMPTS,
 	ERROR_TYPES,
 	PATTERN_TYPE_TO_ERROR_TYPE_MAP,
 	IGNORE_ALL_ERRORS_WILDCARD,
