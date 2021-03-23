@@ -545,6 +545,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-language"><code>@ckeditor/ckeditor5-language</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-language"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-language.svg" alt="@ckeditor/ckeditor5-language npm package badge"></a>
+	</td>
+	<td>
+		The text part language feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-link"><code>@ckeditor/ckeditor5-link</code></a>
 	</td>
 	<td>
