@@ -19,6 +19,7 @@ const { createSpinner, getProgressHandler } = require( './spinner' );
 
 const {
 	DEFAULT_TIMEOUT,
+	DEFAULT_REMAINING_ATTEMPTS,
 	ERROR_TYPES,
 	PATTERN_TYPE_TO_ERROR_TYPE_MAP,
 	IGNORE_ALL_ERRORS_WILDCARD,
@@ -62,7 +63,8 @@ async function startCrawler( { url, depth, exclusions, concurrency, quit } ) {
 		linksQueue: [ {
 			url,
 			parentUrl: '(none)',
-			remainingNestedLevels: depth
+			remainingNestedLevels: depth,
+			remainingAttempts: DEFAULT_REMAINING_ATTEMPTS
 		} ],
 		foundLinks: [ url ],
 		exclusions,
@@ -158,10 +160,22 @@ async function openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions
 			.splice( 0, concurrency - numberOfOpenPages )
 			// ...and open each of them in a dedicated page to collect nested links and errors (if any) they contain.
 			.map( async link => {
-				const {
-					errors: newErrors,
-					links: newLinks
-				} = await openLink( browser, { baseUrl, link, foundLinks, exclusions, onProgress } );
+				let newErrors = [];
+				let newLinks = [];
+
+				onProgress( {
+					total: foundLinks.length
+				} );
+
+				// If opening a given link causes an error, try opening it again until the limit of remaining attempts is reached.
+				do {
+					const { errors, links } = await openLink( browser, { baseUrl, link, foundLinks, exclusions } );
+
+					link.remainingAttempts--;
+
+					newErrors = [ ...errors ];
+					newLinks = [ ...links ];
+				} while ( newErrors.length && link.remainingAttempts );
 
 				newErrors.forEach( newError => onError( newError ) );
 
@@ -171,7 +185,8 @@ async function openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions
 					linksQueue.push( {
 						url: newLink,
 						parentUrl: link.url,
-						remainingNestedLevels: link.remainingNestedLevels - 1
+						remainingNestedLevels: link.remainingNestedLevels - 1,
+						remainingAttempts: DEFAULT_REMAINING_ATTEMPTS
 					} );
 				} );
 
@@ -199,15 +214,9 @@ async function openLinks( browser, { baseUrl, linksQueue, foundLinks, exclusions
  * @param {Link} data.link A link to crawl.
  * @param {Array.<String>} data.foundLinks An array of all links, which have been already discovered.
  * @param {Array.<String>} data.exclusions An array of patterns to exclude links. Empty array by default to not exclude anything.
- * @param {Function} data.onProgress Callback called every time just before opening a new link.
  * @returns {Promise.<ErrorsAndLinks>} A promise, which resolves to a collection of unique errors and links.
  */
-async function openLink( browser, { baseUrl, link, foundLinks, exclusions, onProgress } ) {
-	// Inform progress handler about current number of discovered links in total.
-	onProgress( {
-		total: foundLinks.length
-	} );
-
+async function openLink( browser, { baseUrl, link, foundLinks, exclusions } ) {
 	const errors = [];
 
 	const onError = error => errors.push( error );
@@ -595,6 +604,7 @@ function logErrors( errors ) {
  * @property {String} parentUrl The page on which the link was found.
  * @property {Number} remainingNestedLevels The remaining number of nested levels to be checked. If this value is 0, the
  * requested traversing depth has been reached and nested links from the URL associated with this link are not collected anymore.
+ * @property {Number} remainingAttempts The total number of reopenings allowed for the given link.
  */
 
 /**

@@ -4,9 +4,15 @@ category: builds-integration-frameworks
 order: 20
 ---
 
+{@snippet builds/frameworks/framework-integration}
+
 # Rich text editor component for Angular
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular)
+<p>
+	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
+		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg" alt="npm version" loading="lazy">
+	</a>
+</p>
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
