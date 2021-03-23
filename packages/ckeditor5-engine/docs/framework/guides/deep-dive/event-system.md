@@ -33,9 +33,9 @@ Once you mix the {@link module:utils/emittermixin~EmitterMixin} into your class 
 this.fire( 'eventName', ...args );
 ```
 
-All the listeners that are bound to that event will receive passed arguments by the reference.
+All passed arguments will be available in all listeners that are added to that event.
 
-**Note**: Most base classes (like the {@link module:core/command~Command} or the {@link module:core/plugin~Plugin}) already are {@link module:utils/emittermixin~Emitter emitters}.
+**Note**: Most base classes (like the {@link module:core/command~Command} or the {@link module:core/plugin~Plugin}) already are {@link module:utils/emittermixin~Emitter emitters} and fire their own events.
 
 ### Event stopping
 
@@ -60,7 +60,7 @@ Note that {@link module:utils/eventinfo~EventInfo} expects source object in the 
 
 ### Event return value
 
-Listeners can set the {@link module:utils/eventinfo~EventInfo#return `eventInfo.return`} field, so the value is returned from the {@link module:utils/emittermixin~Emitter#fire `fire()`} call. 
+Listeners can set the {@link module:utils/eventinfo~EventInfo#return `eventInfo.return`} field. This value will be returned by {@link module:utils/emittermixin~Emitter#fire `fire()`} after all callbacks are processed. 
 
 ```js
 emitter.on( 'eventName', ( eventInfo, ...args ) => {
@@ -74,7 +74,7 @@ console.log( result ); // -> 123
 
 ### Event namespaces
 
-Event system supports namespaced events, so you could fire:
+Event system supports namespaced events to give you a possibility to build a structure of callbacks. Namespacing is achieved by using `:` in the event name:
 
 ```js
 this.fire( 'foo:bar:eventName', ...args );
@@ -88,29 +88,31 @@ this.on( 'foo:bar', () => { ... } );
 this.on( 'foo:bar:eventName', () => { ... } );
 ```
 
+This way you can have more general events, listening to a broader event ("`foo`" in this case), or more detailed callbacks listening to specified events (`"foo:bar"` or "`foo:bar:eventName`").
+
 **Note**: Listeners registered on the same priority will be fired in the order of the registration (no matter if listening to a whole namespace or to the specific event).
 
 ## Listening to events
 
-You could attach a listener directly on the emitter object:
+Adding a callback to an event is simple. You can listen directly on the emitter object and use an anonyomous function:
 
 ```js
 emitter.on( 'eventName', ( eventInfo, ...args ) => { ... } );
 ```
 
-but this way you would need to keep the reference to the handler function to be able to unregister that listener:
+However, a function object will be needed if you would need to be able to remove the event listener:
 
 ```js
 emitter.off( 'eventName', handler );
 ```
 
-There is an easier way, you could use {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`} method from one emitter and bind listener to the other emitter:
+There is also another way to add an event listener - by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
 
 ```js
 foo.listenTo( bar, 'eventName', ( eventInfo, ...args ) => { ... } );
 ```
 
-This way you could easily detach the `foo` from `bar` simply by {@link module:utils/emittermixin~Emitter#stopListening `stopListening()`}.  
+Now you can easily detach the `foo` from `bar` simply by {@link module:utils/emittermixin~Emitter#stopListening `stopListening()`}.  
 
 ```js
 // Stop listening to a specific handler.
@@ -129,7 +131,7 @@ foo.stopListening();
 **Note**: The above detaches only the listeners that were attached from `foo` on `bar`, all other listeners are not affected.
 
 <info-box>
-    The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, ... )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, ... )`} (emitter is bound on itself). 
+    The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, ... )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, ... )`} (emitter is bound to itself). 
 </info-box>
 
 ### Listener priorities
@@ -159,7 +161,7 @@ It is possible to use relative priorities {@link module:utils/priorities~priorit
 
 The {@link module:engine/view/document~Document `view.Document`} is not only the {@link module:utils/observablemixin~Observable Observable} (and {@link module:utils/emittermixin~Emitter Emitter}) but it also implements {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface. This is the special interface that is implemented by the {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}. It provides a bubbling of the events over the virtual DOM tree. It is different from the bubbling that you know from the browser's DOM tree events bubbling. You don't register listeners on the exact instances of the elements in the view document tree, instead you can register handlers for the `context` (for example the {@link module:engine/view/element~Element view element} name, the virtual `'$capture'`, `'$text'`, `'$root'`, `'$document'` contexts, or by providing a callback that matches some view nodes).  
 
-### Listening to events
+### Listening to bubbling events
 
 Listeners registered in the context of the view element names:
 ```js
