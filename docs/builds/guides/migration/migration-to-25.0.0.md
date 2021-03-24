@@ -184,7 +184,8 @@ class CustomAnnotationUI extends ContextPlugin {
 		// The code responsible for the integration with editor annotation markers,
 		// editor events and the editor selection changes.
 		// The requirement of this integration might change in the future.
-		// // If the plugin was initialized as an editor plugin, the integration should look like the following:
+		// If the plugin was initialized as an editor plugin, the integration
+		// should look like the following:
 		const editorAnnotations = editor.plugins.get( 'EditorAnnotations' );
 
 		this.listenTo( editorAnnotations, 'refresh', () => refreshActiveAnnotation.bind( this ) );
