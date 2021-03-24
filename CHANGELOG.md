@@ -42,7 +42,7 @@ This release introduces some new features:
 ### Bug fixes
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `DataController#toView()` should have a default value for the `options` parameter. Closes [#9293](https://github.com/ckeditor/ckeditor5/issues/9293). ([commit](https://github.com/ckeditor/ckeditor5/commit/f77a3d57bddb96ae3280736f974cfd0b148611cb))
-* **[highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight)** The remove highlight button now also gets disabled along with the main highlight command. Closes [#9174](https://github.com/ckeditor/ckeditor5/issues/9174).
+* **[highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight)** The remove highlight button now also gets disabled along with the main highlight command. Closes [#9174](https://github.com/ckeditor/ckeditor5/issues/9174). ([commit](https://github.com/ckeditor/ckeditor5/commit/04acdfec9e7ee4b38daa1ef372e201f535d960fc))
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `EmitterMixin#listenTo()` method is split into listener and emitter parts. The `ObservableMixin` decorated methods reverted to the original method while destroying an observable. ([commit](https://github.com/ckeditor/ckeditor5/commit/5527283324ad8bef5231acde0e49f9fc78df9c90))
 
 ### Other changes
