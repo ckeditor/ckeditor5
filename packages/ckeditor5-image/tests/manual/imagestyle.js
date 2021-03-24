@@ -43,11 +43,10 @@ ClassicEditor
 		toolbar: TOOLBAR_CONFIG,
 		image: {
 			styles: {
-				arrangements: [ 'full', 'side', 'inline' ],
+				arrangements: [ 'full', 'side' ],
 				groups: []
 			},
 			toolbar: [
-				'imageStyle:inline',
 				'imageStyle:full',
 				'imageStyle:side',
 				'|',
