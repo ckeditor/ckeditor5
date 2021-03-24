@@ -1,5 +1,6 @@
 ---
 category: builds-migration
+menu-title: Migration to v26.0.0
 order: 30
 ---
 
