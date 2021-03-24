@@ -1,11 +1,12 @@
 ---
 category: builds-migration
+menu-title: Migration to v27.0.0
 order: 20
 ---
 
 # Migration to CKEditor 5 v27.0.0
 
-For the entire list of changes introduced in version 27.0.0, see the [changelog for CKEditor 5 v27.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md). **TODO** update link to the exact version anchor.
+For the entire list of changes introduced in version 27.0.0, see the [changelog for CKEditor 5 v27.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2700-2021-03-22).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v27.0.0.
 
@@ -19,8 +20,8 @@ Starting from v27.0.0, the {@link module:clipboard/clipboard~Clipboard `Clipboar
 
 The {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin became a "glue" plugin that loads the ones listed above.
 
-From v27.0.0 the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline`} plugin is responsible for firing the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event and also the new {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event.
+From v27.0.0, the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline`} plugin is responsible for firing the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event and also the new {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event.
 
-The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired or stopped in your feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some specific content.
+The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired or stopped in your feature code. Instead, the `data.content` property should be assigned to override the default content. You can stop this event only if you want to completely disable pasting or dropping of some specific content.
 
-You can read about the whole input pipeline in details in {@link framework/guides/deep-dive/clipboard#input-pipeline clipboard pipeline guide}.
+You can read about the whole input pipeline in details in {@link framework/guides/deep-dive/clipboard#input-pipeline Clipboard deep-dive guide}.
