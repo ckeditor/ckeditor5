@@ -18,7 +18,7 @@ The entire annotations API was redesigned in order to support multiple annotatio
 
 The new annotations API allows for activating (attaching) multiple annotation UIs at the same time. To allow multiple UIs at the same time, the annotation filtering function must be registered during the annotation UI activation. Though, still, one annotation can be handled only by one annotation UI at the same time.
 
-New annotations API allows for setting multiple active annotations at the same time (max one per each annotation UI), so at some point more than one annotation can be active for various annotation UIs.
+The new annotations API allows for setting multiple active annotations at the same time (max one per each annotation UI), so at some point more than one annotation can be active for various annotation UIs.
 
 An annotation UI is now activated with its own collection of filtered annotations and became responsible for reacting to more events. This allows for more customization possibilities, however, unfortunately, it comes with more code needed to be written for the custom annotation UI class. After the changes, an annotation UI is responsible for:
 * Displaying the annotation.
