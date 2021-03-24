@@ -10,7 +10,7 @@ For the entire list of changes introduced in version 25.0.0, see the [changelog 
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v25.0.0 due to changes introduced in the [collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) and the redesign of the annotations API.
 
-## Reason for changes in the Annotations API
+## The redesign of the Annotations API
 
 The entire annotations API was redesigned in order to support multiple annotation UIs at the same time. A good example of this is an idea of displaying [comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) in the [sidebar](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-display-mode.html#wide-sidebar) while showing suggestions from [track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) in [inline balloons](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-display-mode.html#inline-balloons) when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
 
