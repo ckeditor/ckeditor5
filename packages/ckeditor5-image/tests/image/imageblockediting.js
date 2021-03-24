@@ -634,4 +634,10 @@ describe( 'ImageBlockEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'integration with the clipboard pipeline', () => {
+		it( '', () => {
+
+		} );
+	} );
 } );

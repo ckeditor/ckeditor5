@@ -259,6 +259,20 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 	};
 }
 
+/**
+ * TODO
+ *
+ * @param {} editor
+ * @param {*} selection
+ * @returns
+ */
+export function determineImageTypeForInsertionAtSelection( editor, selection ) {
+	const schema = editor.model.schema;
+	const firstBlock = first( selection.getSelectedBlocks() );
+
+	return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
+}
+
 // Checks if image is allowed by schema in optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection} selection
@@ -339,9 +353,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 
 	// Try to replace the selected widget (e.g. another image).
 	if ( selectable.is( 'selection' ) ) {
-		const firstBlock = first( selectable.getSelectedBlocks() );
-
-		return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
+		return determineImageTypeForInsertionAtSelection( editor, selectable );
 	}
 
 	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';
