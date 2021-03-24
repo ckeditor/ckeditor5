@@ -171,7 +171,8 @@ class CustomAnnotationUI extends ContextPlugin {
 		// The code responsible for displaying annotations
 		// based on the annotation collection passed to this UI.
 
-		// The code responsible for setting an active and non-active annotation based on the annotation focus changes.
+		// The code responsible for setting an active and non-active annotation
+		// based on the annotation focus changes.
 		this.listenTo( annotations, 'focus', ( evt, annotation ) => {
 			this.setActiveAnnotation( annotation );
 		} );
