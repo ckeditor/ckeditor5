@@ -1,5 +1,6 @@
 ---
 category: builds-migration
+menu-title: Migration to v25.0.0
 order: 20
 ---
 
