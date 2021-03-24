@@ -37,7 +37,7 @@ ClassicEditor
 			text: 'Type some paragraph text...'
 		} );
 
-		view.render();
+		view._render();
 	} )
 	.catch( err => {
 		console.error( err.stack );

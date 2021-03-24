@@ -47,6 +47,7 @@ export default class Autoformat extends Plugin {
 	 * - `* ` or `- ` &ndash; A paragraph will be changed to a bulleted list.
 	 * - `1. ` or `1) ` &ndash; A paragraph will be changed to a numbered list ("1" can be any digit or a list of digits).
 	 * - `[] ` or `[ ] ` &ndash; A paragraph will be changed to a to-do list.
+	 * - `[x] ` or `[ x ] ` &ndash; A paragraph will be changed to a checked to-do list.
 	 *
 	 * @private
 	 */
@@ -63,6 +64,13 @@ export default class Autoformat extends Plugin {
 
 		if ( commands.get( 'todoList' ) ) {
 			blockAutoformatEditing( this.editor, this, /^\[\s?\]\s$/, 'todoList' );
+		}
+
+		if ( commands.get( 'checkTodoList' ) ) {
+			blockAutoformatEditing( this.editor, this, /^\[\s?x\s?\]\s$/, () => {
+				this.editor.execute( 'todoList' );
+				this.editor.execute( 'checkTodoList' );
+			} );
 		}
 	}
 

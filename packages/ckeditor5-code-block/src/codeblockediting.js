@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ShiftEnter } from 'ckeditor5/src/enter';
+import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
@@ -16,7 +17,7 @@ import OutdentCodeBlockCommand from './outdentcodeblockcommand';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
-	rawSnippetTextToModelDocumentFragment
+	rawSnippetTextToViewDocumentFragment
 } from './utils';
 import {
 	modelToViewCodeBlockInsertion,
@@ -135,18 +136,22 @@ export default class CodeBlockEditing extends Plugin {
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
 		// "spill out" as separate paragraphs.
 		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
-			const modelSelection = model.document.selection;
+			let insertionRange = model.createRange( model.document.selection.anchor );
 
-			if ( !modelSelection.anchor.parent.is( 'element', 'codeBlock' ) ) {
+			// Use target ranges in case this is a drop.
+			if ( data.targetRanges ) {
+				insertionRange = editor.editing.mapper.toModelRange( data.targetRanges[ 0 ] );
+			}
+
+			if ( !insertionRange.start.parent.is( 'element', 'codeBlock' ) ) {
 				return;
 			}
 
 			const text = data.dataTransfer.getData( 'text/plain' );
+			const writer = new UpcastWriter( editor.editing.view.document );
 
-			model.change( writer => {
-				model.insertContent( rawSnippetTextToModelDocumentFragment( writer, text ), modelSelection );
-				evt.stop();
-			} );
+			// Pass the view fragment to the default clipboardInput handler.
+			data.content = rawSnippetTextToViewDocumentFragment( writer, text );
 		} );
 
 		// Make sure multi–line selection is always wrapped in a code block when `getSelectedContent()`
@@ -221,7 +226,7 @@ export default class CodeBlockEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		} );
+		}, { context: 'pre' } );
 	}
 }
 

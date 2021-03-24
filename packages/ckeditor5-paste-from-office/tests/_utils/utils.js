@@ -159,7 +159,7 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 
 			testRunner( name, () => {
 				// Simulate data from Clipboard event
-				const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+				const clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
 				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
 				const dataTransfer = createDataTransfer( {
 					'text/html': fixtures.input[ name ],

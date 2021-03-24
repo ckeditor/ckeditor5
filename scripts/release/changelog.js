@@ -14,9 +14,14 @@ const fs = require( 'fs' );
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
 
 const CKEDITOR5_INTERNAL_PATH = path.resolve( __dirname, '..', '..', 'external', 'ckeditor5-internal' );
+const COLLABORATION_FEATURES_PATH = path.resolve( __dirname, '..', '..', 'external', 'collaboration-features' );
 
 if ( !fs.existsSync( CKEDITOR5_INTERNAL_PATH ) ) {
 	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
+}
+
+if ( !fs.existsSync( COLLABORATION_FEATURES_PATH ) ) {
+	throw new Error( `The script assumes that the directory "${ COLLABORATION_FEATURES_PATH }" exists.` );
 }
 
 Promise.resolve()
@@ -25,7 +30,6 @@ Promise.resolve()
 		packages: 'packages',
 		releaseBranch: 'release',
 		highlightsPlaceholder: true,
-		collaborationFeatures: true,
 		transformScope: name => {
 			if ( name === 'ckeditor5' ) {
 				return 'https://www.npmjs.com/package/ckeditor5';
@@ -35,8 +39,8 @@ Promise.resolve()
 				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
 			}
 
-			if ( name === 'cloud-services-core' ) {
-				return 'https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core';
+			if ( name === 'letters' ) {
+				return 'https://www.npmjs.com/package/@ckeditor/letters';
 			}
 
 			return 'https://www.npmjs.com/package/@ckeditor/ckeditor5-' + name;
@@ -44,6 +48,11 @@ Promise.resolve()
 		externalRepositories: [
 			{
 				cwd: CKEDITOR5_INTERNAL_PATH,
+				packages: 'packages',
+				skipLinks: true
+			},
+			{
+				cwd: COLLABORATION_FEATURES_PATH,
 				packages: 'packages',
 				skipLinks: true
 			}

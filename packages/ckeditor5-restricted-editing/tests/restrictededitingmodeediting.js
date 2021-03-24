@@ -15,7 +15,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
@@ -23,6 +23,7 @@ import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicedi
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -31,7 +32,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingModeEditing, ClipboardPipeline ] } );
 		} );
 
 		afterEach( async () => {
@@ -74,7 +75,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		}
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing, ClipboardPipeline ] } );
 			model = editor.model;
 
 			plugin = editor.plugins.get( RestrictedEditingModeEditing );
@@ -96,7 +97,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 	describe( 'conversion', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, TableEditing, RestrictedEditingModeEditing, ClipboardPipeline ]
+			} );
 			model = editor.model;
 		} );
 
@@ -295,7 +298,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 	describe( 'editing behavior', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
 			model = editor.model;
 		} );
 
@@ -532,11 +535,41 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 		} );
+
+		it( 'should not move collapsed marker to $graveyard if it was removed by dragging', () => {
+			setModelData( model, '<paragraph>foo bar b[]az</paragraph>' );
+
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			const range = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 5 )
+			);
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range,
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.deleteContent( model.createSelection( range ) );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo ar b[]az</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 4 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'enforcing restrictions on deleteContent', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
 			model = editor.model;
 		} );
 
@@ -625,7 +658,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		let firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
@@ -720,8 +753,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, BlockQuoteEditing, LinkEditing, Typing, Clipboard,
-					RestrictedEditingModeEditing
+				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, BlockQuoteEditing, LinkEditing, Typing,
+					ClipboardPipeline, RestrictedEditingModeEditing
 				]
 			} );
 			model = editor.model;
@@ -854,12 +887,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 			it( 'should be blocked outside exception markers (collapsed selection)', () => {
 				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 				const spy = sinon.spy();
-				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: {
-						getData: sinon.spy()
-					}
+					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -869,12 +901,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 			it( 'should be blocked outside exception markers (non-collapsed selection)', () => {
 				setModelData( model, '<paragraph>[foo bar baz]</paragraph>' );
 				const spy = sinon.spy();
-				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: {
-						getData: sinon.spy()
-					}
+					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -883,13 +914,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			it( 'should be blocked outside exception markers (non-collapsed selection, starts inside exception marker)', () => {
 				setModelData( model, '<paragraph>foo b[ar baz]</paragraph>' );
+				addExceptionMarker( 4, 7, model.document.getRoot().getChild( 0 ) );
+
 				const spy = sinon.spy();
-				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: {
-						getData: sinon.spy()
-					}
+					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -898,13 +930,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			it( 'should be blocked outside exception markers (non-collapsed selection, ends inside exception marker)', () => {
 				setModelData( model, '<paragraph>[foo ba]r baz</paragraph>' );
+				addExceptionMarker( 4, 7, model.document.getRoot().getChild( 0 ) );
+
 				const spy = sinon.spy();
-				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: {
-						getData: sinon.spy()
-					}
+					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -1053,7 +1086,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing, ClipboardPipeline ]
 			} );
 			model = editor.model;
 			view = editor.editing.view;
@@ -1286,7 +1319,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing, ClipboardPipeline ]
 			} );
 
 			model = editor.model;
@@ -1417,7 +1450,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing, ClipboardPipeline ]
 			} );
 
 			model = editor.model;
@@ -1432,7 +1465,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 			beforeEach( async () => {
 				evtData = {
 					keyCode: getCode( 'A' ),
-					ctrlKey: true,
+					ctrlKey: !env.isMac,
+					metaKey: env.isMac,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};
