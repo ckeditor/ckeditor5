@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global CKEditorInspector, document, console, window */
+/* global CKEditorInspector, document, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -36,8 +36,26 @@ const PLUGINS_CONFIG = [
 	EasyImage
 ];
 
-ClassicEditor
-	.create( document.querySelector( '#editor-semantic' ), {
+startEditors();
+
+async function startEditors() {
+	window.editorInline = await ClassicEditor.create( document.querySelector( '#editor-inline' ), {
+		cloudServices: CS_CONFIG,
+		plugins: PLUGINS_CONFIG,
+		toolbar: TOOLBAR_CONFIG,
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
+		}
+	} );
+
+	window.editorSemantic = await ClassicEditor.create( document.querySelector( '#editor-semantic' ), {
 		cloudServices: CS_CONFIG,
 		plugins: PLUGINS_CONFIG,
 		toolbar: TOOLBAR_CONFIG,
@@ -54,18 +72,9 @@ ClassicEditor
 				'imageTextAlternative'
 			]
 		}
-	} )
-	.then( editor => {
-		window.editorSemantic = editor;
-
-		CKEditorInspector.attach( { semantic: editor } );
-	} )
-	.catch( err => {
-		console.error( err.stack );
 	} );
 
-ClassicEditor
-	.create( document.querySelector( '#editor-formatting' ), {
+	window.editorFormatting = await ClassicEditor.create( document.querySelector( '#editor-formatting' ), {
 		cloudServices: CS_CONFIG,
 		plugins: PLUGINS_CONFIG,
 		toolbar: TOOLBAR_CONFIG,
@@ -83,37 +92,12 @@ ClassicEditor
 				'imageTextAlternative'
 			]
 		}
-	} )
-	.then( editor => {
-		window.editorFormatting = editor;
-
-		CKEditorInspector.attach( { formatting: editor } );
-	} )
-	.catch( err => {
-		console.error( err.stack );
 	} );
 
-ClassicEditor
-	.create( document.querySelector( '#editor-inline' ), {
-		cloudServices: CS_CONFIG,
-		plugins: PLUGINS_CONFIG,
-		toolbar: TOOLBAR_CONFIG,
-		image: {
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:wrapText',
-				'imageStyle:breakText',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
-			]
-		}
-	} )
-	.then( editor => {
-		window.editorInline = editor;
-
-		CKEditorInspector.attach( { inline: editor } );
-	} )
-	.catch( err => {
-		console.error( err.stack );
+	CKEditorInspector.attach( {
+		inline: window.editorInline,
+		semantic: window.editorSemantic,
+		formatting: window.editorFormatting
 	} );
+}
+
