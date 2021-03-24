@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global CKEditorInspector, document, console, window */
+/* global document, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -35,7 +35,6 @@ import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks
 				'redo'
 			],
 			image: {
-				// resizeUnit: 'px',
 				toolbar: [
 					'toggleImageCaption', '|',
 					'imageStyle:inline',
