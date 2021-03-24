@@ -1,14 +1,13 @@
 ---
 category: framework-deep-dive
 ---
-
 # Event system
 
 {@link module:utils/emittermixin~Emitter Emitters} are objects that can fire events. They also provide means to listen to other emitters' events.
 
-Emitters are heavily used in the {@link framework/guides/architecture/editing-engine#conversion conversion}, {@link framework/guides/architecture/editing-engine#observers Observers} and are a base for the {@link framework/guides/deep-dive/observables Observables}.  
+Emitters are heavily used throughout the entire editor architecture. They are the building blocks for mechanisms such as {@link framework/guides/deep-dive/observables observables}, {@link framework/guides/architecture/editing-engine#observers engine's view observers}, and {@link framework/guides/architecture/editing-engine#conversion conversion}.
 
-Any class can become an event emitter; all you need to do is mix the {@link module:utils/emittermixin~EmitterMixin} into it:
+Any class can become an event emitter. All you need to do is mix the {@link module:utils/emittermixin~EmitterMixin} into it:
 
 ```js
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -20,10 +19,6 @@ class AnyClass {
 
 mix( AnyClass, EmitterMixin );
 ```
-
-<info-box>
-	Check out the {@link framework/guides/deep-dive/custom-element-conversion custom element conversion} guide to learn more about the advanced usage of events in the conversion pipelines.
-</info-box>
 
 ## Listening to events
 
@@ -62,7 +57,7 @@ foo.stopListening();
 ```
 
 <info-box>
-    The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, ... )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, ... )`} (emitter is bound to itself). 
+    The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, ... )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, ... )`} (emitter is bound to itself).
 </info-box>
 
 ### Listener priorities
@@ -82,7 +77,7 @@ There are 5 named priorities:
 * `low`
 * `lowest`
 
-Listeners are triggered in the order of those priorities. For multiple listeners attached on the same priority, they are fired in the order of the registration.
+Listeners are triggered in the order of those priorities (first `highest`, then `high`, etc.). For multiple listeners attached on the same priority, they are fired in the order of the registration.
 
 **Note**: If any listener {@link module:utils/eventinfo~EventInfo#stop stops} the event, no other listeners including those on lower priorities will be called.
 
@@ -90,25 +85,34 @@ It is possible to use relative priorities {@link module:utils/priorities~priorit
 
 ### Stopping events and returned value
 
-The first argument passed to an event handler is always an instance of the {@link module:utils/eventinfo~EventInfo}. There you can check the event {@link module:utils/eventinfo~EventInfo#name `name`}, {@link module:utils/eventinfo~EventInfo#source `source` emitter} of the event, and you could {@link module:utils/eventinfo~EventInfo#stop `stop()`} the event from further processing. 
+The first argument passed to an event handler is always an instance of the {@link module:utils/eventinfo~EventInfo}. There you can check the event {@link module:utils/eventinfo~EventInfo#name `name`}, {@link module:utils/eventinfo~EventInfo#source `source` emitter} of the event, and you can {@link module:utils/eventinfo~EventInfo#stop `stop()`} the event from further processing.
 
 ```js
 emitter.on( 'eventName', ( eventInfo, data ) => {
+	console.log( 'foo' );
 	eventInfo.stop();
 } );
+
+emitter.on( 'eventName', ( eventInfo, data ) => {
+	console.log( 'bar' ); // This won't be called.
+} );
+
+emitter.fire( 'eventName' ); // Logs "foo" only.
 ```
 
-Listeners can set the {@link module:utils/eventinfo~EventInfo#return `return`} field. This value will be returned by {@link module:utils/emittermixin~Emitter#fire `fire()`} after all callbacks are processed.
+Listeners can set the {@link module:utils/eventinfo~EventInfo#return `return`} value. This value will be returned by {@link module:utils/emittermixin~Emitter#fire `fire()`} after all callbacks are processed.
 
 ```js
 emitter.on( 'eventName', ( eventInfo, data ) => {
 	eventInfo.return = 123;
 } );
+
+emitter.fire( 'eventName' ); // -> 123
 ```
 
 ### Listening on namespaced events
 
-Event system supports namespaced events to give you a possibility to build a structure of callbacks. Namespacing is achieved by using `:` in the event name:
+The event system supports namespaced events to give you a possibility to build a structure of callbacks. Namespacing is achieved by using `:` in the event name:
 
 ```js
 this.fire( 'foo:bar:baz', data );
@@ -122,7 +126,9 @@ this.on( 'foo:bar', () => { ... } );
 this.on( 'foo:bar:baz', () => { ... } );
 ```
 
-This way you can have more general events, listening to a broader event ("`foo`" in this case), or more detailed callbacks listening to specified events (`"foo:bar"` or "`foo:bar:baz`").
+This way you can have more general events, listening to a broader event (`'foo'` in this case), or more detailed callbacks listening to specified events (`'foo:bar'` or `'foo:bar:baz'`).
+
+This mechanism is used for instance in the conversion where thanks to events named as `'insert:<elementName>'` you can listen to the insertion of a specific element (e.g. `'insert:p'`) or all elements insertion (`'insert'`).
 
 **Note**: Listeners registered on the same priority will be fired in the order of the registration (no matter if listening to a whole namespace or to the specific event).
 
@@ -136,7 +142,7 @@ this.fire( 'eventName', argA, argB, ... );
 
 All passed arguments will be available in all listeners that are added to that event.
 
-**Note**: Most base classes (like the {@link module:core/command~Command} or the {@link module:core/plugin~Plugin}) already are {@link module:utils/emittermixin~Emitter emitters} and fire their own events.
+**Note**: Most base classes (like {@link module:core/command~Command} or {@link module:core/plugin~Plugin}) already are {@link module:utils/emittermixin~Emitter emitters} and fire their own events.
 
 ### Stopped events
 
@@ -160,8 +166,8 @@ if ( eventInfo.stop.called ) {
 Note that {@link module:utils/eventinfo~EventInfo} expects source object in the first parameter as an origin of the event.
 
 ### Event return value
- 
-If any handler set the {@link module:utils/eventinfo~EventInfo#return `eventInfo.return`} field then this value will be returned by {@link module:utils/emittermixin~Emitter#fire `fire()`} after all callbacks are processed. 
+
+If any handler set the {@link module:utils/eventinfo~EventInfo#return `eventInfo.return`} field then this value will be returned by {@link module:utils/emittermixin~Emitter#fire `fire()`} after all callbacks are processed.
 
 ```js
 emitter.on( 'eventName', ( eventInfo, ...args ) => {
@@ -175,23 +181,26 @@ console.log( result ); // -> 123
 
 ## Delegating events
 
-The {@link module:utils/emittermixin~Emitter Emitter} interface also provides the events {@link module:utils/emittermixin~Emitter#delegate delegation} so that selected events are fired by another {@link module:utils/emittermixin~Emitter}.
+The {@link module:utils/emittermixin~Emitter Emitter} interface also provides the {@link module:utils/emittermixin~Emitter#delegate events delegation} mechanism so that selected events are fired by another {@link module:utils/emittermixin~Emitter}.
 
 ### Setting events delegation
 
 Delegate a specific events to another emitter:
+
 ```js
 emitterA.delegate( 'foo' ).to( emitterB );
 emitterA.delegate( 'foo', 'bar' ).to( emitterC );
 ```
 
 You can delegate events with a different name:
+
 ```js
 emitterA.delegate( 'foo' ).to( emitterB, 'bar' );
 emitterA.delegate( 'foo' ).to( emitterB, name => `delegated:${ name }` );
 ```
 
 It is also possible to delegate all the events:
+
 ```js
 emitterA.delegate( '*' ).to( emitterB );
 ```
@@ -233,9 +242,11 @@ emitterA.fire( 'foo' );
 //   event "baz" emitted by C; source: emitterA; path: [ emitterA, emitterB, emitterC ]
 ```
 
-## Bubbling events
+## View events bubbling
 
-The {@link module:engine/view/document~Document `view.Document`} is not only the {@link module:utils/observablemixin~Observable Observable} (and {@link module:utils/emittermixin~Emitter Emitter}) but it also implements {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface. This is the special interface that is implemented by the {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}. It provides a bubbling of the events over the virtual DOM tree. It is different from the bubbling that you know from the browser's DOM tree events bubbling. You don't register listeners on the exact instances of the elements in the view document tree, instead you can register handlers for the `context` (for example the {@link module:engine/view/element~Element view element} name, the virtual `'$capture'`, `'$text'`, `'$root'`, `'$document'` contexts, or by providing a callback that matches some view nodes).
+The {@link module:engine/view/document~Document `view.Document`} is not only an {@link module:utils/observablemixin~Observable Observable} and {@link module:utils/emittermixin~Emitter Emitter} but it also implements the special {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface (implemented by {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}). It provides a mechanism for bubbling events over the virtual DOM tree.
+
+It is different from the bubbling that you know from the DOM tree events bubbling. You do not register listeners on specific instances of the elements in the view document tree. Instead, you can register handlers for specific contexts. A context is either a name of an element, or one of the virtual contexts (`'$capture'`, `'$text'`, `'$root'`, `'$document'`), or a callback to match desired nodes.
 
 ### Listening to bubbling events
 
