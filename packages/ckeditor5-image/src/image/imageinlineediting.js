@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 
 import {
 	toImageWidget,
@@ -40,7 +41,7 @@ export default class ImageInlineEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing ];
+		return [ ImageEditing, ClipboardPipeline ];
 	}
 
 	/**

@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 
 import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
 import {
@@ -39,7 +40,7 @@ export default class ImageBlockEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing ];
+		return [ ImageEditing, ClipboardPipeline ];
 	}
 
 	/**
