@@ -41,7 +41,7 @@ And also a single bug fix:
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Created the universal caption icon. Closes [#9196](https://github.com/ckeditor/ckeditor5/issues/9196). ([commit](https://github.com/ckeditor/ckeditor5/commit/6dce730c27db063c13c71d363458731cb57faac9))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced bubbling of the `view.Document` events, similar to how bubbling works in the DOM. Bubbling allows listening on a view event on a specific kind of element, hence simplifying code that needs to handle a specific event for only that element (e.g. `enter` in `blockquote` elements only). Read more in the [Event system deep-dive guide](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/event-system.html). Closes [#8640](https://github.com/ckeditor/ckeditor5/issues/8640). ([commit](https://github.com/ckeditor/ckeditor5/commit/5527283324ad8bef5231acde0e49f9fc78df9c90))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `ArrowKeysObserver`. See [#8640](https://github.com/ckeditor/ckeditor5/issues/8640). ([commit](https://github.com/ckeditor/ckeditor5/commit/5527283324ad8bef5231acde0e49f9fc78df9c90))
-* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: Added the `'textPartLanguage'` toolbar dropdown to support setting a text part language. Closes [#8989](https://github.com/ckeditor/ckeditor5/issues/8989).
+* **[language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: Added support setting the text part language. Closes [#8989](https://github.com/ckeditor/ckeditor5/issues/8989).
 
 ### Bug fixes
 
