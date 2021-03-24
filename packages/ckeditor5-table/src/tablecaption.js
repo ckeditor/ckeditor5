@@ -11,6 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import TableCaptionEditing from './tablecaption/tablecaptionediting';
 import TableCaptionUI from './tablecaption/tablecaptionui';
 
+import '../theme/tablecaption.css';
+
 /**
  * The table caption plugin.
  *
