@@ -185,7 +185,7 @@ describe( 'downcast converters', () => {
 							'<table>' +
 								'<tbody>' +
 									'<tr>' +
-										'<td>&nbsp;</td>' +
+										'<td><span data-cke-filler="true">&nbsp;</span></td>' +
 									'</tr>' +
 								'</tbody>' +
 							'</table>' +
@@ -213,7 +213,7 @@ describe( 'downcast converters', () => {
 
 				assertEqualMarkup( editor.getData(),
 					'<table foo="bar">' +
-						'<tr><td><p>&nbsp;</p></td></tr>' +
+						'<tr><td><p><span data-cke-filler="true">&nbsp;</span></p></td></tr>' +
 					'</table>'
 				);
 			} );
@@ -231,7 +231,7 @@ describe( 'downcast converters', () => {
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
-								'<tr><td>&nbsp;</td></tr>' +
+								'<tr><td><span data-cke-filler="true">&nbsp;</span></td></tr>' +
 							'</tbody>' +
 						'</table>' +
 					'</figure>'
@@ -250,7 +250,7 @@ describe( 'downcast converters', () => {
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
-									'<tr><td>&nbsp;</td></tr>' +
+									'<tr><td><span data-cke-filler="true">&nbsp;</span></td></tr>' +
 								'</tbody>' +
 							'</table>' +
 						'</figure>' +
@@ -338,7 +338,7 @@ describe( 'downcast converters', () => {
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
-								'<tr><td>&nbsp;</td></tr>' +
+								'<tr><td><span data-cke-filler="true">&nbsp;</span></td></tr>' +
 							'</tbody>' +
 						'</table>' +
 					'</figure>'

@@ -104,7 +104,7 @@ describe( 'Table feature – integration', () => {
 		} );
 
 		it( 'fixing empty roots should be transparent to undo', () => {
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
 
 			editor.data.set( viewTable( [ [ 'foo' ] ] ) );
@@ -115,7 +115,7 @@ describe( 'Table feature – integration', () => {
 				writer.remove( root.getChild( 0 ) );
 			} );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 
 			editor.execute( 'undo' );
 
@@ -123,7 +123,7 @@ describe( 'Table feature – integration', () => {
 
 			editor.execute( 'redo' );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 
 			editor.execute( 'undo' );
 
@@ -144,12 +144,20 @@ describe( 'Table feature – integration', () => {
 				writer.remove( otherRoot.getChild( 0 ) );
 			} );
 
-			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( '<p>&nbsp;</p>' );
-			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal(
+				'<p><span data-cke-filler="true">&nbsp;</span></p>'
+			);
+
+			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal(
+				'<p><span data-cke-filler="true">&nbsp;</span></p>'
+			);
 
 			editor.execute( 'undo' );
 
-			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal(
+				'<p><span data-cke-filler="true">&nbsp;</span></p>'
+			);
+
 			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 
 			editor.execute( 'undo' );

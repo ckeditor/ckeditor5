@@ -41,7 +41,13 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
  * @see module:engine/view/filler~BR_FILLER
  * @function
  */
-export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
+export const NBSP_FILLER = domDocument => {
+	const span = domDocument.createElement( 'span' );
+	span.dataset.ckeFiller = true;
+	span.innerHTML = '\u00A0';
+
+	return span;
+};
 
 /**
  * `<br>` filler creator. This is a function which creates `<br data-cke-filler="true">` element.

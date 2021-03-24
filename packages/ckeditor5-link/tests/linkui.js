@@ -522,7 +522,7 @@ describe( 'LinkUI', () => {
 						'<p>[</p>' +
 						'<p><span class="ck-fake-link-selection">foo</span>]</p>'
 					);
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
+					expect( editor.getData() ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p><p>foo</p>' );
 				} );
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
@@ -585,9 +585,9 @@ describe( 'LinkUI', () => {
 					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal(
 						'<p>foo</p>' +
-						'<p>&nbsp;</p><p>&nbsp;</p>' +
+						'<p><span data-cke-filler="true">&nbsp;</span></p><p><span data-cke-filler="true">&nbsp;</span></p>' +
 						'<p>bar</p>' +
-						'<p>&nbsp;</p><p>&nbsp;</p>' +
+						'<p><span data-cke-filler="true">&nbsp;</span></p><p><span data-cke-filler="true">&nbsp;</span></p>' +
 						'<p>baz</p>'
 					);
 				} );
@@ -640,7 +640,7 @@ describe( 'LinkUI', () => {
 						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
 
 					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
-					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+					expect( editor.getData() ).to.equal( '<p>foo</p><p><span data-cke-filler="true">&nbsp;</span></p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
@@ -669,7 +669,12 @@ describe( 'LinkUI', () => {
 						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
 
 					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
-					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+					expect( editor.getData() ).to.equal(
+						'<p>foo</p>' +
+						'<p><span data-cke-filler="true">&nbsp;</span></p>' +
+						'<p><span data-cke-filler="true">&nbsp;</span></p>' +
+						'<p>bar</p>'
+					);
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
@@ -698,7 +703,12 @@ describe( 'LinkUI', () => {
 						'<p>bar</p>';
 
 					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
-					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+					expect( editor.getData() ).to.equal(
+						'<p>foo</p>' +
+						'<p><span data-cke-filler="true">&nbsp;</span></p>' +
+						'<p><span data-cke-filler="true">&nbsp;</span></p>' +
+						'<p>bar</p>'
+					);
 				} );
 			} );
 		} );

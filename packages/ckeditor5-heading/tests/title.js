@@ -467,7 +467,7 @@ describe( 'Title', () => {
 		it( 'should return empty paragraph when body is empty', () => {
 			setData( model, '<title><title-content>Foo</title-content></title>' );
 
-			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 		} );
 
 		it( 'should return marker - starts and ends inside a body', () => {

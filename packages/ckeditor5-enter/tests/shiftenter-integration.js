@@ -50,7 +50,7 @@ describe( 'ShiftEnter integration', () => {
 
 		editor.execute( 'shiftEnter' );
 
-		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><br>&nbsp;</p>' );
+		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><br><span data-cke-filler="true">&nbsp;</span></p>' );
 		expect( editor.ui.view.editable.element.innerHTML ).to.equal( '<p><br><br data-cke-filler="true"></p>' );
 	} );
 

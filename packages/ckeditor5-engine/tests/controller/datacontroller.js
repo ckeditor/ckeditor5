@@ -398,7 +398,7 @@ describe( 'DataController', () => {
 		it( 'should get empty paragraph (with trim=none)', () => {
 			setData( model, '<paragraph></paragraph>' );
 
-			expect( data.get( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( data.get( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 		} );
 
 		it( 'should get two paragraphs', () => {

@@ -1883,23 +1883,23 @@ describe( 'ListEditing', () => {
 						'1' +
 						'<ul>' +
 							'<li>' +
-								'&nbsp;' +
+								'<span data-cke-filler="true">&nbsp;</span>' +
 								'<ul>' +
-									'<li>&nbsp;</li>' +
+									'<li><span data-cke-filler="true">&nbsp;</span></li>' +
 									'<li>1.1.2</li>' +
 									'<li>1.1.3</li>' +
 									'<li>1.1.4</li>' +
 								'</ul>' +
 							'</li>' +
 							'<li>' +
-								'&nbsp;' +
+								'<span data-cke-filler="true">&nbsp;</span>' +
 								'<ul><li>1.2.1</li></ul>' +
 							'</li>' +
 						'</ul>' +
 					'</li>' +
 					'<li>2</li>' +
 					'<li>' +
-						'&nbsp;' +
+						'<span data-cke-filler="true">&nbsp;</span>' +
 						'<ol>' +
 							'<li>' +
 								'3<strong>.</strong>1' +

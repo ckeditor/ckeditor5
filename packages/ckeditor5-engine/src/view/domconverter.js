@@ -26,8 +26,8 @@ import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancest
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import { isElement } from 'lodash-es';
 
-// eslint-disable-next-line new-cap
-const BR_FILLER_REF = BR_FILLER( document );
+const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
+const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 /**
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -1320,6 +1320,10 @@ function forEachDomNodeAncestor( node, callback ) {
 // @param {Node} domNode DOM node.
 // @returns {Boolean}
 function isNbspBlockFiller( domNode, blockElements ) {
+	return domNode.isEqualNode( NBSP_FILLER_REF ) || isUnmarkedNbspBlockFiller( domNode, blockElements );
+}
+
+function isUnmarkedNbspBlockFiller( domNode, blockElements ) {
 	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
 
 	return isNBSP && hasBlockParent( domNode, blockElements ) && domNode.parentNode.childNodes.length === 1;

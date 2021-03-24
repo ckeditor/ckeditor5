@@ -148,7 +148,7 @@ describe( 'Paragraph feature – integration', () => {
 					const doc = editor.model.document;
 					const root = doc.getRoot();
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
 
 					editor.setData( '<p>Foobar.</p>' );
@@ -157,7 +157,7 @@ describe( 'Paragraph feature – integration', () => {
 						writer.remove( root.getChild( 0 ) );
 					} );
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 
 					editor.execute( 'undo' );
 
@@ -165,7 +165,7 @@ describe( 'Paragraph feature – integration', () => {
 
 					editor.execute( 'redo' );
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 
 					editor.execute( 'undo' );
 
@@ -193,12 +193,20 @@ describe( 'Paragraph feature – integration', () => {
 						writer.remove( otherRoot.getChild( 0 ) );
 					} );
 
-					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal(
+						'<p><span data-cke-filler="true">&nbsp;</span></p>'
+					);
+
+					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal(
+						'<p><span data-cke-filler="true">&nbsp;</span></p>'
+					);
 
 					editor.execute( 'undo' );
 
-					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal(
+						'<p><span data-cke-filler="true">&nbsp;</span></p>'
+					);
+
 					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
 
 					editor.execute( 'undo' );

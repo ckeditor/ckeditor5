@@ -68,7 +68,9 @@ describe( 'PageBreakEditing', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
 
 				expect( editor.getData() ).to.equal(
-					'<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>'
+					'<div class="page-break" style="page-break-after:always;">' +
+						'<span style="display:none;"><span data-cke-filler="true">&nbsp;</span></span>' +
+					'</div>'
 				);
 			} );
 		} );

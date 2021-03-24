@@ -740,7 +740,9 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert empty codeBlock to empty pre tag', () => {
 			setModelData( model, '<codeBlock language="plaintext"></codeBlock>' );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<pre><code class="language-plaintext">&nbsp;</code></pre>' );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal(
+				'<pre><code class="language-plaintext"><span data-cke-filler="true">&nbsp;</span></code></pre>'
+			);
 		} );
 
 		it( 'should convert non-empty codeBlock to pre tag', () => {

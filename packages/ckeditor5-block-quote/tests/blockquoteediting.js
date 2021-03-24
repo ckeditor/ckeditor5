@@ -99,7 +99,7 @@ describe( 'BlockQuoteEditing', () => {
 			writer.remove( writer.createRangeIn( bq ) );
 		} );
 
-		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' ); // Autoparagraphed.
+		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' ); // Autoparagraphed.
 	} );
 
 	it( 'should unwrap a blockQuote if it was inserted into another blockQuote', () => {

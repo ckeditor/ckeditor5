@@ -388,6 +388,10 @@ function makeRows( tableData, options ) {
 						`</${ wrappingElement }>`;
 				}
 
+				if ( contents == '&nbsp;' ) {
+					contents = '<span data-cke-filler="true">&nbsp;</span>';
+				}
+
 				const formattedAttributes = formatAttributes( attributes );
 				const tableCell = `<${ resultingCellElement }${ formattedAttributes }>${ contents }</${ resultingCellElement }>`;
 

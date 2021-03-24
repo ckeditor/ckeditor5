@@ -35,7 +35,7 @@ describe( 'Bug ckeditor5#5564', () => {
 	it( 'preserves a soft break in an empty paragraph', () => {
 		setModelData( editor.model, '<paragraph>x</paragraph><paragraph><softBreak /></paragraph><paragraph>x</paragraph>' );
 
-		const expectedData = '<p>x</p><p><br>&nbsp;</p><p>x</p>';
+		const expectedData = '<p>x</p><p><br><span data-cke-filler="true">&nbsp;</span></p><p>x</p>';
 		const actualData = editor.getData();
 
 		expect( actualData ).to.equal( expectedData );

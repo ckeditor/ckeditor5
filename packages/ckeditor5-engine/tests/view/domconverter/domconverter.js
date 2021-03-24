@@ -300,7 +300,7 @@ describe( 'DomConverter', () => {
 				converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			} );
 
-			it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
+			it( 'should return true if the node is an nbsp filler', () => {
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 				const context = document.createElement( 'div' );
@@ -309,33 +309,54 @@ describe( 'DomConverter', () => {
 				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
 			} );
 
-			it( 'should return false if the node is an nbsp filler and is not a single child of a block level element', () => {
+			it( 'should return true for nbsp filler after <br>', () => {
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 				const context = document.createElement( 'div' );
+				context.innerHTML = '<br>';
 				context.appendChild( nbspFillerInstance );
-				context.appendChild( document.createTextNode( 'a' ) );
 
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
 			} );
 
-			it( 'should return false if there are two nbsp fillers in a block element', () => {
-				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+			describe( 'backward compatibility tests (using nbsp text node as a filler)', () => {
+				it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
+					const nbspFillerInstance = document.createTextNode( '\u00A0' );
 
-				const context = document.createElement( 'div' );
-				context.appendChild( nbspFillerInstance );
-				context.appendChild( NBSP_FILLER( document ) ); // eslint-disable-line new-cap
+					const context = document.createElement( 'div' );
+					context.appendChild( nbspFillerInstance );
 
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
-			} );
+					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
+				} );
 
-			it( 'should return false filler is placed in a non-block element', () => {
-				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+				it( 'should return false if the node is an nbsp filler and is not a single child of a block level element', () => {
+					const nbspFillerInstance = document.createTextNode( '\u00A0' );
 
-				const context = document.createElement( 'span' );
-				context.appendChild( nbspFillerInstance );
+					const context = document.createElement( 'div' );
+					context.appendChild( nbspFillerInstance );
+					context.appendChild( document.createTextNode( 'a' ) );
 
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+				} );
+
+				it( 'should return false if there are two nbsp fillers in a block element', () => {
+					const nbspFillerInstance = document.createTextNode( '\u00A0' );
+
+					const context = document.createElement( 'div' );
+					context.appendChild( nbspFillerInstance );
+					context.appendChild( document.createTextNode( '\u00A0' ) );
+
+					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+				} );
+
+				it( 'should return false if filler is placed in a non-block element', () => {
+					const nbspFillerInstance = document.createTextNode( '\u00A0' );
+
+					const context = document.createElement( 'span' );
+					context.appendChild( nbspFillerInstance );
+
+					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+				} );
 			} );
 
 			it( 'should return false if the node is an instance of the BR block filler', () => {
