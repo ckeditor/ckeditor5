@@ -13,11 +13,11 @@ Listed below are the most important changes that require your attention when upg
 
 Starting from v27.0.0, the {@link module:clipboard/clipboard~Clipboard `Clipboard` plugin} is no longer firing the `inputTransformation` events. The code of this feature was refactored and split into:
 
-* {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline` plugin}, 
-* {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText` plugin}, 
-* {@link module:clipboard/dragdrop~DragDrop `DragDrop` plugin}. 
-  
-The {@link module:clipboard/clipboard~Clipboard `Clipboard` plugin} became a "glue" plugin that loads ones listed above. 
+* {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline` plugin},
+* {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText` plugin},
+* {@link module:clipboard/dragdrop~DragDrop `DragDrop` plugin}.
+
+The {@link module:clipboard/clipboard~Clipboard `Clipboard` plugin} became a "glue" plugin that loads ones listed above.
 
 From v27.0.0 the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline` plugin} is responsible for firing the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event and also the new {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event.
 
@@ -27,15 +27,15 @@ You can read about the whole input pipeline in details in {@link framework/guide
 
 ## The `view.Document` event bubbling
 
-In v27.0.0 we introduced bubbling of the {@link module:engine/view/document~Document `view.Document`} events, similar to how bubbling works in the DOM. That allowed us to reprioritize many listeners that previously had to rely on the `priority` property. However, it means that existing listeners that use priorities may now be executed at a wrong time (in the different order). The listeners to such events should be reviewed in terms of when they should be executed (in what context/element/phase).
+In v27.0.0 we introduced bubbling of the {@link module:engine/view/document~Document `view.Document`} events, similar to how bubbling works in the DOM. That allowed us to reprioritize many listeners that previously had to rely on the `priority` property. However, it means that existing listeners that use priorities may now be executed at a wrong time (in the different order). These listeners should be reviewed in terms of when they should be executed (in what context/element/phase).
 
 Read more about bubbling events in the {@link framework/guides/deep-dive/event-system#bubbling-events event system guide}.
 
 ### The `delete` event
 
-Previously, the {@link module:engine/view/document~Document#event:delete `delete`} event was handled by different features on the different priority levels to ensure the precedence of for example list item over the block quote that is wrapping it. From v27.0.0 this precedence is handled by the events bubbling over the view document tree. Listeners registered for the deeper nested view elements are now triggered first, and then listeners for elements closer to the root element.     
+Previously, the {@link module:engine/view/document~Document#event:delete `delete`} event was handled by different features on the different priority levels to, for example, ensure the precedence of the list item over the block quote that is wrapping it. From v27.0.0 on, this precedence is handled by the events bubbling over the view document tree. Listeners registered for the view elements deeper in the view tree are now triggered before listeners for elements closer to the {@link module:engine/view/rooteditableelement~RootEditableElement root element}.
 
-The `delete` listeners:
+Let's take a look at the list of `delete` listeners across core editor features and their {@link module:utils/priorities~PriorityString priorities}:
 
 | **Feature**        | **Priority before v27** | **Event context from v27** |
 | ---                | ---                     | ---                        |
@@ -45,32 +45,34 @@ The `delete` listeners:
 | Widget             | High                    | `$root` @ Normal           |
 | Delete             | Normal                  | `$document` @ Low          |
 
-Looking at this table, even if your listener was listening on the `highest` priority it will be triggered just before the last handler that is listening on the `$document` at the `low` priority because the `$document` is the default context for registering listeners.
+Looking at this table, even if your listener was listening on the `highest` priority, it will be triggered just before the last handler that is listening on the `$document` at the `low` priority because the `$document` is the {@link framework/guides/deep-dive/event-system#listening-to-bubbling-events default context} for registering listeners.
 
-Example changes for block quote integration:
+Here is an example of changes you may need for proper integration with the block quote feature:
+
 ```js
 // Old code.
 this.listenTo( view.document, 'delete', ( evt, data ) => {
-    ...
+	// ...
 }, { priority: priorities.high + 5 } );
 
 // New code.
 this.listenTo( view.document, 'delete', ( evt, data ) => {
-	...
+	// ...
 }, { context: 'blockquote' } );
 ```
 
-You should review your integration if some of your listeners were attached to the `delete` event.
+We recommend you to review your integration if some of your listeners were attached to the `delete` event.
 
 ### The `enter` event
 
-The case for the {@link module:engine/view/document~Document#event:enter `enter`} event is similar to the `delete` event. 
+The case for the {@link module:engine/view/document~Document#event:enter `enter`} event is similar to the `delete` event.
 
-Example changes for widget:
+Here is an example of changes you may need for proper integration with the widget system:
+
 ```js
 // Old code.
 this.listenTo( view.document, 'enter', ( evt, data ) => {
-    ...
+	// ...
 } );
 
 // New code.
@@ -80,13 +82,13 @@ this.listenTo( view.document, 'enter', ( evt, data ) => {
 	if ( evt.eventPhase != 'atTarget' ) {
 		return;
 	}
-	
-	...
-    
+
+	// ...
+
 }, { context: isWidget } );
 ```
 
-You should review your integration if some of your listeners were attached to the `enter` event.
+We recommend you to review your integration if some of your listeners were attached to the `enter` event.
 
 ### The `arrowKey` event
 
