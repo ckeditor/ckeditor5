@@ -940,7 +940,7 @@ function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 			continue;
 		}
 
-		// Do not overwrite the attribute if a node has already specified it. See #8921.
+		// Do not override the attribute if it's already present. See #8921.
 		if ( node.hasAttribute( modelAttribute.key ) ) {
 			continue;
 		}
