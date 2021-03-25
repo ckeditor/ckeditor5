@@ -300,7 +300,7 @@ Bubbling always starts from the virtual `'$capture'` context. All listeners atta
 
 Then, the real bubbling starts from the selection position (either its anchor or focus &mdash; depending on what is deeper).
 
-If text nodes are allowed at the selection position (this is verified in the model's schema), then the first context is `'$text'`. Then the event bubbles through all elements up to the `'$root'` and finally `'$document'`.
+If text nodes are allowed at the selection position, then the first context is `'$text'`. Then the event bubbles through all elements up to the `'$root'` and finally `'$document'`.
 
 In all contexts listeners can be registered at desired priorities. If a listeners stops an event, then this event is not fired for the remaining contexts.
 

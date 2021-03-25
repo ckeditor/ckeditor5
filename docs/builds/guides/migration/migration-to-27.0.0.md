@@ -1,6 +1,7 @@
 ---
 category: builds-migration
-order: 20
+menu-title: Migration to v27.0.0
+order: 10
 ---
 
 # Migration to CKEditor 5 v27.0.0
@@ -29,7 +30,7 @@ You can read about the whole input pipeline in details in the {@link framework/g
 
 In v27.0.0 we introduced bubbling of the {@link module:engine/view/document~Document `view.Document`} events, similar to how bubbling works in the DOM. That allowed us to reprioritize many listeners that previously had to rely on the `priority` property. However, it means that existing listeners that use priorities may now be executed at a wrong time (in the different order). These listeners should be reviewed in terms of when they should be executed (in what context/element/phase).
 
-Read more about bubbling events in the {@link framework/guides/deep-dive/event-system#bubbling-events event system guide}.
+Read more about bubbling events in the {@link framework/guides/deep-dive/event-system#view-events-bubbling event system guide}.
 
 ### The `delete` event
 
