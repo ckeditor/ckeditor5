@@ -181,7 +181,7 @@ console.log( result ); // -> 123
 
 ## Delegating events
 
-The {@link module:utils/emittermixin~Emitter Emitter} interface also provides the {@link module:utils/emittermixin~Emitter#delegate events delegation} mechanism, so that selected events are fired by another {@link module:utils/emittermixin~Emitter}.
+The {@link module:utils/emittermixin~Emitter `Emitter`} interface also provides the {@link module:utils/emittermixin~Emitter#delegate events delegation} mechanism, so that selected events are fired by another {@link module:utils/emittermixin~Emitter}.
 
 ### Setting events delegation
 
@@ -244,7 +244,7 @@ emitterA.fire( 'foo' );
 
 ## View events bubbling
 
-The {@link module:engine/view/document~Document `view.Document`} is not only an {@link module:utils/observablemixin~Observable Observable} and an {@link module:utils/emittermixin~Emitter Emitter} but it also implements the special {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface (implemented by {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}). It provides a mechanism for bubbling events over the virtual DOM tree.
+The {@link module:engine/view/document~Document `view.Document`} is not only an {@link module:utils/observablemixin~Observable Observable} and an {@link module:utils/emittermixin~Emitter emitter} but it also implements the special {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface (implemented by {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}). It provides a mechanism for bubbling events over the virtual DOM tree.
 
 It is different from the bubbling that you know from the DOM tree events bubbling. You do not register listeners on specific instances of the elements in the view document tree. Instead, you can register handlers for specific contexts. A context is either a name of an element, or one of the virtual contexts (`'$capture'`, `'$text'`, `'$root'`, `'$document'`), or a callback to match desired nodes.
 
