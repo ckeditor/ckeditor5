@@ -25,7 +25,7 @@ When the user pastes or drops content into the editor, the browser fires an even
 4. Then, the clipboard feature listens to the `ClipboardPipeline#inputTransformation` event, takes the processed content, transforms it to the {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event with the transformed content in the event data `content` property as a {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
 5. Finally, the clipboard feature listens to the `ClipboardPipeline#contentInsertion` event, takes the model fragment and {@link module:engine/model/model~Model#insertContent inserts} it into the editor and stores the range which contains all the performed changes in the `resultRange` property of the event data.
 
-The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using low priority listeners. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior.
+The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using the {@link framework/guides/deep-dive/event-system#listener-priorities low priority listeners}. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior.
 
 ### Input pipeline events overview
 ```plaintext
@@ -42,7 +42,7 @@ The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardP
                     └─────────┬────────┘
                               │
                   ┌───────────V───────────┐
-                  │   ClipboardPipeline   │   Converts view.DocumentFragment 
+                  │   ClipboardPipeline   │   Converts view.DocumentFragment
                   │  inputTransformation  │   to model.DocumentFragment.
                   └───────────┬───────────┘
                               │
@@ -58,7 +58,7 @@ By default the clipboard feature retrieves `text/html` or `text/plain` from the 
 
 The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event can be used to override this behavior. For example, you can use it to:
 
-* Handle pasted or droppped files (that you can retrieve from the `dataTransfer`).
+* Handle pasted or dropped files (that you can retrieve from the `dataTransfer`).
 
 	Handling file upload requires, however, a lot more than reading {@link module:clipboard/datatransfer~DataTransfer#files `dataTransfer.files`} so for a complete code example we recommend checking the source code of plugins like [`ImageUploadEditing`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/src/imageupload/imageuploadediting.js).
 * Change the type of data that the clipboard feature reads from the clipboard. For instance, you may want to use `application/rtf` if it is present in the `dataTransfer` (and ignore `text/html` in that case).
@@ -116,6 +116,10 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data
 }, { priority: 'lowest' } );
 ```
 
+<info-box>
+	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities event system deep dive guide} to learn more about event listener priorities.
+</info-box>
+
 ### Paste as plain text plugin example
 
 You can use knowledge from previous sections to create a full plugin which will allow users to paste the content as plain text while the feature is toggled on.
@@ -162,7 +166,7 @@ class PastePlainText extends Plugin {
 
 			const dataTransfer = data.dataTransfer;
 			let content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
-			
+
 			data.content = this.editor.data.htmlProcessor.toView( content );
 		} );
 	}
@@ -225,15 +229,15 @@ It allows to process the content that will be then put into the clipboard or to 
 
 ### Output pipeline events overview
 ```plaintext
- ┌──────────────────────┐          ┌──────────────────────┐   Retrieves the selected 
+ ┌──────────────────────┐          ┌──────────────────────┐   Retrieves the selected
  │     view.Document    │          │     view.Document    │   model.DocumentFragment
- │         copy         │          │          cut         │   and converts it to 
+ │         copy         │          │          cut         │   and converts it to
  └───────────┬──────────┘          └───────────┬──────────┘   view.DocumentFragment.
              │                                 │
              └────────────────┌────────────────┘
                               │
-                    ┌─────────V────────┐   Processes view.DocumentFragment  
-                    │   view.Document  │   to text/html and text/plain  
+                    ┌─────────V────────┐   Processes view.DocumentFragment
+                    │   view.Document  │   to text/html and text/plain
                     │  clipboardOutput │   and stores results in data.dataTransfer.
                     └──────────────────┘
 ```
