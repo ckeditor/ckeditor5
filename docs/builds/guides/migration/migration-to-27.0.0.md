@@ -11,19 +11,19 @@ Listed below are the most important changes that require your attention when upg
 
 ## Clipboard input pipeline integration
 
-Starting from v27.0.0, the {@link module:clipboard/clipboard~Clipboard `Clipboard` plugin} is no longer firing the `inputTransformation` events. The code of this feature was refactored and split into:
+Starting from v27.0.0, the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin is no longer firing the `inputTransformation` events. The code of this feature was refactored and split into:
 
-* {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline` plugin},
-* {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText` plugin},
-* {@link module:clipboard/dragdrop~DragDrop `DragDrop` plugin}.
+* the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline`} plugin,
+* the {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText`} plugin,
+* the {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin.
 
-The {@link module:clipboard/clipboard~Clipboard `Clipboard` plugin} became a "glue" plugin that loads ones listed above.
+The {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin became a "glue" plugin that loads ones listed above.
 
-From v27.0.0 the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline` plugin} is responsible for firing the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event and also the new {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event.
+From v27.0.0 the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline`} plugin is responsible for firing the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event and also the new {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event.
 
-The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired or stopped in your feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some specific content.
+The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired nor stopped in your feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some specific content.
 
-You can read about the whole input pipeline in details in {@link framework/guides/deep-dive/clipboard#input-pipeline clipboard pipeline guide}.
+You can read about the whole input pipeline in details in the {@link framework/guides/deep-dive/clipboard#input-pipeline clipboard pipeline} guide.
 
 ## The `view.Document` event bubbling
 
@@ -35,7 +35,7 @@ Read more about bubbling events in the {@link framework/guides/deep-dive/event-s
 
 Previously, the {@link module:engine/view/document~Document#event:delete `delete`} event was handled by different features on the different priority levels to, for example, ensure the precedence of the list item over the block quote that is wrapping it. From v27.0.0 on, this precedence is handled by the events bubbling over the view document tree. Listeners registered for the view elements deeper in the view tree are now triggered before listeners for elements closer to the {@link module:engine/view/rooteditableelement~RootEditableElement root element}.
 
-Let's take a look at the list of `delete` listeners across core editor features and their {@link module:utils/priorities~PriorityString priorities}:
+Take a look at the list of `delete` listeners across the core editor features and their {@link module:utils/priorities~PriorityString priorities}:
 
 | **Feature**        | **Priority before v27** | **Event context from v27** |
 | ---                | ---                     | ---                        |
@@ -61,7 +61,7 @@ this.listenTo( view.document, 'delete', ( evt, data ) => {
 }, { context: 'blockquote' } );
 ```
 
-We recommend you to review your integration if some of your listeners were attached to the `delete` event.
+We recommend reviewing your integration if some of your listeners were attached to the `delete` event.
 
 ### The `enter` event
 
@@ -88,7 +88,7 @@ this.listenTo( view.document, 'enter', ( evt, data ) => {
 }, { context: isWidget } );
 ```
 
-We recommend you to review your integration if some of your listeners were attached to the `enter` event.
+We recommend reviewing your integration if some of your listeners were attached to the `enter` event.
 
 ### The `arrowKey` event
 

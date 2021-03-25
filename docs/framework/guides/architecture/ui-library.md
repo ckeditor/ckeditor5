@@ -558,5 +558,5 @@ Pressing <kbd>Ctrl</kbd>+<kbd>A</kbd> will only log:
 ```
 
 <info-box>
-	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities deep dive into event system} guide to learn more about event listener priorities.
+	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities event system deep dive guide} to learn more about event listener priorities.
 </info-box>
