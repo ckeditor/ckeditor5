@@ -133,4 +133,20 @@ describe( 'HtmlDataProcessor', () => {
 			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
 		} );
 	} );
+
+	describe( 'useMarkedFiller()', () => {
+		it( 'should turn on and off using marked block fillers', () => {
+			const fragment = parse( '<container:p></container:p>' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
+
+			dataProcessor.useMarkedFillers( true );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
+
+			dataProcessor.useMarkedFillers( false );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
+		} );
+	} );
 } );
