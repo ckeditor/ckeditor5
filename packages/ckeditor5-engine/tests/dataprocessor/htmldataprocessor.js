@@ -140,11 +140,11 @@ describe( 'HtmlDataProcessor', () => {
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 
-			dataProcessor.useMarkedFiller( true );
+			dataProcessor.useMarkedFillers( true );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 
-			dataProcessor.useMarkedFiller( false );
+			dataProcessor.useMarkedFillers( false );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
