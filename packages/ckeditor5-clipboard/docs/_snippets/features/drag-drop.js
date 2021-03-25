@@ -262,6 +262,9 @@ ClassicEditor
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 			supportAllValues: true
 		},
+		image: {
+			toolbar: [ 'imageTextAlternative' ]
+		},
 		placeholder: 'Drop the content here to test the feature.',
 		cloudServices: CS_CONFIG
 	} )
