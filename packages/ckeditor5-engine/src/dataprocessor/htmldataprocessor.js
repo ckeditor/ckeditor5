@@ -94,17 +94,17 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * If the processor is set to use marked filler, it will insert marked nbsp fillers (`<span data-cke-filler="true">&nbsp;</span>`),
-	 * instead of regular nbsp characters (`&nbsp;`).
+	 * If the processor is set to use marked fillers, it will insert nbsp fillers wrapped in spans
+	 * (`<span data-cke-filler="true">&nbsp;</span>`), instead of regular nbsp characters (`&nbsp;`).
 	 *
 	 * This mode allows for more precise handling of block fillers (so they don't leak into editor content) but bloats the editor
 	 * data with additional markup.
 	 *
 	 * This mode may be required by some features and will be turned on by them automatically.
 	 *
-	 * @type {Boolean} value Whether to use (`true`) or not (`false`) marked nbsp fillers.
+	 * @param {Boolean} value Whether to use (`true`) or not (`false`) marked nbsp fillers.
 	 */
-	useMarkedFiller( value ) {
+	useMarkedFillers( value ) {
 		this._domConverter.blockFillerMode = value ? 'markedNbsp' : 'nbsp';
 	}
 
