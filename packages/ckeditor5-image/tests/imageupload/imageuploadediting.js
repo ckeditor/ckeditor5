@@ -717,10 +717,7 @@ describe( 'ImageUploadEditing', () => {
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
-		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
-
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 		const id = adapterMocks[ 0 ].loader.id;
 		const expected =
@@ -739,10 +736,7 @@ describe( 'ImageUploadEditing', () => {
 		const clipboardHtml = `<img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
-		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
-
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 		const expected = `<paragraph><imageInline src="${ base64Sample }"></imageInline>[]foo</paragraph>`;
 
@@ -762,9 +756,6 @@ describe( 'ImageUploadEditing', () => {
 		const clipboardHtml = `<img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
-		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
-
 		// Stub `fetch` so it can be rejected.
 		sinon.stub( window, 'fetch' ).callsFake( () => {
 			return new Promise( ( res, rej ) => rej( 'could not fetch' ) );
@@ -775,7 +766,7 @@ describe( 'ImageUploadEditing', () => {
 			content = data.content;
 		} );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 		expectData(
 			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
@@ -1048,9 +1039,6 @@ describe( 'ImageUploadEditing', () => {
 			const clipboardHtml = `<img src=${ base64Sample } />`;
 			const dataTransfer = mockDataTransfer( clipboardHtml );
 
-			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
-			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
-
 			// Stub `HTMLCanvasElement#toBlob` to return invalid blob, so image conversion always fails.
 			sinon.stub( HTMLCanvasElement.prototype, 'toBlob' ).callsFake( fn => fn( null ) );
 
@@ -1059,7 +1047,7 @@ describe( 'ImageUploadEditing', () => {
 				content = data.content;
 			} );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expectData(
 				'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
