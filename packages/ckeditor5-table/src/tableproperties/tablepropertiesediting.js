@@ -69,6 +69,11 @@ export default class TablePropertiesEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
+		// TODO (pomek): Add this option to the `table` configuration interface.
+		editor.config.define( 'table.tableProperties.defaultProperties', {
+			alignment: 'center'
+		} );
+
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor ) );

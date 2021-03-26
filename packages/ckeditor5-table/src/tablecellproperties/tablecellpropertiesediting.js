@@ -69,6 +69,12 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const conversion = editor.conversion;
 		const locale = editor.locale;
 
+		// TODO (pomek): Add this option to the `table` configuration interface.
+		editor.config.define( 'table.tableCellProperties.defaultProperties', {
+			horizontalAlignment: 'center',
+			verticalAlignment: 'middle'
+		} );
+
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableCellBorderStyle', new TableCellBorderStyleCommand( editor ) );

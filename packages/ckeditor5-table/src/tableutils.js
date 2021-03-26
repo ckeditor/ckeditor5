@@ -94,15 +94,20 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} [options.columns=2] The number of columns to create.
 	 * @param {Number} [options.headingRows=0] The number of heading rows.
 	 * @param {Number} [options.headingColumns=0] The number of heading columns.
+	 * @param {String} [options.defaultProperties={}] Default properties for the created table.
+	 * @param {String} [options.defaultCellProperties={}] Default properties for the created table.
 	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
 	createTable( writer, options ) {
-		const table = writer.createElement( 'table' );
+		const defaultProperties = options.defaultProperties || {};
+		const defaultCellProperties = options.defaultCellProperties || {};
+
+		const table = writer.createElement( 'table', defaultProperties );
 
 		const rows = parseInt( options.rows ) || 2;
 		const columns = parseInt( options.columns ) || 2;
 
-		createEmptyRows( writer, table, 0, rows, columns );
+		createEmptyRows( writer, table, 0, rows, columns, defaultCellProperties );
 
 		if ( options.headingRows ) {
 			updateNumericAttribute( 'headingRows', options.headingRows, table, writer, 0 );

@@ -19,19 +19,20 @@ before_install:
 install:
 - yarn install
 # The "./manual/all-features-dll.js" test requires building DLL.
-- yarn run dll:build
+#- yarn run dll:build
 script:
-- node ./scripts/continuous-integration-script.js
-- yarn run lint
-- yarn run stylelint
-- ./scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
-- yarn run docs --strict
-- 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-    travis_wait 30 yarn run docs:build-and-publish-nightly;
-  fi'
+- echo "Testing. Do not trigger the full build."
+#- node ./scripts/continuous-integration-script.js
+#- yarn run lint
+#- yarn run stylelint
+#- ./scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
+#- yarn run docs --strict
+#- 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
+#    travis_wait 30 yarn run docs:build-and-publish-nightly;
+#  fi'
 after_script:
 - export END_TIME=$( date +%s )
-- ckeditor5-dev-tests-notify-travis-status
+#- ckeditor5-dev-tests-notify-travis-status
 env:
   global:
   - secure: RO140EQDHmEOPJPikk8eCY5IdHpnEKGm41p5U1ewAbeZv1DpCG+rSumR2JdYl75kFAaZvCSm1NuVMM+kmYd+/z+LQbKj7QH5G/UHNho3H89blIU6WlJhT0YR5vclm9rvnEvOtxnfODca1Qrw+CaCoJks2o4VYbJB7mOBVNsh7Bc=

@@ -26,8 +26,26 @@ ClassicEditor
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
+			// TODO (pomek): Please, rollback these changes or update the manual test.
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
-			tableToolbar: [ 'bold', 'italic' ]
+			tableToolbar: [ 'bold', 'italic' ],
+			tableProperties: {
+				defaultProperties: {
+					alignment: 'left',
+					borderColor: '#ff0000',
+					borderWidth: '2px',
+					borderStyle: 'dashed'
+				}
+			},
+			tableCellProperties: {
+				defaultProperties: {
+					horizontalAlignment: 'right',
+					verticalAlignment: 'bottom',
+					borderColor: '#0000ff',
+					borderWidth: '2px',
+					borderStyle: 'dotted'
+				}
+			}
 		}
 	} )
 	.then( editor => {
@@ -36,3 +54,4 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
