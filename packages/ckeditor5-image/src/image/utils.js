@@ -284,11 +284,17 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 }
 
 /**
- * TODO
+ * Considering the current model selection, it returns the name of the model image element
+ * (`'image'` or `'imageInline'`) that will make most sense from the UX perspective, if a new
+ * image was inserted (also: uploaded, dropped, pasted) at that selection.
  *
- * @param {} editor
- * @param {*} selection
- * @returns
+ * The assumption is that inserting images into empty blocks or on other block widgets should
+ * produce block images. Inline images should be inserted in other cases, e.g. into paragraphs
+ * that already contain some text.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @returns {'image'|'imageInline'}
  */
 export function determineImageTypeForInsertionAtSelection( editor, selection ) {
 	const schema = editor.model.schema;

@@ -29,7 +29,8 @@ import {
 	getViewImageFromWidget,
 	getImageWidgetAncestor,
 	isInlineViewImage,
-	isBlockViewImage
+	isBlockViewImage,
+	determineImageTypeForInsertionAtSelection
 } from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
@@ -266,7 +267,7 @@ describe( 'image widget utils', () => {
 		it( 'should return true for the inline view image element', () => {
 			const element = writer.createEmptyElement( 'img' );
 
-			expect( isInlineViewImage( element ) ).to.be.false;
+			expect( isInlineViewImage( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for other view element', () => {
@@ -275,10 +276,9 @@ describe( 'image widget utils', () => {
 			expect( isInlineViewImage( element ) ).to.be.false;
 		} );
 
-		it( 'should return false for null, undefined, etc.', () => {
+		it( 'should return false for null, undefined', () => {
 			expect( isInlineViewImage() ).to.be.false;
 			expect( isInlineViewImage( null ) ).to.be.false;
-			expect( isInlineViewImage( 'foo' ) ).to.be.false;
 		} );
 	} );
 
@@ -313,10 +313,9 @@ describe( 'image widget utils', () => {
 			expect( isBlockViewImage( element ) ).to.be.false;
 		} );
 
-		it( 'should return false for null, undefined, etc.', () => {
+		it( 'should return false for null, undefined', () => {
 			expect( isBlockViewImage() ).to.be.false;
 			expect( isBlockViewImage( null ) ).to.be.false;
-			expect( isBlockViewImage( 'foo' ) ).to.be.false;
 		} );
 	} );
 
@@ -665,6 +664,65 @@ describe( 'image widget utils', () => {
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
 
 			expect( getViewImageFromWidget( element ) ).to.equal( image );
+		} );
+	} );
+
+	describe( 'determineImageTypeForInsertionAtSelection()', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
+			} );
+
+			model = editor.model;
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block'
+			} );
+			model.schema.register( 'blockWidget', {
+				isObject: true,
+				allowIn: '$root'
+			} );
+			model.schema.register( 'inlineWidget', {
+				isObject: true,
+				allowIn: [ '$block' ]
+			} );
+
+			model.schema.extend( '$text', { allowIn: [ 'block', '$root' ] } );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'blockWidget', view: 'blockWidget' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'inlineWidget', view: 'inlineWidget' } );
+		} );
+
+		it( 'should return "image" when there is no selected block in the selection', () => {
+			setModelData( model, 'f[]oo' );
+
+			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'image' );
+		} );
+
+		it( 'should return "image" when the selected block in the selection is empty', () => {
+			setModelData( model, '<block>[]</block>' );
+
+			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'image' );
+		} );
+
+		it( 'should return "image" when the selected block is an object (a widget)', () => {
+			setModelData( model, '[<blockWidget></blockWidget>]' );
+
+			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'image' );
+		} );
+
+		it( 'should return "imageInline" when selected block in the selection has some content', () => {
+			setModelData( model, '<block>[]a</block>' );
+
+			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'imageInline' );
+		} );
+
+		it( 'should return "imageInline" when an inline widget is selected', () => {
+			setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
+
+			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 	} );
 } );

@@ -76,7 +76,8 @@ export default class ImageBlockEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Configures conversion pipelines to support upcasting and downcasting
+	 * block images (block image widgets) and their attributes.
 	 *
 	 * @private
 	 */
@@ -114,7 +115,18 @@ export default class ImageBlockEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Integrates the plugin with the clipboard pipeline.
+	 *
+	 * Idea is that the feature should recognize the user's intent when an **inline** image is
+	 * pasted or dropped. If such an image is pasted/dropped:
+	 *
+	 * * into an empty block (e.g. an empty paragraph),
+	 * * on another object (e.g. some block widget).
+	 *
+	 * it gets converted into a block image on the fly. We assume this is the user's intent
+	 * if they decided to put their image there.
+	 *
+	 * See the `ImageInlineEditing` for the similar integration that works in the opposite direction.
 	 *
 	 * @private
 	 */

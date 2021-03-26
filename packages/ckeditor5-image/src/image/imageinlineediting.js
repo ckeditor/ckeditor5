@@ -77,7 +77,8 @@ export default class ImageInlineEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Configures conversion pipelines to support upcasting and downcasting
+	 * inline images (inline image widgets) and their attributes.
 	 *
 	 * @private
 	 */
@@ -114,7 +115,19 @@ export default class ImageInlineEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Integrates the plugin with the clipboard pipeline.
+	 *
+	 * Idea is that the feature should recognize the user's intent when an **block** image is
+	 * pasted or dropped. If such an image is pasted/dropped into a non-empty block
+	 * (e.g. a paragraph with some text) it gets converted into an inline image on the fly.
+	 *
+	 * We assume this is the user's intent if they decided to put their image there.
+	 *
+	 * **Note**: If a block image has a caption, it will not be converted to an inline image
+	 * to avoid the confusion. Captions are added on purpose and they should never be lost
+	 * in the clipboard pipeline.
+	 *
+	 * See the `ImageBlockEditing` for the similar integration that works in the opposite direction.
 	 *
 	 * @private
 	 */
