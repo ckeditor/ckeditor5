@@ -64,10 +64,10 @@ export default class ListCommand extends Command {
 		const document = model.document;
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
 			.filter( block => checkCanBecomeListItem( block, model.schema ) );
-		const value = options.forceValue === undefined ? this.value : !options.forceValue;
 
 		// Whether we are turning off some items.
-		const turnOff = value === true;
+		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
+
 		// If we are turning off items, we are going to rename them to paragraphs.
 
 		model.change( writer => {
