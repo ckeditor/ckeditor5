@@ -53,9 +53,10 @@ export default class InsertRowCommand extends Command {
 	refresh() {
 		const selection = this.editor.model.document.selection;
 
-		const tableParent = selection.getFirstPosition().findAncestor( 'table' );
+		const isAnyCellSelected = !!getSelectionAffectedTableCells( selection ).length;
+		const isInsideTable = !!selection.getFirstPosition().findAncestor( 'table' );
 
-		this.isEnabled = !!tableParent;
+		this.isEnabled = isAnyCellSelected && isInsideTable;
 	}
 
 	/**
