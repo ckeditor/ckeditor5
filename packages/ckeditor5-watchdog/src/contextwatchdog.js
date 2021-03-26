@@ -9,7 +9,6 @@
 
 /* globals console */
 
-import { toArray } from 'ckeditor5/src/utils';
 import Watchdog from './watchdog';
 import EditorWatchdog from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
@@ -514,6 +513,14 @@ class ActionQueue {
 
 		return queueWithAction;
 	}
+}
+
+// Transforms any value to an array. If the provided value is already an array, it is returned unchanged.
+//
+// @param {*} data The value to transform to an array.
+// @returns {Array} An array created from data.
+function toArray( data ) {
+	return Array.isArray( data ) ? data : [ data ];
 }
 
 /**

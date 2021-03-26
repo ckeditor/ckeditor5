@@ -181,6 +181,23 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p>Hello world!</p>';
+
+			return InlineEditor.create( editorElement, {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
+			} );
+		} );
+
 		it( 'should pass the config.toolbar.shouldNotGroupWhenFull configuration to the view', () => {
 			const editorElement = document.createElement( 'div' );
 
