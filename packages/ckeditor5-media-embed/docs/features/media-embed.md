@@ -101,6 +101,30 @@ By default, the media embed feature outputs semantic `<oembed url="...">` tags f
 </figure>
 ```
 
+Further customization of semantic data output can be done through the {@link module:media-embed/mediaembed~MediaEmbedConfig#preferredElementName `config.mediaEmbed.preferredElementName`} and {@link module:media-embed/mediaembed~MediaEmbedConfig#elementNames `config.mediaEmbed.elementNames`} options. As an example, if `preferredElementName` is set to `o-embed`:
+
+```html
+<figure class="media">
+	<o-embed url="https://media-url"></oembed>
+</figure>
+```
+
+And further, to be backward compatible with legacy semantic elements (any element using the `url` attribute, these can be passed via `elementNames`: `['oembed', 'o-embed']`. If there is a semantic tag for `<mytag url="..."></mytag>`, you can set `['oembed', 'o-embed', 'mytag']`. To remove support for tags, omit the tag name. To skip handling of `<oembed>` tags, `['oembed']`:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MediaEmbed, ... ],,
+		toolbar: [ 'mediaEmbed', ... ]
+		mediaEmbed: {
+			elementNames: ['oembed']
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+
 #### Including previews in data
 
 Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor. So if the media element is "previewable", the media preview (HTML) is saved to the database:

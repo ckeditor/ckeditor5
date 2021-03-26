@@ -67,6 +67,13 @@ export default class MediaRegistry {
 		 * @member {Array}
 		 */
 		this.providerDefinitions = providerDefinitions;
+
+		/**
+		 * The preferred element names for newly added media embed.
+		 *
+		 * @member {String}
+		 */
+		this.preferredElementName = config.preferredElementName;
 	}
 
 	/**
@@ -206,6 +213,7 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
+	 * @param {String} [options.preferredElementName]
 	 * @param {String} [options.renderMediaPreview]
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
@@ -233,7 +241,7 @@ class Media {
 				attributes.url = this.url;
 			}
 
-			viewElement = writer.createEmptyElement( 'oembed', attributes );
+			viewElement = writer.createEmptyElement( options.preferredElementName, attributes );
 		}
 
 		writer.setCustomProperty( 'media-content', true, viewElement );
