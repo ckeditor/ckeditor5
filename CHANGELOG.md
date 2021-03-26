@@ -12,11 +12,11 @@ Starting from this version, collaboration features release notes will be include
 This release introduces some new features:
 
 * The new [text part language](https://github.com/ckeditor/ckeditor5/issues/8989) feature allows you to define the language for each passage of content written in multiple languages. This helps satisfy the WCAG Success Criterion 3.1.2 Language of Parts.
-* Support for [drag and dropping of textual content and block objects](https://github.com/ckeditor/ckeditor5/issues/9128) (like images and tables) within the editor.
-* Support for [dropping HTML content from outside of the editor](https://github.com/ckeditor/ckeditor5/issues/9128) into the editor.
+* Support for [drag and dropping of textual content and block objects](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/drag-drop.html) (like images and tables) within the editor.
+* Support for [dropping HTML content from outside of the editor](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/drag-drop.html) into the editor.
 * [Alignment can now be set using classes](https://github.com/ckeditor/ckeditor5/issues/8516).
 * [Typing `[x]` will now insert a checked to-do list item](https://github.com/ckeditor/ckeditor5/issues/8877).
-* Support for [bubbling of `view.Document` events](https://github.com/ckeditor/ckeditor5/issues/8640).
+* Support for [bubbling of `view.Document` events](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/event-system.html#view-events-bubbling).
 
 <!-- TODO: Read more in the blog post: [URL]. -->
 
