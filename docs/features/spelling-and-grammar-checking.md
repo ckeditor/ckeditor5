@@ -37,7 +37,7 @@ There are also over 150 additional languages and specialized dictionaries such a
 
 There are other language-related CKEditor 5 features you may want to check:
 
-* {@link features/language Text part Language}  &ndash; Set the language of selected content part.
+* {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
 
 ## Installation
 
