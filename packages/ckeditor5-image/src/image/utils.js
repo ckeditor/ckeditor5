@@ -285,11 +285,11 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 
 /**
  * Considering the current model selection, it returns the name of the model image element
- * (`'image'` or `'imageInline'`) that will make most sense from the UX perspective, if a new
+ * (`'image'` or `'imageInline'`) that will make most sense from the UX perspective if a new
  * image was inserted (also: uploaded, dropped, pasted) at that selection.
  *
  * The assumption is that inserting images into empty blocks or on other block widgets should
- * produce block images. Inline images should be inserted in other cases, e.g. into paragraphs
+ * produce block images. Inline images should be inserted in other cases, e.g. in paragraphs
  * that already contain some text.
  *
  * @param {module:core/editor/editor~Editor} editor
