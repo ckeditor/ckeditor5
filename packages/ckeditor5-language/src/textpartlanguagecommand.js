@@ -17,15 +17,16 @@ import { stringifyLanguageAttribute } from './utils';
  */
 export default class TextPartLanguageCommand extends Command {
 	/**
-	 * If the selection starts in a language attribute the value is set to
+	 * If the selection starts in a language attribute, the value is set to
 	 * the value of that language in a format:
 	 *
 	 *		<languageCode>:<textDirection>
 	 *
-	 * * `languageCode` - The language code used for the lang attribute in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
+	 * * `languageCode` - The language code used for the `lang` attribute in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
+	 *    format.
 	 * * `textDirection` - One of the following values: `rtl` or `ltr`, indicating the reading direction of the language.
 	 *
-	 * See {@link module:core/editor/editorconfig~LanguageConfig#textPartLanguage text part language config}
+	 * See the {@link module:core/editor/editorconfig~LanguageConfig#textPartLanguage text part language configuration}
 	 * for more information about language properties.
 	 *
 	 * It is set to `false` otherwise.
@@ -49,8 +50,8 @@ export default class TextPartLanguageCommand extends Command {
 	/**
 	 * Executes the command. Applies the attribute to the selection or removes it from the selection.
 	 *
-	 * If `languageCode` is set to `false` or `null` value, it will remove attributes. Otherwise, it will set
-	 * attribute in `{@link #value value}` format.
+	 * If `languageCode` is set to `false` or a `null` value, it will remove attributes. Otherwise, it will set
+	 * the attribute in the `{@link #value value}` format.
 	 *
 	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection}:
 	 *
@@ -63,8 +64,8 @@ export default class TextPartLanguageCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Command options.
-	 * @param {String|Boolean} [options.languageCode] Language code to be applied to the model.
-	 * @param {String} [options.textDirection] Language text direction.
+	 * @param {String|Boolean} [options.languageCode] The language code to be applied to the model.
+	 * @param {String} [options.textDirection] The language text direction.
 	 */
 	execute( { languageCode, textDirection } = {} ) {
 		const model = this.editor.model;
@@ -96,7 +97,7 @@ export default class TextPartLanguageCommand extends Command {
 
 	/**
 	 * Returns the attribute value of the first node in the selection that allows the attribute.
-	 * For the collapsed selection returns the selection attribute.
+	 * For a collapsed selection it returns the selection attribute.
 	 *
 	 * @private
 	 * @returns {Boolean|String} The attribute value.
