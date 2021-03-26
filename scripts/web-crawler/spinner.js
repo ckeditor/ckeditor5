@@ -32,11 +32,11 @@ function getProgressHandler( spinner ) {
 	let current = 0;
 
 	return ( { total } ) => {
+		current++;
+
 		const progress = Math.round( current / total * 100 );
 
 		spinner.text = `Checking pages… ${ chalk.bold( `${ progress }% (${ current } of ${ total })` ) }`;
-
-		current++;
 	};
 }
 
