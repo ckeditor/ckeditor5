@@ -8,6 +8,15 @@
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
+
 import {
 	toImageWidget,
 	isImageWidget,
@@ -18,15 +27,10 @@ import {
 	isImageAllowed,
 	insertImage,
 	getViewImageFromWidget,
-	getImageWidgetAncestor
+	getImageWidgetAncestor,
+	isInlineViewImage,
+	isBlockViewImage
 } from '../../src/image/utils';
-import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'image widget utils', () => {
 	let element, image, writer, viewDocument;
@@ -249,6 +253,70 @@ describe( 'image widget utils', () => {
 		it( 'should return false for null and undefined', () => {
 			expect( isBlockImage( null ) ).to.be.false;
 			expect( isBlockImage( undefined ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isInlineViewImage()', () => {
+		it( 'should return false for the block image element', () => {
+			const element = writer.createContainerElement( 'figure', { class: 'image' } );
+
+			expect( isInlineViewImage( element ) ).to.be.false;
+		} );
+
+		it( 'should return true for the inline view image element', () => {
+			const element = writer.createEmptyElement( 'img' );
+
+			expect( isInlineViewImage( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for other view element', () => {
+			const element = writer.createContainerElement( 'div' );
+
+			expect( isInlineViewImage( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for null, undefined, etc.', () => {
+			expect( isInlineViewImage() ).to.be.false;
+			expect( isInlineViewImage( null ) ).to.be.false;
+			expect( isInlineViewImage( 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isBlockViewImage()', () => {
+		it( 'should return false for the inline image element', () => {
+			const element = writer.createEmptyElement( 'img' );
+
+			expect( isBlockViewImage( element ) ).to.be.false;
+		} );
+
+		it( 'should return true for the block view image element', () => {
+			const element = writer.createContainerElement( 'figure', { class: 'image' } );
+
+			expect( isBlockViewImage( element ) ).to.be.true;
+		} );
+
+		it( 'should return false for the figure without a proper class', () => {
+			const element = writer.createContainerElement( 'figure' );
+
+			expect( isBlockViewImage( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for the non-figure with a proper class', () => {
+			const element = writer.createContainerElement( 'div', { class: 'image' } );
+
+			expect( isBlockViewImage( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for other view element', () => {
+			const element = writer.createContainerElement( 'div' );
+
+			expect( isBlockViewImage( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for null, undefined, etc.', () => {
+			expect( isBlockViewImage() ).to.be.false;
+			expect( isBlockViewImage( null ) ).to.be.false;
+			expect( isBlockViewImage( 'foo' ) ).to.be.false;
 		} );
 	} );
 

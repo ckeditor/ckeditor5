@@ -15,7 +15,8 @@ import {
 	createImageViewElement,
 	getImageTypeMatcher,
 	getViewImageFromWidget,
-	determineImageTypeForInsertionAtSelection
+	determineImageTypeForInsertionAtSelection,
+	isBlockViewImage
 } from './utils';
 import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
 
@@ -128,7 +129,7 @@ export default class ImageInlineEditing extends Plugin {
 
 			// Make sure only <figure class="image"></figure> elements are dropped or pasted. Otherwise, if there some other HTML
 			// mixed up, this should be handled as a regular paste.
-			if ( !docFragmentChildren.every( item => item.is( 'element', 'figure' ) && item.hasClass( 'image' ) ) ) {
+			if ( !docFragmentChildren.every( isBlockViewImage ) ) {
 				return;
 			}
 
@@ -154,6 +155,9 @@ export default class ImageInlineEditing extends Plugin {
 				// Unwrap <figure class="image"><img .../></figure> -> <img ... />
 				// but <figure class="image"><img .../><figcaption>...</figcaption></figure> -> stays the same
 				const inlineViewImages = docFragmentChildren.map( blockViewImage => {
+					// If there are other children than <img>, this means that the block image
+					// has a caption or some other features and this kind of image should be
+					// pasted/dropped without modifications.
 					if ( blockViewImage.childCount === 1 ) {
 						return getViewImageFromWidget( blockViewImage );
 					} else {

@@ -113,6 +113,30 @@ export function isImage( modelElement ) {
 }
 
 /**
+ * Checks if the provided view element represents an inline image.
+ *
+ * Also, see {@link module:image/image/utils~isImageWidget}.
+ *
+ * @param {module:engine/view/element~Element} element
+ * @returns {Boolean}
+ */
+export function isInlineViewImage( element ) {
+	return !!element && element.is( 'element', 'img' );
+}
+
+/**
+ * Checks if the provided view element represents a block image.
+ *
+ * Also, see {@link module:image/image/utils~isImageWidget}.
+ *
+ * @param {module:engine/view/element~Element} element
+ * @returns {Boolean}
+ */
+export function isBlockViewImage( element ) {
+	return !!element && element.is( 'element', 'figure' ) && element.hasClass( 'image' );
+}
+
+/**
  * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
  *
  *		insertImage( model, { src: 'path/to/image.jpg' } );
@@ -180,7 +204,7 @@ export function isImageAllowed( editor ) {
  * @returns {module:engine/view/element~Element}
  */
 export function getViewImageFromWidget( figureView ) {
-	if ( figureView.is( 'element', 'img' ) ) {
+	if ( isInlineViewImage( figureView ) ) {
 		return figureView;
 	}
 
@@ -194,7 +218,7 @@ export function getViewImageFromWidget( figureView ) {
 		}
 	}
 
-	return figureChildren.find( viewChild => viewChild.is( 'element', 'img' ) );
+	return figureChildren.find( isInlineViewImage );
 }
 
 /**
@@ -245,7 +269,7 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 
 	return element => {
 		// Convert only images with src attribute.
-		if ( !element.is( 'element', 'img' ) || !element.hasAttribute( 'src' ) ) {
+		if ( !isInlineViewImage( element ) || !element.hasAttribute( 'src' ) ) {
 			return null;
 		}
 
