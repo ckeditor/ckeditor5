@@ -113,7 +113,7 @@ function getDropViewRange( view, domEvent ) {
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
- * This event carries a `dataTransfer` object which comes from the clipboard and which content should be processed
+ * This event carries a `dataTransfer` object which comes from the clipboard and whose content should be processed
  * and inserted into the editor.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
@@ -124,13 +124,13 @@ function getDropViewRange( view, domEvent ) {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  * @event module:engine/view/document~Document#event:clipboardInput
- * @param {Object} data Event data.
+ * @param {Object} data The event data.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {'paste'|'drop'} method Whether the event was triggered by a paste or drop operation.
  * @param {module:engine/view/element~Element} target The tree view element representing the target.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
  * (usually – into which the content should be inserted).
- * If the clipboard input was triggered by a paste operation, then this property is not set. If by a drop operation,
+ * If the clipboard input was triggered by a paste operation, this property is not set. If by a drop operation,
  * then it is the drop position (which can be different than the selection at the moment of drop).
  */
 
@@ -232,7 +232,7 @@ function getDropViewRange( view, domEvent ) {
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
- * This event carries a `dataTransfer` object which comes from the clipboard and which content should be processed
+ * This event carries a `dataTransfer` object which comes from the clipboard and whose content should be processed
  * and inserted into the editor.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
@@ -243,7 +243,7 @@ function getDropViewRange( view, domEvent ) {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  * @event module:engine/view/document~Document#event:dragging
- * @param {Object} data Event data.
+ * @param {Object} data The event data.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {module:engine/view/element~Element} target The tree view element representing the target.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation

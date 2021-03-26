@@ -41,7 +41,7 @@ import '../theme/clipboard.css';
 //                └─────────┬────────┘
 //                          │
 //                ┌─────────V────────┐   Processes view.DocumentFragment to text/html and text/plain
-//                │  clipboardOutput │   and stores results in data.dataTransfer.
+//                │  clipboardOutput │   and stores the results in data.dataTransfer.
 //                └─────────┬────────┘
 //                          │
 //                          │   DOM dragover
@@ -68,19 +68,19 @@ import '../theme/clipboard.css';
 //        │   └─────────────┐
 //        │   │             │
 //        │   │   ┌─────────V────────┐
-//        └───┐   │       drop       │   ( Default handler of the clipboard pipeline ).
+//        └───┐   │       drop       │   (The default handler of the clipboard pipeline).
 //            │   └─────────┬────────┘
 //            │             │
-//            │   ┌─────────V────────┐   Resolves final data.targetRanges.
+//            │   ┌─────────V────────┐   Resolves the final data.targetRanges.
 //            │   │  clipboardInput  │   Aborts if dropping on dragged content.
 //            │   └─────────┬────────┘
 //            │             │
 //            │   ┌─────────V────────┐
-//            │   │  clipboardInput  │   ( Default handler of the clipboard pipeline ).
+//            │   │  clipboardInput  │   (The default handler of the clipboard pipeline).
 //            │   └─────────┬────────┘
 //            │             │
 //            │ ┌───────────V───────────┐
-//            │ │  inputTransformation  │   ( Default handler of the clipboard pipeline ).
+//            │ │  inputTransformation  │   (The default handler of the clipboard pipeline).
 //            │ └───────────┬───────────┘
 //            │             │
 //            │  ┌──────────V──────────┐
@@ -88,22 +88,22 @@ import '../theme/clipboard.css';
 //            │  └──────────┬──────────┘
 //            │             │
 //            │  ┌──────────V──────────┐
-//            │  │   contentInsertion  │   ( Default handler of the clipboard pipeline ).
+//            │  │   contentInsertion  │   (The default handler of the clipboard pipeline).
 //            │  └──────────┬──────────┘
 //            │             │
 //            │  ┌──────────V──────────┐
-//            │  │   contentInsertion  │   Removes content from the original range if insertion was successful.
+//            │  │   contentInsertion  │   Removes the content from the original range if the insertion was successful.
 //            │  └──────────┬──────────┘
 //            │             │
 //            └─────────────┐
 //                          │
 //                ┌─────────V────────┐
-//                │      dragend     │   Removes the drop marker and cleans state.
+//                │      dragend     │   Removes the drop marker and cleans the state.
 //                └──────────────────┘
 //
 
 /**
- * The drag and drop feature. It works on top of {@link module:clipboard/clipboardpipeline~ClipboardPipeline}.
+ * The drag and drop feature. It works on top of the {@link module:clipboard/clipboardpipeline~ClipboardPipeline}.
  *
  * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
  *
@@ -140,7 +140,7 @@ export default class DragDrop extends Plugin {
 		this._draggedRange = null;
 
 		/**
-		 * The UID of current dragging that is used to verify if the drop started in the same editor as dragstart.
+		 * The UID of current dragging that is used to verify if the drop started in the same editor as the drag start.
 		 *
 		 * **Note**: This is a workaround for broken 'dragend' events (they are not fired if the source text node got removed).
 		 *
@@ -150,7 +150,7 @@ export default class DragDrop extends Plugin {
 		this._draggingUid = '';
 
 		/**
-		 * The reference to the model element that currently has a 'draggable' attribute set (it's set while dragging).
+		 * The reference to the model element that currently has a `draggable` attribute set (it is set while dragging).
 		 *
 		 * @private
 		 * @type {module:engine/model/element~Element}
@@ -158,7 +158,7 @@ export default class DragDrop extends Plugin {
 		this._draggableElement = null;
 
 		/**
-		 * A throttled callback updating drop marker.
+		 * A throttled callback updating the drop marker.
 		 *
 		 * @private
 		 * @type {Function}
@@ -166,7 +166,7 @@ export default class DragDrop extends Plugin {
 		this._updateDropMarkerThrottled = throttle( targetRange => this._updateDropMarker( targetRange ), 40 );
 
 		/**
-		 * A delayed callback removing drop marker.
+		 * A delayed callback removing the drop marker.
 		 *
 		 * @private
 		 * @type {Function}
@@ -404,7 +404,7 @@ export default class DragDrop extends Plugin {
 	}
 
 	/**
-	 * Integration with the `ClipboardPipeline` `contentInsertion` event.
+	 * Integration with the `contentInsertion` event of the clipboard pipeline.
 	 *
 	 * @private
 	 */
@@ -441,7 +441,7 @@ export default class DragDrop extends Plugin {
 	}
 
 	/**
-	 * Adds listeners that add the 'draggable' attribute to the elements while the mouse button is down so the dragging could start.
+	 * Adds listeners that add the `draggable` attribute to the elements while the mouse button is down so the dragging could start.
 	 *
 	 * @private
 	 */
@@ -497,7 +497,7 @@ export default class DragDrop extends Plugin {
 	}
 
 	/**
-	 * Removes 'draggable' attribute from the element that was used for dragging.
+	 * Removes the `draggable` attribute from the element that was used for dragging.
 	 *
 	 * @private
 	 */

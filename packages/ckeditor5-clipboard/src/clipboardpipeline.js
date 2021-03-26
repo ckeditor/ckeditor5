@@ -52,41 +52,41 @@ import viewToPlainText from './utils/viewtoplaintext.js';
 //                                           │
 //                                 ┌─────────V────────┐
 //                                 │   view.Document  │   Processes view.DocumentFragment to text/html and text/plain
-//                                 │  clipboardOutput │   and stores results in data.dataTransfer.
+//                                 │  clipboardOutput │   and stores the results in data.dataTransfer.
 //                                 └──────────────────┘
 //
 
 /**
  * The clipboard pipeline feature. It is responsible for intercepting the `paste` and `drop` events and
- * passing the pasted content through the series of events in order to insert it into the editor's content.
- * It also handles the `cut` and `copy` events to fill the native clipboard with serialized editor's data.
+ * passing the pasted content through a series of events in order to insert it into the editor's content.
+ * It also handles the `cut` and `copy` events to fill the native clipboard with the serialized editor's data.
  *
  * # Input pipeline
  *
- * Behavior of the default handlers (all at a `low` priority):
+ * The behavior of the default handlers (all at a `low` priority):
  *
  * ## Event: `paste` or `drop`
  *
- * 1. Translates an event data,
- * 2. and fires the {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event.
+ * 1. Translates the event data.
+ * 2. Fires the {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event.
  *
  * ## Event: `view.Document#clipboardInput`
  *
- * 1. If the `data.content` event field is already set (by some listener on a higher priority), it takes that content and fires the event
- *    from the last point,
- * 2. or else retrieves `text/html` or `text/plain` from `data.dataTransfer`,
- * 3. normalizes that raw data by applying simple filters on string data,
- * 4. processes raw data to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} with the
- *    {@link module:engine/controller/datacontroller~DataController#htmlProcessor `DataController#htmlProcessor`},
- * 5. and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
- *   `ClipboardPipeline#inputTransformation`} event with the view document fragment in `data.content` event field.
+ * 1. If the `data.content` event field is already set (by some listener on a higher priority), it takes this content and fires the event
+ *    from the last point.
+ * 2. Otherwise, it retrieves `text/html` or `text/plain` from `data.dataTransfer`.
+ * 3. Normalizes the raw data by applying simple filters on string data.
+ * 4. Processes the raw data to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} with the
+ *    {@link module:engine/controller/datacontroller~DataController#htmlProcessor `DataController#htmlProcessor`}.
+ * 5. Fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
+ *   `ClipboardPipeline#inputTransformation`} event with the view document fragment in the `data.content` event field.
  *
  * ## Event: `ClipboardPipeline#inputTransformation`
  *
- * 1. Converts {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} from `data.content` field to
- *    {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`},
- * 2. and fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`}
- *    event with model document fragment in `data.content` event field.
+ * 1. Converts {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} from the `data.content` field to
+ *    {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
+ * 2. Fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`}
+ *    event with the model document fragment in the `data.content` event field.
  *    **Note**: The `ClipboardPipeline#contentInsertion` event is fired within a model change block to allow other handlers
  *    to run in the same block without post-fixers called in between (i.e., the selection post-fixer).
  *
@@ -97,22 +97,22 @@ import viewToPlainText from './utils/viewtoplaintext.js';
  *
  * # Output pipeline
  *
- * Behavior of the default handlers (all at a `low` priority):
+ * The behavior of the default handlers (all at a `low` priority):
  *
  * ## Event: `copy`, `cut` or `dragstart`
  *
  * 1. Retrieves the selected {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} by calling
- *    {@link module:engine/model/model~Model#getSelectedContent `model#getSelectedContent()`},
- * 2. converts model document fragment to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`},
- * 3. and fires the {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} event
- *    with view document fragment in `data.content` event field.
+ *    {@link module:engine/model/model~Model#getSelectedContent `model#getSelectedContent()`}.
+ * 2. Converts the model document fragment to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`}.
+ * 3. Fires the {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} event
+ *    with the view document fragment in the `data.content` event field.
  *
  * ## Event: `view.Document#clipboardOutput`
  *
- * 1. Processes `data.content` to html and plain text with the
- *    {@link module:engine/controller/datacontroller~DataController#htmlProcessor `DataController#htmlProcessor`},
- * 2. updates `data.dataTransfer` data for `text/html` and `text/plain` with the processed data,
- * 3. and for the `cut` method, calls {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
+ * 1. Processes `data.content` to HTML and plain text with the
+ *    {@link module:engine/controller/datacontroller~DataController#htmlProcessor `DataController#htmlProcessor`}.
+ * 2. Updates the `data.dataTransfer` data for `text/html` and `text/plain` with the processed data.
+ * 3. For the `cut` method, calls {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
  *    on the current selection.
  *
  * Read more about the clipboard integration in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
@@ -279,7 +279,7 @@ export default class ClipboardPipeline extends Plugin {
  * * The `content` which comes from the clipboard (it was pasted or dropped) should be processed in order to be inserted into the editor.
  * * The `dataTransfer` object is available in case the transformation functions need access to the raw clipboard data.
  * * The `method` indicates the original DOM event (for example `'drop'` or `'paste'`).
- * * The `targetRanges` is an array of view ranges (it is available only for `'drop'`).
+ * * The `targetRanges` property is an array of view ranges (it is available only for `'drop'`).
  *
  * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
@@ -288,13 +288,13 @@ export default class ClipboardPipeline extends Plugin {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  * @event module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
- * @param {Object} data Event data.
- * @param {module:engine/view/documentfragment~DocumentFragment} data.content Event data. Content to be inserted into the editor.
- * It can be modified by the event listeners. Read more about the clipboard pipelines in
+ * @param {Object} data The event data.
+ * @param {module:engine/view/documentfragment~DocumentFragment} data.content The event data. The content to be inserted into the editor.
+ * It can be modified by event listeners. Read more about the clipboard pipelines in
  * the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
+ * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
- * @param {Array.<module:engine/view/range~Range>} data.targetRanges Target drop ranges.
+ * @param {Array.<module:engine/view/range~Range>} data.targetRanges The target drop ranges.
  */
 
 /**
@@ -303,7 +303,7 @@ export default class ClipboardPipeline extends Plugin {
  * * The `content` which comes from the clipboard (was pasted or dropped) should be processed in order to be inserted into the editor.
  * * The `dataTransfer` object is available in case the transformation functions need access to the raw clipboard data.
  * * The `method` indicates the original DOM event (for example `'drop'` or `'paste'`).
- * * The `targetRanges` is an array of view ranges (it is available only for `'drop'`).
+ * * The `targetRanges` property is an array of view ranges (it is available only for `'drop'`).
  *
  * Event handlers can modify the content according to the final insertion position.
  *
@@ -315,14 +315,14 @@ export default class ClipboardPipeline extends Plugin {
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
  * @event module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion
- * @param {Object} data Event data.
- * @param {module:engine/model/documentfragment~DocumentFragment} data.content Event data. Content to be inserted into the editor.
+ * @param {Object} data The event data.
+ * @param {module:engine/model/documentfragment~DocumentFragment} data.content The event data. The content to be inserted into the editor.
  * Read more about the clipboard pipelines in the {@glink framework/guides/deep-dive/clipboard clipboard deep dive guide}.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
+ * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {'paste'|'drop'} data.method Whether the event was triggered by a paste or drop operation.
- * @param {Array.<module:engine/view/range~Range>} data.targetRanges Target drop ranges.
+ * @param {Array.<module:engine/view/range~Range>} data.targetRanges The target drop ranges.
  * @param {module:engine/model/range~Range} data.resultRange The result of the `model.insertContent()` call
- *  (inserted by the event handler at low priority).
+ *  (inserted by the event handler at a low priority).
  */
 
 /**
@@ -334,7 +334,7 @@ export default class ClipboardPipeline extends Plugin {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  * @event module:engine/view/document~Document#event:clipboardOutput
- * @param {module:clipboard/clipboardpipeline~ClipboardOutputEventData} data Event data.
+ * @param {module:clipboard/clipboardpipeline~ClipboardOutputEventData} data The event data.
  */
 
 /**
@@ -344,7 +344,7 @@ export default class ClipboardPipeline extends Plugin {
  */
 
 /**
- * Data transfer instance.
+ * The data transfer instance.
  *
  * @readonly
  * @member {module:clipboard/datatransfer~DataTransfer} module:clipboard/clipboardpipeline~ClipboardOutputEventData#dataTransfer
