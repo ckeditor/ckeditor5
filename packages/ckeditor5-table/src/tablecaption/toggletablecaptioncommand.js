@@ -40,9 +40,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
-		const position = selection.getFirstPosition();
-		const tableElement = locateTable( position );
+		const tableElement = locateTable( editor.model.document.selection );
 
 		this.isEnabled = !!tableElement;
 
@@ -85,9 +83,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 */
 	_showTableCaption( writer, focusCaptionOnShow ) {
 		const model = this.editor.model;
-		const selection = model.document.selection;
-		const position = selection.getFirstPosition();
-		const tableElement = locateTable( position );
+		const tableElement = locateTable( model.document.selection );
 
 		let newCaptionElement;
 
@@ -119,9 +115,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 */
 	_hideTableCaption( writer ) {
 		const model = this.editor.model;
-		const selection = model.document.selection;
-		const position = selection.getFirstPosition();
-		const tableElement = locateTable( position );
+		const tableElement = locateTable( model.document.selection );
 		const captionElement = getCaptionFromTableModelElement( tableElement );
 
 		// Store the caption content so it can be restored quickly if the user changes their mind.
@@ -129,7 +123,7 @@ export default class ToggleTableCaptionCommand extends Command {
 			writer.setAttribute( 'caption', captionElement.toJSON(), tableElement );
 		}
 
-		writer.setSelection( tableElement, 'on' );
+		writer.setSelection( writer.createRangeIn( tableElement.getChild( 0 ).getChild( 0 ) ) );
 		writer.remove( captionElement );
 	}
 }

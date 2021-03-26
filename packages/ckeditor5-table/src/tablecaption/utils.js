@@ -40,7 +40,7 @@ export function getCaptionFromTableModelElement( tableModelElement ) {
  * @returns {module:engine/model/element~Element|null}
  */
 export function getCaptionFromModelSelection( selection ) {
-	const tableElement = locateTable( selection.getFirstPosition() );
+	const tableElement = locateTable( selection );
 	const captionElement = tableElement && getCaptionFromTableModelElement( tableElement );
 
 	// Make sure we are getting caption from the table and not, for example, image.
@@ -82,13 +82,24 @@ export function matchTableCaptionViewElement( element ) {
  * @param {module:engine/model/position~Position} position
  * @returns {module:engine/model/element~Element}
  */
-export function locateTable( position ) {
-	const nodeAfter = position.nodeAfter;
+// export function locateTable( position ) {
+// 	const nodeAfter = position.nodeAfter;
+
+// 	// Is the command triggered from the `tableToolbar`?
+// 	if ( nodeAfter && nodeAfter.is( 'element', 'table' ) ) {
+// 		return nodeAfter;
+// 	}
+
+// 	return position.findAncestor( 'table' );
+// }
+
+export function locateTable( selection ) {
+	const selectedElement = selection.getSelectedElement();
 
 	// Is the command triggered from the `tableToolbar`?
-	if ( nodeAfter && nodeAfter.is( 'element', 'table' ) ) {
-		return nodeAfter;
+	if ( selectedElement && selectedElement.is( 'element', 'table' ) ) {
+		return selectedElement;
 	}
 
-	return position.findAncestor( 'table' );
+	return selection.getFirstPosition().findAncestor( 'table' );
 }
