@@ -21,10 +21,10 @@ const _emitterId = Symbol( 'emitterId' );
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
  *
- * Read more about the concept of emitters:
- * * the {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables event system and observables}
- * section of the {@glink framework/guides/architecture/core-editor-architecture core editor architecture} guide
- * * and the {@glink framework/guides/deep-dive/event-system event system deep dive guide}.
+ * Read more about the concept of emitters in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
  *
  * @mixin EmitterMixin
  * @implements module:utils/emittermixin~Emitter
@@ -342,9 +342,9 @@ export default EmitterMixin;
  * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~EmitterMixin} mixin.
  *
  * Read more about the usage of this interface in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables "Event system and observables"}
- * section of the {@glink framework/guides/architecture/core-editor-architecture "Core editor architecture"} guide,
- * * {@glink framework/guides/deep-dive/event-system "Event system" deep dive} guide.
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
  *
  * @interface Emitter
  */
