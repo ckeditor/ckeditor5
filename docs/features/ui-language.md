@@ -196,4 +196,4 @@ ClassicEditor
 
 There are other CKEditor 5 features that will help you control the content language:
 
-* {@link features/language Text part Language}  &ndash; Set the language of selected content part.
+* {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
