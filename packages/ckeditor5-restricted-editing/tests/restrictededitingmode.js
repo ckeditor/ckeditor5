@@ -7,6 +7,7 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import RestrictedEditingMode from './../src/restrictededitingmode';
 import RestrictedEditingModeUI from './../src/restrictededitingmodeui';
@@ -21,7 +22,7 @@ describe( 'RestrictedEditingMode', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditingMode ] } );
+		editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditingMode, Clipboard ] } );
 	} );
 
 	afterEach( () => {

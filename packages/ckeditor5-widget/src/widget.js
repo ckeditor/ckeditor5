@@ -171,6 +171,12 @@ export default class Widget extends Plugin {
 			}
 		}
 
+		// On Android selection would jump to the first table cell, on other devices
+		// we can't block it (and don't need to) because of drag and drop support.
+		if ( env.isAndroid ) {
+			domEventData.preventDefault();
+		}
+
 		// Focus editor if is not focused already.
 		if ( !viewDocument.isFocused ) {
 			view.focus();
