@@ -20,7 +20,7 @@ import TextPartLanguageUI from './textpartlanguageui';
  *
  * To change the editor's UI language, refer to the {@glink features/ui-language Setting the UI language} guide.
  *
- * For more information about this feature, check the {@glink api/language package page} as well as the {@glink feature/language
+ * For more information about this feature, check the {@glink api/language package page} as well as the {@glink features/language
  * Text part language} feature guide.
  *
  * This is a "glue" plugin which loads the

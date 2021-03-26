@@ -5,7 +5,7 @@ menu-title: Text part language
 
 # Text part language
 
-The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to set the text direction as well as mark the language of selected text fragments. It makes working with multilingual content convenient and ensures that user agents can correctly present a content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
+The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to mark the language of selected text fragments as well as automatically set the text direction based on the language choice. It makes working with multilingual content convenient and ensures that user agents can correctly present the content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
 
 This feature is especially useful when your content includes text sections written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
 
@@ -13,7 +13,7 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 
 ## Demo
 
-Use the editor below to see the text part language plugin in action. Select text part and use the toolbar dropdown to choose from predefined available languages.
+Use the editor below to see the text part language plugin in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
 
 {@snippet features/textpartlanguage}
 
@@ -22,7 +22,7 @@ Use the editor below to see the text part language plugin in action. Select text
 There are other language-related CKEditor 5 features you may want to check:
 
 * {@link features/ui-language UI Language}  &ndash; Set the UI language.
-* {@link features/spelling-and-grammar-checking Spelling and grammar checking} &ndash; Employ multi-language spellcheck for flawless content.
+* {@link features/spelling-and-grammar-checking Spelling and grammar checking} &ndash; Employ multi-language spell check for flawless content.
 
 ## Installation
 
@@ -54,13 +54,13 @@ ClassicEditor
 
 The {@link module:language/textpartlanguage~TextPartLanguage} plugin registers:
 
-* the `'textPartLanguage'` UI dropdown component implemented by the {@link module:language/textpartlanguageui~TextPartLanguageUI text part language UI feature},
-* the `'textPartLanguage'` command implemented by the {@link module:language/textpartlanguageediting~TextPartLanguageEditing text part language editing feature}.
+* The `'textPartLanguage'` UI dropdown component implemented by the {@link module:language/textpartlanguageui~TextPartLanguageUI text part language UI feature}.
+* The `'textPartLanguage'` command implemented by the {@link module:language/textpartlanguageediting~TextPartLanguageEditing text part language editing feature}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
-// Applies language to the selected text part with the given language code.
+// Applies the language to the selected text part with the given language code.
 editor.execute( 'textPartLanguage', { languageCode: 'es' } );
 ```
 
