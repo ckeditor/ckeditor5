@@ -34,7 +34,7 @@ However, a function object is needed if you want to be able to remove the event 
 emitter.off( 'eventName', handler );
 ```
 
-There is also another way to add an event listener - by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
+There is also another way to add an event listener &mdash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
 
 ```js
 foo.listenTo( bar, 'eventName', ( eventInfo, ...args ) => { ... } );
@@ -57,12 +57,12 @@ foo.stopListening();
 ```
 
 <info-box>
-	The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, ... )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, ... )`} (emitter is bound to itself).
+	The {@link module:utils/emittermixin~Emitter#on `on()`} and {@link module:utils/emittermixin~Emitter#off `off()`} methods are shorthands for {@link module:utils/emittermixin~Emitter#listenTo `listenTo( this, ... )`} and {@link module:utils/emittermixin~Emitter#stopListening `stopListening( this, ... )`} (the emitter is bound to itself).
 </info-box>
 
 ### Listener priorities
 
-By default, all listeners are bound on the {@link module:utils/priorities~PriorityString `normal`} priority, but you can specify the priority while registering a listener:
+By default, all listeners are bound on the {@link module:utils/priorities~PriorityString `normal`} priority, but you can specify the priority when registering a listener:
 
 ```js
 this.on( 'eventName', () => { ... }, { priority: 'high' } );
@@ -77,7 +77,7 @@ There are 5 named priorities:
 * `low`
 * `lowest`
 
-Listeners are triggered in the order of those priorities (first `highest`, then `high`, etc.). For multiple listeners attached on the same priority, they are fired in the order of the registration.
+Listeners are triggered in the order of these priorities (first `highest`, then `high`, etc.). For multiple listeners attached on the same priority, they are fired in the order of the registration.
 
 **Note**: If any listener {@link module:utils/eventinfo~EventInfo#stop stops} the event, no other listeners including those on lower priorities will be called.
 
@@ -118,7 +118,7 @@ The event system supports namespaced events to give you the possibility to build
 this.fire( 'foo:bar:baz', data );
 ```
 
-Then then listeners can be bound to a specific event or the whole namespace:
+Then the listeners can be bound to a specific event or the whole namespace:
 
 ```js
 this.on( 'foo', () => { ... } );
@@ -140,7 +140,7 @@ Once you mix the {@link module:utils/emittermixin~EmitterMixin} into your class,
 this.fire( 'eventName', argA, argB, ... );
 ```
 
-All passed arguments will be available in all listeners that are added to that event.
+All passed arguments will be available in all listeners that are added to the event.
 
 **Note**: Most base classes (like {@link module:core/command~Command} or {@link module:core/plugin~Plugin}) are {@link module:utils/emittermixin~Emitter emitters} already and fire their own events.
 
@@ -157,17 +157,17 @@ const eventInfo = new EventInfo( this, 'eventName' );
 // ...and fire the event.
 this.fire( eventInfo, argA, argB, ... );
 
-// Here we can check if this event was stopped.
+// Here you can check if the event was stopped.
 if ( eventInfo.stop.called ) {
-	// Event was stopped.
+	// The event was stopped.
 }
 ```
 
-Note that {@link module:utils/eventinfo~EventInfo} expects source object in the first parameter as an origin of the event.
+Note that {@link module:utils/eventinfo~EventInfo} expects the source object in the first parameter as the origin of the event.
 
 ### Event return value
 
-If any handler set the {@link module:utils/eventinfo~EventInfo#return `eventInfo.return`} field then this value will be returned by {@link module:utils/emittermixin~Emitter#fire `fire()`} after all callbacks are processed.
+If any handler set the {@link module:utils/eventinfo~EventInfo#return `eventInfo.return`} field, this value will be returned by {@link module:utils/emittermixin~Emitter#fire `fire()`} after all callbacks are processed.
 
 ```js
 emitter.on( 'eventName', ( eventInfo, ...args ) => {
@@ -181,11 +181,11 @@ console.log( result ); // -> 123
 
 ## Delegating events
 
-The {@link module:utils/emittermixin~Emitter `Emitter`} interface also provides the {@link module:utils/emittermixin~Emitter#delegate events delegation} mechanism, so that selected events are fired by another {@link module:utils/emittermixin~Emitter}.
+The {@link module:utils/emittermixin~Emitter `Emitter`} interface also provides the {@link module:utils/emittermixin~Emitter#delegate event delegation} mechanism, so that selected events are fired by another {@link module:utils/emittermixin~Emitter}.
 
 ### Setting events delegation
 
-Delegate a specific events to another emitter:
+Delegate specific events to another emitter:
 
 ```js
 emitterA.delegate( 'foo' ).to( emitterB );
@@ -209,7 +209,7 @@ emitterA.delegate( '*' ).to( emitterB );
 
 ### Stopping delegation
 
-You can stop delegation by calling {@link module:utils/emittermixin~Emitter#stopDelegating `stopDelegating()`}. It can be used at different levels:
+You can stop delegation by calling the {@link module:utils/emittermixin~Emitter#stopDelegating `stopDelegating()`} method. It can be used at different levels:
 
 ```js
 // Stop delegating all events.
@@ -246,7 +246,7 @@ emitterA.fire( 'foo' );
 
 The {@link module:engine/view/document~Document `view.Document`} is not only an {@link module:utils/observablemixin~Observable Observable} and an {@link module:utils/emittermixin~Emitter emitter} but it also implements the special {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface (implemented by {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}). It provides a mechanism for bubbling events over the virtual DOM tree.
 
-It is different from the bubbling that you know from the DOM tree events bubbling. You do not register listeners on specific instances of the elements in the view document tree. Instead, you can register handlers for specific contexts. A context is either a name of an element, or one of the virtual contexts (`'$capture'`, `'$text'`, `'$root'`, `'$document'`), or a callback to match desired nodes.
+It is different from the bubbling that you know from the DOM tree event bubbling. You do not register listeners on specific instances of the elements in the view document tree. Instead, you can register handlers for specific contexts. A context is either a name of an element, or one of the virtual contexts (`'$capture'`, `'$text'`, `'$root'`, `'$document'`), or a callback to match desired nodes.
 
 ### Listening to bubbling events
 
@@ -278,7 +278,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 }, { context: '$capture' } );
 ```
 
-Listeners registered in the context of custom callback function:
+Listeners registered in the context of a custom callback function:
 
 ```js
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -296,19 +296,19 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 
 ### Bubbling events flow
 
-Bubbling always starts from the virtual `'$capture'` context. All listeners attached to that context are triggered first (and in the order of their priorities).
+Bubbling always starts from the virtual `'$capture'` context. All listeners attached to this context are triggered first (and in the order of their priorities).
 
 Then, the real bubbling starts from the selection position (either its anchor or focus &mdash; depending on what is deeper).
 
 If text nodes are allowed at the selection position, then the first context is `'$text'`. Then the event bubbles through all elements up to the `'$root'` and finally `'$document'`.
 
-In all contexts listeners can be registered at desired priorities. If a listeners stops an event, then this event is not fired for the remaining contexts.
+In all contexts listeners can be registered at desired priorities. If a listener stops an event, this event is not fired for the remaining contexts.
 
 ### Examples
 
 Assuming the given content and selection:
 
-```
+```html
 <blockquote>
 	<p>
 		Foo[]bar
@@ -327,7 +327,7 @@ Events will be fired for the following contexts:
 
 Assuming the given content and selection (on a widget):
 
-```
+```html
 <blockquote>
 	<p>
 		Foo
@@ -347,9 +347,9 @@ Events will be fired for the following contexts:
 1. `'$root'`
 1. `'$document'`
 
-Even more complex example:
+An even more complex example:
 
-```
+```html
 <blockquote>
 	<figure class="table">	 // enhanced with toWidget()
 		<table>
@@ -381,7 +381,7 @@ Events that will be fired:
 
 ### `BubblingEventInfo`
 
-In some events the first parameter is not the standard `EventInfo`, but {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo `BubblingEventInfo`}. It is an extension that provides the current {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo#eventPhase} and {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo#currentTarget}.
+In some events the first parameter is not the standard `EventInfo`, but {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo `BubblingEventInfo`}. This is an extension that provides the current {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo#eventPhase} and {@link module:engine/view/observer/bubblingeventinfo~BubblingEventInfo#currentTarget}.
 
 Currently, this information is available for the following events:
 
@@ -403,9 +403,9 @@ Hence the events from the above example would be extended with the following `ev
 1. `'$root'` - *bubbling*
 1. `'$document'` - *bubbling*
 
-And for the example with widget selected:
+And for the example with the widget selected:
 
-```
+```html
 <blockquote>
 	<p>
 		Foo
@@ -414,6 +414,8 @@ And for the example with widget selected:
 	</p>
 </blockquote>
 ```
+
+Events that will be fired:
 
 1. `'$capture'` - *capturing*
 1. `'img'` - *atTarget*
