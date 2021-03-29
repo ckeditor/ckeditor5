@@ -32,18 +32,25 @@ const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable'
  *		};
  *
  * @param {Array.<Array.<String>|Object>} tableData
- * @param {Object} [attributes] Optional table attributes: `headingRows` and `headingColumns`.
+ * @param {Object} [attributes={}] Optional table attributes.
+ * @param {Number} attributes.headingRows Number of heading rows.
+ * @param {Number} attributes.headingColumns Number of heading columns.
+ * @param {Object} attributes.defaultProperties Default styles for the table.
+ * @param {Object} attributes.defaultCellProperties Default styles for all cells.
  *
  * @returns {String}
  */
-export function modelTable( tableData, attributes ) {
+export function modelTable( tableData, attributes = {} ) {
 	const tableRows = makeRows( tableData, {
 		cellElement: 'tableCell',
 		rowElement: 'tableRow',
 		headingElement: 'tableCell',
 		wrappingElement: 'paragraph',
-		enforceWrapping: true
+		enforceWrapping: true,
+		defaultCellProperties: attributes.defaultCellProperties
 	} );
+
+	delete attributes.defaultCellProperties;
 
 	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
 }
@@ -343,7 +350,7 @@ function formatAttributes( attributes ) {
 
 // Formats passed table data to a set of table rows.
 function makeRows( tableData, options ) {
-	const { cellElement, rowElement, headingElement, wrappingElement, enforceWrapping, asWidget } = options;
+	const { cellElement, rowElement, headingElement, wrappingElement, enforceWrapping, asWidget, defaultCellProperties } = options;
 
 	return tableData
 		.reduce( ( previousRowsString, tableRow ) => {
@@ -367,7 +374,9 @@ function makeRows( tableData, options ) {
 					delete tableCellData.isSelected;
 				}
 
-				let attributes = {};
+				let attributes = {
+					...defaultCellProperties
+				};
 
 				if ( asWidget ) {
 					attributes.class = getClassToSet( attributes );

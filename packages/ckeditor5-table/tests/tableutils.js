@@ -13,6 +13,8 @@ import TableEditing from '../src/tableediting';
 import { modelTable } from './_utils/utils';
 
 import TableUtils from '../src/tableutils';
+import TablePropertiesEditing from '../src/tableproperties/tablepropertiesediting';
+import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
@@ -1634,6 +1636,72 @@ describe( 'TableUtils', () => {
 				[ '', '' ],
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 1 } ) );
+		} );
+
+		describe( 'enabled TablePropertiesEditing + TableCellPropertiesEditing', () => {
+			let editor, model, tableUtils;
+
+			beforeEach( () => {
+				return ModelTestEditor.create( {
+					plugins: [ Paragraph, TableEditing, TableUtils, TablePropertiesEditing, TableCellPropertiesEditing ]
+				} ).then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					tableUtils = editor.plugins.get( TableUtils );
+				} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should create table and apply specified styles for the table', () => {
+				setData( model, '[]' );
+
+				const defaultProperties = {
+					borderStyle: 'solid',
+					borderColor: '#f00',
+					borderWidth: '2px',
+					width: '400px',
+					height: '200px',
+					alignment: 'left'
+				};
+
+				model.change( writer => {
+					const table = tableUtils.createTable( writer, { defaultProperties } );
+
+					model.insertContent( table, model.document.selection.focus );
+				} );
+
+				// Styles for the table are included in the `attributes` object.
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', '' ],
+					[ '', '' ]
+				], { ...defaultProperties } ) );
+			} );
+
+			it( 'should create table and apply specified styles for all cells', () => {
+				setData( model, '[]' );
+
+				const defaultCellProperties = {
+					width: '30px',
+					height: '30px',
+					verticalAlignment: 'bottom',
+					horizontalAlignment: 'right'
+				};
+
+				model.change( writer => {
+					const table = tableUtils.createTable( writer, { defaultCellProperties } );
+
+					model.insertContent( table, model.document.selection.focus );
+				} );
+
+				// Styles for cells are specified as `attributes.defaultCellProperties` object.
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', '' ],
+					[ '', '' ]
+				], { defaultCellProperties } ) );
+			} );
 		} );
 	} );
 } );

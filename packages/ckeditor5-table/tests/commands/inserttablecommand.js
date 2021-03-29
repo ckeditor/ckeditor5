@@ -12,6 +12,8 @@ import TableEditing from '../../src/tableediting';
 import { modelTable } from '../_utils/utils';
 
 import InsertTableCommand from '../../src/commands/inserttablecommand';
+import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
 
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;
@@ -167,6 +169,124 @@ describe( 'InsertTableCommand', () => {
 						[ '', '', '', '' ]
 					] )
 				);
+			} );
+
+			describe( 'integration with TablePropertiesEditing', () => {
+				let editor, model, command, tableUtils;
+
+				beforeEach( () => {
+					return ModelTestEditor
+						.create( {
+							plugins: [ Paragraph, TableEditing, TablePropertiesEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							setData( model, '<paragraph>[]</paragraph>' );
+
+							command = editor.commands.get( 'insertTable' );
+							tableUtils = editor.plugins.get( 'TableUtils' );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it(
+					'should pass the default table styles to "TableUtils.createTable()" function if TablePropertiesEditing is enabled',
+					() => {
+						const createTableStub = sinon.stub( tableUtils, 'createTable' ).callThrough();
+
+						command.execute();
+
+						expect( createTableStub.callCount ).to.equal( 1 );
+						expect( createTableStub.firstCall.args[ 1 ] ).to.deep.equal( {
+							defaultProperties: { alignment: 'center' }
+						} );
+					}
+				);
+
+				it( 'should create the table with applied the default properties', () => {
+					const defaultProperties = {
+						borderStyle: 'solid',
+						borderWidth: '2px',
+						borderColor: '#f00',
+						alignment: 'right'
+					};
+
+					editor.config.set( 'table.tableProperties.defaultProperties', defaultProperties );
+
+					command.execute();
+
+					assertEqualMarkup( getData( model ),
+						modelTable( [
+							[ '[]', '' ],
+							[ '', '' ]
+						], { ...defaultProperties } )
+					);
+				} );
+			} );
+
+			describe( 'integration with TableCellPropertiesEditing', () => {
+				let editor, model, command, tableUtils;
+
+				beforeEach( () => {
+					return ModelTestEditor
+						.create( {
+							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							setData( model, '<paragraph>[]</paragraph>' );
+
+							command = editor.commands.get( 'insertTable' );
+							tableUtils = editor.plugins.get( 'TableUtils' );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it(
+					'should pass the default cell styles to "TableUtils.createTable()" function if TableCellPropertiesEditing is enabled',
+					() => {
+						const createTableStub = sinon.stub( tableUtils, 'createTable' ).callThrough();
+
+						command.execute();
+
+						expect( createTableStub.callCount ).to.equal( 1 );
+						expect( createTableStub.firstCall.args[ 1 ] ).to.deep.equal( {
+							defaultCellProperties: {
+								horizontalAlignment: 'center',
+								verticalAlignment: 'middle'
+							}
+						} );
+					}
+				);
+
+				it( 'should create the table and all cells should have applied the default cell properties', () => {
+					const defaultProperties = {
+						borderStyle: 'solid',
+						borderWidth: '2px',
+						borderColor: '#f00',
+						horizontalAlignment: 'right',
+						verticalAlignment: 'bottom'
+					};
+
+					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
+
+					command.execute();
+
+					assertEqualMarkup( getData( model ),
+						modelTable( [
+							[ '[]', '' ],
+							[ '', '' ]
+						], { defaultCellProperties: defaultProperties } )
+					);
+				} );
 			} );
 		} );
 	} );

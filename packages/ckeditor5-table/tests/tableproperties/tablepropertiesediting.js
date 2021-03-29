@@ -73,6 +73,20 @@ describe( 'table properties', () => {
 			expect( editor.commands.get( 'tableBackgroundColor' ) ).to.be.instanceOf( TableBackgroundColorCommand );
 		} );
 
+		describe( 'config', () => {
+			let tableProperties;
+
+			beforeEach( () => {
+				tableProperties = editor.config.get( 'table.tableProperties' );
+			} );
+
+			it( 'should define the default properties for a table', () => {
+				expect( tableProperties.defaultProperties ).to.deep.equal( {
+					alignment: 'center'
+				} );
+			} );
+		} );
+
 		describe( 'border', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderColor' ) ).to.be.true;
@@ -1054,11 +1068,11 @@ describe( 'table properties', () => {
 			setModelData(
 				model,
 				'<table headingRows="0" headingColumns="0">' +
-				'<tableRow>' +
-				'<tableCell>' +
-				'<paragraph>foo</paragraph>' +
-				'</tableCell>' +
-				'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
 				'</table>'
 			);
 

@@ -48,20 +48,24 @@ export default class InsertTableCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const editor = this.editor;
-		const model = this.editor.model;
+		const model = editor.model;
 		const selection = model.document.selection;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils = editor.plugins.get( 'TableUtils' );
 
-		// TODO (pomek): Could it be resolved in a nicer way?
-		const defaultProperties = editor.config.get( 'table.tableProperties.defaultProperties' );
-		const defaultCellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
+		const createTableOptions = Object.assign( {}, options );
 
-		options = Object.assign( {}, options, { defaultProperties, defaultCellProperties } );
+		if ( editor.plugins.has( 'TablePropertiesEditing' ) ) {
+			createTableOptions.defaultProperties = editor.config.get( 'table.tableProperties.defaultProperties' );
+		}
+
+		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
+			createTableOptions.defaultCellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
+		}
 
 		const insertPosition = findOptimalInsertionPosition( selection, model );
 
 		model.change( writer => {
-			const table = tableUtils.createTable( writer, options );
+			const table = tableUtils.createTable( writer, createTableOptions );
 
 			model.insertContent( table, insertPosition );
 

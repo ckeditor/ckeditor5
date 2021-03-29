@@ -79,6 +79,21 @@ describe( 'table cell properties', () => {
 			expect( editor.commands.get( 'tableCellHeight' ) ).to.be.instanceOf( TableCellHeightCommand );
 		} );
 
+		describe( 'config', () => {
+			let tableCellProperties;
+
+			beforeEach( () => {
+				tableCellProperties = editor.config.get( 'table.tableCellProperties' );
+			} );
+
+			it( 'should define the default properties for a table', () => {
+				expect( tableCellProperties.defaultProperties ).to.deep.equal( {
+					horizontalAlignment: 'center',
+					verticalAlignment: 'middle'
+				} );
+			} );
+		} );
+
 		describe( 'border', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderColor' ) ).to.be.true;
