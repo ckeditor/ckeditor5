@@ -64,6 +64,20 @@ export default class TableCellProperties extends Plugin {
  *			}
  *		};
  *
+ * * The default styles for the cell while creating a new table (`tableCellProperties.defaultProperties`):
+ *
+ *		const tableConfig = {
+ *			tableCellProperties: {
+ *				defaultProperties: {
+ *				    borderStyle: 'dotted',
+ *				    borderColor: 'hsl(120, 75%, 60%)',
+ *				    borderWidth: '2px',
+ *				    horizontalAlignment: 'right',
+ *					verticalAlignment: 'bottom'
+ *				}
+ *			}
+ *		}
+ *
  * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
  * allowing users to pick colors in a more convenient way.
