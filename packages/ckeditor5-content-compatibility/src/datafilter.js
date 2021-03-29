@@ -347,9 +347,9 @@ export default class DataFilter {
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 	 * @returns {Object} [result]
-	 * @returns {Set.<Object>} result.attributes Set with matched attribute names.
-	 * @returns {Set.<Object>} result.styles Set with matched style names.
-	 * @returns {Set.<String>} result.classes Set with matched class names.
+	 * @returns {Object} result.attributes Set with matched attribute names.
+	 * @returns {Object} result.styles Set with matched style names.
+	 * @returns {Array.<String>} result.classes Set with matched class names.
 	 */
 	_matchAndConsumeAllowedAttributes( viewElement, conversionApi ) {
 		const matches = consumeAttributeMatches( viewElement, conversionApi, this._allowedAttributes );
