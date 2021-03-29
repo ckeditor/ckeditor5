@@ -13,6 +13,10 @@
 		float: right;
 		margin-left: var(--ck-image-style-spacing);
 		max-width: 50%;
+
+		/* Since this is a style intended for the article-like content, this rule prevents from displaying multiple images in the same line.
+		See https://github.com/ckeditor/ckeditor5/issues/9183#issuecomment-804988132 */
+		clear: both;
 	}
 
 	& .image-style-align-left {
