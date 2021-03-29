@@ -246,7 +246,7 @@ function testViewName( pattern, viewName ) {
 /**
  * A base definition of {@link module:content-compatibility/dataschema~DataSchema data schema}.
  *
- * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
+ * @interface module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
  */
 
