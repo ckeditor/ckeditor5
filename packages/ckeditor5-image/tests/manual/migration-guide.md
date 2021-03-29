@@ -61,6 +61,8 @@ Editor.create( document.querySelector( '#editor' ), {
 
 	Read the *Image toolbar (link)* section for more information.
 
+* TODO: A few words about the 'isDefault' configuration.
+
 #### Image toolbar
 
 Due to the changes mentioned above, the image toolbar became crucial in terms of providing the user with a proper interaction with images.
