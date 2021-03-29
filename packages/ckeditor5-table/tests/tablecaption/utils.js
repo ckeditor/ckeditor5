@@ -7,6 +7,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
 import TableEditing from '../../src/tableediting';
@@ -208,25 +209,17 @@ describe( 'table caption utils', () => {
 	describe( 'locateTable', () => {
 		it( 'should return null if table is not present', () => {
 			setModelData( model, '<paragraph>Foo[]</paragraph>' );
-			const position = model.createPositionFromPath( modelRoot, [ 0 ] );
+			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
 
-			const tableElement = locateTable( position );
+			const tableElement = locateTable( selection );
 
 			expect( tableElement ).to.be.null;
 		} );
 
-		it( 'should return table if present after the position', () => {
-			const position = model.createPositionFromPath( modelRoot, [ 0 ] );
-
-			const tableElement = locateTable( position );
-
-			expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
-		} );
-
 		it( 'should return table if present higher in the model tree', () => {
-			const position = model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] );
+			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
 
-			const tableElement = locateTable( position );
+			const tableElement = locateTable( selection );
 
 			expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
 		} );

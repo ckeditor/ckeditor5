@@ -117,10 +117,10 @@ describe( 'ToggleTableCaptionCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ),
-				'[<table>' +
+				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph>11</paragraph>' +
+							'<paragraph>[11]</paragraph>' +
 						'</tableCell>' +
 						'<tableCell>' +
 							'<paragraph>12</paragraph>' +
@@ -134,7 +134,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 							'<paragraph>22</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
-				'</table>]'
+				'</table>'
 			);
 		} );
 
@@ -178,13 +178,13 @@ describe( 'ToggleTableCaptionCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ),
-				'[<table>' +
+				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph></paragraph>' +
+							'<paragraph>[]</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
-				'</table>]'
+				'</table>'
 			);
 		} );
 
@@ -228,26 +228,26 @@ describe( 'ToggleTableCaptionCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ),
-				'[<table caption="{"name":"caption","children":[{"data":"Foo caption"}]}">' +
+				'<table caption="{"name":"caption","children":[{"data":"Foo caption"}]}">' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph></paragraph>' +
+							'<paragraph>[]</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
-				'</table>]'
+				'</table>'
 			);
 
 			command.execute();
 
 			assertEqualMarkup( getData( model ),
-				'[<table>' +
+				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<paragraph></paragraph>' +
+							'<paragraph>[]</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
 					'<caption>Foo caption</caption>' +
-				'</table>]'
+				'</table>'
 			);
 		} );
 	} );
