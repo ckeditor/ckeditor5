@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Font from '@ckeditor/ckeditor5-font/src/font';
+import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -16,17 +14,14 @@ import DataSchema from '../src/dataschema';
 import DataFilter from '../src/datafilter';
 
 describe( 'DataFilter', () => {
-	let editor, model, dataFilter, dataSchema, element;
+	let editor, model, dataFilter, dataSchema;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		element = document.createElement( 'div' );
-		document.body.appendChild( element );
-
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ Paragraph, Font ]
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Paragraph, FontColorEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -38,8 +33,6 @@ describe( 'DataFilter', () => {
 	} );
 
 	afterEach( () => {
-		element.remove();
-
 		return editor.destroy();
 	} );
 
