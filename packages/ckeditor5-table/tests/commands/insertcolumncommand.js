@@ -14,6 +14,7 @@ import TableEditing from '../../src/tableediting';
 import { assertSelectedCells, modelTable } from '../_utils/utils';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
@@ -213,6 +214,79 @@ describe( 'InsertColumnCommand', () => {
 					[ '31', '<horizontalLine></horizontalLine>', '' ]
 				] ) );
 			} );
+
+			describe( 'integration with TableCellPropertiesEditing', () => {
+				let editor, model, tableUtils, command;
+
+				beforeEach( () => {
+					return ModelTestEditor
+						.create( {
+							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+
+							command = editor.commands.get( 'insertTableColumnRight' );
+							tableUtils = editor.plugins.get( 'TableUtils' );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it(
+					'should pass the default cell styles to "TableUtils.insertColumns()" function if TableCellPropertiesEditing is enabled',
+					() => {
+						const insertColumnsStub = sinon.stub( tableUtils, 'insertColumns' ).callThrough();
+
+						setData( model, modelTable( [
+							[ '11[]' ],
+							[ '21' ]
+						] ) );
+
+						command.execute();
+
+						expect( insertColumnsStub.callCount ).to.equal( 1 );
+						expect( insertColumnsStub.firstCall.args[ 1 ] ).to.deep.equal( {
+							columns: 1,
+							at: 1,
+							defaultCellProperties: {
+								horizontalAlignment: 'center',
+								verticalAlignment: 'middle'
+							}
+						} );
+					}
+				);
+
+				it( 'should create the table and all cells should have applied the default cell properties', () => {
+					const defaultProperties = {
+						borderStyle: 'solid',
+						borderWidth: '2px',
+						borderColor: '#f00',
+						horizontalAlignment: 'right',
+						verticalAlignment: 'bottom'
+					};
+
+					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
+
+					// Apply default properties for the created table.
+					setData( model, modelTable( [
+						[ '11[]' ],
+						[ '21' ]
+					], { defaultCellProperties: defaultProperties } ) );
+
+					command.execute();
+
+					assertEqualMarkup( getData( model ),
+						modelTable( [
+							[ '11[]', '' ],
+							[ '21', '' ]
+						], { defaultCellProperties: defaultProperties } )
+					);
+				} );
+			} );
 		} );
 	} );
 
@@ -379,6 +453,79 @@ describe( 'InsertColumnCommand', () => {
 					[ '10', '11', '', { contents: '12', colspan: 2 }, '14', '15' ],
 					[ { contents: '20', colspan: 5 }, { contents: '24', colspan: 2 } ]
 				], { headingColumns: 5 } ) );
+			} );
+
+			describe( 'integration with TableCellPropertiesEditing', () => {
+				let editor, model, tableUtils, command;
+
+				beforeEach( () => {
+					return ModelTestEditor
+						.create( {
+							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+
+							command = editor.commands.get( 'insertTableColumnLeft' );
+							tableUtils = editor.plugins.get( 'TableUtils' );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it(
+					'should pass the default cell styles to "TableUtils.insertColumns()" function if TableCellPropertiesEditing is enabled',
+					() => {
+						const insertColumnsStub = sinon.stub( tableUtils, 'insertColumns' ).callThrough();
+
+						setData( model, modelTable( [
+							[ '11[]' ],
+							[ '21' ]
+						] ) );
+
+						command.execute();
+
+						expect( insertColumnsStub.callCount ).to.equal( 1 );
+						expect( insertColumnsStub.firstCall.args[ 1 ] ).to.deep.equal( {
+							columns: 1,
+							at: 0,
+							defaultCellProperties: {
+								horizontalAlignment: 'center',
+								verticalAlignment: 'middle'
+							}
+						} );
+					}
+				);
+
+				it( 'should create the table and all cells should have applied the default cell properties', () => {
+					const defaultProperties = {
+						borderStyle: 'solid',
+						borderWidth: '2px',
+						borderColor: '#f00',
+						horizontalAlignment: 'right',
+						verticalAlignment: 'bottom'
+					};
+
+					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
+
+					// Apply default properties for the created table.
+					setData( model, modelTable( [
+						[ '11[]' ],
+						[ '21' ]
+					], { defaultCellProperties: defaultProperties } ) );
+
+					command.execute();
+
+					assertEqualMarkup( getData( model ),
+						modelTable( [
+							[ '', '11[]' ],
+							[ '', '21' ]
+						], { defaultCellProperties: defaultProperties } )
+					);
+				} );
 			} );
 		} );
 	} );

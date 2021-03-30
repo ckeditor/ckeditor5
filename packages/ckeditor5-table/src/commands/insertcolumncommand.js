@@ -78,6 +78,15 @@ export default class InsertColumnCommand extends Command {
 		const column = insertBefore ? columnIndexes.first : columnIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
 
-		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
+		const insertColumnsOptions = {
+			columns: 1,
+			at: insertBefore ? column : column + 1
+		};
+
+		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
+			insertColumnsOptions.defaultCellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
+		}
+
+		tableUtils.insertColumns( table, insertColumnsOptions );
 	}
 }
