@@ -77,6 +77,15 @@ export default class InsertRowCommand extends Command {
 		const row = insertAbove ? rowIndexes.first : rowIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
 
-		tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
+		const insertRowsOptions = {
+			at: insertAbove ? row : row + 1,
+			copyStructureFromAbove: !insertAbove
+		};
+
+		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
+			insertRowsOptions.defaultCellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
+		}
+
+		tableUtils.insertRows( table, insertRowsOptions );
 	}
 }
