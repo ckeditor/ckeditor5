@@ -35,13 +35,13 @@ import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import TableCaptionEditing from '@ckeditor/ckeditor5-table/src/tablecaption';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -50,7 +50,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
-			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties, TableCaptionEditing,
+			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties, TableCaption,
 			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
