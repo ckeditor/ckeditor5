@@ -200,7 +200,7 @@ mix( Command, ObservableMixin );
 ```
 
 <info-box>
-	Check out the {@link framework/guides/deep-dive/observables deep dive into observables} guide to learn more about the advanced usage of observables with some additional examples.
+	Check out the {@link framework/guides/deep-dive/event-system event system deep dive guide} and the {@link framework/guides/deep-dive/observables observables deep dive guide} to learn more about the advanced usage of events and observables with some additional examples.
 </info-box>
 
 Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:
