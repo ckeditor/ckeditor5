@@ -723,7 +723,7 @@ export default class TableUtils extends Plugin {
 	 */
 	getColumns( table ) {
 		// Analyze first row only as all the rows should have the same width.
-		// We are taking first row without checking because we expect that table will have only tableRow models at the beginning.
+		// Using the first row without checking if it's a tableRow because we expect that table will have only tableRow model elements at the beginning.
 		const row = table.getChild( 0 );
 
 		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
