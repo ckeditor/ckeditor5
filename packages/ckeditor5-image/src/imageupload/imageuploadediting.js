@@ -25,6 +25,9 @@ import { getViewImgFromWidget } from '../image/utils';
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
  * and `imageUpload` command as an aliased name.
  *
+ * When an image is uploaded it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete` event}
+ * that allows adding custom attributes to the {@link module:engine/model/element~Element image element}.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadEditing extends Plugin {
@@ -192,6 +195,13 @@ export default class ImageUploadEditing extends Plugin {
 				}
 			}
 		} );
+
+		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
+		this.on( 'uploadComplete', ( evt, { imageElement, writer, data } ) => {
+			writer.setAttribute( 'src', data.default, imageElement );
+
+			this._parseAndSetSrcsetAttributeOnImage( data, imageElement, writer );
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -260,8 +270,34 @@ export default class ImageUploadEditing extends Plugin {
 			} )
 			.then( data => {
 				model.enqueueChange( 'transparent', writer => {
-					writer.setAttributes( { uploadStatus: 'complete', src: data.default }, imageElement );
-					this._parseAndSetSrcsetAttributeOnImage( data, imageElement, writer );
+					writer.setAttribute( 'uploadStatus', 'complete', imageElement );
+
+					/**
+					 * An event fired when an image is uploaded. You can hook into this event to provide
+					 * custom attributes to the {@link module:engine/model/element~Element image element} based on the data from
+					 * the back-end.
+					 *
+					 * 		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing );
+					 *
+					 * 		imageUploadEditing.on( 'uploadComplete', evt, { writer, data, imageElement } => {
+					 * 			writer.setAttribute( 'someAttribute', 'foo', imageElement );
+					 * 		} );
+					 *
+					 * You can also stop the default handler that sets the `src` and `srcset` attributes
+					 * if you want to provide custom values for these attributes.
+					 *
+					 * 		imageUploadEditing.on( 'uploadComplete', evt, { writer, data, imageElement } => {
+					 * 			evt.stop();
+					 * 		} );
+					 *
+					 * @event uploadComplete
+					 * @param {Object} options The `uploadComplete` event options.
+					 * @param {Object} options.data The data coming from the upload adapter.
+					 * @param {module:engine/model/element~Element} options.image The
+					 * {@link module:engine/model/element~Element image element}.
+					 * @param {module:engine/model/writer~Writer} options.writer A writer that can operate on the image element.
+					 */
+					this.fire( 'uploadComplete', { writer, data, imageElement } );
 				} );
 
 				clean();
@@ -312,7 +348,7 @@ export default class ImageUploadEditing extends Plugin {
 		let maxWidth = 0;
 
 		const srcsetAttribute = Object.keys( data )
-		// Filter out keys that are not integers.
+			// Filter out keys that are not integers.
 			.filter( key => {
 				const width = parseInt( key, 10 );
 
