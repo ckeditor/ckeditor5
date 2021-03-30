@@ -57,7 +57,7 @@ export default class ListCommand extends Command {
 	 * @param {Object} [options] Command options.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will try to convert the
 	 * selected items and potentially the neighbor elements to the proper list items.
-	 * If not set, the command will look for its current value to decide what it should do.
+	 * If not set, the command will toggle selected elements to list items or paragraphs, depending on the selection.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
