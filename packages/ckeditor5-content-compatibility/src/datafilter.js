@@ -5,7 +5,6 @@
 
 /**
  * @module content-compatibility/datafilter
- * @publicApi
  */
 
 import { Matcher } from 'ckeditor5/src/engine';
