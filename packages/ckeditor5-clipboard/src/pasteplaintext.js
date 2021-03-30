@@ -15,7 +15,7 @@ import ClipboardPipeline from './clipboardpipeline';
 /**
  * The plugin detects the user's intention to paste plain text.
  *
- * For example, it detects <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke.
+ * For example, it detects the <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -53,7 +53,7 @@ export default class PastePlainText extends Plugin {
 		} );
 
 		editor.plugins.get( ClipboardPipeline ).on( 'contentInsertion', ( evt, data ) => {
-			// Plain text can be determined based on event flag (#7799) or auto-detection (#1006). If detected,
+			// Plain text can be determined based on the event flag (#7799) or auto-detection (#1006). If detected,
 			// preserve selection attributes on pasted items.
 			if ( !shiftPressed && !isPlainTextFragment( data.content, model.schema ) ) {
 				return;
