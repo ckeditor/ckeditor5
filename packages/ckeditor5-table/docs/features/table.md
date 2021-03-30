@@ -31,14 +31,13 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 	By default, table styling tools are not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
-## Table selection
+### Table caption
 
-The {@link module:table/tableselection~TableSelection} plugin introduces support for the custom selection system for tables that lets you:
+The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, add caption, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
 
-* Select an arbitrary rectangular table fragment &mdash; a few cells from different rows, a column (or a few of them) or a row (or multiple rows).
-* Apply formatting or add a link to all selected cells at once.
+{@snippet features/table-caption}
 
-The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demos above](#demos).
+Use the **"Insert table"** button in the toolbar to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
 
 ## Table captions
 
@@ -58,6 +57,15 @@ By default, if the table caption is empty, the `<figcaption>` element is not vis
 <info-box hint>
 	Table caption is positioned above the table by default. You can change that placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
 </info-box>
+
+## Table selection
+
+The {@link module:table/tableselection~TableSelection} plugin introduces support for the custom selection system for tables that lets you:
+
+* Select an arbitrary rectangular table fragment &mdash; a few cells from different rows, a column (or a few of them) or a row (or multiple rows).
+* Apply formatting or add a link to all selected cells at once.
+
+The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demos above](#demos).
 
 ## Installation
 
