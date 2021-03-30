@@ -6,8 +6,8 @@
 .ck-content {
 	& .image {
 		display: table;
-		text-align: center;
 		clear: both;
+		text-align: center;
 
 		/* Make sure there is some space between the content and the image. Center image by default. */
 		margin: 1em auto;
