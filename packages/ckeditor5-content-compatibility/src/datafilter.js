@@ -5,6 +5,7 @@
 
 /**
  * @module content-compatibility/datafilter
+ * @publicApi
  */
 
 import { Matcher } from 'ckeditor5/src/engine';
@@ -17,7 +18,7 @@ const DATA_SCHEMA_ATTRIBUTE_KEY = 'htmlAttributes';
 /**
  * Allows to validate elements and element attributes registered by {@link module:content-compatibility/dataschema~DataSchema}.
  *
- * To enable registered element in the editor, use {@link #allowElement} method:
+ * To enable registered element in the editor, use {@link module:content-compatibility/datafilter~DataFilter#allowElement} method:
  *
  *		dataFilter.allowElement( {
  *			name: 'section'
@@ -78,7 +79,10 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Allow the given element registered by {@link #register} method.
+	 * Allow the given element in the editor context.
+	 *
+	 * This method will only allow elements described by the {@link module:content-compatibility/dataschema~DataSchema} used
+	 * to create data filter.
 	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all view elements which should be allowed.
 	 */
