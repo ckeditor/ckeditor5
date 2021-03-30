@@ -35,7 +35,8 @@
 
 		/* Inline HTML elements nested in the span should always be dimensioned in relation to the whole cell width.
 		See https://github.com/ckeditor/ckeditor5/issues/9117. */
-		& td > span {
+		& td > span,
+		& th > span {
 			width: 100%;
 		}
 

@@ -6,7 +6,7 @@
 /* global console, document */
 
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import ViewUpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import {
@@ -33,6 +33,7 @@ import ImageEditing from '../../src/image/imageediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../../src/image';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'image widget utils', () => {
 	let element, image, writer, viewDocument;
@@ -627,27 +628,16 @@ describe( 'image widget utils', () => {
 				}
 			};
 
-			it( 'should return an img element if ImageBlockEditing plugin is not loaded', () => {
-				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => {
-					if ( pluginName === 'ImageBlockEditing' ) {
-						return false;
-					} else {
-						return true;
-					}
-				} );
+			it( 'should return a matcher patter for an img element if ImageBlockEditing plugin is not loaded', () => {
+				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
+
+				expect( getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
+				expect( getImageTypeMatcher( 'imageInline', editor ) ).to.eql( returnValue );
 			} );
 
-			it( 'should return an img element if ImageInlineEditing plugin is not loaded', () => {
-				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => {
-					if ( pluginName === 'ImageInlineEditing' ) {
-						return false;
-					} else {
-						return true;
-					}
-				} );
-			} );
+			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
+				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-			afterEach( () => {
 				expect( getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
 				expect( getImageTypeMatcher( 'imageInline', editor ) ).to.eql( returnValue );
 			} );
@@ -664,7 +654,7 @@ describe( 'image widget utils', () => {
 					plugins: [ Image, Paragraph, Table ]
 				} );
 
-				writer = new ViewUpcastWriter( editor.editing.view.document );
+				writer = new UpcastWriter( editor.editing.view.document );
 			} );
 
 			afterEach( async () => {
@@ -701,20 +691,13 @@ describe( 'image widget utils', () => {
 					} );
 
 					it( 'should return null if the element is an "imageInline" in a table', () => {
-						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						const cell = writer.createElement( 'td' );
-						const row = writer.createElement( 'tr' );
-						const body = writer.createElement( 'tbody' );
-						const table = writer.createElement( 'table' );
-						const figure = writer.createElement( 'figure' );
+						const fragment = parseView(
+							'<figure><table><tbody><tr><td>' +
+								'[<img src="sample.jpg"></img>]' +
+							'</td></tr></tbody></table></figure>'
+						);
 
-						writer.appendChild( element, cell );
-						writer.appendChild( cell, row );
-						writer.appendChild( row, body );
-						writer.appendChild( body, table );
-						writer.appendChild( table, figure );
-
-						expect( matcherPattern( element ) ).to.be.null;
+						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.be.null;
 					} );
 
 					it( 'should return a matcherPattern object if the element is an "image"', () => {
@@ -764,20 +747,13 @@ describe( 'image widget utils', () => {
 					} );
 
 					it( 'should return a matcherPattern object if the element is an "imageInline" in a table', () => {
-						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						const cell = writer.createElement( 'td' );
-						const row = writer.createElement( 'tr' );
-						const body = writer.createElement( 'tbody' );
-						const table = writer.createElement( 'table' );
-						const figure = writer.createElement( 'figure' );
+						const fragment = parseView(
+							'<figure><table><tbody><tr><td>' +
+								'[<img src="sample.jpg"></img>]' +
+							'</td></tr></tbody></table></figure>'
+						);
 
-						writer.appendChild( element, cell );
-						writer.appendChild( cell, row );
-						writer.appendChild( row, body );
-						writer.appendChild( body, table );
-						writer.appendChild( table, figure );
-
-						expect( matcherPattern( element ) ).to.be.eql( {
+						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.be.eql( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
