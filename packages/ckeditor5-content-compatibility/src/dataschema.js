@@ -5,6 +5,7 @@
 
 /**
  * @module content-compatibility/dataschema
+ * @publicApi
  */
 
 import { toArray } from 'ckeditor5/src/utils';
@@ -15,7 +16,8 @@ import { toArray } from 'ckeditor5/src/utils';
  *
  * Data schema is represented by data schema definitions.
  *
- * To add new definition for block element, use {@link #registerBlockElement} method:
+ * To add new definition for block element,
+ * use {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method:
  *
  *		dataSchema.registerBlockElement( {
  *			view: 'section',
@@ -25,7 +27,8 @@ import { toArray } from 'ckeditor5/src/utils';
  *			}
  *		} );
  *
- * To add new definition for inline element, use {@link #registerInlineElement} method:
+ * To add new definition for inline element,
+ * use {@link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method:
  *
  *		dataSchema.registerInlineElement( {
  *			view: 'span',
@@ -246,7 +249,7 @@ function testViewName( pattern, viewName ) {
 /**
  * A base definition of {@link module:content-compatibility/dataschema~DataSchema data schema}.
  *
- * @interface module:content-compatibility/dataschema~DataSchemaDefinition
+ * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
  */
 
@@ -258,7 +261,7 @@ function testViewName( pattern, viewName ) {
  * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
  * @property {Boolean} isBlock Indicates that the definition describes block element.
- * Set by {@link @link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
+ * Set by {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
 
@@ -269,6 +272,6 @@ function testViewName( pattern, viewName ) {
  * @property {String} view Name of the view element.
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
  * @property {Boolean} isInline Indicates that the definition descibes inline element.
- * Set by {@link @link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method.
+ * Set by {@link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
