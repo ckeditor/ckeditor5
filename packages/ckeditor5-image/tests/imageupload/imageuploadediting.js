@@ -25,6 +25,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
@@ -68,7 +69,7 @@ describe( 'ImageUploadEditing', () => {
 				viewDocument = view.document;
 
 				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
 			} );
 	} );
 
@@ -381,9 +382,9 @@ describe( 'ImageUploadEditing', () => {
 			tryExpect( done, () => {
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
-						// Rendering the image data is left to a upload progress converter.
-						'<img></img>' +
-						'</figure>]' +
+					// Rendering the image data is left to a upload progress converter.
+					'<img></img>' +
+					'</figure>]' +
 					'<p>foo bar</p>'
 				);
 
@@ -605,7 +606,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 	} );
 
-	it( 'should create responsive image if server return multiple images', done => {
+	it( 'should create responsive image if the server returns multiple images', done => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
@@ -623,6 +624,44 @@ describe( 'ImageUploadEditing', () => {
 			}, { priority: 'lowest' } );
 
 			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } ) );
+		} );
+
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+	} );
+
+	it( 'should allow hooking into the `uploadComplete` event', done => {
+		const file = createNativeFileMock();
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+
+		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+
+		const uploadCompleteSpy = sinon.spy();
+
+		imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
+
+		editor.execute( 'uploadImage', { file } );
+
+		model.document.once( 'change', () => {
+			sinon.assert.notCalled( uploadCompleteSpy );
+
+			model.document.once( 'change', () => {
+				tryExpect( done, () => {
+					sinon.assert.calledOnce( uploadCompleteSpy );
+
+					const eventArgs = uploadCompleteSpy.firstCall.args[ 1 ];
+
+					expect( eventArgs ).to.be.an( 'object' );
+
+					expect( eventArgs.writer ).to.be.instanceOf( Writer );
+
+					expect( eventArgs.imageElement ).to.be.an( 'object' );
+					expect( eventArgs.imageElement.name ).to.equal( 'image' );
+
+					expect( eventArgs.data ).to.deep.equal( { default: 'image.png' } );
+				} );
+			}, { priority: 'lowest' } );
+
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
 		} );
 
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
