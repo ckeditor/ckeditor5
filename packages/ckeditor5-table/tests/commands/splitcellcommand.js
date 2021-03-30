@@ -13,6 +13,7 @@ import TableSelection from '../../src/tableselection';
 import { modelTable } from '../_utils/utils';
 
 import SplitCellCommand from '../../src/commands/splitcellcommand';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
 
 describe( 'SplitCellCommand', () => {
 	let editor, model, command;
@@ -164,6 +165,75 @@ describe( 'SplitCellCommand', () => {
 					[ '25' ]
 				] ) );
 			} );
+
+			describe( 'integration with TableCellPropertiesEditing', () => {
+				let editor, model, tableUtils, command;
+
+				beforeEach( () => {
+					return ModelTestEditor
+						.create( {
+							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+
+							command = editor.commands.get( 'splitTableCellVertically' );
+							tableUtils = editor.plugins.get( 'TableUtils' );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it(
+					'should pass the default cell styles to "TableUtils.splitCellVertically()" function if TableCellPropertiesEditing ' +
+					'is enabled',
+					() => {
+						const splitCellVerticallyStub = sinon.stub( tableUtils, 'splitCellVertically' ).callThrough();
+
+						setData( model, modelTable( [
+							[ '11[]' ]
+						] ) );
+
+						command.execute();
+
+						expect( splitCellVerticallyStub.callCount ).to.equal( 1 );
+						expect( splitCellVerticallyStub.firstCall.args[ 2 ] ).to.deep.equal( {
+							defaultCellProperties: {
+								horizontalAlignment: 'center',
+								verticalAlignment: 'middle'
+							}
+						} );
+					}
+				);
+
+				it( 'should create the table and all cells should have applied the default cell properties', () => {
+					const defaultProperties = {
+						borderStyle: 'solid',
+						borderWidth: '2px',
+						borderColor: '#f00',
+						horizontalAlignment: 'right',
+						verticalAlignment: 'bottom'
+					};
+
+					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
+
+					// Apply default properties for the created table.
+					setData( model, modelTable( [
+						[ '11[]' ]
+					], { defaultCellProperties: defaultProperties } ) );
+
+					command.execute();
+
+					assertEqualMarkup( getData( model ),
+						modelTable( [
+							[ '11[]', '' ]
+						], { defaultCellProperties: defaultProperties } )
+					);
+				} );
+			} );
 		} );
 	} );
 
@@ -204,6 +274,76 @@ describe( 'SplitCellCommand', () => {
 					[ '' ],
 					[ '20', '21', '22' ]
 				] ) );
+			} );
+
+			describe( 'integration with TableCellPropertiesEditing', () => {
+				let editor, model, tableUtils, command;
+
+				beforeEach( () => {
+					return ModelTestEditor
+						.create( {
+							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+
+							command = editor.commands.get( 'splitTableCellHorizontally' );
+							tableUtils = editor.plugins.get( 'TableUtils' );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it(
+					'should pass the default cell styles to "TableUtils.splitCellHorizontally()" function if TableCellPropertiesEditing ' +
+					'is enabled',
+					() => {
+						const splitCellHorizontallyStub = sinon.stub( tableUtils, 'splitCellHorizontally' ).callThrough();
+
+						setData( model, modelTable( [
+							[ '11[]' ]
+						] ) );
+
+						command.execute();
+
+						expect( splitCellHorizontallyStub.callCount ).to.equal( 1 );
+						expect( splitCellHorizontallyStub.firstCall.args[ 2 ] ).to.deep.equal( {
+							defaultCellProperties: {
+								horizontalAlignment: 'center',
+								verticalAlignment: 'middle'
+							}
+						} );
+					}
+				);
+
+				it( 'should create the table and all cells should have applied the default cell properties', () => {
+					const defaultProperties = {
+						borderStyle: 'solid',
+						borderWidth: '2px',
+						borderColor: '#f00',
+						horizontalAlignment: 'right',
+						verticalAlignment: 'bottom'
+					};
+
+					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
+
+					// Apply default properties for the created table.
+					setData( model, modelTable( [
+						[ '11[]' ]
+					], { defaultCellProperties: defaultProperties } ) );
+
+					command.execute();
+
+					assertEqualMarkup( getData( model ),
+						modelTable( [
+							[ '11[]' ],
+							[ '' ]
+						], { defaultCellProperties: defaultProperties } )
+					);
+				} );
 			} );
 		} );
 	} );
