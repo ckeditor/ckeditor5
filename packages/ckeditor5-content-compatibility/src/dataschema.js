@@ -5,7 +5,6 @@
 
 /**
  * @module content-compatibility/dataschema
- * @publicApi
  */
 
 import { toArray } from 'ckeditor5/src/utils';
