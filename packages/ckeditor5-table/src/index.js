@@ -22,6 +22,7 @@ import TableMouse from './tablemouse';
 import TableKeyboard from './tablekeyboard';
 import TableSelection from './tableselection';
 import TableUtils from './tableutils';
+import TableCaption from './tablecaption';
 
 export default {
 	Table,
@@ -38,5 +39,6 @@ export default {
 	TableClipboard,
 	TableKeyboard,
 	TableSelection,
-	TableUtils
+	TableUtils,
+	TableCaption
 };

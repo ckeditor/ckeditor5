@@ -11,7 +11,7 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 ### Basic table features
 
-The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
+The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, add caption, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
 
 {@snippet features/table}
 
@@ -39,6 +39,25 @@ The {@link module:table/tableselection~TableSelection} plugin introduces support
 * Apply formatting or add a link to all selected cells at once.
 
 The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demos above](#demos).
+
+## Table captions
+
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions:
+
+```html
+<figure class="table">
+	<table>
+		...
+	</table>
+	<figcaption>A caption goes here...</figcaption>
+</figure>
+```
+
+By default, if the table caption is empty, the `<figcaption>` element is not visible to the user. You can click the table to reveal the caption field and write one.
+
+<info-box hint>
+	Table caption is positioned above the table by default. You can change that placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
+</info-box>
 
 ## Installation
 
@@ -368,7 +387,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 		<tr>
 			<td><code>'insertTable'</code></td>
 			<td>{@link module:table/commands/inserttablecommand~InsertTableCommand}</td>
-			<td rowspan="15">{@link module:table/table~Table}</td>
+			<td rowspan="17">{@link module:table/table~Table}</td>
 		</tr>
 		<tr>
 			<td><code>'insertTableColumnLeft'</code></td>
@@ -433,6 +452,11 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 		<tr>
 			<td><code>'splitTableCellHorizontally'</code></td>
 			<td>{@link module:table/commands/splitcellcommand~SplitCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'toggleTableCaption'</code></td>
+			<td>{@link module:table/tablecaption/toggletablecaptioncommand~ToggleTableCaptionCommand}</td>
+			<td>{@link module:table/tablecaption~TableCaption}</td>
 		</tr>
 		<tr>
 			<td><code>'tableBorderColor'</code></td>

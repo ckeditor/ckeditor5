@@ -8,7 +8,7 @@
 ClassicEditor
 	.create( document.querySelector( '#snippet-table' ), {
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', '|', 'toggleTableCaption' ]
 		},
 		image: {
 			toolbar: [
