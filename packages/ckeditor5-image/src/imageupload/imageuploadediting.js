@@ -197,9 +197,13 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 
 		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
-		this.on( 'uploadComplete', ( evt, { imageElement, writer, data } ) => {
-			writer.setAttribute( 'src', data.default, imageElement );
-			this._parseAndSetSrcsetAttributeOnImage( data, imageElement, writer );
+		this.on( 'uploadComplete', ( evt, { imageElement, data } ) => {
+			const urls = data.urls ? data.urls : data;
+
+			this.editor.model.change( writer => {
+				writer.setAttribute( 'src', urls.default, imageElement );
+				this._parseAndSetSrcsetAttributeOnImage( urls, imageElement, writer );
+			} );
 		}, { priority: 'low' } );
 	}
 
@@ -278,25 +282,26 @@ export default class ImageUploadEditing extends Plugin {
 					 *
 					 * 		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing );
 					 *
-					 * 		imageUploadEditing.on( 'uploadComplete', evt, { writer, data, imageElement } => {
-					 * 			writer.setAttribute( 'someAttribute', 'foo', imageElement );
+					 * 		imageUploadEditing.on( 'uploadComplete', evt, { data, imageElement } => {
+					 * 			editor.model.change( writer => {
+					 * 				writer.setAttribute( 'someAttribute', 'foo', imageElement );
+					 * 			} );
 					 * 		} );
 					 *
 					 * You can also stop the default handler that sets the `src` and `srcset` attributes
 					 * if you want to provide custom values for these attributes.
 					 *
-					 * 		imageUploadEditing.on( 'uploadComplete', evt, { writer, data, imageElement } => {
+					 * 		imageUploadEditing.on( 'uploadComplete', evt, { data, imageElement } => {
 					 * 			evt.stop();
 					 * 		} );
 					 *
 					 * @event uploadComplete
 					 * @param {Object} options The `uploadComplete` event options.
 					 * @param {Object} options.data The data coming from the upload adapter.
-					 * @param {module:engine/model/element~Element} options.image The
-					 * {@link module:engine/model/element~Element image element}.
-					 * @param {module:engine/model/writer~Writer} options.writer A writer that can operate on the image element.
+					 * @param {module:engine/model/element~Element} options.imageElement The
+					 * {@link module:engine/model/element~Element image element} that can be customized.
 					 */
-					this.fire( 'uploadComplete', { writer, data, imageElement } );
+					this.fire( 'uploadComplete', { data, imageElement } );
 				} );
 
 				clean();
