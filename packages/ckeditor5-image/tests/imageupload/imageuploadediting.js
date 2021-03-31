@@ -397,25 +397,46 @@ describe( 'ImageUploadEditing', () => {
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
-	it( 'should replace read data with server response once it is present', done => {
+	it( 'should replace read data with server response once it is present', async () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
 
-		model.document.once( 'change', () => {
-			model.document.once( 'change', () => {
-				tryExpect( done, () => {
-					expect( getViewData( view ) ).to.equal(
-						'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
-					);
-					expect( loader.status ).to.equal( 'idle' );
-				} );
-			}, { priority: 'lowest' } );
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
 
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
 			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
 		} );
 
-		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
+		);
+		expect( loader.status ).to.equal( 'idle' );
+	} );
+
+	it( 'should support adapter response with the normalized `urls` property', async () => {
+		const file = createNativeFileMock();
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { urls: { default: 'image.png' } } ) );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
+		);
+		expect( loader.status ).to.equal( 'idle' );
 	} );
 
 	it( 'should fire notification event in case of error', done => {
