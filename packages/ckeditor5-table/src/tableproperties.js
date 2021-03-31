@@ -70,10 +70,10 @@ export default class TableProperties extends Plugin {
  *		const tableConfig = {
  *			tableProperties: {
  *				defaultProperties: {
- *				    borderStyle: 'dashed',
- *				    borderColor: 'hsl(0, 0%, 90%)',
- *				    borderWidth: '3px',
- *				    alignment: 'left'
+ *					borderStyle: 'dashed',
+ *					borderColor: 'hsl(0, 0%, 90%)',
+ *					borderWidth: '3px',
+ *					alignment: 'left'
  *				}
  *			}
  *		}

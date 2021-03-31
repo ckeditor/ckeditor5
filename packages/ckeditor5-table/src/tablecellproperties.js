@@ -69,11 +69,11 @@ export default class TableCellProperties extends Plugin {
  *		const tableConfig = {
  *			tableCellProperties: {
  *				defaultProperties: {
- *				    borderStyle: 'dotted',
- *				    borderColor: 'hsl(120, 75%, 60%)',
- *				    borderWidth: '2px',
- *				    horizontalAlignment: 'right',
- *				    verticalAlignment: 'bottom'
+ *					borderStyle: 'dotted',
+ *					borderColor: 'hsl(120, 75%, 60%)',
+ *					borderWidth: '2px',
+ *					horizontalAlignment: 'right',
+ *					verticalAlignment: 'bottom'
  *				}
  *			}
  *		}
