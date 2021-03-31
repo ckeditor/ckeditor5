@@ -57,6 +57,20 @@ describe( 'ImageStyleCommand', () => {
 		} );
 	} );
 
+	it( 'should undo the whole command action if the image type has changed', () => {
+		const initialData = '[<image src="assets/sample.png"></image>]';
+
+		setData( model, initialData );
+
+		command.execute( { value: onlyInline.name } );
+
+		expect( getData( model ) ).to.equal( '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+
+		editor.execute( 'undo' );
+
+		expect( getData( model ) ).to.equal( initialData );
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should set default arrangement names properly if both of them are defined in the config', () => {
 			expect( command._defaultArrangements ).to.deep.equal( {
