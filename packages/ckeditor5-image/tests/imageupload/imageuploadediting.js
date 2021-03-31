@@ -69,7 +69,7 @@ describe( 'ImageUploadEditing', () => {
 				viewDocument = view.document;
 
 				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
+				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
 			} );
 	} );
 
