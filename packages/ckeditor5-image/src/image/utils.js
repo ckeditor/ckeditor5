@@ -113,7 +113,7 @@ export function isImage( modelElement ) {
 }
 
 /**
- * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
+ * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionRange} method.
  *
  *		insertImage( model, { src: 'path/to/image.jpg' } );
  *
