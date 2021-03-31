@@ -374,9 +374,8 @@ function makeRows( tableData, options ) {
 					delete tableCellData.isSelected;
 				}
 
-				let attributes = {
-					...defaultCellProperties
-				};
+				// Copy the default properties to avoid modifying references.
+				let attributes = Object.assign( {}, defaultCellProperties );
 
 				if ( asWidget ) {
 					attributes.class = getClassToSet( attributes );

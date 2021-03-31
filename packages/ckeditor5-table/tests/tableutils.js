@@ -290,7 +290,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should copy structure from the first row', () => {
+			it( 'should not copy structure from the first row (copyStructureFromAbove=false)', () => {
 				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 1, copyStructureFromAbove: false } );
 
 				// +----+----+----+----+----+----+
@@ -356,6 +356,171 @@ describe( 'TableUtils', () => {
 					[ '', { contents: '', colspan: 2 } ],
 					[ '10', { contents: '14', colspan: 2 } ]
 				] ) );
+			} );
+		} );
+
+		describe( 'integration with TableCellPropertiesEditing', () => {
+			let editor, model, tableUtils, table;
+
+			const defaultProperties = {
+				borderStyle: 'solid',
+				borderWidth: '2px',
+				borderColor: '#f00',
+				horizontalAlignment: 'right',
+				verticalAlignment: 'bottom'
+			};
+
+			beforeEach( () => {
+				return ModelTestEditor.create( {
+					plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ]
+				} ).then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					tableUtils = editor.plugins.get( TableUtils );
+
+					// +----+----+----+----+----+----+
+					// | 00 | 01      | 03 | 04 | 05 |
+					// +----+         +    +----+----+
+					// | 10 |         |    | 14      |
+					// +----+----+----+----+----+----+
+					// | 20 | 21 | 22 | 23 | 24 | 25 |
+					// +----+----+----+----+----+----+
+					setData( model, modelTable( [
+						[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+						[ '10', { contents: '14', colspan: 2 } ],
+						[ '20', '21', '22', '23', '24', '25' ]
+					], { defaultCellProperties: defaultProperties } ) );
+
+					const root = model.document.getRoot( 'main' );
+					table = root.getNodeByPath( [ 0 ] );
+				} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should insert a new row and apply default cell properties to all created cells (insert below, single row)', () => {
+				tableUtils.insertRows( table, {
+					at: 3,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				// | 20 | 21 | 22 | 23 | 24 | 25 |
+				// +----+----+----+----+----+----+
+				// |    |    |    |    |    |    |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+					[ '10', { contents: '14', colspan: 2 } ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ '', '', '', '', '', '' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new row and apply default cell properties to all created cells (insert below, double row)', () => {
+				tableUtils.insertRows( table, {
+					at: 3,
+					rows: 2,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				// | 20 | 21 | 22 | 23 | 24 | 25 |
+				// +----+----+----+----+----+----+
+				// |    |    |    |    |    |    |
+				// +----+----+----+----+----+----+
+				// |    |    |    |    |    |    |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+					[ '10', { contents: '14', colspan: 2 } ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ '', '', '', '', '', '' ],
+					[ '', '', '', '', '', '' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new row and apply default cell properties to all created cells (insert above, single row)', () => {
+				tableUtils.insertRows( table, {
+					at: 0,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// |    |    |    |    |    |    |
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				// | 20 | 21 | 22 | 23 | 24 | 25 |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', '', '', '', '', '' ],
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+					[ '10', { contents: '14', colspan: 2 } ],
+					[ '20', '21', '22', '23', '24', '25' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new row and apply default cell properties to all created cells (insert above, double row)', () => {
+				tableUtils.insertRows( table, {
+					at: 0,
+					rows: 2,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// |    |    |    |    |    |    |
+				// +----+----+----+----+----+----+
+				// |    |    |    |    |    |    |
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				// | 20 | 21 | 22 | 23 | 24 | 25 |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', '', '', '', '', '' ],
+					[ '', '', '', '', '', '' ],
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+					[ '10', { contents: '14', colspan: 2 } ],
+					[ '20', '21', '22', '23', '24', '25' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new row and apply default cell properties to all created cells (insert in the middle, single row)', () => {
+				tableUtils.insertRows( table, {
+					at: 1,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// |    |         |    |    |    |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				// | 20 | 21 | 22 | 23 | 24 | 25 |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05' ],
+					[ '', '', '' ],
+					[ '10', { contents: '14', colspan: 2 } ],
+					[ '20', '21', '22', '23', '24', '25' ]
+				], { defaultCellProperties: defaultProperties } ) );
 			} );
 		} );
 	} );
@@ -599,6 +764,132 @@ describe( 'TableUtils', () => {
 				[ '', '32' ]
 			], { headingColumns: 3 } ) );
 		} );
+
+		describe( 'integration with TableCellPropertiesEditing', () => {
+			let editor, model, tableUtils, table;
+
+			const defaultProperties = {
+				borderStyle: 'solid',
+				borderWidth: '2px',
+				borderColor: '#f00',
+				horizontalAlignment: 'right',
+				verticalAlignment: 'bottom'
+			};
+
+			beforeEach( () => {
+				return ModelTestEditor.create( {
+					plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ]
+				} ).then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					tableUtils = editor.plugins.get( TableUtils );
+
+					// +----+----+----+----+----+
+					// | 00 | 01      | 03 | 04 |
+					// +----+         +    +----+
+					// | 10 |         |    | 14 |
+					// +----+----+----+----+----+
+					setData( model, modelTable( [
+						[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04' ],
+						[ '10', '14' ]
+					], { defaultCellProperties: defaultProperties } ) );
+
+					const root = model.document.getRoot( 'main' );
+					table = root.getNodeByPath( [ 0 ] );
+				} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should insert a new column and apply default cell properties to all created cells (insert right, single column)', () => {
+				tableUtils.insertColumns( table, {
+					at: 5,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 |    |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14 |    |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '' ],
+					[ '10', '14', '' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new column and apply default cell properties to all created cells (insert right, double column)', () => {
+				tableUtils.insertColumns( table, {
+					at: 5,
+					columns: 2,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 |    |    |
+				// +----+         +    +----+----+----+
+				// | 10 |         |    | 14 |    |    |
+				// +----+----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '', '' ],
+					[ '10', '14', '', '' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new column and apply default cell properties to all created cells (insert left, single column)', () => {
+				tableUtils.insertColumns( table, {
+					at: 0,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// |    | 00 | 01      | 03 | 04 |
+				// +----+----+         +    +----+
+				// |    | 10 |         |    | 14 |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04' ],
+					[ '', '10', '14' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new column and apply default cell properties to all created cells (insert left, double column)', () => {
+				tableUtils.insertColumns( table, {
+					at: 0,
+					columns: 2,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+----+
+				// |    |    | 00 | 01      | 03 | 04 |
+				// +----+----+----+         +    +----+
+				// |    |    | 10 |         |    | 14 |
+				// +----+----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', '', '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04' ],
+					[ '', '', '10', '14' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should insert a new row and apply default cell properties to all created cells (insert in the middle, single row)', () => {
+				tableUtils.insertColumns( table, {
+					at: 3,
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      |    | 03 | 04 |
+				// +----+         +----+    +----+
+				// | 10 |         |    |    | 14 |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, '', { contents: '03', rowspan: 2 }, '04' ],
+					[ '10', '', '14' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+		} );
 	} );
 
 	describe( 'splitCellVertically()', () => {
@@ -742,6 +1033,122 @@ describe( 'TableUtils', () => {
 				[ { colspan: 3, contents: '00' }, '01' ],
 				[ '10[]', '', '', '11' ]
 			], { headingColumns: 3 } ) );
+		} );
+
+		describe( 'integration with TableCellPropertiesEditing', () => {
+			let editor, model, tableUtils, root;
+
+			const defaultProperties = {
+				borderStyle: 'solid',
+				borderWidth: '2px',
+				borderColor: '#f00',
+				horizontalAlignment: 'right',
+				verticalAlignment: 'bottom'
+			};
+
+			beforeEach( () => {
+				return ModelTestEditor.create( {
+					plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ]
+				} ).then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					tableUtils = editor.plugins.get( TableUtils );
+					root = model.document.getRoot( 'main' );
+				} );
+			} );
+
+			afterEach( () => {
+				// The `defaultProperties` object should not be modified.
+				// All values should be copied to a new object while preparing a cell element.
+				expect( defaultProperties ).to.not.have.property( 'colspan' );
+				expect( defaultProperties ).to.not.have.property( 'rowspan' );
+				expect( defaultProperties ).to.have.property( 'borderStyle' );
+				expect( defaultProperties ).to.have.property( 'borderWidth' );
+				expect( defaultProperties ).to.have.property( 'borderColor' );
+				expect( defaultProperties ).to.have.property( 'horizontalAlignment' );
+				expect( defaultProperties ).to.have.property( 'verticalAlignment' );
+
+				return editor.destroy();
+			} );
+
+			it( 'should properly split the column and apply default cell properties (colspan=2, cells=2)', () => {
+				// +----+----+----+----+
+				// | 00 | 01      | 03 |
+				// +----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '[]01', colspan: 2 }, '03' ]
+				], { defaultCellProperties: defaultProperties } ) );
+
+				const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+				tableUtils.splitCellVertically( tableCell, 2, {
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+
+				// | 00 | 01 |    | 03 |
+				// +----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', '', '03' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should properly split the column and apply default cell properties (colspan=4, cells=2)', () => {
+				// +----+----+----+----+----+----+
+				// | 00 | 01                | 05 |
+				// +----+----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '[]01', colspan: 4 }, '05' ]
+				], { defaultCellProperties: defaultProperties } ) );
+
+				const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+				tableUtils.splitCellVertically( tableCell, 2, {
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      |         | 05 |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2 }, { contents: '', colspan: 2 }, '05' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should properly split the column and apply default cell properties (colspan=2, rowspan=2, cells=3)', () => {
+				// +----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 |
+				// +----+         +    +----+
+				// | 10 |         |    | 14 |
+				// +----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04' ],
+					[ '10', '14' ]
+				], { defaultCellProperties: defaultProperties } ) );
+
+				const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+				tableUtils.splitCellVertically( tableCell, 3, {
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01 |    |    | 03 | 04 |
+				// +----+    +    +    +    +----+
+				// | 10 |    |    |    |    | 14 |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[
+						'00',
+						{ contents: '01', rowspan: 2 },
+						{ contents: '', rowspan: 2 },
+						{ contents: '', rowspan: 2 },
+						{ contents: '03', rowspan: 2 },
+						'04'
+					],
+					[ '10', '14' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
 		} );
 	} );
 
@@ -917,6 +1324,173 @@ describe( 'TableUtils', () => {
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]
 			], { headingRows: 3 } ) );
+		} );
+
+		describe( 'integration with TableCellPropertiesEditing', () => {
+			let editor, model, tableUtils, root;
+
+			const defaultProperties = {
+				borderStyle: 'solid',
+				borderWidth: '2px',
+				borderColor: '#f00',
+				horizontalAlignment: 'right',
+				verticalAlignment: 'bottom'
+			};
+
+			beforeEach( () => {
+				return ModelTestEditor.create( {
+					plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ]
+				} ).then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					tableUtils = editor.plugins.get( TableUtils );
+					root = model.document.getRoot( 'main' );
+				} );
+			} );
+
+			afterEach( () => {
+				// The `defaultProperties` object should not be modified.
+				// All values should be copied to a new object while preparing a cell element.
+				expect( defaultProperties ).to.not.have.property( 'colspan' );
+				expect( defaultProperties ).to.not.have.property( 'rowspan' );
+				expect( defaultProperties ).to.have.property( 'borderStyle' );
+				expect( defaultProperties ).to.have.property( 'borderWidth' );
+				expect( defaultProperties ).to.have.property( 'borderColor' );
+				expect( defaultProperties ).to.have.property( 'horizontalAlignment' );
+				expect( defaultProperties ).to.have.property( 'verticalAlignment' );
+
+				return editor.destroy();
+			} );
+
+			it( 'should properly split the column and apply default cell properties (rowspan=2, cells=2)', () => {
+				// +----+
+				// | 00 |
+				// +----+
+				// | 01 |
+				// +    +
+				// |    |
+				// +----+
+				// | 03 |
+				// +----+
+				setData( model, modelTable( [
+					[ '00' ],
+					[ { contents: '[]01', rowspan: 2 } ],
+					[],
+					[ '03' ]
+				], { defaultCellProperties: defaultProperties } ) );
+
+				const tableCell = root.getNodeByPath( [ 0, 1, 0 ] );
+
+				tableUtils.splitCellHorizontally( tableCell, 2, {
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+
+				// | 00 |
+				// +----+
+				// | 01 |
+				// +----+
+				// |    |
+				// +----+
+				// | 03 |
+				// +----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00' ],
+					[ '01' ],
+					[ '' ],
+					[ '03' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should properly split the column and apply default cell properties (rowspan=4, cells=2)', () => {
+				// +----+
+				// | 00 |
+				// +----+
+				// | 01 |
+				// +    +
+				// |    |
+				// +    +
+				// |    |
+				// +    +
+				// |    |
+				// +----+
+				// | 05 |
+				// +----+
+				setData( model, modelTable( [
+					[ '00' ],
+					[ { contents: '[]01', rowspan: 4 } ],
+					[],
+					[],
+					[],
+					[ '05' ]
+				], { defaultCellProperties: defaultProperties } ) );
+
+				const tableCell = root.getNodeByPath( [ 0, 1, 0 ] );
+
+				tableUtils.splitCellHorizontally( tableCell, 2, {
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+
+				// | 00 |
+				// +----+
+				// | 01 |
+				// +    +
+				// |    |
+				// +----+
+				// |    |
+				// +    +
+				// |    |
+				// +----+
+				// | 05 |
+				// +----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00' ],
+					[ { contents: '01', rowspan: 2 } ],
+					[],
+					[ { contents: '', rowspan: 2 } ],
+					[],
+					[ '05' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should properly split the column and apply default cell properties (colspan=2, rowspan=2, cells=3)', () => {
+				// +----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 |
+				// +----+         +    +----+
+				// | 10 |         |    | 14 |
+				// +----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04' ],
+					[ '10', '14' ]
+				], { defaultCellProperties: defaultProperties } ) );
+
+				const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+				tableUtils.splitCellHorizontally( tableCell, 3, {
+					defaultCellProperties: defaultProperties
+				} );
+
+				// +----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 |
+				// +    +----+----+    +    +
+				// |    |         |    |    |
+				// +----+----+----+    +----+
+				// | 10 |         |    | 14 |
+				// +----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[
+						{ contents: '00', rowspan: 2 },
+						{ contents: '01', colspan: 2 },
+						{ contents: '03', rowspan: 3 },
+						{ contents: '04', rowspan: 2 }
+					],
+					[
+						{ contents: '', colspan: 2 }
+					],
+					[ '10', { contents: '', colspan: 2 }, '14' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
 		} );
 	} );
 
