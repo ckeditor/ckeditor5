@@ -26,24 +26,23 @@ ClassicEditor
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
-			// TODO (pomek): Please, rollback these changes or update the manual test.
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ],
 			tableProperties: {
 				defaultProperties: {
-					alignment: 'left',
-					borderColor: '#ff0000',
-					borderWidth: '2px',
-					borderStyle: 'dashed'
+					borderStyle: 'dashed',
+					borderColor: 'hsl(0, 0%, 60%)',
+					borderWidth: '3px',
+					alignment: 'left'
 				}
 			},
 			tableCellProperties: {
 				defaultProperties: {
-					horizontalAlignment: 'right',
-					verticalAlignment: 'bottom',
-					borderColor: '#0000ff',
+					borderStyle: 'dotted',
+					borderColor: 'hsl(120, 75%, 60%)',
 					borderWidth: '2px',
-					borderStyle: 'dotted'
+					horizontalAlignment: 'right',
+					verticalAlignment: 'bottom'
 				}
 			}
 		}
