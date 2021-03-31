@@ -769,9 +769,9 @@ export default class TableUtils extends Plugin {
 // @param {Number} insertAt The row index of row insertion.
 // @param {Number} rows The number of rows to create.
 // @param {Number} tableCellToInsert The number of cells to insert in each row.
-// @param {Object} [options={}]
+// @param {Object} options
 // @param {Object} options.cellProperties The cell attributes.
-function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, options = {} ) {
+function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, options ) {
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
 
@@ -786,7 +786,8 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, opti
 // @param {Number} columns The number of columns to create
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/position~Position} insertPosition
-function createCells( cells, writer, insertPosition, attributes = {} ) {
+// @param {Object} attributes The cell attributes.
+function createCells( cells, writer, insertPosition, attributes ) {
 	for ( let i = 0; i < cells; i++ ) {
 		createEmptyTableCell( writer, insertPosition, attributes );
 	}
