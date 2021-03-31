@@ -11,6 +11,7 @@ import TableEditing from '../../src/tableediting';
 import { modelTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
 
 describe( 'Table layout post-fixer', () => {
 	let editor, model, root;
@@ -197,6 +198,77 @@ describe( 'Table layout post-fixer', () => {
 			} ).to.not.throw();
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+		} );
+
+		describe( 'integration with TableCellPropertiesEditing', () => {
+			let editor, model, root;
+
+			const defaultProperties = {
+				borderStyle: 'solid',
+				borderWidth: '2px',
+				borderColor: '#f00',
+				horizontalAlignment: 'right',
+				verticalAlignment: 'bottom'
+			};
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ TableEditing, Paragraph, UndoEditing, TableCellPropertiesEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						root = model.document.getRoot();
+					} );
+			} );
+
+			afterEach( () => {
+				editor.destroy();
+			} );
+
+			it( 'should add missing columns to tableRows that are shorter then the longest table row', () => {
+				const parsed = parse( modelTable( [
+					[ '00' ],
+					[ '10', '11', '12' ],
+					[ '20', '21' ]
+				], { defaultCellProperties: defaultProperties } ), model.schema );
+
+				model.change( writer => {
+					writer.remove( writer.createRangeIn( root ) );
+					writer.insert( parsed, root );
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '', '' ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
+
+			it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 2)', () => {
+				const parsed = parse( modelTable( [
+					[ { colspan: 6, contents: '00' } ],
+					[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
+					[ '21', '22' ]
+				], { defaultCellProperties: defaultProperties } ), model.schema );
+
+				model.change( writer => {
+					writer.remove( writer.createRangeIn( root ) );
+					writer.insert( parsed, root );
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ { colspan: 6, contents: '00' } ],
+					[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
+					[ '21', '22', '', '', '' ]
+				], { defaultCellProperties: defaultProperties } ) );
+			} );
 		} );
 	} );
 

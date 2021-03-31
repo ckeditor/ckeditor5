@@ -211,18 +211,20 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
  *				</tr>
  *			</tbody>
  *		</table>
- * @param {module:engine/model/model~Model} model
+ * @param {module:core/editor/editor~Editor} editor
  */
-export default function injectTableLayoutPostFixer( model ) {
-	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
+export default function injectTableLayoutPostFixer( editor ) {
+	editor.model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, editor ) );
 }
 
 // The table layout post-fixer.
 //
 // @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/model~Model} model
-function tableLayoutPostFixer( writer, model ) {
+// @param {module:core/editor/editor~Editor} editor
+function tableLayoutPostFixer( writer, editor ) {
+	const model = editor.model;
 	const changes = model.document.differ.getChanges();
+	const cellProperties = getDefaultCellProperties( editor );
 
 	let wasFixed = false;
 
@@ -251,7 +253,7 @@ function tableLayoutPostFixer( writer, model ) {
 			// The wasFixed flag should be true if any of tables in batch was fixed - might be more then one.
 			wasFixed = fixTableCellsRowspan( table, writer ) || wasFixed;
 			// Step 2: fix table rows sizes.
-			wasFixed = fixTableRowsSizes( table, writer ) || wasFixed;
+			wasFixed = fixTableRowsSizes( table, writer, cellProperties ) || wasFixed;
 
 			analyzedTables.add( table );
 		}
@@ -287,8 +289,9 @@ function fixTableCellsRowspan( table, writer ) {
 //
 // @param {module:engine/model/element~Element} table
 // @param {module:engine/model/writer~Writer} writer
+// @param {Object} cellProperties Default for created cells.
 // @returns {Boolean} Returns `true` if the table was fixed.
-function fixTableRowsSizes( table, writer ) {
+function fixTableRowsSizes( table, writer, cellProperties ) {
 	let wasFixed = false;
 
 	const rowsLengths = getRowsLengths( table );
@@ -328,7 +331,7 @@ function fixTableRowsSizes( table, writer ) {
 
 			if ( columnsToInsert ) {
 				for ( let i = 0; i < columnsToInsert; i++ ) {
-					createEmptyTableCell( writer, writer.createPositionAt( table.getChild( rowIndex ), 'end' ) );
+					createEmptyTableCell( writer, writer.createPositionAt( table.getChild( rowIndex ), 'end' ), cellProperties );
 				}
 
 				wasFixed = true;
@@ -396,4 +399,17 @@ function isTableAttributeEntry( entry ) {
 	const key = entry.attributeKey;
 
 	return isAttributeType && ( key === 'headingRows' || key === 'colspan' || key === 'rowspan' );
+}
+
+// Returns the default cell properties if the `TableCellPropertiesEditing` plugin is enabled.
+// Otherwise, returns an empty object.
+//
+// @param {module:core/editor/editor~Editor} editor
+// @returns {Object}
+function getDefaultCellProperties( editor ) {
+	if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
+		return editor.config.get( 'table.tableCellProperties.defaultProperties' );
+	}
+
+	return {};
 }
