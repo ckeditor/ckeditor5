@@ -73,10 +73,21 @@ export default class TableCellProperties extends Plugin {
  *				    borderColor: 'hsl(120, 75%, 60%)',
  *				    borderWidth: '2px',
  *				    horizontalAlignment: 'right',
- *					verticalAlignment: 'bottom'
+ *				    verticalAlignment: 'bottom'
  *				}
  *			}
  *		}
+ *
+ * 	 The following properties are supported:
+ *
+ * 	 * `backgroundColor` – sets the cell background color
+ * 	 * `borderColor` – sets the border color
+ * 	 * `borderStyle` – sets the border style
+ * 	 * `borderWidth` – sets the border width
+ * 	 * `height` – sets the cell height
+ * 	 * `horizontalAlignment` – sets the cell horizontal alignment
+ * 	 * `verticalAlignment` – sets the cell vertical alignment
+ * 	 * `width` – sets the cell width
  *
  * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface

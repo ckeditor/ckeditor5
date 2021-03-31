@@ -78,6 +78,16 @@ export default class TableProperties extends Plugin {
  *			}
  *		}
  *
+ * 	 The following properties are supported:
+ *
+ * 	 * `alignment` – sets the table alignment
+ * 	 * `backgroundColor` – sets the table background color
+ * 	 * `borderColor` – sets the border color
+ * 	 * `borderStyle` – sets the border style
+ * 	 * `borderWidth` – sets the border width
+ * 	 * `height` – sets the table height
+ * 	 * `width` – sets the table width
+ *
  * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
  * allowing users to pick colors in a more convenient way.

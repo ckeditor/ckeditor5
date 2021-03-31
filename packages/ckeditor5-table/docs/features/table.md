@@ -205,6 +205,45 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Default table and cell styles
+
+You can specify the default styles for the table and cells that will be applied while creating the new table by passing the `defaultProperties` object to {@link module:table/table~TableConfig#tableProperties} for tables, and {@link module:table/table~TableConfig#tableCellProperties} for cells.
+
+```js
+const tableConfig = {
+    table: {
+        tableProperties: {
+            // The default styles for new tables.
+            defaultProperties: {
+                borderStyle: 'dashed',
+                borderColor: 'hsl(0, 0%, 60%)',
+                borderWidth: '3px',
+                alignment: 'left'
+            }
+        },
+        
+        tableCellProperties: {
+            // The default styles for each cell inside the created table.
+            defaultProperties: {
+                borderStyle: 'dotted',
+                borderColor: 'hsl(120, 75%, 60%)',
+                borderWidth: '2px',
+                horizontalAlignment: 'right',
+                verticalAlignment: 'bottom'
+            }
+        }
+    }
+};
+```
+
+Read more about supported values in {@link module:table/table~TableConfig}.
+
+{@snippet features/table-default-properties}
+
+<info-box>
+	The default table and cell styles **do not** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. They are used only when creating the new table.
+</info-box>
+
 ## Block vs inline content in table cells
 
 The table feature allows creating block content (like paragraphs, lists, headings, etc.) in table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), the cell content is considered "inline" and the paragraph is not rendered.
