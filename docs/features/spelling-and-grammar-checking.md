@@ -27,6 +27,12 @@ The proofreader badge in the bottom-right corner shows you the number of mistake
 
 {@snippet features/wproofreader}
 
+## Multi-language support
+
+As seen in the demo, the spell checking and grammar feature can support multiple languages of the content (a language can be set for separately for a selected text with the {@link features/language text part language} feature). If the WProofreader dictionary is set to `auto`, the feature will recognize the proper language and suggest error corrections and grammar specifically for that language.
+
+{@img assets/img/spellcheck-dictionary.png 800 Setting spell check dictionary to auto.}
+
 ## Supported languages
 
 By default the spell checker supports 18 languages: AI-based English (default), American English, Brazilian Portuguese, British English, Canadian English, Canadian French, Danish, Dutch, Finnish, French, German, Greek, Italian, Norwegian Bokmål, Portuguese, Spanish, Swedish and Ukrainian. Grammar checking is available for 16 of them &mdash; there is no grammar checking for Finnish and Norwegian.
