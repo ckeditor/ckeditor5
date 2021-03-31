@@ -133,13 +133,83 @@ yarn run docs:verify
 	By default, the crawler scans `http://fake.ckeditor.com:8080`, so you need to adjust your hosts file first.
 </info-box>
 
-This script collects and opens all links from the documentation, except the API and assets.
+The crawler collects and opens all links from the documentation, except the API and assets.
 
-The web crawler accepts the following arguments:
+The crawler accepts the following arguments:
 
-* `--url`, `-u` &ndash; The URL to start crawling. This argument is required. Thanks to it you can verify e.g. a deployed documentation.
-* `--depth`, `-d` &ndash; Defines how many nested page levels should be examined. Infinity by default.
-* `--exclude`, `-e` &ndash; A comma-separated string with URL exclusions &ndash; links that match the excluded part are skipped. Nothing is excluded by default.
+* `--url` (alias `-u`) &ndash; The URL to start crawling. This argument is required. Thanks to it you can verify e.g. a deployed documentation.
+* `--depth` (alias `-d`) &ndash; A number that defines how many nested page levels should be examined. Infinity by default.
+* `--exclude` (alias `-e`) &ndash; A string with URL exclusion &ndash; links that match the excluded part are skipped. You can define multiple exclusions by providing multiple `--exclude` (or `-e`) arguments. Not specifying a value removes default exclusions, if any. Nothing is excluded by default, but the `docs:verify` script has some predefined ones.
+* `--concurrency` (alias `-c`) &ndash; Number of concurrent pages (browser tabs) to be used during the scan. By default all links are opened one by one, sequentially (concurrency is 1).
+* `--quit` (alias `-q`) &ndash; A boolean argument that specifies, whether the scan should be terminated as soon as the first error is found. Disabled by default, so all found links are scanned regardless of whether they have errors or not.
+
+For example, to check the documentation without the default exclusions (the API and assets links), using only 2 concurrent pages and terminate the scan as soon as first error is found, run this command:
+
+```
+yarn run docs:verify -e -c 2 -q
+```
+
+#### Defining exclusions for web crawler
+
+The crawler supports exclusions provided as text patterns, which are then searched for in the error messages as substrings. This pattern is just a plain text, not a regular expression. When a pattern (substring) is found, such an error is ignored - it is not listed after the finished scan and it does not mark the entire scan as failed. Only non-ignored errors are logged at the end of the scan.
+
+The pattern for ignoring an error must be defined in `<meta>` tag on a page, where an error occurs. This `<meta>` tag must have `x-cke-crawler-ignore-patterns` name and `content` value provided as JSON object, where:
+
+* Each key is the error type, that can be detected by the crawler.
+* Each value is the text or an array of texts, that are used for finding a match in error messages. The special wildcard value `*` can be used to ignore all errors for given error type.
+
+The following error types are supported: `uncaught-exception`, `request-failure`, `response-failure`, `console-error`, `navigation-error` and `page-crash`:
+
+* `uncaught-exception` &ndash; As the name suggests, these are uncaught exceptions from the page.
+* `request-failure` &ndash; This error occurs, when the request has not been sent (e.g. it was blocked by the browser) or has not received any response (e.g. due to a timeout or in case the remote server is unreachable). HTTP error responses, such as 404 or 500, are considered as successful ones from HTTP standpoint, so such requests will not be logged as request failures, but as response failures.
+* `response-failure` &ndash; Each HTTP response with status code equal or greater than 400 is treated as failed one.
+* `console-error` &ndash; All `console.error()` calls are treated as an error.
+* `navigation-error` &ndash; The navigation error may happen, when:
+	* there's an SSL error (e.g. in case of self-signed certificate or expired one),
+	* target URL is invalid,
+	* the timeout is exceeded during navigation to a page, so the `load` event is not emmited (e.g. due to an infinite loop in the JavaScript code).
+* `page-crash` &ndash; The general page malfunction, that does not fit to other categories (e.g. running out of a RAM).
+
+| Error&nbsp;type      | Example              |
+|----------------------|----------------------|
+| `uncaught-exception` | `"uncaught-exception": "ckeditor-duplicated-modules"`<br> This pattern ignores only the `ckeditor-duplicated-modules` exception. |
+| `request-failure`    | `"request-failure": "missing-file.jpg"`<br> All requests containing the `missing-file.jpg` in the URL are ignored. |
+| `response-failure`   | `"response-failure": "HTTP response status code: 401"`<br> All requests requiring authorization are ignored. |
+| `console-error`      | `"console-error": "Example error message"`<br> All console errors containing "Example error message" substring are ignored. |
+| `navigation-error`   | `"navigation-error": "Navigation timeout of 15000 ms exceeded"`<br> Links, which are not completely loaded, are ignored. |
+| `page-crash`         | `"page-crash": "Error: Page crashed!"`<br> This general text pattern ignores all page crashes. |
+
+These patterns are simply added as keys and values in a JSON object to the `<meta>` tag on a page, where they should be active:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "page-crash": "Error: Page crashed!",
+    "uncaught-exception": "ckeditor-duplicated-modules",
+    "console-error": "Example error message"
+}'>
+```
+
+Please note that the pattern (regardless of the type of error) does not have to be a string, but can also be defined as an array of strings (patterns) to ignore many different errors:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "console-error": [ "Error 1", "Error 2", "Error 3" ]
+}'>
+```
+
+To ignore all errors, use the special wildcard value `*`:
+
+```html
+<meta name="x-cke-crawler-ignore-patterns" content='{
+    "console-error": "*"
+}'>
+```
+
+In addition to the possibility of defining exclusions in the `<meta>` tag, it is also possible to specify that the link cannot be visited by the crawler by adding a `data-cke-crawler-skip` attribute:
+
+```html
+<a href="path/to/page" data-cke-crawler-skip>No entry for crawler, sorry</a>
+```
 
 ## Generating content styles
 
@@ -175,6 +245,5 @@ The script reduces the icon size up to 70%, depending on the software used to cr
 
 **Note**: You may still need to tweak the source code of the SVG files manually after using the script:
 
-* The icons should have the `viewBox` attribute (instead of `width` and `height`). The `removeDimensions` SVGO plugin will not remove `width` and `height` if there is no `viewBox` attribute so make sure it is present.
-* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source.
+* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source and running `clean-up-svg-icons` again usually does that.
 * Make sure the number of `<path>` elements is minimal. Merge paths whenever possible in the image processor before saving the file.

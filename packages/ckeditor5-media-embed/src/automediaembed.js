@@ -16,7 +16,7 @@ import { global } from 'ckeditor5/src/utils';
 import MediaEmbedEditing from './mediaembedediting';
 import { insertMedia } from './utils';
 
-const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=%]+$/;
+const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+\.[\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
 
 /**
  * The auto-media embed plugin. It recognizes media links in the pasted content and embeds
@@ -74,7 +74,7 @@ export default class AutoMediaEmbed extends Plugin {
 		// We need to listen on `Clipboard#inputTransformation` because we need to save positions of selection.
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
 		// into media.
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange();
 
 			const leftLivePosition = LivePosition.fromPosition( firstRange.start );

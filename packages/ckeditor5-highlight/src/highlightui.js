@@ -94,8 +94,11 @@ export default class HighlightUI extends Plugin {
 	 */
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
+		const command = this.editor.commands.get( 'highlight' );
 
-		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser );
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, button => {
+			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		} );
 	}
 
 	/**
@@ -124,10 +127,11 @@ export default class HighlightUI extends Plugin {
 	 * @param {String} name The name of the button.
 	 * @param {String} label The label for the button.
 	 * @param {String} icon The button icon.
-	 * @param {Function} [decorateButton=()=>{}] Additional method for extending the button.
+	 * @param {*} value The `value` property passed to the executed command.
+	 * @param {Function} decorateButton A callback getting ButtonView instance so that it can be further customized.
 	 * @private
 	 */
-	_addButton( name, label, icon, value, decorateButton = () => {} ) {
+	_addButton( name, label, icon, value, decorateButton ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, locale => {

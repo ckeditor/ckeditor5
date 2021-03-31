@@ -31,7 +31,7 @@ describe( 'Table feature – integration', () => {
 				.create( '', { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
 				.then( newEditor => {
 					editor = newEditor;
-					clipboard = editor.plugins.get( 'Clipboard' );
+					clipboard = editor.plugins.get( 'ClipboardPipeline' );
 				} );
 		} );
 

@@ -1,0 +1,89 @@
+<div class="snippet-drag-drop-wrapper">
+	<h3>List of contacts</h3>
+	<ul class="contacts tour-balloon-visible"></ul>
+	<div id="snippet-drag-drop">
+		<h2>The Annual Meeting of Fictional Characters</h2>
+		<h3>Announcement</h3>
+		<p>It is with great pleasure that we hereby announce the theme of this year&#39;s meeting is &quot;<strong>E&ndash;ink Technology and
+			Classical Fairy Tales</strong>&quot;. As every year, the event will be hosted in <em>The Wonderland</em> by
+			<span class="h-card"><a class="p-name u-email" href="mailto:alice@example.com">Alice</a>
+				<span class="p-tel">+20 4345 234 235</span></span> and starts tomorrow at 8:00 GMT.</p>
+		<h3>Speakers and agenda</h3>
+		<p>TBA.</p>
+		<h3>Venue</h3>
+		<p>For detailed information, please contact
+			<span class="h-card"><a class="p-name u-email" href="mailto:h.finn@example.com">Huckleberry Finn</a>
+				<span class="p-tel">+48 1345 234 235</span></span>.</p>
+		<h3>Accommodation</h3>
+		<p>Many thanks to <span class="h-card"><a class="p-name u-email" href="mailto:r.crusoe@example.com">Robinson Crusoe</a>
+			<span class="p-tel">+45 2345 234 235</span></span> who kindly offered his island to the guests of the annual meeting.</p>
+		<hr/>
+		<p style="text-align: right;"><span class="h-card"><a class="p-name u-email" href="mailto:lrrh@example.com">Little Red Riding Hood</a>
+			<span class="p-tel">+45 2345 234 235</span></span>
+		</p>
+	</div>
+</div>
+
+<style>
+	ul.contacts {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		list-style-type: none;
+		padding: 10px;
+		margin: 20px 0;
+	}
+	ul.contacts li {
+		background: hsl(0deg 0% 100%);
+		border: 1px solid var(--ck-color-base-border);
+		box-shadow: 1px 1px 2px hsl(0deg 0% 0% / 12%);
+		height: 32px;
+		margin: 0 10px 10px 0;
+		line-height: 32px;
+		cursor: pointer;
+		border-radius: 100px;
+		overflow: hidden;
+		font-size: 0.9em;
+	}
+	ul.contacts li:hover {
+		background: hsl(56, 100%, 95%);
+	}
+	ul.contacts .contact {
+		padding: 0 10px 0 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	ul.contacts .contact .u-photo {
+		display: inline-block;
+		vertical-align: bottom;
+		margin-right: 10px;
+	}
+	ul.contacts.tour-balloon-visible li:not(:nth-child( 3 )) {
+		opacity: .4;
+	}
+
+	.ck-content .h-card {
+		background: hsl(56, 100%, 95%);
+		padding: 3px 6px;
+		border-bottom: 1px dashed hsl(0, 0%, 80%);
+		cursor: default;
+		user-select: none;
+		white-space: nowrap;
+	}
+	.ck-content .h-card a {
+		pointer-events: none;
+	}
+	.ck-content .h-card .p-tel {
+		font-style: italic;
+	}
+	.ck-content .h-card .p-tel::before {
+		font-style: normal;
+		content: " (☎ ";
+	}
+	.ck-content .h-card .p-tel::after {
+		font-style: normal;
+		content: ")";
+	}
+</style>

@@ -16,8 +16,10 @@ import { global } from 'ckeditor5/src/utils';
 import { insertImage } from './image/utils';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
-const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+(\.[\w-]+)+[\w._~:/?#[\]@!$&'()*+,;=%-]+/.source +
-	/\.(jpg|jpeg|png|gif|ico|webp|JPG|JPEG|PNG|GIF|ICO|WEBP)\??[\w._~:/#[\]@!$&'()*+,;=%-]*$/.source ) );
+const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\]@!$&'()*+,;=%-]+/.source +
+	/\.(jpg|jpeg|png|gif|ico|webp|JPG|JPEG|PNG|GIF|ICO|WEBP)/.source +
+	/(\?[\w.~:/[\]@!$&'()*+,;=%-]*)?/.source +
+	/(#[\w.~:/[\]@!$&'()*+,;=%-]*)?$/.source ) );
 
 /**
  * The auto-image plugin. It recognizes image links in the pasted content and embeds
@@ -75,7 +77,7 @@ export default class AutoImage extends Plugin {
 		// We need to listen on `Clipboard#inputTransformation` because we need to save positions of selection.
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
 		// into an image.
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange();
 
 			const leftLivePosition = LivePosition.fromPosition( firstRange.start );

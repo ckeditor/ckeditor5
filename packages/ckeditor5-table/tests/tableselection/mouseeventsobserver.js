@@ -25,13 +25,12 @@ describe( 'table selection', () => {
 		it( 'should define domEventTypes', () => {
 			expect( observer.domEventType ).to.deep.equal( [
 				'mousemove',
-				'mouseup',
 				'mouseleave'
 			] );
 		} );
 
 		describe( 'onDomEvent', () => {
-			for ( const eventName of [ 'mousemove', 'mouseup', 'mouseleave' ] ) {
+			for ( const eventName of [ 'mousemove', 'mouseleave' ] ) {
 				it( `should fire ${ eventName } with the right event data`, () => {
 					const spy = sinon.spy();
 

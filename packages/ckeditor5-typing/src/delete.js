@@ -62,7 +62,7 @@ export default class Delete extends Plugin {
 			data.preventDefault();
 
 			view.scrollToTheSelection();
-		} );
+		}, { priority: 'low' } );
 
 		// Android IMEs have a quirk - they change DOM selection after the input changes were performed by the browser.
 		// This happens on `keyup` event. Android doesn't know anything about our deletion and selection handling. Even if the selection

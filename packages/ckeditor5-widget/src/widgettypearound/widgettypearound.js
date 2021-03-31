@@ -11,12 +11,12 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import {
-	isArrowKeyCode,
 	isForwardArrowKeyCode,
 	keyCodes
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import {
 	isTypeAroundWidget,
@@ -30,6 +30,8 @@ import {
 import {
 	isNonTypingKeystroke
 } from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+
+import { isWidget } from '../utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
@@ -59,6 +61,13 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	static get pluginName() {
 		return 'WidgetTypeAround';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Enter, Delete ];
 	}
 
 	/**
@@ -257,13 +266,10 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		// This is the main listener responsible for the fake caret.
-		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high-10").
-		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
-			if ( isArrowKeyCode( domEventData.keyCode ) ) {
-				this._handleArrowKeyPress( evt, domEventData );
-			}
-		}, { priority: priorities.get( 'high' ) + 10 } );
+		// Note: The priority must precede the default Widget class keydown handler ("high").
+		this._listenToIfEnabled( editingView.document, 'arrowKey', ( evt, domEventData ) => {
+			this._handleArrowKeyPress( evt, domEventData );
+		}, { context: [ isWidget, '$text' ], priority: 'high' } );
 
 		// This listener makes sure the widget type around selection attribute will be gone from the model
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
@@ -531,11 +537,19 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableInsertingParagraphsOnEnterKeypress() {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 		const editingView = editor.editing.view;
 
 		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
-			const selectedViewElement = editingView.document.selection.getSelectedElement();
-			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
+			// This event could be triggered from inside the widget but we are interested
+			// only when the widget is selected itself.
+			if ( evt.eventPhase != 'atTarget' ) {
+				return;
+			}
+
+			const selectedModelElement = selection.getSelectedElement();
+			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
 			const schema = editor.model.schema;
 			let wasHandled;
 
@@ -556,7 +570,7 @@ export default class WidgetTypeAround extends Plugin {
 				domEventData.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { context: isWidget } );
 	}
 
 	/**
@@ -587,14 +601,13 @@ export default class WidgetTypeAround extends Plugin {
 			keyCodes.backspace
 		];
 
-		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high + 1").
+		// Note: The priority must precede the default observers.
 		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
 			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
 				this._insertParagraphAccordingToFakeCaretPosition();
 			}
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -613,8 +626,13 @@ export default class WidgetTypeAround extends Plugin {
 		const model = editor.model;
 		const schema = model.schema;
 
-		// Note: The priority must precede the default Widget class delete handler.
 		this._listenToIfEnabled( editingView.document, 'delete', ( evt, domEventData ) => {
+			// This event could be triggered from inside the widget but we are interested
+			// only when the widget is selected itself.
+			if ( evt.eventPhase != 'atTarget' ) {
+				return;
+			}
+
 			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
 			// This listener handles only these cases when the fake caret is active.
@@ -677,7 +695,7 @@ export default class WidgetTypeAround extends Plugin {
 			// If nothing was deleted, then the default handler will have nothing to do anyway.
 			domEventData.preventDefault();
 			evt.stop();
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		}, { context: isWidget } );
 	}
 
 	/**

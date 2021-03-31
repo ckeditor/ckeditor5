@@ -100,7 +100,7 @@ export function getLeadingWhiteSpaces( textNode ) {
 }
 
 /**
- * For a plain text containing the code (snippet), it returns a document fragment containing
+ * For plain text containing the code (a snippet), it returns a document fragment containing
  * model text nodes separated by soft breaks (in place of new line characters "\n"), for instance:
  *
  * Input:
@@ -118,6 +118,7 @@ export function getLeadingWhiteSpaces( textNode ) {
  *
  * @param {module:engine/model/writer~Writer} writer
  * @param {String} text The raw code text to be converted.
+ * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
 export function rawSnippetTextToModelDocumentFragment( writer, text ) {
 	const fragment = writer.createDocumentFragment();
@@ -131,6 +132,46 @@ export function rawSnippetTextToModelDocumentFragment( writer, text ) {
 			writer.appendElement( 'softBreak', fragment );
 		}
 	}
+
+	return fragment;
+}
+
+/**
+ * For plain text containing the code (a snippet), it returns a document fragment containing
+ * view text nodes separated by `<br>` elements (in place of new line characters "\n"), for instance:
+ *
+ * Input:
+ *
+ *		"foo()\n
+ *		bar()"
+ *
+ * Output:
+ *
+ *		<DocumentFragment>
+ *			"foo()"
+ *			<br/>
+ *			"bar()"
+ *		</DocumentFragment>
+ *
+ * @param {module:engine/view/upcastwriter~UpcastWriter} writer
+ * @param {String} text The raw code text to be converted.
+ * @returns {module:engine/view/documentfragment~DocumentFragment}
+ */
+export function rawSnippetTextToViewDocumentFragment( writer, text ) {
+	const fragment = writer.createDocumentFragment();
+	const textLines = text.split( '\n' );
+
+	const nodes = textLines.reduce( ( nodes, line, lineIndex ) => {
+		nodes.push( line );
+
+		if ( lineIndex < textLines.length - 1 ) {
+			nodes.push( writer.createElement( 'br' ) );
+		}
+
+		return nodes;
+	}, [] );
+
+	writer.appendChild( nodes, fragment );
 
 	return fragment;
 }
@@ -162,9 +203,9 @@ export function rawSnippetTextToModelDocumentFragment( writer, text ) {
  *		</codeBlock>                               </codeBlock>
  *
  * **Note:** The positions are in reverse order so they do not get outdated when iterating over them and
- * the writer inserts or removes things at the same time.
+ * the writer inserts or removes elements at the same time.
  *
- * **Note:** The position is situated after the leading white spaces in the text node.
+ * **Note:** The position is located after the leading white spaces in the text node.
  *
  * @param {module:engine/model/model~Model} model
  * @returns {Array.<module:engine/model/position~Position>}
@@ -181,7 +222,7 @@ export function getIndentOutdentPositions( model ) {
 	// When the selection is NOT collapsed, collect all positions starting before text nodes
 	// (code lines) in any <codeBlock> within the selection.
 	else {
-		// Walk backward so positions we're about to collect here do not get outdated when
+		// Walk backward so positions we are about to collect here do not get outdated when
 		// inserting or deleting using the writer.
 		const walker = selection.getFirstRange().getWalker( {
 			ignoreElementEnd: true,

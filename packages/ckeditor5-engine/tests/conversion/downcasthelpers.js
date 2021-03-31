@@ -2673,14 +2673,12 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.markerToHighlight( {
 				model: 'comment',
-				view: ( data, conversionApi ) => {
-					const commentType = data.markerName.split( ':' )[ 1 ];
-
-					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
-
+				view: data => {
+					// Assuming that the marker name is in a form of comment:commentType:commentId.
+					const [ , commentType, commentId ] = data.markerName.split( ':' );
 					return {
-						classes: [ 'comment', 'comment-' + commentType ]
+						classes: [ 'comment', 'comment-' + commentType ],
+						attributes: { 'data-comment-id': commentId }
 					};
 				}
 			} );
@@ -2688,10 +2686,10 @@ describe( 'DowncastHelpers', () => {
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
 				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
-				writer.addMarker( 'comment:abc', { range, usingOperation: false } );
+				writer.addMarker( 'comment:abc:id', { range, usingOperation: false } );
 			} );
 
-			expectResult( '<span class="comment comment-abc">foo</span>' );
+			expectResult( '<span class="comment comment-abc" data-comment-id="id">foo</span>' );
 		} );
 
 		describe( 'highlight', () => {

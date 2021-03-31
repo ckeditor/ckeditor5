@@ -18,6 +18,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
+import DragDrop from '@ckeditor/ckeditor5-clipboard/src/dragdrop';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -50,7 +52,7 @@ describe( 'CodeBlockEditing', () => {
 		return ClassicTestEditor
 			.create( element, {
 				language: 'en',
-				plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph, Undo ]
+				plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph, Undo, ClipboardPipeline, DragDrop ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -238,6 +240,28 @@ describe( 'CodeBlockEditing', () => {
 			viewDoc.fire( 'enter', getEvent() );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
+			sinon.assert.calledOnce( enterCommand.execute );
+			sinon.assert.notCalled( shiftEnterCommand.execute );
+		} );
+
+		it( 'should execute enter command when pressing enter in an element nested inside a codeBlock', () => {
+			model.schema.register( 'codeBlockSub', { allowIn: 'codeBlock', isInline: true } );
+			model.schema.extend( '$text', { allowIn: 'codeBlockSub' } );
+			editor.conversion.elementToElement( { model: 'codeBlockSub', view: 'codeBlockSub' } );
+
+			const enterCommand = editor.commands.get( 'enter' );
+			const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
+
+			sinon.spy( enterCommand, 'execute' );
+			sinon.spy( shiftEnterCommand, 'execute' );
+
+			setModelData( model, '<codeBlock>foo<codeBlockSub>b[]a</codeBlockSub>r</codeBlock>' );
+
+			viewDoc.fire( 'enter', getEvent() );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock>foo<codeBlockSub>b</codeBlockSub><codeBlockSub>[]a</codeBlockSub>r</codeBlock>'
+			);
 			sinon.assert.calledOnce( enterCommand.execute );
 			sinon.assert.notCalled( shiftEnterCommand.execute );
 		} );
@@ -1128,8 +1152,13 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should not intercept input when selection anchored outside any code block', () => {
 			setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
+			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
+			const contentInsertionSpy = sinon.spy();
+
+			clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+
 			const dataTransferMock = {
-				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar' )
+				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar\nbaz\n' )
 			};
 
 			viewDoc.fire( 'clipboardInput', {
@@ -1137,12 +1166,19 @@ describe( 'CodeBlockEditing', () => {
 				stop: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
-			sinon.assert.notCalled( dataTransferMock.getData );
+			expect( getModelData( model ) ).to.equal( '<paragraph>fbar baz[]oo</paragraph>' );
+
+			// Make sure that ClipboardPipeline was not interrupted.
+			sinon.assert.calledOnce( contentInsertionSpy );
 		} );
 
 		it( 'should intercept input when selection anchored in the code block', () => {
 			setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+
+			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
+			const contentInsertionSpy = sinon.spy();
+
+			clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
 
 			const dataTransferMock = {
 				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar\nbaz\n' )
@@ -1163,6 +1199,49 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>' );
 
 			sinon.assert.calledOnce( dataTransferMock.getData );
+
+			// Make sure that ClipboardPipeline was not interrupted.
+			sinon.assert.calledOnce( contentInsertionSpy );
+		} );
+
+		it( 'should intercept input when target range is in the code block (drop integration)', () => {
+			setModelData( model, '<codeBlock language="css">foo</codeBlock><paragraph>b[]ar</paragraph>' );
+
+			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
+			const contentInsertionSpy = sinon.spy();
+
+			clipboardPlugin.on( 'contentInsertion', contentInsertionSpy );
+
+			const dataTransferMock = {
+				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar\nbaz\n' )
+			};
+
+			const targetPosition = model.createPositionAt( model.document.getRoot().getChild( 0 ), 1 );
+			const targetViewRange = editor.editing.mapper.toViewRange( model.createRange( targetPosition ) );
+
+			viewDoc.fire( 'clipboardInput', {
+				method: 'drop',
+				dataTransfer: dataTransferMock,
+				targetRanges: [ targetViewRange ],
+				target: targetViewRange.start.parent.parent,
+				stop: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="css">' +
+				'fbar' +
+				'<softBreak></softBreak>' +
+				'baz' +
+				'<softBreak></softBreak>' +
+				'[]oo' +
+				'</codeBlock>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			sinon.assert.calledOnce( dataTransferMock.getData );
+
+			// Make sure that ClipboardPipeline was not interrupted.
+			sinon.assert.calledOnce( contentInsertionSpy );
 		} );
 
 		describe( 'getSelectedContent()', () => {

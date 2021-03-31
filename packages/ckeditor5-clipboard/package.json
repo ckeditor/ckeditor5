@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-clipboard",
-  "version": "26.0.0",
+  "version": "27.0.0",
   "description": "Clipboard integration for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,16 +12,30 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^26.0.0",
-    "@ckeditor/ckeditor5-engine": "^26.0.0",
-    "@ckeditor/ckeditor5-utils": "^26.0.0"
+    "@ckeditor/ckeditor5-core": "^27.0.0",
+    "@ckeditor/ckeditor5-engine": "^27.0.0",
+    "@ckeditor/ckeditor5-utils": "^27.0.0",
+    "@ckeditor/ckeditor5-widget": "^27.0.0",
+    "lodash-es": "^4.17.11"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^26.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^26.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^26.0.0",
-    "@ckeditor/ckeditor5-link": "^26.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^26.0.0"
+    "@ckeditor/ckeditor5-alignment": "^27.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^27.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^27.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "^27.0.0",
+    "@ckeditor/ckeditor5-code-block": "^27.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^27.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^27.0.0",
+    "@ckeditor/ckeditor5-enter": "^27.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^27.0.0",
+    "@ckeditor/ckeditor5-image": "^27.0.0",
+    "@ckeditor/ckeditor5-link": "^27.0.0",
+    "@ckeditor/ckeditor5-page-break": "^27.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^27.0.0",
+    "@ckeditor/ckeditor5-paste-from-office": "^27.0.0",
+    "@ckeditor/ckeditor5-remove-format": "^27.0.0",
+    "@ckeditor/ckeditor5-table": "^27.0.0",
+    "@ckeditor/ckeditor5-typing": "^27.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

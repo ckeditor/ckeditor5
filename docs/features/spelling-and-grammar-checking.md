@@ -33,6 +33,12 @@ By default the spell checker supports 18 languages: AI-based English (default), 
 
 There are also over 150 additional languages and specialized dictionaries such as medical and legal available for an additional fee. You can check the full list [here](https://webspellchecker.com/additional-dictionaries/).
 
+## Related features
+
+There are other language-related CKEditor 5 features you may want to check:
+
+* {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
+
 ## Installation
 
 WProofreader is delivered as a CKEditor 5 plugin, so it can be combined into an editor build as other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
