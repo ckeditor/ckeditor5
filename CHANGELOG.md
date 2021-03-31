@@ -5,13 +5,15 @@ Changelog
 
 ### Release highlights
 
-We are happy to announce the release of CKEditor 5 v27.0.0.
+We are happy to announce the release of CKEditor 5 v27.0.0 that contains security fixes for multiple packages: `ckeditor5-engine`, `ckeditor5-font`, `ckeditor5-image`, `ckeditor5-list`, `ckeditor5-markdown-gfm`, `ckeditor5-media-embed`, `ckeditor5-paste-from-office`, `ckeditor5-widget`. Even though this is a low impact issue and only affects the victim's browser with no risk of data leakage, an upgrade is highly recommended! You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-3rh3-wfr4-76mj) and [contact us](https://ckeditor.com/contact/) if you have more questions.
+
+The CKEditor 5 team would like to thank Yeting Li for recognizing and reporting these vulnerabilities.
 
 Starting from this version, collaboration features release notes will be included in the CKEditor 5 changelog. Changes for the previous releases are available on https://ckeditor.com/collaboration/changelog/.
 
 This release introduces some new features:
 
-* The new [text part language](https://github.com/ckeditor/ckeditor5/issues/8989) feature allows you to define the language for each passage of content written in multiple languages. This helps satisfy the WCAG Success Criterion 3.1.2 Language of Parts.
+* The new [text part language](https://ckeditor.com/docs/ckeditor5/latest/features/language.html) feature allows you to define the language for each passage of content written in multiple languages. This helps satisfy the WCAG Success Criterion 3.1.2 Language of Parts.
 * Support for [drag and dropping of textual content and block objects](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/drag-drop.html) (like images and tables) within the editor.
 * Support for [dropping HTML content from outside of the editor](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/drag-drop.html) into the editor.
 * [Alignment can now be set using classes](https://github.com/ckeditor/ckeditor5/issues/8516).
