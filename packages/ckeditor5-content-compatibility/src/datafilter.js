@@ -55,26 +55,24 @@ export default class DataFilter {
 		this._dataSchema = dataSchema;
 
 		/**
-		 * A map of registered {@link module:engine/view/matcher~Matcher Matcher} instances.
-		 *
-		 * Describes rules upon which content attributes should be allowed.
+		 * {@link module:engine/view/matcher~Matcher Matcher} instance describing rules upon which
+		 * content attributes should be allowed.
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Map.<String, module:engine/view/matcher~Matcher>} #_allowedAttributes
+		 * @member {module:engine/view/matcher~Matcher} #_allowedAttributes
 		 */
-		this._allowedAttributes = new Map();
+		this._allowedAttributes = new Matcher();
 
 		/**
-		 * A map of registered {@link module:engine/view/matcher~Matcher Matcher} instances.
-		 *
-		 * Describes rules upon which content attributes should be disallowed.
+		 * {@link module:engine/view/matcher~Matcher Matcher} instance describing rules upon which
+		 * content attributes should be disallowed.
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Map.<String, module:engine/view/matcher~Matcher>} #_disallowedAttributes
+		 * @member {module:engine/view/matcher~Matcher} #_disallowedAttributes
 		 */
-		this._disallowedAttributes = new Map();
+		this._disallowedAttributes = new Matcher();
 	}
 
 	/**
@@ -99,7 +97,7 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be allowed.
 	 */
 	allowAttributes( config ) {
-		this._addAttributeMatcher( config, this._allowedAttributes );
+		this._allowedAttributes.add( config );
 	}
 
 	/**
@@ -108,27 +106,7 @@ export default class DataFilter {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be disallowed.
 	 */
 	disallowAttributes( config ) {
-		this._addAttributeMatcher( config, this._disallowedAttributes );
-	}
-
-	/**
-	 * Adds attribute matcher for every registered data schema definition for the given `config.name`.
-	 *
-	 * @private
-	 * @param {module:engine/view/matcher~MatcherPattern} config
-	 * @param {Map.<String, module:engine/view/matcher~Matcher>} rules Rules map holding matchers.
-	 */
-	_addAttributeMatcher( config, rules ) {
-		const viewName = config.name;
-
-		config = cloneDeep( config );
-
-		// We don't want match by name when matching attributes. Matcher will be already attached to specific definition.
-		delete config.name;
-
-		for ( const definition of this._dataSchema.getDefinitionsForView( viewName ) ) {
-			getOrCreateMatcher( definition.view, rules ).add( config );
-		}
+		this._disallowedAttributes.add( config );
 	}
 
 	/**
@@ -379,25 +357,29 @@ export default class DataFilter {
 	}
 }
 
-// Consumes attributes matched for the given `rules`.
+// Consumes matched attributes.
 //
 // Returns sucessfully consumed attribute matches.
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @param {Map.<String, module:engine/view/matcher~Matcher>} rules
+// @param {module:engine/view/matcher~Matcher Matcher} matcher
 // @returns {Array.<Object>} Array with match information about found attributes.
-function consumeAttributeMatches( viewElement, { consumable }, rules ) {
-	const matches = [];
+function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
+	const matches = matcher.matchAll( viewElement ) || [];
+	const consumedMatches = [];
 
-	for ( const match of matchAll( viewElement, rules ) ) {
+	for ( const match of matches ) {
+		// We only want to consume attributes, so element can be still processed by other converters.
+		delete match.match.name;
+
 		if ( consumable.consume( viewElement, match.match ) ) {
-			matches.push( match );
+			consumedMatches.push( match );
 		}
 	}
 
-	return matches;
+	return consumedMatches;
 }
 
 // Helper function for downcast converter. Sets attributes on the given view element.
@@ -420,35 +402,6 @@ function setViewElementAttributes( writer, viewAttributes, viewElement ) {
 	if ( viewAttributes.classes ) {
 		writer.addClass( viewAttributes.classes, viewElement );
 	}
-}
-
-// Helper function restoring matcher for the given key from `rules` object.
-//
-// If matcher for the given key does not exist, this function will create a new one
-// inside `rules` object under the given key.
-//
-// @private
-// @param {String} key
-// @param {Map.<String, module:engine/view/matcher~Matcher>} rules
-// @returns {module:engine/view/matcher~Matcher}
-function getOrCreateMatcher( key, rules ) {
-	if ( !rules.has( key ) ) {
-		rules.set( key, new Matcher() );
-	}
-
-	return rules.get( key );
-}
-
-// Alias for {@link module:engine/view/matcher~Matcher#matchAll matchAll}.
-//
-// @private
-// @param {module:engine/view/element~Element} viewElement
-// @param {Map.<String, module:engine/view/matcher~Matcher>} rules Rules map holding matchers.
-// @returns {Array.<Object>} Array with match information about found elements.
-function matchAll( viewElement, rules ) {
-	const matcher = getOrCreateMatcher( viewElement.name, rules );
-
-	return matcher.matchAll( viewElement ) || [];
 }
 
 // Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
