@@ -141,7 +141,9 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 	model.change( writer => {
 		const imageElement = writer.createElement( imageType, attributes );
 
-		if ( !selectable && imageType != 'imageInline' && !selection.getSelectedElement() ) {
+		// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
+		// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
+		if ( !selectable && imageType != 'imageInline' ) {
 			selectable = findOptimalInsertionRange( selection, model );
 		}
 
