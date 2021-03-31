@@ -1160,6 +1160,17 @@ describe( 'TodoListEditing', () => {
 			} );
 
 			it( 'should do nothing when other arrow key was pressed', () => {
+				domEvtDataStub.keyCode = getCode( 'arrowUp' );
+
+				setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
+
+				viewDoc.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			} );
+
+			it( 'should do nothing when other arrow key was pressed', () => {
 				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
 				domEvtDataStub = {

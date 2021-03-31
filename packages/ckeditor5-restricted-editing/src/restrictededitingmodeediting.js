@@ -200,6 +200,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 		const viewDoc = editor.editing.view.document;
+		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
@@ -211,12 +212,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
 
-		// Block clipboard outside exception marker on paste.
-		this.listenTo( viewDoc, 'clipboardInput', function( evt ) {
+		// Block clipboard outside exception marker on paste and drop.
+		this.listenTo( clipboard, 'contentInsertion', evt => {
 			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
 				evt.stop();
 			}
-		}, { priority: 'high' } );
+		} );
 
 		// Block clipboard outside exception marker on cut.
 		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {

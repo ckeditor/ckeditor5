@@ -4,7 +4,7 @@
  */
 
 import PasteFromOffice from '../src/pastefromoffice';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { createDataTransfer } from './_utils/utils';
@@ -26,7 +26,7 @@ describe( 'PasteFromOffice', () => {
 			.then( _editor => {
 				editor = _editor;
 				pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
-				clipboard = editor.plugins.get( 'Clipboard' );
+				clipboard = editor.plugins.get( 'ClipboardPipeline' );
 			} );
 	} );
 
@@ -39,7 +39,7 @@ describe( 'PasteFromOffice', () => {
 	} );
 
 	it( 'should load Clipboard plugin', () => {
-		expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
+		expect( editor.plugins.get( ClipboardPipeline ) ).to.be.instanceOf( ClipboardPipeline );
 	} );
 
 	describe( 'isTransformedWithPasteFromOffice - flag', () => {

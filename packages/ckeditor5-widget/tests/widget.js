@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Widget from '../src/widget';
 import WidgetTypeAround from '../src/widgettypearound/widgettypearound';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { toWidget } from '../src/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
@@ -19,6 +20,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Widget', () => {
 	let element, editor, model, view, viewDocument;
@@ -132,8 +134,8 @@ describe( 'Widget', () => {
 		expect( view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
 	} );
 
-	it( 'should require the WidgetTypeAround plugin', () => {
-		expect( Widget.requires ).to.have.members( [ WidgetTypeAround ] );
+	it( 'should require the WidgetTypeAround and Delete plugins', () => {
+		expect( Widget.requires ).to.have.members( [ WidgetTypeAround, Delete ] );
 	} );
 
 	it( 'should create selection over clicked widget', () => {
@@ -147,7 +149,24 @@ describe( 'Widget', () => {
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+	} );
+
+	it( 'should create selection over clicked widget (Android)', () => {
+		env.isAndroid = true;
+
+		setModelData( model, '[]<widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewDiv ),
+			preventDefault: sinon.spy()
+		} );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
 		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
+		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+
+		env.isAndroid = false;
 	} );
 
 	it( 'should create selection when clicked in nested element', () => {
@@ -162,7 +181,6 @@ describe( 'Widget', () => {
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should do nothing if clicked in non-widget element', () => {
@@ -192,7 +210,6 @@ describe( 'Widget', () => {
 		viewDocument.isFocused = true;
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 		sinon.assert.notCalled( focusSpy );
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
 	} );
@@ -433,7 +450,7 @@ describe( 'Widget', () => {
 				viewDocument.fire( 'keydown', domEventDataMock );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
-				sinon.assert.calledTwice( domEventDataMock.preventDefault );
+				sinon.assert.called( domEventDataMock.preventDefault );
 				sinon.assert.notCalled( keydownHandler );
 			} );
 
@@ -451,7 +468,7 @@ describe( 'Widget', () => {
 				viewDocument.fire( 'keydown', domEventDataMock );
 
 				expect( getModelData( model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
-				sinon.assert.calledTwice( domEventDataMock.preventDefault );
+				sinon.assert.called( domEventDataMock.preventDefault );
 				sinon.assert.notCalled( keydownHandler );
 			} );
 

@@ -55,9 +55,9 @@ Keep full control of your work. Be safe and never lose anything thanks to the [a
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
-Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} to ensure everything is correct.
+Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
-{@img assets/img/features-productivity.png 800 CKEditor 5 features.}
+{@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 features.}
 
 ### Collaboration
 

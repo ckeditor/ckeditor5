@@ -6,7 +6,7 @@
 /* global document, setTimeout */
 
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
@@ -184,13 +184,13 @@ describe( 'Mention feature - integration', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor
-				.create( div, { plugins: [ Clipboard, Paragraph, BlockQuote, MentionEditing, UndoEditing ] } )
+				.create( div, { plugins: [ ClipboardPipeline, Paragraph, BlockQuote, MentionEditing, UndoEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
 					doc = model.document;
 
-					clipboard = editor.plugins.get( 'Clipboard' );
+					clipboard = editor.plugins.get( 'ClipboardPipeline' );
 				} );
 		} );
 

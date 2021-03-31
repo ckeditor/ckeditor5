@@ -7,6 +7,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -22,7 +23,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
@@ -572,7 +573,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ],
+				plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ],
 				restrictedEditing: {
 					allowedCommands: [ 'allowed' ]
 				}
@@ -740,7 +741,9 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingModeEditing, ClipboardPipeline ]
+			} );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );

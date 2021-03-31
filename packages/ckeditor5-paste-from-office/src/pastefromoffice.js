@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Clipboard } from 'ckeditor5/src/clipboard';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 
 import GoogleDocsNormalizer from './normalizers/googledocsnormalizer';
 import MSWordNormalizer from './normalizers/mswordnormalizer';
@@ -40,7 +40,7 @@ export default class PasteFromOffice extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard ];
+		return [ ClipboardPipeline ];
 	}
 
 	/**
@@ -54,7 +54,7 @@ export default class PasteFromOffice extends Plugin {
 		normalizers.push( new MSWordNormalizer( viewDocument ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 
-		editor.plugins.get( 'Clipboard' ).on(
+		editor.plugins.get( 'ClipboardPipeline' ).on(
 			'inputTransformation',
 			( evt, data ) => {
 				if ( data.isTransformedWithPasteFromOffice ) {

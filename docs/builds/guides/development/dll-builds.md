@@ -85,8 +85,6 @@ For example:
 			CKEditor5.basicStyles.Bold,
 			CKEditor5.basicStyles.Italic,
 			CKEditor5.autoformat.Autoformat,
-			CKEditor5.basicStyles.Bold,
-			CKEditor5.basicStyles.Italic,
 			CKEditor5.blockQuote.BlockQuote,
 			CKEditor5.essentials.Essentials,
 			CKEditor5.heading.Heading,

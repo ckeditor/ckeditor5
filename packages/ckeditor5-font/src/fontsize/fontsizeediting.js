@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { CKEditorError } from 'ckeditor5/src/utils';
+import { isLength, isPercentage } from 'ckeditor5/src/engine';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
@@ -109,7 +110,9 @@ export default class FontSizeEditing extends Plugin {
 		const editor = this.editor;
 
 		// If `fontSize.supportAllValues=true`, we do not allow to use named presets in the plugin's configuration.
-		const presets = definition.model.values.filter( value => !String( value ).match( /[\d.]+[\w%]+/ ) );
+		const presets = definition.model.values.filter( value => {
+			return !isLength( String( value ) ) && !isPercentage( String( value ) );
+		} );
 
 		if ( presets.length ) {
 			/**

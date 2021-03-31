@@ -82,7 +82,7 @@ export default class Editor {
 		/**
 		 * The plugins loaded and in use by this editor instance.
 		 *
-		 *		editor.plugins.get( 'Clipboard' ); // -> An instance of the clipboard plugin.
+		 *		editor.plugins.get( 'ClipboardPipeline' ); // -> An instance of the clipboard pipeline plugin.
 		 *
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}

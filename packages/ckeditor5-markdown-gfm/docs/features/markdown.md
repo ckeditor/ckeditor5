@@ -91,10 +91,7 @@ ClassicEditor
 	This means that advanced formatting like list styles, table styles or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be converted from HTML to Markdown.
 </info-box>
 
-While the Markdown plugin is stable and ready to use, some issues were reported for it. Feel free to upvote 👍&nbsp; them on GitHub if they are important for you:
-
-* The horizontal rule is not yet supported by the {@link features/autoformat autoformatting} feature but it gets output to Markdown nevertheless if inserted using the toolbar button. GitHub issue: [#5720](https://github.com/ckeditor/ckeditor5/issues/5720).
-* Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+While the Markdown plugin is stable and ready to use, pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322). Feel free to upvote 👍&nbsp; this on GitHub if you would like to see this introduced.
 
 ## Contribute
 
