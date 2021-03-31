@@ -1012,6 +1012,24 @@ describe( 'TableUtils', () => {
 
 			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
 		} );
+
+		it( 'should return proper number of columns for a table with a non-row element', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+		} );
 	} );
 
 	describe( 'removeRows()', () => {
