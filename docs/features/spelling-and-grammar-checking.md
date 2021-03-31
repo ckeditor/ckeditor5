@@ -29,9 +29,9 @@ The proofreader badge in the bottom-right corner shows you the number of mistake
 
 ## Multi-language support
 
-As seen in the demo, the spell checking and grammar feature can support multiple languages of the content (a language can be set for separately for a selected text with the {@link features/language text part language} feature). If the WProofreader dictionary is set to `auto`, the feature will recognize the proper language and suggest error corrections and grammar specifically for that language.
+As seen in the demo, the spell checking and grammar feature can support multilingual content. If the proofreader language is set to Auto Detect (or the `auto` language is set in the configuration), the feature will automatically recognize the text language and suggest error corrections and grammar specifically for that language.
 
-{@img assets/img/spellcheck-dictionary.png 800 Setting spell check dictionary to auto.}
+{@img assets/img/spellcheck-dictionary.png 800 Setting the spell checker dictionary to auto.}
 
 ## Supported languages
 
