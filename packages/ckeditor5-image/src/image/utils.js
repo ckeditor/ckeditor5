@@ -82,25 +82,38 @@ export function getImageWidgetAncestor( selection ) {
 /**
  * Checks if the provided model element is an `image`.
  *
+ * @protected
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isImage( modelElement ) {
+export function isBlockImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'image' );
 }
 
 /**
  * Checks if the provided model element is an `imageInline`.
  *
+ * @protected
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
-export function isImageInline( modelElement ) {
+export function isInlineImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'element', 'imageInline' );
 }
 
 /**
- * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionRange} method.
+ * Checks if the provided model element is an `image` or `imageInline`.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} modelElement
+ * @returns {Boolean}
+ */
+export function isImage( modelElement ) {
+	return isInlineImage( modelElement ) || isBlockImage( modelElement );
+}
+
+/**
+ * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
  *
  *		insertImage( model, { src: 'path/to/image.jpg' } );
  *

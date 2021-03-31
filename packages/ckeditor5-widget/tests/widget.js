@@ -20,6 +20,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Widget', () => {
 	let element, editor, model, view, viewDocument;
@@ -148,6 +149,24 @@ describe( 'Widget', () => {
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+	} );
+
+	it( 'should create selection over clicked widget (Android)', () => {
+		env.isAndroid = true;
+
+		setModelData( model, '[]<widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewDiv ),
+			preventDefault: sinon.spy()
+		} );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
+		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+
+		env.isAndroid = false;
 	} );
 
 	it( 'should create selection when clicked in nested element', () => {

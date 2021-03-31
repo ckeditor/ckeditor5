@@ -59,7 +59,7 @@ class HCardEditing extends Plugin {
 		this._defineConverters();
 		this._defineClipboardInputOutput();
 
-		// View to model position mapping is needed because h-card element in model is represented by a single element,
+		// View-to-model position mapping is needed because an h-card element in the model is represented by a single element,
 		// but in the view it is a more complex structure.
 		this.editor.editing.mapper.on(
 			'viewToModelPosition',
@@ -79,7 +79,7 @@ class HCardEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		// Data to model conversion.
+		// Data-to-model conversion.
 		conversion.for( 'upcast' ).elementToElement( {
 			view: {
 				name: 'span',
@@ -90,13 +90,13 @@ class HCardEditing extends Plugin {
 			}
 		} );
 
-		// Model to data conversion.
+		// Model-to-data conversion.
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'h-card',
 			view: ( modelItem, { writer: viewWriter } ) => createCardView( modelItem, viewWriter )
 		} );
 
-		// Model to view conversion.
+		// Model-to-view conversion.
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'h-card',
 			view: ( modelItem, { writer: viewWriter } ) => toWidget( createCardView( modelItem, viewWriter ), viewWriter )
@@ -127,10 +127,10 @@ class HCardEditing extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		// Processing pasted/dropped content.
+		// Processing pasted or dropped content.
 		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
 			// The clipboard content was already processed by the listener on the higher priority
-			// (for example while pasting into code-block).
+			// (for example while pasting into the code block).
 			if ( data.content ) {
 				return;
 			}
@@ -144,7 +144,7 @@ class HCardEditing extends Plugin {
 			// Use JSON data encoded in the DataTransfer.
 			const contact = JSON.parse( contactData );
 
-			// Translate h-card data to a view fragment.
+			// Translate the h-card data to a view fragment.
 			const writer = new UpcastWriter( viewDocument );
 			const fragment = writer.createDocumentFragment();
 
@@ -160,7 +160,7 @@ class HCardEditing extends Plugin {
 			data.content = fragment;
 		} );
 
-		// Processing copied/pasted/dragged content.
+		// Processing copied, pasted or dragged content.
 		this.listenTo( document, 'clipboardOutput', ( evt, data ) => {
 			if ( data.content.childCount != 1 ) {
 				return;
@@ -261,6 +261,9 @@ ClassicEditor
 		fontSize: {
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 			supportAllValues: true
+		},
+		image: {
+			toolbar: [ 'imageTextAlternative' ]
 		},
 		placeholder: 'Drop the content here to test the feature.',
 		cloudServices: CS_CONFIG
