@@ -93,21 +93,22 @@ export default class ImageStyleCommand extends Command {
 	 * @fires execute
 	 */
 	execute( options ) {
-		const requestedArrangement = options.value;
 		const model = this.editor.model;
 
-		let imageElement = model.document.selection.getSelectedElement();
-		const supportedTypes = this._arrangements.get( requestedArrangement ).modelElements;
-
-		// Change the image type if a style requires it.
-		if ( !supportedTypes.includes( imageElement.name ) ) {
-			this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
-
-			// Update the imageElement to the newly created image.
-			imageElement = model.document.selection.getSelectedElement();
-		}
-
 		model.change( writer => {
+			const requestedArrangement = options.value;
+			const supportedTypes = this._arrangements.get( requestedArrangement ).modelElements;
+
+			let imageElement = model.document.selection.getSelectedElement();
+
+			// Change the image type if a style requires it.
+			if ( !supportedTypes.includes( imageElement.name ) ) {
+				this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
+
+				// Update the imageElement to the newly created image.
+				imageElement = model.document.selection.getSelectedElement();
+			}
+
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
 			if ( this._arrangements.get( requestedArrangement ).isDefault ) {

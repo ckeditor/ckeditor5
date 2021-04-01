@@ -19,7 +19,7 @@ import { insertImage, isImage, isImageAllowed } from './utils';
  * and it is also available via aliased `imageInsert` name.
  *
  * In order to insert an image at the current selection position
- * (according to the {@link module:widget/utils~findOptimalInsertionPosition} algorithm),
+ * (according to the {@link module:widget/utils~findOptimalInsertionRange} algorithm),
  * execute the command and specify the image source:
  *
  *		editor.execute( 'insertImage', { source: 'http://url.to.the/image' } );

@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionPosition, checkSelectionOnObject } from 'ckeditor5/src/widget';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
 
 /**
  * The horizontal line command.
@@ -26,7 +26,11 @@ export default class HorizontalLineCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isHorizontalLineAllowed( this.editor.model );
+		const model = this.editor.model;
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		this.isEnabled = isHorizontalLineAllowedInParent( selection, schema, model );
 	}
 
 	/**
@@ -62,18 +66,6 @@ export default class HorizontalLineCommand extends Command {
 	}
 }
 
-// Checks if the `horizontalLine` element can be inserted at the current model selection.
-//
-// @param {module:engine/model/model~Model} model
-// @returns {Boolean}
-function isHorizontalLineAllowed( model ) {
-	const schema = model.schema;
-	const selection = model.document.selection;
-
-	return isHorizontalLineAllowedInParent( selection, schema, model ) &&
-		!checkSelectionOnObject( selection, schema );
-}
-
 // Checks if a horizontal line is allowed by the schema in the optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
@@ -93,9 +85,8 @@ function isHorizontalLineAllowedInParent( selection, schema, model ) {
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {module:engine/model/element~Element}
 function getInsertHorizontalLineParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
-
-	const parent = insertAt.parent;
+	const insertionRange = findOptimalInsertionRange( selection, model );
+	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
 		return parent.parent;
