@@ -263,7 +263,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		} );
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-			[ '<span style="display:inline-block">00</span>' ]
+			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
 	} );
@@ -392,7 +392,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		} );
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-			[ '<span style="display:inline-block">00</span>' ]
+			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
 	} );
