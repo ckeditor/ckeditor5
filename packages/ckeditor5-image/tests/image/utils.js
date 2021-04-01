@@ -5,6 +5,8 @@
 
 /* global console, document */
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
@@ -13,8 +15,6 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
