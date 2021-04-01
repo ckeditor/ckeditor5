@@ -704,7 +704,7 @@ describe( 'image widget utils', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
 						writer.appendChild( element, writer.createElement( 'figure' ) );
 
-						expect( matcherPattern( element ) ).to.be.eql( {
+						expect( matcherPattern( element ) ).to.equal( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
@@ -740,7 +740,7 @@ describe( 'image widget utils', () => {
 					it( 'should return a matcherPattern object if the element is an "imageInline"', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
 
-						expect( matcherPattern( element ) ).to.be.eql( {
+						expect( matcherPattern( element ) ).to.equal( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
@@ -753,7 +753,7 @@ describe( 'image widget utils', () => {
 							'</td></tr></tbody></table></figure>'
 						);
 
-						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.be.eql( {
+						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.equal( {
 							name: true,
 							attributes: [ 'src' ]
 						} );
