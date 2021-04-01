@@ -16,7 +16,7 @@ import {
 	createImageViewElement,
 	getImageTypeMatcher,
 	determineImageTypeForInsertionAtSelection,
-	isInlineViewImage
+	isInlineImageView
 } from './utils';
 
 import ImageEditing from './imageediting';
@@ -141,7 +141,7 @@ export default class ImageBlockEditing extends Plugin {
 
 			// Make sure only <img> elements are dropped or pasted. Otherwise, if there some other HTML
 			// mixed up, this should be handled as a regular paste.
-			if ( !docFragmentChildren.every( isInlineViewImage ) ) {
+			if ( !docFragmentChildren.every( isInlineImageView ) ) {
 				return;
 			}
 

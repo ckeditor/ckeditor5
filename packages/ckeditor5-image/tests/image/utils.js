@@ -35,8 +35,8 @@ import {
 	insertImage,
 	getViewImageFromWidget,
 	getImageWidgetAncestor,
-	isInlineViewImage,
-	isBlockViewImage,
+	isInlineImageView,
+	isBlockImageView,
 	determineImageTypeForInsertionAtSelection,
 	getImageTypeMatcher
 } from '../../src/image/utils';
@@ -265,65 +265,65 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'isInlineViewImage()', () => {
+	describe( 'isInlineImageView()', () => {
 		it( 'should return false for the block image element', () => {
 			const element = writer.createContainerElement( 'figure', { class: 'image' } );
 
-			expect( isInlineViewImage( element ) ).to.be.false;
+			expect( isInlineImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return true for the inline view image element', () => {
 			const element = writer.createEmptyElement( 'img' );
 
-			expect( isInlineViewImage( element ) ).to.be.true;
+			expect( isInlineImageView( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for other view element', () => {
 			const element = writer.createContainerElement( 'div' );
 
-			expect( isInlineViewImage( element ) ).to.be.false;
+			expect( isInlineImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for null, undefined', () => {
-			expect( isInlineViewImage() ).to.be.false;
-			expect( isInlineViewImage( null ) ).to.be.false;
+			expect( isInlineImageView() ).to.be.false;
+			expect( isInlineImageView( null ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'isBlockViewImage()', () => {
+	describe( 'isBlockImageView()', () => {
 		it( 'should return false for the inline image element', () => {
 			const element = writer.createEmptyElement( 'img' );
 
-			expect( isBlockViewImage( element ) ).to.be.false;
+			expect( isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return true for the block view image element', () => {
 			const element = writer.createContainerElement( 'figure', { class: 'image' } );
 
-			expect( isBlockViewImage( element ) ).to.be.true;
+			expect( isBlockImageView( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for the figure without a proper class', () => {
 			const element = writer.createContainerElement( 'figure' );
 
-			expect( isBlockViewImage( element ) ).to.be.false;
+			expect( isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for the non-figure with a proper class', () => {
 			const element = writer.createContainerElement( 'div', { class: 'image' } );
 
-			expect( isBlockViewImage( element ) ).to.be.false;
+			expect( isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for other view element', () => {
 			const element = writer.createContainerElement( 'div' );
 
-			expect( isBlockViewImage( element ) ).to.be.false;
+			expect( isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for null, undefined', () => {
-			expect( isBlockViewImage() ).to.be.false;
-			expect( isBlockViewImage( null ) ).to.be.false;
+			expect( isBlockImageView() ).to.be.false;
+			expect( isBlockImageView( null ) ).to.be.false;
 		} );
 	} );
 

@@ -16,7 +16,7 @@ import {
 	getImageTypeMatcher,
 	getViewImageFromWidget,
 	determineImageTypeForInsertionAtSelection,
-	isBlockViewImage
+	isBlockImageView
 } from './utils';
 import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
 
@@ -142,7 +142,7 @@ export default class ImageInlineEditing extends Plugin {
 
 			// Make sure only <figure class="image"></figure> elements are dropped or pasted. Otherwise, if there some other HTML
 			// mixed up, this should be handled as a regular paste.
-			if ( !docFragmentChildren.every( isBlockViewImage ) ) {
+			if ( !docFragmentChildren.every( isBlockImageView ) ) {
 				return;
 			}
 

@@ -120,7 +120,7 @@ export function isImage( modelElement ) {
  * @param {module:engine/view/element~Element} element
  * @returns {Boolean}
  */
-export function isInlineViewImage( element ) {
+export function isInlineImageView( element ) {
 	return !!element && element.is( 'element', 'img' );
 }
 
@@ -132,7 +132,7 @@ export function isInlineViewImage( element ) {
  * @param {module:engine/view/element~Element} element
  * @returns {Boolean}
  */
-export function isBlockViewImage( element ) {
+export function isBlockImageView( element ) {
 	return !!element && element.is( 'element', 'figure' ) && element.hasClass( 'image' );
 }
 
@@ -206,7 +206,7 @@ export function isImageAllowed( editor ) {
  * @returns {module:engine/view/element~Element}
  */
 export function getViewImageFromWidget( figureView ) {
-	if ( isInlineViewImage( figureView ) ) {
+	if ( isInlineImageView( figureView ) ) {
 		return figureView;
 	}
 
@@ -220,7 +220,7 @@ export function getViewImageFromWidget( figureView ) {
 		}
 	}
 
-	return figureChildren.find( isInlineViewImage );
+	return figureChildren.find( isInlineImageView );
 }
 
 /**
@@ -271,7 +271,7 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 
 	return element => {
 		// Convert only images with src attribute.
-		if ( !isInlineViewImage( element ) || !element.hasAttribute( 'src' ) ) {
+		if ( !isInlineImageView( element ) || !element.hasAttribute( 'src' ) ) {
 			return null;
 		}
 

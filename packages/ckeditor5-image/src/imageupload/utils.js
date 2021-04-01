@@ -10,7 +10,7 @@
 /* global fetch, File */
 
 import { global } from 'ckeditor5/src/utils';
-import { isInlineViewImage } from '../image/utils';
+import { isInlineImageView } from '../image/utils';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -69,7 +69,7 @@ export function fetchLocalImage( image ) {
  * @returns {Boolean}
  */
 export function isLocalImage( node ) {
-	if ( !isInlineViewImage( node ) || !node.getAttribute( 'src' ) ) {
+	if ( !isInlineImageView( node ) || !node.getAttribute( 'src' ) ) {
 		return false;
 	}
 
