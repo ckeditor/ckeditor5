@@ -684,10 +684,9 @@ describe( 'ImageBlockEditing', () => {
 				getData: () => '<img src="/assets/sample.png?id=A" />'
 			} );
 
-			setModelData( model, '<image src="/assets/sample.png?id=B"></image>' );
+			setModelData( model, '[<image src="/assets/sample.png?id=B"></image>]' );
 
-			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
-			viewDocument.fire( eventInfo, { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
 				'[<image src="/assets/sample.png?id=A"></image>]'
@@ -702,8 +701,7 @@ describe( 'ImageBlockEditing', () => {
 
 			setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
-			viewDocument.fire( eventInfo, { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
@@ -722,11 +720,10 @@ describe( 'ImageBlockEditing', () => {
 
 			const targetRange = model.createRange( model.createPositionAt( doc.getRoot().getChild( 1 ), 0 ) );
 			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
-			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
 			const viewElement = viewDocument.getRoot().getChild( 1 );
 			const domNode = view.domConverter.mapViewToDom( viewElement );
 
-			viewDocument.fire( eventInfo, {
+			viewDocument.fire( 'clipboardInput', {
 				method: 'drop',
 				domTarget: domNode,
 				target: viewElement,
@@ -747,8 +744,7 @@ describe( 'ImageBlockEditing', () => {
 
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
-			viewDocument.fire( eventInfo, { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo<imageInline src="/assets/sample.png"></imageInline>[]</paragraph>'
@@ -763,8 +759,7 @@ describe( 'ImageBlockEditing', () => {
 
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
-			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
-			viewDocument.fire( eventInfo, { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
 				'[<image alt="abc" src="/assets/sample.png"></image>]'
