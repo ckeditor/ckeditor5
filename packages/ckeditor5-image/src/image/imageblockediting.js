@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
 import {
@@ -21,8 +22,6 @@ import {
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
-
-import { UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
  * The image block plugin.
@@ -163,16 +162,13 @@ export default class ImageBlockEditing extends Plugin {
 			// (e.g. an empty paragraph) or some object is selected (to replace it).
 			if ( determineImageTypeForInsertionAtSelection( schema, selection ) === 'image' ) {
 				const writer = new UpcastWriter( editingView.document );
-				const fragment = writer.createDocumentFragment();
 
 				// Wrap <img ... /> -> <figure class="image"><img .../></figure>
 				const blockViewImages = docFragmentChildren.map(
 					inlineViewImage => writer.createElement( 'figure', { class: 'image' }, inlineViewImage )
 				);
 
-				writer.appendChild( blockViewImages, fragment );
-
-				data.content = fragment;
+				data.content = writer.createDocumentFragment( blockViewImages );
 			}
 		} );
 	}

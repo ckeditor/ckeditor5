@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import {
 	toImageWidget,
@@ -22,8 +23,6 @@ import { modelToViewAttributeConverter, srcsetAttributeConverter } from './conve
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
-
-import { UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
  * The image inline plugin.
@@ -164,7 +163,6 @@ export default class ImageInlineEditing extends Plugin {
 			// and when the block is not an object (e.g. pasting to replace another widget).
 			if ( determineImageTypeForInsertionAtSelection( schema, selection ) === 'imageInline' ) {
 				const writer = new UpcastWriter( editingView.document );
-				const fragment = writer.createDocumentFragment();
 
 				// Unwrap <figure class="image"><img .../></figure> -> <img ... />
 				// but <figure class="image"><img .../><figcaption>...</figcaption></figure> -> stays the same
@@ -179,9 +177,7 @@ export default class ImageInlineEditing extends Plugin {
 					}
 				} );
 
-				writer.appendChild( inlineViewImages, fragment );
-
-				data.content = fragment;
+				data.content = writer.createDocumentFragment( inlineViewImages );
 			}
 		} );
 	}
