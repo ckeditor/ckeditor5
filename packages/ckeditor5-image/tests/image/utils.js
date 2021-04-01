@@ -3,17 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console */
+/* global console, document */
 
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
+import Image from '../../src/image';
+import ImageEditing from '../../src/image/imageediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 
@@ -30,7 +37,8 @@ import {
 	getImageWidgetAncestor,
 	isInlineViewImage,
 	isBlockViewImage,
-	determineImageTypeForInsertionAtSelection
+	determineImageTypeForInsertionAtSelection,
+	getImageTypeMatcher
 } from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
@@ -723,6 +731,162 @@ describe( 'image widget utils', () => {
 			setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
 
 			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'imageInline' );
+		} );
+	} );
+
+	describe( 'getImageTypeMatcher()', () => {
+		let editor;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ ImageEditing ]
+			} );
+		} );
+
+		afterEach( async () => {
+			editor.destroy();
+		} );
+
+		describe( 'when one of the image editing plugins is not loaded', () => {
+			const returnValue = {
+				name: 'img',
+				attributes: {
+					src: true
+				}
+			};
+
+			it( 'should return a matcher patter for an img element if ImageBlockEditing plugin is not loaded', () => {
+				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
+
+				expect( getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
+				expect( getImageTypeMatcher( 'imageInline', editor ) ).to.eql( returnValue );
+			} );
+
+			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
+				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
+
+				expect( getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
+				expect( getImageTypeMatcher( 'imageInline', editor ) ).to.eql( returnValue );
+			} );
+		} );
+
+		describe( 'when both image editing plugins are loaded', () => {
+			let matcherPattern, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ Image, Paragraph, Table ]
+				} );
+
+				writer = new UpcastWriter( editor.editing.view.document );
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				await editor.destroy();
+			} );
+
+			describe( 'the returned matcherPattern function', () => {
+				describe( 'for the "image" type requested', () => {
+					beforeEach( () => {
+						matcherPattern = getImageTypeMatcher( 'image', editor );
+					} );
+
+					it( 'should return a function', () => {
+						expect( matcherPattern ).to.be.a( 'function' );
+					} );
+
+					it( 'should return null if the element is not an image', () => {
+						element = writer.createElement( 'media', { src: 'sample.jpg' } );
+
+						expect( matcherPattern( element ) ).to.be.null;
+					} );
+
+					it( 'should return null if the element has no src property', () => {
+						element = writer.createElement( 'img' );
+
+						expect( matcherPattern( element ) ).to.be.null;
+					} );
+
+					it( 'should return null if the element is an "imageInline"', () => {
+						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+
+						expect( matcherPattern( element ) ).to.be.null;
+					} );
+
+					it( 'should return null if the element is an "imageInline" in a table', () => {
+						const fragment = parseView(
+							'<figure><table><tbody><tr><td>' +
+								'[<img src="sample.jpg"></img>]' +
+							'</td></tr></tbody></table></figure>'
+						);
+
+						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.be.null;
+					} );
+
+					it( 'should return a matcherPattern object if the element is an "image"', () => {
+						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+						writer.appendChild( element, writer.createElement( 'figure' ) );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+				} );
+
+				describe( 'for the "imageInline" type requested', () => {
+					beforeEach( () => {
+						matcherPattern = getImageTypeMatcher( 'imageInline', editor );
+					} );
+
+					it( 'should return a function', () => {
+						expect( matcherPattern ).to.be.a( 'function' );
+					} );
+
+					it( 'should return null if the element is not an "image"', () => {
+						expect( matcherPattern( element ) ).to.be.null;
+					} );
+
+					it( 'should return null if the element has no src property', () => {
+						element = writer.createElement( 'media', { src: 'sample.jpg' } );
+
+						expect( matcherPattern( element ) ).to.be.null;
+					} );
+
+					it( 'should return null if the element is an "image"', () => {
+						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+						writer.appendChild( element, writer.createElement( 'figure' ) );
+
+						expect( matcherPattern( element ) ).to.be.null;
+					} );
+
+					it( 'should return a matcherPattern object if the element is an "imageInline"', () => {
+						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+
+						expect( matcherPattern( element ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+
+					it( 'should return a matcherPattern object if the element is an "imageInline" in a table', () => {
+						const fragment = parseView(
+							'<figure><table><tbody><tr><td>' +
+								'[<img src="sample.jpg"></img>]' +
+							'</td></tr></tbody></table></figure>'
+						);
+
+						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.deep.equal( {
+							name: true,
+							attributes: [ 'src' ]
+						} );
+					} );
+				} );
+			} );
 		} );
 	} );
 } );

@@ -18,6 +18,10 @@
 	& .image-style-align-left {
 		float: left;
 		margin-right: var(--ck-image-style-spacing);
+
+		/* Allows displaying multiple floating images in the same line.
+		See https://github.com/ckeditor/ckeditor5/issues/9183#issuecomment-804988132 */
+		clear: none;
 	}
 
 	& .image-style-align-center {
@@ -28,6 +32,10 @@
 	& .image-style-align-right {
 		float: right;
 		margin-left: var(--ck-image-style-spacing);
+
+		/* Allows displaying multiple floating images in the same line.
+		See https://github.com/ckeditor/ckeditor5/issues/9183#issuecomment-804988132 */
+		clear: none;
 	}
 
 	& .image-style-block-align-right {

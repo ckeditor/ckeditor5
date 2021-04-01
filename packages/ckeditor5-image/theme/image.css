@@ -78,4 +78,13 @@
 	& .image-inline.ck-widget_selected {
 		z-index: 1;
 	}
+
+	/* The inline image nested in the table should have its original size if not resized.
+	See https://github.com/ckeditor/ckeditor5/issues/9117. */
+	& td,
+	& th {
+		& .image-inline img {
+			max-width: none;
+		}
+	}
 }
