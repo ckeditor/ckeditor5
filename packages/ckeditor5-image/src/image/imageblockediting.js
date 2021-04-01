@@ -166,13 +166,9 @@ export default class ImageBlockEditing extends Plugin {
 				const fragment = writer.createDocumentFragment();
 
 				// Wrap <img ... /> -> <figure class="image"><img .../></figure>
-				const blockViewImages = docFragmentChildren.map( inlineViewImage => {
-					const figureElement = writer.createElement( 'figure', { class: 'image' } );
-
-					writer.insertChild( 0, inlineViewImage, figureElement );
-
-					return figureElement;
-				} );
+				const blockViewImages = docFragmentChildren.map(
+					inlineViewImage => writer.createElement( 'figure', { class: 'image' }, inlineViewImage )
+				);
 
 				writer.appendChild( blockViewImages, fragment );
 
