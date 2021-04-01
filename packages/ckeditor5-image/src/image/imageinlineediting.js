@@ -138,7 +138,7 @@ export default class ImageInlineEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
-			const docFragmentChildren = [ ...data.content.getChildren() ];
+			const docFragmentChildren = Array.from( data.content.getChildren() );
 			let modelRange;
 
 			// Make sure only <figure class="image"></figure> elements are dropped or pasted. Otherwise, if there some other HTML
