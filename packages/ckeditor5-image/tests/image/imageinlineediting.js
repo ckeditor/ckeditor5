@@ -743,8 +743,7 @@ describe( 'ImageInlineEditing', () => {
 
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
-			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
-			viewDocument.fire( eventInfo, { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
 				'[<image src="/assets/sample.png"></image>]'
