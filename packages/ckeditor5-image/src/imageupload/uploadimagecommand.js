@@ -20,7 +20,7 @@ import { insertImage, isImage, isImageAllowed } from '../image/utils';
  * and it is also available via aliased `imageUpload` name.
  *
  * In order to upload an image at the current selection position
- * (according to the {@link module:widget/utils~findOptimalInsertionPosition} algorithm),
+ * (according to the {@link module:widget/utils~findOptimalInsertionRange} algorithm),
  * execute the command and pass the native image file instance:
  *
  *		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {

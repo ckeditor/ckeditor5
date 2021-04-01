@@ -7,7 +7,7 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, isWidget, toWidget } from 'ckeditor5/src/widget';
+import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { first } from 'ckeditor5/src/utils';
 
 /**
@@ -113,7 +113,7 @@ export function isImage( modelElement ) {
 }
 
 /**
- * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
+ * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionRange} method.
  *
  *		insertImage( model, { src: 'path/to/image.jpg' } );
  *
@@ -121,7 +121,7 @@ export function isImage( modelElement ) {
  * @param {Object} [attributes={}] Attributes of the inserted image.
  * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~Schema}.
  * @param {module:engine/model/selection~Selectable} [selectable] Place to insert the image. If not specified,
- * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied for the block images
+ * the {@link module:widget/utils~findOptimalInsertionRange} logic will be applied for the block images
  * and `model.document.selection` for the inline images.
  * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
  * it will be determined automatically depending of editor config or place of the insertion.
@@ -141,8 +141,10 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 	model.change( writer => {
 		const imageElement = writer.createElement( imageType, attributes );
 
-		if ( !selectable && imageType != 'imageInline' && !selection.getSelectedElement() ) {
-			selectable = findOptimalInsertionPosition( selection, model );
+		// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
+		// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
+		if ( !selectable && imageType != 'imageInline' ) {
+			selectable = findOptimalInsertionRange( selection, model );
 		}
 
 		model.insertContent( imageElement, selectable );
@@ -295,9 +297,8 @@ function isNotInsideImage( selection ) {
 // @param {module:engine/model/model~Model} model
 // @returns {module:engine/model/element~Element}
 function getInsertImageParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
-
-	const parent = insertAt.parent;
+	const insertionRange = findOptimalInsertionRange( selection, model );
+	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
 		return parent.parent;

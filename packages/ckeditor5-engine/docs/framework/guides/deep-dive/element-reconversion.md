@@ -303,7 +303,7 @@ You can see the details of the upcast converter function (`upcastCard()`) in the
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { toWidget, toWidgetEditable, findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget, toWidgetEditable, findOptimalInsertionRange } from '@ckeditor/ckeditor5-widget/src/utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
@@ -482,7 +482,7 @@ class InsertCardCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const validParent = findOptimalInsertionPosition( model.document.selection, model );
+		const range = findOptimalInsertionRange( model.document.selection, model );
 
 		this.isEnabled = model.schema.checkChild( validParent, 'sideCard' );
 	}
@@ -494,7 +494,7 @@ class InsertCardCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const insertPosition = findOptimalInsertionPosition( selection, model );
+		const insertionRange = findOptimalInsertionRange( selection, model );
 
 		model.change( writer => {
 			const sideCard = writer.createElement( 'sideCard', { cardType: 'default' } );
@@ -506,7 +506,7 @@ class InsertCardCommand extends Command {
 			writer.insert( section, sideCard, 1 );
 			writer.insert( paragraph, section, 0 );
 
-			model.insertContent( sideCard, insertPosition );
+			model.insertContent( sideCard, insertionRange );
 
 			writer.setSelection( writer.createPositionAt( title, 0 ) );
 		} );
