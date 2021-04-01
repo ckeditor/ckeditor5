@@ -134,6 +134,7 @@ export default class ImageInlineEditing extends Plugin {
 	_setupClipboardIntegration() {
 		const editor = this.editor;
 		const model = editor.model;
+		const schema = model.schema;
 		const editingView = editor.editing.view;
 
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
@@ -161,7 +162,7 @@ export default class ImageInlineEditing extends Plugin {
 
 			// Convert block images into inline images only when pasting or dropping into non-empty blocks
 			// and when the block is not an object (e.g. pasting to replace another widget).
-			if ( determineImageTypeForInsertionAtSelection( editor, selection ) === 'imageInline' ) {
+			if ( determineImageTypeForInsertionAtSelection( schema, selection ) === 'imageInline' ) {
 				const writer = new UpcastWriter( editingView.document );
 				const fragment = writer.createDocumentFragment();
 

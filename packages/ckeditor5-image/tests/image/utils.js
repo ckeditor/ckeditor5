@@ -676,7 +676,7 @@ describe( 'image widget utils', () => {
 	} );
 
 	describe( 'determineImageTypeForInsertionAtSelection()', () => {
-		let editor, model;
+		let editor, model, schema;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
@@ -684,19 +684,20 @@ describe( 'image widget utils', () => {
 			} );
 
 			model = editor.model;
-			model.schema.register( 'block', {
+			schema = model.schema;
+			schema.register( 'block', {
 				inheritAllFrom: '$block'
 			} );
-			model.schema.register( 'blockWidget', {
+			schema.register( 'blockWidget', {
 				isObject: true,
 				allowIn: '$root'
 			} );
-			model.schema.register( 'inlineWidget', {
+			schema.register( 'inlineWidget', {
 				isObject: true,
 				allowIn: [ '$block' ]
 			} );
 
-			model.schema.extend( '$text', { allowIn: [ 'block', '$root' ] } );
+			schema.extend( '$text', { allowIn: [ 'block', '$root' ] } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'blockWidget', view: 'blockWidget' } );
@@ -706,31 +707,31 @@ describe( 'image widget utils', () => {
 		it( 'should return "image" when there is no selected block in the selection', () => {
 			setModelData( model, 'f[]oo' );
 
-			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'image' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
 		} );
 
 		it( 'should return "image" when the selected block in the selection is empty', () => {
 			setModelData( model, '<block>[]</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'image' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
 		} );
 
 		it( 'should return "image" when the selected block is an object (a widget)', () => {
 			setModelData( model, '[<blockWidget></blockWidget>]' );
 
-			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'image' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
 		} );
 
 		it( 'should return "imageInline" when selected block in the selection has some content', () => {
 			setModelData( model, '<block>[]a</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'imageInline' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 
 		it( 'should return "imageInline" when an inline widget is selected', () => {
 			setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( editor, model.document.selection ) ).to.equal( 'imageInline' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 	} );
 

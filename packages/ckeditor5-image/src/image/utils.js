@@ -298,12 +298,11 @@ export function getImageTypeMatcher( matchImageType, editor ) {
  * produce block images. Inline images should be inserted in other cases, e.g. in paragraphs
  * that already contain some text.
  *
- * @param {module:core/editor/editor~Editor} editor
+ * @param {module:engine/model/schema~Schema} schema
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * @returns {'image'|'imageInline'}
  */
-export function determineImageTypeForInsertionAtSelection( editor, selection ) {
-	const schema = editor.model.schema;
+export function determineImageTypeForInsertionAtSelection( schema, selection ) {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
 	return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
@@ -388,7 +387,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 
 	// Try to replace the selected widget (e.g. another image).
 	if ( selectable.is( 'selection' ) ) {
-		return determineImageTypeForInsertionAtSelection( editor, selectable );
+		return determineImageTypeForInsertionAtSelection( schema, selectable );
 	}
 
 	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';

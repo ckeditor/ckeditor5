@@ -133,6 +133,7 @@ export default class ImageBlockEditing extends Plugin {
 	_setupClipboardIntegration() {
 		const editor = this.editor;
 		const model = editor.model;
+		const schema = model.schema;
 		const editingView = editor.editing.view;
 
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
@@ -160,7 +161,7 @@ export default class ImageBlockEditing extends Plugin {
 
 			// Convert inline images into block images only when the currently selected block is empty
 			// (e.g. an empty paragraph) or some object is selected (to replace it).
-			if ( determineImageTypeForInsertionAtSelection( editor, selection ) === 'image' ) {
+			if ( determineImageTypeForInsertionAtSelection( schema, selection ) === 'image' ) {
 				const writer = new UpcastWriter( editingView.document );
 				const fragment = writer.createDocumentFragment();
 
