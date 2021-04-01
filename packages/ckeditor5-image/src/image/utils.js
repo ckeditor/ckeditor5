@@ -251,7 +251,11 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 			return null;
 		}
 
-		const imageType = element.findAncestor( 'figure' ) ? 'image' : 'imageInline';
+		const imageType = element.findAncestor( ancestor =>
+			// Check if element is a figure and if its direct or subsequent child is an img element
+			// to exclude a table with an inline image inside.
+			ancestor.is( 'element', 'figure' ) && getViewImageFromWidget( ancestor )
+		) ? 'image' : 'imageInline';
 
 		if ( imageType !== matchImageType ) {
 			return null;
