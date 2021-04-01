@@ -113,7 +113,6 @@ export function isImage( modelElement ) {
 }
 
 /**
-<<<<<<< HEAD
  * Checks if the provided view element represents an inline image.
  *
  * Also, see {@link module:image/image/utils~isImageWidget}.
