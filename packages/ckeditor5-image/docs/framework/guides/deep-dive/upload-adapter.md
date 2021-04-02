@@ -376,7 +376,7 @@ xhr.addEventListener( 'load', () => {
 
 There is a chance you might need to pass additional data from the server to provide additional data to some features. In order to do that you need to wrap all URLs in the `urls` property and pass additional data in the top level of the object.
 
-For image uploading, you can later retrieve the data in {@link module:image/imageupload/imageuploadediting~ImageUploadEditing#event:uploadComplete the `uploadComplete` event}, which allows setting new attributes and overriding the existing ones on the model image based on the data just after the image is uploaded.
+For image uploading, you can later retrieve the data in the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing#event:uploadComplete `uploadComplete`} event, which allows setting new attributes and overriding the existing ones on the model image based on the data just after the image is uploaded.
 
 ```js
 {

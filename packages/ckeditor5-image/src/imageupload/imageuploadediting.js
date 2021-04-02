@@ -282,7 +282,7 @@ export default class ImageUploadEditing extends Plugin {
 					 *
 					 * 		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing );
 					 *
-					 * 		imageUploadEditing.on( 'uploadComplete', evt, { data, imageElement } => {
+					 * 		imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
 					 * 			editor.model.change( writer => {
 					 * 				writer.setAttribute( 'someAttribute', 'foo', imageElement );
 					 * 			} );
@@ -291,15 +291,17 @@ export default class ImageUploadEditing extends Plugin {
 					 * You can also stop the default handler that sets the `src` and `srcset` attributes
 					 * if you want to provide custom values for these attributes.
 					 *
-					 * 		imageUploadEditing.on( 'uploadComplete', evt, { data, imageElement } => {
+					 * 		imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
 					 * 			evt.stop();
 					 * 		} );
 					 *
+					 * **Note**: This event is fired by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} plugin.
+					 *
 					 * @event uploadComplete
-					 * @param {Object} options The `uploadComplete` event options.
-					 * @param {Object} options.data The data coming from the upload adapter.
-					 * @param {module:engine/model/element~Element} options.imageElement The
-					 * {@link module:engine/model/element~Element image element} that can be customized.
+					 * @param {Object} data The `uploadComplete` event data.
+					 * @param {Object} data.data The data coming from the upload adapter.
+					 * @param {module:engine/model/element~Element} data.imageElement The
+					 * model {@link module:engine/model/element~Element image element} that can be customized.
 					 */
 					this.fire( 'uploadComplete', { data, imageElement } );
 				} );
