@@ -101,9 +101,11 @@ export function getCode( key ) {
  * @returns {Number} Keystroke code.
  */
 export function parseKeystroke( keystroke ) {
-	if ( typeof keystroke == 'string' ) {
-		keystroke = splitKeystrokeText( keystroke );
+	if ( typeof keystroke != 'string' ) {
+		return;
 	}
+
+	keystroke = splitKeystrokeText( keystroke );
 
 	return keystroke
 		.map( key => ( typeof key == 'string' ) ? getEnvKeyCode( key ) : key )
