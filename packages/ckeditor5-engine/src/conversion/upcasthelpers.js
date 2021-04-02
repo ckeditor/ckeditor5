@@ -940,13 +940,16 @@ function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 			continue;
 		}
 
-		// Do not override the attribute if it's already present. See #8921.
+		// Mark the node as consumed even if the attribute will not be updated because it's in a valid context (schema)
+		// and would be converted if the attribute wouldn't be present. See #8921.
+		result = true;
+
+		// Do not override the attribute if it's already present.
 		if ( node.hasAttribute( modelAttribute.key ) ) {
 			continue;
 		}
 
 		conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
-		result = true;
 	}
 
 	return result;

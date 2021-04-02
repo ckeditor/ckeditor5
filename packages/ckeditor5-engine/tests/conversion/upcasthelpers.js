@@ -473,6 +473,26 @@ describe( 'UpcastHelpers', () => {
 					'<$text fontColor="#0000ff" fontSize="11">Bar</$text>'
 				);
 			} );
+
+			it( 'should consume both elements even if the attribute from the most inner element will be used', () => {
+				upcastDispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
+					const viewItem = data.viewItem;
+					const wasConsumed = conversionApi.consumable.consume( viewItem, {
+						styles: [ 'font-size' ]
+					} );
+
+					expect( wasConsumed, `span[fontSize=${ viewItem.getStyle( 'font-size' ) }]` ).to.equal( false );
+				}, { priority: 'lowest' } );
+
+				const viewElement = viewParse(
+					'<span style="font-size:9px;"><span style="font-size:11px;">Bar</span></span>'
+				);
+
+				expectResult(
+					viewElement,
+					'<$text fontSize="11">Bar</$text>'
+				);
+			} );
 		} );
 	} );
 
