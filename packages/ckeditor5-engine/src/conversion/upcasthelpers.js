@@ -896,12 +896,12 @@ function prepareToAttributeConverter( config, shallow ) {
 			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
-		// Set attribute on current `output`. `Schema` is checked inside this helper function.
-		const attributeWasSet = setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
+		// Set attribute on current `output`.
+		setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
 
-		if ( attributeWasSet ) {
-			conversionApi.consumable.consume( data.viewItem, match.match );
-		}
+		// Mark the node as consumed even if the attribute will not be updated because it's in a valid context (schema)
+		// and would be converted if the attribute wouldn't be present. See #9249.
+		conversionApi.consumable.consume( data.viewItem, match.match );
 	};
 }
 
@@ -930,29 +930,20 @@ function onlyViewNameIsDefined( viewConfig, viewItem ) {
 // @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion API.
 // @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
 // on all elements in the range.
-// @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
 function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
-	let result = false;
-
 	// Set attribute on each item in range according to Schema.
 	for ( const node of Array.from( modelRange.getItems( { shallow } ) ) ) {
 		if ( !conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
 			continue;
 		}
 
-		// Mark the node as consumed even if the attribute will not be updated because it's in a valid context (schema)
-		// and would be converted if the attribute wouldn't be present. See #8921.
-		result = true;
-
-		// Do not override the attribute if it's already present.
+		// Do not override the attribute if it's already present. See #8921.
 		if ( node.hasAttribute( modelAttribute.key ) ) {
 			continue;
 		}
 
 		conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
 	}
-
-	return result;
 }
 
 // Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
