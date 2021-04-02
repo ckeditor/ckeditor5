@@ -368,13 +368,7 @@ describe( 'SimpleUploadAdapter', () => {
 						return uploadPromise;
 					} )
 					.then( uploadResponse => {
-						expect( uploadResponse ).to.deep.equal( {
-							urls: {
-								default: 'http://example.com/images/image.jpeg',
-								'120': 'http://example.com/images/image-120.jpeg',
-								'240': 'http://example.com/images/image-240.jpeg'
-							}
-						} );
+						expect( uploadResponse ).to.deep.equal( validResponse );
 					} );
 			} );
 
@@ -399,14 +393,7 @@ describe( 'SimpleUploadAdapter', () => {
 						return uploadPromise;
 					} )
 					.then( uploadResponse => {
-						expect( uploadResponse ).to.deep.equal( {
-							urls: {
-								default: 'http://example.com/images/image.jpeg',
-								'120': 'http://example.com/images/image-120.jpeg',
-								'240': 'http://example.com/images/image-240.jpeg'
-							},
-							customProperty: 'foo'
-						} );
+						expect( uploadResponse ).to.deep.equal( validResponse );
 					} );
 			} );
 
