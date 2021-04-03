@@ -36,7 +36,6 @@ export default class MediaEmbedEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'mediaEmbed', {
-			elementNames: [ 'oembed', 'o-embed' ],
 			preferredElementName: 'oembed',
 			providers: [
 				{
@@ -164,8 +163,12 @@ export default class MediaEmbedEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
-		const elementNames = editor.config.get( 'mediaEmbed.elementNames' );
 		const preferredElementName = editor.config.get( 'mediaEmbed.preferredElementName' );
+		const elementNames = preferredElementName ? [ preferredElementName ] : [];
+		if ( elementNames.includes( 'oembed' ) ) {
+			elementNames.push( 'oembed' );
+		}
+
 		const registry = this.registry;
 
 		editor.commands.add( 'mediaEmbed', new MediaEmbedCommand( editor ) );

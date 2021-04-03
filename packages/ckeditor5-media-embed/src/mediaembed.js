@@ -255,26 +255,6 @@ export default class MediaEmbed extends Plugin {
  */
 
 /**
- * Supporting legacy semantic element names.
- *
- * When `['oembed', 'o-embed']` (default), the feature renders "semantic" data for content with
- * `<oembed>` an `<o-embed>` tags:
- *
- *		<figure class="media">
- *			<oembed url="https://url"></oembed>
- *		</figure>
- *
- *		<figure class="media">
- *			<o-embed url="https://url"></oembed>
- *		</figure>
- *
- * By default, the feature will render new media embeds via the option
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#preferredElementName `config.mediaEmbed.preferredElementName`}
- *
- * @member {Array} [module:media-embed/mediaembed~MediaEmbedConfig#elementNames]
- */
-
-/**
  * Controls the data format produced by the feature.
  *
  * When `false` (default), the feature produces "semantic" data, i.e. it does not include the preview of
