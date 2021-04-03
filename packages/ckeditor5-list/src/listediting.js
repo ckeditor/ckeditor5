@@ -15,21 +15,10 @@ import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
 
 import {
-	cleanList,
-	cleanListItem,
-	modelViewInsertion,
-	modelViewChangeType,
-	modelViewMergeAfterChangeType,
-	modelViewMergeAfter,
-	modelViewRemove,
-	modelViewSplitOnInsert,
-	modelViewChangeIndent,
-	modelChangePostFixer,
 	modelIndentPasteFixer,
-	viewModelConverter,
-	modelToViewPosition,
-	viewToModelPosition
+	viewToModelPosition, isList
 } from './converters';
+import { createViewListItemElement } from './utils';
 
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
@@ -59,52 +48,158 @@ export default class ListEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Schema.
-		// Note: in case `$block` will ever be allowed in `listItem`, keep in mind that this feature
-		// uses `Selection#getSelectedBlocks()` without any additional processing to obtain all selected list items.
-		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
-		editor.model.schema.register( 'listItem', {
-			inheritAllFrom: '$block',
-			allowAttributes: [ 'listType', 'listIndent' ]
+		editor.model.schema.extend( '$block', {
+			allowAttributes: [ 'listIndent', 'listItem' ]
 		} );
+
+		// // Schema.
+		// // Note: in case `$block` will ever be allowed in `listItem`, keep in mind that this feature
+		// // uses `Selection#getSelectedBlocks()` without any additional processing to obtain all selected list items.
+		// // If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
+		// editor.model.schema.register( 'listItem', {
+		// 	inheritAllFrom: '$block',
+		// 	allowAttributes: [ 'listType', 'listIndent' ]
+		// } );
 
 		// Converters.
 		const data = editor.data;
 		const editing = editor.editing;
+		const view = editing.view;
 
-		editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
+		// editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
 
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
-		editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
+		function getViewListItemLength( element ) {
+			let length = 0;
+
+			for ( const child of element.getChildren() ) {
+				if ( isList( child ) ) {
+					for ( const item of child.getChildren() ) {
+						length += getViewListItemLength( item );
+					}
+				} else {
+					length += editing.mapper.getModelLength( child );
+				}
+			}
+
+			return length;
+		}
+
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
-		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
+		editing.mapper.on( 'modelToViewPosition', modelToViewPosition );
+		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
 
-		editor.conversion.for( 'editingDowncast' )
-			.add( dispatcher => {
-				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
-				dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
-				dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
-				dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
-				dispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
-				dispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
-			} );
+		function modelToViewPosition( evt, data ) {
+			if ( data.isPhantom ) {
+				return;
+			}
 
-		editor.conversion.for( 'dataDowncast' )
-			.add( dispatcher => {
-				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
-			} );
+			const modelItem = data.modelPosition.nodeAfter;
 
-		editor.conversion.for( 'upcast' )
-			.add( dispatcher => {
-				dispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
-				dispatcher.on( 'element:ol', cleanList, { priority: 'high' } );
-				dispatcher.on( 'element:li', cleanListItem, { priority: 'high' } );
-				dispatcher.on( 'element:li', viewModelConverter );
-			} );
+			if ( !modelItem || !modelItem.is( 'element' ) || !modelItem.hasAttribute( 'listItem' ) ) {
+				return;
+			}
+
+			const firstModelItem = findFirstSameListItemEntry( modelItem ) || modelItem;
+			const listView = data.mapper.toViewElement( firstModelItem );
+
+			if ( !listView ) {
+				return;
+			}
+
+			data.viewPosition = editing.mapper.findPositionIn(
+				listView.is( 'element', 'li' ) ? listView : listView.findAncestor( 'li' ),
+				data.modelPosition.offset - firstModelItem.startOffset
+			);
+		}
+
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( 'insert', ( evt, data, { consumable, writer, mapper } ) => {
+				if ( !consumable.test( data.item, 'attribute:listItem' ) ||
+					!consumable.test( data.item, 'attribute:listType' ) ||
+					!consumable.test( data.item, 'attribute:listIndent' )
+				) {
+					return;
+				}
+
+				const modelItem = data.item;
+				const previousItem = modelItem.previousSibling;
+
+				// Don't insert ol/ul or li if this is a continuation of some other list item.
+				if ( findFirstSameListItemEntry( modelItem ) ) {
+					return;
+				}
+
+				const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+				let viewList;
+
+				const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
+
+				// First element of the top level list.
+				if (
+					!previousIsListItem ||
+					modelItem.getAttribute( 'listIndent' ) == 0 &&
+					previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
+				) {
+					viewList = writer.createContainerElement( listType );
+					writer.insert( mapper.toViewPosition( data.range.start ), viewList );
+				}
+
+				// Deeper nested list.
+				else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
+					const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
+
+					viewList = writer.createContainerElement( listType );
+					writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
+				}
+
+				// Same or shallower level.
+				else {
+					viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
+
+					for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
+						viewList = viewList.findAncestor( isList );
+					}
+				}
+
+				consumable.consume( modelItem, 'attribute:listItem' );
+				consumable.consume( modelItem, 'attribute:listType' );
+				consumable.consume( modelItem, 'attribute:listIndent' );
+
+				// Inserting the li.
+				const viewItem = createViewListItemElement( writer );
+
+				writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+				mapper.bindElements( modelItem, viewItem );
+			}, { priority: 'high' } );
+		} );
+
+		// editor.conversion.for( 'editingDowncast' )
+		// 	.add( dispatcher => {
+		// 		dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+		// 		dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+		// 		dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
+		// 		dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
+		// 		dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
+		// 		dispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
+		// 		dispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
+		// 	} );
+
+		// editor.conversion.for( 'dataDowncast' )
+		// 	.add( dispatcher => {
+		// 		dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+		// 		dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+		// 	} );
+		//
+		// editor.conversion.for( 'upcast' )
+		// 	.add( dispatcher => {
+		// 		dispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
+		// 		dispatcher.on( 'element:ol', cleanList, { priority: 'high' } );
+		// 		dispatcher.on( 'element:li', cleanListItem, { priority: 'high' } );
+		// 		dispatcher.on( 'element:li', viewModelConverter );
+		// 	} );
 
 		// Fix indentation of pasted items.
 		editor.model.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
@@ -205,16 +300,30 @@ export default class ListEditing extends Plugin {
 	}
 }
 
-function getViewListItemLength( element ) {
-	let length = 1;
+function findFirstSameListItemEntry( modelItem ) {
+	let node = modelItem.previousSibling;
 
-	for ( const child of element.getChildren() ) {
-		if ( child.name == 'ul' || child.name == 'ol' ) {
-			for ( const item of child.getChildren() ) {
-				length += getViewListItemLength( item );
-			}
-		}
+	// Find closest node with the same listItem attribute.
+	while (
+		node && node.is( 'element' ) && node.hasAttribute( 'listItem' ) &&
+		node.getAttribute( 'listItem' ) != modelItem.getAttribute( 'listItem' )
+	) {
+		node = node.previousSibling;
 	}
 
-	return length;
+	if ( !node || !node.is( 'element' ) || node.getAttribute( 'listItem' ) != modelItem.getAttribute( 'listItem' ) ) {
+		return null;
+	}
+
+	// Find farthest one.
+	let previous = null;
+
+	while (
+		( previous = node.previousSibling ) && previous.is( 'element' ) &&
+		previous.getAttribute( 'listItem' ) == modelItem.getAttribute( 'listItem' )
+	) {
+		node = previous;
+	}
+
+	return node;
 }

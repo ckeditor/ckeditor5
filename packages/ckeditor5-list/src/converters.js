@@ -997,7 +997,7 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 //
 // @param {module:engine/view/element~Element} viewElement
 // @returns {Boolean}
-function isList( viewElement ) {
+export function isList( viewElement ) {
 	return viewElement.is( 'element', 'ol' ) || viewElement.is( 'element', 'ul' );
 }
 
