@@ -143,7 +143,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 
 The {@link module:alignment/alignment~Alignment} plugin provides support for the deprecated `align` attribute.
 
-Block formatted with `align` attribute is accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
+Block elements such as `<p>` with the `align` attribute are accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
 
 ## Contribute
 
