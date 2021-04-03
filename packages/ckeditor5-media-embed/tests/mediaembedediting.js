@@ -611,8 +611,12 @@ describe( 'MediaEmbedEditing', () => {
 						} )
 							.then( newEditor => {
 								newEditor.setData(
-									'<figure class="media"><o-embed url="unknown.media"></o-embed></figure>' +
-									'<figure class="media"><o-embed url="foo.com/123"></o-embed></figure>' );
+									'<figure class="media">' +
+										'<div data-oembed-url="foo.com/123"></div>' +
+									'</figure>' +
+									'<figure class="media">' +
+										'<div data-oembed-url="unknown.media/123"></div>' +
+									'</figure>' );
 
 								expect( getModelData( newEditor.model, { withoutSelection: true } ) )
 									.to.equal( '<media url="foo.com/123"></media>' );
