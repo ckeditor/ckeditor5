@@ -1646,7 +1646,15 @@ describe( 'ListEditing', () => {
 										'</ul>' +
 										'</li>' +
 										'</ul>' +
-										'<p>e</p>' +
+										'<figure class="table">' +
+											'<table>' +
+												'<tbody>' +
+													'<tr>' +
+														'<td>e</td>' +
+													'</tr>' +
+												'</tbody>' +
+											'</table>' +
+										'</figure>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -2003,7 +2011,13 @@ describe( 'ListEditing', () => {
 									'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 									'<listItem listIndent="0" listType="bulleted">c</listItem>' +
 									'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-									'<paragraph>e</paragraph>' +
+									'<table>' +
+										'<tableRow>' +
+											'<tableCell>' +
+											'<paragraph>e</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>' +
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>' +
