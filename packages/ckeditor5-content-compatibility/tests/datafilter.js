@@ -380,6 +380,24 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
 		} );
+
+		it( 'should only set attributes on existing model range', () => {
+			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': 'foo' } } );
+
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:p', ( evt, data ) => {
+					data.modelRange = null;
+				} );
+			} );
+
+			editor.setData( '<p data-foo="foo">foo</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo</paragraph>',
+				attributes: {}
+			} );
+		} );
 	} );
 
 	describe( 'inline', () => {
@@ -761,6 +779,122 @@ describe( 'DataFilter', () => {
 		} );
 
 		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span>foobar</span></span></p>' );
+	} );
+
+	describe( 'existing features', () => {
+		it( 'should allow additional attributes', () => {
+			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': 'foo' } } );
+
+			editor.setData( '<p data-foo="foo">foo</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlAttributes="(1)">foo</paragraph>',
+				attributes: {
+					1: {
+						attributes: { 'data-foo': 'foo' }
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p data-foo="foo">foo</p>' );
+		} );
+
+		it( 'should allow additional attributes (classes)', () => {
+			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowAttributes( { name: 'p', classes: /[\s\S]+/ } );
+
+			editor.setData( '<p class="foo">foo</p><p class="bar">bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlAttributes="(1)">foo</paragraph><paragraph htmlAttributes="(2)">bar</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					},
+					2: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p class="foo">foo</p><p class="bar">bar</p>' );
+		} );
+
+		it( 'should allow additional attributes (styles)', () => {
+			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowAttributes( { name: 'p', styles: { 'color': /[\s\S]+/ } } );
+
+			editor.setData( '<p style="color:red;">foo</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlAttributes="(1)">foo</paragraph>',
+				attributes: {
+					1: {
+						styles: { color: 'red' }
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="color:red;">foo</p>' );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': /[\s\S]+/ } } );
+			dataFilter.disallowAttributes( { name: 'p', attributes: { 'data-foo': 'bar' } } );
+
+			editor.setData( '<p data-foo="foo">foo</p><p data-foo="bar">bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlAttributes="(1)">foo</paragraph><paragraph>bar</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foo'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p data-foo="foo">foo</p><p>bar</p>' );
+		} );
+
+		it( 'should disallow attributes (styles)', () => {
+			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowAttributes( { name: 'p', styles: { color: /[\s\S]+/ } } );
+			dataFilter.disallowAttributes( { name: 'p', styles: { color: 'red' } } );
+
+			editor.setData( '<p style="color:blue;">foo</p><p style="color:red">bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlAttributes="(1)">foo</paragraph><paragraph>bar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							color: 'blue'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p style="color:blue;">foo</p><p>bar</p>' );
+		} );
+
+		it( 'should disallow attributes (classes)', () => {
+			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowAttributes( { name: 'p', classes: [ 'foo', 'bar' ] } );
+			dataFilter.disallowAttributes( { name: 'p', classes: [ 'bar' ] } );
+
+			editor.setData( '<p class="foo bar">foo</p><p class="bar">bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo</paragraph><paragraph>bar</paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
 	} );
 
 	it( 'should preserve attributes not used by other features', () => {

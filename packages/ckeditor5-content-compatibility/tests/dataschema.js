@@ -4,10 +4,13 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DataSchema from '../src/dataschema';
 
 describe( 'DataSchema', () => {
 	let editor, dataSchema;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -23,7 +26,7 @@ describe( 'DataSchema', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'registerInlineElement', () => {
+	describe( 'registerInlineElement()', () => {
 		it( 'should register proper definition', () => {
 			dataSchema.registerInlineElement( { model: 'htmlDef', view: 'def' } );
 
@@ -58,7 +61,7 @@ describe( 'DataSchema', () => {
 		} );
 	} );
 
-	describe( 'registerBlockElement', () => {
+	describe( 'registerBlockElement()', () => {
 		const fakeDefinitions = [
 			{
 				view: 'def1',
@@ -189,5 +192,28 @@ describe( 'DataSchema', () => {
 			// It's expected that definition will include `isBlock` property.
 			return getFakeDefinitions( ...viewNames ).map( def => ( { ...def, isBlock: true } ) );
 		}
+	} );
+
+	describe( 'extendBlockElement()', () => {
+		it( 'should register proper definition', () => {
+			dataSchema.extendBlockElement( { model: 'paragraph', view: 'p' } );
+
+			const result = dataSchema.getDefinitionsForView( 'p' );
+
+			expect( Array.from( result ) ).to.deep.equal( [ {
+				model: 'paragraph',
+				view: 'p',
+				isBlock: true,
+				extend: true
+			} ] );
+		} );
+
+		it( 'should use registerBlockElement()', () => {
+			const spy = sinon.spy( dataSchema, 'registerBlockElement' );
+
+			dataSchema.extendBlockElement( { model: 'paragraph', view: 'p' } );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
 	} );
 } );
