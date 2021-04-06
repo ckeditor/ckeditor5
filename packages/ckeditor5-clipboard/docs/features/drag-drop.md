@@ -6,28 +6,32 @@ order: 40
 
 # Drag and drop
 
-The drag and drop feature is implemented by the {@link module:clipboard/dragdrop~DragDrop} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} feature.
+The drag and drop feature brings support for dragging and dropping textual content as well as block objects (like images or tables) within the rich-text editor. It also allows for dropping HTML and plain text content from outside of the editor into CKEditor 5.
 
-{@img assets/img/drag-drop.gif Drag & drop demo.}
+This feature is implemented by the {@link module:clipboard/dragdrop~DragDrop} plugin which is a part of the {@link module:clipboard/clipboard~Clipboard} feature.
+
+See the screencast below for what you can expect from drag and drop support of text and blocks in CKEditor 5. Use the [demo](#demo) below to play with dragging content from outside the editor into a document.
+
+{@img assets/img/drag-drop.gif A screencast of drag and drop of text and blocks in CKEditor 5.}
 
 ## Demo
 
-The sample below allows you to drag contacts from the list to the editor content. They are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card).
+The sample below allows you to drag contacts from the list to the editor below. They are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card).
 
 {@snippet features/drag-drop}
 
 Photos: [Wikipedia.org](http://en.wikipedia.org).
 
-Source code of the above snippet is available here: [`drag-drop.js`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.js), [`drag-drop.html`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.html).
+The source code of the above snippet is available here: [`drag-drop.js`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.js), [`drag-drop.html`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.html).
 
 ## Related features
 
-CKEditor 5 supports dropping images from the file system by the {@link features/image-upload Image upload} feature.
+CKEditor 5 supports dropping images from the file system thanks to the {@link features/image-upload image upload} feature.
 
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all {@link builds/guides/overview ready-to-use editor builds} (a dependency of the {@link module:clipboard/clipboard~Clipboard} plugin). The installation instructions are for developers interested in building their own custom rich-text editor.
+	This feature is required by the clipboard plugin and is enabled by default in all official builds. These installation instructions are for developers interested in building their own custom rich-text editor.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:
@@ -50,4 +54,8 @@ ClassicEditor
 ```
 
 The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate along with the clipboard plugin.
+
+## Known issues
+
+At the moment, the drag and drop feature supports textual content as well as widgets. Bringing support for any types of blocks is tracked in [issue #7731](https://github.com/ckeditor/ckeditor5/issues/7731). If you  would like to see this feature implemented, make sure you add a 👍 &nbsp; to the issue on GitHub.
 

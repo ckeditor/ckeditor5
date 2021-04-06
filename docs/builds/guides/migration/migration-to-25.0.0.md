@@ -1,7 +1,7 @@
 ---
 category: builds-migration
 menu-title: Migration to v25.0.0
-order: 20
+order: 10
 ---
 
 # Migration to CKEditor 5 v25.0.0
