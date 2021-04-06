@@ -164,10 +164,6 @@ export default class MediaEmbedEditing extends Plugin {
 		const conversion = editor.conversion;
 		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
 		const elementName = editor.config.get( 'mediaEmbed.elementName' );
-		const elementNames = [ elementName ];
-		if ( elementNames.includes( 'oembed' ) ) {
-			elementNames.push( 'oembed' );
-		}
 
 		const registry = this.registry;
 
@@ -226,12 +222,10 @@ export default class MediaEmbedEditing extends Plugin {
 		conversion.for( 'upcast' )
 			// Upcast semantic media.
 			.elementToElement( {
-				view: {
-					name: new RegExp( `^(${ elementNames.join( '|' ) })$` ),
-					attributes: {
-						url: true
-					}
-				},
+				view: element => [ 'oembed', elementName ].includes( element.name ) && element.getAttribute( 'url' ) ?
+					{ name: true } :
+					null,
+
 				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
