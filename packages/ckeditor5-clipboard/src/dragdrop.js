@@ -470,6 +470,8 @@ export default class DragDrop extends Plugin {
 			// If this was not a widget then we should check if we need to drag some text content.
 			// In Chrome set a 'draggable' attribute on closest editable to allow immediate dragging of the selected text range.
 			// In Firefox this is not needed. In Safari it makes the whole editable draggable (not just textual content).
+			// Disabled in read-only mode because draggable="true" + contenteditable="false" results
+			// in not firing selectionchange event ever, which makes the selection stuck in read-only mode.
 			if ( env.isBlink && !editor.isReadOnly && !draggableElement && !viewDocument.selection.isCollapsed ) {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
