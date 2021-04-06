@@ -65,6 +65,17 @@ class ExtendHTMLSupport extends Plugin {
 		dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
 		dataFilter.allowAttributes( { name: /^(span|cite)$/, styles: { color: /[\s\S]+/ } } );
 		dataFilter.disallowAttributes( { name: /^(span|cite)$/, styles: { color: 'red' } } );
+
+		// Allow existing features.
+		dataFilter.allowElement( { name: 'p' } );
+		dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'p', styles: { 'background-color': /[\s\S]+/ } } );
+
+		dataFilter.allowElement( { name: 'blockquote' } );
+		dataFilter.allowAttributes( { name: 'blockquote', styles: { 'color': /[\s\S]+/ } } );
+
+		dataFilter.allowElement( { name: 'li' } );
+		dataFilter.allowAttributes( { name: 'li', styles: { 'color': /[\s\S]+/ } } );
 	}
 }
 

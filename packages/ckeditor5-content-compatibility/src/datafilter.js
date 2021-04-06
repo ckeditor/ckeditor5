@@ -143,15 +143,13 @@ export default class DataFilter {
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_defineBlockElement( definition ) {
-		if ( this.editor.model.schema.isRegistered( definition.model ) ) {
-			return;
+		if ( !definition.extend ) {
+			this._defineBlockElementSchema( definition );
+			this._addBlockElementToElementConversion( definition );
 		}
 
-		this._defineBlockElementSchema( definition );
-
-		if ( definition.view ) {
-			this._defineBlockElementConverters( definition );
-		}
+		this._addDisallowedAttributeConversion( definition );
+		this._addBlockElementAttributeConversion( definition );
 	}
 
 	/**
@@ -173,7 +171,8 @@ export default class DataFilter {
 			schema.setAttributeProperties( definition.model, definition.attributeProperties );
 		}
 
-		this._defineInlineElementConverters( definition );
+		this._addDisallowedAttributeConversion( definition );
+		this._addInlineElementConversion( definition );
 	}
 
 	/**
@@ -184,6 +183,10 @@ export default class DataFilter {
 	 */
 	_defineBlockElementSchema( definition ) {
 		const schema = this.editor.model.schema;
+
+		if ( schema.isRegistered( definition.model ) ) {
+			return;
+		}
 
 		schema.register( definition.model, definition.modelSchema );
 
@@ -199,17 +202,85 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Registers attribute converters for the given inline element definition.
+	 * Registers element to element converters for the given block element definition.
+	 *
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 */
+	_addBlockElementToElementConversion( { model: modelName, view: viewName } ) {
+		const conversion = this.editor.conversion;
+
+		if ( !viewName ) {
+			return;
+		}
+
+		conversion.for( 'upcast' ).elementToElement( {
+			model: modelName,
+			view: viewName,
+			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
+			// this listener is called before it. If not, some elements will be transformed into a paragraph.
+			converterPriority: priorities.get( 'low' ) + 1
+		} );
+
+		conversion.for( 'downcast' ).elementToElement( {
+			model: modelName,
+			view: viewName
+		} );
+	}
+
+	/**
+	 * Registers attribute converters for the given block element definition.
+	 *
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 */
+	_addBlockElementAttributeConversion( { model: modelName, view: viewName } ) {
+		const conversion = this.editor.conversion;
+
+		if ( !viewName ) {
+			return;
+		}
+
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
+				if ( !data.modelRange ) {
+					return;
+				}
+
+				const viewAttributes = this._matchAndConsumeAllowedAttributes( data.viewItem, conversionApi );
+
+				if ( viewAttributes ) {
+					conversionApi.writer.setAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes, data.modelRange );
+				}
+			}, { priority: 'low' } );
+		} );
+
+		conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }:${ modelName }`, ( evt, data, conversionApi ) => {
+				const viewAttributes = data.attributeNewValue;
+
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = conversionApi.mapper.toViewElement( data.item );
+
+				setViewElementAttributes( viewWriter, viewAttributes, viewElement );
+			} );
+		} );
+	}
+
+	/**
+	 * Registers converters for the given inline element definition.
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
-	_defineInlineElementConverters( definition ) {
+	_addInlineElementConversion( definition ) {
 		const conversion = this.editor.conversion;
 		const viewName = definition.view;
 		const attributeKey = definition.model;
-
-		this._addDisallowedAttributesConverter( viewName );
 
 		conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
@@ -253,65 +324,17 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Registers attribute converters for the given block element definition.
+	 * Registers converters responsible for consuming disallowed view attributes.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
-	_defineBlockElementConverters( definition ) {
+	_addDisallowedAttributeConversion( { view: viewName } ) {
 		const conversion = this.editor.conversion;
-		const viewName = definition.view;
-		const modelName = definition.model;
 
-		this._addDisallowedAttributesConverter( viewName );
-
-		// Stash unused, allowed element attributes, so they can be reapplied later in data conversion.
-		conversion.for( 'upcast' ).elementToElement( {
-			view: viewName,
-			model: ( viewElement, conversionApi ) => {
-				const element = conversionApi.writer.createElement( modelName );
-				const viewAttributes = this._matchAndConsumeAllowedAttributes( viewElement, conversionApi );
-
-				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes, element );
-				}
-
-				return element;
-			},
-			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
-			// this listener is called before it. If not, some elements will be transformed into a paragraph.
-			converterPriority: priorities.get( 'low' ) + 1
-		} );
-
-		conversion.for( 'downcast' ).elementToElement( {
-			model: modelName,
-			view: viewName
-		} );
-
-		conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }:${ modelName }`, ( evt, data, conversionApi ) => {
-				const viewAttributes = data.attributeNewValue;
-
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
-				}
-
-				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
-
-				setViewElementAttributes( viewWriter, viewAttributes, viewElement );
-			} );
-		} );
-	}
-
-	/**
-	 * Adds converter responsible for consuming disallowed view attributes.
-	 *
-	 * @private
-	 * @param {String} viewName
-	 */
-	_addDisallowedAttributesConverter( viewName ) {
-		const conversion = this.editor.conversion;
+		if ( !viewName ) {
+			return;
+		}
 
 		// Consumes disallowed element attributes to prevent them of being processed by other converters.
 		conversion.for( 'upcast' ).add( dispatcher => {
