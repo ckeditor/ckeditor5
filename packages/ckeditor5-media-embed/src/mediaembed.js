@@ -248,7 +248,7 @@ export default class MediaEmbed extends Plugin {
  * It can also be set to other element names, for instance, `o-embed` will produce:
  *
  *		<figure class="media">
- *			<o-embed url="https://url"></oembed>
+ *			<o-embed url="https://url"></o-embed>
  *		</figure>
  *
  * @member {String} [module:media-embed/mediaembed~MediaEmbedConfig#preferredElementName]
