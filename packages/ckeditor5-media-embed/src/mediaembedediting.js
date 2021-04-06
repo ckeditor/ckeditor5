@@ -164,7 +164,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const conversion = editor.conversion;
 		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
 		const elementName = editor.config.get( 'mediaEmbed.elementName' );
-		const elementNames = elementName ? [ elementName ] : [];
+		const elementNames = [ elementName ];
 		if ( elementNames.includes( 'oembed' ) ) {
 			elementNames.push( 'oembed' );
 		}
