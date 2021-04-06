@@ -477,10 +477,10 @@ describe( 'MediaEmbedEditing', () => {
 		} );
 
 		describe( 'conversion in the data pipeline', () => {
-			describe( 'preferredElementName#o-embed', () => {
+			describe( 'elementName#o-embed', () => {
 				beforeEach( () => {
 					return createTestEditor( {
-						preferredElementName: 'o-embed',
+						elementName: 'o-embed',
 						providers: providerDefinitions
 					} )
 						.then( newEditor => {

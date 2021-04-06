@@ -101,7 +101,7 @@ By default, the media embed feature outputs semantic `<oembed url="...">` tags f
 </figure>
 ```
 
-Further customization of semantic data output can be done through the {@link module:media-embed/mediaembed~MediaEmbedConfig#preferredElementName `config.mediaEmbed.preferredElementName`}. As an example, if `preferredElementName` is set to `o-embed`:
+Further customization of semantic data output can be done through the {@link module:media-embed/mediaembed~MediaEmbedConfig#elementName `config.mediaEmbed.elementName`}. As an example, if `elementName` is set to `o-embed`:
 
 ```html
 <figure class="media">
@@ -109,7 +109,7 @@ Further customization of semantic data output can be done through the {@link mod
 </figure>
 ```
 
-To be backward compatible with legacy semantic elements, `<oembed>` tags are still supported when `preferredElementName` is set.
+To be backward compatible with legacy semantic elements, `<oembed>` tags are still supported when `elementName` is set.
 
 #### Including previews in data
 

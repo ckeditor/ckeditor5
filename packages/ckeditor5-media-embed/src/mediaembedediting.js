@@ -36,7 +36,7 @@ export default class MediaEmbedEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'mediaEmbed', {
-			preferredElementName: 'oembed',
+			elementName: 'oembed',
 			providers: [
 				{
 					name: 'dailymotion',
@@ -163,8 +163,8 @@ export default class MediaEmbedEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
-		const preferredElementName = editor.config.get( 'mediaEmbed.preferredElementName' );
-		const elementNames = preferredElementName ? [ preferredElementName ] : [];
+		const elementName = editor.config.get( 'mediaEmbed.elementName' );
+		const elementNames = elementName ? [ elementName ] : [];
 		if ( elementNames.includes( 'oembed' ) ) {
 			elementNames.push( 'oembed' );
 		}
@@ -188,7 +188,7 @@ export default class MediaEmbedEditing extends Plugin {
 				const url = modelElement.getAttribute( 'url' );
 
 				return createMediaFigureElement( writer, registry, url, {
-					preferredElementName,
+					elementName,
 					renderMediaPreview: url && renderMediaPreview
 				} );
 			}
@@ -197,7 +197,7 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> Data (url -> data-oembed-url)
 		conversion.for( 'dataDowncast' ).add(
 			modelToViewUrlAttributeConverter( registry, {
-				preferredElementName,
+				elementName,
 				renderMediaPreview
 			} ) );
 
@@ -207,7 +207,7 @@ export default class MediaEmbedEditing extends Plugin {
 			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
 				const figure = createMediaFigureElement( writer, registry, url, {
-					preferredElementName,
+					elementName,
 					renderForEditingView: true
 				} );
 
@@ -218,7 +218,7 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> View (url -> data-oembed-url)
 		conversion.for( 'editingDowncast' ).add(
 			modelToViewUrlAttributeConverter( registry, {
-				preferredElementName,
+				elementName,
 				renderForEditingView: true
 			} ) );
 

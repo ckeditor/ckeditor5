@@ -73,7 +73,7 @@ export default class MediaRegistry {
 		 *
 		 * @member {String}
 		 */
-		this.preferredElementName = config.preferredElementName;
+		this.elementName = config.elementName;
 	}
 
 	/**
@@ -213,7 +213,7 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
-	 * @param {String} [options.preferredElementName]
+	 * @param {String} [options.elementName]
 	 * @param {String} [options.renderMediaPreview]
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
@@ -241,7 +241,7 @@ class Media {
 				attributes.url = this.url;
 			}
 
-			viewElement = writer.createEmptyElement( options.preferredElementName, attributes );
+			viewElement = writer.createEmptyElement( options.elementName, attributes );
 		}
 
 		writer.setCustomProperty( 'media-content', true, viewElement );
