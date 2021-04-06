@@ -275,7 +275,9 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 			return null;
 		}
 
-		const imageType = isBlockImageView( element.parent ) ? 'image' : 'imageInline';
+		// The <img> can be standalone, wrapped in <figure>...</figure> (ImageBlock plugin) or
+		// wrapped in <figure><a>...</a></figure> (LinkImage plugin).
+		const imageType = element.findAncestor( isBlockImageView ) ? 'image' : 'imageInline';
 
 		if ( imageType !== matchImageType ) {
 			return null;
