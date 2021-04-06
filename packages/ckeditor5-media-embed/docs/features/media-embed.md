@@ -105,7 +105,7 @@ Further customization of semantic data output can be done through the {@link mod
 
 ```html
 <figure class="media">
-	<o-embed url="https://media-url"></oembed>
+	<o-embed url="https://media-url"></o-embed>
 </figure>
 ```
 
