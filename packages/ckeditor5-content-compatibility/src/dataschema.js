@@ -274,7 +274,7 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
- * @property {Boolean} [extend=false] Indicates if data schema should extend existing model definition.
+ * @property {Boolean} [extend=false] Indicates if data schema should extend existing editor element.
  */
 
 /**
