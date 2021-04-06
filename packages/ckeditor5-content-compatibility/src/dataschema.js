@@ -49,6 +49,21 @@ export default class DataSchema {
 		this._definitions = new Map();
 
 		// Block elements.
+		this.extendBlockElement( {
+			model: 'paragraph',
+			view: 'p'
+		} );
+
+		this.extendBlockElement( {
+			model: 'blockQuote',
+			view: 'blockquote'
+		} );
+
+		this.extendBlockElement( {
+			model: 'listItem',
+			view: 'li'
+		} );
+
 		this.registerBlockElement( {
 			model: '$htmlBlock',
 			allowChildren: '$block',
@@ -146,7 +161,7 @@ export default class DataSchema {
 	}
 
 	/**
-	 * Add new data schema definition for block element.
+	 * Add new data schema definition describing block element.
 	 *
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
@@ -155,12 +170,21 @@ export default class DataSchema {
 	}
 
 	/**
-	 * Add new data schema definition for inline element.
+	 * Add new data schema definition describing inline element.
 	 *
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	registerInlineElement( definition ) {
 		this._definitions.set( definition.model, { ...definition, isInline: true } );
+	}
+
+	/**
+	 * Add new data schema definition to extend existing editor's model block element.
+	 *
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 */
+	extendBlockElement( definition ) {
+		this.registerBlockElement( { ...definition, extend: true } );
 	}
 
 	/**
@@ -250,6 +274,7 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
+ * @property {Boolean} [extend=false] Indicates if data schema should extend existing model definition.
  */
 
 /**
