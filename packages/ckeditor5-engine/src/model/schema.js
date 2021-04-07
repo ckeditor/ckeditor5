@@ -884,6 +884,10 @@ export default class Schema {
 		}
 
 		for ( const itemName of itemNames ) {
+			compileAllowChildren( compiledDefinitions, itemName );
+		}
+
+		for ( const itemName of itemNames ) {
 			compileAllowContentOf( compiledDefinitions, itemName );
 		}
 
@@ -1090,6 +1094,7 @@ mix( Schema, ObservableMixin );
  * You can define the following rules:
  *
  * * {@link ~SchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
+ * * {@link ~SchemaItemDefinition#allowChildren `allowChildren`} &ndash; Defines which other items are allowed inside this item.
  * * {@link ~SchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
  * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Inherits "allowed children" from other items.
  * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Inherits "allowed in" from other items.
@@ -1157,6 +1162,14 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *
+ * Allow `paragraph` inside a `$root` and allow `$text` as a `paragraph` child:
+ *
+ *		schema.register( 'paragraph', {
+ *			allowIn: '$root',
+ *			allowChildren: '$text',
+ *			isBlock: true
+ *		} );
+ *
  * Make `image` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
@@ -1205,6 +1218,7 @@ mix( Schema, ObservableMixin );
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
  *
  * @property {String|Array.<String>} allowIn Defines in which other items this item will be allowed.
+ * @property {String|Array.<String>} allowChildren Defines which other items are allowed inside this item.
  * @property {String|Array.<String>} allowAttributes Defines allowed attributes of the given item.
  * @property {String|Array.<String>} allowContentOf Inherits "allowed children" from other items.
  * @property {String|Array.<String>} allowWhere Inherits "allowed in" from other items.
@@ -1566,6 +1580,8 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 		allowAttributes: [],
 		allowAttributesOf: [],
 
+		allowChildren: [],
+
 		inheritTypesFrom: []
 	};
 
@@ -1578,11 +1594,29 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 	copyProperty( sourceItemRules, itemRule, 'allowAttributes' );
 	copyProperty( sourceItemRules, itemRule, 'allowAttributesOf' );
 
+	copyProperty( sourceItemRules, itemRule, 'allowChildren' );
+
 	copyProperty( sourceItemRules, itemRule, 'inheritTypesFrom' );
 
 	makeInheritAllWork( sourceItemRules, itemRule );
 
 	return itemRule;
+}
+
+function compileAllowChildren( compiledDefinitions, itemName ) {
+	const item = compiledDefinitions[ itemName ];
+
+	for ( const allowChildrenItem of item.allowChildren ) {
+		const allowedChildren = compiledDefinitions[ allowChildrenItem ];
+
+		if ( !allowedChildren ) {
+			continue;
+		}
+
+		allowedChildren.allowIn.push( itemName );
+	}
+
+	delete item.allowChildren;
 }
 
 function compileAllowContentOf( compiledDefinitions, itemName ) {
