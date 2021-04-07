@@ -872,7 +872,7 @@ function prepareToAttributeConverter( config, shallow ) {
 		const modelValue = typeof config.model.value == 'function' ?
 			config.model.value( data.viewItem, conversionApi ) : config.model.value;
 
-		// Do not convert if attribute building function returned falsy value.
+		// Do not convert if the attribute building function returned a falsy value.
 		if ( modelValue === null ) {
 			return;
 		}
@@ -889,18 +889,18 @@ function prepareToAttributeConverter( config, shallow ) {
 			return;
 		}
 
-		// Since we are converting to attribute we need an range on which we will set the attribute.
-		// If the range is not created yet, we will create it.
+		// Since we are converting to attribute we need a range on which we will set the attribute.
+		// If the range is not created yet, let's create it by converting children of the current node first.
 		if ( !data.modelRange ) {
 			// Convert children and set conversion result as a current data.
 			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
-		// Set attribute on current `output`.
+		// Set the attribute (on nodes that allow it).
 		setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
 
-		// Mark the node as consumed even if the attribute will not be updated because it's in a valid context (schema)
-		// and would be converted if the attribute wouldn't be present. See #9249.
+		// Consume the thing being converted regardless of whether setAttributeOn() was actually able
+		// to set the attribute. See #9249.
 		conversionApi.consumable.consume( data.viewItem, match.match );
 	};
 }
@@ -933,6 +933,7 @@ function onlyViewNameIsDefined( viewConfig, viewItem ) {
 function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 	// Set attribute on each item in range according to Schema.
 	for ( const node of Array.from( modelRange.getItems( { shallow } ) ) ) {
+		// Skip if not allowed.
 		if ( !conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
 			continue;
 		}
