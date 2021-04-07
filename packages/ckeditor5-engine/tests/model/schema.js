@@ -2411,6 +2411,173 @@ describe( 'Schema', () => {
 			// } );
 		} );
 
+		describe( 'allowChildren', () => {
+			it( 'allows item in another item', () => {
+				schema.register( 'paragraph' );
+
+				schema.register( '$root', {
+					allowChildren: 'paragraph'
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+			} );
+
+			it( 'supports the array syntax', () => {
+				schema.register( 'paragraph' );
+				schema.register( 'blockQuote' );
+
+				schema.register( '$root', {
+					allowChildren: [ 'paragraph', 'blockQuote' ]
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+				expect( schema.checkChild( root1, r1bQ ) ).to.be.true;
+			} );
+
+			it( 'supports circular references', () => {
+				schema.register( '$root', {
+					allowChildren: [ 'paragraph', 'blockQuote' ]
+				} );
+
+				schema.register( 'paragraph', {
+					allowChildren: 'blockQuote'
+				} );
+
+				schema.register( 'blockQuote', {
+					allowChildren: 'paragraph'
+				} );
+
+				expect( schema.checkChild( r1p1, r1bQ ) ).to.be.true;
+				expect( schema.checkChild( r1bQ, r1p1 ) ).to.be.true;
+			} );
+
+			it( 'supports self-reference', () => {
+				schema.register( '$root', {
+					allowChildren: 'paragraph'
+				} );
+
+				schema.register( 'paragraph', {
+					allowChildren: 'paragraph'
+				} );
+
+				expect( schema.checkChild( r1p1, r1p1 ) ).to.be.true;
+			} );
+
+			it( 'passes $root>$paragraph>div>blockQuote - deep nesting', () => {
+				schema.register( '$root', {
+					allowChildren: 'paragraph'
+				} );
+
+				schema.register( 'paragraph', {
+					allowChildren: 'div'
+				} );
+
+				schema.register( 'div', {
+					allowChildren: 'blockQuote'
+				} );
+
+				schema.register( 'blockQuote' );
+
+				const paragraph = new Element( 'paragraph' );
+				root1._appendChild( paragraph );
+
+				const div = new Element( 'div' );
+				paragraph._appendChild( div );
+
+				const blockQuote = new Element( 'blockQuote' );
+				div._appendChild( blockQuote );
+
+				expect( schema.checkChild( root1, paragraph ) ).to.be.true;
+				expect( schema.checkChild( paragraph, div ) ).to.be.true;
+				expect( schema.checkChild( div, blockQuote ) ).to.be.true;
+
+				expect( schema.checkChild( paragraph, blockQuote ) ).to.be.false;
+				expect( schema.checkChild( div, paragraph ) ).to.be.false;
+			} );
+
+			it( 'should remove allowChildren from definition', () => {
+				schema.register( '$root', {
+					allowChildren: 'paragraph'
+				} );
+
+				schema.register( 'paragraph' );
+
+				expect( schema.getDefinition( '$root' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowIn: [],
+					name: '$root'
+				} );
+			} );
+
+			it( 'should add parent item to child allowIn property', () => {
+				schema.register( '$root', {
+					allowChildren: 'paragraph'
+				} );
+
+				schema.register( 'div', {
+					allowChildren: 'paragraph'
+				} );
+
+				schema.register( 'paragraph' );
+
+				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowIn: [ '$root', 'div' ],
+					name: 'paragraph'
+				} );
+			} );
+
+			it( 'should add parent item to child allowIn property - self reference', () => {
+				schema.register( 'paragraph', {
+					allowChildren: 'paragraph'
+				} );
+
+				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowIn: [ 'paragraph' ],
+					name: 'paragraph'
+				} );
+			} );
+
+			it( 'should add parent item to child allowIn property - circular reference', () => {
+				schema.register( 'paragraph', {
+					allowChildren: 'blockQuote'
+				} );
+
+				schema.register( 'blockQuote', {
+					allowChildren: 'paragraph'
+				} );
+
+				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowIn: [ 'blockQuote' ],
+					name: 'paragraph'
+				} );
+
+				expect( schema.getDefinition( 'blockQuote' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowIn: [ 'paragraph' ],
+					name: 'blockQuote'
+				} );
+			} );
+
+			it( 'should include only one allowIn item for definition defined in both allowIn and allowChildren', () => {
+				schema.register( '$root', {
+					allowChildren: 'paragraph'
+				} );
+
+				schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+
+				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowIn: [ '$root' ],
+					name: 'paragraph'
+				} );
+			} );
+		} );
+
 		describe( 'inheritTypesFrom', () => {
 			it( 'inherit properties of another item', () => {
 				schema.register( '$block', {
@@ -2578,6 +2745,15 @@ describe( 'Schema', () => {
 				schema.register( '$root' );
 				schema.register( '$text', {
 					allowIn: 'foo404'
+				} );
+
+				expect( schema.checkChild( root1, '$text' ) ).to.be.false;
+			} );
+
+			it( 'does not break when used allowChildren pointing to an non-register element', () => {
+				schema.register( '$root' );
+				schema.register( '$text', {
+					allowChildren: 'foo404'
 				} );
 
 				expect( schema.checkChild( root1, '$text' ) ).to.be.false;
