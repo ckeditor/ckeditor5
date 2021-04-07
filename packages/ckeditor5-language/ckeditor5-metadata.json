@@ -1,0 +1,32 @@
+{
+	"plugins": [
+		{
+			"name": "CodeBlock",
+			"className": "Code blocks",
+			"description": "Allows for inserting and editing blocks of pre–formatted code with the programming language assigned.",
+			"docs": "features/code-blocks.html",
+			"path": "src/codeblock.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "codeBlock",
+					"iconPath": "theme/icons/codeblock.svg"
+				}
+			]
+		},
+		{
+			"name": "TextPartLanguage",
+			"description": "The text part language feature provides the ability to change the language of selected text fragments and set the text direction ensuring correct content presentation in multilingual documents.",
+			"docs": "features/language.html",
+			"repository": "@ckeditor/ckeditor5-language",
+			"path": "src/textpartlanguage.js",
+			"uiComponents": [
+				{
+					"type": "dropdown",
+					"name": "textPartLanguage",
+					"textContent": "Language"
+				}
+			]
+		}
+	]
+}

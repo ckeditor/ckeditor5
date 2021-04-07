@@ -1,0 +1,50 @@
+{
+	"plugins": [
+		{
+			"name": "Autolink",
+			"className": "Autolink",
+			"description": "Automatically turns plain links in the document into active URLs as you write. Works for emails, too.",
+			"docs": "features/link.html#autolink-feature",
+			"path": "src/autolink.js",
+			"requires": [
+				"Link"
+			]
+		},
+		{
+			"name": "Link",
+			"pluginName": "Link",
+			"description": "Brings support for inserting hyperlinks into the content and offers the UI to create and edit them.",
+			"docs": "features/link.html",
+			"path": "src/link.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "link",
+					"iconPath": "theme/icons/link.svg"
+				}
+			]
+		},
+		{
+			"name": "Link image",
+			"className": "LinkImage",
+			"description": "Allows adding clickable links to images for creating banners or referrers.",
+			"docs": "features/image.html#linking-images",
+			"repository": "@ckeditor/ckeditor5-link",
+			"path": "src/linkimage.js",
+			"requires": [
+				"Link",
+				"Image"
+			],
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "linkImage",
+					"iconPath": "theme/icons/link.svg",
+					"toolbars": [
+						"image.toolbar"
+					]
+				}
+			]
+		}
+	]
+}

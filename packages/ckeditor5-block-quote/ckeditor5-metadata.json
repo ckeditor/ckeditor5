@@ -1,0 +1,17 @@
+{
+	"plugins": [
+		{
+			"name": "BlockQuote",
+			"description": "Implements block quote support to easily include quotations and passages in the rich-text content.",
+			"docs": "features/block-quote.html",
+			"path": "src/blockquote.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "blockQuote",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/quote.svg"
+				}
+			]
+		}
+	]
+}

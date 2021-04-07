@@ -1,0 +1,21 @@
+{
+	"plugins": [
+		{
+			"name": "Essentials",
+			"description": "Includes all essential editing features like clipboard, <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd>, typing and undo support.",
+			"path": "src/essentials.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "undo",
+					"iconPath": "@ckeditor/ckeditor5-undo/theme/icons/undo.svg"
+				},
+				{
+					"type": "button",
+					"name": "redo",
+					"iconPath": "@ckeditor/ckeditor5-undo/theme/icons/redo.svg"
+				}
+			]
+		}
+	]
+}

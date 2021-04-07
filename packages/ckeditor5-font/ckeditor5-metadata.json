@@ -1,0 +1,60 @@
+{
+	"plugins": [
+		{
+			"name": "Font background color",
+			"className": "FontBackgroundColor",
+			"description": "Introduces font background color support with a configurable color palette panel.",
+			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
+			"path": "src/fontbackgroundcolor.js",
+			"uiComponents": [
+				{
+					"type": "split button",
+					"name": "fontBackgroundColor",
+					"iconPath": "theme/icons/font-background.svg"
+				}
+			]
+		},
+		{
+			"name": "Font color",
+			"className": "FontColor",
+			"description": "Introduces font color support with a configurable color palette panel.",
+			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
+			"path": "src/fontcolor.js",
+			"uiComponents": [
+				{
+					"type": "split button",
+					"name": "fontColor",
+					"iconPath": "theme/icons/font-color.svg"
+				}
+			]
+		},
+		{
+			"name": "Font size",
+			"className": "FontSize",
+			"description": "Introduces font size support.",
+			"docs": "features/font.html#configuring-the-font-size-feature",
+			"path": "src/fontsize.js",
+			"uiComponents": [
+				{
+					"type": "split button",
+					"name": "fontSize",
+					"iconPath": "theme/icons/font-size.svg"
+				}
+			]
+		},
+		{
+			"name": "FontFamily",
+			"description": "Introduces font family support.",
+			"docs": "features/font.html#configuring-the-font-family-feature",
+			"repository": "@ckeditor/ckeditor5-font",
+			"path": "src/fontfamily.js",
+			"uiComponents": [
+				{
+					"type": "split button",
+					"name": "fontFamily",
+					"iconPath": "theme/icons/font-family.svg"
+				}
+			]
+		}
+	]
+}

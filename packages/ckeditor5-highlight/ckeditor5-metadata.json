@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Highlight",
+			"className": "Highlight",
+			"description": "Offers text marking tools (pens and markers) useful when reviewing content or highlighting it for future reference.",
+			"docs": "features/highlight.html",
+			"path": "src/highlight.js",
+			"uiComponents": [
+				{
+					"type": "split button",
+					"name": "highlight",
+					"iconPath": "theme/icons/pen.svg"
+				}
+			]
+		}
+	]
+}

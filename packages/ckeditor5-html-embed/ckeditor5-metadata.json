@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Html embed",
+			"className": "HtmlEmbed",
+			"description": "Allows embedding an arbitrary HTML snippet in the editor.",
+			"docs": "features/html-embed.html",
+			"path": "src/htmlembed.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "htmlEmbed",
+					"iconPath": "theme/icons/html.svg"
+				}
+			]
+		}
+	]
+}

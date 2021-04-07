@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "CodeBlock",
+			"pluginName": "Code blocks",
+			"description": "Allows for inserting and editing blocks of pre–formatted code with the programming language assigned.",
+			"docs": "features/code-blocks.html",
+			"path": "src/codeblock.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "codeBlock",
+					"iconPath": "theme/icons/codeblock.svg"
+				}
+			]
+		}
+	]
+}
