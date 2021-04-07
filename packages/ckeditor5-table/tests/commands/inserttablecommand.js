@@ -44,9 +44,9 @@ describe( 'InsertTableCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			it( 'should be false if in table', () => {
+			it( 'should be true if in table', () => {
 				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 

@@ -311,14 +311,15 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
-	it( 'should strip table in table', () => {
+	it( 'should not strip table in table', () => {
 		editor.setData(
 			'<table>' +
 				'<tr>' +
+					'<td>foo</td>' +
 					'<td>' +
 						'<table>' +
 							'<tr>' +
-								'<td>tableception</td>' +
+								'<td>bar</td>' +
 							'</tr>' +
 						'</table>' +
 					'</td>' +
@@ -330,7 +331,52 @@ describe( 'upcastTable()', () => {
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
-						'<paragraph>tableception</paragraph>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>bar</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should strip table in table if nested tables are forbidden', () => {
+		model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+				return false;
+			}
+		} );
+
+		editor.setData(
+			'<table>' +
+				'<tr>' +
+					'<td>foo</td>' +
+					'<td>' +
+						'<table>' +
+							'<tr>' +
+								'<td>bar</td>' +
+							'</tr>' +
+						'</table>' +
+					'</td>' +
+				'</tr>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<paragraph>bar</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
 			'</table>'
