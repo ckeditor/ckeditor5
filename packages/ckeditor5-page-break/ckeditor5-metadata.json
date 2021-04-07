@@ -1,0 +1,16 @@
+{
+	"plugins": [
+		{
+			"name": "Page break",
+			"className": "PageBreak",
+			"description": "Allows for inserting a page break into the rich-text editor so you can structure your content better for print.",
+			"docs": "features/page-break.html",
+			"path": "src/pagebreak.js",
+			"uiComponents": [ {
+				"type": "button",
+				"name": "pageBreak",
+				"iconPath": "theme/icons/pagebreak.svg"
+			} ]
+		}
+	]
+}

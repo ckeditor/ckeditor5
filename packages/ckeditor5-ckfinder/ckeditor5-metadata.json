@@ -1,0 +1,24 @@
+{
+	"plugins": [
+		{
+			"name": "CKFinder",
+			"pluginName": "CKFinder",
+			"description": "An image upload tool. It provides a full, server-side and client-side integration with CKFinder and all its features, including multiple file upload, image editor and file management.",
+			"docs": "features/image-upload/ckfinder.html",
+			"repository": "@ckeditor/ckeditor5-ckfinder",
+			"path": "src/ckfinder.js",
+			"requires": [
+				"CKFinderUploadAdapter",
+				"Link",
+				"Image"
+			],
+			"uiComponents": [
+				{
+					"name": "CKFinder",
+					"type": "button",
+					"iconPath": "theme/icons/browser-files.svg"
+				}
+			]
+		}
+	]
+}

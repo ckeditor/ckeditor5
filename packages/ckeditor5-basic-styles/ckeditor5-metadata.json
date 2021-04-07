@@ -1,0 +1,102 @@
+{
+	"plugins": [
+		{
+			"name": "Bold",
+			"className": "Bold",
+			"description": "Implements bold formatting support. It is a part of the basic text styles package.",
+			"docs": "features/basic-styles.html",
+			"path": "src/bold.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "bold",
+					"iconPath": "theme/icons/bold.svg"
+				}
+			]
+		},
+		{
+			"name": "Code",
+			"className": "Code",
+			"description": "Implements inline code formatting support. It is a part of the basic text styles package.",
+			"docs": "features/basic-styles.html",
+			"path": "src/code.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "code",
+					"iconPath": "theme/icons/code.svg"
+				}
+			]
+		},
+		{
+			"name": "Italic",
+			"className": "Italic",
+			"description": "Implements italic formatting support. It is a part of the basic text styles package.",
+			"docs": "features/basic-styles.html",
+			"path": "src/italic.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "italic",
+					"iconPath": "theme/icons/italic.svg"
+				}
+			]
+		},
+		{
+			"name": "Strikethrough",
+			"className": "Strikethrough",
+			"description": "Implements strikethrough formatting support. It is a part of the basic text styles package.",
+			"docs": "features/basic-styles.html",
+			"path": "src/strikethrough.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "strikethrough",
+					"iconPath": "theme/icons/strikethrough.svg"
+				}
+			]
+		},
+		{
+			"name": "Subscript",
+			"className": "Subscript",
+			"description": "Implements subscript formatting support. It is a part of the basic text styles package.",
+			"docs": "features/basic-styles.html",
+			"path": "src/subscript.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "subscript",
+					"iconPath": "theme/icons/subscript.svg"
+				}
+			]
+		},
+		{
+			"name": "Superscript",
+			"className": "Superscript",
+			"description": "Implements superscript formatting support. It is a part of the basic text styles package.",
+			"docs": "features/basic-styles.html",
+			"path": "src/superscript.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "superscript",
+					"iconPath": "theme/icons/superscript.svg"
+				}
+			]
+		},
+		{
+			"name": "Underline",
+			"className": "Underline",
+			"description": "Implements underline formatting support. It is a part of the basic text styles package.",
+			"docs": "features/basic-styles.html",
+			"path": "src/underline.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "underline",
+					"iconPath": "theme/icons/underline.svg"
+				}
+			]
+		}
+	]
+}

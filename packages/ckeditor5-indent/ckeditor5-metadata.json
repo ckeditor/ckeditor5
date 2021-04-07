@@ -1,0 +1,33 @@
+{
+	"plugins": [
+		{
+			"name": "Indent",
+			"className": "Indent",
+			"description": "Implements the core of the indent feature. It requires compatible plugins, such as indent block or list, to work.",
+			"docs": "features/indent.html",
+			"path": "src/indent.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "indent",
+					"iconPath": "theme/icons/indent.svg"
+				},
+				{
+					"type": "button",
+					"name": "outdent",
+					"iconPath": "theme/icons/outdent.svg"
+				}
+			]
+		},
+		{
+			"name": "Indent block",
+			"className": "IndentBlock",
+			"description": "The indent block feature, together with the indent feature, controls the indentation of elements such as paragraphs and headings.",
+			"docs": "features/indent.html",
+			"path": "src/indentblock.js",
+			"requires": [
+				"Indent"
+			]
+		}
+	]
+}

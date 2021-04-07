@@ -1,0 +1,31 @@
+{
+	"plugins": [
+		{
+			"name": "Media embed",
+			"className": "MediaEmbed",
+			"description": "Allows for inserting embeddable media such as YouTube or Vimeo videos, Instagram posts and tweets or Google Maps into your rich-text content.",
+			"docs": "features/media-embed.html",
+			"path": "src/mediaembed.js",
+			"uiComponents": [
+				{
+					"type": "button",
+					"name": "mediaEmbed",
+					"iconPath": "theme/icons/media.svg"
+				}
+			]
+		},
+		{
+			"name": "Media embed toolbar",
+			"className": "MediaEmbedToolbar",
+			"description": "Implements an optional toolbar for media embed that shows up when the media element is selected.",
+			"docs": "features/media-embed.html",
+			"path": "src/mediaembedtoolbar.js",
+			"requires": [
+				"MediaEmbed"
+			],
+			"registeredToolbars": [
+				"mediaEmbed.toolbar"
+			]
+		}
+	]
+}
