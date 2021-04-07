@@ -474,6 +474,7 @@ describe( 'UpcastHelpers', () => {
 				);
 			} );
 
+			// See https://github.com/ckeditor/ckeditor5/pull/9249#issuecomment-813935851
 			it( 'should consume both elements even if the attribute from the most inner element will be used', () => {
 				upcastDispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
 					const viewItem = data.viewItem;
