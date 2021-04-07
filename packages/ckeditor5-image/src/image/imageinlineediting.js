@@ -171,7 +171,11 @@ export default class ImageInlineEditing extends Plugin {
 					// has a caption or some other features and this kind of image should be
 					// pasted/dropped without modifications.
 					if ( blockViewImage.childCount === 1 ) {
-						return getViewImageFromWidget( blockViewImage );
+						const viewImage = getViewImageFromWidget( blockViewImage );
+
+						// Preserve the link around the block image when pasted so
+						// <figure class="image"><a ...><img .../></a></figure> -> <a ...><img ... /></a>
+						return viewImage.parent.is( 'element', 'a' ) ? viewImage.parent : viewImage;
 					} else {
 						return blockViewImage;
 					}
