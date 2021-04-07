@@ -162,6 +162,10 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 		}
 	}
 
+	if ( selection.hasAttribute( 'linkHref' ) ) {
+		attributes.linkHref = selection.getAttribute( 'linkHref' );
+	}
+
 	model.change( writer => {
 		const imageElement = writer.createElement( imageType, attributes );
 
@@ -245,7 +249,7 @@ export function createImageViewElement( writer, imageType ) {
 
 	const container = imageType === 'image' ?
 		writer.createContainerElement( 'figure', { class: 'image' } ) :
-		writer.createContainerElement( 'span', { class: 'image-inline' } );
+		writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
 
 	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
 
