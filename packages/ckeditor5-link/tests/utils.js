@@ -11,7 +11,13 @@ import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import {
-	createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, isImageAllowed, isEmail, addLinkProtocolIfApplicable
+	createLinkElement,
+	isLinkElement,
+	ensureSafeUrl,
+	normalizeDecorators,
+	isLinkableImage,
+	isEmail,
+	addLinkProtocolIfApplicable
 } from '../src/utils';
 
 describe( 'utils', () => {
@@ -221,19 +227,19 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'isImageAllowed()', () => {
+	describe( 'isLinkableImage()', () => {
 		it( 'returns false when passed "null" as element', () => {
-			expect( isImageAllowed( null, new Schema() ) ).to.equal( false );
+			expect( isLinkableImage( null, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when passed an element that is not the image element', () => {
 			const element = new ModelElement( 'paragraph' );
-			expect( isImageAllowed( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when schema does not allow linking images', () => {
 			const element = new ModelElement( 'image' );
-			expect( isImageAllowed( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns true when passed an image element and it can be linked', () => {
@@ -245,7 +251,7 @@ describe( 'utils', () => {
 				allowAttributes: [ 'linkHref' ]
 			} );
 
-			expect( isImageAllowed( element, schema ) ).to.equal( true );
+			expect( isLinkableImage( element, schema ) ).to.equal( true );
 		} );
 	} );
 

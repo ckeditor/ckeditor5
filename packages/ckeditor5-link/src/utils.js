@@ -7,6 +7,7 @@
  * @module link/utils
  */
 
+import { isBlockImage, isImage } from '@ckeditor/ckeditor5-image/src/image/utils';
 import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
@@ -129,18 +130,21 @@ export function normalizeDecorators( decorators ) {
 }
 
 /**
- * Returns `true` if the specified `element` is an image and it can be linked (the element allows having the `linkHref` attribute).
+ * Returns `true` if the specified `element` is an image (either block or inline) and it
+ * can be linked (the element allows having the `linkHref` attribute).
  *
  * @params {module:engine/model/element~Element|null} element
  * @params {module:engine/model/schema~Schema} schema
  * @returns {Boolean}
  */
-export function isImageAllowed( element, schema ) {
-	if ( !element ) {
-		return false;
+export function isLinkableImage( element, schema ) {
+	if ( isImage( element ) ) {
+		const modelElementName = isBlockImage( element ) ? 'image' : 'imageInline';
+
+		return schema.checkAttribute( modelElementName, 'linkHref' );
 	}
 
-	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
+	return false;
 }
 
 /**
