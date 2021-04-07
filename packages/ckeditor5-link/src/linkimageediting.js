@@ -12,6 +12,7 @@ import { Matcher } from 'ckeditor5/src/engine';
 import { toMap } from 'ckeditor5/src/utils';
 
 import LinkEditing from './linkediting';
+import { isBlockImageView } from '@ckeditor/ckeditor5-image/src/image/utils';
 
 import linkIcon from '../theme/icons/link.svg';
 
@@ -50,7 +51,7 @@ export default class LinkImageEditing extends Plugin {
 			schema.extend( 'imageInline', { allowAttributes: [ 'linkHref' ] } );
 		}
 
-		editor.conversion.for( 'upcast' ).add( upcastLink() );
+		editor.conversion.for( 'upcast' ).add( upcastLink( editor ) );
 		editor.conversion.for( 'editingDowncast' ).add( downcastImageLink( { attachIconIndicator: true } ) );
 		editor.conversion.for( 'dataDowncast' ).add( downcastImageLink( { attachIconIndicator: false } ) );
 
@@ -101,17 +102,34 @@ export default class LinkImageEditing extends Plugin {
 	}
 }
 
-// Returns a converter that consumes the 'href' attribute if a link contains an image.
+// Returns a converter for linked block images that consumes the "href" attribute
+// if a link contains an image.
 //
 // @private
+// @param {module:core/editor/editor~Editor} editor The editor instance.
 // @returns {Function}
-function upcastLink() {
+function upcastLink( editor ) {
+	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
+
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
 			const imageInLink = getFirstImage( viewLink );
 
 			if ( !imageInLink ) {
+				return;
+			}
+
+			const blockImageView = imageInLink.findAncestor( isBlockImageView );
+
+			// There are two possible cases to consider here
+			//
+			// 1. A "root > ... > figure.image > a > img" structure.
+			// 2. A "root > ... > block > a > img" structure.
+			//
+			// but the latter should only be considered by this converter when the inline image plugin
+			// is NOT loaded in the editor (because otherwise, that would be a plain, linked inline image).
+			if ( isImageInlinePluginLoaded && !blockImageView ) {
 				return;
 			}
 
@@ -278,12 +296,12 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 			// At this stage we can assume that we have the `<image>` element.
 			// `nodeBefore` comes after conversion: `<a><img></a>`.
 			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
-			// See the body of the `upcastLink()` function.
+			// See the body of the `upcastLink( editor )` function.
 			const modelElement = data.modelCursor.nodeBefore || data.modelCursor.parent;
 
 			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
 		}, { priority: 'high' } );
-		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
+		// Using the same priority that `upcastLink( editor )` converter guarantees that the linked image was properly converted.
 	};
 }
 
