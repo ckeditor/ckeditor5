@@ -18,6 +18,6 @@ If you wish to bring back this restriction see {@link features/table#disallowing
 
 ## Disallowing nesting block quotes
 
-CKEditor v28.0.0 supports a block quote inserted into another block quote.
+Prior to version 28.0.0 inserting block quote into a block quote was not allowed.
 
 If you wish to bring back the old behavior see {@link features/block-quote#disallowing-nesting-block-quotes "Disallowing nesting block quotes"}.
