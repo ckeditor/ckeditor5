@@ -16,6 +16,7 @@ import LinkEditing from './linkediting';
 import { LINK_KEYSTROKE } from './utils';
 
 import linkIcon from '../theme/icons/link.svg';
+import { isImage } from '@ckeditor/ckeditor5-image/src/image/utils';
 
 /**
  * The link image UI plugin.
@@ -47,10 +48,9 @@ export default class LinkImageUI extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
+		// Prevent browser navigation when clicking a linked image.
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
-			const hasLink = isImageLinked( viewDocument.selection.getSelectedElement(), editor.plugins.get( 'Image' ) );
-
-			if ( hasLink ) {
+			if ( isSelectedLinkedImage( editor.model.document.selection ) ) {
 				data.preventDefault();
 			}
 		} );
@@ -91,9 +91,7 @@ export default class LinkImageUI extends Plugin {
 
 			// Show the actionsView or formView (both from LinkUI) on button click depending on whether the image is linked already.
 			this.listenTo( button, 'execute', () => {
-				const hasLink = isImageLinked( editor.editing.view.document.selection.getSelectedElement(), editor.plugins.get( 'Image' ) );
-
-				if ( hasLink ) {
+				if ( isSelectedLinkedImage( editor.model.document.selection ) ) {
 					plugin._addActionsView();
 				} else {
 					plugin._showUI( true );
@@ -105,16 +103,12 @@ export default class LinkImageUI extends Plugin {
 	}
 }
 
-// A helper function that checks whether the element is a linked image.
+// TODO
 //
-// @param {module:engine/model/element~Element} element
+// @param TODO
 // @returns {Boolean}
-function isImageLinked( element, image ) {
-	const isImage = element && image.isImageWidget( element );
+function isSelectedLinkedImage( selection ) {
+	const selectedModelElement = selection.getSelectedElement();
 
-	if ( !isImage ) {
-		return false;
-	}
-
-	return element.getChild( 0 ).is( 'element', 'a' );
+	return isImage( selectedModelElement ) && selectedModelElement.hasAttribute( 'linkHref' );
 }
