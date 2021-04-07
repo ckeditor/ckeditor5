@@ -8,35 +8,40 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import ImageLoadObserver from '../../src/image/imageloadobserver';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
-import { isImageWidget } from '../../src/image/utils';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageTypeCommand from '../../src/image/imagetypecommand';
 import InsertImageCommand from '../../src/image/insertimagecommand';
+import ImageCaption from '../../src/imagecaption';
+import ImageLoadObserver from '../../src/image/imageloadobserver';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
+import { isImageWidget } from '../../src/image/utils';
 
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ ImageInlineEditing, Paragraph ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-				view = editor.editing.view;
-				viewDocument = view.document;
-			} );
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( {
+			plugins: [ ImageInlineEditing, Paragraph ]
+		} );
+
+		model = editor.model;
+		doc = model.document;
+		view = editor.editing.view;
+		viewDocument = view.document;
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -109,7 +114,7 @@ describe( 'ImageInlineEditing', () => {
 		sinon.assert.calledOnce( spy );
 
 		await editor.destroy();
-		await element.remove();
+		element.remove();
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -625,6 +630,149 @@ describe( 'ImageInlineEditing', () => {
 					'</span></p>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'integration with the clipboard pipeline', () => {
+		let editorElement, editor, model, doc, view, viewDocument;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ ImageInlineEditing, ImageBlockEditing, ImageCaption, Clipboard, Paragraph ]
+			} );
+
+			model = editor.model;
+			doc = model.document;
+			view = editor.editing.view;
+			viewDocument = view.document;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should paste or drop a block image as inline in the middle of a non-empty paragraph', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'should not work if there are elements other than block images in the pipeline data', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure><img src="/assets/sample.png?id=B" />'
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f</paragraph>' +
+				'<image src="/assets/sample.png?id=A"></image>' +
+				'<paragraph><imageInline src="/assets/sample.png?id=B"></imageInline>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'should use targetRanges from the data when present (when dropping)', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+
+			const targetRange = model.createRange( model.createPositionAt( doc.getRoot().getChild( 1 ), 1 ) );
+			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+			const viewElement = viewDocument.getRoot().getChild( 1 );
+			const domNode = view.domConverter.mapViewToDom( viewElement );
+
+			viewDocument.fire( 'clipboardInput', {
+				method: 'drop',
+				domTarget: domNode,
+				target: viewElement,
+				dataTransfer,
+				targetRanges: [ targetViewRange ]
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph></paragraph><paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'should not interfere if dropped or pasted in the middle of a non-empty paragraph when the image has caption', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /><figcaption>abc</figcaption></figure>'
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f</paragraph>' +
+				'[<image src="/assets/sample.png"><caption>abc</caption></image>]' +
+				'<paragraph>oo</paragraph>'
+			);
+		} );
+
+		it( 'should not interfere if pasted or dropped in an empty paragraph', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<image src="/assets/sample.png"></image>]'
+			);
+		} );
+
+		it( 'should not interfere if pasted or dropped on another block widget', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure>'
+			} );
+
+			setModelData( model, '[<image src="/assets/sample.png?id=B"></image>]' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<image src="/assets/sample.png?id=A"></image>]'
+			);
+		} );
+
+		it( 'should preserve image attributes (such as alt) when converting to an inline image', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" alt="abc" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f<imageInline alt="abc" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+			);
 		} );
 	} );
 } );

@@ -5,10 +5,25 @@
 
 /* global console, document */
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
+
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+import Image from '../../src/image';
+import ImageEditing from '../../src/image/imageediting';
+import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageInlineEditing from '../../src/image/imageinlineediting';
+
 import {
 	toImageWidget,
 	isImageWidget,
@@ -20,20 +35,11 @@ import {
 	insertImage,
 	getViewImageFromWidget,
 	getImageWidgetAncestor,
+	isInlineImageView,
+	isBlockImageView,
+	determineImageTypeForInsertionAtSelection,
 	getImageTypeMatcher
 } from '../../src/image/utils';
-import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import ImageEditing from '../../src/image/imageediting';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Image from '../../src/image';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'image widget utils', () => {
 	let element, image, writer, viewDocument;
@@ -256,6 +262,68 @@ describe( 'image widget utils', () => {
 		it( 'should return false for null and undefined', () => {
 			expect( isBlockImage( null ) ).to.be.false;
 			expect( isBlockImage( undefined ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isInlineImageView()', () => {
+		it( 'should return false for the block image element', () => {
+			const element = writer.createContainerElement( 'figure', { class: 'image' } );
+
+			expect( isInlineImageView( element ) ).to.be.false;
+		} );
+
+		it( 'should return true for the inline view image element', () => {
+			const element = writer.createEmptyElement( 'img' );
+
+			expect( isInlineImageView( element ) ).to.be.true;
+		} );
+
+		it( 'should return false for other view element', () => {
+			const element = writer.createContainerElement( 'div' );
+
+			expect( isInlineImageView( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for null, undefined', () => {
+			expect( isInlineImageView() ).to.be.false;
+			expect( isInlineImageView( null ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isBlockImageView()', () => {
+		it( 'should return false for the inline image element', () => {
+			const element = writer.createEmptyElement( 'img' );
+
+			expect( isBlockImageView( element ) ).to.be.false;
+		} );
+
+		it( 'should return true for the block view image element', () => {
+			const element = writer.createContainerElement( 'figure', { class: 'image' } );
+
+			expect( isBlockImageView( element ) ).to.be.true;
+		} );
+
+		it( 'should return false for the figure without a proper class', () => {
+			const element = writer.createContainerElement( 'figure' );
+
+			expect( isBlockImageView( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for the non-figure with a proper class', () => {
+			const element = writer.createContainerElement( 'div', { class: 'image' } );
+
+			expect( isBlockImageView( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for other view element', () => {
+			const element = writer.createContainerElement( 'div' );
+
+			expect( isBlockImageView( element ) ).to.be.false;
+		} );
+
+		it( 'should return false for null, undefined', () => {
+			expect( isBlockImageView() ).to.be.false;
+			expect( isBlockImageView( null ) ).to.be.false;
 		} );
 	} );
 
@@ -607,6 +675,66 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
+	describe( 'determineImageTypeForInsertionAtSelection()', () => {
+		let editor, model, schema;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
+			} );
+
+			model = editor.model;
+			schema = model.schema;
+			schema.register( 'block', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'blockWidget', {
+				isObject: true,
+				allowIn: '$root'
+			} );
+			schema.register( 'inlineWidget', {
+				isObject: true,
+				allowIn: [ '$block' ]
+			} );
+
+			schema.extend( '$text', { allowIn: [ 'block', '$root' ] } );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'blockWidget', view: 'blockWidget' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'inlineWidget', view: 'inlineWidget' } );
+		} );
+
+		it( 'should return "image" when there is no selected block in the selection', () => {
+			setModelData( model, 'f[]oo' );
+
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+		} );
+
+		it( 'should return "image" when the selected block in the selection is empty', () => {
+			setModelData( model, '<block>[]</block>' );
+
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+		} );
+
+		it( 'should return "image" when the selected block is an object (a widget)', () => {
+			setModelData( model, '[<blockWidget></blockWidget>]' );
+
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+		} );
+
+		it( 'should return "imageInline" when selected block in the selection has some content', () => {
+			setModelData( model, '<block>[]a</block>' );
+
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+		} );
+
+		it( 'should return "imageInline" when an inline widget is selected', () => {
+			setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
+
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+		} );
+	} );
+
 	describe( 'getImageTypeMatcher()', () => {
 		let editor;
 
@@ -628,7 +756,7 @@ describe( 'image widget utils', () => {
 				}
 			};
 
-			it( 'should return a matcher patter for an img element if ImageBlockEditing plugin is not loaded', () => {
+			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
 				expect( getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
@@ -702,7 +830,7 @@ describe( 'image widget utils', () => {
 
 					it( 'should return a matcherPattern object if the element is an "image"', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						writer.appendChild( element, writer.createElement( 'figure' ) );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true,
@@ -732,7 +860,7 @@ describe( 'image widget utils', () => {
 
 					it( 'should return null if the element is an "image"', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						writer.appendChild( element, writer.createElement( 'figure' ) );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.be.null;
 					} );

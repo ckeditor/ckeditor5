@@ -7,7 +7,7 @@
  * @module image/imagecaption/utils
  */
 
-import { isBlockImage } from '../image/utils';
+import { isBlockImage, isBlockImageView } from '../image/utils';
 
 /**
  * Returns the caption model element from a given image element. Returns `null` if no caption is found.
@@ -54,10 +54,8 @@ export function getCaptionFromModelSelection( selection ) {
  * cannot be matched.
  */
 export function matchImageCaptionViewElement( element ) {
-	const parent = element.parent;
-
 	// Convert only captions for images.
-	if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'image' ) ) {
+	if ( element.name == 'figcaption' && isBlockImageView( element.parent ) ) {
 		return { name: true };
 	}
 

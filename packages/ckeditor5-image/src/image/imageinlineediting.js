@@ -8,9 +8,19 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import { UpcastWriter } from 'ckeditor5/src/engine';
 
-import { toImageWidget, createImageViewElement, getImageTypeMatcher } from './utils';
+import {
+	toImageWidget,
+	createImageViewElement,
+	getImageTypeMatcher,
+	getViewImageFromWidget,
+	determineImageTypeForInsertionAtSelection,
+	isBlockImageView
+} from './utils';
 import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
+
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 
@@ -31,7 +41,7 @@ export default class ImageInlineEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing ];
+		return [ ImageEditing, ClipboardPipeline ];
 	}
 
 	/**
@@ -47,8 +57,6 @@ export default class ImageInlineEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const t = editor.t;
-		const conversion = editor.conversion;
 
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'imageInline', {
@@ -57,6 +65,26 @@ export default class ImageInlineEditing extends Plugin {
 			allowWhere: '$text',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
+
+		this._setupConversion();
+
+		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
+			editor.commands.add( 'imageTypeInline', new ImageTypeCommand( this.editor, 'imageInline' ) );
+
+			this._setupClipboardIntegration();
+		}
+	}
+
+	/**
+	 * Configures conversion pipelines to support upcasting and downcasting
+	 * inline images (inline image widgets) and their attributes.
+	 *
+	 * @private
+	 */
+	_setupConversion() {
+		const editor = this.editor;
+		const t = editor.t;
+		const conversion = editor.conversion;
 
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
@@ -83,10 +111,74 @@ export default class ImageInlineEditing extends Plugin {
 				view: getImageTypeMatcher( 'imageInline', editor ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
+	}
 
-		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
-			editor.commands.add( 'imageTypeInline', new ImageTypeCommand( this.editor, 'imageInline' ) );
-		}
+	/**
+	 * Integrates the plugin with the clipboard pipeline.
+	 *
+	 * Idea is that the feature should recognize the user's intent when an **block** image is
+	 * pasted or dropped. If such an image is pasted/dropped into a non-empty block
+	 * (e.g. a paragraph with some text) it gets converted into an inline image on the fly.
+	 *
+	 * We assume this is the user's intent if they decided to put their image there.
+	 *
+	 * **Note**: If a block image has a caption, it will not be converted to an inline image
+	 * to avoid the confusion. Captions are added on purpose and they should never be lost
+	 * in the clipboard pipeline.
+	 *
+	 * See the `ImageBlockEditing` for the similar integration that works in the opposite direction.
+	 *
+	 * @private
+	 */
+	_setupClipboardIntegration() {
+		const editor = this.editor;
+		const model = editor.model;
+		const schema = model.schema;
+		const editingView = editor.editing.view;
+
+		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
+			const docFragmentChildren = Array.from( data.content.getChildren() );
+			let modelRange;
+
+			// Make sure only <figure class="image"></figure> elements are dropped or pasted. Otherwise, if there some other HTML
+			// mixed up, this should be handled as a regular paste.
+			if ( !docFragmentChildren.every( isBlockImageView ) ) {
+				return;
+			}
+
+			// When drag and dropping, data.targetRanges specifies where to drop because
+			// this is usually a different place than the current model selection (the user
+			// uses a drop marker to specify the drop location).
+			if ( data.targetRanges ) {
+				modelRange = editor.editing.mapper.toModelRange( data.targetRanges[ 0 ] );
+			}
+			// Pasting, however, always occurs at the current model selection.
+			else {
+				modelRange = model.document.selection.getFirstRange();
+			}
+
+			const selection = model.createSelection( modelRange );
+
+			// Convert block images into inline images only when pasting or dropping into non-empty blocks
+			// and when the block is not an object (e.g. pasting to replace another widget).
+			if ( determineImageTypeForInsertionAtSelection( schema, selection ) === 'imageInline' ) {
+				const writer = new UpcastWriter( editingView.document );
+
+				// Unwrap <figure class="image"><img .../></figure> -> <img ... />
+				// but <figure class="image"><img .../><figcaption>...</figcaption></figure> -> stays the same
+				const inlineViewImages = docFragmentChildren.map( blockViewImage => {
+					// If there are other children than <img>, this means that the block image
+					// has a caption or some other features and this kind of image should be
+					// pasted/dropped without modifications.
+					if ( blockViewImage.childCount === 1 ) {
+						return getViewImageFromWidget( blockViewImage );
+					} else {
+						return blockViewImage;
+					}
+				} );
+
+				data.content = writer.createDocumentFragment( inlineViewImages );
+			}
+		} );
 	}
 }
-

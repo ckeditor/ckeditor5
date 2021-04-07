@@ -113,6 +113,30 @@ export function isImage( modelElement ) {
 }
 
 /**
+ * Checks if the provided view element represents an inline image.
+ *
+ * Also, see {@link module:image/image/utils~isImageWidget}.
+ *
+ * @param {module:engine/view/element~Element} element
+ * @returns {Boolean}
+ */
+export function isInlineImageView( element ) {
+	return !!element && element.is( 'element', 'img' );
+}
+
+/**
+ * Checks if the provided view element represents a block image.
+ *
+ * Also, see {@link module:image/image/utils~isImageWidget}.
+ *
+ * @param {module:engine/view/element~Element} element
+ * @returns {Boolean}
+ */
+export function isBlockImageView( element ) {
+	return !!element && element.is( 'element', 'figure' ) && element.hasClass( 'image' );
+}
+
+/**
  * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionRange} method.
  *
  *		insertImage( model, { src: 'path/to/image.jpg' } );
@@ -182,7 +206,7 @@ export function isImageAllowed( editor ) {
  * @returns {module:engine/view/element~Element}
  */
 export function getViewImageFromWidget( figureView ) {
-	if ( figureView.is( 'element', 'img' ) ) {
+	if ( isInlineImageView( figureView ) ) {
 		return figureView;
 	}
 
@@ -196,7 +220,7 @@ export function getViewImageFromWidget( figureView ) {
 		}
 	}
 
-	return figureChildren.find( viewChild => viewChild.is( 'element', 'img' ) );
+	return figureChildren.find( isInlineImageView );
 }
 
 /**
@@ -247,15 +271,13 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 
 	return element => {
 		// Convert only images with src attribute.
-		if ( !element.is( 'element', 'img' ) || !element.hasAttribute( 'src' ) ) {
+		if ( !isInlineImageView( element ) || !element.hasAttribute( 'src' ) ) {
 			return null;
 		}
 
-		const imageType = element.findAncestor( ancestor =>
-			// Check if element is a figure and if its direct or subsequent child is an img element
-			// to exclude a table with an inline image inside.
-			ancestor.is( 'element', 'figure' ) && getViewImageFromWidget( ancestor )
-		) ? 'image' : 'imageInline';
+		// The <img> can be standalone, wrapped in <figure>...</figure> (ImageBlock plugin) or
+		// wrapped in <figure><a>...</a></figure> (LinkImage plugin).
+		const imageType = element.findAncestor( isBlockImageView ) ? 'image' : 'imageInline';
 
 		if ( imageType !== matchImageType ) {
 			return null;
@@ -263,6 +285,25 @@ export function getImageTypeMatcher( matchImageType, editor ) {
 
 		return { name: true, attributes: [ 'src' ] };
 	};
+}
+
+/**
+ * Considering the current model selection, it returns the name of the model image element
+ * (`'image'` or `'imageInline'`) that will make most sense from the UX perspective if a new
+ * image was inserted (also: uploaded, dropped, pasted) at that selection.
+ *
+ * The assumption is that inserting images into empty blocks or on other block widgets should
+ * produce block images. Inline images should be inserted in other cases, e.g. in paragraphs
+ * that already contain some text.
+ *
+ * @param {module:engine/model/schema~Schema} schema
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @returns {'image'|'imageInline'}
+ */
+export function determineImageTypeForInsertionAtSelection( schema, selection ) {
+	const firstBlock = first( selection.getSelectedBlocks() );
+
+	return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
@@ -344,9 +385,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 
 	// Try to replace the selected widget (e.g. another image).
 	if ( selectable.is( 'selection' ) ) {
-		const firstBlock = first( selectable.getSelectedBlocks() );
-
-		return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
+		return determineImageTypeForInsertionAtSelection( schema, selectable );
 	}
 
 	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';
