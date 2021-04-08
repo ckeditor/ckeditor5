@@ -5,7 +5,9 @@ category: features
 
 {@snippet features/build-table-source}
 
-The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents.
+The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents. Tables help organize the content in a distinct, visual way that stands out from the text and is more easily readable for certain types of information. They are perfect for listing, grouping, and otherwise organizing data sets or for providing information in a clear, efficient way. Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and and provide relief from large body texts.
+
+CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
 
 ## Demos
 
@@ -33,14 +35,14 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 ### Nesting tables
 
-CKEditor 5 allows nesting tables inside other table cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be configured and formatted just like a regular one.
+CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can formatted just like a regular one.
 
-Test this feature by adding a table in the section that was left blank at the bottom of the main table. To nest a table in another table's cell, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
+Test this feature by adding a table in the section that was left blank at the bottom of the main table. To nest a table, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
 
 {@snippet features/table-nesting}
 
 <info-box>
-	If for some reason you want to disallow nesting tables in your editor, see the {@link features/table#disallowing-nesting-tables corresponding section} to learn how to disable this functionality.
+	If for some reason you want to disallow nesting tables in your editor, see the {@link features/table#disallowing-nesting-tables disabling nesting tables} section to learn how to disable this functionality.
 </info-box>
 
 ## Table selection
