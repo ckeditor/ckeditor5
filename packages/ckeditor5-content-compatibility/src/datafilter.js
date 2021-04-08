@@ -117,9 +117,9 @@ export default class DataFilter {
 	 */
 	_registerElement( definition ) {
 		if ( definition.isInline ) {
-			this._defineInlineElement( definition );
+			this._registerInlineElement( definition );
 		} else if ( definition.isBlock ) {
-			this._defineBlockElement( definition );
+			this._registerBlockElement( definition );
 		} else {
 			/**
 			 * Only a definition marked as inline or block can be allowed.
@@ -142,7 +142,7 @@ export default class DataFilter {
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
-	_defineBlockElement( definition ) {
+	_registerBlockElement( definition ) {
 		const schema = this.editor.model.schema;
 
 		if ( !definition.isFeature ) {
@@ -152,10 +152,12 @@ export default class DataFilter {
 				return;
 			}
 
-			this._defineBlockElementSchema( definition );
+			this._registerBlockElementSchema( definition );
 			this._addBlockElementToElementConversion( definition );
 		}
 
+		// TODO So far we are not able to detect if feature converters has been already added,
+		// so this code may result in duplicated converters and additional conversion overheat.
 		this._addDisallowedAttributeConversion( definition );
 		this._addBlockElementAttributeConversion( definition );
 	}
@@ -168,7 +170,7 @@ export default class DataFilter {
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
-	_defineInlineElement( definition ) {
+	_registerInlineElement( definition ) {
 		const schema = this.editor.model.schema;
 
 		schema.extend( '$text', {
@@ -189,7 +191,7 @@ export default class DataFilter {
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
-	_defineBlockElementSchema( definition ) {
+	_registerBlockElementSchema( definition ) {
 		const schema = this.editor.model.schema;
 
 		schema.register( definition.model, definition.modelSchema );
@@ -206,7 +208,7 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Registers element to element converters for the given block element definition.
+	 * Adds element to element converters for the given block element definition.
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
@@ -233,7 +235,7 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Registers attribute converters for the given block element definition.
+	 * Adds attribute converters for the given block element definition.
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
@@ -276,7 +278,7 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Registers converters for the given inline element definition.
+	 * Adds converters for the given inline element definition.
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
@@ -328,7 +330,7 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Registers converters responsible for consuming disallowed view attributes.
+	 * Adds converters responsible for consuming disallowed view attributes.
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
