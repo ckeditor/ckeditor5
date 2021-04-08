@@ -63,7 +63,11 @@ export default class UploadImageCommand extends Command {
 	execute( options ) {
 		const files = toArray( options.file );
 		const selection = this.editor.model.document.selection;
-		const fileRepository = this.editor.plugins.get( FileRepository );
+
+		// In case of multiple files, each file (starting from the 2nd) will be inserted at a position that
+		// follows the previous one. That will move the selection and to stay on the safe side and make sure
+		// all images inherit all selection attributes, they are collected beforehand.
+		const selectionAttributes = Object.fromEntries( selection.getAttributes() );
 
 		files.forEach( ( file, index ) => {
 			const selectedElement = selection.getSelectedElement();
@@ -73,27 +77,30 @@ export default class UploadImageCommand extends Command {
 			if ( index && selectedElement && isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
-				uploadImage( this.editor, fileRepository, file, position );
+				this._uploadImage( file, selectionAttributes, position );
 			} else {
-				uploadImage( this.editor, fileRepository, file );
+				this._uploadImage( file, selectionAttributes );
 			}
 		} );
 	}
-}
 
-// Handles uploading single file.
-//
-// @param {module:core/editor/editor~Editor} editor
-// @param {module:upload/filerepository~FileRepository} fileRepository
-// @param {File} file
-// @param {module:engine/model/position~Position} position
-function uploadImage( editor, fileRepository, file, position ) {
-	const loader = fileRepository.createLoader( file );
+	/**
+	 * Handles uploading single file.
+	 *
+	 * @private
+	 * @param {File} file
+	 * @param {Object} attributes
+	 * @param {module:engine/model/position~Position} position
+	 */
+	_uploadImage( file, attributes, position ) {
+		const fileRepository = this.editor.plugins.get( FileRepository );
+		const loader = fileRepository.createLoader( file );
 
-	// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
-	if ( !loader ) {
-		return;
+		// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
+		if ( !loader ) {
+			return;
+		}
+
+		insertImage( this.editor, { ...attributes, uploadId: loader.id }, position );
 	}
-
-	insertImage( editor, { uploadId: loader.id }, position );
 }

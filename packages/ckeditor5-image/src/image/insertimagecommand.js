@@ -86,6 +86,7 @@ export default class InsertImageCommand extends Command {
 	execute( options ) {
 		const sources = toArray( options.source );
 		const selection = this.editor.model.document.selection;
+		const selectionAttributes = Object.fromEntries( selection.getAttributes() );
 
 		sources.forEach( ( src, index ) => {
 			const selectedElement = selection.getSelectedElement();
@@ -95,9 +96,9 @@ export default class InsertImageCommand extends Command {
 			if ( index && selectedElement && isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
-				insertImage( this.editor, { src }, position );
+				insertImage( this.editor, { src, ...selectionAttributes }, position );
 			} else {
-				insertImage( this.editor, { src } );
+				insertImage( this.editor, { src, ...selectionAttributes } );
 			}
 		} );
 	}

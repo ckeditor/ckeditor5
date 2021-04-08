@@ -118,6 +118,7 @@ export default class AutoImage extends Plugin {
 		// TODO: Use a marker instead of LiveRange & LivePositions.
 		const urlRange = new LiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
+		const selectionAttributes = Object.fromEntries( editor.model.document.selection.getAttributes() );
 
 		let src = '';
 
@@ -166,7 +167,7 @@ export default class AutoImage extends Plugin {
 					insertionPosition = this._positionToInsert.toPosition();
 				}
 
-				insertImage( editor, { src }, insertionPosition );
+				insertImage( editor, { ...selectionAttributes, src }, insertionPosition );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;

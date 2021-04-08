@@ -52,8 +52,20 @@ export function isImageWidget( viewElement ) {
 export function getSelectedImageWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isImageWidget( viewElement ) ) {
-		return viewElement;
+	if ( viewElement ) {
+		if ( isImageWidget( viewElement ) ) {
+			return viewElement;
+		}
+		// If a selected inline image widget is the only child of a link, the selection will encompass
+		// that link. But this still counts as a selected image widget.
+		// [<a href="..."><span class="image-inline ck-widget ck-widget_selected"><img ... /></span></a>]
+		else if ( viewElement.is( 'element', 'a' ) && viewElement.childCount === 1 ) {
+			const firstChild = viewElement.getChild( 0 );
+
+			if ( firstChild.is( 'element' ) && isImageWidget( firstChild ) ) {
+				return firstChild;
+			}
+		}
 	}
 
 	return null;
@@ -147,6 +159,9 @@ export function isBlockImageView( element ) {
  * @param {module:engine/model/selection~Selectable} [selectable] Place to insert the image. If not specified,
  * the {@link module:widget/utils~findOptimalInsertionRange} logic will be applied for the block images
  * and `model.document.selection` for the inline images.
+ *
+ * **Note**: If `selectable` is passed, this helper will not be able to set selection attributes (such as `linkHref`)
+ * and apply them to the new image. In this case, make sure all selection attributes are passed in `attributes`.
  * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
  * it will be determined automatically depending of editor config or place of the insertion.
  */
@@ -156,14 +171,18 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 
 	imageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
 
+	// Mix declarative attributes with selection attributes because the new image should "inherit"
+	// the latter for best UX. For instance, inline images inserted into existing links
+	// should not split them. To do that, they need to have "linkHref" inherited from the selection.
+	attributes = {
+		...Object.fromEntries( selection.getAttributes() ),
+		...attributes
+	};
+
 	for ( const attributeName in attributes ) {
 		if ( !model.schema.checkAttribute( imageType, attributeName ) ) {
 			delete attributes[ attributeName ];
 		}
-	}
-
-	if ( selection.hasAttribute( 'linkHref' ) ) {
-		attributes.linkHref = selection.getAttribute( 'linkHref' );
 	}
 
 	model.change( writer => {
