@@ -14,7 +14,7 @@ import { modelTable } from './_utils/utils';
 
 import TableUtils from '../src/tableutils';
 
-describe( 'TableUtils', () => {
+describe.only( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
 
 	testUtils.createSinonSandbox();
@@ -283,6 +283,80 @@ describe( 'TableUtils', () => {
 				[ '', '' ],
 				[ '', '' ]
 			] ) );
+		} );
+
+		// TODO: Should throw error when options.at is larger than the amount of rows in the table.
+		it( 'should insert rows at the end of a table', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			] ) );
+		} );
+
+		it( 'should insert rows into a table with a non-row element', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
 		} );
 
 		describe( 'with copyStructureFrom enabled', () => {

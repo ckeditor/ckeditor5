@@ -7,6 +7,7 @@
  * @module table/tableutils
  */
 
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from 'ckeditor5/src/core';
 
 import TableWalker from './tablewalker';
@@ -152,6 +153,19 @@ export default class TableUtils extends Plugin {
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
+
+		if ( insertAt > rows ) {
+			/**
+			 * The `options.at` points at a row position that does not exist.
+			 *
+			 * @error tableutils-insertrows-insert-out-of-range
+			 */
+			throw new CKEditorError(
+				'tableutils-insertrows-insert-out-of-range',
+				this,
+				{ options }
+			);
+		}
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) || 0;
