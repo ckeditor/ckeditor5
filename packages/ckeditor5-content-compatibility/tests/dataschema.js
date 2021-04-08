@@ -194,9 +194,9 @@ describe( 'DataSchema', () => {
 		}
 	} );
 
-	describe( 'extendBlockElement()', () => {
+	describe( 'registerBlockElementFeature()', () => {
 		it( 'should register proper definition', () => {
-			dataSchema.extendBlockElement( { model: 'paragraph', view: 'p' } );
+			dataSchema.registerBlockElementFeature( { model: 'paragraph', view: 'p' } );
 
 			const result = dataSchema.getDefinitionsForView( 'p' );
 
@@ -204,14 +204,14 @@ describe( 'DataSchema', () => {
 				model: 'paragraph',
 				view: 'p',
 				isBlock: true,
-				extend: true
+				isFeature: true
 			} ] );
 		} );
 
 		it( 'should use registerBlockElement()', () => {
 			const spy = sinon.spy( dataSchema, 'registerBlockElement' );
 
-			dataSchema.extendBlockElement( { model: 'paragraph', view: 'p' } );
+			dataSchema.registerBlockElementFeature( { model: 'paragraph', view: 'p' } );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
