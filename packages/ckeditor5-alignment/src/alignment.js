@@ -82,7 +82,7 @@ export default class Alignment extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * By default the alignment is set inline using the `text-align` CSS property. To further customize the alignment
+ * By default the alignment is set inline using the `text-align` CSS property. To further customize the alignment,
  * you can provide names of classes for each alignment option using the `className` property.
  *
  * **Note:** Once you define the `className` property for one option, you need to specify it for all other options.
