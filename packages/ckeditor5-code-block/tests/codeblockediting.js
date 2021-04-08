@@ -734,6 +734,26 @@ describe( 'CodeBlockEditing', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		it( 'should convert markers inside pre > code', () => {
+			editor.conversion.for( 'editingDowncast' ).markerToElement( { view: 'group', model: 'group' } );
+
+			setModelData( model,
+				'<codeBlock language="plaintext">[]Foo</codeBlock>'
+			);
+
+			model.change( writer => {
+				const range = model.createRangeIn( model.document.getRoot().getChild( 0 ) );
+
+				writer.addMarker( 'group', { range, usingOperation: false } );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false">' +
+					'<code class="language-plaintext">[]<group></group>Foo<group></group></code>' +
+				'</pre>'
+			);
+		} );
 	} );
 
 	describe( 'data pipeline m -> v conversion ', () => {
@@ -866,6 +886,28 @@ describe( 'CodeBlockEditing', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		it( 'should convert markers inside pre > code', () => {
+			editor.conversion.for( 'downcast' ).markerToData( { model: 'group' } );
+
+			setModelData( model,
+				'<codeBlock language="plaintext">[]Foo</codeBlock>'
+			);
+
+			model.change( writer => {
+				const range = model.createRangeIn( model.document.getRoot().getChild( 0 ) );
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<pre>' +
+					'<code class="language-plaintext">' +
+						'<group-start name="foo:bar:baz"></group-start>Foo<group-end name="foo:bar:baz"></group-end>' +
+					'</code>' +
+				'</pre>'
+			);
+		} );
 	} );
 
 	describe( 'data pipeline v -> m conversion ', () => {
@@ -946,6 +988,31 @@ describe( 'CodeBlockEditing', () => {
 			editor.setData( '<pre><code>&lt;div&gt;&lt;p&gt;Foo&apos;s&amp;&quot;bar&quot;&lt;/p&gt;&lt;/div&gt;</code></pre>' );
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]<div><p>Foo\'s&"bar"</p></div></codeBlock>' );
+		} );
+
+		it( 'should preserve markers inside pre > code', () => {
+			editor.conversion.for( 'upcast' ).dataToMarker( { view: 'group' } );
+
+			editor.setData(
+				'<pre>' +
+					'<code>' +
+						'<pre>' +
+							'<group-start name="foo:id"></group-start>' +
+							'<code>Bar</code>' +
+							'<group-end name="foo:id"></group-end>' +
+						'</pre>' +
+					'</code>' +
+				'</pre>'
+			);
+
+			expect( model.markers.has( 'group:foo:id' ) ).to.be.true;
+
+			const marker = model.markers.get( 'group:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0, 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 0, 3 ] );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Bar</codeBlock>' );
 		} );
 
 		it( 'should be overridable', () => {

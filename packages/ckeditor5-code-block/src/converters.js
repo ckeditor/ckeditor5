@@ -7,10 +7,7 @@
  * @module code-block/converters
  */
 
-import {
-	rawSnippetTextToModelDocumentFragment,
-	getPropertyAssociation
-} from './utils';
+import { getPropertyAssociation } from './utils';
 
 /**
  * A model-to-view (both editing and data) converter for the `codeBlock` element.
@@ -120,11 +117,11 @@ export function modelToDataViewSoftBreakInsertion( model ) {
  *
  * Sample input:
  *
- *		<pre><code class="language-javascript">foo();\nbar();</code></pre>
+ *		<pre><code class="language-javascript">foo();bar();</code></pre>
  *
  * Sample output:
  *
- *		<codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
+ *		<codeBlock language="javascript">foo();bar();</codeBlock>
  *
  * @param {module:engine/view/view~View} editingView
  * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} languageDefs The normalized language
@@ -148,6 +145,11 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 		const viewChild = viewItem.getChild( 0 );
 
 		if ( !viewChild || !viewChild.is( 'element', 'code' ) ) {
+			return;
+		}
+
+		// In case of nested `<pre>` we don't want to convert to another code block.
+		if ( data.modelCursor.findAncestor( 'codeBlock' ) ) {
 			return;
 		}
 
@@ -183,15 +185,7 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 			writer.setAttribute( 'language', defaultLanguageName, codeBlock );
 		}
 
-		// HTML elements are invalid content for `<code>`.
-		// Read only text nodes.
-		const textData = [ ...editingView.createRangeIn( viewChild ) ]
-			.filter( current => current.type === 'text' )
-			.map( ( { item } ) => item.data )
-			.join( '' );
-		const fragment = rawSnippetTextToModelDocumentFragment( writer, textData );
-
-		writer.append( fragment, codeBlock );
+		conversionApi.convertChildren( viewChild, codeBlock );
 
 		// Let's try to insert code block.
 		if ( !conversionApi.safeInsert( codeBlock, data.modelCursor ) ) {
@@ -202,5 +196,58 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 		consumable.consume( viewChild, { name: true } );
 
 		conversionApi.updateConversionResult( codeBlock, data );
+	};
+}
+
+/**
+ * A view-to-model converter for new line characters in `<pre>`.
+ *
+ * Sample input:
+ *
+ *		<pre><code class="language-javascript">foo();\nbar();</code></pre>
+ *
+ * Sample output:
+ *
+ *		<codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
+ *
+ * @returns {Function} Returns a conversion callback.
+ */
+export function dataViewToModelTextNewlinesInsertion() {
+	return ( evt, data, { consumable, writer } ) => {
+		let position = data.modelCursor;
+
+		// When node is already converted then do nothing.
+		if ( !consumable.test( data.viewItem ) ) {
+			return;
+		}
+
+		// When not inside `codeBlock` then do nothing.
+		if ( !position.findAncestor( 'codeBlock' ) ) {
+			return;
+		}
+
+		consumable.consume( data.viewItem );
+
+		const text = data.viewItem.data;
+		const textLines = text.split( '\n' ).map( data => writer.createText( data ) );
+		const lastLine = textLines[ textLines.length - 1 ];
+
+		for ( const node of textLines ) {
+			writer.insert( node, position );
+			position = position.getShiftedBy( node.offsetSize );
+
+			if ( node !== lastLine ) {
+				const softBreak = writer.createElement( 'softBreak' );
+
+				writer.insert( softBreak, position );
+				position = writer.createPositionAfter( softBreak );
+			}
+		}
+
+		data.modelRange = writer.createRange(
+			data.modelCursor,
+			position
+		);
+		data.modelCursor = position;
 	};
 }
