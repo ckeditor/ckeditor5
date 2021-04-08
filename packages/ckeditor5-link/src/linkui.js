@@ -624,6 +624,15 @@ export default class LinkUI extends Plugin {
 		if ( selection.isCollapsed ) {
 			return findLinkElementAncestor( selection.getFirstPosition() );
 		} else {
+			// The link element is not fully selected when there's an element directly inside of it, for instance:
+			//
+			// [<a href="..."><span class="image-inline ck-widget ck-widget_selected"><img ... /></span></a>]
+			//
+			// This is not a selected image but a selected inline (image) widget instead.
+			if ( selection.getSelectedElement() ) {
+				return null;
+			}
+
 			// The range for fully selected link is usually anchored in adjacent text nodes.
 			// Trim it to get closer to the actual link element.
 			const range = selection.getFirstRange().getTrimmed();
