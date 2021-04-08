@@ -31,6 +31,18 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 	By default, table styling tools are not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
+### Nesting tables
+
+CKEditor 5 allows nesting tables inside other table cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be configured and formatted just like a regular one.
+
+Test this feature by adding a table in the section that was left blank at the bottom of the main table. To nest a table in another table's cell, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
+
+{@snippet features/table-nesting}
+
+<info-box>
+	If for some reason you want to disallow nesting tables in your editor, see the {@link features/table#disallowing-nesting-tables corresponding section} to learn how to disable this functionality.
+</info-box>
+
 ## Table selection
 
 The {@link module:table/tableselection~TableSelection} plugin introduces support for the custom selection system for tables that lets you:
@@ -338,6 +350,9 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+<info-box>
+	Check the {@link framework/guides/creating-simple-plugin plugin development guide} if you need more information about the technical side of this solution.
+</info-box>
 
 ## Common API
 
