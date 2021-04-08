@@ -6,6 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -21,7 +22,7 @@ describe( 'DataFilter', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, FontColorEditing ]
+				plugins: [ Paragraph, FontColorEditing, ListEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -382,16 +383,12 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should only set attributes on existing model range', () => {
-			dataFilter.allowElement( { name: 'p' } );
-			dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': 'foo' } } );
+			dataSchema.registerBlockElementFeature( { view: 'xyz', model: 'modelXyz' } );
 
-			editor.conversion.for( 'upcast' ).add( dispatcher => {
-				dispatcher.on( 'element:p', ( evt, data ) => {
-					data.modelRange = null;
-				} );
-			} );
+			dataFilter.allowElement( { name: 'xyz' } );
+			dataFilter.allowAttributes( { name: 'xyz', attributes: { 'data-foo': 'foo' } } );
 
-			editor.setData( '<p data-foo="foo">foo</p>' );
+			editor.setData( '<xyz>foo</xyz>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>foo</paragraph>',
