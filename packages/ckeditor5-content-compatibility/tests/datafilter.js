@@ -381,11 +381,15 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<section><p>foo</p></section>' );
 		} );
 
-		it( 'should only set attributes on existing model range', () => {
+		it( 'should not convert attributes if the model schema item definition is not registered', () => {
 			dataSchema.registerBlockElementFeature( { view: 'xyz', model: 'modelXyz' } );
 
 			dataFilter.allowElement( { name: 'xyz' } );
 			dataFilter.allowAttributes( { name: 'xyz', attributes: { 'data-foo': 'foo' } } );
+
+			// We are not registering model schema anywhere, to check if upcast
+			// converter will be able to detect this case.
+			// editor.model.schema.register( 'modelXyz', { ... } );
 
 			editor.setData( '<xyz>foo</xyz>' );
 
