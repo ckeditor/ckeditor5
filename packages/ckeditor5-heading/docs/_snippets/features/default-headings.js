@@ -30,7 +30,10 @@ ClassicEditor
 				editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label && item.buttonView.label.startsWith( 'Heading' )
 			),
 			text: 'Click to change heading level.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-start'
+			}
 		} );
 	} )
 	.catch( err => {
