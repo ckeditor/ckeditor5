@@ -88,6 +88,13 @@ export default class TableProperties extends Plugin {
  * 	 * `height` – sets the table height
  * 	 * `width` – sets the table width
  *
+ * 	 The {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} plugin defines the default table
+ * 	 properties as specified below:
+ *
+ *		{
+ *			"alignment": "center"
+ *		}
+ *
  * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
  * allowing users to pick colors in a more convenient way.
