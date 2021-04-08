@@ -67,13 +67,6 @@ export default class MediaRegistry {
 		 * @member {Array}
 		 */
 		this.providerDefinitions = providerDefinitions;
-
-		/**
-		 * The view element name for newly added media embed.
-		 *
-		 * @member {String}
-		 */
-		this.elementName = config.elementName;
 	}
 
 	/**
