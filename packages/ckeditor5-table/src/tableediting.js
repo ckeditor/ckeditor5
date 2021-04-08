@@ -84,13 +84,6 @@ export default class TableEditing extends Plugin {
 		// Allow all $block content inside a table cell.
 		schema.extend( '$block', { allowIn: 'tableCell' } );
 
-		// Disallow a table in a table.
-		schema.addChildCheck( ( context, childDefinition ) => {
-			if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
-				return false;
-			}
-		} );
-
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 

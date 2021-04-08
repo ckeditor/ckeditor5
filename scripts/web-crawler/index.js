@@ -19,6 +19,7 @@ const { createSpinner, getProgressHandler } = require( './spinner' );
 
 const {
 	DEFAULT_TIMEOUT,
+	DEFAULT_RESPONSIVENESS_CHECK_TIMEOUT,
 	DEFAULT_REMAINING_ATTEMPTS,
 	ERROR_TYPES,
 	PATTERN_TYPE_TO_ERROR_TYPE_MAP,
@@ -242,12 +243,20 @@ async function openLink( browser, { baseUrl, link, foundLinks, exclusions } ) {
 			} );
 		}
 
-		await page.close();
+		const isResponding = await isPageResponding( page );
 
-		return {
-			errors,
-			links: []
-		};
+		// Exit immediately and do not try to call any function in the context of the page, that is not responding or if it has not been
+		// opened. However, once the page has been opened (its URL is the same as the one requested), continue as usual and do not close
+		// the page yet, because the page may contain error exclusions, that should be taken into account. Such a case can happen when,
+		// for example, the `load` event was not fired because the external resource was not loaded yet.
+		if ( !isResponding || page.url() !== link.url ) {
+			await page.close();
+
+			return {
+				errors,
+				links: []
+			};
+		}
 	}
 
 	// Create patterns from meta tags to ignore errors.
@@ -537,6 +546,19 @@ function registerErrorHandlers( page, { link, onError } ) {
  */
 function isNavigationRequest( request ) {
 	return request.isNavigationRequest() && request.frame().parentFrame() === null;
+}
+
+/**
+ * Checks, if the page is not hung by trying to evaluate a function within the page context in defined time.
+ *
+ * @param {Object} page The page instance from Puppeteer.
+ * @returns {Promise.<Boolean>}
+ */
+async function isPageResponding( page ) {
+	return Promise.race( [
+		page.title(),
+		new Promise( ( resolve, reject ) => setTimeout( () => reject(), DEFAULT_RESPONSIVENESS_CHECK_TIMEOUT ) )
+	] ).then( () => true ).catch( () => false );
 }
 
 /**

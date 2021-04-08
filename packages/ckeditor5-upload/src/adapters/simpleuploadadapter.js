@@ -174,7 +174,14 @@ class Adapter {
 				return reject( response && response.error && response.error.message ? response.error.message : genericErrorText );
 			}
 
-			resolve( response.url ? { default: response.url } : response.urls );
+			const urls = response.url ? { default: response.url } : response.urls;
+
+			// Resolve with the normalized `urls` property and pass the rest of the response
+			// to allow customizing the behavior of features relying on the upload adapters.
+			resolve( {
+				...response,
+				urls
+			} );
 		} );
 
 		// Upload progress when it is supported.

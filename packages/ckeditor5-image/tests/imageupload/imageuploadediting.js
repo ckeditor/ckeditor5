@@ -25,6 +25,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import { modelToViewAttributeConverter } from '../../src/image/converters';
 
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
@@ -381,9 +382,9 @@ describe( 'ImageUploadEditing', () => {
 			tryExpect( done, () => {
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
-						// Rendering the image data is left to a upload progress converter.
-						'<img></img>' +
-						'</figure>]' +
+					// Rendering the image data is left to a upload progress converter.
+					'<img></img>' +
+					'</figure>]' +
 					'<p>foo bar</p>'
 				);
 
@@ -396,25 +397,46 @@ describe( 'ImageUploadEditing', () => {
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
-	it( 'should replace read data with server response once it is present', done => {
+	it( 'should replace read data with server response once it is present', async () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
 
-		model.document.once( 'change', () => {
-			model.document.once( 'change', () => {
-				tryExpect( done, () => {
-					expect( getViewData( view ) ).to.equal(
-						'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
-					);
-					expect( loader.status ).to.equal( 'idle' );
-				} );
-			}, { priority: 'lowest' } );
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
 
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
 			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
 		} );
 
-		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
+		);
+		expect( loader.status ).to.equal( 'idle' );
+	} );
+
+	it( 'should support adapter response with the normalized `urls` property', async () => {
+		const file = createNativeFileMock();
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { urls: { default: 'image.png' } } ) );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
+		);
+		expect( loader.status ).to.equal( 'idle' );
 	} );
 
 	it( 'should fire notification event in case of error', done => {
@@ -605,7 +627,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 	} );
 
-	it( 'should create responsive image if server return multiple images', done => {
+	it( 'should create responsive image if the server returns multiple images', done => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'uploadImage', { file } );
@@ -626,6 +648,162 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+	} );
+
+	describe( 'uploadComplete event', () => {
+		it( 'should be fired when the upload adapter resolves with the image data', async () => {
+			const file = createNativeFileMock();
+			setModelData( model, '<paragraph>[]foo bar</paragraph>' );
+
+			const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+			const uploadCompleteSpy = sinon.spy();
+
+			imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
+
+			editor.execute( 'uploadImage', { file } );
+
+			await new Promise( res => {
+				model.document.once( 'change', res );
+				loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+			} );
+
+			sinon.assert.notCalled( uploadCompleteSpy );
+
+			await new Promise( res => {
+				model.document.once( 'change', res, { priority: 'lowest' } );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
+			} );
+
+			sinon.assert.calledOnce( uploadCompleteSpy );
+
+			const eventArgs = uploadCompleteSpy.firstCall.args[ 1 ];
+
+			expect( eventArgs ).to.be.an( 'object' );
+			expect( eventArgs.imageElement.is( 'model:element', 'image' ) ).to.be.true;
+			expect( eventArgs.data ).to.deep.equal( { default: 'image.png' } );
+		} );
+
+		it( 'should allow modifying the image element once the original image is uploaded', async () => {
+			const file = createNativeFileMock();
+			setModelData( model, '<paragraph>[]foo bar</paragraph>' );
+
+			editor.model.schema.extend( 'image', { allowAttributes: 'data-original' } );
+
+			editor.conversion.for( 'downcast' )
+				.add( modelToViewAttributeConverter( 'data-original' ) );
+
+			editor.conversion.for( 'upcast' )
+				.attributeToAttribute( {
+					view: {
+						name: 'img',
+						key: 'data-original'
+					},
+					model: 'data-original'
+				} );
+
+			const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+			let batch;
+
+			imageUploadEditing.on( 'uploadComplete', ( evt, { imageElement, data } ) => {
+				editor.model.change( writer => {
+					writer.setAttribute( 'data-original', data.originalUrl, imageElement );
+					batch = writer.batch;
+				} );
+			} );
+
+			editor.execute( 'uploadImage', { file } );
+
+			await new Promise( res => {
+				model.document.once( 'change', res );
+				loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+			} );
+
+			await new Promise( res => {
+				model.document.once( 'change', res, { priority: 'lowest' } );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { originalUrl: 'original.jpg', default: 'image.jpg' } ) );
+			} );
+
+			// Make sure the custom attribute was set in the same transparent batch as the default handling (setting src and status).
+			expect( batch.type ).to.equal( 'transparent' );
+			expect( batch.operations.length ).to.equal( 3 );
+
+			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );
+			expect( batch.operations[ 0 ].key ).to.equal( 'uploadStatus' );
+			expect( batch.operations[ 0 ].newValue ).to.equal( 'complete' );
+
+			expect( batch.operations[ 1 ].type ).to.equal( 'addAttribute' );
+			expect( batch.operations[ 1 ].key ).to.equal( 'data-original' );
+			expect( batch.operations[ 1 ].newValue ).to.equal( 'original.jpg' );
+
+			expect( batch.operations[ 2 ].type ).to.equal( 'addAttribute' );
+			expect( batch.operations[ 2 ].key ).to.equal( 'src' );
+			expect( batch.operations[ 2 ].newValue ).to.equal( 'image.jpg' );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<image data-original="original.jpg" src="image.jpg"></image>]<paragraph>foo bar</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'[<figure class="ck-widget image" contenteditable="false">' +
+					'<img data-original="original.jpg" src="image.jpg"></img>' +
+				'</figure>]' +
+				'<p>foo bar</p>'
+			);
+		} );
+
+		it( 'should allow stopping the original listener that sets image attributes based on the data', async () => {
+			const file = createNativeFileMock();
+			setModelData( model, '<paragraph>[]foo bar</paragraph>' );
+
+			const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+			let batch;
+
+			imageUploadEditing.on( 'uploadComplete', ( evt, { imageElement } ) => {
+				evt.stop();
+
+				model.change( writer => {
+					writer.setAttribute( 'src', 'foo.jpg', imageElement );
+					batch = writer.batch;
+				} );
+			} );
+
+			editor.execute( 'uploadImage', { file } );
+
+			await new Promise( res => {
+				model.document.once( 'change', res );
+				loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+			} );
+
+			await new Promise( res => {
+				model.document.once( 'change', res, { priority: 'lowest' } );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess(
+					{ default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' }
+				) );
+			} );
+
+			// Make sure the custom attribute was set in the same transparent batch as the default handling (setting src and status).
+			expect( batch.type ).to.equal( 'transparent' );
+			expect( batch.operations.length ).to.equal( 2 );
+
+			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );
+			expect( batch.operations[ 0 ].key ).to.equal( 'uploadStatus' );
+			expect( batch.operations[ 0 ].newValue ).to.equal( 'complete' );
+
+			expect( batch.operations[ 1 ].type ).to.equal( 'addAttribute' );
+			expect( batch.operations[ 1 ].key ).to.equal( 'src' );
+			expect( batch.operations[ 1 ].newValue ).to.equal( 'foo.jpg' );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<image src="foo.jpg"></image>]<paragraph>foo bar</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'[<figure class="ck-widget image" contenteditable="false">' +
+					'<img src="foo.jpg"></img>' +
+				'</figure>]' +
+				'<p>foo bar</p>'
+			);
+		} );
 	} );
 
 	it( 'should prevent from browser redirecting when an image is dropped on another image', () => {
