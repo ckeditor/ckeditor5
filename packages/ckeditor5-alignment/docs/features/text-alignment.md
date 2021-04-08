@@ -50,7 +50,7 @@ ClassicEditor
 
 ### Using classes instead of inline style
 
-By default alignment is set inline using `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the  `className` property in `config.alignment.options` and style them by using a stylesheet.
+By default, alignment is set inline using the `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the `className` property in `config.alignment.options` and style them by using a stylesheet.
 
 <info-box>
 	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
