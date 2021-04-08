@@ -32,27 +32,26 @@ const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable'
  *		};
  *
  * @param {Array.<Array.<String>|Object>} tableData
- * @param {Object} [attributes={}] Optional table attributes.
- * @param {Number} attributes.headingRows Number of heading rows.
- * @param {Number} attributes.headingColumns Number of heading columns.
- * @param {Object} attributes.tableProperties Default styles for the table.
- * @param {Object} attributes.cellProperties Default styles for all cells.
+ * @param {Object} [options={}] Optional table attributes. Supports {@link module:table/table~TableConfig#tableProperties}.
+ * @param {Number} options.headingRows Number of heading rows.
+ * @param {Number} options.headingColumns Number of heading columns.
+ * @param {module:table/table~TableConfig#tableCellProperties} options.cellProperties Properties for all created cells.
  *
  * @returns {String}
  */
-export function modelTable( tableData, attributes = {} ) {
+export function modelTable( tableData, options = {} ) {
 	const tableRows = makeRows( tableData, {
 		cellElement: 'tableCell',
 		rowElement: 'tableRow',
 		headingElement: 'tableCell',
 		wrappingElement: 'paragraph',
 		enforceWrapping: true,
-		cellProperties: attributes.cellProperties
+		cellProperties: options.cellProperties
 	} );
 
-	delete attributes.cellProperties;
+	delete options.cellProperties;
 
-	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
+	return `<table${ formatAttributes( options ) }>${ tableRows }</table>`;
 }
 
 /**
