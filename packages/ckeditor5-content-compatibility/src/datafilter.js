@@ -143,7 +143,9 @@ export default class DataFilter {
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_defineBlockElement( definition ) {
-		if ( !definition.isFeature ) {
+		const schema = this.editor.model.schema;
+
+		if ( !definition.isFeature && !schema.isRegistered( definition.model ) ) {
 			this._defineBlockElementSchema( definition );
 			this._addBlockElementToElementConversion( definition );
 		}
@@ -183,10 +185,6 @@ export default class DataFilter {
 	 */
 	_defineBlockElementSchema( definition ) {
 		const schema = this.editor.model.schema;
-
-		if ( schema.isRegistered( definition.model ) ) {
-			return;
-		}
 
 		schema.register( definition.model, definition.modelSchema );
 

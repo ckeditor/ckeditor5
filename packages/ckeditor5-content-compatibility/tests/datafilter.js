@@ -398,6 +398,22 @@ describe( 'DataFilter', () => {
 				attributes: {}
 			} );
 		} );
+
+		it( 'should not register converters if element definition was already registered', () => {
+			dataSchema.registerBlockElement( {
+				model: 'htmlXyz',
+				view: 'xyz',
+				modelSchema: { inheritAllFrom: '$block' }
+			} );
+
+			editor.model.schema.register( 'htmlXyz', { inheritAllFrom: '$block' } );
+
+			dataFilter.allowElement( { name: 'xyz' } );
+
+			editor.setData( '<xyz>foo</xyz>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+		} );
 	} );
 
 	describe( 'inline', () => {
