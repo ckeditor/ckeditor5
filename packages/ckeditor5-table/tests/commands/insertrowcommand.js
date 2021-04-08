@@ -346,7 +346,7 @@ describe( 'InsertRowCommand', () => {
 						expect( insertRowsStub.firstCall.args[ 1 ] ).to.deep.equal( {
 							at: 1,
 							copyStructureFromAbove: true,
-							defaultCellProperties: {
+							cellProperties: {
 								horizontalAlignment: 'center',
 								verticalAlignment: 'middle'
 							}
@@ -368,7 +368,7 @@ describe( 'InsertRowCommand', () => {
 					// Apply default properties for the created table.
 					setData( model, modelTable( [
 						[ '11[]', '12' ]
-					], { defaultCellProperties: defaultProperties } ) );
+					], { cellProperties: defaultProperties } ) );
 
 					command.execute();
 
@@ -376,7 +376,7 @@ describe( 'InsertRowCommand', () => {
 						modelTable( [
 							[ '11[]', '12' ],
 							[ '', '' ]
-						], { defaultCellProperties: defaultProperties } )
+						], { cellProperties: defaultProperties } )
 					);
 				} );
 			} );
@@ -579,7 +579,7 @@ describe( 'InsertRowCommand', () => {
 						expect( insertRowsStub.firstCall.args[ 1 ] ).to.deep.equal( {
 							at: 0,
 							copyStructureFromAbove: false,
-							defaultCellProperties: {
+							cellProperties: {
 								horizontalAlignment: 'center',
 								verticalAlignment: 'middle'
 							}
@@ -601,7 +601,7 @@ describe( 'InsertRowCommand', () => {
 					// Apply default properties for the created table.
 					setData( model, modelTable( [
 						[ '11[]', '12' ]
-					], { defaultCellProperties: defaultProperties } ) );
+					], { cellProperties: defaultProperties } ) );
 
 					command.execute();
 
@@ -609,7 +609,7 @@ describe( 'InsertRowCommand', () => {
 						modelTable( [
 							[ '', '' ],
 							[ '11[]', '12' ]
-						], { defaultCellProperties: defaultProperties } )
+						], { cellProperties: defaultProperties } )
 					);
 				} );
 			} );

@@ -83,7 +83,7 @@ export default class InsertRowCommand extends Command {
 		};
 
 		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
-			insertRowsOptions.defaultCellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
+			insertRowsOptions.cellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
 		}
 
 		tableUtils.insertRows( table, insertRowsOptions );

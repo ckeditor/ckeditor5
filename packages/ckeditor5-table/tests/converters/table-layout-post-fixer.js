@@ -237,7 +237,7 @@ describe( 'Table layout post-fixer', () => {
 					[ '00' ],
 					[ '10', '11', '12' ],
 					[ '20', '21' ]
-				], { defaultCellProperties: defaultProperties } ), model.schema );
+				], { cellProperties: defaultProperties } ), model.schema );
 
 				model.change( writer => {
 					writer.remove( writer.createRangeIn( root ) );
@@ -248,7 +248,7 @@ describe( 'Table layout post-fixer', () => {
 					[ '00', '', '' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '' ]
-				], { defaultCellProperties: defaultProperties } ) );
+				], { cellProperties: defaultProperties } ) );
 			} );
 
 			it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 2)', () => {
@@ -256,7 +256,7 @@ describe( 'Table layout post-fixer', () => {
 					[ { colspan: 6, contents: '00' } ],
 					[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
 					[ '21', '22' ]
-				], { defaultCellProperties: defaultProperties } ), model.schema );
+				], { cellProperties: defaultProperties } ), model.schema );
 
 				model.change( writer => {
 					writer.remove( writer.createRangeIn( root ) );
@@ -267,7 +267,7 @@ describe( 'Table layout post-fixer', () => {
 					[ { colspan: 6, contents: '00' } ],
 					[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 					[ '21', '22', '', '', '' ]
-				], { defaultCellProperties: defaultProperties } ) );
+				], { cellProperties: defaultProperties } ) );
 			} );
 		} );
 	} );

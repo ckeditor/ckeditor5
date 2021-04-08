@@ -94,22 +94,20 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} [options.columns=2] The number of columns to create.
 	 * @param {Number} [options.headingRows=0] The number of heading rows.
 	 * @param {Number} [options.headingColumns=0] The number of heading columns.
-	 * @param {String} [options.defaultProperties={}] The default properties for the created table.
-	 * @param {Object} [options.defaultCellProperties={}] The default cell properties in the created table.
+	 * @param {String} [options.tableProperties={}] The default properties for the created table.
+	 * @param {Object} [options.cellProperties={}] The default cell properties in the created table.
 	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
 	createTable( writer, options ) {
-		const defaultProperties = options.defaultProperties || {};
-		const defaultCellProperties = options.defaultCellProperties || {};
+		const tableProperties = options.tableProperties || {};
+		const cellProperties = options.cellProperties || {};
 
-		const table = writer.createElement( 'table', defaultProperties );
+		const table = writer.createElement( 'table', tableProperties );
 
 		const rows = parseInt( options.rows ) || 2;
 		const columns = parseInt( options.columns ) || 2;
 
-		createEmptyRows( writer, table, 0, rows, columns, {
-			cellProperties: defaultCellProperties
-		} );
+		createEmptyRows( writer, table, 0, rows, columns, cellProperties );
 
 		if ( options.headingRows ) {
 			updateNumericAttribute( 'headingRows', options.headingRows, table, writer, 0 );
@@ -148,7 +146,7 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} [options.rows=1] The number of rows to insert.
 	 * @param {Boolean|undefined} [options.copyStructureFromAbove] The flag for copying row structure. Note that
 	 * the row structure will not be copied if this option is not provided.
-	 * @param {Object} [options.defaultCellProperties={}] The default cell properties in the created table.
+	 * @param {Object} [options.cellProperties={}] Properties that will be applied to all created cells.
 	 */
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
@@ -157,7 +155,7 @@ export default class TableUtils extends Plugin {
 		const rowsToInsert = options.rows || 1;
 		const isCopyStructure = options.copyStructureFromAbove !== undefined;
 		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
-		const cellProperties = options.defaultCellProperties || {};
+		const cellProperties = options.cellProperties || {};
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
@@ -172,7 +170,7 @@ export default class TableUtils extends Plugin {
 
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
 			if ( !isCopyStructure && ( insertAt === 0 || insertAt === rows ) ) {
-				createEmptyRows( writer, table, insertAt, rowsToInsert, columns, { cellProperties } );
+				createEmptyRows( writer, table, insertAt, rowsToInsert, columns, cellProperties );
 
 				return;
 			}
@@ -254,14 +252,14 @@ export default class TableUtils extends Plugin {
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] The column index at which the columns will be inserted.
 	 * @param {Number} [options.columns=1] The number of columns to insert.
-	 * @param {Object} [options.defaultCellProperties={}] The default cell properties in the created table.
+	 * @param {Object} [options.cellProperties={}] Properties that will be applied to all created cells.
 	 */
 	insertColumns( table, options = {} ) {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
-		const cellProperties = options.defaultCellProperties || {};
+		const cellProperties = options.cellProperties || {};
 
 		model.change( writer => {
 			const headingColumns = table.getAttribute( 'headingColumns' );
@@ -488,7 +486,7 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
 	 * @param {Object} [options={}] options
-	 * @param {Object} [options.defaultCellProperties={}] The default cell properties in the created table.
+	 * @param {Object} [options.cellProperties={}] Properties that will be applied after splitting the cell.
 	 */
 	splitCellVertically( tableCell, numberOfCells = 2, options = {} ) {
 		const model = this.editor.model;
@@ -497,7 +495,7 @@ export default class TableUtils extends Plugin {
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-		const defaultCellProperties = options.defaultCellProperties || {};
+		const cellProperties = options.cellProperties || {};
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -508,7 +506,7 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'colspan', updatedSpan, tableCell, writer );
 
 				// Each inserted cell will have the same properties. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, defaultCellProperties );
+				const newCellProperties = Object.assign( {}, cellProperties );
 
 				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
@@ -550,7 +548,7 @@ export default class TableUtils extends Plugin {
 				// Second step: create columns after split cell.
 
 				// Each inserted cell will have the same properties. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, defaultCellProperties );
+				const newCellProperties = Object.assign( {}, cellProperties );
 
 				// Do not store default value in the model.
 
@@ -627,7 +625,7 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
 	 * @param {Object} [options={}] options
-	 * @param {Object} [options.defaultCellProperties={}] The default cell properties in the created table.
+	 * @param {Object} [options.cellProperties={}] Properties that will be applied after splitting the cell.
 	 */
 	splitCellHorizontally( tableCell, numberOfCells = 2, options = {} ) {
 		const model = this.editor.model;
@@ -638,7 +636,7 @@ export default class TableUtils extends Plugin {
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-		const defaultCellProperties = options.defaultCellProperties || {};
+		const cellProperties = options.cellProperties || {};
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -658,7 +656,7 @@ export default class TableUtils extends Plugin {
 				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
 
 				// Each inserted cell will have the same properties. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, defaultCellProperties );
+				const newCellProperties = Object.assign( {}, cellProperties );
 
 				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
@@ -710,14 +708,14 @@ export default class TableUtils extends Plugin {
 				}
 
 				// Second step: create rows with single cell below split cell. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, defaultCellProperties );
+				const newCellProperties = Object.assign( {}, cellProperties );
 
 				// Copy colspan of split cell.
 				if ( colspan > 1 ) {
 					newCellProperties.colspan = colspan;
 				}
 
-				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, { cellProperties: newCellProperties } );
+				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellProperties );
 
 				// Update heading section if split cell is in heading section.
 				const headingRows = table.getAttribute( 'headingRows' ) || 0;
@@ -769,15 +767,14 @@ export default class TableUtils extends Plugin {
 // @param {Number} insertAt The row index of row insertion.
 // @param {Number} rows The number of rows to create.
 // @param {Number} tableCellToInsert The number of cells to insert in each row.
-// @param {Object} options
-// @param {Object} options.cellProperties The cell attributes.
-function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, options ) {
+// @param {Object} attributes The cell attributes.
+function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attributes ) {
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
 
 		writer.insert( tableRow, table, insertAt );
 
-		createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), options.cellProperties );
+		createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes );
 	}
 }
 

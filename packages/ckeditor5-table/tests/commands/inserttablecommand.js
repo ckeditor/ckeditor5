@@ -202,7 +202,7 @@ describe( 'InsertTableCommand', () => {
 
 						expect( createTableStub.callCount ).to.equal( 1 );
 						expect( createTableStub.firstCall.args[ 1 ] ).to.deep.equal( {
-							defaultProperties: { alignment: 'center' }
+							tableProperties: { alignment: 'center' }
 						} );
 					}
 				);
@@ -259,7 +259,7 @@ describe( 'InsertTableCommand', () => {
 
 						expect( createTableStub.callCount ).to.equal( 1 );
 						expect( createTableStub.firstCall.args[ 1 ] ).to.deep.equal( {
-							defaultCellProperties: {
+							cellProperties: {
 								horizontalAlignment: 'center',
 								verticalAlignment: 'middle'
 							}
@@ -284,7 +284,7 @@ describe( 'InsertTableCommand', () => {
 						modelTable( [
 							[ '[]', '' ],
 							[ '', '' ]
-						], { defaultCellProperties: defaultProperties } )
+						], { cellProperties: defaultProperties } )
 					);
 				} );
 			} );

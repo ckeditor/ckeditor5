@@ -84,7 +84,7 @@ export default class InsertColumnCommand extends Command {
 		};
 
 		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
-			insertColumnsOptions.defaultCellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
+			insertColumnsOptions.cellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
 		}
 
 		tableUtils.insertColumns( table, insertColumnsOptions );

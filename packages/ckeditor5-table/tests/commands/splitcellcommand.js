@@ -201,7 +201,7 @@ describe( 'SplitCellCommand', () => {
 
 						expect( splitCellVerticallyStub.callCount ).to.equal( 1 );
 						expect( splitCellVerticallyStub.firstCall.args[ 2 ] ).to.deep.equal( {
-							defaultCellProperties: {
+							cellProperties: {
 								horizontalAlignment: 'center',
 								verticalAlignment: 'middle'
 							}
@@ -223,14 +223,14 @@ describe( 'SplitCellCommand', () => {
 					// Apply default properties for the created table.
 					setData( model, modelTable( [
 						[ '11[]' ]
-					], { defaultCellProperties: defaultProperties } ) );
+					], { cellProperties: defaultProperties } ) );
 
 					command.execute();
 
 					assertEqualMarkup( getData( model ),
 						modelTable( [
 							[ '11[]', '' ]
-						], { defaultCellProperties: defaultProperties } )
+						], { cellProperties: defaultProperties } )
 					);
 				} );
 			} );
@@ -311,7 +311,7 @@ describe( 'SplitCellCommand', () => {
 
 						expect( splitCellHorizontallyStub.callCount ).to.equal( 1 );
 						expect( splitCellHorizontallyStub.firstCall.args[ 2 ] ).to.deep.equal( {
-							defaultCellProperties: {
+							cellProperties: {
 								horizontalAlignment: 'center',
 								verticalAlignment: 'middle'
 							}
@@ -333,7 +333,7 @@ describe( 'SplitCellCommand', () => {
 					// Apply default properties for the created table.
 					setData( model, modelTable( [
 						[ '11[]' ]
-					], { defaultCellProperties: defaultProperties } ) );
+					], { cellProperties: defaultProperties } ) );
 
 					command.execute();
 
@@ -341,7 +341,7 @@ describe( 'SplitCellCommand', () => {
 						modelTable( [
 							[ '11[]' ],
 							[ '' ]
-						], { defaultCellProperties: defaultProperties } )
+						], { cellProperties: defaultProperties } )
 					);
 				} );
 			} );
