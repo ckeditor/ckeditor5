@@ -15,7 +15,6 @@ import {
 	toImageWidget,
 	createImageViewElement,
 	getImageTypeMatcher,
-	getViewImageFromWidget,
 	determineImageTypeForInsertionAtSelection,
 	isBlockImageView
 } from './utils';
@@ -167,15 +166,12 @@ export default class ImageInlineEditing extends Plugin {
 				// Unwrap <figure class="image"><img .../></figure> -> <img ... />
 				// but <figure class="image"><img .../><figcaption>...</figcaption></figure> -> stays the same
 				const inlineViewImages = docFragmentChildren.map( blockViewImage => {
+					// If there's just one child, it can be either <img /> or <a><img></a>.
 					// If there are other children than <img>, this means that the block image
 					// has a caption or some other features and this kind of image should be
 					// pasted/dropped without modifications.
 					if ( blockViewImage.childCount === 1 ) {
-						const viewImage = getViewImageFromWidget( blockViewImage );
-
-						// Preserve the link around the block image when pasted so
-						// <figure class="image"><a ...><img .../></a></figure> -> <a ...><img ... /></a>
-						return viewImage.parent.is( 'element', 'a' ) ? viewImage.parent : viewImage;
+						return blockViewImage.getChild( 0 );
 					} else {
 						return blockViewImage;
 					}
