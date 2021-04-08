@@ -49,17 +49,17 @@ export default class DataSchema {
 		this._definitions = new Map();
 
 		// Block elements.
-		this.extendBlockElement( {
+		this.registerBlockElementFeature( {
 			model: 'paragraph',
 			view: 'p'
 		} );
 
-		this.extendBlockElement( {
+		this.registerBlockElementFeature( {
 			model: 'blockQuote',
 			view: 'blockquote'
 		} );
 
-		this.extendBlockElement( {
+		this.registerBlockElementFeature( {
 			model: 'listItem',
 			view: 'li'
 		} );
@@ -179,12 +179,12 @@ export default class DataSchema {
 	}
 
 	/**
-	 * Add new data schema definition to extend existing editor's model block element.
+	 * Add new data schema definition to extend existing editor's model block element feature.
 	 *
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
-	extendBlockElement( definition ) {
-		this.registerBlockElement( { ...definition, extend: true } );
+	registerBlockElementFeature( definition ) {
+		this.registerBlockElement( { ...definition, isFeature: true } );
 	}
 
 	/**
@@ -274,7 +274,7 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
- * @property {Boolean} [extend=false] Indicates if data schema should extend existing editor element.
+ * @property {Boolean} [isFeature=false] Indicates if data schema should extend existing editor feature.
  */
 
 /**

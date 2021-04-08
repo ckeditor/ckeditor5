@@ -143,7 +143,7 @@ export default class DataFilter {
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_defineBlockElement( definition ) {
-		if ( !definition.extend ) {
+		if ( !definition.isFeature ) {
 			this._defineBlockElementSchema( definition );
 			this._addBlockElementToElementConversion( definition );
 		}
