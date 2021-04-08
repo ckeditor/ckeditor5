@@ -225,7 +225,6 @@ export default class MediaEmbedEditing extends Plugin {
 				view: element => [ 'oembed', elementName ].includes( element.name ) && element.getAttribute( 'url' ) ?
 					{ name: true } :
 					null,
-
 				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
