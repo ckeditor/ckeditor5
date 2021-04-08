@@ -335,7 +335,9 @@ describe( 'transform', () => {
 				expectClients(
 					'<blockQuote>' +
 						'<paragraph>A</paragraph>' +
-						'<paragraph>B</paragraph>' +
+						'<blockQuote>' +
+							'<paragraph>B</paragraph>' +
+						'</blockQuote>' +
 						'<paragraph>C</paragraph>' +
 					'</blockQuote>'
 				);

@@ -48,6 +48,33 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
+## Disallowing nesting block quotes
+
+By default, the editor supports a block quote inserted into another block quote.
+
+In order to disallow nesting block quotes you need to register an additional schema rule. It needs to be added before the data gets loaded into the editor, hence it is best to implement it as a plugin:
+
+```js
+function DisallowNestingBlockQuotes( editor ) {
+	editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+		if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
+			return false;
+		}
+	} );
+}
+
+// Pass it via config.extraPlugins or config.plugins:
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ DisallowNestingBlockQuotes ],
+
+		// The rest of the config.
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 ## Common API
 
 The {@link module:block-quote/blockquote~BlockQuote} plugin registers:

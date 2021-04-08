@@ -8,7 +8,7 @@
 <div id="editor">
 	<p>Complex table:</p>
 
-	<figure>
+	<figure class="table">
 		<figcaption>Data about the planets of our solar system (Planetary facts taken from <a
 			href="http://nssdc.gsfc.nasa.gov/planetary/factsheet/">Nasa's Planetary Fact Sheet - Metric</a>.
 		</figcaption>
@@ -200,5 +200,35 @@
 			<td>3</td>
 		</tr>
 		</tbody>
+	</table>
+
+	<p>Nested tables</p>
+
+	<table>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<p>Paragraph before table</p>
+				<table>
+					<tr>
+						<td>
+							Nested table
+						</td>
+					</tr>
+				</table>
+				<p>Paragraph after table</p>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
 	</table>
 </div>

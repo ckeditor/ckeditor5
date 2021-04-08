@@ -49,13 +49,6 @@ export default class BlockQuoteEditing extends Plugin {
 			allowContentOf: '$root'
 		} );
 
-		// Disallow blockQuote in blockQuote.
-		schema.addChildCheck( ( ctx, childDef ) => {
-			if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'blockQuote' ) {
-				return false;
-			}
-		} );
-
 		editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
 
 		// Postfixer which cleans incorrect model states connected with block quotes.
@@ -77,13 +70,12 @@ export default class BlockQuoteEditing extends Plugin {
 
 						return true;
 					} else if ( element.is( 'element', 'blockQuote' ) && !schema.checkChild( entry.position, element ) ) {
-						// Added a blockQuote in incorrect place - most likely inside another blockQuote. Unwrap it
-						// so the content inside is not lost.
+						// Added a blockQuote in incorrect place. Unwrap it so the content inside is not lost.
 						writer.unwrap( element );
 
 						return true;
 					} else if ( element.is( 'element' ) ) {
-						// Just added an element. Check its children to see if there are no nested blockQuotes somewhere inside.
+						// Just added an element. Check that all children meet the scheme rules.
 						const range = writer.createRangeIn( element );
 
 						for ( const child of range.getItems() ) {
