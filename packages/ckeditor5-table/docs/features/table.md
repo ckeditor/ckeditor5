@@ -330,7 +330,7 @@ The above model structure will be rendered to the data and to the editing view a
 
 By default, the editor allows nesting a table inside another table's cell.
 
-In order to disallow nesting tables you need to register an additional schema rule. It needs to be added before the data gets loaded into the editor, hence it is best to implement it as a plugin:
+In order to disallow nesting tables you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingTables( editor ) {
@@ -353,7 +353,7 @@ ClassicEditor
 	.catch( ... );
 ```
 <info-box>
-	Check the {@link framework/guides/creating-simple-plugin plugin development guide} if you need more information about the technical side of this solution.
+	Check the {@link framework/guides/creating-simple-plugin plugin development} guide if you need more information about the technical side of this solution.
 </info-box>
 
 ## Common API
