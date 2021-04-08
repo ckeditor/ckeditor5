@@ -29,7 +29,6 @@
 			"className": "LinkImage",
 			"description": "Allows adding clickable links to images for creating banners or referrers.",
 			"docs": "features/image.html#linking-images",
-			"repository": "@ckeditor/ckeditor5-link",
 			"path": "src/linkimage.js",
 			"requires": [
 				"Link",

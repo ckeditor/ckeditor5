@@ -5,7 +5,6 @@
 			"className": "Watchdog",
 			"description": "A utility that detects that an editor crashed, destroys it, and automatically creates a new instance of that editor with the content of the previous editor.",
 			"docs": "features/watchdog.html",
-			"repository": "@ckeditor/ckeditor5-watchdog",
 			"path": "src/editorwatchdog.js"
 		}
 	]
