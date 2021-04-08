@@ -113,7 +113,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "split button",
 					"name": "imageInsert",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
 				}

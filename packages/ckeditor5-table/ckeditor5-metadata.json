@@ -8,7 +8,7 @@
 			"path": "src/table.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "split button",
 					"name": "insertTable",
 					"iconPath": "theme/icons/table.svg"
 				},

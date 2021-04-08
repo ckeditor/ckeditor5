@@ -43,10 +43,10 @@
 			]
 		},
 		{
-			"name": "FontFamily",
+			"name": "Font family",
+			"className": "FontFamily",
 			"description": "Introduces font family support.",
 			"docs": "features/font.html#configuring-the-font-family-feature",
-			"repository": "@ckeditor/ckeditor5-font",
 			"path": "src/fontfamily.js",
 			"uiComponents": [
 				{
