@@ -207,7 +207,7 @@ ClassicEditor
 
 ### Default table and cell styles
 
-You can specify the default styles for the table and cells that will be applied while creating the new table by passing the `defaultProperties` object to {@link module:table/table~TableConfig#tableProperties} for tables, and {@link module:table/table~TableConfig#tableCellProperties} for cells.
+You can specify the default styles for the table and cells that will be applied while creating a new table. To configure default table styles, pass the `defaultProperties` object to {@link module:table/table~TableConfig#tableProperties} configuration option. Similarly, cell styles can be configured by setting `defaultProperties` on {@link module:table/table~TableConfig#tableCellProperties} option.
 
 ```js
 const tableConfig = {
