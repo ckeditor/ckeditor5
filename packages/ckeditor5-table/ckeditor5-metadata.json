@@ -75,7 +75,7 @@
 					"name": "tableProperties",
 					"iconPath": "theme/icons/table-properties.svg",
 					"toolbars": [
-						"table.tableToolbar"
+						"table.contentToolbar"
 					]
 				}
 			]
