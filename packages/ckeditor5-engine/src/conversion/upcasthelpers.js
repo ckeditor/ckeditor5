@@ -872,7 +872,7 @@ function prepareToAttributeConverter( config, shallow ) {
 		const modelValue = typeof config.model.value == 'function' ?
 			config.model.value( data.viewItem, conversionApi ) : config.model.value;
 
-		// Do not convert if the attribute building function returned a falsy value.
+		// Do not convert if attribute building function returned falsy value.
 		if ( modelValue === null ) {
 			return;
 		}
@@ -896,12 +896,14 @@ function prepareToAttributeConverter( config, shallow ) {
 			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
-		// Set the attribute (on nodes that allow it).
-		setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
+		// Set attribute on current `output`. `Schema` is checked inside this helper function.
+		const attributeWasSet = setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
 
-		// Consume the thing being converted regardless of whether setAttributeOn() was actually able
-		// to set the attribute. See #9249.
-		conversionApi.consumable.consume( data.viewItem, match.match );
+		// It may happen that a converter will try to set an attribute that is not allowed in the given context.
+		// In such a situation we cannot consume the attribute. See: https://github.com/ckeditor/ckeditor5/pull/9249#issuecomment-815658459.
+		if ( attributeWasSet ) {
+			conversionApi.consumable.consume( data.viewItem, match.match );
+		}
 	};
 }
 
@@ -930,7 +932,10 @@ function onlyViewNameIsDefined( viewConfig, viewItem ) {
 // @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion API.
 // @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
 // on all elements in the range.
+// @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
 function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
+	let result = false;
+
 	// Set attribute on each item in range according to Schema.
 	for ( const node of Array.from( modelRange.getItems( { shallow } ) ) ) {
 		// Skip if not allowed.
@@ -938,13 +943,19 @@ function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 			continue;
 		}
 
-		// Do not override the attribute if it's already present. See #8921.
+		// Mark the node as consumed even if the attribute will not be updated because it's in a valid context (schema)
+		// and would be converted if the attribute wouldn't be present. See #8921.
+		result = true;
+
+		// Do not override the attribute if it's already present.
 		if ( node.hasAttribute( modelAttribute.key ) ) {
 			continue;
 		}
 
 		conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
 	}
+
+	return result;
 }
 
 // Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
