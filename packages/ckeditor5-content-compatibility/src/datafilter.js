@@ -145,7 +145,13 @@ export default class DataFilter {
 	_defineBlockElement( definition ) {
 		const schema = this.editor.model.schema;
 
-		if ( !definition.isFeature && !schema.isRegistered( definition.model ) ) {
+		if ( !definition.isFeature ) {
+			// Early return, so if definition has been already registered,
+			// attribute filters also will be skipped.
+			if ( schema.isRegistered( definition.model ) ) {
+				return;
+			}
+
 			this._defineBlockElementSchema( definition );
 			this._addBlockElementToElementConversion( definition );
 		}
