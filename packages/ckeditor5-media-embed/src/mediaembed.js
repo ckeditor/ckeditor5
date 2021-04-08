@@ -237,20 +237,30 @@ export default class MediaEmbed extends Plugin {
  */
 
 /**
- * Customizing semantic element name.
+ * Override the element name used for "semantic" data.
  *
- * When `oembed` (default), the feature produces "semantic" data with tag `<oembed>`:
+ * This is not relevant if {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`}
+ * is set to `true`.
+ *
+ * When unset, the feature produces tag `<oembed>`:
  *
  *		<figure class="media">
  *			<oembed url="https://url"></oembed>
  *		</figure>
  *
- * It can also be set to other element names, for instance, `o-embed` will produce:
+ * To override the element name used, for instance, to use `<o-embed>`:
+ *
+ *		mediaEmbed: {
+ *			elementName: 'o-embed'
+ *		}
+ *
+ * This will produce semantic data like such:
  *
  *		<figure class="media">
  *			<o-embed url="https://url"></o-embed>
  *		</figure>
  *
+ * @default 'o-embed'
  * @member {String} [module:media-embed/mediaembed~MediaEmbedConfig#elementName]
  */
 

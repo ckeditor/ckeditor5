@@ -109,7 +109,7 @@ Further customization of semantic data output can be done through the {@link mod
 </figure>
 ```
 
-To be backward compatible with legacy semantic elements, `<oembed>` tags are still supported when `elementName` is set.
+If `elementName` is overridden to something beside the default value, existing `<oembed>` elements will still be shown when for backward compatibility purposes.
 
 #### Including previews in data
 
