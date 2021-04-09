@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console */
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-
+/* globals ClassicEditor, console, document, window */
 ClassicEditor
 	.create( document.querySelector( '#snippet-block-quote' ), {
 		toolbar: {
