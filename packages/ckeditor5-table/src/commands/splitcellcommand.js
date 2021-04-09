@@ -55,17 +55,14 @@ export default class SplitCellCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const editor = this.editor;
-		const tableCell = getSelectionAffectedTableCells( editor.model.document.selection )[ 0 ];
+		const tableCell = getSelectionAffectedTableCells( this.editor.model.document.selection )[ 0 ];
 		const isHorizontal = this.direction === 'horizontally';
-		const tableUtils = editor.plugins.get( 'TableUtils' );
-
-		const splitOptions = {};
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		if ( isHorizontal ) {
-			tableUtils.splitCellHorizontally( tableCell, 2, splitOptions );
+			tableUtils.splitCellHorizontally( tableCell, 2 );
 		} else {
-			tableUtils.splitCellVertically( tableCell, 2, splitOptions );
+			tableUtils.splitCellVertically( tableCell, 2 );
 		}
 	}
 }
