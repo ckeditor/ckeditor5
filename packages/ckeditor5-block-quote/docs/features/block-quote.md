@@ -14,7 +14,15 @@ Use the editor below to see the block quote plugin in action. You can also prece
 
 {@snippet features/block-quote}
 
+## Nested block quotes
+
+Sometimes it is necessary to nest q block quote into another block quote. To do it, simply click where you need to quote nested and insert it just like a regular one.
+
 {@snippet features/nested-block-quote}
+
+<info-box>
+	If for some reason you want to disallow nesting tables in your editor, see the {@link features/block-quote#disallowing-nesting-block-quotes disabling nesting block quotes} section to learn how to disable this functionality.
+</info-box>
 
 ## Related features
 
@@ -53,9 +61,9 @@ ClassicEditor
 
 ## Disallowing nesting block quotes
 
-By default, the editor supports a block quote inserted into another block quote.
+By default, the editor supports inserting a block quote into another block quote.
 
-In order to disallow nesting block quotes you need to register an additional schema rule. It needs to be added before the data gets loaded into the editor, hence it is best to implement it as a plugin:
+In order to disallow nesting block quotes, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor, hence it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingBlockQuotes( editor ) {
@@ -77,6 +85,10 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+<info-box>
+	Check the {@link framework/guides/creating-simple-plugin plugin development} guide if you need more information about the technical side of this solution.
+</info-box>
 
 ## Common API
 
