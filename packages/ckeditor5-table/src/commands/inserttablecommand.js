@@ -47,19 +47,17 @@ export default class InsertTableCommand extends Command {
 	 * @fires execute
 	 */
 	execute( options = {} ) {
-		const editor = this.editor;
-		const model = editor.model;
+		const model = this.editor.model;
 		const selection = model.document.selection;
-		const tableUtils = editor.plugins.get( 'TableUtils' );
-
-		const createTableOptions = Object.assign( {}, options );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		const insertPosition = findOptimalInsertionPosition( selection, model );
 
 		model.change( writer => {
-			const table = tableUtils.createTable( writer, createTableOptions );
+			const table = tableUtils.createTable( writer, options );
 
 			model.insertContent( table, insertPosition );
+
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );
 	}
