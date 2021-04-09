@@ -26,6 +26,11 @@ class InfoBox {
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', editingDowncastConverter ) );
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
+
+		// Model to view position mapper is needed since the model <infoBox> content needs to end up in the inner
+		// <div class="info-box-content">.
+		editor.editing.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
+		editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
 	}
 }
 
@@ -123,17 +128,49 @@ function insertViewElements( data, conversionApi, infoBox, infoBoxTitle, infoBox
 		infoBoxContent
 	);
 
-	// The default mapping between the model <infoBox> and its view representation.
+	// The mapping between the model <infoBox> and its view representation.
 	conversionApi.mapper.bindElements( data.item, infoBox );
-	// However, since the model <infoBox> content needs to end up in the inner
-	// <div class="info-box-content">, you need to bind one with another overriding
-	// a part of the default binding.
-	conversionApi.mapper.bindElements( data.item, infoBoxContent );
 
 	conversionApi.writer.insert(
 		conversionApi.mapper.toViewPosition( data.range.start ),
 		infoBox
 	);
+}
+
+function createModelToViewPositionMapper( view ) {
+	return ( evt, data ) => {
+		const modelPosition = data.modelPosition;
+		const parent = modelPosition.parent;
+
+		if ( !parent.is( 'element', 'infoBox' ) ) {
+			return;
+		}
+
+		const viewElement = data.mapper.toViewElement( parent );
+		const viewContentElement = findContentViewElement( view, viewElement );
+
+		data.viewPosition = data.mapper.findPositionIn( viewContentElement, modelPosition.offset );
+	};
+}
+
+function findContentViewElement( editingView, viewElement ) {
+	for ( const value of editingView.createRangeIn( viewElement ) ) {
+		if ( value.item.is( 'element', 'div' ) && value.item.hasClass( 'info-box-content' ) ) {
+			return value.item;
+		}
+	}
+}
+
+function getTypeFromViewElement( viewElement ) {
+	if ( viewElement.hasClass( 'info-box-info' ) ) {
+		return 'Info';
+	}
+
+	if ( viewElement.hasClass( 'info-box-warning' ) ) {
+		return 'Warning';
+	}
+
+	return 'None';
 }
 
 ClassicEditor
@@ -160,15 +197,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-function getTypeFromViewElement( viewElement ) {
-	if ( viewElement.hasClass( 'info-box-info' ) ) {
-		return 'Info';
-	}
-
-	if ( viewElement.hasClass( 'info-box-warning' ) ) {
-		return 'Warning';
-	}
-
-	return 'None';
-}
