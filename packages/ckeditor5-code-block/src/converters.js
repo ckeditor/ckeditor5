@@ -141,10 +141,10 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 	const defaultLanguageName = languageDefs[ 0 ].language;
 
 	return ( evt, data, conversionApi ) => {
-		const viewItem = data.viewItem;
-		const viewChild = viewItem.getChild( 0 );
+		const viewCodeElement = data.viewItem;
+		const viewPreElement = viewCodeElement.parent;
 
-		if ( !viewChild || !viewChild.is( 'element', 'code' ) ) {
+		if ( !viewPreElement || !viewPreElement.is( 'element', 'pre' ) ) {
 			return;
 		}
 
@@ -155,12 +155,12 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 
 		const { consumable, writer } = conversionApi;
 
-		if ( !consumable.test( viewItem, { name: true } ) || !consumable.test( viewChild, { name: true } ) ) {
+		if ( !consumable.test( viewCodeElement, { name: true } ) ) {
 			return;
 		}
 
 		const codeBlock = writer.createElement( 'codeBlock' );
-		const viewChildClasses = [ ...viewChild.getClassNames() ];
+		const viewChildClasses = [ ...viewCodeElement.getClassNames() ];
 
 		// As we're to associate each class with a model language, a lack of class (empty class) can be
 		// also associated with a language if the language definition was configured so. Pushing an empty
@@ -185,15 +185,14 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 			writer.setAttribute( 'language', defaultLanguageName, codeBlock );
 		}
 
-		conversionApi.convertChildren( viewChild, codeBlock );
+		conversionApi.convertChildren( viewCodeElement, codeBlock );
 
 		// Let's try to insert code block.
 		if ( !conversionApi.safeInsert( codeBlock, data.modelCursor ) ) {
 			return;
 		}
 
-		consumable.consume( viewItem, { name: true } );
-		consumable.consume( viewChild, { name: true } );
+		consumable.consume( viewCodeElement, { name: true } );
 
 		conversionApi.updateConversionResult( codeBlock, data );
 	};
