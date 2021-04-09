@@ -6,7 +6,7 @@ menu-title: Block quote
 
 # Block quote
 
-The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. This provides an attractive way to draw the readers' attention to selected parts of text. It also helps organize the content in a structured, elegant way and to manage the flow better.
+The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included. This provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way and to manage the flow better.
 
 ## Demo
 
@@ -14,14 +14,14 @@ Use the editor below to see the block quote plugin in action. You can also prece
 
 {@snippet features/block-quote}
 
-## Nested block quotes
+## Nesting block quotes
 
-Sometimes it is necessary to nest q block quote into another block quote. To do it, simply click where you need to quote nested and insert it just like a regular one.
+Sometimes it is necessary to nest a block quote into another block quote. This may be the case for scientific or academic papers, but also articles citing sources and referring to previous writing would often use it. To use this functionality, simply click where you need the quote nested and insert it just like a regular one.
 
 {@snippet features/nested-block-quote}
 
 <info-box>
-	If for some reason you want to disallow nesting tables in your editor, see the {@link features/block-quote#disallowing-nesting-block-quotes disabling nesting block quotes} section to learn how to disable this functionality.
+	If you would want to disallow nesting tables in your editor, see the {@link features/block-quote#disallowing-nesting-block-quotes disallowing nesting block quotes} section to learn how to disable this functionality.
 </info-box>
 
 ## Related features

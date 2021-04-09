@@ -10,14 +10,8 @@ For the entire list of changes introduced in version 28.0.0, see the [changelog 
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v28.0.0.
 
-## Disallowing nesting tables
-
-Prior to version 28.0.0 inserting a table into another table was not allowed.
-
-If you wish to bring back this restriction see the {@link features/table#disallowing-nesting-tables Disallowing nesting tables} section of the table feature guide.
-
 ## Disallowing nesting block quotes
 
-Prior to version 28.0.0 inserting block quote into a block quote was not allowed.
+Prior to version 28.0.0 inserting a block quote into another block quote was not allowed.
 
-If you wish to bring back the old behavior see the {@link features/block-quote#disallowing-nesting-block-quotes Disallowing nesting block quotes} section in the blockquote feature guide.
+If you wish to bring back this restriction, see the {@link features/block-quote#disallowing-nesting-block-quotes Disallowing nesting block quotes} section in the blockquote feature guide.
