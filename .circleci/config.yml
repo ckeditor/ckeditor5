@@ -1,50 +1,18 @@
 version: 2.1
 
-executors:
-  linux-executor:
-    machine:
-      image: ubuntu-1604:201903-01
-      docker_layer_caching: true
 
 jobs:
   build:
-    executor:
-      name: linux-executor
+    docker:
+      - image: circleci/node:14
     steps:
       - checkout
       - run:
-          name: Install packages
-          command: |
-            apt-get update && apt-get install -y wget
-            pip install awscli
-
-            # Prepare environment variables
-            echo "export PUBLIC_IP=$(wget -qO- http://checkip.amazonaws.com)" >> $BASH_ENV
-            echo "export AWS_ACCESS_KEY_ID=$NEXUS_AWS_ACCESS_KEY_ID" >> $BASH_ENV
-            echo "export AWS_SECRET_ACCESS_KEY=$NEXUS_AWS_ACCESS_KEY_SECRET" >> $BASH_ENV
-            echo "export AWS_DEFAULT_REGION=$NEXUS_AWS_REGION" >> $BASH_ENV
-      - run:
-          name: Prepare Nexus connection
-          command: |
-            aws ec2 authorize-security-group-ingress --group-id $NEXUS_SG_ID \
-              --ip-permissions IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges="[{CidrIp=${PUBLIC_IP}/32,Description=\"CircleCI\"}]"
-      - run:
-          name: Setup Node
-          command: |
-            curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-      - run:
           name: Create distribution
           command: |
-            printf "registry=https://nexus.tictrac.com/repository/tictrac-npm/\nemail=developer@tictrac.com\nalways-auth=true\n_auth=$NEXUS_TOKEN" > ~/.npmrc
+            printf "registry=https://tictrac.jfrog.io/artifactory/api/npm/npm/\nemail=developer@tictrac.com\nalways-auth=true\n_auth=$JFROG_AUTH_ENC" > ~/.npmrc
             cd packages/ckeditor5-build-balloon-block
-            npm publish
-      - run:
-          name: Remove Nexus connection
-          command: |
-            aws ec2 revoke-security-group-ingress --region $NEXUS_AWS_REGION --group-id $NEXUS_SG_ID \
-               --protocol tcp --port 443 --cidr ${PUBLIC_IP}/32 || echo "Security Group rule not found"
-          when: always
+            npm publish --registry https://tictrac.jfrog.io/artifactory/api/npm/npm/
       - slack/status
 
 workflows:
@@ -61,4 +29,3 @@ workflows:
 
 orbs:
   slack: circleci/slack@3.4.2
-
