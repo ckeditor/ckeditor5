@@ -20,7 +20,7 @@ Sometimes it is necessary to nest q block quote into another block quote. To do 
 <!-- demo goes here -->
 
 <info-box>
-	If for some reason you want to disallow nesting tables in your editor, see the {@link features/table#disallowing-nesting-block-quotes disabling nesting block quotes} section to learn how to disable this functionality.
+	If for some reason you want to disallow nesting tables in your editor, see the {@link features/block-quote#disallowing-nesting-block-quotes disabling nesting block quotes} section to learn how to disable this functionality.
 </info-box>
 
 ## Related features
@@ -58,7 +58,7 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-## Disallow nesting block quotes
+## Disallowing nesting block quotes
 
 By default, the editor supports inserting a block quote into another block quote.
 
