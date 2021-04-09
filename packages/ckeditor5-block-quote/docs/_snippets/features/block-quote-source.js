@@ -23,8 +23,6 @@ ClassicEditor.defaultConfig = {
 			'numberedList',
 			'|',
 			'blockQuote',
-			'outdent',
-			'indent',
 			'|',
 			'undo',
 			'redo'
@@ -34,6 +32,6 @@ ClassicEditor.defaultConfig = {
 	image: {
 		toolbar: [ 'imageTextAlternative' ]
 	}
-}
+};
 
 window.ClassicEditor = ClassicEditor;
