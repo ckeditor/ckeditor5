@@ -17,9 +17,11 @@ import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcomm
 import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand';
 import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand';
 
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData, setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
+import { assertTableStyle, assertTRBLAttribute, modelTable } from '../_utils/utils';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import TableUtils from '../../src/tableutils';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesEditing', () => {
@@ -43,6 +45,10 @@ describe( 'table properties', () => {
 
 		it( 'should have pluginName', () => {
 			expect( TablePropertiesEditing.pluginName ).to.equal( 'TablePropertiesEditing' );
+		} );
+
+		it( 'should require TableUtils', () => {
+			expect( TablePropertiesEditing.requires ).to.include( TableUtils );
 		} );
 
 		it( 'adds tableBorderColor command', () => {
@@ -1249,6 +1255,49 @@ describe( 'table properties', () => {
 
 					assertTableStyle( editor );
 				} );
+			} );
+		} );
+
+		describe( 'default table properties', () => {
+			let editor, model;
+
+			const defaultProperties = {
+				borderStyle: 'solid',
+				borderWidth: '2px',
+				borderColor: '#f00',
+				alignment: 'right'
+			};
+
+			beforeEach( () => {
+				return ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TablePropertiesEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						setData( model, '<paragraph>[]</paragraph>' );
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should create a table with applied the default properties', () => {
+				editor.execute( 'insertTable' );
+
+				assertEqualMarkup( getData( model ),
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { ...defaultProperties } )
+				);
 			} );
 		} );
 

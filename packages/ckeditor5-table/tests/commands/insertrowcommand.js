@@ -14,7 +14,7 @@ import TableSelection from '../../src/tableselection';
 import { assertSelectedCells, modelTable } from '../_utils/utils';
 
 import InsertRowCommand from '../../src/commands/insertrowcommand';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'InsertRowCommand', () => {
 	let editor, model, command;
@@ -22,7 +22,7 @@ describe( 'InsertRowCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing, TableSelection, HorizontalLineEditing ]
+				plugins: [ Paragraph, TableEditing, TableSelection, HorizontalLineEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -310,75 +310,42 @@ describe( 'InsertRowCommand', () => {
 				] ) );
 			} );
 
-			describe( 'integration with TableCellPropertiesEditing', () => {
-				let editor, model, tableUtils, command;
+			it( 'should create a single undo step when inserting a column', () => {
+				setData( model, modelTable( [
+					[ '11[]', '12' ],
+					[ '21', '22' ]
+				] ) );
 
-				beforeEach( () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
-						} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
+				const tableUtils = editor.plugins.get( 'TableUtils' );
+				const spy = sinon.spy();
 
-							command = editor.commands.get( 'insertTableRowBelow' );
-							tableUtils = editor.plugins.get( 'TableUtils' );
-						} );
-				} );
+				tableUtils.on( 'insertRows', () => {
+					model.change( writer => {
+						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+						const paragraph = writer.createElement( 'paragraph' );
 
-				afterEach( () => {
-					return editor.destroy();
-				} );
+						model.insertContent( paragraph, writer.createPositionBefore( table ) );
 
-				it(
-					'should pass the default cell styles to "TableUtils.insertRows()" function if TableCellPropertiesEditing is enabled',
-					() => {
-						const insertRowsStub = sinon.stub( tableUtils, 'insertRows' ).callThrough();
-
-						setData( model, modelTable( [
-							[ '11[]', '12' ]
-						] ) );
-
-						command.execute();
-
-						expect( insertRowsStub.callCount ).to.equal( 1 );
-						expect( insertRowsStub.firstCall.args[ 1 ] ).to.deep.equal( {
-							at: 1,
-							copyStructureFromAbove: true,
-							cellProperties: {
-								horizontalAlignment: 'center',
-								verticalAlignment: 'middle'
-							}
-						} );
-					}
-				);
-
-				it( 'should create the table and all cells should have applied the default cell properties', () => {
-					const defaultProperties = {
-						borderStyle: 'solid',
-						borderWidth: '2px',
-						borderColor: '#f00',
-						horizontalAlignment: 'right',
-						verticalAlignment: 'bottom'
-					};
-
-					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
-
-					// Apply default properties for the created table.
-					setData( model, modelTable( [
-						[ '11[]', '12' ]
-					], { cellProperties: defaultProperties } ) );
-
-					command.execute();
-
-					assertEqualMarkup( getData( model ),
-						modelTable( [
+						assertEqualMarkup( getData( model ), '<paragraph></paragraph>' + modelTable( [
 							[ '11[]', '12' ],
-							[ '', '' ]
-						], { cellProperties: defaultProperties } )
-					);
-				} );
+							[ '', '' ],
+							[ '21', '22' ]
+						] ) );
+					} );
+
+					spy();
+				}, { priority: 'low' } );
+
+				command.execute();
+
+				expect( spy.calledOnce ).to.equal( true );
+
+				editor.execute( 'undo' );
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '11[]', '12' ],
+					[ '21', '22' ]
+				] ) );
 			} );
 		} );
 	} );
@@ -541,77 +508,6 @@ describe( 'InsertRowCommand', () => {
 					[ '00', { contents: '01', colspan: 2 } ],
 					[ '10', '11', '12' ]
 				] ) );
-			} );
-
-			describe( 'integration with TableCellPropertiesEditing', () => {
-				let editor, model, tableUtils, command;
-
-				beforeEach( () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
-						} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
-
-							command = editor.commands.get( 'insertTableRowAbove' );
-							tableUtils = editor.plugins.get( 'TableUtils' );
-						} );
-				} );
-
-				afterEach( () => {
-					return editor.destroy();
-				} );
-
-				it(
-					'should pass the default cell styles to "TableUtils.insertRows()" function if TableCellPropertiesEditing is enabled',
-					() => {
-						const insertRowsStub = sinon.stub( tableUtils, 'insertRows' ).callThrough();
-
-						setData( model, modelTable( [
-							[ '11[]', '12' ]
-						] ) );
-
-						command.execute();
-
-						expect( insertRowsStub.callCount ).to.equal( 1 );
-						expect( insertRowsStub.firstCall.args[ 1 ] ).to.deep.equal( {
-							at: 0,
-							copyStructureFromAbove: false,
-							cellProperties: {
-								horizontalAlignment: 'center',
-								verticalAlignment: 'middle'
-							}
-						} );
-					}
-				);
-
-				it( 'should create the table and all cells should have applied the default cell properties', () => {
-					const defaultProperties = {
-						borderStyle: 'solid',
-						borderWidth: '2px',
-						borderColor: '#f00',
-						horizontalAlignment: 'right',
-						verticalAlignment: 'bottom'
-					};
-
-					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
-
-					// Apply default properties for the created table.
-					setData( model, modelTable( [
-						[ '11[]', '12' ]
-					], { cellProperties: defaultProperties } ) );
-
-					command.execute();
-
-					assertEqualMarkup( getData( model ),
-						modelTable( [
-							[ '', '' ],
-							[ '11[]', '12' ]
-						], { cellProperties: defaultProperties } )
-					);
-				} );
 			} );
 		} );
 	} );

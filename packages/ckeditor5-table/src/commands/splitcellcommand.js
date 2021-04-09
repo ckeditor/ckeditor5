@@ -62,10 +62,6 @@ export default class SplitCellCommand extends Command {
 
 		const splitOptions = {};
 
-		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
-			splitOptions.cellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
-		}
-
 		if ( isHorizontal ) {
 			tableUtils.splitCellHorizontally( tableCell, 2, splitOptions );
 		} else {

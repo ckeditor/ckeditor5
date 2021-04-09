@@ -19,9 +19,11 @@ import TableCellVerticalAlignmentCommand from '../../src/tablecellproperties/com
 import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tablecellpaddingcommand';
 import TableCellBackgroundColorCommand from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData, setData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils';
+import { assertTableCellStyle, assertTRBLAttribute, modelTable } from '../_utils/utils';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import TableUtils from '../../src/tableutils';
 
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesEditing', () => {
@@ -41,6 +43,10 @@ describe( 'table cell properties', () => {
 
 		it( 'should have pluginName', () => {
 			expect( TableCellPropertiesEditing.pluginName ).to.equal( 'TableCellPropertiesEditing' );
+		} );
+
+		it( 'should require TableUtils', () => {
+			expect( TableCellPropertiesEditing.requires ).to.include( TableUtils );
 		} );
 
 		it( 'adds tableCellBorderColor command', () => {
@@ -1257,6 +1263,100 @@ describe( 'table cell properties', () => {
 
 					assertTableCellStyle( editor, 'height:1410em;' );
 				} );
+			} );
+		} );
+
+		describe( 'default cell properties', () => {
+			let editor, model;
+
+			const defaultProperties = {
+				borderStyle: 'solid',
+				borderWidth: '2px',
+				borderColor: '#f00',
+				horizontalAlignment: 'right',
+				verticalAlignment: 'bottom'
+			};
+
+			beforeEach( () => {
+				return ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableCellPropertiesEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						setData( model, '<paragraph>[]</paragraph>' );
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should create a table and all cells should have applied the default cell properties', () => {
+				editor.execute( 'insertTable' );
+
+				assertEqualMarkup( getData( model ),
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { cellProperties: defaultProperties } )
+				);
+			} );
+
+			it( 'should apply default cell properties when inserting a new column (command=insertTableColumnRight)', () => {
+				editor.execute( 'insertTable' );
+				editor.execute( 'insertTableColumnRight' );
+
+				assertEqualMarkup( getData( model ),
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { cellProperties: defaultProperties } )
+				);
+			} );
+
+			it( 'should apply default cell properties when inserting a new column (command=insertTableColumnLeft)', () => {
+				editor.execute( 'insertTable' );
+				editor.execute( 'insertTableColumnLeft' );
+
+				assertEqualMarkup( getData( model ),
+					modelTable( [
+						[ '', '[]', '' ],
+						[ '', '', '' ]
+					], { cellProperties: defaultProperties } )
+				);
+			} );
+
+			it( 'should apply default cell properties when inserting a new row (command=insertTableRowAbove)', () => {
+				editor.execute( 'insertTable' );
+				editor.execute( 'insertTableRowAbove' );
+
+				assertEqualMarkup( getData( model ),
+					modelTable( [
+						[ '', '' ],
+						[ '[]', '' ],
+						[ '', '' ]
+					], { cellProperties: defaultProperties } )
+				);
+			} );
+
+			it( 'should apply default cell properties when inserting a new row (command=insertTableRowBelow)', () => {
+				editor.execute( 'insertTable' );
+				editor.execute( 'insertTableRowBelow' );
+
+				assertEqualMarkup( getData( model ),
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ],
+						[ '', '' ]
+					], { cellProperties: defaultProperties } )
+				);
 			} );
 		} );
 	} );

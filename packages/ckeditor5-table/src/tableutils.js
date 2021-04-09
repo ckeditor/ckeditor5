@@ -32,6 +32,7 @@ export default class TableUtils extends Plugin {
 	init() {
 		this.decorate( 'insertColumns' );
 		this.decorate( 'insertRows' );
+		this.decorate( 'createTable' );
 	}
 
 	/**
@@ -94,20 +95,15 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} [options.columns=2] The number of columns to create.
 	 * @param {Number} [options.headingRows=0] The number of heading rows.
 	 * @param {Number} [options.headingColumns=0] The number of heading columns.
-	 * @param {String} [options.tableProperties={}] The default properties for the created table.
-	 * @param {Object} [options.cellProperties={}] The default cell properties in the created table.
 	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
 	createTable( writer, options ) {
-		const tableProperties = options.tableProperties || {};
-		const cellProperties = options.cellProperties || {};
-
-		const table = writer.createElement( 'table', tableProperties );
+		const table = writer.createElement( 'table' );
 
 		const rows = parseInt( options.rows ) || 2;
 		const columns = parseInt( options.columns ) || 2;
 
-		createEmptyRows( writer, table, 0, rows, columns, cellProperties );
+		createEmptyRows( writer, table, 0, rows, columns );
 
 		if ( options.headingRows ) {
 			updateNumericAttribute( 'headingRows', options.headingRows, table, writer, 0 );
@@ -146,7 +142,7 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} [options.rows=1] The number of rows to insert.
 	 * @param {Boolean|undefined} [options.copyStructureFromAbove] The flag for copying row structure. Note that
 	 * the row structure will not be copied if this option is not provided.
-	 * @param {Object} [options.cellProperties={}] Properties that will be applied to all created cells.
+	 * @returns {Array.<module:engine/model/element~Element>} Created table cells.
 	 */
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
@@ -155,12 +151,11 @@ export default class TableUtils extends Plugin {
 		const rowsToInsert = options.rows || 1;
 		const isCopyStructure = options.copyStructureFromAbove !== undefined;
 		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
-		const cellProperties = options.cellProperties || {};
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
 
-		model.change( writer => {
+		return model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
@@ -170,9 +165,7 @@ export default class TableUtils extends Plugin {
 
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
 			if ( !isCopyStructure && ( insertAt === 0 || insertAt === rows ) ) {
-				createEmptyRows( writer, table, insertAt, rowsToInsert, columns, cellProperties );
-
-				return;
+				return createEmptyRows( writer, table, insertAt, rowsToInsert, columns );
 			}
 
 			// Iterate over all the rows above the inserted rows in order to check for the row-spanned cells.
@@ -202,6 +195,8 @@ export default class TableUtils extends Plugin {
 				}
 			}
 
+			const createdCells = [];
+
 			for ( let rowIndex = 0; rowIndex < rowsToInsert; rowIndex++ ) {
 				const tableRow = writer.createElement( 'tableRow' );
 
@@ -213,17 +208,17 @@ export default class TableUtils extends Plugin {
 
 					// Insert the empty cell only if this slot is not row-spanned from any other cell.
 					if ( colspan > 0 ) {
-						const newCellProperties = Object.assign( {}, cellProperties, {
-							colspan: colspan > 1 ? colspan : null
-						} );
+						const tableCell = createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : null );
 
-						createEmptyTableCell( writer, insertPosition, newCellProperties );
+						createdCells.push( tableCell );
 					}
 
 					// Skip the col-spanned slots, there won't be any cells.
 					cellIndex += Math.abs( colspan ) - 1;
 				}
 			}
+
+			return createdCells;
 		} );
 	}
 
@@ -252,17 +247,17 @@ export default class TableUtils extends Plugin {
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] The column index at which the columns will be inserted.
 	 * @param {Number} [options.columns=1] The number of columns to insert.
-	 * @param {Object} [options.cellProperties={}] Properties that will be applied to all created cells.
+	 * @returns {Array.<module:engine/model/element~Element>} Created table cells.
 	 */
 	insertColumns( table, options = {} ) {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
-		const cellProperties = options.cellProperties || {};
 
-		model.change( writer => {
+		return model.change( writer => {
 			const headingColumns = table.getAttribute( 'headingColumns' );
+			const createdCells = [];
 
 			// Inserting columns inside heading section requires to update `headingColumns` attribute as the heading section will grow.
 			if ( insertAt < headingColumns ) {
@@ -274,10 +269,12 @@ export default class TableUtils extends Plugin {
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns === insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
-					createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ), cellProperties );
+					createdCells.push(
+						...createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) )
+					);
 				}
 
-				return;
+				return createdCells;
 			}
 
 			const tableWalker = new TableWalker( table, { column: insertAt, includeAllSlots: true } );
@@ -304,9 +301,13 @@ export default class TableUtils extends Plugin {
 				} else {
 					// It's either cell at this column index or spanned cell by a row-spanned cell from row above.
 					// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
-					createCells( columnsToInsert, writer, tableSlot.getPositionBefore(), cellProperties );
+					createdCells.push(
+						...createCells( columnsToInsert, writer, tableSlot.getPositionBefore() )
+					);
 				}
 			}
+
+			return createdCells;
 		} );
 	}
 
@@ -485,17 +486,14 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
-	 * @param {Object} [options={}] options
-	 * @param {Object} [options.cellProperties={}] Properties that will be applied after splitting the cell.
 	 */
-	splitCellVertically( tableCell, numberOfCells = 2, options = {} ) {
+	splitCellVertically( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-		const cellProperties = options.cellProperties || {};
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -505,21 +503,21 @@ export default class TableUtils extends Plugin {
 
 				updateNumericAttribute( 'colspan', updatedSpan, tableCell, writer );
 
-				// Each inserted cell will have the same properties. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, cellProperties );
+				// Each inserted cell will have the same attributes:
+				const newCellsAttributes = {};
 
 				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
-					newCellProperties.colspan = newCellsSpan;
+					newCellsAttributes.colspan = newCellsSpan;
 				}
 
 				// Copy rowspan of split cell.
 				if ( rowspan > 1 ) {
-					newCellProperties.rowspan = rowspan;
+					newCellsAttributes.rowspan = rowspan;
 				}
 
 				const cellsToInsert = colspan > numberOfCells ? numberOfCells - 1 : colspan - 1;
-				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellProperties );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
 			}
 
 			// Second check - the cell has colspan of 1 or we need to create more cells then the currently one spans over.
@@ -547,17 +545,17 @@ export default class TableUtils extends Plugin {
 
 				// Second step: create columns after split cell.
 
-				// Each inserted cell will have the same properties. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, cellProperties );
+				// Each inserted cell will have the same attributes:
+				const newCellsAttributes = {};
 
 				// Do not store default value in the model.
 
 				// Copy rowspan of split cell.
 				if ( rowspan > 1 ) {
-					newCellProperties.rowspan = rowspan;
+					newCellsAttributes.rowspan = rowspan;
 				}
 
-				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellProperties );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
 
 				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
@@ -624,10 +622,8 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
-	 * @param {Object} [options={}] options
-	 * @param {Object} [options.cellProperties={}] Properties that will be applied after splitting the cell.
 	 */
-	splitCellHorizontally( tableCell, numberOfCells = 2, options = {} ) {
+	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
 
 		const tableRow = tableCell.parent;
@@ -636,7 +632,6 @@ export default class TableUtils extends Plugin {
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-		const cellProperties = options.cellProperties || {};
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -655,17 +650,17 @@ export default class TableUtils extends Plugin {
 
 				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
 
-				// Each inserted cell will have the same properties. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, cellProperties );
+				// Each inserted cell will have the same attributes:
+				const newCellsAttributes = {};
 
 				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
-					newCellProperties.rowspan = newCellsSpan;
+					newCellsAttributes.rowspan = newCellsSpan;
 				}
 
 				// Copy colspan of split cell.
 				if ( colspan > 1 ) {
-					newCellProperties.colspan = colspan;
+					newCellsAttributes.colspan = colspan;
 				}
 
 				for ( const tableSlot of tableMap ) {
@@ -682,7 +677,7 @@ export default class TableUtils extends Plugin {
 					const isInEvenlySplitRow = ( row + splitCellRow + updatedSpan ) % newCellsSpan === 0;
 
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
-						createCells( 1, writer, tableSlot.getPositionBefore(), newCellProperties );
+						createCells( 1, writer, tableSlot.getPositionBefore(), newCellsAttributes );
 					}
 				}
 			}
@@ -707,15 +702,15 @@ export default class TableUtils extends Plugin {
 					}
 				}
 
-				// Second step: create rows with single cell below split cell. Copy the default ones to avoid modifying references.
-				const newCellProperties = Object.assign( {}, cellProperties );
+				// Second step: create rows with single cell below split cell.
+				const newCellsAttributes = {};
 
 				// Copy colspan of split cell.
 				if ( colspan > 1 ) {
-					newCellProperties.colspan = colspan;
+					newCellsAttributes.colspan = colspan;
 				}
 
-				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellProperties );
+				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellsAttributes );
 
 				// Update heading section if split cell is in heading section.
 				const headingRows = table.getAttribute( 'headingRows' ) || 0;
@@ -767,15 +762,21 @@ export default class TableUtils extends Plugin {
 // @param {Number} insertAt The row index of row insertion.
 // @param {Number} rows The number of rows to create.
 // @param {Number} tableCellToInsert The number of cells to insert in each row.
-// @param {Object} attributes The cell attributes.
-function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attributes ) {
+// @returns {Array.<module:engine/model/element~Element>} Created table cells.
+function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attributes = {} ) {
+	const createdCells = [];
+
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
 
 		writer.insert( tableRow, table, insertAt );
 
-		createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes );
+		createdCells.push(
+			...createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes )
+		);
 	}
+
+	return createdCells;
 }
 
 // Creates cells at a given position.
@@ -783,11 +784,15 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 // @param {Number} columns The number of columns to create
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/position~Position} insertPosition
-// @param {Object} attributes The cell attributes.
-function createCells( cells, writer, insertPosition, attributes ) {
+// @returns {Array.<module:engine/model/element~Element>} Created table cells.
+function createCells( cells, writer, insertPosition, attributes = {} ) {
+	const createdCells = [];
+
 	for ( let i = 0; i < cells; i++ ) {
-		createEmptyTableCell( writer, insertPosition, attributes );
+		createdCells.push( createEmptyTableCell( writer, insertPosition, attributes ) );
 	}
+
+	return createdCells;
 }
 
 // Evenly distributes the span of a cell to a number of provided cells.

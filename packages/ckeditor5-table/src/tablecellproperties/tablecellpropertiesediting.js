@@ -21,6 +21,8 @@ import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontala
 import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand';
 import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand';
 import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
+import TableWalker from '../tablewalker';
+import TableUtils from '../tableutils';
 
 const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
 
@@ -57,7 +59,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableEditing ];
+		return [ TableEditing, TableUtils ];
 	}
 
 	/**
@@ -99,6 +101,34 @@ export default class TableCellPropertiesEditing extends Plugin {
 
 		enableVerticalAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableCellVerticalAlignment', new TableCellVerticalAlignmentCommand( editor ) );
+
+		this._enableDefaultCellProperties();
+	}
+
+	/**
+	 * Enables applying the default cell properties.
+	 *
+	 * @private
+	 */
+	_enableDefaultCellProperties() {
+		const editor = this.editor;
+		const tableCellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
+		const tableUtils = editor.plugins.get( TableUtils );
+
+		// Apply default cell properties while creating a new table.
+		this.listenTo( tableUtils, 'createTable', ( evt, [ writer ] ) => {
+			const tableElement = evt.return;
+
+			for ( const item of new TableWalker( tableElement ) ) {
+				writer.setAttributes( tableCellProperties, item.cell );
+			}
+		}, { priority: 'low' } );
+
+		// Apply default cell properties while inserting new rows into the table.
+		this.listenTo( tableUtils, 'insertRows', applyDefaultCellProperties( editor, tableCellProperties ), { priority: 'low' } );
+
+		// Apply default cell properties while inserting new rows into the table.
+		this.listenTo( tableUtils, 'insertColumns', applyDefaultCellProperties( editor, tableCellProperties ), { priority: 'low' } );
 	}
 }
 
@@ -206,4 +236,21 @@ function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	} );
 	upcastStyleToAttribute( conversion, 'tableCell', modelAttribute, styleName );
 	downcastAttributeToStyle( conversion, 'tableCell', modelAttribute, styleName );
+}
+
+// A factory function that returns a handler which applies default cell properties for created cells.
+//
+// @param {module:core/editor/editor~Editor} editor
+// @param {module:table/table~TableConfig#tableCellProperties} tableCellProperties
+// @return {Function}
+function applyDefaultCellProperties( editor, tableCellProperties ) {
+	return evt => {
+		const createdCells = evt.return;
+
+		editor.model.change( writer => {
+			for ( const tableCell of createdCells ) {
+				writer.setAttributes( tableCellProperties, tableCell );
+			}
+		} );
+	};
 }

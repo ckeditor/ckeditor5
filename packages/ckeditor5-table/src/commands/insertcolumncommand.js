@@ -78,15 +78,10 @@ export default class InsertColumnCommand extends Command {
 		const column = insertBefore ? columnIndexes.first : columnIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
 
-		const insertColumnsOptions = {
-			columns: 1,
-			at: insertBefore ? column : column + 1
-		};
-
-		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
-			insertColumnsOptions.cellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
-		}
-
-		tableUtils.insertColumns( table, insertColumnsOptions );
+		// The `TableUtils` plugin fires the `#insertColumns` event. In order to having a single undo step,
+		// we need to wrap the code in the `editor.model.change()` block.
+		editor.model.change( () => {
+			tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
+		} );
 	}
 }

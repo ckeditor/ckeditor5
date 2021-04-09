@@ -54,21 +54,12 @@ export default class InsertTableCommand extends Command {
 
 		const createTableOptions = Object.assign( {}, options );
 
-		if ( editor.plugins.has( 'TablePropertiesEditing' ) ) {
-			createTableOptions.tableProperties = editor.config.get( 'table.tableProperties.defaultProperties' );
-		}
-
-		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
-			createTableOptions.cellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
-		}
-
 		const insertPosition = findOptimalInsertionPosition( selection, model );
 
 		model.change( writer => {
 			const table = tableUtils.createTable( writer, createTableOptions );
 
 			model.insertContent( table, insertPosition );
-
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );
 	}

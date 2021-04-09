@@ -77,15 +77,10 @@ export default class InsertRowCommand extends Command {
 		const row = insertAbove ? rowIndexes.first : rowIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
 
-		const insertRowsOptions = {
-			at: insertAbove ? row : row + 1,
-			copyStructureFromAbove: !insertAbove
-		};
-
-		if ( editor.plugins.has( 'TableCellPropertiesEditing' ) ) {
-			insertRowsOptions.cellProperties = editor.config.get( 'table.tableCellProperties.defaultProperties' );
-		}
-
-		tableUtils.insertRows( table, insertRowsOptions );
+		// The `TableUtils` plugin fires the `#insertRows` event. In order to having a single undo step,
+		// we need to wrap the code in the `editor.model.change()` block.
+		editor.model.change( () => {
+			tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
+		} );
 	}
 }

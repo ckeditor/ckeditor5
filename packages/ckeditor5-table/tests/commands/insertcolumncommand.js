@@ -14,7 +14,7 @@ import TableEditing from '../../src/tableediting';
 import { assertSelectedCells, modelTable } from '../_utils/utils';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
@@ -22,7 +22,7 @@ describe( 'InsertColumnCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing, TableSelection, HorizontalLineEditing ]
+				plugins: [ Paragraph, TableEditing, TableSelection, HorizontalLineEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -215,77 +215,41 @@ describe( 'InsertColumnCommand', () => {
 				] ) );
 			} );
 
-			describe( 'integration with TableCellPropertiesEditing', () => {
-				let editor, model, tableUtils, command;
+			it( 'should create a single undo step when inserting a column', () => {
+				setData( model, modelTable( [
+					[ '11[]', '12' ],
+					[ '21', '22' ]
+				] ) );
 
-				beforeEach( () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
-						} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
+				const tableUtils = editor.plugins.get( 'TableUtils' );
+				const spy = sinon.spy();
 
-							command = editor.commands.get( 'insertTableColumnRight' );
-							tableUtils = editor.plugins.get( 'TableUtils' );
-						} );
-				} );
+				tableUtils.on( 'insertColumns', () => {
+					model.change( writer => {
+						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+						const paragraph = writer.createElement( 'paragraph' );
 
-				afterEach( () => {
-					return editor.destroy();
-				} );
+						model.insertContent( paragraph, writer.createPositionBefore( table ) );
 
-				it(
-					'should pass the default cell styles to "TableUtils.insertColumns()" function if TableCellPropertiesEditing is enabled',
-					() => {
-						const insertColumnsStub = sinon.stub( tableUtils, 'insertColumns' ).callThrough();
-
-						setData( model, modelTable( [
-							[ '11[]' ],
-							[ '21' ]
+						assertEqualMarkup( getData( model ), '<paragraph></paragraph>' + modelTable( [
+							[ '11[]', '', '12' ],
+							[ '21', '', '22' ]
 						] ) );
+					} );
 
-						command.execute();
+					spy();
+				}, { priority: 'low' } );
 
-						expect( insertColumnsStub.callCount ).to.equal( 1 );
-						expect( insertColumnsStub.firstCall.args[ 1 ] ).to.deep.equal( {
-							columns: 1,
-							at: 1,
-							cellProperties: {
-								horizontalAlignment: 'center',
-								verticalAlignment: 'middle'
-							}
-						} );
-					}
-				);
+				command.execute();
 
-				it( 'should create the table and all cells should have applied the default cell properties', () => {
-					const defaultProperties = {
-						borderStyle: 'solid',
-						borderWidth: '2px',
-						borderColor: '#f00',
-						horizontalAlignment: 'right',
-						verticalAlignment: 'bottom'
-					};
+				expect( spy.calledOnce ).to.equal( true );
 
-					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
+				editor.execute( 'undo' );
 
-					// Apply default properties for the created table.
-					setData( model, modelTable( [
-						[ '11[]' ],
-						[ '21' ]
-					], { cellProperties: defaultProperties } ) );
-
-					command.execute();
-
-					assertEqualMarkup( getData( model ),
-						modelTable( [
-							[ '11[]', '' ],
-							[ '21', '' ]
-						], { cellProperties: defaultProperties } )
-					);
-				} );
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '11[]', '12' ],
+					[ '21', '22' ]
+				] ) );
 			} );
 		} );
 	} );
@@ -453,79 +417,6 @@ describe( 'InsertColumnCommand', () => {
 					[ '10', '11', '', { contents: '12', colspan: 2 }, '14', '15' ],
 					[ { contents: '20', colspan: 5 }, { contents: '24', colspan: 2 } ]
 				], { headingColumns: 5 } ) );
-			} );
-
-			describe( 'integration with TableCellPropertiesEditing', () => {
-				let editor, model, tableUtils, command;
-
-				beforeEach( () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
-						} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
-
-							command = editor.commands.get( 'insertTableColumnLeft' );
-							tableUtils = editor.plugins.get( 'TableUtils' );
-						} );
-				} );
-
-				afterEach( () => {
-					return editor.destroy();
-				} );
-
-				it(
-					'should pass the default cell styles to "TableUtils.insertColumns()" function if TableCellPropertiesEditing is enabled',
-					() => {
-						const insertColumnsStub = sinon.stub( tableUtils, 'insertColumns' ).callThrough();
-
-						setData( model, modelTable( [
-							[ '11[]' ],
-							[ '21' ]
-						] ) );
-
-						command.execute();
-
-						expect( insertColumnsStub.callCount ).to.equal( 1 );
-						expect( insertColumnsStub.firstCall.args[ 1 ] ).to.deep.equal( {
-							columns: 1,
-							at: 0,
-							cellProperties: {
-								horizontalAlignment: 'center',
-								verticalAlignment: 'middle'
-							}
-						} );
-					}
-				);
-
-				it( 'should create the table and all cells should have applied the default cell properties', () => {
-					const defaultProperties = {
-						borderStyle: 'solid',
-						borderWidth: '2px',
-						borderColor: '#f00',
-						horizontalAlignment: 'right',
-						verticalAlignment: 'bottom'
-					};
-
-					editor.config.set( 'table.tableCellProperties.defaultProperties', defaultProperties );
-
-					// Apply default properties for the created table.
-					setData( model, modelTable( [
-						[ '11[]' ],
-						[ '21' ]
-					], { cellProperties: defaultProperties } ) );
-
-					command.execute();
-
-					assertEqualMarkup( getData( model ),
-						modelTable( [
-							[ '', '11[]' ],
-							[ '', '21' ]
-						], { cellProperties: defaultProperties } )
-					);
-				} );
 			} );
 		} );
 	} );

@@ -24,6 +24,7 @@ import TableBorderWidthCommand from './commands/tableborderwidthcommand';
 import TableWidthCommand from './commands/tablewidthcommand';
 import TableHeightCommand from './commands/tableheightcommand';
 import TableAlignmentCommand from './commands/tablealignmentcommand';
+import TableUtils from '../tableutils';
 
 const ALIGN_VALUES_REG_EXP = /^(left|right)$/;
 
@@ -58,7 +59,7 @@ export default class TablePropertiesEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableEditing ];
+		return [ TableEditing, TableUtils ];
 	}
 
 	/**
@@ -91,6 +92,26 @@ export default class TablePropertiesEditing extends Plugin {
 		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor ) );
+
+		this._enableDefaultTableProperties();
+	}
+
+	/**
+	 * Enables applying the default table properties.
+	 *
+	 * @private
+	 */
+	_enableDefaultTableProperties() {
+		const editor = this.editor;
+		const tableProperties = editor.config.get( 'table.tableProperties.defaultProperties' );
+		const tableUtils = editor.plugins.get( TableUtils );
+
+		// Apply default table properties while creating a new table.
+		this.listenTo( tableUtils, 'createTable', ( evt, [ writer ] ) => {
+			const tableElement = evt.return;
+
+			writer.setAttributes( tableProperties, tableElement );
+		}, { priority: 'low' } );
 	}
 }
 
