@@ -2,6 +2,7 @@
 category: features
 menu-title: Block quote
 ---
+{@snippet features/block-quote-source}
 
 # Block quote
 
@@ -12,6 +13,8 @@ The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easil
 Use the editor below to see the block quote plugin in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
+
+{@snippet features/nested-block-quote}
 
 ## Related features
 
