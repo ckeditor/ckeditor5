@@ -7,7 +7,7 @@
  * @module table/converters/table-layout-post-fixer
  */
 
-import TableWalker from './../tablewalker';
+import TableWalker from '../tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
 
 /**

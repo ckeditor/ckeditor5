@@ -7,7 +7,7 @@
  * @module table/converters/downcast
  */
 
-import TableWalker from './../tablewalker';
+import TableWalker from '../tablewalker';
 import { setHighlightHandling, toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
 import { toArray } from 'ckeditor5/src/utils';
 

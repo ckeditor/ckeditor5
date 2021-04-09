@@ -86,6 +86,7 @@ export default class TableCellProperties extends Plugin {
  * 	 * `borderWidth` – sets the border width
  * 	 * `height` – sets the cell height
  * 	 * `horizontalAlignment` – sets the cell horizontal alignment
+ * 	 * `padding` – sets the cell padding
  * 	 * `verticalAlignment` – sets the cell vertical alignment
  * 	 * `width` – sets the cell width
  *

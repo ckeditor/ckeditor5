@@ -7,7 +7,19 @@
  * @module table/converters/table-layout-post-fixer
  */
 
-import TableWalker from './../tablewalker';
+import TableWalker from '../tablewalker';
+
+const TABLE_CELL_PROPERTIES = [
+	'borderStyle',
+	'borderColor',
+	'borderWidth',
+	'backgroundColor',
+	'padding',
+	'horizontalAlignment',
+	'verticalAlignment',
+	'width',
+	'height'
+];
 
 /**
  * Injects a table cell default properties post-fixer into the model.
@@ -61,7 +73,7 @@ function tableCellDefaultPropertiesPostFixer( writer, editor ) {
 			for ( const item of new TableWalker( table ) ) {
 				// ...check its cell properties...
 				if ( shouldApplyDefaultCellProperties( item.cell ) ) {
-					// ...and if cell has no properties, apply the default one.
+					// ...and if the cell has no properties, apply the default.
 					writer.setAttributes( cellProperties, item.cell );
 
 					wasFixed = true;
@@ -75,8 +87,14 @@ function tableCellDefaultPropertiesPostFixer( writer, editor ) {
 	return wasFixed;
 }
 
+// Checks whether the default properties should be applied for the specified cell.
+//
+// The default properties will be applied only if the cell does not contain any "visual" properties.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @returns {Boolean}
 function shouldApplyDefaultCellProperties( tableCell ) {
-	return [ ...tableCell.getAttributeKeys() ].filter( attributeName => {
-		return attributeName !== 'colspan' && attributeName !== 'rowspan';
-	} ).length === 0;
+	const attrs = [ ...tableCell.getAttributeKeys() ];
+
+	return attrs.some( attributeName => TABLE_CELL_PROPERTIES.includes( attributeName ) ) === false;
 }
