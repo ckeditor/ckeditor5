@@ -87,9 +87,7 @@ describe( 'table properties', () => {
 			} );
 
 			it( 'should define the default properties for a table', () => {
-				expect( tableProperties.defaultProperties ).to.deep.equal( {
-					alignment: 'center'
-				} );
+				expect( tableProperties.defaultProperties ).to.deep.equal( {} );
 			} );
 		} );
 

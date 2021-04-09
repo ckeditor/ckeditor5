@@ -93,10 +93,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should define the default properties for a table', () => {
-				expect( tableCellProperties.defaultProperties ).to.deep.equal( {
-					horizontalAlignment: 'center',
-					verticalAlignment: 'middle'
-				} );
+				expect( tableCellProperties.defaultProperties ).to.deep.equal( {} );
 			} );
 		} );
 

@@ -89,14 +89,6 @@ export default class TableCellProperties extends Plugin {
  * 	 * `verticalAlignment` – sets the cell vertical alignment
  * 	 * `width` – sets the cell width
  *
- * 	 The {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} plugin defines the default cell
- * 	 properties as specified below:
- *
- *		{
- *			"horizontalAlignment": "center",
- *			"verticalAlignment": "middle"
- *		}
- *
  * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
  * allowing users to pick colors in a more convenient way.

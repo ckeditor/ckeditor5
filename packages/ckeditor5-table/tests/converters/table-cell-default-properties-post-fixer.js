@@ -11,14 +11,28 @@ import TableEditing from '../../src/tableediting';
 import { modelTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
 
-describe( 'Table layout post-fixer', () => {
+describe( 'Table cell default properties post-fixer', () => {
 	let editor, model, root;
+
+	const defaultProperties = {
+		borderStyle: 'solid',
+		borderWidth: '2px',
+		borderColor: '#f00',
+		horizontalAlignment: 'right',
+		verticalAlignment: 'bottom'
+	};
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph, UndoEditing ]
+				plugins: [ TableEditing, Paragraph, UndoEditing, TableCellPropertiesEditing ],
+				table: {
+					tableCellProperties: {
+						defaultProperties
+					}
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -37,7 +51,7 @@ describe( 'Table layout post-fixer', () => {
 				[ '00' ],
 				[ '10', '11', '12' ],
 				[ '20', '21' ]
-			] ), model.schema );
+			], { cellProperties: defaultProperties } ), model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -48,26 +62,7 @@ describe( 'Table layout post-fixer', () => {
 				[ '00', '', '' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '' ]
-			] ) );
-		} );
-
-		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 1)', () => {
-			const parsed = parse( modelTable( [
-				[ '00', { rowspan: 2, contents: '10' } ],
-				[ '10', { colspan: 2, contents: '12' } ],
-				[ '20', '21' ]
-			] ), model.schema );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-				writer.insert( parsed, root );
-			} );
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '00', { rowspan: 2, contents: '10' }, '', '' ],
-				[ '10', { colspan: 2, contents: '12' } ],
-				[ '20', '21', '', '' ]
-			] ) );
+			], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 2)', () => {
@@ -75,7 +70,7 @@ describe( 'Table layout post-fixer', () => {
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
 				[ '21', '22' ]
-			] ), model.schema );
+			], { cellProperties: defaultProperties } ), model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -86,117 +81,7 @@ describe( 'Table layout post-fixer', () => {
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 				[ '21', '22', '', '', '' ]
-			] ) );
-		} );
-
-		it( 'should remove empty rows', () => {
-			const parsed = parse( modelTable( [
-				[ '00', '01' ],
-				[ ],
-				[ '20', '21', '22' ],
-				[ ]
-			] ), model.schema );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-				writer.insert( parsed, root );
-			} );
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '00', '01', '' ],
-				[ '20', '21', '22' ]
-			] ) );
-		} );
-
-		it( 'should fix the wrong rowspan attribute of a table cell inside the header', () => {
-			const parsed = parse( modelTable( [
-				[ { rowspan: 2, contents: '00' }, { rowspan: 3, contents: '01' }, '02' ],
-				[ { rowspan: 8, contents: '12' } ],
-				[ '20', '21', '22' ]
-			], { headingRows: 2 } ), model.schema );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-				writer.insert( parsed, root );
-			} );
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
-				[ '12' ],
-				[ '20', '21', '22' ]
-			], { headingRows: 2 } ) );
-		} );
-
-		it( 'should fix the wrong rowspan attribute of a table cell inside the body', () => {
-			const parsed = parse( modelTable( [
-				[ '00', '01', '02' ],
-				[ { rowspan: 2, contents: '10' }, { rowspan: 3, contents: '11' }, '12' ],
-				[ { rowspan: 8, contents: '22' } ]
-			], { headingRows: 1 } ), model.schema );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-				writer.insert( parsed, root );
-			} );
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '00', '01', '02' ],
-				[ { rowspan: 2, contents: '10' }, { rowspan: 2, contents: '11' }, '12' ],
-				[ '22' ]
-			], { headingRows: 1 } ) );
-		} );
-
-		it( 'should fix multiple tables', () => {
-			const tableA = modelTable( [
-				[ '11' ],
-				[ '21', '22' ]
-			] );
-			const tableB = modelTable( [
-				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ]
-			] );
-			const tableC = modelTable( [
-				[ 'xx' ],
-				[ 'yy', 'yy' ]
-			] );
-
-			const parsed = parse( tableA + tableB + tableC, model.schema );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-				writer.insert( parsed, root );
-			} );
-
-			const expectedTableA = modelTable( [
-				[ '11', '' ],
-				[ '21', '22' ]
-			] );
-			const expectedTableB = modelTable( [
-				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ]
-			] );
-			const expectedTableC = modelTable( [
-				[ 'xx', '' ],
-				[ 'yy', 'yy' ]
-			] );
-
-			const expectedTables = expectedTableA + expectedTableB + expectedTableC;
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), expectedTables );
-		} );
-
-		it( 'should not crash on table remove', () => {
-			setModelData( model, modelTable( [
-				[ '11', '12' ]
-			] ) );
-
-			expect( () => {
-				model.change( writer => {
-					writer.remove( writer.createRangeIn( root ) );
-				} );
-			} ).to.not.throw();
-
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			], { cellProperties: defaultProperties } ) );
 		} );
 	} );
 
@@ -206,7 +91,7 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => _removeColumn( writer, 1, [ 0, 1 ] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				// Table should have added empty cells.
@@ -214,13 +99,13 @@ describe( 'Table layout post-fixer', () => {
 					[ '00', '' ],
 					[ 'a', 'b' ],
 					[ '10', '' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				// Table will have empty column after undo.
 				modelTable( [
 					[ '00', '01', '' ],
 					[ 'a', 'b', '' ],
 					[ '10', '11', '' ]
-				] ) );
+				], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should add missing cells to columns (insert row vs remove column)', () => {
@@ -228,7 +113,7 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				writer => _removeColumn( writer, 1, [ 0, 2 ] ),
 				// There should be empty cells added.
@@ -236,12 +121,12 @@ describe( 'Table layout post-fixer', () => {
 					[ '00', '' ],
 					[ 'a', 'b' ],
 					[ '10', '' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				// Table will have empty column after undo.
 				modelTable( [
 					[ '00', '' ],
 					[ '10', '' ]
-				] ) );
+				], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should add empty cell to an added row (insert row vs insert column)', () => {
@@ -249,7 +134,7 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				writer => _insertColumn( writer, 1, [ 0, 2 ] ),
 				// There should be empty cells added.
@@ -257,12 +142,12 @@ describe( 'Table layout post-fixer', () => {
 					[ '00', '', '01' ],
 					[ 'a', 'b', '' ],
 					[ '10', '', '11' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				// Table will have empty column after undo.
 				modelTable( [
 					[ '00', '', '01' ],
 					[ '10', '', '11' ]
-				] ) );
+				], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should add empty cell to an added row (insert column vs insert row)', () => {
@@ -270,7 +155,7 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ '00[]', '01' ],
 					[ '10', '11' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => _insertColumn( writer, 1, [ 0, 1 ] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				// There should be empty cells added.
@@ -278,13 +163,13 @@ describe( 'Table layout post-fixer', () => {
 					[ '00', '', '01' ],
 					[ 'a', 'b', '' ],
 					[ '10', '', '11' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				// Table will have empty column after undo.
 				modelTable( [
 					[ '00', '01', '' ],
 					[ 'a', 'b', '' ],
 					[ '10', '11', '' ]
-				] ) );
+				], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should add empty cell when inserting column over a colspanned cell (insert column vs insert column)', () => {
@@ -292,7 +177,7 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ { colspan: 3, contents: '00' } ],
 					[ '10', '11', '12' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => {
 					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 2, [ 1 ] );
@@ -305,12 +190,12 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ { colspan: 4, contents: '00' }, '' ],
 					[ '10', '', '11', '', '12' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				// Table will have empty column after undo.
 				modelTable( [
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '', '11', '12' ]
-				] ) );
+				], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should add empty cell when inserting column over a colspanned cell (insert column vs insert column) - inverted', () => {
@@ -318,7 +203,7 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ { colspan: 3, contents: '00' } ],
 					[ '10', '11', '12' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => {
 					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 1, [ 1 ] );
@@ -331,12 +216,12 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ { colspan: 4, contents: '00' }, '' ],
 					[ '10', '', '11', '', '12' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				// Table will have empty column after undo.
 				modelTable( [
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '11', '', '12' ]
-				] ) );
+				], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should insert table cell on undo (change table headers on row with rowspanned cell vs remove row)', () => {
@@ -345,7 +230,7 @@ describe( 'Table layout post-fixer', () => {
 					[ '11', { rowspan: 2, contents: '12' }, '13' ],
 					[ '21', '23' ],
 					[ '31', '32', '33' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => {
 					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
 					_removeAttribute( writer, 'rowspan', [ 0, 0, 1 ] );
@@ -357,11 +242,11 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ '11', '12', '13' ],
 					[ '31', '32', '33' ]
-				], { headingRows: 1 } ),
+				], { headingRows: 1, cellProperties: defaultProperties } ),
 				modelTable( [
 					[ '11', { rowspan: 2, contents: '12' }, '13', '' ],
 					[ '31', '32', '33' ]
-				] ) );
+				], { cellProperties: defaultProperties } ) );
 		} );
 
 		it( 'should insert empty table cell (remove row vs change table headers on row with rowspanned cell)', () => {
@@ -370,7 +255,7 @@ describe( 'Table layout post-fixer', () => {
 					[ '11', { rowspan: 2, contents: '12' }, '13' ],
 					[ '21', '23' ],
 					[ '31', '32', '33' ]
-				] ),
+				], { cellProperties: defaultProperties } ),
 				writer => {
 					_removeRow( writer, 1 );
 				},
@@ -381,12 +266,12 @@ describe( 'Table layout post-fixer', () => {
 				modelTable( [
 					[ '11', '12', '13', '' ],
 					[ '31', '32', '33', '' ]
-				], { headingRows: 1 } ),
+				], { headingRows: 1, cellProperties: defaultProperties } ),
 				modelTable( [
 					[ '11', '12', '13', '' ],
 					[ '21', '23', '', '' ],
 					[ '31', '32', '33', '' ]
-				], { headingRows: 1 } ) );
+				], { headingRows: 1, cellProperties: defaultProperties } ) );
 		} );
 
 		function _testExternal( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {

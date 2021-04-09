@@ -23,6 +23,7 @@ import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand'
 import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
 import TableWalker from '../tablewalker';
 import TableUtils from '../tableutils';
+import injectTableCellDefaultPropertiesPostFixer from '../converters/table-cell-default-properties-post-fixer';
 
 const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
 
@@ -71,10 +72,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const conversion = editor.conversion;
 		const locale = editor.locale;
 
-		editor.config.define( 'table.tableCellProperties.defaultProperties', {
-			horizontalAlignment: 'center',
-			verticalAlignment: 'middle'
-		} );
+		editor.config.define( 'table.tableCellProperties.defaultProperties', {} );
 
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
@@ -103,6 +101,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 		editor.commands.add( 'tableCellVerticalAlignment', new TableCellVerticalAlignmentCommand( editor ) );
 
 		this._enableDefaultCellProperties();
+
+		injectTableCellDefaultPropertiesPostFixer( editor );
 	}
 
 	/**

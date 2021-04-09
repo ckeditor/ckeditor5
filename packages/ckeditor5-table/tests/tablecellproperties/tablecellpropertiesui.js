@@ -75,10 +75,7 @@ describe( 'table cell properties', () => {
 				expect( editor.config.get( 'table.tableCellProperties' ) ).to.deep.equal( {
 					borderColors: defaultColors,
 					backgroundColors: defaultColors,
-					defaultProperties: {
-						horizontalAlignment: 'center',
-						verticalAlignment: 'middle'
-					}
+					defaultProperties: {}
 				} );
 			} );
 		} );

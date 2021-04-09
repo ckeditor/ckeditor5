@@ -74,9 +74,7 @@ describe( 'table properties', () => {
 				expect( editor.config.get( 'table.tableProperties' ) ).to.deep.equal( {
 					borderColors: defaultColors,
 					backgroundColors: defaultColors,
-					defaultProperties: {
-						alignment: 'center'
-					}
+					defaultProperties: {}
 				} );
 			} );
 		} );

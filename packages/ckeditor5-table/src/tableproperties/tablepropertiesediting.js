@@ -70,9 +70,7 @@ export default class TablePropertiesEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
-		editor.config.define( 'table.tableProperties.defaultProperties', {
-			alignment: 'center'
-		} );
+		editor.config.define( 'table.tableProperties.defaultProperties', {} );
 
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );

@@ -146,7 +146,7 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
 		injectTableHeadingRowsRefreshPostFixer( model );
-		injectTableLayoutPostFixer( editor );
+		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model, editor.editing.mapper );
 		injectTableCellParagraphPostFixer( model );
 	}
