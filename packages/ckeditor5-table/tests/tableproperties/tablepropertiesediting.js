@@ -17,7 +17,7 @@ import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcomm
 import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand';
 import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand';
 
-import { setData as setModelData, getData as getModelData, setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableStyle, assertTRBLAttribute, modelTable } from '../_utils/utils';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
@@ -1281,7 +1281,7 @@ describe( 'table properties', () => {
 					.then( newEditor => {
 						editor = newEditor;
 						model = editor.model;
-						setData( model, '<paragraph>[]</paragraph>' );
+						setModelData( model, '<paragraph>[]</paragraph>' );
 					} );
 			} );
 
@@ -1292,7 +1292,7 @@ describe( 'table properties', () => {
 			it( 'should create a table with applied the default properties', () => {
 				editor.execute( 'insertTable' );
 
-				assertEqualMarkup( getData( model ),
+				assertEqualMarkup( getModelData( model ),
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]

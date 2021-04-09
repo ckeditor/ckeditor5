@@ -19,7 +19,7 @@ import TableCellVerticalAlignmentCommand from '../../src/tablecellproperties/com
 import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tablecellpaddingcommand';
 import TableCellBackgroundColorCommand from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand';
 
-import { getData, setData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableCellStyle, assertTRBLAttribute, modelTable } from '../_utils/utils';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
@@ -1290,7 +1290,7 @@ describe( 'table cell properties', () => {
 					.then( newEditor => {
 						editor = newEditor;
 						model = editor.model;
-						setData( model, '<paragraph>[]</paragraph>' );
+						setModelData( model, '<paragraph>[]</paragraph>' );
 					} );
 			} );
 
@@ -1301,7 +1301,7 @@ describe( 'table cell properties', () => {
 			it( 'should create a table and all cells should have applied the default cell properties', () => {
 				editor.execute( 'insertTable' );
 
-				assertEqualMarkup( getData( model ),
+				assertEqualMarkup( getModelData( model ),
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
@@ -1313,7 +1313,7 @@ describe( 'table cell properties', () => {
 				editor.execute( 'insertTable' );
 				editor.execute( 'insertTableColumnRight' );
 
-				assertEqualMarkup( getData( model ),
+				assertEqualMarkup( getModelData( model ),
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ]
@@ -1325,7 +1325,7 @@ describe( 'table cell properties', () => {
 				editor.execute( 'insertTable' );
 				editor.execute( 'insertTableColumnLeft' );
 
-				assertEqualMarkup( getData( model ),
+				assertEqualMarkup( getModelData( model ),
 					modelTable( [
 						[ '', '[]', '' ],
 						[ '', '', '' ]
@@ -1337,7 +1337,7 @@ describe( 'table cell properties', () => {
 				editor.execute( 'insertTable' );
 				editor.execute( 'insertTableRowAbove' );
 
-				assertEqualMarkup( getData( model ),
+				assertEqualMarkup( getModelData( model ),
 					modelTable( [
 						[ '', '' ],
 						[ '[]', '' ],
@@ -1350,7 +1350,7 @@ describe( 'table cell properties', () => {
 				editor.execute( 'insertTable' );
 				editor.execute( 'insertTableRowBelow' );
 
-				assertEqualMarkup( getData( model ),
+				assertEqualMarkup( getModelData( model ),
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ],
