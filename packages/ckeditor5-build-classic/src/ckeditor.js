@@ -31,6 +31,9 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
+import Alignment from '@ckeditor/ckeditor5-alignment';
+import Font from '@ckeditor/ckeditor5-font';
+
 export default class ClassicEditor extends ClassicEditorBase {}
 
 // Plugins to include in the build.
@@ -58,7 +61,9 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	Alignment,
+	Font
 ];
 
 // Editor configuration.
@@ -67,8 +72,16 @@ ClassicEditor.defaultConfig = {
 		items: [
 			'heading',
 			'|',
+			'fontSize',
+			'fontFamily',
+			'fontColor',
+			'fontBackgroundColor',
+			'|',
 			'bold',
 			'italic',
+			'|',
+			'alignment',
+			'|',
 			'link',
 			'bulletedList',
 			'numberedList',
@@ -99,6 +112,9 @@ ClassicEditor.defaultConfig = {
 			'mergeTableCells'
 		]
 	},
+	alignment: {
+		options: [ 'left', 'right', 'center' ]
+	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+	language: 'vi'
 };
