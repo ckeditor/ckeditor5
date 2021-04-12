@@ -57,7 +57,7 @@ export function getSelectedImageWidget( selection ) {
 			return viewElement;
 		}
 		// If a selected inline image widget is the only child of a link, the selection will encompass
-		// that link. But this still counts as a selected image widget.
+		// that link. But this still counts as a selected image widget. This is what it looks like:
 		// [<a href="..."><span class="image-inline ck-widget ck-widget_selected"><img ... /></span></a>]
 		else if ( viewElement.is( 'element', 'a' ) && viewElement.childCount === 1 ) {
 			const firstChild = viewElement.getChild( 0 );

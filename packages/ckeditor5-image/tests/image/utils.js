@@ -38,7 +38,8 @@ import {
 	isInlineImageView,
 	isBlockImageView,
 	determineImageTypeForInsertionAtSelection,
-	getImageTypeMatcher
+	getImageTypeMatcher,
+	createImageViewElement
 } from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
@@ -114,6 +115,56 @@ describe( 'image widget utils', () => {
 			frag = writer.createDocumentFragment( [ element, notWidgetizedElement ] );
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
+
+			expect( getSelectedImageWidget( selection ) ).to.be.null;
+		} );
+
+		it( 'should return true when an inline image widget is encompassed by a link', () => {
+			const paragraph = writer.createContainerElement( 'p' );
+			const inlineImageView = createImageViewElement( writer, 'imageInline' );
+			toImageWidget( inlineImageView, writer, 'image widget' );
+
+			writer.insert( writer.createPositionAt( paragraph, 0 ), inlineImageView );
+
+			writer.wrap( writer.createRangeOn( inlineImageView ), writer.createAttributeElement( 'a', {
+				href: 'https://ckeditor.com'
+			} ) );
+
+			// <p>[<a href="..."><span class="image-inline ...">...</span></a>]</p>
+			const selection = writer.createSelection( writer.createRangeOn( inlineImageView.parent ) );
+
+			expect( getSelectedImageWidget( selection ) ).to.equal( inlineImageView );
+		} );
+
+		it( 'should return false when an inline image widget is encompassed by a link that has some additional content', () => {
+			const paragraph = writer.createContainerElement( 'p' );
+			const inlineImageView = createImageViewElement( writer, 'imageInline' );
+			toImageWidget( inlineImageView, writer, 'image widget' );
+
+			writer.insert( writer.createPositionAt( paragraph, 0 ), inlineImageView );
+			writer.insert( writer.createPositionAt( paragraph, 1 ), writer.createText( 'foo' ) );
+
+			writer.wrap( writer.createRangeIn( paragraph ), writer.createAttributeElement( 'a', {
+				href: 'https://ckeditor.com'
+			} ) );
+
+			// <p>[<a href="..."><span class="image-inline ...">...</span>foo</a>]</p>
+			const selection = writer.createSelection( writer.createRangeOn( inlineImageView.parent ) );
+
+			expect( getSelectedImageWidget( selection ) ).to.be.null;
+		} );
+
+		it( 'should return false when a link that does not have an image but something else is selected', () => {
+			const paragraph = writer.createContainerElement( 'p' );
+
+			writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foo' ) );
+
+			writer.wrap( writer.createRangeIn( paragraph ), writer.createAttributeElement( 'a', {
+				href: 'https://ckeditor.com'
+			} ) );
+
+			// <p>[<a href="...">foo</a>]</p>
+			const selection = writer.createSelection( writer.createRangeOn( paragraph.getChild( 0 ) ) );
 
 			expect( getSelectedImageWidget( selection ) ).to.be.null;
 		} );
