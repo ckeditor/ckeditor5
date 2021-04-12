@@ -80,8 +80,8 @@
 
 		/*
 		 * Make sure the native browser selection style is not displayed.
-		 * Inline image widget have their own selected styles leaving it up to
-		 * the browser means a visual collision.
+		 * Inline image widgets have their own styles for the selected state and
+		 * leaving this up to the browser is asking for a visual collision.
 		 */
 		& ::selection {
 			display: none;
