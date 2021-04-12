@@ -65,8 +65,13 @@ export default class UploadImageCommand extends Command {
 		const selection = this.editor.model.document.selection;
 
 		// In case of multiple files, each file (starting from the 2nd) will be inserted at a position that
-		// follows the previous one. That will move the selection and to stay on the safe side and make sure
-		// all images inherit all selection attributes, they are collected beforehand.
+		// follows the previous one. That will move the selection and, to stay on the safe side and make sure
+		// all images inherit the same selection attributes, they are collected beforehand.
+		//
+		// Applying these attributes ensures, for instance, that inserting an (inline) image into a link does
+		// not split that link but preserves its continuity.
+		//
+		// Note: Selection attributes that do not make sense for images will be filtered out by insertImage() anyway.
 		const selectionAttributes = Object.fromEntries( selection.getAttributes() );
 
 		files.forEach( ( file, index ) => {

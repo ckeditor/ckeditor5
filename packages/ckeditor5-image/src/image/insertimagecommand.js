@@ -87,8 +87,13 @@ export default class InsertImageCommand extends Command {
 		const sources = toArray( options.source );
 		const selection = this.editor.model.document.selection;
 
-		// Collect selection attributes to make sure, for instance, that inserting an (inline) image into
-		// a link does not split that link but preserves its continuity.
+		// In case of multiple images, each image (starting from the 2nd) will be inserted at a position that
+		// follows the previous one. That will move the selection and, to stay on the safe side and make sure
+		// all images inherit the same selection attributes, they are collected beforehand.
+		//
+		// Applying these attributes ensures, for instance, that inserting an (inline) image into a link does
+		// not split that link but preserves its continuity.
+		//
 		// Note: Selection attributes that do not make sense for images will be filtered out by insertImage() anyway.
 		const selectionAttributes = Object.fromEntries( selection.getAttributes() );
 
