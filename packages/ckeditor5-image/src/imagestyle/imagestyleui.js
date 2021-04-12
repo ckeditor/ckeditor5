@@ -150,6 +150,9 @@ export default class ImageStyleUI extends Plugin {
 				}
 			} );
 
+			dropdownView.bind( 'isEnabled' )
+				.toMany( buttonViews, 'isEnabled', ( ...areEnabled ) => !!areEnabled.find( isEnabled => isEnabled ) );
+
 			return dropdownView;
 		} );
 	}
