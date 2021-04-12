@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
@@ -28,7 +29,7 @@ describe( 'AutoImage - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Typing, Paragraph, Link, Image, ImageCaption, AutoImage ]
+				plugins: [ Typing, Paragraph, Link, Image, LinkImage, ImageCaption, AutoImage ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -330,6 +331,21 @@ describe( 'AutoImage - integration', () => {
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
 				'<paragraph>[<imageInline src="http://example.com/image2.png"></imageInline>]</paragraph>' +
 				'<paragraph>Bar.</paragraph>'
+			);
+		} );
+
+		it( 'should insert an image into a link and preserve its continuity (LinkImage integration)', () => {
+			setData( editor.model, '<paragraph><$text linkHref="https://cksource.com">linked[]text</$text></paragraph>' );
+			pasteHtml( editor, 'http://example.com/image.png' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="https://cksource.com">linked</$text>' +
+					'[<imageInline linkHref="https://cksource.com" src="http://example.com/image.png"></imageInline>]' +
+					'<$text linkHref="https://cksource.com">text</$text>' +
+				'</paragraph>'
 			);
 		} );
 	} );
