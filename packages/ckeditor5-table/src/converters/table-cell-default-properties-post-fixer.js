@@ -7,8 +7,6 @@
  * @module table/converters/table-layout-post-fixer
  */
 
-import TableWalker from '../tablewalker';
-
 const TABLE_CELL_PROPERTIES = [
 	'borderStyle',
 	'borderColor',
@@ -48,39 +46,37 @@ function tableCellDefaultPropertiesPostFixer( writer, editor ) {
 
 	let wasFixed = false;
 
-	// Do not analyze the same table more then once - may happen for multiple changes in the same table.
-	const analyzedTables = new Set();
-
 	for ( const entry of changes ) {
-		let table;
-
-		if ( entry.name == 'table' && entry.type == 'insert' ) {
-			table = entry.position.nodeAfter;
+		if ( entry.type != 'insert' ) {
+			continue;
 		}
 
 		// Fix table on adding/removing table cells and rows.
 		if ( entry.name == 'tableRow' ) {
-			table = entry.position.findAncestor( 'table' );
-		}
+			const tableRow = entry.position.nodeAfter;
 
-		// Fix table on adding/removing table cells and rows.
-		if ( entry.name == 'tableCell' ) {
-			table = entry.position.findAncestor( 'table' );
-		}
-
-		if ( table && !analyzedTables.has( table ) ) {
-			// For each cell in the table...
-			for ( const item of new TableWalker( table ) ) {
+			// For each cell in the table row...
+			for ( const tableCell of tableRow.getChildren() ) {
 				// ...check its cell properties...
-				if ( shouldApplyDefaultCellProperties( item.cell ) ) {
+				if ( shouldApplyDefaultCellProperties( tableCell ) ) {
 					// ...and if the cell has no properties, apply the default.
-					writer.setAttributes( cellProperties, item.cell );
+					writer.setAttributes( cellProperties, tableCell );
 
 					wasFixed = true;
 				}
 			}
+		}
 
-			analyzedTables.add( table );
+		// Fix table cell on adding/removing table cells and rows.
+		if ( entry.name == 'tableCell' ) {
+			const tableCell = entry.position.nodeAfter;
+
+			if ( shouldApplyDefaultCellProperties( tableCell ) ) {
+				// ...and if the cell has no properties, apply the default.
+				writer.setAttributes( cellProperties, tableCell );
+
+				wasFixed = true;
+			}
 		}
 	}
 

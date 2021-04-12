@@ -45,46 +45,6 @@ describe( 'Table cell default properties post-fixer', () => {
 		editor.destroy();
 	} );
 
-	describe( 'on insert table', () => {
-		it( 'should add missing columns to tableRows that are shorter then the longest table row', () => {
-			const parsed = parse( modelTable( [
-				[ '00' ],
-				[ '10', '11', '12' ],
-				[ '20', '21' ]
-			], { cellProperties: defaultProperties } ), model.schema );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-				writer.insert( parsed, root );
-			} );
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '00', '', '' ],
-				[ '10', '11', '12' ],
-				[ '20', '21', '' ]
-			], { cellProperties: defaultProperties } ) );
-		} );
-
-		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 2)', () => {
-			const parsed = parse( modelTable( [
-				[ { colspan: 6, contents: '00' } ],
-				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
-				[ '21', '22' ]
-			], { cellProperties: defaultProperties } ), model.schema );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-				writer.insert( parsed, root );
-			} );
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ { colspan: 6, contents: '00' } ],
-				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
-				[ '21', '22', '', '', '' ]
-			], { cellProperties: defaultProperties } ) );
-		} );
-	} );
-
 	describe( 'on collaboration', () => {
 		it( 'should add missing cells to columns (remove column vs insert row)', () => {
 			_testExternal(
@@ -224,56 +184,6 @@ describe( 'Table cell default properties post-fixer', () => {
 				], { cellProperties: defaultProperties } ) );
 		} );
 
-		it( 'should insert table cell on undo (change table headers on row with rowspanned cell vs remove row)', () => {
-			_testExternal(
-				modelTable( [
-					[ '11', { rowspan: 2, contents: '12' }, '13' ],
-					[ '21', '23' ],
-					[ '31', '32', '33' ]
-				], { cellProperties: defaultProperties } ),
-				writer => {
-					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
-					_removeAttribute( writer, 'rowspan', [ 0, 0, 1 ] );
-					_insertCell( writer, 1, 1 );
-				},
-				writer => {
-					_removeRow( writer, 1 );
-				},
-				modelTable( [
-					[ '11', '12', '13' ],
-					[ '31', '32', '33' ]
-				], { headingRows: 1, cellProperties: defaultProperties } ),
-				modelTable( [
-					[ '11', { rowspan: 2, contents: '12' }, '13', '' ],
-					[ '31', '32', '33' ]
-				], { cellProperties: defaultProperties } ) );
-		} );
-
-		it( 'should insert empty table cell (remove row vs change table headers on row with rowspanned cell)', () => {
-			_testExternal(
-				modelTable( [
-					[ '11', { rowspan: 2, contents: '12' }, '13' ],
-					[ '21', '23' ],
-					[ '31', '32', '33' ]
-				], { cellProperties: defaultProperties } ),
-				writer => {
-					_removeRow( writer, 1 );
-				},
-				writer => {
-					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
-					_removeAttribute( writer, 'rowspan', [ 0, 0, 1 ] );
-				},
-				modelTable( [
-					[ '11', '12', '13', '' ],
-					[ '31', '32', '33', '' ]
-				], { headingRows: 1, cellProperties: defaultProperties } ),
-				modelTable( [
-					[ '11', '12', '13', '' ],
-					[ '21', '23', '', '' ],
-					[ '31', '32', '33', '' ]
-				], { headingRows: 1, cellProperties: defaultProperties } ) );
-		} );
-
 		function _testExternal( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {
 			setModelData( model, initialData );
 
@@ -303,13 +213,6 @@ describe( 'Table cell default properties post-fixer', () => {
 			}
 		}
 
-		function _removeRow( writer, rowIndex ) {
-			const table = root.getChild( 0 );
-			const tableRow = table.getChild( rowIndex );
-
-			writer.remove( tableRow );
-		}
-
 		function _insertRow( writer, rowIndex, rowData ) {
 			const table = root.getChild( 0 );
 
@@ -321,25 +224,10 @@ describe( 'Table cell default properties post-fixer', () => {
 			writer.insert( parsedTable.getChild( 0 ), table, rowIndex );
 		}
 
-		function _insertCell( writer, rowIndex, index ) {
-			const table = root.getChild( 0 );
-			const tableRow = table.getChild( rowIndex );
-
-			const tableCell = writer.createElement( 'tableCell' );
-			writer.insert( tableCell, tableRow, index );
-			writer.insertElement( 'paragraph', tableCell );
-		}
-
 		function _setAttribute( writer, attributeKey, attributeValue, path ) {
 			const node = root.getNodeByPath( path );
 
 			writer.setAttribute( attributeKey, attributeValue, node );
-		}
-
-		function _removeAttribute( writer, attributeKey, path ) {
-			const node = root.getNodeByPath( path );
-
-			writer.removeAttribute( attributeKey, node );
 		}
 
 		function _insertColumn( writer, columnIndex, rows ) {
