@@ -7,7 +7,7 @@
  * @module table/tableutils
  */
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
 import TableWalker from './tablewalker';
@@ -348,8 +348,11 @@ export default class TableUtils extends Plugin {
 		const model = this.editor.model;
 
 		const rowsToRemove = options.rows || 1;
+		const rowCount = this.getRows( table );
 		const first = options.at;
-		const last = first + rowsToRemove - 1;
+
+		// Make sure we are not removing too much, e.g. non-row elements at the end of the table.
+		const last = Math.min( first + rowsToRemove - 1, rowCount - 1 );
 
 		model.change( writer => {
 			// Removing rows from the table require that most calculations to be done prior to changing table structure.
@@ -493,6 +496,10 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} numberOfCells
 	 */
 	splitCellVertically( tableCell, numberOfCells = 2 ) {
+		if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+			return;
+		}
+
 		const model = this.editor.model;
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
@@ -629,6 +636,10 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} numberOfCells
 	 */
 	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
+		if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+			return;
+		}
+
 		const model = this.editor.model;
 
 		const tableRow = tableCell.parent;
