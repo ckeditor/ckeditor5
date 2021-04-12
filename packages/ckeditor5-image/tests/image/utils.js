@@ -23,6 +23,7 @@ import Image from '../../src/image';
 import ImageEditing from '../../src/image/imageediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 
 import {
 	toImageWidget,
@@ -38,7 +39,8 @@ import {
 	isInlineImageView,
 	isBlockImageView,
 	determineImageTypeForInsertionAtSelection,
-	getImageTypeMatcher
+	getImageTypeMatcher,
+	getCorrelatedImage
 } from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
@@ -888,6 +890,73 @@ describe( 'image widget utils', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'getCorrelatedImage()', () => {
+		let model;
+
+		beforeEach( async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph, ImageCaptionEditing ]
+			} );
+
+			model = editor.model;
+
+			model.schema.register( 'blockWidget', {
+				isObject: true,
+				allowIn: '$root'
+			} );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'blockWidget', view: 'blockWidget' } );
+		} );
+
+		it( 'should return null if no element is selected and the selection has no image ancestor', () => {
+			setModelData( model, '<paragraph>F[]oo</paragraph>' );
+
+			expect( getCorrelatedImage( model.document.selection ) ).to.be.null;
+		} );
+
+		it( 'should return null if a non-image element is selected', () => {
+			setModelData( model, '[<blockWidget></blockWidget>]' );
+
+			expect( getCorrelatedImage( model.document.selection ) ).to.be.null;
+		} );
+
+		it( 'should return an imageInline element if it is selected', () => {
+			setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+
+			const image = getCorrelatedImage( model.document.selection );
+
+			expect( image ).to.be.instanceOf( ModelElement );
+			expect( image.name ).to.equal( 'imageInline' );
+		} );
+
+		it( 'should return an image element if it is selected', () => {
+			setModelData( model, '[<image></image>]' );
+
+			const image = getCorrelatedImage( model.document.selection );
+
+			expect( image ).to.be.instanceOf( ModelElement );
+			expect( image.name ).to.equal( 'image' );
+		} );
+
+		it( 'should return a image element if the selection range is inside its caption', () => {
+			setModelData( model, '<image><caption>F[oo]</caption></image>' );
+
+			const image = getCorrelatedImage( model.document.selection );
+
+			expect( image ).to.be.instanceOf( ModelElement );
+			expect( image.name ).to.equal( 'image' );
+		} );
+
+		it( 'should return a image element if the selection position is inside its caption', () => {
+			setModelData( model, '<image><caption>Foo[]</caption></image>' );
+
+			const image = getCorrelatedImage( model.document.selection );
+
+			expect( image ).to.be.instanceOf( ModelElement );
+			expect( image.name ).to.equal( 'image' );
 		} );
 	} );
 } );
