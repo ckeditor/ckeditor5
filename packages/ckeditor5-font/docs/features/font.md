@@ -22,7 +22,7 @@ The {@link module:font/font~Font} plugin provides extended text formatting optio
 ## Related features
 
 Here are some more CKEditor 5 features that can help you format your content:
-* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
