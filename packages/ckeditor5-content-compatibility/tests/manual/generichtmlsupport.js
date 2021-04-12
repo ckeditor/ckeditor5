@@ -14,6 +14,7 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 
 import DataSchema from '../../src/dataschema';
 import DataFilter from '../../src/datafilter';
@@ -66,6 +67,9 @@ class ExtendHTMLSupport extends Plugin {
 		dataFilter.allowAttributes( { name: /^(span|cite)$/, styles: { color: /[\s\S]+/ } } );
 		dataFilter.disallowAttributes( { name: /^(span|cite)$/, styles: { color: 'red' } } );
 
+		dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-order-id': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-item-id': /[\s\S]+/ } } );
+
 		// Allow existing features.
 		dataFilter.allowElement( { name: 'p' } );
 		dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': /[\s\S]+/ } } );
@@ -76,12 +80,26 @@ class ExtendHTMLSupport extends Plugin {
 
 		dataFilter.allowElement( { name: 'li' } );
 		dataFilter.allowAttributes( { name: 'li', styles: { 'color': /[\s\S]+/ } } );
+
+		dataFilter.allowElement( { name: 'a' } );
+		dataFilter.allowAttributes( { name: 'a', styles: { 'background-color': /[\s\S]+/ } } );
+
+		dataFilter.allowElement( { name: 'strong' } );
+		dataFilter.allowAttributes( { name: 'strong', styles: { 'font-weight': /[\s\S]+/ } } );
+
+		dataFilter.allowElement( { name: 'i' } );
+		dataFilter.allowAttributes( { name: 'i', styles: { 'color': /[\s\S]+/ } } );
+		dataFilter.allowAttributes( { name: 'i', attributes: { 'data-foo': /[\s\S]+/ } } );
+
+		dataFilter.allowElement( { name: 's' } );
+		dataFilter.allowAttributes( { name: 's', styles: { 'color': /[\s\S]+/ } } );
 	}
 }
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
+			Link,
 			BlockQuote,
 			Bold,
 			Essentials,

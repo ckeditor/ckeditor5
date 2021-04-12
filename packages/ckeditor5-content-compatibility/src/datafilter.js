@@ -320,7 +320,7 @@ export default class DataFilter {
 				}
 
 				const { writer } = conversionApi;
-				const viewElement = writer.createAttributeElement( viewName );
+				const viewElement = writer.createAttributeElement( viewName, null, { priority: definition.priority } );
 
 				setViewElementAttributes( writer, attributeValue, viewElement );
 
