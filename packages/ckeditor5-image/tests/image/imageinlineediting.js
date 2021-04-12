@@ -10,6 +10,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
@@ -641,7 +642,7 @@ describe( 'ImageInlineEditing', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ ImageInlineEditing, ImageBlockEditing, ImageCaption, Clipboard, Paragraph ]
+				plugins: [ ImageInlineEditing, ImageBlockEditing, ImageCaption, Clipboard, LinkImage, Paragraph ]
 			} );
 
 			model = editor.model;
@@ -772,6 +773,21 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline alt="abc" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'should preserve image link when converting to an inline image (LinkImage integration)', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><a href="https://cksource.com"><img src="/assets/sample.png" /></a></figure>'
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f<imageInline linkHref="https://cksource.com" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 	} );
