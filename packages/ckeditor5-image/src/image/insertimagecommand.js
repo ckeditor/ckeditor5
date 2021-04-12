@@ -86,6 +86,10 @@ export default class InsertImageCommand extends Command {
 	execute( options ) {
 		const sources = toArray( options.source );
 		const selection = this.editor.model.document.selection;
+
+		// Collect selection attributes to make sure, for instance, that inserting an (inline) image into
+		// a link does not split that link but preserves its continuity.
+		// Note: Selection attributes that do not make sense for images will be filtered out by insertImage() anyway.
 		const selectionAttributes = Object.fromEntries( selection.getAttributes() );
 
 		sources.forEach( ( src, index ) => {
