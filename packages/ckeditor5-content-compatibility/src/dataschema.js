@@ -49,19 +49,22 @@ export default class DataSchema {
 		this._definitions = new Map();
 
 		// Block elements.
-		this.registerBlockElementFeature( {
+		this.registerBlockElement( {
 			model: 'paragraph',
-			view: 'p'
+			view: 'p',
+			isFeature: true
 		} );
 
-		this.registerBlockElementFeature( {
+		this.registerBlockElement( {
 			model: 'blockQuote',
-			view: 'blockquote'
+			view: 'blockquote',
+			isFeature: true
 		} );
 
-		this.registerBlockElementFeature( {
+		this.registerBlockElement( {
 			model: 'listItem',
-			view: 'li'
+			view: 'li',
+			isFeature: true
 		} );
 
 		this.registerBlockElement( {
@@ -144,6 +147,27 @@ export default class DataSchema {
 
 		// Inline elements.
 		this.registerInlineElement( {
+			view: 'a',
+			model: 'htmlA',
+			priority: 5
+		} );
+
+		this.registerInlineElement( {
+			view: 'strong',
+			model: 'htmlStrong'
+		} );
+
+		this.registerInlineElement( {
+			view: 'i',
+			model: 'htmlI'
+		} );
+
+		this.registerInlineElement( {
+			view: 's',
+			model: 'htmlS'
+		} );
+
+		this.registerInlineElement( {
 			view: 'span',
 			model: 'htmlSpan',
 			attributeProperties: {
@@ -175,16 +199,11 @@ export default class DataSchema {
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	registerInlineElement( definition ) {
-		this._definitions.set( definition.model, { ...definition, isInline: true } );
-	}
-
-	/**
-	 * Add new data schema definition to extend existing editor's model block element feature.
-	 *
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
-	 */
-	registerBlockElementFeature( definition ) {
-		this.registerBlockElement( { ...definition, isFeature: true } );
+		this._definitions.set( definition.model, {
+			priority: 10,
+			...definition,
+			isInline: true
+		} );
 	}
 
 	/**
@@ -274,7 +293,6 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
- * @property {Boolean} [isFeature=false] Indicates if data schema should extend existing editor feature.
  */
 
 /**
@@ -285,6 +303,7 @@ function testViewName( pattern, viewName ) {
  * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
  * @property {Boolean} isBlock Indicates that the definition describes block element.
+ * @property {Boolean} [isFeature=false] Indicates if data schema should extend existing editor feature.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
@@ -296,6 +315,8 @@ function testViewName( pattern, viewName ) {
  * @property {String} view Name of the view element.
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
  * @property {Boolean} isInline Indicates that the definition descibes inline element.
+ * @property {Number} [priority=10] Element priority. Decides in what order elements are wrapped by
+ * {@link module:engine/view/downcastwriter~DowncastWriter}.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */

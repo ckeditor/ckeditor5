@@ -35,6 +35,7 @@ describe( 'DataSchema', () => {
 			expect( Array.from( result ) ).to.deep.equal( [ {
 				model: 'htmlDef',
 				view: 'def',
+				priority: 10,
 				isInline: true
 			} ] );
 		} );
@@ -53,9 +54,23 @@ describe( 'DataSchema', () => {
 			expect( Array.from( result ) ).to.deep.equal( [ {
 				model: 'htmlDef',
 				view: 'def',
+				priority: 10,
 				attributeProperties: {
 					copyOnEnter: true
 				},
+				isInline: true
+			} ] );
+		} );
+
+		it( 'should preserve custom priority', () => {
+			dataSchema.registerInlineElement( { model: 'htmlDef', view: 'def', priority: 7 } );
+
+			const result = dataSchema.getDefinitionsForView( 'def' );
+
+			expect( Array.from( result ) ).to.deep.equal( [ {
+				model: 'htmlDef',
+				view: 'def',
+				priority: 7,
 				isInline: true
 			} ] );
 		} );
@@ -81,6 +96,7 @@ describe( 'DataSchema', () => {
 			{
 				view: 'def3',
 				model: 'htmlDef3',
+				isFeature: true,
 				modelSchema: {
 					inheritTypesFrom: 'htmlDef2'
 				}
@@ -192,28 +208,5 @@ describe( 'DataSchema', () => {
 			// It's expected that definition will include `isBlock` property.
 			return getFakeDefinitions( ...viewNames ).map( def => ( { ...def, isBlock: true } ) );
 		}
-	} );
-
-	describe( 'registerBlockElementFeature()', () => {
-		it( 'should register proper definition', () => {
-			dataSchema.registerBlockElementFeature( { model: 'paragraph', view: 'p' } );
-
-			const result = dataSchema.getDefinitionsForView( 'p' );
-
-			expect( Array.from( result ) ).to.deep.equal( [ {
-				model: 'paragraph',
-				view: 'p',
-				isBlock: true,
-				isFeature: true
-			} ] );
-		} );
-
-		it( 'should use registerBlockElement()', () => {
-			const spy = sinon.spy( dataSchema, 'registerBlockElement' );
-
-			dataSchema.registerBlockElementFeature( { model: 'paragraph', view: 'p' } );
-
-			expect( spy.calledOnce ).to.be.true;
-		} );
 	} );
 } );

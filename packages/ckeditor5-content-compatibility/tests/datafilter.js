@@ -5,6 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -21,7 +22,7 @@ describe( 'DataFilter', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, FontColorEditing ]
+				plugins: [ Paragraph, FontColorEditing, LinkEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -382,7 +383,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should not convert attributes if the model schema item definition is not registered', () => {
-			dataSchema.registerBlockElementFeature( { view: 'xyz', model: 'modelXyz' } );
+			dataSchema.registerBlockElement( { view: 'xyz', model: 'modelXyz', isFeature: true } );
 
 			dataFilter.allowElement( { name: 'xyz' } );
 			dataFilter.allowAttributes( { name: 'xyz', attributes: { 'data-foo': 'foo' } } );
@@ -759,6 +760,29 @@ describe( 'DataFilter', () => {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			editor.getData( '<p>foobar</p>' );
+		} );
+
+		it( 'should use correct priority level for existing features', () => {
+			// 'a' element is registered by data schema with priority 5.
+			// We are checking if this element will be correctly nested due to different
+			// AttributeElement priority than default.
+			dataFilter.allowElement( { name: 'a' } );
+			dataFilter.allowAttributes( { name: 'a', attributes: { 'data-foo': 'foo' } } );
+
+			editor.setData( '<p><a href="example.com" data-foo="foo">link</a></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlA="(1)" linkHref="example.com">link</$text></paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foo'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><a href="example.com" data-foo="foo">link</a></p>' );
 		} );
 	} );
 
