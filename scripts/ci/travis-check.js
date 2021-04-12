@@ -23,15 +23,15 @@ const MAGENTA = '\x1B[35;1m';
 const NO_COLOR = '\x1B[0m';
 
 // Tests + Code coverage.
-if ( TRAVIS_JOB_TYPE === 'Coverage' ) {
-	console.log( `\n${ CYAN }Running the "Coverage" build.${ NO_COLOR }\n` );
+if ( TRAVIS_JOB_TYPE === 'Tests' ) {
+	console.log( `\n${ CYAN }Running the "Tests" build.${ NO_COLOR }\n` );
 
 	exec( 'node', './scripts/ci/check-packages-code-coverage.js' );
 }
 
 // Verifying the code style.
-if ( TRAVIS_JOB_TYPE === 'Validate' ) {
-	console.log( `\n${ CYAN }Running the "Validate" build.${ NO_COLOR }\n` );
+if ( TRAVIS_JOB_TYPE === 'Validation' ) {
+	console.log( `\n${ CYAN }Running the "Validation" build.${ NO_COLOR }\n` );
 
 	// Linters.
 	exec( 'yarn', 'run', 'lint' );
