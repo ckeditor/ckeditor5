@@ -21,7 +21,7 @@ Sometimes it is necessary to nest a block quote into another block quote. This m
 {@snippet features/nested-block-quote}
 
 <info-box>
-	If you would want to disallow nesting tables in your editor, see the {@link features/block-quote#disallowing-nesting-block-quotes disallowing nesting block quotes} section to learn how to disable this functionality.
+	If you would want to block the possibility to nest block quotes in your editor, refer to the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section to learn how to disable this functionality.
 </info-box>
 
 ## Related features
