@@ -247,14 +247,16 @@ export default class DataController {
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
-		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
-			// Then, if a document element is converted, convert markers.
-			// From all document markers, get those, which "intersect" with the converter element.
-			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
+		// Convert markers.
+		// For document fragment, simply take the markers assigned to this document fragment.
+		// For model element, we need to check in which markers is that element and relatively modify the range's paths.
+		// For model root, all markers in that root will be taken.
+		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
+			Array.from( modelElementOrFragment.markers ) :
+			_getMarkersRelativeToElement( modelElementOrFragment );
 
-			for ( const [ name, range ] of markers ) {
-				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
-			}
+		for ( const [ name, range ] of markers ) {
+			this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 		}
 
 		// Clean `conversionApi`.
