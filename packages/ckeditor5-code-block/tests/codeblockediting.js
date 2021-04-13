@@ -1038,7 +1038,7 @@ describe( 'CodeBlockEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Bar</codeBlock>' );
 		} );
 
-		it( 'should preserve markers inside pre > code', () => {
+		it( 'should preserve markers on a code block', () => {
 			editor.conversion.for( 'upcast' ).dataToMarker( { view: 'group' } );
 
 			editor.setData(
