@@ -148,7 +148,7 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 			return;
 		}
 
-		// In case of nested `<pre>` we don't want to convert to another code block.
+		// In case of nested code blocks we don't want to convert to another code block.
 		if ( data.modelCursor.findAncestor( 'codeBlock' ) ) {
 			return;
 		}
