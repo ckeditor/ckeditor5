@@ -270,9 +270,11 @@ editor.conversion.for( 'dataDowncast' )
 	.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
 ```
 
+Due to the fact that the info box's view structure is more complex than its model structure we need to take care of one additional aspect to make the converters work &mdash; position mapping.
+
 ### The model to view position mapping
 
-After adding the above downcast converters we would end up with the following view structure:
+The downcast converters shown in the previous section will not yet work correctly. This is how a given model would look after being downcasted:
 
 ```
 <div class="info-box info-box-info">
@@ -284,7 +286,9 @@ After adding the above downcast converters we would end up with the following vi
 </div>
 ```
 
-This is not what we need. We expect the content of the `<infoBox>` to be inside the `<div class="info-box-content">`. We have the downcast conversion for the `<infoBox>` and its own structure, but we need to specify where its content should land in the view. By the default it would be converted as a direct child of `<div class="info-box">` (as you can see in the above snippet) but it should go into the `<div class="info-box-content">`. To achieve this, we need to register a callback for the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition` event}, so the positions inside the model `<infoBox>` element would map to the positions inside the `<div class="info-box-content">` view element.
+As you can see, this is not a correct view structure. The content of the model's `<infoBox>` element ended up directly inside the outer `<div>`. We expect the the `<infoBox>`'s content to be inside the `<div class="info-box-content">`.
+
+We defined downcast conversion for `<infoBox>` itself, but we need to specify where its content should land in its view structure. By default, it is converted as direct children of `<div class="info-box">` (as you can see in the above snippet) but it should go into the `<div class="info-box-content">`. To achieve this, we need to register a callback for the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition` event}, so positions inside the model `<infoBox>` element would map to positions inside the `<div class="info-box-content">` view element.
 
 ```
 <infoBox infoBoxType="Info">    ->    <div class="info-box info-box-info">
@@ -297,7 +301,7 @@ This is not what we need. We expect the content of the `<infoBox>` to be inside 
 </infoBox>                      ->    </div>
 ```
 
-The callback that we need:
+Such mapping can be achieved by registering this callback to {@link XYZ} event:
 
 ```js
 function createModelToViewPositionMapper( view ) {
