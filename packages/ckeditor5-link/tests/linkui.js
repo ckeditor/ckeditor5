@@ -6,6 +6,7 @@
 /* globals document, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
@@ -13,18 +14,18 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import { toWidget } from '@ckeditor/ckeditor5-widget';
+
 import LinkEditing from '../src/linkediting';
 import LinkUI from '../src/linkui';
 import LinkFormView from '../src/ui/linkformview';
 import LinkActionsView from '../src/ui/linkactionsview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 describe( 'LinkUI', () => {
 	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
@@ -1076,6 +1077,29 @@ describe( 'LinkUI', () => {
 
 			it( 'should do nothing when selection is non-collapsed and doesn\'t enclose a link element (#5)', () => {
 				setModelData( editor.model, 'ba[r<$text linkHref="url">foo</$text>]' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should do nothing when the selection spans over a link which only child is a widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isObject: true,
+					isInline: true
+				} );
+
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'inlineWidget',
+						view: ( modelItem, { writer } ) => toWidget(
+							writer.createContainerElement( 'inlineWidget' ),
+							writer,
+							{ label: 'inline widget' }
+						)
+					} );
+
+				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );

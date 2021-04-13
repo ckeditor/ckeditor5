@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ClickObserver } from 'ckeditor5/src/engine';
 import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+import { isWidget } from 'ckeditor5/src/widget';
 
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';
@@ -624,15 +625,6 @@ export default class LinkUI extends Plugin {
 		if ( selection.isCollapsed ) {
 			return findLinkElementAncestor( selection.getFirstPosition() );
 		} else {
-			// The link element is not fully selected when there's an element directly inside of it, for instance:
-			//
-			// [<a href="..."><span class="image-inline ck-widget ck-widget_selected"><img ... /></span></a>]
-			//
-			// This is not a selected image but a selected inline (image) widget instead.
-			if ( selection.getSelectedElement() ) {
-				return null;
-			}
-
 			// The range for fully selected link is usually anchored in adjacent text nodes.
 			// Trim it to get closer to the actual link element.
 			const range = selection.getFirstRange().getTrimmed();
@@ -645,6 +637,13 @@ export default class LinkUI extends Plugin {
 
 			// Check if the link element is fully selected.
 			if ( view.createRangeIn( startLink ).getTrimmed().isEqual( range ) ) {
+				// The link element is not fully selected when, for instance, there's an inline image widget directly inside.
+				// This should be interpreted as a selected inline image and the image UI should be displayed instead
+				// (LinkUI should not interact).
+				if ( startLink.childCount === 1 && isWidget( startLink.getChild( 0 ) ) ) {
+					return null;
+				}
+
 				return startLink;
 			} else {
 				return null;

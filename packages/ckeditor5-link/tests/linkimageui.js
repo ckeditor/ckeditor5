@@ -101,21 +101,39 @@ describe( 'LinkImageUI', () => {
 	} );
 
 	describe( 'click', () => {
-		it( 'should prevent default behavior if image is wrapped with a link', () => {
+		it( 'should prevent default behavior to prevent navigation if a block image has a link', () => {
 			editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
-			editor.editing.view.change( writer => {
-				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot(), 'in' );
 			} );
 
-			const img = viewDocument.selection.getSelectedElement();
+			const imageWidget = viewDocument.selection.getSelectedElement();
 			const data = fakeEventData();
-			const eventInfo = new EventInfo( img, 'click' );
+			const eventInfo = new EventInfo( imageWidget, 'click' );
 			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
 
 			viewDocument.fire( 'click', domEventDataMock );
 
-			expect( img.getChild( 0 ).name ).to.equal( 'a' );
+			expect( imageWidget.getChild( 0 ).name ).to.equal( 'a' );
+			expect( data.preventDefault.called ).to.be.true;
+		} );
+
+		it( 'should prevent default behavior to prevent navigation if an inline image is wrapped in a link', () => {
+			editor.setData( '<p><a href="https://example.com"><img src="" /></a></p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'in' );
+			} );
+
+			const imageWidget = viewDocument.selection.getSelectedElement().getChild( 0 );
+			const data = fakeEventData();
+			const eventInfo = new EventInfo( imageWidget, 'click' );
+			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+			viewDocument.fire( 'click', domEventDataMock );
+
+			expect( imageWidget.getChild( 0 ).name ).to.equal( 'img' );
 			expect( data.preventDefault.called ).to.be.true;
 		} );
 	} );
