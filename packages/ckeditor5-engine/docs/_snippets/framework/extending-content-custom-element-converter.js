@@ -142,17 +142,24 @@ function createModelToViewPositionMapper( view ) {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
 
+		// Only mapping of positions that are directly in
+		// the <infoBox> model element should be modified.
 		if ( !parent.is( 'element', 'infoBox' ) ) {
 			return;
 		}
 
+		// Get the mapped view element <div class="info-box">.
 		const viewElement = data.mapper.toViewElement( parent );
+
+		// Find the <div class="info-box-content"> in it.
 		const viewContentElement = findContentViewElement( view, viewElement );
 
+		// Translate the model position offset to the view position offset.
 		data.viewPosition = data.mapper.findPositionIn( viewContentElement, modelPosition.offset );
 	};
 }
 
+// Returns the <div class="info-box-content"> nested in the info box view structure.
 function findContentViewElement( editingView, viewElement ) {
 	for ( const value of editingView.createRangeIn( viewElement ) ) {
 		if ( value.item.is( 'element', 'div' ) && value.item.hasClass( 'info-box-content' ) ) {

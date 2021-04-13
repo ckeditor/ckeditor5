@@ -277,31 +277,31 @@ Due to the fact that the info box's view structure is more complex than its mode
 The downcast converters shown in the previous section will not yet work correctly. This is how a given model would look after being downcasted:
 
 ```
-<div class="info-box info-box-info">
-    []<p>
-        Foobar
-    </p>
-    <div class="info-box-title">Info</div>
-    <div class="info-box-content"></div>
-</div>
+<infoBox infoBoxType="Info">    ->    <div class="info-box info-box-info">
+    <paragraph>                 ->        <p>
+        Foobar                  ->            Foobar
+    </paragraph>                ->        </p>                                          
+                                          <div class="info-box-title">Info</div>
+                                          <div class="info-box-content"></div>
+</infoBox>                      ->    </div>
 ```
 
-As you can see, this is not a correct view structure. The content of the model's `<infoBox>` element ended up directly inside the outer `<div>`. We expect the the `<infoBox>`'s content to be inside the `<div class="info-box-content">`.
+As you can see, this is not a correct view structure. The content of the model's `<infoBox>` element ended up directly inside the outer `<div>`. We expect the `<infoBox>`'s content to be inside the `<div class="info-box-content">`.
 
-We defined downcast conversion for `<infoBox>` itself, but we need to specify where its content should land in its view structure. By default, it is converted as direct children of `<div class="info-box">` (as you can see in the above snippet) but it should go into the `<div class="info-box-content">`. To achieve this, we need to register a callback for the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition` event}, so positions inside the model `<infoBox>` element would map to positions inside the `<div class="info-box-content">` view element.
+We defined downcast conversion for `<infoBox>` itself, but we need to specify where its content should land in its view structure. By default, it is converted as direct children of `<div class="info-box">` (as you can see in the above snippet) but it should go into the `<div class="info-box-content">`. To achieve this, we need to register a callback for the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition`} event, so positions inside the model `<infoBox>` element would map to positions inside the `<div class="info-box-content">` view element.
 
 ```
 <infoBox infoBoxType="Info">    ->    <div class="info-box info-box-info">
                                           <div class="info-box-title">Info</div>
                                           <div class="info-box-content">
-    []<paragraph>               ->            []<p>
+    <paragraph>                 ->            <p>
         Foobar                  ->                Foobar
     </paragraph>                ->            </p>
                                           </div>
 </infoBox>                      ->    </div>
 ```
 
-Such mapping can be achieved by registering this callback to {@link XYZ} event:
+Such mapping can be achieved by registering this callback to the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition`} event:
 
 ```js
 function createModelToViewPositionMapper( view ) {
@@ -336,12 +336,16 @@ function findContentViewElement( editingView, viewElement ) {
 }
 ```
 
-It needs to be plugged into the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition` event} for both downcast pipelines:
+It needs to be plugged into the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition`} event for both downcast pipelines:
 
 ```js
 editor.editing.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
 editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
 ```
+
+<info-box>
+    **Note**: We do not need the reverse position mapping ({@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition from view to model}) because the default view to model position mapping is looking for the {@link module:engine/conversion/mapper~Mapper#findMappedViewAncestor mapped view ancestor} and maps offset in respect to that model element.
+</info-box>
 
 ### Updated plugin code
 
