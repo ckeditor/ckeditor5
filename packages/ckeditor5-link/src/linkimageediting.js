@@ -270,12 +270,12 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 			// At this stage we can assume that we have the `<image>` element.
 			// `nodeBefore` comes after conversion: `<a><img></a>`.
 			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
-			// See the body of the `upcastLink( editor )` function.
+			// See the body of the `upcastLink()` function.
 			const modelElement = data.modelCursor.nodeBefore || data.modelCursor.parent;
 
 			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
 		}, { priority: 'high' } );
-		// Using the same priority that `upcastLink( editor )` converter guarantees that the linked image was properly converted.
+		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
 }
 

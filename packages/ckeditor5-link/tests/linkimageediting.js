@@ -58,23 +58,6 @@ describe( 'LinkImageEditing', () => {
 	} );
 
 	describe( 'conversion in data pipeline', () => {
-		describe( 'model to view', () => {
-			it( 'should attach a link indicator to the image element', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="foo"></image>' );
-
-				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.match( new RegExp(
-					'<figure class="ck-widget image" contenteditable="false">' +
-						'<a href="foo">' +
-							'<img alt="alt text" src="/assets/sample.png"></img>' +
-							'<span class="ck ck-link-image_icon">' +
-								'<svg[^>]+>.*<\\/svg>' +
-							'</span>' +
-						'</a>' +
-					'</figure>'
-				) );
-			} );
-		} );
-
 		describe( 'model to data', () => {
 			it( 'should convert an image with a link', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></image>' );
@@ -190,7 +173,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			describe( 'a > img', () => {
-				it( 'should convert a link in an image figure', () => {
+				it( 'should convert an image surrounded by a link', () => {
 					editor.setData(
 						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
 					);
@@ -199,14 +182,14 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<image alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
 				} );
 
-				it( 'should convert an image with a link and without alt attribute', () => {
+				it( 'should convert an image surrounded by a link without alt attribute', () => {
 					editor.setData( '<a href="http://ckeditor.com"><img src="/assets/sample.png" /></a>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( '<image linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
 				} );
 
-				it( 'should not convert without src attribute', () => {
+				it( 'should not convert an image surrounded by a link without src attribute', () => {
 					editor.setData( '<a href="http://ckeditor.com"><img alt="alt text" /></a>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
@@ -254,6 +237,25 @@ describe( 'LinkImageEditing', () => {
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
 				} );
+
+				it( 'should not convert an image surrounded by a link to a linked block image' +
+					'when the ImageInline plugin is loaded', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, ImageInlineEditing, LinkImageEditing ]
+					} );
+					const model = editor.model;
+
+					editor.setData(
+						'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
+					);
+
+					// If ImageInline is loaded, then ☝️ should be a plain linked inline image in the editor.
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>' +
+							'<imageInline alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageInline>' +
+						'</paragraph>'
+					);
+				} );
 			} );
 
 			describe( 'figure > a > img + figcaption', () => {
@@ -296,8 +298,6 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://ckeditor.com">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
-							// Content of the UIElement is skipped here.
-							'<span class="ck ck-link-image_icon"></span>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -315,8 +315,6 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="https://ckeditor.com/why-ckeditor/">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
-							// Content of the UIElement is skipped here.
-							'<span class="ck ck-link-image_icon"></span>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -355,8 +353,6 @@ describe( 'LinkImageEditing', () => {
 							'<figure class="ck-widget image" contenteditable="false">' +
 								'<a href="http://ckeditor.com">' +
 									'<img alt="alt text" src="/assets/sample.png"></img>' +
-									// Content of the UIElement is skipped here.
-									'<span class="ck ck-link-image_icon"></span>' +
 								'</a>' +
 								'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" data-placeholder="Enter image caption">' +
