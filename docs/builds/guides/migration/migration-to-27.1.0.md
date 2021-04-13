@@ -6,7 +6,7 @@ order: 10
 
 # Migration to CKEditor 5 v27.1.0
 
-For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v28.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#TODO).
+For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v27.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#TODO).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v27.1.0.
 
