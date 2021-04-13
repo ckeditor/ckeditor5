@@ -12,6 +12,6 @@ Listed below are the most important changes that require your attention when upg
 
 ## Disallowing nesting block quotes
 
-Prior to version 28.0.0 inserting a block quote into another block quote was not allowed.
+Prior to version 27.1.0 inserting a block quote into another block quote was not allowed.
 
 If you wish to bring back this restriction, see the {@link features/block-quote#disallowing-nesting-block-quotes Disallowing nesting block quotes} section in the blockquote feature guide.
