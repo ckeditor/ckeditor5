@@ -63,7 +63,7 @@ ClassicEditor
 
 ## Configuration
 
-### Disallowing nesting block quotes
+### Disallow nesting block quotes
 
 By default, the editor supports inserting a block quote into another block quote.
 
