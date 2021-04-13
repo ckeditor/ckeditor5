@@ -54,11 +54,12 @@ describe( 'HighlightEditing', () => {
 			expect( editor.getData() ).to.equal( data );
 		} );
 
-		it( 'should convert only one defined marker classes', () => {
-			editor.setData( '<p>f<mark class="marker-green marker-yellow">o</mark>o</p>' );
+		// After closing #8921, converted will be the last class in the alphabetical order that matches the configuration options.
+		it( 'should convert only one class even if the marker has a few of them', () => {
+			editor.setData( '<p>f<mark class="marker-yellow marker-green">o</mark>o</p>' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="greenMarker">o</$text>o</paragraph>' );
-			expect( editor.getData() ).to.equal( '<p>f<mark class="marker-green">o</mark>o</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="yellowMarker">o</$text>o</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>f<mark class="marker-yellow">o</mark>o</p>' );
 		} );
 
 		it( 'should not convert undefined marker classes', () => {

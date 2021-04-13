@@ -95,20 +95,29 @@ export default class Model {
 		this.schema.register( '$root', {
 			isLimit: true
 		} );
+
 		this.schema.register( '$block', {
 			allowIn: '$root',
 			isBlock: true
 		} );
+
 		this.schema.register( '$text', {
 			allowIn: '$block',
 			isInline: true,
 			isContent: true
 		} );
+
 		this.schema.register( '$clipboardHolder', {
 			allowContentOf: '$root',
 			isLimit: true
 		} );
 		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
+
+		this.schema.register( '$documentFragment', {
+			allowContentOf: '$root',
+			isLimit: true
+		} );
+		this.schema.extend( '$text', { allowIn: '$documentFragment' } );
 
 		// An element needed by the `upcastElementToMarker` converter.
 		// This element temporarily represents a marker boundary during the conversion process and is removed
