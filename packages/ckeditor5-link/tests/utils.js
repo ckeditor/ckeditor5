@@ -237,16 +237,33 @@ describe( 'utils', () => {
 			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
 		} );
 
-		it( 'returns false when schema does not allow linking images', () => {
+		it( 'returns false when schema does not allow linking images (block image)', () => {
 			const element = new ModelElement( 'image' );
 			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
 		} );
 
-		it( 'returns true when passed an image element and it can be linked', () => {
+		it( 'returns false when schema does not allow linking images (inline image)', () => {
+			const element = new ModelElement( 'imageInline' );
+			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
+		} );
+
+		it( 'returns true when passed a block image element and it can be linked', () => {
 			const element = new ModelElement( 'image' );
 			const schema = new Schema();
 
 			schema.register( 'image', {
+				allowIn: '$root',
+				allowAttributes: [ 'linkHref' ]
+			} );
+
+			expect( isLinkableImage( element, schema ) ).to.equal( true );
+		} );
+
+		it( 'returns true when passed an inline image element and it can be linked', () => {
+			const element = new ModelElement( 'imageInline' );
+			const schema = new Schema();
+
+			schema.register( 'imageInline', {
 				allowIn: '$root',
 				allowAttributes: [ 'linkHref' ]
 			} );

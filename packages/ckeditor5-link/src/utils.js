@@ -7,7 +7,7 @@
  * @module link/utils
  */
 
-import { isBlockImage, isImage } from '@ckeditor/ckeditor5-image/src/image/utils';
+import { isImage } from '@ckeditor/ckeditor5-image/src/image/utils';
 import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
@@ -139,9 +139,7 @@ export function normalizeDecorators( decorators ) {
  */
 export function isLinkableImage( element, schema ) {
 	if ( isImage( element ) ) {
-		const modelElementName = isBlockImage( element ) ? 'image' : 'imageInline';
-
-		return schema.checkAttribute( modelElementName, 'linkHref' );
+		return schema.checkAttribute( element.name, 'linkHref' );
 	}
 
 	return false;
