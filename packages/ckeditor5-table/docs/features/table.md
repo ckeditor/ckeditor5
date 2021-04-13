@@ -5,7 +5,9 @@ category: features
 
 {@snippet features/build-table-source}
 
-The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents. Tables help organize the content in a distinct, visual way that stands out from the text and is more easily readable for certain types of information. They are perfect for listing, grouping, and otherwise organizing data sets or for providing information in a clear, efficient way. Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and and provide relief from large body texts.
+The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents. Tables help organize the content in a distinct, visual way that stands out from the text and is more easily readable for certain types of information. They are perfect for listing, grouping, and otherwise organizing data sets or for providing information in a clear, efficient way.
+
+Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and and provide relief from large body texts.
 
 CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
 
@@ -35,14 +37,14 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 ### Nesting tables
 
-SInce version 28.x.x CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can formatted just like a regular one.
+Starting from version 27.1.0 CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can formatted just like a regular one.
 
-Test this feature by adding a table in the section that was left blank at the bottom of the main table. To nest a table, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
+Test this feature by adding a table in the *"abandoned"* section that was left blank at the bottom of the main table. To nest a table, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
 
 {@snippet features/table-nesting}
 
 <info-box>
-	If for some reason you want to disallow nesting tables in your editor, see the {@link features/table#disallowing-nesting-tables Disallowing nesting tables} section to learn how to disable this functionality.
+	If you would want to disallow nesting tables in your editor, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section to learn how to disable this functionality.
 </info-box>
 
 ## Table selection
@@ -326,11 +328,11 @@ The above model structure will be rendered to the data and to the editing view a
 	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍 if you need this feature.
 </info-box>
 
-## Disallowing nesting tables
+## Disallow nesting tables
 
 By default, the editor allows nesting a table inside another table's cell.
 
-In order to disallow nesting tables you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
+In order to disallow nesting tables, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor. Due to that, it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingTables( editor ) {
