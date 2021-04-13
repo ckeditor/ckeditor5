@@ -127,17 +127,18 @@ describe( 'ImageTypeCommand', () => {
 				expect( inlineCommand.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false when the selection is inside other image', () => {
-				setModelData( model, '<image><caption>[]</caption></image>' );
-				expect( blockCommand.isEnabled ).to.be.false;
-			} );
-
 			it( 'should be false when the selection is on other object', () => {
 				model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 				setModelData( model, '[<object></object>]' );
 
 				expect( inlineCommand.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true if selection is in the caption', () => {
+				setModelData( model, '<image><caption>[]Foo</caption></image>' );
+
+				expect( inlineCommand.isEnabled ).to.be.true;
 			} );
 		} );
 	} );
@@ -212,9 +213,9 @@ describe( 'ImageTypeCommand', () => {
 		} );
 
 		describe( 'inline command', () => {
-			it( 'should convert block image to inline image', () => {
-				const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'foo/bar.jpg';
 
+			it( 'should convert block image to inline image', () => {
 				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
 
 				inlineCommand.execute();
@@ -225,8 +226,6 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should convert block image with alt attribute to inline image', () => {
-				const imgSrc = 'foo/bar.jpg';
-
 				setModelData( model,
 					`[<image src="${ imgSrc }" alt="alt text"></image>]`
 				);
@@ -241,8 +240,6 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should convert block image with srcset attribute to inline image', () => {
-				const imgSrc = 'foo/bar.jpg';
-
 				setModelData( model,
 					`[<image src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></image>]`
 				);
@@ -257,8 +254,6 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should convert block image with caption attribute to inline image', () => {
-				const imgSrc = 'foo/bar.jpg';
-
 				setModelData( model,
 					`[<image caption="foo" src="${ imgSrc }"></image>]`
 				);
@@ -268,6 +263,18 @@ describe( 'ImageTypeCommand', () => {
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
 					`[<imageInline caption="foo" src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should convert and set selection on the new image if selection is in the caption', () => {
+				setModelData( model, `<image src="${ imgSrc }"><caption>[]Foo</caption></image>` );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+					`[<imageInline src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
 				);
 			} );
