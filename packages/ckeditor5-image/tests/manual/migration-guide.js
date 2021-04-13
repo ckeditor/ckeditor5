@@ -1,3 +1,5 @@
+/* global console, window, document */
+
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
