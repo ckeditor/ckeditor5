@@ -86,7 +86,7 @@ export function getImageWidgetAncestor( selection ) {
  * @returns {module:engine/model/element~Element|null}
  */
 
- export function getImageModelElementAncestor( selection ) {
+export function getImageModelElementAncestor( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
 	return isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'image' );
