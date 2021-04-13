@@ -249,8 +249,8 @@ export default class DataController {
 
 		// Convert markers.
 		// For document fragment, simply take the markers assigned to this document fragment.
-		// For model element, we need to check in which markers is that element and relatively modify the range's paths.
 		// For model root, all markers in that root will be taken.
+		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
 		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
 			Array.from( modelElementOrFragment.markers ) :
 			_getMarkersRelativeToElement( modelElementOrFragment );
