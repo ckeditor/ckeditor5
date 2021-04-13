@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getCorrelatedImage } from '../image/utils';
+import { getImageModelElementAncestor } from '../image/utils';
 
 /**
  * The image style command. It is used to apply {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements}
@@ -65,7 +65,7 @@ export default class ImageStyleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = getCorrelatedImage( this.editor.model.document.selection );
+		const element = getImageModelElementAncestor( this.editor.model.document.selection );
 
 		this.isEnabled = !!element;
 
@@ -99,14 +99,14 @@ export default class ImageStyleCommand extends Command {
 			const requestedArrangement = options.value;
 			const supportedTypes = this._arrangements.get( requestedArrangement ).modelElements;
 
-			let imageElement = getCorrelatedImage( model.document.selection );
+			let imageElement = getImageModelElementAncestor( model.document.selection );
 
 			// Change the image type if a style requires it.
 			if ( !supportedTypes.includes( imageElement.name ) ) {
 				this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
 
 				// Update the imageElement to the newly created image.
-				imageElement = getCorrelatedImage( model.document.selection );
+				imageElement = getImageModelElementAncestor( model.document.selection );
 			}
 
 			// Default style means that there is no `imageStyle` attribute in the model.

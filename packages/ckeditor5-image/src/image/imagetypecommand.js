@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { insertImage, isBlockImage, isInlineImage, getCorrelatedImage } from './utils';
+import { insertImage, isBlockImage, isInlineImage, getImageModelElementAncestor } from './utils';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
@@ -39,7 +39,7 @@ export default class ImageTypeCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = getCorrelatedImage( this.editor.model.document.selection );
+		const element = getImageModelElementAncestor( this.editor.model.document.selection );
 
 		if ( this._modelElementName === 'image' ) {
 			this.isEnabled = isInlineImage( element );
@@ -53,13 +53,13 @@ export default class ImageTypeCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const correlatedImage = getCorrelatedImage( model.document.selection );
-		const attributes = Object.fromEntries( correlatedImage.getAttributes() );
+		const imageElement = getImageModelElementAncestor( model.document.selection );
+		const attributes = Object.fromEntries( imageElement.getAttributes() );
 
 		if ( !attributes.src ) {
 			return;
 		}
 
-		insertImage( this.editor, attributes, model.createSelection( correlatedImage, 'on' ), this._modelElementName );
+		insertImage( this.editor, attributes, model.createSelection( imageElement, 'on' ), this._modelElementName );
 	}
 }

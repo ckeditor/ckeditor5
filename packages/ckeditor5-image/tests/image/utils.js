@@ -40,7 +40,7 @@ import {
 	isBlockImageView,
 	determineImageTypeForInsertionAtSelection,
 	getImageTypeMatcher,
-	getCorrelatedImage
+	getImageModelElementAncestor
 } from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
@@ -893,7 +893,7 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'getCorrelatedImage()', () => {
+	describe( 'getImageModelElementAncestor()', () => {
 		let model;
 
 		beforeEach( async () => {
@@ -914,19 +914,19 @@ describe( 'image widget utils', () => {
 		it( 'should return null if no element is selected and the selection has no image ancestor', () => {
 			setModelData( model, '<paragraph>F[]oo</paragraph>' );
 
-			expect( getCorrelatedImage( model.document.selection ) ).to.be.null;
+			expect( getImageModelElementAncestor( model.document.selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if a non-image element is selected', () => {
 			setModelData( model, '[<blockWidget></blockWidget>]' );
 
-			expect( getCorrelatedImage( model.document.selection ) ).to.be.null;
+			expect( getImageModelElementAncestor( model.document.selection ) ).to.be.null;
 		} );
 
 		it( 'should return an imageInline element if it is selected', () => {
 			setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
-			const image = getCorrelatedImage( model.document.selection );
+			const image = getImageModelElementAncestor( model.document.selection );
 
 			expect( image ).to.be.instanceOf( ModelElement );
 			expect( image.name ).to.equal( 'imageInline' );
@@ -935,7 +935,7 @@ describe( 'image widget utils', () => {
 		it( 'should return an image element if it is selected', () => {
 			setModelData( model, '[<image></image>]' );
 
-			const image = getCorrelatedImage( model.document.selection );
+			const image = getImageModelElementAncestor( model.document.selection );
 
 			expect( image ).to.be.instanceOf( ModelElement );
 			expect( image.name ).to.equal( 'image' );
@@ -944,7 +944,7 @@ describe( 'image widget utils', () => {
 		it( 'should return a image element if the selection range is inside its caption', () => {
 			setModelData( model, '<image><caption>F[oo]</caption></image>' );
 
-			const image = getCorrelatedImage( model.document.selection );
+			const image = getImageModelElementAncestor( model.document.selection );
 
 			expect( image ).to.be.instanceOf( ModelElement );
 			expect( image.name ).to.equal( 'image' );
@@ -953,7 +953,7 @@ describe( 'image widget utils', () => {
 		it( 'should return a image element if the selection position is inside its caption', () => {
 			setModelData( model, '<image><caption>Foo[]</caption></image>' );
 
-			const image = getCorrelatedImage( model.document.selection );
+			const image = getImageModelElementAncestor( model.document.selection );
 
 			expect( image ).to.be.instanceOf( ModelElement );
 			expect( image.name ).to.equal( 'image' );

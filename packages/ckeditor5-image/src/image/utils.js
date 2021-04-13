@@ -80,6 +80,19 @@ export function getImageWidgetAncestor( selection ) {
 }
 
 /**
+ * Returns a image model element if one is among the selection's ancestors.
+ *
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @returns {module:engine/model/element~Element|null}
+ */
+
+ export function getImageModelElementAncestor( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	return isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'image' );
+}
+
+/**
  * Checks if the provided model element is an `image`.
  *
  * @protected
@@ -304,20 +317,6 @@ export function determineImageTypeForInsertionAtSelection( schema, selection ) {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
 	return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
-}
-
-/**
- * Checks if the current selection is on the image model element or inside the nested caption element.
- * Then, it returns the selected image or caption's image parent element if any of them are available.
- *
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * @returns {module:engine/model/element~Element|null}
- */
-
-export function getCorrelatedImage( selection ) {
-	const selectedElement = selection.getSelectedElement();
-
-	return isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'image' );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
