@@ -42,7 +42,7 @@ Test this feature by adding a table in the section that was left blank at the bo
 {@snippet features/table-nesting}
 
 <info-box>
-	If for some reason you want to disallow nesting tables in your editor, see the {@link features/table#disallowing-nesting-tables disabling nesting tables} section to learn how to disable this functionality.
+	If for some reason you want to disallow nesting tables in your editor, see the {@link features/table#disallowing-nesting-tables Disallowing nesting tables} section to learn how to disable this functionality.
 </info-box>
 
 ## Table selection
