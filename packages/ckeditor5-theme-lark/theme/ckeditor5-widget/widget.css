@@ -153,8 +153,8 @@
 		outline-color: var(--ck-color-widget-blurred-border);
 
 		&.ck-widget_with-selection-handle {
-			& .ck-widget__selection-handle,
-			& .ck-widget__selection-handle:hover {
+			& > .ck-widget__selection-handle,
+			& > .ck-widget__selection-handle:hover {
 				background: var(--ck-color-widget-blurred-border);
 			}
 		}
