@@ -31,15 +31,13 @@
 		}
 	}
 
-	/* Show the selection handle on mouse hover over the widget. */
-	&:hover {
-		& .ck-widget__selection-handle {
-			visibility: visible;
-		}
+	/* Show the selection handle on mouse hover over the widget, but not for nested widgets. */
+	&:hover > .ck-widget__selection-handle {
+		visibility: visible;
 	}
 
-	/* Show the selection handle when the widget is selected. */
-	&.ck-widget_selected .ck-widget__selection-handle {
+	/* Show the selection handle when the widget is selected, but not for nested widgets. */
+	&.ck-widget_selected > .ck-widget__selection-handle {
 		visibility: visible;
 	}
 }

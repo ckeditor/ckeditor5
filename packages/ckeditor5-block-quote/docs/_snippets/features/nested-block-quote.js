@@ -6,14 +6,9 @@
 /* globals ClassicEditor, window, document, console */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-block-quote' ) )
+	.create( document.querySelector( '#snippet-nested-block-quote' ) )
 	.then( editor => {
-		window.editor = editor;
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Block quote' ),
-			text: 'Click to insert a block quote.',
-			editor
-		} );
+		window.editor2 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
