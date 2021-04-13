@@ -103,9 +103,10 @@ export default class LinkImageUI extends Plugin {
 	}
 }
 
-// TODO
+// Returns true if a linked image (either block or inline) is the only selected element
+// in the model document.
 //
-// @param TODO
+// @param {module:engine/model/selection~Selection} selection
 // @returns {Boolean}
 function isSelectedLinkedImage( selection ) {
 	const selectedModelElement = selection.getSelectedElement();

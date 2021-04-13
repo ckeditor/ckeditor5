@@ -121,32 +121,70 @@ describe( 'LinkImageUI', () => {
 	} );
 
 	describe( 'event handling', () => {
-		it( 'should show plugin#actionsView after "execute" if image is already linked', () => {
-			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+		let root;
 
-			editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
-
-			editor.editing.view.change( writer => {
-				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
-			} );
-
-			linkButton.fire( 'execute' );
-
-			expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
+		beforeEach( () => {
+			root = editor.model.document.getRoot();
 		} );
 
-		it( 'should show plugin#formView after "execute" if image is not linked', () => {
-			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+		describe( 'when a block image is selected', () => {
+			it( 'should show plugin#actionsView after "execute" if an image is already linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			editor.setData( '<figure class="image"><img src="" /></a>' );
+				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
-			editor.editing.view.change( writer => {
-				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'on' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
 			} );
 
-			linkButton.fire( 'execute' );
+			it( 'should show plugin#formView after "execute" if image is not linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.formView );
+				editor.setData( '<figure class="image"><img src="" /></a>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'on' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.formView );
+			} );
+		} );
+
+		describe( 'when an inline image is selected', () => {
+			it( 'should show plugin#actionsView after "execute" if an image is already linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+
+				editor.setData( '<p><a href="https://example.com"><img src="sample.jpg" /></a></p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'in' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
+			} );
+
+			it( 'should show plugin#formView after "execute" if image is not linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+
+				editor.setData( '<p><img src="" /></p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'in' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.formView );
+			} );
 		} );
 	} );
 } );

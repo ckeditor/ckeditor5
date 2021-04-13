@@ -255,6 +255,8 @@ describe( 'LinkImageEditing', () => {
 							'<imageInline alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageInline>' +
 						'</paragraph>'
 					);
+
+					await editor.destroy();
 				} );
 			} );
 
