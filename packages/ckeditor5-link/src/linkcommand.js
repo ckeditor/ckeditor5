@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { findAttributeRange } from 'ckeditor5/src/typing';
-import { Collection, toMap } from 'ckeditor5/src/utils';
+import { Collection, first, toMap } from 'ckeditor5/src/utils';
 
 import AutomaticDecorators from './utils/automaticdecorators';
 import { isLinkableImage } from './utils';
@@ -67,7 +67,7 @@ export default class LinkCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const selectedElement = selection.getSelectedElement();
+		const selectedElement = selection.getSelectedElement() || first( selection.getSelectedBlocks() );
 
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
