@@ -102,7 +102,7 @@ export default class HtmlDataProcessor {
 	 *
 	 * This mode may be required by some features and will be turned on by them automatically.
 	 *
-	 * @type {Boolean} value Whether to use (`true`) or not (`false`) marked nbsp fillers.
+	 * @param {Boolean} value Whether to use (`true`) or not (`false`) marked nbsp fillers.
 	 */
 	useMarkedFiller( value ) {
 		this._domConverter.blockFillerMode = value ? 'markedNbsp' : 'nbsp';
