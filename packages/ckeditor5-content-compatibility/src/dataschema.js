@@ -51,20 +51,17 @@ export default class DataSchema {
 		// Block elements.
 		this.registerBlockElement( {
 			model: 'paragraph',
-			view: 'p',
-			isFeature: true
+			view: 'p'
 		} );
 
 		this.registerBlockElement( {
 			model: 'blockQuote',
-			view: 'blockquote',
-			isFeature: true
+			view: 'blockquote'
 		} );
 
 		this.registerBlockElement( {
 			model: 'listItem',
-			view: 'li',
-			isFeature: true
+			view: 'li'
 		} );
 
 		this.registerBlockElement( {
@@ -303,7 +300,6 @@ function testViewName( pattern, viewName ) {
  * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
  * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
  * @property {Boolean} isBlock Indicates that the definition describes block element.
- * @property {Boolean} [isFeature=false] Indicates if data schema should extend existing editor feature.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */

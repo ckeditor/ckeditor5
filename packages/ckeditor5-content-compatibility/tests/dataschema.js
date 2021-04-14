@@ -96,7 +96,6 @@ describe( 'DataSchema', () => {
 			{
 				view: 'def3',
 				model: 'htmlDef3',
-				isFeature: true,
 				modelSchema: {
 					inheritTypesFrom: 'htmlDef2'
 				}

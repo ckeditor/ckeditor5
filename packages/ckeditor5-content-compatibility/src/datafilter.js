@@ -73,6 +73,45 @@ export default class DataFilter {
 		 * @member {module:engine/view/matcher~Matcher} #_disallowedAttributes
 		 */
 		this._disallowedAttributes = new Matcher();
+
+		/**
+		 * Allowed element definitions by {@link module:content-compatibility/datafilter~DataFilter#allowElement} method.
+		 *
+		 * @readonly
+		 * @private
+		 * @param {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>} #_allowedElements
+		*/
+		this._allowedElements = new Set();
+
+		/**
+		 * Indicates if {@link module:core/editor~Editor#data editor's data controller} data has been already initialized.
+		 *
+		 * @private
+		 * @param {Boolean} #_dataInitialized
+		*/
+		this._dataInitialized = false;
+
+		this._registerElementsAfterInit();
+	}
+
+	/**
+	 * Registers elements allowed by {@link module:content-compatibility/datafilter~DataFilter#allowElement} method
+	 * once {@link module:core/editor~Editor#data editor's data controller} is initialized.
+	 *
+	 * @private
+	*/
+	_registerElementsAfterInit() {
+		this.editor.data.on( 'init', () => {
+			this._dataInitialized = true;
+
+			for ( const definition of this._allowedElements ) {
+				this._registerElement( definition );
+			}
+		}, {
+			// With high priority listener we are able to register elements right before
+			// running data conversion.
+			priority: 'high'
+		} );
 	}
 
 	/**
@@ -85,7 +124,15 @@ export default class DataFilter {
 	 */
 	allowElement( config ) {
 		for ( const definition of this._dataSchema.getDefinitionsForView( config.name, true ) ) {
-			this._registerElement( definition );
+			if ( this._allowedElements.has( definition ) ) {
+				continue;
+			}
+
+			this._allowedElements.add( definition );
+
+			if ( this._dataInitialized ) {
+				this._registerElement( definition );
+			}
 		}
 
 		this.allowAttributes( config );
@@ -145,19 +192,11 @@ export default class DataFilter {
 	_registerBlockElement( definition ) {
 		const schema = this.editor.model.schema;
 
-		if ( !definition.isFeature ) {
-			// Early return, so if definition has been already registered,
-			// attribute filters also will be skipped.
-			if ( schema.isRegistered( definition.model ) ) {
-				return;
-			}
-
+		if ( !schema.isRegistered( definition.model ) ) {
 			this._registerBlockElementSchema( definition );
 			this._addBlockElementToElementConversion( definition );
 		}
 
-		// TODO So far we are not able to detect if feature converters has been already added,
-		// so this code may result in duplicated converters and additional conversion overheat.
 		this._addDisallowedAttributeConversion( definition );
 		this._addBlockElementAttributeConversion( definition );
 	}

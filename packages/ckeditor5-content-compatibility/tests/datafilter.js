@@ -11,8 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import DataSchema from '../src/dataschema';
-import DataFilter from '../src/datafilter';
+import GeneralHtmlSupport from '../src/generalhtmlsupport';
 
 describe( 'DataFilter', () => {
 	let editor, model, dataFilter, dataSchema;
@@ -22,14 +21,16 @@ describe( 'DataFilter', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, FontColorEditing, LinkEditing ]
+				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 
-				dataSchema = new DataSchema();
-				dataFilter = new DataFilter( editor, dataSchema );
+				const plugin = editor.plugins.get( GeneralHtmlSupport );
+
+				dataFilter = plugin.dataFilter;
+				dataSchema = plugin.dataSchema;
 			} );
 	} );
 
@@ -383,7 +384,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should not convert attributes if the model schema item definition is not registered', () => {
-			dataSchema.registerBlockElement( { view: 'xyz', model: 'modelXyz', isFeature: true } );
+			dataSchema.registerBlockElement( { view: 'xyz', model: 'modelXyz' } );
 
 			dataFilter.allowElement( { name: 'xyz' } );
 			dataFilter.allowAttributes( { name: 'xyz', attributes: { 'data-foo': 'foo' } } );
