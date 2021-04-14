@@ -1295,6 +1295,7 @@ mix( Schema, ObservableMixin );
  * * The `name` property,
  * * The `is*` properties,
  * * The `allowIn` array,
+ * * The `allowChildren` array,
  * * The `allowAttributes` array.
  *
  * @typedef {Object} module:engine/model/schema~SchemaCompiledItemDefinition
