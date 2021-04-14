@@ -134,17 +134,17 @@ describe( 'HtmlDataProcessor', () => {
 		} );
 	} );
 
-	describe( 'useMarkedFiller()', () => {
+	describe( 'useFillerType()', () => {
 		it( 'should turn on and off using marked block fillers', () => {
 			const fragment = parse( '<container:p></container:p>' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 
-			dataProcessor.useMarkedFillers( true );
+			dataProcessor.useFillerType( 'marked' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
 
-			dataProcessor.useMarkedFillers( false );
+			dataProcessor.useFillerType( 'default' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
