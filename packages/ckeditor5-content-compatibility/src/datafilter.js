@@ -87,7 +87,7 @@ export default class DataFilter {
 		 * Indicates if {@link module:core/editor~Editor#data editor's data controller} data has been already initialized.
 		 *
 		 * @private
-		 * @param {Boolean} #_dataInitialized
+		 * @param {Boolean} [#_dataInitialized=false]
 		*/
 		this._dataInitialized = false;
 
