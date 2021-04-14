@@ -325,7 +325,7 @@ The above model structure will be rendered to the data and to the editing view a
 ```
 
 <info-box info>
-	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍 if you need this feature.
+	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍&nbsp; if you need this feature.
 </info-box>
 
 ## Disallow nesting tables
