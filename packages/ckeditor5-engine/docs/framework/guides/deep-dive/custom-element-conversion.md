@@ -278,11 +278,11 @@ The downcast converters shown in the previous section will not work correctly ye
 
 ```
 <infoBox infoBoxType="Info">    ->    <div class="info-box info-box-info">
-    <paragraph>                 ->        <p>
-        Foobar                  ->            Foobar
-    </paragraph>                ->        </p>
-                                          <div class="info-box-title">Info</div>
-                                          <div class="info-box-content"></div>
+	<paragraph>                 ->        <p>
+		Foobar                  ->            Foobar
+	</paragraph>                ->        </p>
+										  <div class="info-box-title">Info</div>
+										  <div class="info-box-content"></div>
 </infoBox>                      ->    </div>
 ```
 
@@ -292,12 +292,12 @@ You defined downcast conversion for `<infoBox>` itself, but you need to specify 
 
 ```
 <infoBox infoBoxType="Info">    ->    <div class="info-box info-box-info">
-                                          <div class="info-box-title">Info</div>
-                                          <div class="info-box-content">
-    <paragraph>                 ->            <p>
-        Foobar                  ->                Foobar
-    </paragraph>                ->            </p>
-                                          </div>
+										  <div class="info-box-title">Info</div>
+										  <div class="info-box-content">
+	<paragraph>                 ->            <p>
+		Foobar                  ->                Foobar
+	</paragraph>                ->            </p>
+										  </div>
 </infoBox>                      ->    </div>
 ```
 
@@ -305,34 +305,34 @@ Such a mapping can be achieved by registering this callback to the {@link module
 
 ```js
 function createModelToViewPositionMapper( view ) {
-    return ( evt, data ) => {
-        const modelPosition = data.modelPosition;
-        const parent = modelPosition.parent;
+	return ( evt, data ) => {
+		const modelPosition = data.modelPosition;
+		const parent = modelPosition.parent;
 
-        // Only mapping of positions that are directly in
-        // the <infoBox> model element should be modified.
-        if ( !parent.is( 'element', 'infoBox' ) ) {
-            return;
-        }
+		// Only mapping of positions that are directly in
+		// the <infoBox> model element should be modified.
+		if ( !parent.is( 'element', 'infoBox' ) ) {
+			return;
+		}
 
-        // Get the mapped view element <div class="info-box">.
-        const viewElement = data.mapper.toViewElement( parent );
+		// Get the mapped view element <div class="info-box">.
+		const viewElement = data.mapper.toViewElement( parent );
 
-        // Find the <div class="info-box-content"> in it.
-        const viewContentElement = findContentViewElement( view, viewElement );
+		// Find the <div class="info-box-content"> in it.
+		const viewContentElement = findContentViewElement( view, viewElement );
 
-        // Translate the model position offset to the view position offset.
-        data.viewPosition = data.mapper.findPositionIn( viewContentElement, modelPosition.offset );
-    };
+		// Translate the model position offset to the view position offset.
+		data.viewPosition = data.mapper.findPositionIn( viewContentElement, modelPosition.offset );
+	};
 }
 
 // Returns the <div class="info-box-content"> nested in the info box view structure.
 function findContentViewElement( editingView, viewElement ) {
-    for ( const value of editingView.createRangeIn( viewElement ) ) {
-        if ( value.item.is( 'element', 'div' ) && value.item.hasClass( 'info-box-content' ) ) {
-            return value.item;
-        }
-    }
+	for ( const value of editingView.createRangeIn( viewElement ) ) {
+		if ( value.item.is( 'element', 'div' ) && value.item.hasClass( 'info-box-content' ) ) {
+			return value.item;
+		}
+	}
 }
 ```
 
@@ -344,7 +344,7 @@ editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( e
 ```
 
 <info-box>
-    **Note**: You do not need the reverse position mapping ({@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition from the view to the model}) because the default view-to-model position mapping looks for the {@link module:engine/conversion/mapper~Mapper#findMappedViewAncestor mapped view ancestor} and maps the offset in respect to the model element.
+	**Note**: You do not need the reverse position mapping ({@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition from the view to the model}) because the default view-to-model position mapping looks for the {@link module:engine/conversion/mapper~Mapper#findMappedViewAncestor mapped view ancestor} and maps the offset in respect to the model element.
 </info-box>
 
 ### Updated plugin code
@@ -372,11 +372,11 @@ class InfoBox {
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
 
-        // Model-to-view position mapper is needed since the model <infoBox> content needs to end up in the inner
-        // <div class="info-box-content">.
-        editor.editing.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
-        editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
-    }
+		// Model-to-view position mapper is needed since the model <infoBox> content needs to end up in the inner
+		// <div class="info-box-content">.
+		editor.editing.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
+		editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
+	}
 }
 
 function upcastConverter() {
@@ -392,6 +392,6 @@ function dataDowncastConverter() {
 }
 
 function createModelToViewPositionMapper() {
-    // ...
+	// ...
 }
 ```
