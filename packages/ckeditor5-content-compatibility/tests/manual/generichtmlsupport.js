@@ -16,20 +16,18 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 
-import DataSchema from '../../src/dataschema';
-import DataFilter from '../../src/datafilter';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
 /**
  * Client custom plugin extending HTML support for compatibility.
  */
 class ExtendHTMLSupport extends Plugin {
+	static get requires() {
+		return [ GeneralHtmlSupport ];
+	}
+
 	init() {
-		// Create data schema object including default configuration based on CKE4
-		// DTD elements, missing dedicated feature in CKEditor 5.
-		// Data schema only behaves as container for DTD definitions, it doesn't change
-		// anything inside the editor itself. Registered elements are not extending editor
-		// model schema at this point.
-		const dataSchema = new DataSchema();
+		const { dataSchema, dataFilter } = this.editor.plugins.get( GeneralHtmlSupport );
 
 		// Extend schema with custom `xyz` element.
 		dataSchema.registerBlockElement( {
@@ -39,10 +37,6 @@ class ExtendHTMLSupport extends Plugin {
 				inheritAllFrom: '$htmlBlock'
 			}
 		} );
-
-		// Create data filter which will register editor model schema and converters required
-		// to allow elements and filter attributes.
-		const dataFilter = new DataFilter( this.editor, dataSchema );
 
 		// Allow some elements, at this point model schema will include information about view-model mapping
 		// e.g. article -> ghsArticle
