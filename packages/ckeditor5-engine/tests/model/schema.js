@@ -164,6 +164,7 @@ describe( 'Schema', () => {
 			expect( definitions.foo ).to.deep.equal( {
 				name: 'foo',
 				allowIn: [ '$root' ],
+				allowChildren: [],
 				allowAttributes: [],
 				isBlock: true
 			} );
@@ -207,6 +208,7 @@ describe( 'Schema', () => {
 			expect( definitions.foo ).to.deep.equal( {
 				name: 'foo',
 				allowIn: [ '$root' ],
+				allowChildren: [],
 				allowAttributes: []
 			} );
 		} );
@@ -221,6 +223,7 @@ describe( 'Schema', () => {
 			expect( definitions.foo ).to.deep.equal( {
 				name: 'foo',
 				allowIn: [],
+				allowChildren: [],
 				allowAttributes: []
 			} );
 		} );
@@ -238,6 +241,7 @@ describe( 'Schema', () => {
 			expect( definitions.paragraph ).to.deep.equal( {
 				name: 'paragraph',
 				allowIn: [],
+				allowChildren: [],
 				allowAttributes: [ 'foo' ]
 			} );
 		} );
@@ -256,6 +260,7 @@ describe( 'Schema', () => {
 			expect( definitions.paragraph ).to.deep.equal( {
 				name: 'paragraph',
 				allowIn: [],
+				allowChildren: [],
 				allowAttributes: [ 'foo' ]
 			} );
 		} );
@@ -2495,7 +2500,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( div, paragraph ) ).to.be.false;
 			} );
 
-			it( 'should remove allowChildren from definition', () => {
+			it( 'should keep allowChildren', () => {
 				schema.register( '$root', {
 					allowChildren: 'paragraph'
 				} );
@@ -2504,6 +2509,43 @@ describe( 'Schema', () => {
 
 				expect( schema.getDefinition( '$root' ) ).to.deep.equal( {
 					allowAttributes: [],
+					allowChildren: [ 'paragraph' ],
+					allowIn: [],
+					name: '$root'
+				} );
+			} );
+
+			it( 'should resolve allowChildren from allowIn', () => {
+				schema.register( '$root' );
+
+				schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+
+				schema.register( 'blockQuote', {
+					allowIn: '$root'
+				} );
+
+				expect( schema.getDefinition( '$root' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowChildren: [ 'paragraph', 'blockQuote' ],
+					allowIn: [],
+					name: '$root'
+				} );
+			} );
+
+			it( 'should not duplicate allowChildren', () => {
+				schema.register( '$root', {
+					allowChildren: 'paragraph'
+				} );
+
+				schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+
+				expect( schema.getDefinition( '$root' ) ).to.deep.equal( {
+					allowAttributes: [],
+					allowChildren: [ 'paragraph' ],
 					allowIn: [],
 					name: '$root'
 				} );
@@ -2522,6 +2564,7 @@ describe( 'Schema', () => {
 
 				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
 					allowAttributes: [],
+					allowChildren: [],
 					allowIn: [ '$root', 'div' ],
 					name: 'paragraph'
 				} );
@@ -2534,6 +2577,7 @@ describe( 'Schema', () => {
 
 				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
 					allowAttributes: [],
+					allowChildren: [ 'paragraph' ],
 					allowIn: [ 'paragraph' ],
 					name: 'paragraph'
 				} );
@@ -2550,6 +2594,7 @@ describe( 'Schema', () => {
 
 				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
 					allowAttributes: [],
+					allowChildren: [ 'blockQuote' ],
 					allowIn: [ 'blockQuote' ],
 					name: 'paragraph'
 				} );
@@ -2557,6 +2602,7 @@ describe( 'Schema', () => {
 				expect( schema.getDefinition( 'blockQuote' ) ).to.deep.equal( {
 					allowAttributes: [],
 					allowIn: [ 'paragraph' ],
+					allowChildren: [ 'paragraph' ],
 					name: 'blockQuote'
 				} );
 			} );
@@ -2572,6 +2618,7 @@ describe( 'Schema', () => {
 
 				expect( schema.getDefinition( 'paragraph' ) ).to.deep.equal( {
 					allowAttributes: [],
+					allowChildren: [],
 					allowIn: [ '$root' ],
 					name: 'paragraph'
 				} );

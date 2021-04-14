@@ -902,6 +902,7 @@ export default class Schema {
 
 		for ( const itemName of itemNames ) {
 			cleanUpAllowIn( compiledDefinitions, itemName );
+			cleanUpAllowChildren( compiledDefinitions, itemName );
 			cleanUpAllowAttributes( compiledDefinitions, itemName );
 		}
 
@@ -1617,7 +1618,9 @@ function compileAllowChildren( compiledDefinitions, itemName ) {
 		allowedChildren.allowIn.push( itemName );
 	}
 
-	delete item.allowChildren;
+	// allowIn already includes correct items, reset allowChildren
+	// to avoid duplicates later when cleaning up compilation results.
+	item.allowChildren = [];
 }
 
 function compileAllowContentOf( compiledDefinitions, itemName ) {
@@ -1691,6 +1694,16 @@ function cleanUpAllowIn( compiledDefinitions, itemName ) {
 	const existingItems = itemRule.allowIn.filter( itemToCheck => compiledDefinitions[ itemToCheck ] );
 
 	itemRule.allowIn = Array.from( new Set( existingItems ) );
+}
+
+// Restore allowChildren items based on allowIn.
+function cleanUpAllowChildren( compiledDefinitions, itemName ) {
+	const itemRule = compiledDefinitions[ itemName ];
+
+	for ( const allowItemName of itemRule.allowIn ) {
+		const allowedItem = compiledDefinitions[ allowItemName ];
+		allowedItem.allowChildren.push( itemName );
+	}
 }
 
 function cleanUpAllowAttributes( compiledDefinitions, itemName ) {
