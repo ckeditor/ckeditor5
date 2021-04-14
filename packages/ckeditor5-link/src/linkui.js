@@ -594,14 +594,19 @@ export default class LinkUI extends Plugin {
 
 			target = view.domConverter.viewRangeToDom( newRange );
 		} else {
-			const targetLink = this._getSelectedLinkElement();
-			const range = viewDocument.selection.getFirstRange();
+			// Make sure the target is calculated on demand at the last moment because a cached DOM range
+			// (which is very fragile) can desynchronize with the state of the editing view if there was
+			// any rendering done in the meantime. This can happen, for instance, when an inline widget
+			// gets unlinked.
+			target = () => {
+				const targetLink = this._getSelectedLinkElement();
 
-			target = targetLink ?
-				// When selection is inside link element, then attach panel to this element.
-				view.domConverter.mapViewToDom( targetLink ) :
-				// Otherwise attach panel to the selection.
-				view.domConverter.viewRangeToDom( range );
+				return targetLink ?
+					// When selection is inside link element, then attach panel to this element.
+					view.domConverter.mapViewToDom( targetLink ) :
+					// Otherwise attach panel to the selection.
+					view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+			};
 		}
 
 		return { target };

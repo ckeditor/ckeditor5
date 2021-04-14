@@ -180,12 +180,12 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: actionsView,
-				position: {
-					target: linkElement
-				}
-			} );
+
+			const addSpyCallArgs = balloonAddSpy.firstCall.args[ 0 ];
+
+			expect( addSpyCallArgs.view ).to.equal( actionsView );
+			expect( addSpyCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
 		// #https://github.com/ckeditor/ckeditor5-link/issues/181
@@ -196,22 +196,20 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: actionsView,
-				position: {
-					target: linkElement
-				}
-			} );
+
+			const addSpyFirstCallArgs = balloonAddSpy.firstCall.args[ 0 ];
+
+			expect( addSpyFirstCallArgs.view ).to.equal( actionsView );
+			expect( addSpyFirstCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyFirstCallArgs.position.target() ).to.equal( linkElement );
 
 			linkUIFeature._showUI();
 
-			expect( balloon.visibleView ).to.equal( formView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: formView,
-				position: {
-					target: linkElement
-				}
-			} );
+			const addSpyCallSecondCallArgs = balloonAddSpy.secondCall.args[ 0 ];
+
+			expect( addSpyCallSecondCallArgs.view ).to.equal( formView );
+			expect( addSpyCallSecondCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyCallSecondCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
 		it( 'should disable #formView and #actionsView elements when link and unlink commands are disabled', () => {
@@ -284,7 +282,7 @@ describe( 'LinkUI', () => {
 			const linkDomElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( linkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( linkDomElement );
 
 			balloon.add( {
 				stackId: 'custom',
@@ -302,12 +300,12 @@ describe( 'LinkUI', () => {
 
 			expect( balloon.visibleView ).to.equal( actionsView );
 			expect( balloon.hasView( customView ) ).to.equal( true );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( linkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.not.equal( linkDomElement );
 
 			const newLinkViewElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 1 );
 			const newLinkDomElement = editor.editing.view.domConverter.mapViewToDom( newLinkViewElement );
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newLinkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( newLinkDomElement );
 		} );
 
 		describe( 'response to ui#update', () => {
@@ -353,9 +351,8 @@ describe( 'LinkUI', () => {
 				} );
 
 				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, {
-					target: view.domConverter.mapViewToDom( linkElement )
-				} );
+
+				expect( spy.firstCall.args[ 0 ].target() ).to.equal( view.domConverter.mapViewToDom( linkElement ) );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
