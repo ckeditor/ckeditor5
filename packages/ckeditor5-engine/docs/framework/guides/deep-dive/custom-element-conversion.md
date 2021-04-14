@@ -251,8 +251,8 @@ function insertViewElements( data, conversionApi, infoBox, infoBoxTitle, infoBox
 		infoBoxContent
 	);
 
-    // The mapping between the model <infoBox> and its view representation.
-    conversionApi.mapper.bindElements( data.item, infoBox );
+	// The mapping between the model <infoBox> and its view representation.
+	conversionApi.mapper.bindElements( data.item, infoBox );
 
 	conversionApi.writer.insert(
 		conversionApi.mapper.toViewPosition( data.range.start ),
