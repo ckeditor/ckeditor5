@@ -16,9 +16,11 @@ Use the editor below to see the block quote plugin in action. You can also prece
 
 {@snippet features/block-quote}
 
-## Nesting block quotes
+## Nested block quotes
 
-Starting from version 27.1.0, CKEditor 5 supports nesting a block quote in another block quote. This may prove useful for scientific or academic papers, but also articles citing sources and referring to previous writing would often use it. To use this functionality, simply click where you need the quote nested and insert it just like a regular one.
+Starting from version 27.1.0, CKEditor 5 will properly display a block quote nested in another block quote - this is backwards compatible for content created in CKEditor 4. The functionality itself may prove useful for scientific or academic papers, but also articles citing sources and referring to previous writing would often use it.
+
+It is also possible to nest a block quote into another block quote using the {@link features/pasting/drag-drop drag and drop} mechanism - select an existing blockquote and drag it into another existing blockquote.
 
 {@snippet features/nested-block-quote}
 
