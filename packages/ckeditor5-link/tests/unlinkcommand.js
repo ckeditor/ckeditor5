@@ -465,13 +465,13 @@ describe( 'UnlinkCommand', () => {
 
 					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-					model.schema.register( 'image', {
+					model.schema.register( 'linkableBlock', {
 						isBlock: true,
 						allowWhere: '$text',
 						allowAttributes: [ 'linkHref' ]
 					} );
 
-					model.schema.register( 'imageInline', {
+					model.schema.register( 'linkableInline', {
 						isObject: true,
 						isInline: true,
 						allowWhere: '$text',
@@ -492,20 +492,20 @@ describe( 'UnlinkCommand', () => {
 			expect( getData( model ) ).to.equal( 'f[]oobar' );
 		} );
 
-		it( 'should remove manual decorators from linked block images together with linkHref', () => {
-			setData( model, '<image linkIsFoo="true" linkIsBar="true" linkHref="url"></image>' );
+		it( 'should remove manual decorators from linkable blocks together with linkHref', () => {
+			setData( model, '[<linkableBlock linkIsFoo="true" linkIsBar="true" linkHref="url"></linkableBlock>]' );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equal( '<image></image>' );
+			expect( getData( model ) ).to.equal( '[<linkableBlock></linkableBlock>]' );
 		} );
 
-		it( 'should remove manual decorators from linked inline images together with linkHref', () => {
-			setData( model, '<paragraph>[<imageInline linkIsFoo="true" linkIsBar="true" linkHref="foo"></imageInline>]</paragraph>' );
+		it( 'should remove manual decorators from linkable inline elements together with linkHref', () => {
+			setData( model, '<paragraph>[<linkableInline linkIsFoo="true" linkIsBar="true" linkHref="foo"></linkableInline>]</paragraph>' );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>[<linkableInline></linkableInline>]</paragraph>' );
 		} );
 	} );
 } );

@@ -15,7 +15,7 @@ import {
 	isLinkElement,
 	ensureSafeUrl,
 	normalizeDecorators,
-	isLinkableImage,
+	isLinkableElement,
 	isEmail,
 	addLinkProtocolIfApplicable
 } from '../src/utils';
@@ -227,24 +227,24 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'isLinkableImage()', () => {
+	describe( 'isLinkableElement()', () => {
 		it( 'returns false when passed "null" as element', () => {
-			expect( isLinkableImage( null, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( null, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when passed an element that is not the image element', () => {
 			const element = new ModelElement( 'paragraph' );
-			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when schema does not allow linking images (block image)', () => {
 			const element = new ModelElement( 'image' );
-			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when schema does not allow linking images (inline image)', () => {
 			const element = new ModelElement( 'imageInline' );
-			expect( isLinkableImage( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
 		} );
 
 		it( 'returns true when passed a block image element and it can be linked', () => {
@@ -256,7 +256,7 @@ describe( 'utils', () => {
 				allowAttributes: [ 'linkHref' ]
 			} );
 
-			expect( isLinkableImage( element, schema ) ).to.equal( true );
+			expect( isLinkableElement( element, schema ) ).to.equal( true );
 		} );
 
 		it( 'returns true when passed an inline image element and it can be linked', () => {
@@ -268,7 +268,7 @@ describe( 'utils', () => {
 				allowAttributes: [ 'linkHref' ]
 			} );
 
-			expect( isLinkableImage( element, schema ) ).to.equal( true );
+			expect( isLinkableElement( element, schema ) ).to.equal( true );
 		} );
 	} );
 

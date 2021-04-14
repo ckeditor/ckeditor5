@@ -12,7 +12,6 @@ import { Matcher } from 'ckeditor5/src/engine';
 import { toMap } from 'ckeditor5/src/utils';
 
 import LinkEditing from './linkediting';
-import { isBlockImageView } from '@ckeditor/ckeditor5-image/src/image/utils';
 
 /**
  * The link image engine feature.
@@ -27,7 +26,7 @@ export default class LinkImageEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ 'ImageEditing', LinkEditing ];
+		return [ 'ImageEditing', 'ImageUtils', LinkEditing ];
 	}
 
 	/**
@@ -107,6 +106,7 @@ export default class LinkImageEditing extends Plugin {
 // @returns {Function}
 function upcastLink( editor ) {
 	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
+	const linkUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
@@ -117,7 +117,7 @@ function upcastLink( editor ) {
 				return;
 			}
 
-			const blockImageView = imageInLink.findAncestor( isBlockImageView );
+			const blockImageView = imageInLink.findAncestor( linkUtils.isBlockImageView.bind( linkUtils ) );
 
 			// There are two possible cases to consider here
 			//
