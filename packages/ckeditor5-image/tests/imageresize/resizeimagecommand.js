@@ -5,26 +5,28 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ResizeImageCommand', () => {
 	let model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				model = newEditor.model;
-				command = new ResizeImageCommand( newEditor );
+		return ModelTestEditor.create( {
+			plugins: [ ImageResizeEditing ]
+		} ).then( newEditor => {
+			model = newEditor.model;
+			command = new ResizeImageCommand( newEditor );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-				model.schema.register( 'image', {
-					isObject: true,
-					isBlock: true,
-					allowWhere: '$block',
-					allowAttributes: 'width'
-				} );
+			model.schema.register( 'image', {
+				isObject: true,
+				isBlock: true,
+				allowWhere: '$block',
+				allowAttributes: 'width'
 			} );
+		} );
 	} );
 
 	describe( '#isEnabled', () => {

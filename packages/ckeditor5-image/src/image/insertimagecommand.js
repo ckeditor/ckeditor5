@@ -6,8 +6,6 @@
 import { Command } from 'ckeditor5/src/core';
 import { logWarning, toArray } from 'ckeditor5/src/utils';
 
-import { insertImage, isImage, isImageAllowed } from './utils';
-
 /**
  * @module image/image/insertimagecommand
  */
@@ -73,7 +71,7 @@ export default class InsertImageCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isImageAllowed( this.editor );
+		this.isEnabled = this.editor.plugins.get( 'ImageUtils' ).isImageAllowed();
 	}
 
 	/**
@@ -86,6 +84,7 @@ export default class InsertImageCommand extends Command {
 	execute( options ) {
 		const sources = toArray( options.source );
 		const selection = this.editor.model.document.selection;
+		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		// In case of multiple images, each image (starting from the 2nd) will be inserted at a position that
 		// follows the previous one. That will move the selection and, to stay on the safe side and make sure
@@ -102,12 +101,12 @@ export default class InsertImageCommand extends Command {
 
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
-			if ( index && selectedElement && isImage( selectedElement ) ) {
+			if ( index && selectedElement && imageUtils.isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
-				insertImage( this.editor, { src, ...selectionAttributes }, position );
+				imageUtils.insertImage( { src, ...selectionAttributes }, position );
 			} else {
-				insertImage( this.editor, { src, ...selectionAttributes } );
+				imageUtils.insertImage( { src, ...selectionAttributes } );
 			}
 		} );
 	}

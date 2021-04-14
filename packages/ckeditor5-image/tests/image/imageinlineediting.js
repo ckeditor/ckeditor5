@@ -23,7 +23,6 @@ import InsertImageCommand from '../../src/image/insertimagecommand';
 import ImageCaption from '../../src/imagecaption';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
-import { isImageWidget } from '../../src/image/utils';
 
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -465,7 +464,7 @@ describe( 'ImageInlineEditing', () => {
 				const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
 				expect( element.name ).to.equal( 'span' );
-				expect( isImageWidget( element ) ).to.be.true;
+				expect( editor.plugins.get( 'ImageUtils' ).isImageWidget( element ) ).to.be.true;
 			} );
 
 			it( 'should convert attribute change', () => {

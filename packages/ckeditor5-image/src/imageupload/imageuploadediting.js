@@ -16,10 +16,10 @@ import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { FileRepository } from 'ckeditor5/src/upload';
 import { env } from 'ckeditor5/src/utils';
 
+import ImageUtils from '../image/utils';
 import UploadImageCommand from './uploadimagecommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
-import { getViewImageFromWidget, isImage } from '../image/utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
@@ -35,7 +35,7 @@ export default class ImageUploadEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FileRepository, Notification, ClipboardPipeline ];
+		return [ FileRepository, Notification, ClipboardPipeline, ImageUtils ];
 	}
 
 	static get pluginName() {
@@ -64,6 +64,7 @@ export default class ImageUploadEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' ) );
 
@@ -141,7 +142,7 @@ export default class ImageUploadEditing extends Plugin {
 		// (see Document#change listener below).
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
 			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
-				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
+				.filter( value => isLocalImage( imageUtils, value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
 				.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
 
 			if ( !fetchableImages.length ) {
@@ -233,6 +234,7 @@ export default class ImageUploadEditing extends Plugin {
 		const t = editor.locale.t;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const notification = editor.plugins.get( Notification );
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.enqueueChange( 'transparent', writer => {
 			writer.setAttribute( 'uploadStatus', 'reading', imageElement );
@@ -247,7 +249,7 @@ export default class ImageUploadEditing extends Plugin {
 				/* istanbul ignore next */
 				if ( env.isSafari ) {
 					const viewFigure = editor.editing.mapper.toViewElement( imageElement );
-					const viewImg = getViewImageFromWidget( viewFigure );
+					const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
 
 					editor.editing.view.once( 'render', () => {
 						// Early returns just to be safe. There might be some code ran
@@ -397,7 +399,9 @@ export function isHtmlIncluded( dataTransfer ) {
 }
 
 function getImagesFromChangeItem( editor, item ) {
+	const imageUtils = editor.plugins.get( 'ImageUtils' );
+
 	return Array.from( editor.model.createRangeOn( item ) )
-		.filter( value => isImage( value.item ) )
+		.filter( value => imageUtils.isImage( value.item ) )
 		.map( value => value.item );
 }

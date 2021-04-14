@@ -24,34 +24,32 @@ import ImageEditing from '../../src/image/imageediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 
-import {
-	toImageWidget,
-	isImageWidget,
-	getSelectedImageWidget,
-	isImage,
-	isInlineImage,
-	isBlockImage,
-	isImageAllowed,
-	insertImage,
-	getViewImageFromWidget,
-	getImageWidgetAncestor,
-	isInlineImageView,
-	isBlockImageView,
-	determineImageTypeForInsertionAtSelection,
-	getImageTypeMatcher,
-	createImageViewElement
-} from '../../src/image/utils';
+import ImageUtils from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
-	let element, image, writer, viewDocument;
+	let editor, imageUtils, element, image, writer, viewDocument;
 
-	beforeEach( () => {
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( {
+			plugins: [ ImageUtils ]
+		} );
+
+		imageUtils = editor.plugins.get( 'ImageUtils' );
+
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		writer = new ViewDowncastWriter( viewDocument );
 		image = writer.createContainerElement( 'img' );
 		element = writer.createContainerElement( 'figure' );
 		writer.insert( writer.createPositionAt( element, 0 ), image );
-		toImageWidget( element, writer, 'image widget' );
+		imageUtils.toImageWidget( element, writer, 'image widget' );
+	} );
+
+	afterEach( async () => {
+		return editor.destroy();
+	} );
+
+	it( 'should have a name', () => {
+		expect( ImageUtils.pluginName ).to.equal( 'ImageUtils' );
 	} );
 
 	describe( 'toImageWidget()', () => {
@@ -78,11 +76,11 @@ describe( 'image widget utils', () => {
 
 	describe( 'isImageWidget()', () => {
 		it( 'should return true for elements marked with toImageWidget()', () => {
-			expect( isImageWidget( element ) ).to.be.true;
+			expect( imageUtils.isImageWidget( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for non-widgetized elements', () => {
-			expect( isImageWidget( writer.createContainerElement( 'p' ) ) ).to.be.false;
+			expect( imageUtils.isImageWidget( writer.createContainerElement( 'p' ) ) ).to.be.false;
 		} );
 	} );
 
@@ -95,7 +93,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( element, 'on' );
 
-			expect( getSelectedImageWidget( selection ) ).to.equal( element );
+			expect( imageUtils.getSelectedImageWidget( selection ) ).to.equal( element );
 		} );
 
 		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
@@ -106,7 +104,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( imageUtils.getSelectedImageWidget( selection ) ).to.be.null;
 		} );
 
 		it( 'should return false when widget element is not the only element in the selection', () => {
@@ -116,13 +114,13 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( imageUtils.getSelectedImageWidget( selection ) ).to.be.null;
 		} );
 
 		it( 'should return true when an inline image widget is encompassed by a link', () => {
 			const paragraph = writer.createContainerElement( 'p' );
-			const inlineImageView = createImageViewElement( writer, 'imageInline' );
-			toImageWidget( inlineImageView, writer, 'image widget' );
+			const inlineImageView = imageUtils.createImageViewElement( writer, 'imageInline' );
+			imageUtils.toImageWidget( inlineImageView, writer, 'image widget' );
 
 			writer.insert( writer.createPositionAt( paragraph, 0 ), inlineImageView );
 
@@ -133,13 +131,13 @@ describe( 'image widget utils', () => {
 			// <p>[<a href="..."><span class="image-inline ...">...</span></a>]</p>
 			const selection = writer.createSelection( writer.createRangeOn( inlineImageView.parent ) );
 
-			expect( getSelectedImageWidget( selection ) ).to.equal( inlineImageView );
+			expect( imageUtils.getSelectedImageWidget( selection ) ).to.equal( inlineImageView );
 		} );
 
 		it( 'should return false when an inline image widget is encompassed by a link that has some additional content', () => {
 			const paragraph = writer.createContainerElement( 'p' );
-			const inlineImageView = createImageViewElement( writer, 'imageInline' );
-			toImageWidget( inlineImageView, writer, 'image widget' );
+			const inlineImageView = imageUtils.createImageViewElement( writer, 'imageInline' );
+			imageUtils.toImageWidget( inlineImageView, writer, 'image widget' );
 
 			writer.insert( writer.createPositionAt( paragraph, 0 ), inlineImageView );
 			writer.insert( writer.createPositionAt( paragraph, 1 ), writer.createText( 'foo' ) );
@@ -151,7 +149,7 @@ describe( 'image widget utils', () => {
 			// <p>[<a href="..."><span class="image-inline ...">...</span>foo</a>]</p>
 			const selection = writer.createSelection( writer.createRangeOn( inlineImageView.parent ) );
 
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( imageUtils.getSelectedImageWidget( selection ) ).to.be.null;
 		} );
 
 		it( 'should return false when a link that does not have an image but something else is selected', () => {
@@ -166,7 +164,7 @@ describe( 'image widget utils', () => {
 			// <p>[<a href="...">foo</a>]</p>
 			const selection = writer.createSelection( writer.createRangeOn( paragraph.getChild( 0 ) ) );
 
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( imageUtils.getSelectedImageWidget( selection ) ).to.be.null;
 		} );
 	} );
 
@@ -186,13 +184,13 @@ describe( 'image widget utils', () => {
 
 				const selection = writer.createSelection( writer.createRangeIn( caption ) );
 
-				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
+				expect( imageUtils.getImageWidgetAncestor( selection ) ).to.equal( element );
 			} );
 
 			it( 'should return the widget element if the selection is collapsed', () => {
 				const selection = writer.createSelection( caption, 'in' );
 
-				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
+				expect( imageUtils.getImageWidgetAncestor( selection ) ).to.equal( element );
 			} );
 		} );
 
@@ -202,7 +200,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( element, 'on' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( imageUtils.getImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if an image is a part of the selection', () => {
@@ -212,7 +210,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( imageUtils.getImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if a non-widgetized element is the only element in the selection', () => {
@@ -223,7 +221,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( imageUtils.getImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if the selection is inside a figure element, which is not an image', () => {
@@ -237,7 +235,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( innerContainer, 'in' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( imageUtils.getImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 	} );
 
@@ -245,24 +243,24 @@ describe( 'image widget utils', () => {
 		it( 'should return true for the block image element', () => {
 			const image = new ModelElement( 'image' );
 
-			expect( isImage( image ) ).to.be.true;
+			expect( imageUtils.isImage( image ) ).to.be.true;
 		} );
 
 		it( 'should return true for the inline image element', () => {
 			const image = new ModelElement( 'imageInline' );
 
-			expect( isImage( image ) ).to.be.true;
+			expect( imageUtils.isImage( image ) ).to.be.true;
 		} );
 
 		it( 'should return false for different elements', () => {
 			const image = new ModelElement( 'foo' );
 
-			expect( isImage( image ) ).to.be.false;
+			expect( imageUtils.isImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return false for null and undefined', () => {
-			expect( isImage( null ) ).to.be.false;
-			expect( isImage( undefined ) ).to.be.false;
+			expect( imageUtils.isImage( null ) ).to.be.false;
+			expect( imageUtils.isImage( undefined ) ).to.be.false;
 		} );
 	} );
 
@@ -270,24 +268,24 @@ describe( 'image widget utils', () => {
 		it( 'should return true for the inline image element', () => {
 			const image = new ModelElement( 'imageInline' );
 
-			expect( isInlineImage( image ) ).to.be.true;
+			expect( imageUtils.isInlineImage( image ) ).to.be.true;
 		} );
 
 		it( 'should return false for the block image element', () => {
 			const image = new ModelElement( 'image' );
 
-			expect( isInlineImage( image ) ).to.be.false;
+			expect( imageUtils.isInlineImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return false for different elements', () => {
 			const image = new ModelElement( 'foo' );
 
-			expect( isInlineImage( image ) ).to.be.false;
+			expect( imageUtils.isInlineImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return false for null and undefined', () => {
-			expect( isInlineImage( null ) ).to.be.false;
-			expect( isInlineImage( undefined ) ).to.be.false;
+			expect( imageUtils.isInlineImage( null ) ).to.be.false;
+			expect( imageUtils.isInlineImage( undefined ) ).to.be.false;
 		} );
 	} );
 
@@ -295,24 +293,24 @@ describe( 'image widget utils', () => {
 		it( 'should return false for the inline image element', () => {
 			const image = new ModelElement( 'imageInline' );
 
-			expect( isBlockImage( image ) ).to.be.false;
+			expect( imageUtils.isBlockImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return true for the block image element', () => {
 			const image = new ModelElement( 'image' );
 
-			expect( isBlockImage( image ) ).to.be.true;
+			expect( imageUtils.isBlockImage( image ) ).to.be.true;
 		} );
 
 		it( 'should return false for different elements', () => {
 			const image = new ModelElement( 'foo' );
 
-			expect( isBlockImage( image ) ).to.be.false;
+			expect( imageUtils.isBlockImage( image ) ).to.be.false;
 		} );
 
 		it( 'should return false for null and undefined', () => {
-			expect( isBlockImage( null ) ).to.be.false;
-			expect( isBlockImage( undefined ) ).to.be.false;
+			expect( imageUtils.isBlockImage( null ) ).to.be.false;
+			expect( imageUtils.isBlockImage( undefined ) ).to.be.false;
 		} );
 	} );
 
@@ -320,24 +318,24 @@ describe( 'image widget utils', () => {
 		it( 'should return false for the block image element', () => {
 			const element = writer.createContainerElement( 'figure', { class: 'image' } );
 
-			expect( isInlineImageView( element ) ).to.be.false;
+			expect( imageUtils.isInlineImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return true for the inline view image element', () => {
 			const element = writer.createEmptyElement( 'img' );
 
-			expect( isInlineImageView( element ) ).to.be.true;
+			expect( imageUtils.isInlineImageView( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for other view element', () => {
 			const element = writer.createContainerElement( 'div' );
 
-			expect( isInlineImageView( element ) ).to.be.false;
+			expect( imageUtils.isInlineImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for null, undefined', () => {
-			expect( isInlineImageView() ).to.be.false;
-			expect( isInlineImageView( null ) ).to.be.false;
+			expect( imageUtils.isInlineImageView() ).to.be.false;
+			expect( imageUtils.isInlineImageView( null ) ).to.be.false;
 		} );
 	} );
 
@@ -345,36 +343,36 @@ describe( 'image widget utils', () => {
 		it( 'should return false for the inline image element', () => {
 			const element = writer.createEmptyElement( 'img' );
 
-			expect( isBlockImageView( element ) ).to.be.false;
+			expect( imageUtils.isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return true for the block view image element', () => {
 			const element = writer.createContainerElement( 'figure', { class: 'image' } );
 
-			expect( isBlockImageView( element ) ).to.be.true;
+			expect( imageUtils.isBlockImageView( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for the figure without a proper class', () => {
 			const element = writer.createContainerElement( 'figure' );
 
-			expect( isBlockImageView( element ) ).to.be.false;
+			expect( imageUtils.isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for the non-figure with a proper class', () => {
 			const element = writer.createContainerElement( 'div', { class: 'image' } );
 
-			expect( isBlockImageView( element ) ).to.be.false;
+			expect( imageUtils.isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for other view element', () => {
 			const element = writer.createContainerElement( 'div' );
 
-			expect( isBlockImageView( element ) ).to.be.false;
+			expect( imageUtils.isBlockImageView( element ) ).to.be.false;
 		} );
 
 		it( 'should return false for null, undefined', () => {
-			expect( isBlockImageView() ).to.be.false;
-			expect( isBlockImageView( null ) ).to.be.false;
+			expect( imageUtils.isBlockImageView() ).to.be.false;
+			expect( imageUtils.isBlockImageView( null ) ).to.be.false;
 		} );
 	} );
 
@@ -389,6 +387,7 @@ describe( 'image widget utils', () => {
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
+					imageUtils = editor.plugins.get( 'ImageUtils' );
 
 					const schema = model.schema;
 					schema.extend( 'image', { allowAttributes: 'uploadId' } );
@@ -399,19 +398,19 @@ describe( 'image widget utils', () => {
 			model.enqueueChange( 'transparent', () => {
 				setModelData( model, '[]' );
 
-				expect( isImageAllowed( editor ) ).to.be.true;
+				expect( imageUtils.isImageAllowed() ).to.be.true;
 			} );
 		} );
 
 		it( 'should return true when the selection is in empty block', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
-			expect( isImageAllowed( editor ) ).to.be.true;
+			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return true when the selection directly in a paragraph', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( isImageAllowed( editor ) ).to.be.true;
+			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return true when the selection directly in a block', () => {
@@ -420,12 +419,12 @@ describe( 'image widget utils', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
-			expect( isImageAllowed( editor ) ).to.be.true;
+			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return true when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( isImageAllowed( editor ) ).to.be.true;
+			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return false when the selection is inside other image', () => {
@@ -436,7 +435,7 @@ describe( 'image widget utils', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			setModelData( model, '<image><caption>[]</caption></image>' );
-			expect( isImageAllowed( editor ) ).to.be.false;
+			expect( imageUtils.isImageAllowed() ).to.be.false;
 		} );
 
 		it( 'should return true when the selection is on other object', () => {
@@ -444,7 +443,7 @@ describe( 'image widget utils', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
-			expect( isImageAllowed( editor ) ).to.be.true;
+			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside isLimit element which allows image', () => {
@@ -458,7 +457,7 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
-			expect( isImageAllowed( editor ) ).to.be.true;
+			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return false when schema disallows image', () => {
@@ -477,7 +476,7 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( isImageAllowed( editor ) ).to.be.false;
+			expect( imageUtils.isImageAllowed() ).to.be.false;
 		} );
 	} );
 
@@ -493,15 +492,21 @@ describe( 'image widget utils', () => {
 					editor = newEditor;
 					model = editor.model;
 
+					imageUtils = editor.plugins.get( 'ImageUtils' );
+
 					const schema = model.schema;
 					schema.extend( 'image', { allowAttributes: 'uploadId' } );
 				} );
 		} );
 
+		afterEach( async () => {
+			return editor.destroy();
+		} );
+
 		it( 'should insert inline image in a paragraph with text', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( editor );
+			imageUtils.insertImage( editor );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 		} );
@@ -509,7 +514,7 @@ describe( 'image widget utils', () => {
 		it( 'should insert a block image when the selection is inside an empty paragraph', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
-			insertImage( editor );
+			imageUtils.insertImage( editor );
 
 			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
 		} );
@@ -517,7 +522,7 @@ describe( 'image widget utils', () => {
 		it( 'should insert a block image in the document root', () => {
 			setModelData( model, '[]' );
 
-			insertImage( editor );
+			imageUtils.insertImage( editor );
 
 			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
 		} );
@@ -525,7 +530,7 @@ describe( 'image widget utils', () => {
 		it( 'should insert image with given attributes', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( editor, { src: 'bar' } );
+			imageUtils.insertImage( { src: 'bar' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="bar"></imageInline>]o</paragraph>' );
 		} );
@@ -541,20 +546,20 @@ describe( 'image widget utils', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			insertImage( editor );
+			imageUtils.insertImage();
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
 		it( 'should use the block image type when the config.image.insert.type="block" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
+				plugins: [ ImageUtils, ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'block' } }
 			} );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( newEditor );
+			newEditor.plugins.get( 'ImageUtils' ).insertImage( newEditor );
 
 			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
 
@@ -563,13 +568,13 @@ describe( 'image widget utils', () => {
 
 		it( 'should use the inline image type if the config.image.insert.type="inline" option is set', async () => {
 			const newEditor = await VirtualTestEditor.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
+				plugins: [ ImageUtils, ImageBlockEditing, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'inline' } }
 			} );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( newEditor );
+			newEditor.plugins.get( 'ImageUtils' ).insertImage();
 
 			expect( getModelData( newEditor.model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
@@ -578,12 +583,12 @@ describe( 'image widget utils', () => {
 
 		it( 'should use the inline image type when there is only ImageInlineEditing plugin enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
-				plugins: [ ImageInlineEditing, Paragraph ]
+				plugins: [ ImageUtils, ImageInlineEditing, Paragraph ]
 			} );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( newEditor );
+			newEditor.plugins.get( 'ImageUtils' ).insertImage();
 
 			expect( getModelData( newEditor.model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
@@ -592,12 +597,12 @@ describe( 'image widget utils', () => {
 
 		it( 'should use block the image type when there is only ImageBlockEditing plugin enabled', async () => {
 			const newEditor = await VirtualTestEditor.create( {
-				plugins: [ ImageBlockEditing, Paragraph ]
+				plugins: [ ImageUtils, ImageBlockEditing, Paragraph ]
 			} );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( newEditor );
+			newEditor.plugins.get( 'ImageUtils' ).insertImage();
 
 			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
 
@@ -608,13 +613,13 @@ describe( 'image widget utils', () => {
 			'but ImageInlineEditing plugin is not enabled', async () => {
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const newEditor = await VirtualTestEditor.create( {
-				plugins: [ ImageBlockEditing, Paragraph ],
+				plugins: [ ImageUtils, ImageBlockEditing, Paragraph ],
 				image: { insert: { type: 'inline' } }
 			} );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( newEditor );
+			newEditor.plugins.get( 'ImageUtils' ).insertImage();
 
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
 			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'image-inline-plugin-required' );
@@ -628,13 +633,13 @@ describe( 'image widget utils', () => {
 			'but ImageBlockEditing plugin is not enabled', async () => {
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const newEditor = await VirtualTestEditor.create( {
-				plugins: [ ImageInlineEditing, Paragraph ],
+				plugins: [ ImageUtils, ImageInlineEditing, Paragraph ],
 				image: { insert: { type: 'block' } }
 			} );
 
 			setModelData( newEditor.model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( newEditor );
+			newEditor.plugins.get( 'ImageUtils' ).insertImage();
 
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
 			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'image-block-plugin-required' );
@@ -648,7 +653,7 @@ describe( 'image widget utils', () => {
 			setModelData( model, '[]' );
 			model.schema.extend( 'image', { allowAttributes: 'customAttribute' } );
 
-			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
 			expect( getModelData( model ) )
 				.to.equal( '[<image customAttribute="value" src="foo"></image>]' );
@@ -657,7 +662,7 @@ describe( 'image widget utils', () => {
 		it( 'should omit the disallowed attributes while inserting a block image', () => {
 			setModelData( model, '[]' );
 
-			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
 			expect( getModelData( model ) )
 				.to.equal( '[<image src="foo"></image>]' );
@@ -667,7 +672,7 @@ describe( 'image widget utils', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			model.schema.extend( 'imageInline', { allowAttributes: 'customAttribute' } );
 
-			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>f[<imageInline customAttribute="value" src="foo"></imageInline>]o</paragraph>' );
@@ -676,7 +681,7 @@ describe( 'image widget utils', () => {
 		it( 'should omit the disallowed attributes while inserting an inline image', () => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			insertImage( editor, { src: 'foo', customAttribute: 'value' } );
+			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
 		} );
@@ -686,7 +691,7 @@ describe( 'image widget utils', () => {
 		// figure
 		//   img
 		it( 'returns the the img element from widget if the img is the first children', () => {
-			expect( getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -694,7 +699,7 @@ describe( 'image widget utils', () => {
 		//   img
 		it( 'returns the the img element from widget if the img is not the first children', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), writer.createContainerElement( 'div' ) );
-			expect( getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -706,7 +711,7 @@ describe( 'image widget utils', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), divElement );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 0 ) );
 
-			expect( getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -722,7 +727,7 @@ describe( 'image widget utils', () => {
 			writer.insert( writer.createPositionAt( divElement, 0 ), writer.createText( 'Bar' ) );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
 
-			expect( getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
 		} );
 	} );
 
@@ -731,9 +736,10 @@ describe( 'image widget utils', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
+				plugins: [ ImageUtils, ImageBlockEditing, ImageInlineEditing, Paragraph ]
 			} );
 
+			imageUtils = editor.plugins.get( 'ImageUtils' );
 			model = editor.model;
 			schema = model.schema;
 			schema.register( 'block', {
@@ -755,34 +761,38 @@ describe( 'image widget utils', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'inlineWidget', view: 'inlineWidget' } );
 		} );
 
+		afterEach( async () => {
+			return editor.destroy();
+		} );
+
 		it( 'should return "image" when there is no selected block in the selection', () => {
 			setModelData( model, 'f[]oo' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+			expect( imageUtils.determineImageTypeForInsertionAtSelection( model.document.selection ) ).to.equal( 'image' );
 		} );
 
 		it( 'should return "image" when the selected block in the selection is empty', () => {
 			setModelData( model, '<block>[]</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+			expect( imageUtils.determineImageTypeForInsertionAtSelection( model.document.selection ) ).to.equal( 'image' );
 		} );
 
 		it( 'should return "image" when the selected block is an object (a widget)', () => {
 			setModelData( model, '[<blockWidget></blockWidget>]' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+			expect( imageUtils.determineImageTypeForInsertionAtSelection( model.document.selection ) ).to.equal( 'image' );
 		} );
 
 		it( 'should return "imageInline" when selected block in the selection has some content', () => {
 			setModelData( model, '<block>[]a</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+			expect( imageUtils.determineImageTypeForInsertionAtSelection( model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 
 		it( 'should return "imageInline" when an inline widget is selected', () => {
 			setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+			expect( imageUtils.determineImageTypeForInsertionAtSelection( model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 	} );
 
@@ -791,8 +801,10 @@ describe( 'image widget utils', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ ImageEditing ]
+				plugins: [ ImageUtils, ImageEditing ]
 			} );
+
+			imageUtils = editor.plugins.get( 'ImageUtils' );
 		} );
 
 		afterEach( async () => {
@@ -810,15 +822,15 @@ describe( 'image widget utils', () => {
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				expect( getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
-				expect( getImageTypeMatcher( 'imageInline', editor ) ).to.eql( returnValue );
+				expect( imageUtils.getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
+				expect( imageUtils.getImageTypeMatcher( 'imageInline' ) ).to.eql( returnValue );
 			} );
 
 			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				expect( getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
-				expect( getImageTypeMatcher( 'imageInline', editor ) ).to.eql( returnValue );
+				expect( imageUtils.getImageTypeMatcher( 'image', editor ) ).to.eql( returnValue );
+				expect( imageUtils.getImageTypeMatcher( 'imageInline' ) ).to.eql( returnValue );
 			} );
 		} );
 
@@ -830,8 +842,10 @@ describe( 'image widget utils', () => {
 				document.body.appendChild( editorElement );
 
 				editor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ Image, Paragraph, Table ]
+					plugins: [ ImageUtils, Image, Paragraph, Table ]
 				} );
+
+				imageUtils = editor.plugins.get( 'ImageUtils' );
 
 				writer = new UpcastWriter( editor.editing.view.document );
 			} );
@@ -844,7 +858,7 @@ describe( 'image widget utils', () => {
 			describe( 'the returned matcherPattern function', () => {
 				describe( 'for the "image" type requested', () => {
 					beforeEach( () => {
-						matcherPattern = getImageTypeMatcher( 'image', editor );
+						matcherPattern = imageUtils.getImageTypeMatcher( 'image', editor );
 					} );
 
 					it( 'should return a function', () => {
@@ -892,7 +906,7 @@ describe( 'image widget utils', () => {
 
 				describe( 'for the "imageInline" type requested', () => {
 					beforeEach( () => {
-						matcherPattern = getImageTypeMatcher( 'imageInline', editor );
+						matcherPattern = imageUtils.getImageTypeMatcher( 'imageInline' );
 					} );
 
 					it( 'should return a function', () => {

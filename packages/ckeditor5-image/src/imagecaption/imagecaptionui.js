@@ -9,6 +9,7 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
+import ImageUtils from '../image/utils';
 
 import { getCaptionFromModelSelection } from './utils';
 
@@ -18,6 +19,13 @@ import { getCaptionFromModelSelection } from './utils';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageCaptionUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageUtils ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -31,6 +39,7 @@ export default class ImageCaptionUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'toggleImageCaption', locale => {
@@ -51,7 +60,7 @@ export default class ImageCaptionUI extends Plugin {
 
 				// Scroll to the selection and highlight the caption if the caption showed up.
 				if ( command.value ) {
-					const modelCaptionElement = getCaptionFromModelSelection( editor.model.document.selection );
+					const modelCaptionElement = getCaptionFromModelSelection( imageUtils, editor.model.document.selection );
 					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
 
 					editingView.scrollToTheSelection();

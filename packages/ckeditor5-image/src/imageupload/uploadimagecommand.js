@@ -7,8 +7,6 @@ import { FileRepository } from 'ckeditor5/src/upload';
 import { Command } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 
-import { insertImage, isImage, isImageAllowed } from '../image/utils';
-
 /**
  * @module image/imageupload/uploadimagecommand
  */
@@ -47,10 +45,12 @@ export default class UploadImageCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selectedElement = this.editor.model.document.selection.getSelectedElement();
+		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const selectedElement = editor.model.document.selection.getSelectedElement();
 
 		// TODO: This needs refactoring.
-		this.isEnabled = isImageAllowed( this.editor ) || isImage( selectedElement );
+		this.isEnabled = imageUtils.isImageAllowed() || imageUtils.isImage( selectedElement );
 	}
 
 	/**
@@ -63,6 +63,7 @@ export default class UploadImageCommand extends Command {
 	execute( options ) {
 		const files = toArray( options.file );
 		const selection = this.editor.model.document.selection;
+		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		// In case of multiple files, each file (starting from the 2nd) will be inserted at a position that
 		// follows the previous one. That will move the selection and, to stay on the safe side and make sure
@@ -79,7 +80,7 @@ export default class UploadImageCommand extends Command {
 
 			// Inserting of an inline image replace the selected element and make a selection on the inserted image.
 			// Therefore inserting multiple inline images requires creating position after each element.
-			if ( index && selectedElement && isImage( selectedElement ) ) {
+			if ( index && selectedElement && imageUtils.isImage( selectedElement ) ) {
 				const position = this.editor.model.createPositionAfter( selectedElement );
 
 				this._uploadImage( file, selectionAttributes, position );
@@ -98,14 +99,16 @@ export default class UploadImageCommand extends Command {
 	 * @param {module:engine/model/position~Position} position
 	 */
 	_uploadImage( file, attributes, position ) {
-		const fileRepository = this.editor.plugins.get( FileRepository );
+		const editor = this.editor;
+		const fileRepository = editor.plugins.get( FileRepository );
 		const loader = fileRepository.createLoader( file );
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
 		if ( !loader ) {
 			return;
 		}
 
-		insertImage( this.editor, { ...attributes, uploadId: loader.id }, position );
+		imageUtils.insertImage( { ...attributes, uploadId: loader.id }, position );
 	}
 }

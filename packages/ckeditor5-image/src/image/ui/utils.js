@@ -8,7 +8,6 @@
  */
 
 import { BalloonPanelView } from 'ckeditor5/src/ui';
-import { getSelectedImageWidget } from '../utils';
 
 /**
  * A helper utility that positions the
@@ -20,7 +19,7 @@ import { getSelectedImageWidget } from '../utils';
 export function repositionContextualBalloon( editor ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 
-	if ( getSelectedImageWidget( editor.editing.view.document.selection ) ) {
+	if ( editor.plugins.get( 'ImageUtils' ).getSelectedImageWidget( editor.editing.view.document.selection ) ) {
 		const position = getBalloonPositionData( editor );
 
 		balloon.updatePosition( position );

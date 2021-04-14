@@ -6,32 +6,34 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
 
 describe( 'ImageTextAlternativeCommand', () => {
 	let model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				model = newEditor.model;
-				command = new ImageTextAlternativeCommand( newEditor );
+		return ModelTestEditor.create( {
+			plugins: [ ImageTextAlternativeEditing ]
+		} ).then( newEditor => {
+			model = newEditor.model;
+			command = new ImageTextAlternativeCommand( newEditor );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-				model.schema.register( 'image', {
-					allowWhere: '$block',
-					isObject: true,
-					isBlock: true,
-					alllowAttributes: [ 'alt', 'src' ]
-				} );
-
-				model.schema.register( 'imageInline', {
-					allowWhere: '$text',
-					isObject: true,
-					isInline: true,
-					allowAttributes: [ 'alt', 'src', 'srcset' ]
-				} );
+			model.schema.register( 'image', {
+				allowWhere: '$block',
+				isObject: true,
+				isBlock: true,
+				alllowAttributes: [ 'alt', 'src' ]
 			} );
+
+			model.schema.register( 'imageInline', {
+				allowWhere: '$text',
+				isObject: true,
+				isInline: true,
+				allowAttributes: [ 'alt', 'src', 'srcset' ]
+			} );
+		} );
 	} );
 
 	it( 'should have false value if no image is selected', () => {

@@ -22,7 +22,6 @@ import ImageTypeCommand from '../../src/image/imagetypecommand';
 import InsertImageCommand from '../../src/image/insertimagecommand';
 import ImageCaption from '../../src/imagecaption';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
-import { isImageWidget } from '../../src/image/utils';
 
 describe( 'ImageBlockEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -479,7 +478,7 @@ describe( 'ImageBlockEditing', () => {
 				const figure = viewDocument.getRoot().getChild( 0 );
 
 				expect( figure.name ).to.equal( 'figure' );
-				expect( isImageWidget( figure ) ).to.be.true;
+				expect( editor.plugins.get( 'ImageUtils' ).isImageWidget( figure ) ).to.be.true;
 			} );
 
 			it( 'should convert attribute change', () => {

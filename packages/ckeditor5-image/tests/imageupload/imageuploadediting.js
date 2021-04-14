@@ -740,7 +740,7 @@ describe( 'ImageUploadEditing', () => {
 			editor.model.schema.extend( 'image', { allowAttributes: 'data-original' } );
 
 			editor.conversion.for( 'downcast' )
-				.add( modelToViewAttributeConverter( 'data-original' ) );
+				.add( modelToViewAttributeConverter( editor.plugins.get( 'ImageUtils' ), 'data-original' ) );
 
 			editor.conversion.for( 'upcast' )
 				.attributeToAttribute( {

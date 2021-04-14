@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { isImage } from '../image/utils';
 
 /**
  * The image text alternative command. It is used to change the `alt` attribute of `<image>` and `<imageInline>` model elements.
@@ -28,9 +27,10 @@ export default class ImageTextAlternativeCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = this.editor.model.document.selection.getSelectedElement();
+		const editor = this.editor;
+		const element = editor.model.document.selection.getSelectedElement();
 
-		this.isEnabled = isImage( element );
+		this.isEnabled = editor.plugins.get( 'ImageUtils' ).isImage( element );
 
 		if ( this.isEnabled && element.hasAttribute( 'alt' ) ) {
 			this.value = element.getAttribute( 'alt' );
