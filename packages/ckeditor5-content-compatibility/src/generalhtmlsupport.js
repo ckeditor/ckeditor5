@@ -40,6 +40,7 @@ export default class GeneralHtmlSupport extends Plugin {
 		 */
 		this.dataFilter = new DataFilter( editor, this.dataSchema );
 	}
+
 	/**
 	 * @inheritDoc
 	 */
