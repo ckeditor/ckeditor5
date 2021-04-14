@@ -53,11 +53,10 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 					value: '75'
 				}
 			],
-			styles: [ 'full', 'alignLeft', 'alignRight' ],
 			toolbar: [
-				'imageStyle:alignLeft',
+				'imageStyle:inline',
 				'imageStyle:full',
-				'imageStyle:alignRight',
+				'imageStyle:side',
 				'|',
 				'resizeImage',
 				'|',

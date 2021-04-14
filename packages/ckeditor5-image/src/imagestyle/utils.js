@@ -97,7 +97,7 @@ const DEFAULT_ARRANGEMENTS = {
 	full: {
 		name: 'full',
 		title: 'Full size image',
-		icon: objectFullWidth,
+		icon: objectCenter,
 		modelElements: [ 'image' ],
 		isDefault: true
 	},
