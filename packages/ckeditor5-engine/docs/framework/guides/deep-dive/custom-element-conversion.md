@@ -372,7 +372,7 @@ class InfoBox {
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
 
-        // Model to view position mapper is needed since the model <infoBox> content needs to end up in the inner
+        // Model-to-view position mapper is needed since the model <infoBox> content needs to end up in the inner
         // <div class="info-box-content">.
         editor.editing.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
         editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
