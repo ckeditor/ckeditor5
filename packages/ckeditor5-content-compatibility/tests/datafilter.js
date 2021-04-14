@@ -4,6 +4,7 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
@@ -36,6 +37,78 @@ describe( 'DataFilter', () => {
 
 	afterEach( () => {
 		return editor.destroy();
+	} );
+
+	describe( 'initialization', () => {
+		let initEditor, initModel;
+
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Paragraph, FakeExtentedHtmlPlugin, GeneralHtmlSupport ]
+				} )
+				.then( newEditor => {
+					initEditor = newEditor;
+					initModel = newEditor.model;
+				} );
+		} );
+
+		afterEach( () => {
+			return initEditor.destroy();
+		} );
+
+		it( 'should allow element registered in init() method', () => {
+			initEditor.setData( '<article><p>foobar</p></article>' );
+
+			expect( getModelData( initModel, { withoutSelection: true } ) ).to.equal(
+				'<htmlArticle><paragraph>foobar</paragraph></htmlArticle>'
+			);
+
+			expect( initEditor.getData() ).to.equal( '<article><p>foobar</p></article>' );
+		} );
+
+		it( 'should allow element registered in afterInit() method', () => {
+			initEditor.setData( '<section><p>foobar</p></section>' );
+
+			expect( getModelData( initModel, { withoutSelection: true } ) ).to.equal(
+				'<htmlSection><paragraph>foobar</paragraph></htmlSection>'
+			);
+
+			expect( initEditor.getData() ).to.equal( '<section><p>foobar</p></section>' );
+		} );
+
+		it( 'should allow element registered after editor initialization', () => {
+			const { dataFilter } = initEditor.plugins.get( GeneralHtmlSupport );
+
+			dataFilter.allowElement( { name: 'span' } );
+
+			initEditor.setData( '<p><span>foobar</span></p>' );
+
+			expect( getModelDataWithAttributes( initModel, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( initEditor.getData() ).to.equal( '<p><span>foobar</span></p>' );
+		} );
+
+		class FakeExtentedHtmlPlugin extends Plugin {
+			static get requires() {
+				return [ GeneralHtmlSupport ];
+			}
+
+			init() {
+				const { dataFilter } = this.editor.plugins.get( GeneralHtmlSupport );
+				dataFilter.allowElement( { name: 'article' } );
+			}
+
+			afterInit() {
+				const { dataFilter } = this.editor.plugins.get( GeneralHtmlSupport );
+				dataFilter.allowElement( { name: 'section' } );
+			}
+		}
 	} );
 
 	describe( 'block', () => {
