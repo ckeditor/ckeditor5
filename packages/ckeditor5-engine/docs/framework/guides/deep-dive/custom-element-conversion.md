@@ -344,7 +344,7 @@ editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( e
 ```
 
 <info-box>
-    **Note**: You do not need the reverse position mapping ({@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition from view to model}) because the default view to model position mapping looks for the {@link module:engine/conversion/mapper~Mapper#findMappedViewAncestor mapped view ancestor} and maps offset in respect to that model element.
+    **Note**: You do not need the reverse position mapping ({@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition from the view to the model}) because the default view-to-model position mapping looks for the {@link module:engine/conversion/mapper~Mapper#findMappedViewAncestor mapped view ancestor} and maps the offset in respect to the model element.
 </info-box>
 
 ### Updated plugin code
