@@ -272,7 +272,7 @@ editor.conversion.for( 'dataDowncast' )
 
 Due to the fact that the info box's view structure is more complex than its model structure, you need to take care of one additional aspect to make the converters work &mdash; position mapping.
 
-### The model to view position mapping
+### The model-to-view position mapping
 
 The downcast converters shown in the previous section will not yet work correctly. This is how a given model would look like, after being downcasted:
 
