@@ -11,11 +11,6 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-image-style-custom' ), {
 		removePlugins: [ 'LinkImage', 'AutoImage' ],
 		image: {
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight'
-			],
 			resizeOptions: [
 				{
 					name: 'resizeImage:original',
@@ -34,9 +29,9 @@ ClassicEditor
 				}
 			],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:alignCenter',
-				'imageStyle:alignRight',
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
 				'|',
 				'resizeImage',
 				'|',
