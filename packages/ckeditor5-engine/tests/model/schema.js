@@ -3233,33 +3233,32 @@ describe( 'SchemaContext', () => {
 			expect( ctx ).to.equal( previousCtx );
 		} );
 
-		it( 'filters out DocumentFragment when it is a first item of context - array', () => {
+		it( 'creates context in DocumentFragment - array with string', () => {
 			const ctx = new SchemaContext( [ new DocumentFragment(), 'paragraph' ] );
 
-			expect( ctx.length ).to.equal( 1 );
-			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
+			expect( ctx.length ).to.equal( 2 );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
 		} );
 
-		it( 'filters out DocumentFragment when it is a first item of context - element', () => {
+		it( 'creates context in DocumentFragment - element', () => {
 			const p = new Element( 'paragraph' );
 			const docFrag = new DocumentFragment();
 			docFrag._appendChild( p );
 
 			const ctx = new SchemaContext( p );
 
-			expect( ctx.length ).to.equal( 1 );
-			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
+			expect( ctx.length ).to.equal( 2 );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
 		} );
 
-		it( 'filters out DocumentFragment when it is a first item of context - position', () => {
+		it( 'creates context in DocumentFragment - position', () => {
 			const p = new Element( 'paragraph' );
-			const docFrag = new DocumentFragment();
-			docFrag._appendChild( p );
+			const docFrag = new DocumentFragment( p );
+			const pos = Position._createAt( docFrag.getChild( 0 ), 0 );
+			const ctx = new SchemaContext( pos );
 
-			const ctx = new SchemaContext( new Position( docFrag, [ 0, 0 ] ) );
-
-			expect( ctx.length ).to.equal( 1 );
-			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
+			expect( ctx.length ).to.equal( 2 );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
 		} );
 	} );
 

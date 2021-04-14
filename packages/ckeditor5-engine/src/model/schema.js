@@ -1328,10 +1328,6 @@ export class SchemaContext {
 			context = context.getAncestors( { includeSelf: true } );
 		}
 
-		if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
-			context.shift();
-		}
-
 		this._items = context.map( mapContextItem );
 	}
 
@@ -1708,9 +1704,9 @@ function getValues( obj ) {
 }
 
 function mapContextItem( ctxItem ) {
-	if ( typeof ctxItem == 'string' ) {
+	if ( typeof ctxItem == 'string' || ctxItem.is( 'documentFragment' ) ) {
 		return {
-			name: ctxItem,
+			name: typeof ctxItem == 'string' ? ctxItem : '$documentFragment',
 
 			* getAttributeKeys() {},
 
