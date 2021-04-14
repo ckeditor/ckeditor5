@@ -18,7 +18,7 @@ import {
 	getCaptionFromTableModelElement,
 	getCaptionFromModelSelection,
 	matchTableCaptionViewElement,
-	locateTable
+	findClosestParentTable
 } from '../../src/tablecaption/utils';
 
 describe( 'table caption utils', () => {
@@ -206,12 +206,12 @@ describe( 'table caption utils', () => {
 		} );
 	} );
 
-	describe( 'locateTable', () => {
+	describe( 'findClosestParentTable', () => {
 		it( 'should return null if table is not present', () => {
 			setModelData( model, '<paragraph>Foo[]</paragraph>' );
 			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
 
-			const tableElement = locateTable( selection );
+			const tableElement = findClosestParentTable( selection );
 
 			expect( tableElement ).to.be.null;
 		} );
@@ -219,7 +219,7 @@ describe( 'table caption utils', () => {
 		it( 'should return table if present higher in the model tree', () => {
 			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
 
-			const tableElement = locateTable( selection );
+			const tableElement = findClosestParentTable( selection );
 
 			expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
 		} );
