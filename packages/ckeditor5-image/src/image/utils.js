@@ -143,7 +143,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided view element represents an inline image.
 	 *
-	 * Also, see {@link module:image/image/utils~isImageWidget}.
+	 * Also, see {@link module:image/image/utils#isImageWidget}.
 	 *
 	 * @param {module:engine/view/element~Element} element
 	 * @returns {Boolean}
@@ -155,7 +155,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided view element represents a block image.
 	 *
-	 * Also, see {@link module:image/image/utils~isImageWidget}.
+	 * Also, see {@link module:image/image/utils#isImageWidget}.
 	 *
 	 * @param {module:engine/view/element~Element} element
 	 * @returns {Boolean}
