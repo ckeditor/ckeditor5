@@ -410,7 +410,7 @@ describe( 'CKFinderCommand', () => {
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			model.schema.register( 'other', {
 				allowIn: '$root',
-				allowChildren: 'other',
+				allowChildren: '$text',
 				isLimit: true
 			} );
 
