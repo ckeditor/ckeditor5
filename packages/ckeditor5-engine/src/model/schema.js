@@ -1609,6 +1609,7 @@ function compileAllowChildren( compiledDefinitions, itemName ) {
 	for ( const allowChildrenItem of item.allowChildren ) {
 		const allowedChildren = compiledDefinitions[ allowChildrenItem ];
 
+		// The allowChildren property may point to an unregistered element.
 		if ( !allowedChildren ) {
 			continue;
 		}
