@@ -155,8 +155,9 @@ export default class DataFilter {
 			}
 		}, {
 			// With high priority listener we are able to register elements right before
-			// running data conversion.
-			priority: 'high'
+			// running data conversion. Make also sure that priority is higher than the one
+			// used by `RealTimeCollaborationClient`, as RTC is stopping event propagation.
+			priority: priorities.get( 'high' ) + 1
 		} );
 	}
 

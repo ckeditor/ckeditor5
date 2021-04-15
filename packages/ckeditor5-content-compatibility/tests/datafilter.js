@@ -45,7 +45,8 @@ describe( 'DataFilter', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, FakeExtentedHtmlPlugin, GeneralHtmlSupport ]
+					// Keep FakeRTCPlugin before FakeExtentedHtmlPlugin, so it's registered first.
+					plugins: [ Paragraph, FakeRTCPlugin, FakeExtentedHtmlPlugin ]
 				} )
 				.then( newEditor => {
 					initEditor = newEditor;
@@ -93,6 +94,18 @@ describe( 'DataFilter', () => {
 
 			expect( initEditor.getData() ).to.equal( '<p><span>foobar</span></p>' );
 		} );
+
+		class FakeRTCPlugin extends Plugin {
+			constructor( editor ) {
+				super( editor );
+
+				// Fake listener to simulate RTC one. Registering in constructor to
+				// register it before DataFilter listener.
+				this.editor.data.on( 'init', evt => {
+					evt.stop();
+				}, { priority: 'high' } );
+			}
+		}
 
 		class FakeExtentedHtmlPlugin extends Plugin {
 			static get requires() {
