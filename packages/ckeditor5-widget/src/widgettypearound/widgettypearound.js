@@ -740,11 +740,12 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * Attaches the {@link module:engine/model/model~Model#event:deleteContent} event listener to block it in cases
-	 * of the fake caret is activated.
+	 * Attaches the {@link module:engine/model/model~Model#event:deleteContent} event listener to block the event when the fake
+	 * caret is active.
 	 *
-	 * This is required for the cases that trigger {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
-	 * before calling {@link module:engine/model/model~Model#insertContent `model.insertContent()`} like plain text pasting.
+	 * This is required for cases that trigger {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
+	 * before calling {@link module:engine/model/model~Model#insertContent `model.insertContent()`} like, for instance,
+	 * plain text pasting.
 	 *
 	 * @private
 	 */
