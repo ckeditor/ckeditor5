@@ -30,6 +30,7 @@ export default class ImageUtils extends Plugin {
 	 * element.
 	 * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
 	 *
+	 * @protected
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
 	 * @param {String} label The element's label. It will be concatenated with the image `alt` attribute if one is present.
@@ -53,6 +54,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if a given view element is an image widget.
 	 *
+	 * @protected
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @returns {Boolean}
 	 */
@@ -63,6 +65,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Returns an image widget editing view element if one is selected.
 	 *
+	 * @protected
 	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
 	 * @returns {module:engine/view/element~Element|null}
 	 */
@@ -91,6 +94,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Returns a image widget editing view element if one is among the selection's ancestors.
 	 *
+	 * @protected
 	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
 	 * @returns {module:engine/view/element~Element|null}
 	 */
@@ -223,6 +227,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if image can be inserted at current model selection.
 	 *
+	 * @protected
 	 * @returns {Boolean}
 	 */
 	isImageAllowed() {
@@ -240,6 +245,7 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * The `<img>` can be wrapped to other elements, e.g. `<a>`. Nested check required.
 	 *
+	 * @protected
 	 * @param {module:engine/view/element~Element} figureView
 	 * @returns {module:engine/view/element~Element}
 	 */
@@ -274,6 +280,7 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * Note that `alt` and `src` attributes are converted separately, so they are not included.
 	 *
+	 * @protected
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 * @param {'image'|'imageInline'} imageType The type of created image.
 	 * @returns {module:engine/view/containerelement~ContainerElement}
@@ -293,6 +300,7 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * A function returning a `MatcherPattern` for a particular type of View images.
 	 *
+	 * @protected
 	 * @param {'image'|'imageInline'} matchImageType The type of created image.
 	 * @returns {module:engine/view/matcher~MatcherPattern}
 	 */
@@ -335,6 +343,7 @@ export default class ImageUtils extends Plugin {
 	 * produce block images. Inline images should be inserted in other cases, e.g. in paragraphs
 	 * that already contain some text.
 	 *
+	 * @protected
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 	 * @returns {'image'|'imageInline'}
 	 */
