@@ -79,7 +79,7 @@ export default class DataFilter {
 		 *
 		 * @readonly
 		 * @private
-		 * @param {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>} #_allowedElements
+		 * @member {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>} #_allowedElements
 		*/
 		this._allowedElements = new Set();
 
@@ -87,31 +87,11 @@ export default class DataFilter {
 		 * Indicates if {@link module:core/editor~Editor#data editor's data controller} data has been already initialized.
 		 *
 		 * @private
-		 * @param {Boolean} [#_dataInitialized=false]
+		 * @member {Boolean} [#_dataInitialized=false]
 		*/
 		this._dataInitialized = false;
 
 		this._registerElementsAfterInit();
-	}
-
-	/**
-	 * Registers elements allowed by {@link module:content-compatibility/datafilter~DataFilter#allowElement} method
-	 * once {@link module:core/editor~Editor#data editor's data controller} is initialized.
-	 *
-	 * @private
-	*/
-	_registerElementsAfterInit() {
-		this.editor.data.on( 'init', () => {
-			this._dataInitialized = true;
-
-			for ( const definition of this._allowedElements ) {
-				this._registerElement( definition );
-			}
-		}, {
-			// With high priority listener we are able to register elements right before
-			// running data conversion.
-			priority: 'high'
-		} );
 	}
 
 	/**
@@ -130,6 +110,10 @@ export default class DataFilter {
 
 			this._allowedElements.add( definition );
 
+			// We need to wait for all features to be initialized before we can register
+			// element, so we can access existing features model schemas.
+			// If the data has not been initialized yet, _registerElementsAfterInit() method will take care of
+			// registering elements.
 			if ( this._dataInitialized ) {
 				this._registerElement( definition );
 			}
@@ -154,6 +138,26 @@ export default class DataFilter {
 	 */
 	disallowAttributes( config ) {
 		this._disallowedAttributes.add( config );
+	}
+
+	/**
+	 * Registers elements allowed by {@link module:content-compatibility/datafilter~DataFilter#allowElement} method
+	 * once {@link module:core/editor~Editor#data editor's data controller} is initialized.
+	 *
+	 * @private
+	*/
+	_registerElementsAfterInit() {
+		this.editor.data.on( 'init', () => {
+			this._dataInitialized = true;
+
+			for ( const definition of this._allowedElements ) {
+				this._registerElement( definition );
+			}
+		}, {
+			// With high priority listener we are able to register elements right before
+			// running data conversion.
+			priority: 'high'
+		} );
 	}
 
 	/**
