@@ -121,6 +121,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
 		this._enableDeleteIntegration();
 		this._enableInsertContentIntegration();
+		this._enableDeleteContentIntegration();
 	}
 
 	/**
@@ -735,6 +736,34 @@ export default class WidgetTypeAround extends Plugin {
 
 				return result;
 			} );
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Attaches the {@link module:engine/model/model~Model#event:deleteContent} event listener to block it in cases
+	 * of the fake caret is activated.
+	 *
+	 * This is required for the cases that trigger {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
+	 * before calling {@link module:engine/model/model~Model#insertContent `model.insertContent()`} like plain text pasting.
+	 *
+	 * @private
+	 */
+	_enableDeleteContentIntegration() {
+		const editor = this.editor;
+		const model = this.editor.model;
+		const documentSelection = model.document.selection;
+
+		this._listenToIfEnabled( editor.model, 'deleteContent', ( evt, [ selection ] ) => {
+			if ( selection && !selection.is( 'documentSelection' ) ) {
+				return;
+			}
+
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( documentSelection );
+
+			// Disable removing the selection content while pasting plain text.
+			if ( typeAroundFakeCaretPosition ) {
+				evt.stop();
+			}
 		}, { priority: 'high' } );
 	}
 }
