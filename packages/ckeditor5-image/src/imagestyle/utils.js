@@ -137,8 +137,8 @@ const DEFAULT_GROUPS = {
 	breakText: {
 		name: 'breakText',
 		title: 'Break text',
-		defaultItem: 'alignCenter',
-		items: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
+		defaultItem: 'full',
+		items: [ 'alignBlockLeft', 'full', 'alignBlockRight' ]
 	}
 };
 
