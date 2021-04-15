@@ -15,13 +15,18 @@ This script is to be used on CI to automatically update https://ckeditor5.github
 
 */
 
+const buildBranch = process.env.TRAVIS_BRANCH;
+
 // Build the documentation only when master branch is updated.
-if ( process.env.TRAVIS_BRANCH !== 'master' ) {
+if ( buildBranch !== 'master' ) {
+	printDebugLog( `Aborting due to an invalid branch (${ buildBranch }).` );
 	process.exit();
 }
 
 // Build the documentation only when a cron task triggered the CI.
 if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
+	printDebugLog( `Aborting due to an invalid event type (${ process.env.TRAVIS_EVENT_TYPE }).` );
+
 	process.exit();
 }
 
@@ -108,5 +113,11 @@ function exec( command ) {
 		console.error( error );
 
 		process.exit( 1 );
+	}
+}
+
+function printDebugLog( message ) {
+	if ( process.env.DEBUG == 'true' ) {
+		console.log( '[Nightly Docs]', message );
 	}
 }

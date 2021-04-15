@@ -101,43 +101,6 @@ export function getLeadingWhiteSpaces( textNode ) {
 
 /**
  * For plain text containing the code (a snippet), it returns a document fragment containing
- * model text nodes separated by soft breaks (in place of new line characters "\n"), for instance:
- *
- * Input:
- *
- *		"foo()\n
- *		bar()"
- *
- * Output:
- *
- *		<DocumentFragment>
- *			"foo()"
- *			<softBreak></softBreak>
- *			"bar()"
- *		</DocumentFragment>
- *
- * @param {module:engine/model/writer~Writer} writer
- * @param {String} text The raw code text to be converted.
- * @returns {module:engine/model/documentfragment~DocumentFragment}
- */
-export function rawSnippetTextToModelDocumentFragment( writer, text ) {
-	const fragment = writer.createDocumentFragment();
-	const textLines = text.split( '\n' ).map( data => writer.createText( data ) );
-	const lastLine = textLines[ textLines.length - 1 ];
-
-	for ( const node of textLines ) {
-		writer.append( node, fragment );
-
-		if ( node !== lastLine ) {
-			writer.appendElement( 'softBreak', fragment );
-		}
-	}
-
-	return fragment;
-}
-
-/**
- * For plain text containing the code (a snippet), it returns a document fragment containing
  * view text nodes separated by `<br>` elements (in place of new line characters "\n"), for instance:
  *
  * Input:

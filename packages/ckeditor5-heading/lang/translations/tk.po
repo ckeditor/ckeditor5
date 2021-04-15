@@ -54,7 +54,7 @@ msgstr "Sözbaşy 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr "Adyňyzy ýazyň"
+msgstr "Sözbaşyny ýazyň"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."

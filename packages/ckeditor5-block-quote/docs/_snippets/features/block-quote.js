@@ -3,36 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console */
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+/* globals ClassicEditor, window, document, console */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-block-quote' ), {
-		toolbar: {
-			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'|',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'blockQuote',
-				'outdent',
-				'indent',
-				'|',
-				'undo',
-				'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
-		}
-	} )
+	.create( document.querySelector( '#snippet-block-quote' ) )
 	.then( editor => {
 		window.editor = editor;
-
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Block quote' ),
 			text: 'Click to insert a block quote.',

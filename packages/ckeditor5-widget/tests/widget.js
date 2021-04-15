@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, window */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -1537,6 +1537,31 @@ describe( 'Widget', () => {
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>'
 			);
+		} );
+
+		it( 'should show the selection handle only for selected widget if widgets are nested', () => {
+			setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
+
+			// The top-outer widget.
+			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
+
+			const target = view.domConverter.mapViewToDom( viewWidgetSelectionHandle );
+
+			const domEventDataMock = new DomEventData( view, {
+				target,
+				preventDefault: sinon.spy()
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			// Get all selection handles for all widgets nested inside the top-most one.
+			const selectionHandles = target.querySelectorAll( ':scope .ck-widget .ck-widget__selection-handle' );
+
+			for ( const selectionHandle of selectionHandles ) {
+				const opacity = window.getComputedStyle( selectionHandle ).getPropertyValue( 'opacity' );
+
+				expect( opacity ).to.equal( '0' );
+			}
 		} );
 	} );
 } );
