@@ -35,7 +35,6 @@ describe( 'DataSchema', () => {
 			expect( Array.from( result ) ).to.deep.equal( [ {
 				model: 'htmlDef',
 				view: 'def',
-				priority: 10,
 				isInline: true
 			} ] );
 		} );
@@ -54,7 +53,6 @@ describe( 'DataSchema', () => {
 			expect( Array.from( result ) ).to.deep.equal( [ {
 				model: 'htmlDef',
 				view: 'def',
-				priority: 10,
 				attributeProperties: {
 					copyOnEnter: true
 				},
