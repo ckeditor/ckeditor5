@@ -13,7 +13,7 @@ import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { parse as parseView, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -953,6 +953,47 @@ describe( 'image widget utils', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'createImageViewElement()', () => {
+		let writer;
+
+		beforeEach( () => {
+			const document = new ViewDocument( new StylesProcessor() );
+			writer = new ViewDowncastWriter( document );
+		} );
+
+		it( 'should create a figure element for "image" type', () => {
+			const element = imageUtils.createImageViewElement( writer, 'image' );
+
+			expect( element.is( 'element', 'figure' ) ).to.be.true;
+			expect( element.hasClass( 'image' ) ).to.be.true;
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
+		} );
+
+		it( 'should create a span element for "imageInline" type', () => {
+			const element = imageUtils.createImageViewElement( writer, 'imageInline' );
+
+			expect( element.is( 'element', 'span' ) ).to.be.true;
+			expect( element.hasClass( 'image-inline' ) ).to.be.true;
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
+		} );
+
+		it( 'should create a span element for "imageInline" type that does not break the parent attribute element', () => {
+			const paragraph = writer.createContainerElement( 'p' );
+			const imageElement = imageUtils.createImageViewElement( writer, 'imageInline' );
+			const attributeElement = writer.createAttributeElement( 'a', { foo: 'bar' } );
+
+			writer.insert( writer.createPositionAt( paragraph, 0 ), imageElement );
+			writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foo' ) );
+			writer.wrap( writer.createRangeIn( paragraph ), attributeElement );
+
+			expect( stringifyView( paragraph ) ).to.equal(
+				'<p><a foo="bar">foo<span class="image-inline"><img></img></span></a></p>'
+			);
 		} );
 	} );
 } );
