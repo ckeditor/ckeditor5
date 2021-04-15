@@ -431,7 +431,7 @@ The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} m
 
 These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
 
-For instance, the block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
+For instance, to disallow nested `<blockQuote>` structures, you can define such a listener:
 
 ```js
 schema.addChildCheck( ( context, childDefinition ) => {
