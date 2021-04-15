@@ -42,14 +42,22 @@ describe( 'LinkImageEditing', () => {
 	} );
 
 	it( 'should set proper schema rules for image style when ImageBlock plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, LinkImageEditing ] } );
+		const newEditor = await VirtualTestEditor.create( {
+			plugins: [ ImageBlockEditing, LinkImageEditing ]
+		} );
+
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+
 		await newEditor.destroy();
 	} );
 
 	it( 'should set proper schema rules for image style when ImageInline plugin is enabled', async () => {
-		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageInlineEditing, LinkImageEditing ] } );
+		const newEditor = await VirtualTestEditor.create( {
+			plugins: [ ImageInlineEditing, LinkImageEditing ]
+		} );
+
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'linkHref' ) ).to.be.true;
+
 		await newEditor.destroy();
 	} );
 
@@ -90,6 +98,27 @@ describe( 'LinkImageEditing', () => {
 						'</a>' +
 					'</figure>'
 				);
+			} );
+
+			it( 'should convert a link containing an inline image as a single anchor element in data', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageInlineEditing, LinkImageEditing ]
+				} );
+				const model = editor.model;
+
+				setModelData( model,
+					'<paragraph>' +
+						'<$text linkhref="http://ckeditor.com">foo </$text>' +
+						'<imageInline src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></imageInline>' +
+						'<$text linkhref="http://ckeditor.com"> bar</$text>' +
+					'</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<p>foo <a href="http://ckeditor.com"><img alt="alt text" src="/assets/sample.png"></a>bar</p>'
+				);
+
+				return editor.destroy();
 			} );
 		} );
 
@@ -335,6 +364,31 @@ describe( 'LinkImageEditing', () => {
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
 				);
+			} );
+
+			it( 'should link a text including an inline image as a single anchor element', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageInlineEditing, LinkImageEditing ]
+				} );
+				const model = editor.model;
+
+				setModelData( model,
+					'<paragraph>[foo<imageInline src="/assets/sample.png" alt="alt text"></imageInline>bar]</paragraph>'
+				);
+
+				editor.execute( 'link', 'https://cksource.com' );
+
+				expect( getViewData( editor.editing.view ) ).to.equal(
+					'<p>' +
+						'[<a class="ck-link_selected" href="https://cksource.com">' +
+							'foo<span class="ck-widget image-inline" contenteditable="false">' +
+								'<img alt="alt text" src="/assets/sample.png"></img>' +
+							'</span>bar' +
+						'</a>]' +
+					'</p>'
+				);
+
+				return editor.destroy();
 			} );
 		} );
 
