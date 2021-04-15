@@ -21,6 +21,9 @@ import DataFilter from './datafilter';
  * @extends module:core/plugin~Plugin
  */
 export default class GeneralHtmlSupport extends Plugin {
+	/**
+	 * @param {module:core/editor/editor~Editor} editor
+	*/
 	constructor( editor ) {
 		super( editor );
 
