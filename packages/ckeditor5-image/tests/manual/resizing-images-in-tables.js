@@ -47,11 +47,11 @@ async function createEditor( element, resizeUnit ) {
 			image: {
 				resizeUnit,
 				toolbar: [
-					'toggleImageCaption', '|',
 					'imageStyle:inline',
 					'imageStyle:wrapText',
 					'imageStyle:breakText',
 					'|',
+					'toggleImageCaption',
 					'imageTextAlternative', '|',
 					'resizeImage'
 				]

@@ -65,6 +65,7 @@ async function startEditors() {
 				groups: []
 			},
 			toolbar: [
+				'imageStyle:inline',
 				'imageStyle:full',
 				'imageStyle:side',
 				'|',
@@ -74,30 +75,9 @@ async function startEditors() {
 		}
 	} );
 
-	window.editorFormatting = await ClassicEditor.create( document.querySelector( '#editor-formatting' ), {
-		cloudServices: CS_CONFIG,
-		plugins: PLUGINS_CONFIG,
-		toolbar: TOOLBAR_CONFIG,
-		image: {
-			styles: {
-				arrangements: [ 'alignLeft', 'alignCenter', 'alignRight' ],
-				groups: []
-			},
-			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:alignCenter',
-				'imageStyle:alignRight',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
-			]
-		}
-	} );
-
 	CKEditorInspector.attach( {
 		inline: window.editorInline,
-		semantic: window.editorSemantic,
-		formatting: window.editorFormatting
+		semantic: window.editorSemantic
 	} );
 }
 
