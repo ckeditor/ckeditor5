@@ -17,22 +17,21 @@ Elements and attributes are checked by features separately by using the {@link m
 
 ## Defining allowed structures
 
-When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by `{@link module:engine/model/schema~SchemaItemDefinition#allowIn allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren allowChildren}` properties of the `{@link module:engine/model/schema~SchemaItemDefinition SchemaItemDefinition}`:
+When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by {@link module:engine/model/schema~SchemaItemDefinition#allowIn} property of the {@link module:engine/model/schema~SchemaItemDefinition}:
 
 ```js
 schema.register( 'myElement', {
-	allowIn: '$root',
-	allowChildren: '$text'
+	allowIn: '$root'
 } );
 ```
 
-This lets the schema know that `<myElement>` can be a child of `<$root>` and that the `<$text>` element can be a child of `myElement`. The `$root` and `$text` elements are one of the generic nodes defined by the editing framework. By default, the editor names the main root element a `<$root>`, so the above definition allows `<myElement>` in the main editor element. `<$text>` element on the other hand tells that the `<myElement>` can include text nodes.
+This lets the schema know that `<myElement>` can be a child of `<$root>`. The `$root` element is one of the generic nodes defined by the editing framework. By default, the editor names the main root element a `<$root>`, so the above definition allows `<myElement>` in the main editor element.
 
 In other words, this would be correct:
 
 ```xml
 <$root>
-	<myElement><$text>foobar</$text></myElement>
+	<myElement></myElement>
 </$root>
 ```
 
@@ -41,13 +40,35 @@ While this would be incorrect:
 ```xml
 <$root>
 	<foo>
-		<$text>foobar</$text>
 		<myElement></myElement>
 	</foo>
 </$root>
 ```
 
-Both `{@link module:engine/model/schema~SchemaItemDefinition#allowIn allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren allowChildren}` properties can be also inherited from other `SchemaItemDefinition` items. See `{@link module:engine/model/schema~SchemaItemDefinition SchemaItemDefinition}` API documentation for more details.
+To declare what nodes could be inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
+
+```js
+schema.register( 'myElement', {
+	allowIn: '$root',
+	allowChildren: '$text'
+} );
+```
+
+To allow the following structure:
+
+```xml
+<$root>
+	<myElement>
+		foobar
+	</myElement>
+</$root>
+```
+
+Both `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can be also inherited from other `SchemaItemDefinition` items. 
+
+<info-box>
+	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
+</info-box>
 
 ## Defining additional semantics
 
