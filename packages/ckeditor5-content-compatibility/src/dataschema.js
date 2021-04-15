@@ -196,11 +196,7 @@ export default class DataSchema {
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	registerInlineElement( definition ) {
-		this._definitions.set( definition.model, {
-			priority: 10,
-			...definition,
-			isInline: true
-		} );
+		this._definitions.set( definition.model, { ...definition, isInline: true } );
 	}
 
 	/**
@@ -311,7 +307,7 @@ function testViewName( pattern, viewName ) {
  * @property {String} view Name of the view element.
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
  * @property {Boolean} isInline Indicates that the definition descibes inline element.
- * @property {Number} [priority=10] Element priority. Decides in what order elements are wrapped by
+ * @property {Number} [priority] Element priority. Decides in what order elements are wrapped by
  * {@link module:engine/view/downcastwriter~DowncastWriter}.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
