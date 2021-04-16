@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { isImage } from '../image/utils';
+import { isImage, getSelectedImageElementOrAncestor } from '../image/utils';
 
 /**
  * The image text alternative command. It is used to change the `alt` attribute of `<image>` and `<imageInline>` model elements.
@@ -28,7 +28,7 @@ export default class ImageTextAlternativeCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = this.editor.model.document.selection.getSelectedElement();
+		const element = getSelectedImageElementOrAncestor( this.editor.model.document.selection );
 
 		this.isEnabled = isImage( element );
 
@@ -48,7 +48,7 @@ export default class ImageTextAlternativeCommand extends Command {
 	 */
 	execute( options ) {
 		const model = this.editor.model;
-		const imageElement = model.document.selection.getSelectedElement();
+		const imageElement = getSelectedImageElementOrAncestor( model.document.selection );
 
 		model.change( writer => {
 			writer.setAttribute( 'alt', options.newValue, imageElement );

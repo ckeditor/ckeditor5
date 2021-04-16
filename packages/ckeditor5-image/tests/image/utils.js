@@ -28,19 +28,19 @@ import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import {
 	toImageWidget,
 	isImageWidget,
-	getSelectedImageWidget,
+	getSelectedImageWidgetOrAncestor,
 	isImage,
 	isInlineImage,
 	isBlockImage,
 	isImageAllowed,
 	insertImage,
 	getViewImageFromWidget,
-	getImageWidgetAncestor,
+	getSelectedImageWidgetAncestor,
 	isInlineImageView,
 	isBlockImageView,
 	determineImageTypeForInsertionAtSelection,
 	getImageTypeMatcher,
-	getImageModelElementAncestor
+	getSelectedImageElementOrAncestor
 } from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
@@ -87,7 +87,7 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'getSelectedImageWidget()', () => {
+	describe( 'getSelectedImageWidgetOrAncestor()', () => {
 		let frag;
 
 		it( 'should return true when image widget is the only element in the selection', () => {
@@ -96,7 +96,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( element, 'on' );
 
-			expect( getSelectedImageWidget( selection ) ).to.equal( element );
+			expect( getSelectedImageWidgetOrAncestor( selection ) ).to.equal( element );
 		} );
 
 		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
@@ -107,7 +107,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( getSelectedImageWidgetOrAncestor( selection ) ).to.be.null;
 		} );
 
 		it( 'should return false when widget element is not the only element in the selection', () => {
@@ -117,11 +117,11 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
+			expect( getSelectedImageWidgetOrAncestor( selection ) ).to.be.null;
 		} );
 	} );
 
-	describe( 'getImageWidgetAncestor()', () => {
+	describe( 'getSelectedImageWidgetAncestor()', () => {
 		let frag, caption;
 
 		describe( 'when the selection is inside a caption', () => {
@@ -137,13 +137,13 @@ describe( 'image widget utils', () => {
 
 				const selection = writer.createSelection( writer.createRangeIn( caption ) );
 
-				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
+				expect( getSelectedImageWidgetAncestor( selection ) ).to.equal( element );
 			} );
 
 			it( 'should return the widget element if the selection is collapsed', () => {
 				const selection = writer.createSelection( caption, 'in' );
 
-				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
+				expect( getSelectedImageWidgetAncestor( selection ) ).to.equal( element );
 			} );
 		} );
 
@@ -153,7 +153,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( element, 'on' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( getSelectedImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if an image is a part of the selection', () => {
@@ -163,7 +163,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( getSelectedImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if a non-widgetized element is the only element in the selection', () => {
@@ -174,7 +174,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( getSelectedImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if the selection is inside a figure element, which is not an image', () => {
@@ -188,7 +188,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( innerContainer, 'in' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( getSelectedImageWidgetAncestor( selection ) ).to.be.null;
 		} );
 	} );
 
@@ -893,7 +893,7 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'getImageModelElementAncestor()', () => {
+	describe( 'getSelectedImageElementOrAncestor()', () => {
 		let model;
 
 		beforeEach( async () => {
@@ -914,19 +914,19 @@ describe( 'image widget utils', () => {
 		it( 'should return null if no element is selected and the selection has no image ancestor', () => {
 			setModelData( model, '<paragraph>F[]oo</paragraph>' );
 
-			expect( getImageModelElementAncestor( model.document.selection ) ).to.be.null;
+			expect( getSelectedImageElementOrAncestor( model.document.selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if a non-image element is selected', () => {
 			setModelData( model, '[<blockWidget></blockWidget>]' );
 
-			expect( getImageModelElementAncestor( model.document.selection ) ).to.be.null;
+			expect( getSelectedImageElementOrAncestor( model.document.selection ) ).to.be.null;
 		} );
 
 		it( 'should return an imageInline element if it is selected', () => {
 			setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
-			const image = getImageModelElementAncestor( model.document.selection );
+			const image = getSelectedImageElementOrAncestor( model.document.selection );
 
 			expect( image.is( 'element', 'imageInline' ) ).to.be.true;
 		} );
@@ -934,7 +934,7 @@ describe( 'image widget utils', () => {
 		it( 'should return an image element if it is selected', () => {
 			setModelData( model, '[<image></image>]' );
 
-			const image = getImageModelElementAncestor( model.document.selection );
+			const image = getSelectedImageElementOrAncestor( model.document.selection );
 
 			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
@@ -942,7 +942,7 @@ describe( 'image widget utils', () => {
 		it( 'should return a image element if the selection range is inside its caption', () => {
 			setModelData( model, '<image><caption>F[oo]</caption></image>' );
 
-			const image = getImageModelElementAncestor( model.document.selection );
+			const image = getSelectedImageElementOrAncestor( model.document.selection );
 
 			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
@@ -950,7 +950,7 @@ describe( 'image widget utils', () => {
 		it( 'should return a image element if the selection position is inside its caption', () => {
 			setModelData( model, '<image><caption>Foo[]</caption></image>' );
 
-			const image = getImageModelElementAncestor( model.document.selection );
+			const image = getSelectedImageElementOrAncestor( model.document.selection );
 
 			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
