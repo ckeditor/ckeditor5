@@ -144,6 +144,21 @@ describe( 'ImageTypeCommand', () => {
 
 	describe( 'execute()', () => {
 		describe( 'block command', () => {
+			it( 'should return an object containing the old and new image elements', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const oldElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
+				const returned = blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
+
+				const newElement = model.document.getRoot().getChild( 0 );
+
+				expect( returned ).to.deep.equal( { oldElement, newElement } );
+			} );
+
 			it( 'should convert inline image to block image', () => {
 				const imgSrc = 'foo/bar.jpg';
 
@@ -186,32 +201,34 @@ describe( 'ImageTypeCommand', () => {
 				);
 			} );
 
-			it( 'should convert inline image with caption attribute to block image', () => {
-				const imgSrc = 'foo/bar.jpg';
-
-				setModelData( model,
-					`<paragraph>
-						[<imageInline caption="foo" src="${ imgSrc }"></imageInline>]
-						</paragraph>`
-				);
-
-				blockCommand.execute();
-
-				expect( getModelData( model ) ).to.equal(
-					`[<image caption="foo" src="${ imgSrc }"></image>]`
-				);
-			} );
-
 			it( 'should not convert if "src" attribute is not set', () => {
 				setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
-				blockCommand.execute();
+				const returned = blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+				expect( returned ).to.be.null;
 			} );
 		} );
 
 		describe( 'inline command', () => {
+			it( 'should return an object containing the old and new image elements', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+
+				const oldElement = model.document.getRoot().getChild( 0 );
+				const returned = inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
+
+				const newElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				expect( returned ).to.deep.equal( { oldElement, newElement } );
+			} );
+
 			it( 'should convert block image to inline image', () => {
 				const imgSrc = 'foo/bar.jpg';
 
@@ -256,20 +273,13 @@ describe( 'ImageTypeCommand', () => {
 				);
 			} );
 
-			it( 'should convert block image with caption attribute to inline image', () => {
-				const imgSrc = 'foo/bar.jpg';
+			it( 'should not convert if "src" attribute is not set', () => {
+				setModelData( model, '[<image></image>]' );
 
-				setModelData( model,
-					`[<image caption="foo" src="${ imgSrc }"></image>]`
-				);
+				const returned = inlineCommand.execute();
 
-				inlineCommand.execute();
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>' +
-					`[<imageInline caption="foo" src="${ imgSrc }"></imageInline>]` +
-					'</paragraph>'
-				);
+				expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+				expect( returned ).to.be.null;
 			} );
 		} );
 	} );

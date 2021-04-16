@@ -12,8 +12,6 @@ import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
-import ImageInlineEditing from '../image/imageinlineediting';
-import ImageBlockEditing from '../image/imageblockediting';
 
 import { isBlockImage } from '../image/utils';
 import { getCaptionFromImageModelElement, matchImageCaptionViewElement } from './utils';
@@ -65,18 +63,6 @@ export default class ImageCaptionEditing extends Plugin {
 			allowContentOf: '$block',
 			isLimit: true
 		} );
-
-		if ( editor.plugins.has( ImageBlockEditing ) ) {
-			schema.extend( 'image', {
-				allowAttributes: [ 'caption' ]
-			} );
-		}
-
-		if ( editor.plugins.has( ImageInlineEditing ) ) {
-			schema.extend( 'imageInline', {
-				allowAttributes: [ 'caption' ]
-			} );
-		}
 
 		editor.commands.add( 'toggleImageCaption', new ToggleImageCaptionCommand( this.editor ) );
 
@@ -154,7 +140,14 @@ export default class ImageCaptionEditing extends Plugin {
 		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
 		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
 
-		const handleImageTypeChange = ( { return: { oldElement, newElement } } ) => {
+		const handleImageTypeChange = evt => {
+			// The image type command execution can be unsuccessful.
+			if ( !evt.return ) {
+				return;
+			}
+
+			const { oldElement, newElement } = evt.return;
+
 			if ( isBlockImage( oldElement ) ) {
 				const oldCaptionElement = getCaptionFromImageModelElement( oldElement );
 
