@@ -175,7 +175,7 @@ describe( 'ImageTypeCommand', () => {
 				setModelData( model,
 					`<paragraph>
 						[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]
-						</paragraph>`
+					</paragraph>`
 				);
 
 				blockCommand.execute();
@@ -191,7 +191,7 @@ describe( 'ImageTypeCommand', () => {
 				setModelData( model,
 					`<paragraph>
 						[<imageInline src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
-						</paragraph>`
+					</paragraph>`
 				);
 
 				blockCommand.execute();
@@ -252,7 +252,7 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-					`[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]` +
+						`[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
 				);
 			} );
@@ -268,7 +268,7 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-					`[<imageInline src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
+						`[<imageInline src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
 					'</paragraph>'
 				);
 			} );
@@ -281,6 +281,28 @@ describe( 'ImageTypeCommand', () => {
 				expect( getModelData( model ) ).to.equal( '[<image></image>]' );
 				expect( returned ).to.be.null;
 			} );
+		} );
+
+		it( 'should preserve the caption so it can be restored (integration with ImageCaptionEditing)', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+
+			inlineCommand.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+			);
+
+			blockCommand.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				`[<image src="${ imgSrc }"></image>]`
+			);
+
+			editor.execute( 'toggleImageCaption' );
+
+			setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
 		} );
 	} );
 } );
