@@ -1697,9 +1697,10 @@ function cleanUpAllowIn( compiledDefinitions, itemName ) {
 function cleanUpAllowChildren( compiledDefinitions, itemName ) {
 	const itemRule = compiledDefinitions[ itemName ];
 
-	for ( const allowItemName of itemRule.allowIn ) {
-		const allowedItem = compiledDefinitions[ allowItemName ];
-		allowedItem.allowChildren.push( itemName );
+	for ( const allowedParentItemName of itemRule.allowIn ) {
+		const allowedParentItem = compiledDefinitions[ allowedParentItemName ];
+
+		allowedParentItem.allowChildren.push( itemName );
 	}
 }
 
