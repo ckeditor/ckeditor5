@@ -928,8 +928,7 @@ describe( 'image widget utils', () => {
 
 			const image = getImageModelElementAncestor( model.document.selection );
 
-			expect( image ).to.be.instanceOf( ModelElement );
-			expect( image.name ).to.equal( 'imageInline' );
+			expect( image.is( 'element', 'imageInline' ) ).to.be.true;
 		} );
 
 		it( 'should return an image element if it is selected', () => {
@@ -937,8 +936,7 @@ describe( 'image widget utils', () => {
 
 			const image = getImageModelElementAncestor( model.document.selection );
 
-			expect( image ).to.be.instanceOf( ModelElement );
-			expect( image.name ).to.equal( 'image' );
+			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
 
 		it( 'should return a image element if the selection range is inside its caption', () => {
@@ -946,8 +944,7 @@ describe( 'image widget utils', () => {
 
 			const image = getImageModelElementAncestor( model.document.selection );
 
-			expect( image ).to.be.instanceOf( ModelElement );
-			expect( image.name ).to.equal( 'image' );
+			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
 
 		it( 'should return a image element if the selection position is inside its caption', () => {
@@ -955,8 +952,7 @@ describe( 'image widget utils', () => {
 
 			const image = getImageModelElementAncestor( model.document.selection );
 
-			expect( image ).to.be.instanceOf( ModelElement );
-			expect( image.name ).to.equal( 'image' );
+			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
 	} );
 } );

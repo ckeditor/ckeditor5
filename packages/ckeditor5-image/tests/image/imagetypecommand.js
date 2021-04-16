@@ -135,7 +135,7 @@ describe( 'ImageTypeCommand', () => {
 				expect( inlineCommand.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be true when the selection is in a caption', () => {
+			it( 'should be true when the selection is in a block image caption', () => {
 				setModelData( model, '<image><caption>[]Foo</caption></image>' );
 
 				expect( inlineCommand.isEnabled ).to.be.true;
@@ -267,7 +267,7 @@ describe( 'ImageTypeCommand', () => {
 				);
 			} );
 
-			it( 'should convert and set selection on the new image if the selection is in a caption', () => {
+			it( 'should convert and set selection on the new image if the selection is in a block image caption', () => {
 				setModelData( model, `<image src="${ imgSrc }"><caption>[]Foo</caption></image>` );
 
 				inlineCommand.execute();

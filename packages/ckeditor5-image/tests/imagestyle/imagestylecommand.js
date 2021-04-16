@@ -246,7 +246,7 @@ describe( 'ImageStyleCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true when the selection is in a caption', () => {
+		it( 'should be true when the selection is in a block image caption', () => {
 			setData( model, '<image><caption>[]Foo</caption></image>' );
 
 			expect( command.isEnabled ).to.be.true;

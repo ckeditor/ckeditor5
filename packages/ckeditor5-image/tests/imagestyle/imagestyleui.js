@@ -442,42 +442,32 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should be enabled when at least one of the nested buttons are enabled', () => {
-			groups = groups.map( group => {
-				const items = group.view.toolbarView.items;
+			for ( const group of groups ) {
+				const groupItems = group.view.toolbarView.items;
 
-				items.map( item => {
+				for ( const item of groupItems ) {
 					item.isEnabled = false;
+				}
 
-					return item;
-				} );
+				groupItems.first.isEnabled = true;
+			}
 
-				const activeButton = items.first;
-
-				activeButton.isEnabled = true;
-
-				return { ...group, activeButton };
-			} );
-
-			for ( const { buttonView } of groups ) {
-				expect( buttonView.isEnabled ).to.be.true;
+			for ( const { buttonView, config } of groups ) {
+				expect( buttonView.isEnabled, `Failing group name: "${ config.name }"` ).to.be.true;
 			}
 		} );
 
 		it( 'should be disabled when none of the nested buttons are enabled', () => {
-			groups = groups.map( group => {
-				const items = group.view.toolbarView.items;
+			for ( const group of groups ) {
+				const groupItems = group.view.toolbarView.items;
 
-				items.map( item => {
+				for ( const item of groupItems ) {
 					item.isEnabled = false;
+				}
+			}
 
-					return item;
-				} );
-
-				return group;
-			} );
-
-			for ( const { buttonView } of groups ) {
-				expect( buttonView.isEnabled ).to.be.false;
+			for ( const { buttonView, config } of groups ) {
+				expect( buttonView.isEnabled, `Failing group name: "${ config.name }"` ).to.be.false;
 			}
 		} );
 	} );
