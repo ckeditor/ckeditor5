@@ -95,4 +95,49 @@ describe( 'Alignment integration', () => {
 			);
 		} );
 	} );
+
+	describe( 'compatibility with \'to-model-attribute\' converter', () => {
+		it( 'should not set the "alignment" attribute if the schema does not allow', () => {
+			// See: https://github.com/ckeditor/ckeditor5/pull/9249#issuecomment-815658459.
+			editor.model.schema.register( 'div', {
+				inheritAllFrom: '$block',
+				allowAttributes: [ 'customAlignment' ]
+			} );
+
+			// Does not allow for setting the "alignment" attribute for `div` elements.
+			editor.model.schema.addAttributeCheck( ( context, attributeName ) => {
+				if ( context.endsWith( 'div' ) && attributeName == 'alignment' ) {
+					return false;
+				}
+			} );
+
+			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
+
+			editor.conversion.attributeToAttribute( {
+				model: {
+					name: 'div',
+					key: 'customAlignment',
+					values: [ 'right' ]
+				},
+				view: {
+					right: {
+						key: 'style',
+						value: {
+							'text-align': 'right'
+						}
+					}
+				}
+			} );
+
+			// Conversion for the `style[text-align]` attribue will be called twice.
+			// - The first one comes from the AlignmentEditing plugin,
+			// - The second one from the test.
+			editor.setData( '<div style="text-align: right;">foo</div>' );
+
+			// As we do not allow for the `alignment` attribute for the `div` element, we expect
+			// that the `customAlignment` property will be set.
+			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<div customAlignment="right">foo</div>' );
+			expect( editor.getData() ).to.equal( '<div style="text-align:right;">foo</div>' );
+		} );
+	} );
 } );

@@ -37,6 +37,7 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
@@ -56,7 +57,7 @@ ClassicEditor
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			ImageUpload, CloudServices
+			ImageUpload, CloudServices, TextPartLanguage
 		],
 		toolbar: [
 			'heading',
@@ -74,6 +75,8 @@ ClassicEditor
 			'alignment', 'outdent', 'indent',
 			'|',
 			'pageBreak', 'horizontalLine', 'specialCharacters',
+			'|',
+			'textPartLanguage',
 			'|',
 			'undo', 'redo'
 		],

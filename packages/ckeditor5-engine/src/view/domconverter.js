@@ -17,7 +17,10 @@ import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
 import Matcher from './matcher';
-import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
+import {
+	BR_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER,
+	getDataWithoutFiller, isInlineFiller, startsWithFiller
+} from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
@@ -26,8 +29,9 @@ import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancest
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import { isElement } from 'lodash-es';
 
-// eslint-disable-next-line new-cap
-const BR_FILLER_REF = BR_FILLER( document );
+const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
+const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
+const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 /**
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -60,8 +64,7 @@ export default class DomConverter {
 		/**
 		 * The mode of a block filler used by the DOM converter.
 		 *
-		 * @readonly
-		 * @member {'br'|'nbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
+		 * @member {'br'|'nbsp'|'markedNbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
 		 */
 		this.blockFillerMode = options.blockFillerMode || 'br';
 
@@ -85,16 +88,6 @@ export default class DomConverter {
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
 		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption', 'td', 'th' ];
-
-		/**
-		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
-		 * view-to-DOM conversion and to recognize block fillers during the DOM-to-view conversion.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {Function} module:engine/view/domconverter~DomConverter#_blockFiller
-		 */
-		this._blockFiller = this.blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
 
 		/**
 		 * The DOM-to-view mapping.
@@ -297,7 +290,7 @@ export default class DomConverter {
 
 		for ( const childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
-				yield this._blockFiller( domDocument );
+				yield this._getBlockFiller( domDocument );
 			}
 
 			yield this.viewToDom( childView, domDocument, options );
@@ -306,7 +299,7 @@ export default class DomConverter {
 		}
 
 		if ( fillerPositionOffset === offset ) {
-			yield this._blockFiller( domDocument );
+			yield this._getBlockFiller( domDocument );
 		}
 	}
 
@@ -413,7 +406,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( this.isBlockFiller( domNode, this.blockFillerMode ) ) {
+		if ( this.isBlockFiller( domNode ) ) {
 			return null;
 		}
 
@@ -581,7 +574,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/position~Position} viewPosition View position.
 	 */
 	domPositionToView( domParent, domOffset ) {
-		if ( this.isBlockFiller( domParent, this.blockFillerMode ) ) {
+		if ( this.isBlockFiller( domParent ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
@@ -863,13 +856,13 @@ export default class DomConverter {
 			return domNode.isEqualNode( BR_FILLER_REF );
 		}
 
-		// Special case for <p><br></p> in which case the <br> should be treated as filler even
-		// when we're in the 'nbsp' mode. See ckeditor5#5564.
+		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
 		if ( domNode.tagName === 'BR' && hasBlockParent( domNode, this.blockElements ) && domNode.parentNode.childNodes.length === 1 ) {
 			return true;
 		}
 
-		return isNbspBlockFiller( domNode, this.blockElements );
+		// If not in 'br' mode, try recognizing both marked and regular nbsp block fillers.
+		return domNode.isEqualNode( MARKED_NBSP_FILLER_REF ) || isNbspBlockFiller( domNode, this.blockElements );
 	}
 
 	/**
@@ -954,6 +947,24 @@ export default class DomConverter {
 	 */
 	registerRawContentMatcher( pattern ) {
 		this._rawContentElementMatcher.add( pattern );
+	}
+
+	/**
+	 * Returns block {@link module:engine/view/filler filler} node based on current {@link #blockFillerMode} setting.
+	 *
+	 * @private
+	 * @params {Document} domDocument
+	 * @returns {Node} filler
+	 */
+	_getBlockFiller( domDocument ) {
+		switch ( this.blockFillerMode ) {
+			case 'nbsp':
+				return NBSP_FILLER( domDocument ); // eslint-disable-line new-cap
+			case 'markedNbsp':
+				return MARKED_NBSP_FILLER( domDocument ); // eslint-disable-line new-cap
+			case 'br':
+				return BR_FILLER( domDocument ); // eslint-disable-line new-cap
+		}
 	}
 
 	/**
@@ -1320,7 +1331,7 @@ function forEachDomNodeAncestor( node, callback ) {
 // @param {Node} domNode DOM node.
 // @returns {Boolean}
 function isNbspBlockFiller( domNode, blockElements ) {
-	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
+	const isNBSP = domNode.isEqualNode( NBSP_FILLER_REF );
 
 	return isNBSP && hasBlockParent( domNode, blockElements ) && domNode.parentNode.childNodes.length === 1;
 }
@@ -1340,8 +1351,9 @@ function hasBlockParent( domNode, blockElements ) {
  *
  * Possible values:
  *
- * * `br` - for `<br>` block filler used in editing view,
- * * `nbsp` - for `&nbsp;` block fillers used in the data.
+ * * `br` - for `<br data-cke-filler="true">` block filler used in the editing view,
+ * * `nbsp` - for `&nbsp;` block fillers used in the data,
+ * * `markedNbsp` - for nbsp block fillers wrapped in a span: `<span data-cke-filler="true">&nbsp;</span>` used in the data.
  *
  * @typedef {String} module:engine/view/filler~BlockFillerMode
  */

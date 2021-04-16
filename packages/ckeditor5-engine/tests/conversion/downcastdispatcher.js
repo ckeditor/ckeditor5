@@ -9,6 +9,7 @@ import Mapper from '../../src/conversion/mapper';
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
+import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelRange from '../../src/model/range';
 
 import View from '../../src/view/view';
@@ -500,21 +501,22 @@ describe( 'DowncastDispatcher', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
+		it( 'should convert marker in document fragment', () => {
+			const text = new ModelText( 'foo' );
+			const docFrag = new ModelDocumentFragment( text );
+			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertMarkerAdd( 'name', eleRange );
+
+			expect( dispatcher.fire.called ).to.be.true;
+		} );
+
 		it( 'should not convert marker if it is in graveyard', () => {
 			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
 			dispatcher.convertMarkerAdd( 'name', gyRange );
-
-			expect( dispatcher.fire.called ).to.be.false;
-		} );
-
-		it( 'should not convert marker if it is not in model root', () => {
-			const element = new ModelElement( 'element', null, new ModelText( 'foo' ) );
-			const eleRange = model.createRange( model.createPositionAt( element, 1 ), model.createPositionAt( element, 2 ) );
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.convertMarkerAdd( 'name', eleRange );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -662,14 +664,15 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
 
-		it( 'should not convert marker if it is not in model root', () => {
-			const element = new ModelElement( 'element', null, new ModelText( 'foo' ) );
-			const eleRange = model.createRange( model.createPositionAt( element, 1 ), model.createPositionAt( element, 2 ) );
+		it( 'should convert marker in document fragment', () => {
+			const text = new ModelText( 'foo' );
+			const docFrag = new ModelDocumentFragment( text );
+			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
 			dispatcher.convertMarkerRemove( 'name', eleRange );
 
-			expect( dispatcher.fire.called ).to.be.false;
+			expect( dispatcher.fire.called ).to.be.true;
 		} );
 
 		it( 'should fire conversion for the range', () => {
