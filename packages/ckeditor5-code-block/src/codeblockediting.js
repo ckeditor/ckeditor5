@@ -113,12 +113,9 @@ export default class CodeBlockEditing extends Plugin {
 
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
+			allowChildren: '$text',
 			isBlock: true,
 			allowAttributes: [ 'language' ]
-		} );
-
-		schema.extend( '$text', {
-			allowIn: 'codeBlock'
 		} );
 
 		// Disallow all attributes on $text inside `codeBlock`.

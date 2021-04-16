@@ -246,8 +246,11 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should execute enter command when pressing enter in an element nested inside a codeBlock', () => {
-			model.schema.register( 'codeBlockSub', { allowIn: 'codeBlock', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'codeBlockSub' } );
+			model.schema.register( 'codeBlockSub', {
+				allowIn: 'codeBlock',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'codeBlockSub', view: 'codeBlockSub' } );
 
 			const enterCommand = editor.commands.get( 'enter' );

@@ -316,8 +316,7 @@ describe( 'LinkCommand', () => {
 
 			it( 'should set `linkHref` attribute to allowed elements and omit disallowed', () => {
 				model.schema.register( 'image', { isBlock: true, allowWhere: '$text' } );
-				model.schema.register( 'caption', { allowIn: 'image' } );
-				model.schema.extend( '$text', { allowIn: 'caption' } );
+				model.schema.register( 'caption', { allowIn: 'image', allowChildren: '$text' } );
 
 				setData( model, '<p>f[oo<image><caption>xxx</caption></image>ba]r</p>' );
 
@@ -334,8 +333,7 @@ describe( 'LinkCommand', () => {
 
 			it( 'should set `linkHref` attribute to allowed elements and omit their children even if they accept the attribute', () => {
 				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
-				model.schema.register( 'caption', { allowIn: 'image' } );
-				model.schema.extend( '$text', { allowIn: 'caption' } );
+				model.schema.register( 'caption', { allowIn: 'image', allowChildren: '$text' } );
 
 				setData( model, '<p>f[oo<image><caption>xxx</caption></image>ba]r</p>' );
 
