@@ -17,7 +17,7 @@ Elements and attributes are checked by features separately by using the {@link m
 
 ## Defining allowed structures
 
-When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by {@link module:engine/model/schema~SchemaItemDefinition#allowIn} property of the {@link module:engine/model/schema~SchemaItemDefinition}:
+When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by the {@link module:engine/model/schema~SchemaItemDefinition#allowIn} property of the {@link module:engine/model/schema~SchemaItemDefinition}:
 
 ```js
 schema.register( 'myElement', {
@@ -45,7 +45,7 @@ While this would be incorrect:
 </$root>
 ```
 
-To declare what nodes could be inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
+To declare which nodes could be inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
 
 ```js
 schema.register( 'myElement', {
@@ -64,7 +64,7 @@ To allow the following structure:
 </$root>
 ```
 
-Both `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can be also inherited from other `SchemaItemDefinition` items. 
+Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can be also inherited from other `SchemaItemDefinition` items. 
 
 <info-box>
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
