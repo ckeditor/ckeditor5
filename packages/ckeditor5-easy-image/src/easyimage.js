@@ -42,7 +42,7 @@ export default class EasyImage extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CloudServicesUploadAdapter, 'Image', 'ImageUpload' ];
+		return [ CloudServicesUploadAdapter, 'ImageUpload' ];
 	}
 
 	/**
