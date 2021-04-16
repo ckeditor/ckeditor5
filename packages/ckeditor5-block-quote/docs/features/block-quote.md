@@ -2,16 +2,29 @@
 category: features
 menu-title: Block quote
 ---
+{@snippet features/block-quote-source}
 
 # Block quote
 
-The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. This provides an attractive way to draw the readers' attention to selected parts of text. It also helps organize the content in a structured, elegant way and to manage the flow better.
+The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included.
+
+The block quote feature provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way to manage the flow better.
 
 ## Demo
 
 Use the editor below to see the block quote plugin in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
+
+## Nesting block quotes
+
+Starting from version 27.1.0, CKEditor 5 supports nesting a block quote in another block quote. This may prove useful for scientific or academic papers, but also articles citing sources and referring to previous writing would often use it. To use this functionality, simply click where you need the quote nested and insert it just like a regular one.
+
+{@snippet features/nested-block-quote}
+
+<info-box>
+	If you would want to block the possibility to nest block quotes in your editor, refer to the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section to learn how to disable this functionality.
+</info-box>
 
 ## Related features
 
@@ -48,11 +61,13 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-## Disallowing nesting block quotes
+## Configuration
 
-By default, the editor supports a block quote inserted into another block quote.
+### Disallow nesting block quotes
 
-In order to disallow nesting block quotes you need to register an additional schema rule. It needs to be added before the data gets loaded into the editor, hence it is best to implement it as a plugin:
+By default, the editor supports inserting a block quote into another block quote.
+
+In order to disallow nesting block quotes, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor, hence it is best to implement it as a plugin:
 
 ```js
 function DisallowNestingBlockQuotes( editor ) {
@@ -74,6 +89,10 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+<info-box>
+	Check the {@link framework/guides/creating-simple-plugin plugin development} guide if you need more information about the technical side of this solution.
+</info-box>
 
 ## Common API
 
