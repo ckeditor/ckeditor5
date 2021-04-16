@@ -374,40 +374,38 @@ function getBorderPositionReducer( which ) {
 	return value => reduceBorderPosition( value, which );
 }
 
+// Returns an array with reduced border styles depending on specified values.
+//
+// If all (width, style, color) border properties are specified, the returned selector will be
+// merged into the group: `border-*: [width] [style] [color]`.
+//
+// Otherwise, the specific definitions will be returned: `border-(width|style|color)-*: [value]`.
+//
+// @param {Object|null} value Styles if defined.
+// @param {'top'|'right'|'bottom'|left|} which The border position.
+// @returns {Array}
 function reduceBorderPosition( value, which ) {
-	const borderToSet = [];
+	const borderTypes = [];
 
 	if ( value && value.width !== undefined ) {
-		borderToSet.push( 'width' );
+		borderTypes.push( 'width' );
 	}
 
 	if ( value && value.style !== undefined ) {
-		borderToSet.push( 'style' );
+		borderTypes.push( 'style' );
 	}
 
 	if ( value && value.color !== undefined ) {
-		borderToSet.push( 'color' );
+		borderTypes.push( 'color' );
 	}
 
-	if ( borderToSet.length === 3 ) {
+	if ( borderTypes.length === 3 ) {
 		return [
-			[ `border-${ which }`, borderToSet.map( item => value[ item ] ).join( ' ' ) ]
+			[ `border-${ which }`, borderTypes.map( item => value[ item ] ).join( ' ' ) ]
 		];
 	}
 
-	const result = [];
-
-	if ( borderToSet.includes( 'width' ) ) {
-		result.push( [ `border-${ which }-width`, value.width ] );
-	}
-
-	if ( borderToSet.includes( 'style' ) ) {
-		result.push( [ `border-${ which }-style`, value.style ] );
-	}
-
-	if ( borderToSet.includes( 'color' ) ) {
-		result.push( [ `border-${ which }-color`, value.color ] );
-	}
-
-	return result;
+	return borderTypes.map( type => {
+		return [ `border-${ which }-${ type }`, value[ type ] ];
+	} );
 }
