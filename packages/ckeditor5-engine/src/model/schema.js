@@ -1617,7 +1617,7 @@ function compileAllowChildren( compiledDefinitions, itemName ) {
 
 	// allowIn already includes correct items, reset allowChildren
 	// to avoid duplicates later when cleaning up compilation results.
-	item.allowChildren = [];
+	item.allowChildren.length = 0;
 }
 
 function compileAllowContentOf( compiledDefinitions, itemName ) {
