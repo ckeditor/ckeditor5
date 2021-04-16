@@ -44,13 +44,21 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 			return;
 		}
 
-		// TODO: this is counter-intuitive: ie.: if only `border-top` is defined then `hasStyle( 'border' )` also returns true.
-		// TODO: this might needs to be fixed in styles normalizer.
+		// Check the most detailed properties. These will be always set directly or
+		// when using the "group" properties like: `border-(top|right|bottom|left)` or `border`.
 		const stylesToConsume = [
-			'border-top',
-			'border-right',
-			'border-bottom',
-			'border-left'
+			'border-top-width',
+			'border-top-color',
+			'border-top-style',
+			'border-bottom-width',
+			'border-bottom-color',
+			'border-bottom-style',
+			'border-right-width',
+			'border-right-color',
+			'border-right-style',
+			'border-left-width',
+			'border-left-color',
+			'border-left-style'
 		].filter( styleName => data.viewItem.hasStyle( styleName ) );
 
 		if ( !stylesToConsume.length ) {

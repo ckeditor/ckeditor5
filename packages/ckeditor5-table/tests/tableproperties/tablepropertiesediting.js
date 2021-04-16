@@ -580,7 +580,7 @@ describe( 'table properties', () => {
 						left: '#f00'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+					assertTableStyle( editor, 'border-color:#f00;' );
 				} );
 
 				it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
@@ -592,10 +592,10 @@ describe( 'table properties', () => {
 					}, table ) );
 
 					assertTableStyle( editor,
-						'border-bottom:deeppink;' +
-						'border-left:rgb(255, 0, 0);' +
-						'border-right:hsla(0, 100%, 50%, 0.5);' +
-						'border-top:#f00;'
+						'border-bottom-color:deeppink;' +
+						'border-left-color:rgb(255, 0, 0);' +
+						'border-right-color:hsla(0, 100%, 50%, 0.5);' +
+						'border-top-color:#f00;'
 					);
 				} );
 
@@ -627,7 +627,7 @@ describe( 'table properties', () => {
 						left: 'solid'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+					assertTableStyle( editor, 'border-style:solid;' );
 				} );
 
 				it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
@@ -638,7 +638,12 @@ describe( 'table properties', () => {
 						left: 'dashed'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:dotted;border-left:dashed;border-right:ridge;border-top:solid;' );
+					assertTableStyle( editor,
+						'border-bottom-style:dotted;' +
+						'border-left-style:dashed;' +
+						'border-right-style:ridge;' +
+						'border-top-style:solid;'
+					);
 				} );
 
 				it( 'should consume converted item borderWidth attribute', () => {
@@ -669,7 +674,10 @@ describe( 'table properties', () => {
 						left: 'thick'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:1337rem;border-left:thick;border-right:.1em;border-top:42px;' );
+					assertTableStyle(
+						editor,
+						'border-bottom-width:1337rem;border-left-width:thick;border-right-width:.1em;border-top-width:42px;'
+					);
 				} );
 
 				it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
@@ -680,7 +688,7 @@ describe( 'table properties', () => {
 						left: '42px'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:42px;border-left:42px;border-right:42px;border-top:42px;' );
+					assertTableStyle( editor, 'border-width:42px;' );
 				} );
 
 				it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
@@ -707,12 +715,7 @@ describe( 'table properties', () => {
 						}, table );
 					} );
 
-					assertTableStyle( editor,
-						'border-bottom:42px solid #f00;' +
-						'border-left:42px solid #f00;' +
-						'border-right:42px solid #f00;' +
-						'border-top:42px solid #f00;'
-					);
+					assertTableStyle( editor, 'border:42px solid #f00;' );
 				} );
 
 				it(
@@ -784,12 +787,7 @@ describe( 'table properties', () => {
 							left: 'deeppink'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:42px solid deeppink;' +
-							'border-left:42px solid deeppink;' +
-							'border-right:42px solid deeppink;' +
-							'border-top:42px solid deeppink;'
-						);
+						assertTableStyle( editor, 'border:42px solid deeppink;' );
 					} );
 
 					it( 'should downcast borderStyle attribute change', () => {
@@ -800,12 +798,7 @@ describe( 'table properties', () => {
 							left: 'ridge'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:42px ridge #f00;' +
-							'border-left:42px ridge #f00;' +
-							'border-right:42px ridge #f00;' +
-							'border-top:42px ridge #f00;'
-						);
+						assertTableStyle( editor, 'border:42px ridge #f00;' );
 					} );
 
 					it( 'should downcast borderWidth attribute change', () => {
@@ -816,22 +809,15 @@ describe( 'table properties', () => {
 							left: 'thick'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:thick solid #f00;' +
-							'border-left:thick solid #f00;' +
-							'border-right:thick solid #f00;' +
-							'border-top:thick solid #f00;'
-						);
+						assertTableStyle( editor, 'border:thick solid #f00;' );
 					} );
 
 					it( 'should downcast borderColor attribute removal', () => {
 						model.change( writer => writer.removeAttribute( 'borderColor', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:42px solid;' +
-							'border-left:42px solid;' +
-							'border-right:42px solid;' +
-							'border-top:42px solid;'
+							'border-style:solid;' +
+							'border-width:42px;'
 						);
 					} );
 
@@ -839,10 +825,9 @@ describe( 'table properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderStyle', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:42px #f00;' +
-							'border-left:42px #f00;' +
-							'border-right:42px #f00;' +
-							'border-top:42px #f00;'
+							'border-color:#f00;' +
+							'border-width:42px;'
+
 						);
 					} );
 
@@ -850,10 +835,8 @@ describe( 'table properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderWidth', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:solid #f00;' +
-							'border-left:solid #f00;' +
-							'border-right:solid #f00;' +
-							'border-top:solid #f00;'
+							'border-color:#f00;' +
+							'border-style:solid;'
 						);
 					} );
 

@@ -301,7 +301,11 @@ function borderReducer() {
 	// @param {Array} leftReducer `border-left-*` definitions.
 	// @returns {Boolean}
 	function shouldMergeAllBordersDefinitions( topReducer, rightReducer, bottomReducer, leftReducer ) {
-		return topReducer[ 0 ][ 0 ] === 'border-top' &&
+		return topReducer.length === 1 &&
+			rightReducer.length === 1 &&
+			bottomReducer.length === 1 &&
+			leftReducer.length === 1 &&
+			topReducer[ 0 ][ 0 ] === 'border-top' &&
 			rightReducer[ 0 ][ 0 ] === 'border-right' &&
 			bottomReducer[ 0 ][ 0 ] === 'border-bottom' &&
 			leftReducer[ 0 ][ 0 ] === 'border-left' &&
