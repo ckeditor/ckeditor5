@@ -629,6 +629,16 @@ describe( 'image widget utils', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
 		} );
+
+		it( 'should return the inserted image element', () => {
+			setModelData( model, '[]' );
+
+			const imageElement = insertImage( editor );
+
+			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+			expect( imageElement.is( 'element', 'image' ) ).to.be.true;
+			expect( imageElement ).to.equal( model.document.getRoot().getChild( 0 ) );
+		} );
 	} );
 
 	describe( 'getViewImageFromWidget()', () => {
