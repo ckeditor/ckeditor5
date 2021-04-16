@@ -1,6 +1,6 @@
 <div style="max-width: 600px; margin: 0 auto;">
 
-# Migration guide to CKEditor 5 28.0.0 for the `Image`, `ImageStyle` and `ImageCaption` plugins
+# Migration guide to CKEditor 5 28.0.0 for the `Image`, `ImageStyle`, `ImageCaption` and `EasyImage` plugins
 
 ## Important changes
 
@@ -104,6 +104,31 @@ Editor.create( document.querySelector( '#editor' ), {
 To see the above configurations in action, see the *editor examples (link)* below.
 
 To overview all the new image style buttons and dropdowns we offer for the toolbar customization, visit the *image toolbar configuration API documentation (link)*.
+
+#### `EasyImage` plugin
+
+Please note that the {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/image~ImageBlock} or {@link module:image/image~ImageInline} without loading the other.
+
+This decoupling does not have an impact on integrations based on on {@link builds/guides/overview#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+However, for integrations that {@link builds/guides/integration/advanced-setup build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or one of {@link module:image/image~ImageBlock} or {@link module:image/image~ImageInline}) must be imported separately:
+
+<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EasyImage, Image, ... ],
+		toolbar: [ 'uploadImage', ... ],
+
+		// ...
+	} )
+	.then( ... )
+	.catch( ... );
+</pre>
+
+Check out the comprehensive {@link features/image#installation guide to images} in CKEditor 5 to learn more.
 
 ---
 
