@@ -902,7 +902,7 @@ export default class Schema {
 
 		for ( const itemName of itemNames ) {
 			cleanUpAllowIn( compiledDefinitions, itemName );
-			cleanUpAllowChildren( compiledDefinitions, itemName );
+			restoreAllowChildren( compiledDefinitions, itemName );
 			cleanUpAllowAttributes( compiledDefinitions, itemName );
 		}
 
@@ -1616,7 +1616,7 @@ function compileAllowChildren( compiledDefinitions, itemName ) {
 	}
 
 	// The allowIn property already includes correct items, reset the allowChildren property
-	// to avoid duplicates later when cleaning up compilation results.
+	// to avoid duplicates later when restoring compilation results.
 	item.allowChildren.length = 0;
 }
 
@@ -1694,7 +1694,7 @@ function cleanUpAllowIn( compiledDefinitions, itemName ) {
 }
 
 // Restore allowChildren items based on allowIn.
-function cleanUpAllowChildren( compiledDefinitions, itemName ) {
+function restoreAllowChildren( compiledDefinitions, itemName ) {
 	const itemRule = compiledDefinitions[ itemName ];
 
 	for ( const allowedParentItemName of itemRule.allowIn ) {
