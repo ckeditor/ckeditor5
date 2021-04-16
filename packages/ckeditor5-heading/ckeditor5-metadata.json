@@ -20,9 +20,9 @@
 			"path": "src/heading.js",
 			"uiComponents": [
 				{
-					"type": "dropdown",
+					"type": "Dropdown",
 					"name": "heading",
-					"textContent": "Heading"
+					"label": "Heading"
 				}
 			],
 			"htmlOutput": [

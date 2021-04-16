@@ -8,7 +8,7 @@
 			"path": "src/specialcharacters.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "specialCharacters",
 					"iconPath": "theme/icons/specialcharacters.svg"
 				}

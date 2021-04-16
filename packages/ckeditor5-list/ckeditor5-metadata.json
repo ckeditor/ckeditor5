@@ -8,12 +8,12 @@
 			"path": "src/list.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "numberedList",
 					"iconPath": "theme/icons/numberedlist.svg"
 				},
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "bulletedList",
 					"iconPath": "theme/icons/bulletedlist.svg"
 				}
@@ -39,7 +39,7 @@
 			"path": "src/todolist",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "todoList",
 					"iconPath": "theme/icons/todolist.svg"
 				}

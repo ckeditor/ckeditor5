@@ -8,7 +8,7 @@
 			"path": "src/restrictededitingmode.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "restrictedEditing",
 					"iconPath": "theme/icons/contentlock.svg"
 				}
@@ -28,7 +28,7 @@
 			"path": "src/standardeditingmode.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "restrictedEditingException",
 					"iconPath": "theme/icons/contentunlock.svg"
 				}

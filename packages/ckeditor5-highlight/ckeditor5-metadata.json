@@ -8,7 +8,7 @@
 			"path": "src/highlight.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "highlight",
 					"iconPath": "theme/icons/pen.svg"
 				}

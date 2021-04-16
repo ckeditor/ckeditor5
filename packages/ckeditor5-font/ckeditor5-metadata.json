@@ -8,7 +8,7 @@
 			"path": "src/fontbackgroundcolor.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "fontBackgroundColor",
 					"iconPath": "theme/icons/font-background.svg"
 				}
@@ -28,7 +28,7 @@
 			"path": "src/fontcolor.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "fontColor",
 					"iconPath": "theme/icons/font-color.svg"
 				}
@@ -48,7 +48,7 @@
 			"path": "src/fontsize.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "fontSize",
 					"iconPath": "theme/icons/font-size.svg"
 				}
@@ -85,7 +85,7 @@
 			"path": "src/fontfamily.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "fontFamily",
 					"iconPath": "theme/icons/font-family.svg"
 				}

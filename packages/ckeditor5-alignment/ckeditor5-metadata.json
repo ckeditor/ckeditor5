@@ -8,7 +8,7 @@
 			"docs": "features/image-upload/image-upload.html#ckfinder",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "alignment",
 					"pathToIcon": "TODO"
 				}

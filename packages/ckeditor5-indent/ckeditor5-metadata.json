@@ -8,12 +8,12 @@
 			"path": "src/indent.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "indent",
 					"iconPath": "theme/icons/indent.svg"
 				},
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "outdent",
 					"iconPath": "theme/icons/outdent.svg"
 				}

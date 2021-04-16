@@ -7,7 +7,7 @@
 			"docs": "features/page-break.html",
 			"path": "src/pagebreak.js",
 			"uiComponents": [ {
-				"type": "button",
+				"type": "Button",
 				"name": "pageBreak",
 				"iconPath": "theme/icons/pagebreak.svg"
 			} ],

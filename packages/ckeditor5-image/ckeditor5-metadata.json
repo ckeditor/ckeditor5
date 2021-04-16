@@ -18,7 +18,7 @@
 			"path": "src/image.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "imageTextAlternative",
 					"iconPath": "TODO"
 				}
@@ -85,7 +85,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "imageStyle:full",
 					"toolbars": [
 						"image.toolbar"
@@ -93,7 +93,7 @@
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg"
 				},
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "imageStyle:side",
 					"toolbars": [
 						"image.toolbar"
@@ -142,7 +142,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "imageUpload",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
 				}
@@ -159,7 +159,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "imageInsert",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
 				}

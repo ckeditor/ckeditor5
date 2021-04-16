@@ -7,12 +7,12 @@
 			"path": "src/essentials.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "undo",
 					"iconPath": "@ckeditor/ckeditor5-undo/theme/icons/undo.svg"
 				},
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "redo",
 					"iconPath": "@ckeditor/ckeditor5-undo/theme/icons/redo.svg"
 				}

@@ -18,7 +18,7 @@
 			"path": "src/link.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "link",
 					"iconPath": "theme/icons/link.svg"
 				}
@@ -57,7 +57,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "linkImage",
 					"iconPath": "theme/icons/link.svg",
 					"toolbars": [

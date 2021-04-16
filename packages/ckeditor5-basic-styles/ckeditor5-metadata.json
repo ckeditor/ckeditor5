@@ -8,7 +8,7 @@
 			"path": "src/bold.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "bold",
 					"iconPath": "theme/icons/bold.svg"
 				}
@@ -27,7 +27,7 @@
 			"path": "src/code.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "code",
 					"iconPath": "theme/icons/code.svg"
 				}
@@ -47,7 +47,7 @@
 			"path": "src/italic.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "italic",
 					"iconPath": "theme/icons/italic.svg"
 				}
@@ -66,7 +66,7 @@
 			"path": "src/strikethrough.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "strikethrough",
 					"iconPath": "theme/icons/strikethrough.svg"
 				}
@@ -85,7 +85,7 @@
 			"path": "src/subscript.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "subscript",
 					"iconPath": "theme/icons/subscript.svg"
 				}
@@ -104,7 +104,7 @@
 			"path": "src/superscript.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "superscript",
 					"iconPath": "theme/icons/superscript.svg"
 				}
@@ -123,7 +123,7 @@
 			"path": "src/underline.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "underline",
 					"iconPath": "theme/icons/underline.svg"
 				}

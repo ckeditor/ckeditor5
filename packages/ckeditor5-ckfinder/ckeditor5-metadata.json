@@ -14,7 +14,7 @@
 			"uiComponents": [
 				{
 					"name": "CKFinder",
-					"type": "button",
+					"type": "Button",
 					"iconPath": "theme/icons/browser-files.svg"
 				}
 			]

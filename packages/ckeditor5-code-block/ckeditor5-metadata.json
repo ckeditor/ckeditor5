@@ -8,7 +8,7 @@
 			"path": "src/codeblock.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "codeBlock",
 					"iconPath": "theme/icons/codeblock.svg"
 				}

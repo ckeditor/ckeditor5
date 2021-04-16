@@ -8,12 +8,12 @@
 			"path": "src/table.js",
 			"uiComponents": [
 				{
-					"type": "split button",
+					"type": "SplitButton",
 					"name": "insertTable",
 					"iconPath": "theme/icons/table.svg"
 				},
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "tableColumn",
 					"iconPath": "theme/icons/table-column.svg",
 					"toolbars": [
@@ -21,7 +21,7 @@
 					]
 				},
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "tableRow",
 					"iconPath": "theme/icons/table-row.svg",
 					"toolbars": [
@@ -29,7 +29,7 @@
 					]
 				},
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "mergeTableCells",
 					"iconPath": "theme/icons/table-merge-cell.svg",
 					"toolbars": [
@@ -74,7 +74,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "tableCellProperties",
 					"iconPath": "theme/icons/table-cell-properties.svg",
 					"toolbars": [
@@ -113,7 +113,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "tableProperties",
 					"iconPath": "theme/icons/table-properties.svg",
 					"toolbars": [

@@ -7,7 +7,7 @@
 			"path": "src/blockquote.js",
 			"uiComponents": [
 				{
-					"type": "button",
+					"type": "Button",
 					"name": "blockQuote",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/quote.svg"
 				}
