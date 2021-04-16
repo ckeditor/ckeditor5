@@ -134,9 +134,6 @@ export default class ImageCaptionEditing extends Plugin {
 	 */
 	_setupImageTypeCommandsIntegration() {
 		const editor = this.editor;
-
-		// Presence of the commands depends on the Image(Inline|Block)Editing plugins loaded
-		// in the editor.
 		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
 		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
 
@@ -175,6 +172,7 @@ export default class ImageCaptionEditing extends Plugin {
 			}
 		};
 
+		// Presence of the commands depends on the Image(Inline|Block)Editing plugins loaded in the editor.
 		if ( imageTypeInlineCommand ) {
 			this.listenTo( imageTypeInlineCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
 		}
