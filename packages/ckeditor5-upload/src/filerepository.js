@@ -609,6 +609,20 @@ mix( FileLoader, ObservableMixin );
  *			'1052': 'http://server/default-size.image.png'
  *		}
  *
+ * You can also pass additional properties from the server. In this case you need to wrap URLs
+ * in the `urls` object and pass additional properties along the `urls` property.
+ *
+ * 		{
+ * 			myCustomProperty: 'foo',
+ * 			urls: {
+ *				default: 'http://server/default-size.image.png',
+ *				'160': 'http://server/size-160.image.png',
+ *				'500': 'http://server/size-500.image.png',
+ *				'1000': 'http://server/size-1000.image.png',
+ *				'1052': 'http://server/default-size.image.png'
+ *			}
+ *		}
+ *
  * NOTE: When returning multiple images, the widest returned one should equal the default one. It is essential to
  * correctly set `width` attribute of the image. See this discussion:
  * https://github.com/ckeditor/ckeditor5-easy-image/issues/4 for more information.

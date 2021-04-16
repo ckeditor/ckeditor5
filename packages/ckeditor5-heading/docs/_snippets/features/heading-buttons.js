@@ -23,7 +23,10 @@ ClassicEditor
 				editor.ui.view.toolbar, item => item.label && item.label === 'Heading 1'
 			),
 			text: 'Click to choose heading level.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-start'
+			}
 		} );
 	} )
 	.catch( err => {

@@ -17,9 +17,9 @@ import { createEmptyTableCell, updateNumericAttribute } from './common';
  *
  *		const croppedTable = cropTableToDimensions( table, {
  *			startRow: 1,
- *			endRow: 1,
- *			startColumn: 3,
- *			endColumn: 3
+ *			endRow: 3,
+ *			startColumn: 1,
+ *			endColumn: 3done
  *		}, writer );
  *
  * Calling the code above for the table below:

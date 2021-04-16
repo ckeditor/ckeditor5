@@ -191,3 +191,9 @@ ClassicEditor
 <info-box>
 	If you are unsure about the language that the content will be typed in, do not set it. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
 </info-box>
+
+## Related features
+
+There are other CKEditor 5 features that will help you control the content language:
+
+* {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.

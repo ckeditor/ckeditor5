@@ -7,6 +7,7 @@
  * @module table/tableutils
  */
 
+import { CKEditorError } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
 import TableWalker from './tablewalker';
@@ -152,6 +153,19 @@ export default class TableUtils extends Plugin {
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
+
+		if ( insertAt > rows ) {
+			/**
+			 * The `options.at` points at a row position that does not exist.
+			 *
+			 * @error tableutils-insertrows-insert-out-of-range
+			 */
+			throw new CKEditorError(
+				'tableutils-insertrows-insert-out-of-range',
+				this,
+				{ options }
+			);
+		}
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) || 0;
@@ -334,8 +348,11 @@ export default class TableUtils extends Plugin {
 		const model = this.editor.model;
 
 		const rowsToRemove = options.rows || 1;
+		const rowCount = this.getRows( table );
 		const first = options.at;
-		const last = first + rowsToRemove - 1;
+
+		// Make sure we are not removing too much, e.g. non-row elements at the end of the table.
+		const last = Math.min( first + rowsToRemove - 1, rowCount - 1 );
 
 		model.change( writer => {
 			// Removing rows from the table require that most calculations to be done prior to changing table structure.
@@ -479,6 +496,10 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} numberOfCells
 	 */
 	splitCellVertically( tableCell, numberOfCells = 2 ) {
+		if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+			return;
+		}
+
 		const model = this.editor.model;
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
@@ -615,6 +636,10 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} numberOfCells
 	 */
 	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
+		if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+			return;
+		}
+
 		const model = this.editor.model;
 
 		const tableRow = tableCell.parent;
@@ -723,7 +748,8 @@ export default class TableUtils extends Plugin {
 	 */
 	getColumns( table ) {
 		// Analyze first row only as all the rows should have the same width.
-		// We are taking first row without checking because we expect that table will have only tableRow models at the beginning.
+		// Using the first row without checking if it's a tableRow because we expect
+		// that table will have only tableRow model elements at the beginning.
 		const row = table.getChild( 0 );
 
 		return [ ...row.getChildren() ].reduce( ( columns, row ) => {

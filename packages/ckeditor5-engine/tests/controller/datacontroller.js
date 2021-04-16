@@ -654,18 +654,24 @@ describe( 'DataController', () => {
 			expect( stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
 		} );
 
-		it( 'should convert a document fragment', () => {
+		it( 'should convert a document fragment and its markers', () => {
+			downcastHelpers.markerToData( { model: 'foo' } );
 			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+
+			const range = model.createRange(
+				model.createPositionAt( modelDocumentFragment.getChild( 0 ), 1 ),
+				model.createPositionAt( modelDocumentFragment.getChild( 1 ), 2 )
+			);
+			modelDocumentFragment.markers.set( 'foo:bar', range );
+
 			const viewDocumentFragment = data.toView( modelDocumentFragment );
 
 			expect( viewDocumentFragment ).to.be.instanceOf( ViewDocumentFragment );
 			expect( viewDocumentFragment ).to.have.property( 'childCount', 2 );
 
-			const viewElement = viewDocumentFragment.getChild( 0 );
-
-			expect( viewElement.name ).to.equal( 'p' );
-			expect( viewElement.childCount ).to.equal( 1 );
-			expect( viewElement.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( stringifyView( viewDocumentFragment ) ).to.equal(
+				'<p>f<foo-start name="bar"></foo-start>oo</p><p>ba<foo-end name="bar"></foo-end>r</p>'
+			);
 		} );
 
 		it( 'should keep view-model mapping', () => {

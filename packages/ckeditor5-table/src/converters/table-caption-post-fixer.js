@@ -45,7 +45,7 @@ function tableCaptionPostFixer( writer, model ) {
 			const firstCaption = captionsToMerge.shift();
 
 			if ( !firstCaption ) {
-				return;
+				continue;
 			}
 
 			// Move all the contents of the captions to the first one.

@@ -385,8 +385,8 @@ function getChildrenLengths( table ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
 	const lengths = new Array( table.childCount ).fill( 0 );
 
-	for ( const { row } of new TableWalker( table, { includeAllSlots: true } ) ) {
-		lengths[ row ]++;
+	for ( const { rowIndex } of new TableWalker( table, { includeAllSlots: true } ) ) {
+		lengths[ rowIndex ]++;
 	}
 
 	return lengths;
