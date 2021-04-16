@@ -100,7 +100,7 @@ export default class ToggleImageCaptionCommand extends Command {
 	 * Shows the caption of the `<image>` or `<imageInline>`. Also:
 	 *
 	 * * it converts `<imageInline>` to `<image>` to show the caption,
-	 * * it attempts to restore the caption content from the `caption` attribute,
+	 * * it attempts to restore the caption content from the `ImageCaptionEditing` caption registry,
 	 * * it moves the selection to the caption right away, it the `focusCaptionOnShow` option was set.
 	 *
 	 * @private
@@ -109,9 +109,12 @@ export default class ToggleImageCaptionCommand extends Command {
 	_showImageCaption( writer, focusCaptionOnShow ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const imageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
 
 		let selectedImage = selection.getSelectedElement();
 		let newCaptionElement;
+
+		const savedCaption = imageCaptionEditing._getSavedCaption( selectedImage );
 
 		// Convert imageInline -> image first.
 		if ( isInlineImage( selectedImage ) ) {
@@ -121,12 +124,9 @@ export default class ToggleImageCaptionCommand extends Command {
 			selectedImage = selection.getSelectedElement();
 		}
 
-		// Try restoring the caption from the attribute.
-		if ( selectedImage.hasAttribute( 'caption' ) ) {
-			newCaptionElement = Element.fromJSON( selectedImage.getAttribute( 'caption' ) );
-
-			// The model attribute is no longer needed if the caption was created out of it.
-			writer.removeAttribute( 'caption', selectedImage );
+		// Try restoring the caption from the ImageCaptionEditing plugin storage.
+		if ( savedCaption ) {
+			newCaptionElement = Element.fromJSON( savedCaption );
 		} else {
 			newCaptionElement = writer.createElement( 'caption' );
 		}
@@ -141,8 +141,8 @@ export default class ToggleImageCaptionCommand extends Command {
 	/**
 	 * Hides the caption of a selected image (or an image caption the selection is anchored to).
 	 *
-	 * The content of the caption is stored in the `caption` model attribute of the image
-	 * to make this a reversible action.
+	 * The content of the caption is stored in the `ImageCaptionEditing` caption registry to make this
+	 * a reversible action.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
@@ -150,6 +150,7 @@ export default class ToggleImageCaptionCommand extends Command {
 	_hideImageCaption( writer ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const imageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
 		let selectedImage = selection.getSelectedElement();
 		let captionElement;
 
@@ -162,7 +163,7 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Store the caption content so it can be restored quickly if the user changes their mind even if they toggle image<->imageInline.
 		if ( captionElement.childCount ) {
-			writer.setAttribute( 'caption', captionElement.toJSON(), selectedImage );
+			imageCaptionEditing._saveCaption( selectedImage, captionElement.toJSON() );
 		}
 
 		writer.setSelection( selectedImage, 'on' );

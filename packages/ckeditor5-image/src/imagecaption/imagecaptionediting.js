@@ -16,7 +16,7 @@ import ImageInlineEditing from '../image/imageinlineediting';
 import ImageBlockEditing from '../image/imageblockediting';
 
 import { isBlockImage } from '../image/utils';
-import { matchImageCaptionViewElement } from './utils';
+import { getCaptionFromImageModelElement, matchImageCaptionViewElement } from './utils';
 
 /**
  * The image caption engine plugin. It is responsible for:
@@ -38,11 +38,26 @@ export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * A map that keeps saved JSONified image captions and image model elements they are
+		 * associated with.
+		 *
+		 * To learn more about this system, see {@link #_saveCaption}.
+		 *
+		 * @member {WeakMap.<module:engine/model/element~Element,Object>}
+		 */
+		this._savedCaptionsMap = new WeakMap();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
-		const view = editor.editing.view;
 		const schema = editor.model.schema;
-		const t = editor.t;
 
 		// Schema configuration.
 		schema.register( 'caption', {
@@ -64,6 +79,21 @@ export default class ImageCaptionEditing extends Plugin {
 		}
 
 		editor.commands.add( 'toggleImageCaption', new ToggleImageCaptionCommand( this.editor ) );
+
+		this._setupConversion();
+		this._setupImageTypeCommandsIntegration();
+	}
+
+	/**
+	 * Configures conversion pipelines to support upcasting and downcasting
+	 * image captions.
+	 *
+	 * @private
+	 */
+	_setupConversion() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const t = editor.t;
 
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
@@ -107,6 +137,98 @@ export default class ImageCaptionEditing extends Plugin {
 
 		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
 		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
+	}
+
+	/**
+	 * Integrates with {@link module:image/image/imagetypecommand~ImageTypeCommand image type commands}
+	 * to make sure the caption is preserved when the type of an image changes so it can be restored
+	 * in the future if the user decides they want their caption back.
+	 *
+	 * @private
+	 */
+	_setupImageTypeCommandsIntegration() {
+		const editor = this.editor;
+
+		// Presence of the commands depends on the Image(Inline|Block)Editing plugins loaded
+		// in the editor.
+		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
+		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
+
+		const handleImageTypeChange = ( { return: { oldElement, newElement } } ) => {
+			if ( isBlockImage( oldElement ) ) {
+				const oldCaptionElement = getCaptionFromImageModelElement( oldElement );
+
+				// If the old element was a captioned block image (the caption was visible),
+				// simply save it so it can be restored.
+				if ( oldCaptionElement ) {
+					return this._saveCaption( newElement, oldCaptionElement.toJSON() );
+				}
+			}
+
+			const savedOldElementCaption = this._getSavedCaption( oldElement );
+
+			// If either:
+			//
+			// * the block image didn't have a visible caption,
+			// * the block image caption was hidden (and already saved),
+			// * the inline image was passed
+			//
+			// just try to "pass" the saved caption from the old image to the new image
+			// so it can be retrieved in the future if the user wants it back.
+			if ( savedOldElementCaption ) {
+				// Note: Since we're writing to a WeakMap, we don't bother with removing the
+				// [ oldElement, savedOldElementCaption ] pair from it.
+				this._saveCaption( newElement, savedOldElementCaption );
+			}
+		};
+
+		if ( imageTypeInlineCommand ) {
+			this.listenTo( imageTypeInlineCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
+		}
+
+		if ( imageTypeBlockCommand ) {
+			this.listenTo( imageTypeBlockCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
+		}
+	}
+
+	/**
+	 * Returns the saved {@link module:engine/model/element~Element#toJSON JSONified} caption
+	 * of an image model element.
+	 *
+	 * See {@link #_saveCaption}.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} imageModelElement The model element the
+	 * caption should be returned for.
+	 * @returns {Object|undefined} The JSONified caption element or `undefined` if there is none.
+	 * See {@link module:engine/model/element~Element.fromJSON} to learn more.
+	 */
+	_getSavedCaption( imageModelElement ) {
+		return this._savedCaptionsMap.get( imageModelElement );
+	}
+
+	/**
+	 * Saves a {@link module:engine/model/element~Element#toJSON JSONified} caption for
+	 * an image element to allow restoring it in the future.
+	 *
+	 * A caption is saved every time it gets hidden and/or the type of an image changes. The
+	 * user should be able to restore it on demand.
+	 *
+	 * **Note**: The caption cannot be stored in the image model element attribute because,
+	 * for instance, when the model state propagates to collaborators, the attribute would get
+	 * lost (mainly because it does not convert to anything when the caption is hidden) and
+	 * the states of collaborators' models would de-synchronize causing numerous issues.
+	 *
+	 * See {@link #_getSavedCaption}.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} imageModelElement The model element the
+	 * caption is saved for.
+	 * @param {Object} caption The JSONified caption element to be saved.
+	 * See {@link module:engine/model/element~Element#toJSON} to learn more.
+	 */
+	_saveCaption( imageModelElement, caption ) {
+		this._savedCaptionsMap.set( imageModelElement, caption );
 	}
 }
 

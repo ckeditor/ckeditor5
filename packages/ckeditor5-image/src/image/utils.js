@@ -149,6 +149,7 @@ export function isBlockImageView( element ) {
  * and `model.document.selection` for the inline images.
  * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
  * it will be determined automatically depending of editor config or place of the insertion.
+ * @return {module:engine/view/element~Element} The inserted model image element.
  */
 export function insertImage( editor, attributes = {}, selectable = null, imageType = null ) {
 	const model = editor.model;
@@ -162,7 +163,7 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 		}
 	}
 
-	model.change( writer => {
+	return model.change( writer => {
 		const imageElement = writer.createElement( imageType, attributes );
 
 		// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
@@ -177,6 +178,8 @@ export function insertImage( editor, attributes = {}, selectable = null, imageTy
 		if ( imageElement.parent ) {
 			writer.setSelection( imageElement, 'on' );
 		}
+
+		return imageElement;
 	} );
 }
 

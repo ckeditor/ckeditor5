@@ -49,16 +49,27 @@ export default class ImageTypeCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command and changes the type of a selected image.
+	 *
+	 * @fires execute
+	 * @returns {Object} An object containing references to old and new model image elements
+	 * (for before and after the change) so external integrations can hook into the decorated
+	 * `execute` event and handle this change.
 	 */
 	execute() {
 		const selection = this.editor.model.document.selection;
-		const attributes = Object.fromEntries( selection.getSelectedElement().getAttributes() );
+		const oldElement = selection.getSelectedElement();
+		const attributes = Object.fromEntries( oldElement.getAttributes() );
 
 		if ( !attributes.src ) {
 			return;
 		}
 
-		insertImage( this.editor, attributes, selection, this._modelElementName );
+		const newElement = insertImage( this.editor, attributes, selection, this._modelElementName );
+
+		return {
+			oldElement,
+			newElement
+		};
 	}
 }
