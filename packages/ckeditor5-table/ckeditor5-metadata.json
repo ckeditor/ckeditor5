@@ -36,6 +36,30 @@
 						"table.contentToolbar"
 					]
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "table"
+				},
+				{
+					"elements": [
+						"table",
+						"thead",
+						"tbody",
+						"tr"
+					]
+				},
+				{
+					"elements": [
+						"td",
+						"th"
+					],
+					"attributes": [
+						"colspan",
+						"rowspan"
+					]
+				}
 			]
 		},
 		{
@@ -57,6 +81,24 @@
 						"table.contentToolbar"
 					]
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"td",
+						"th"
+					],
+					"styles": [
+						"background-color",
+						"border",
+						"border-*",
+						"height",
+						"padding",
+						"text-align",
+						"vertical-align",
+						"width"
+					]
+				}
 			]
 		},
 		{
@@ -76,6 +118,24 @@
 					"iconPath": "theme/icons/table-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
+					]
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"styles": [
+						"float",
+						"height",
+						"width"
+					]
+				},
+				{
+					"elements": "table",
+					"styles": [
+						"background-color",
+						"border",
+						"border-*"
 					]
 				}
 			]

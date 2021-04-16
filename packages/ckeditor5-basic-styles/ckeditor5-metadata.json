@@ -12,6 +12,11 @@
 					"name": "bold",
 					"iconPath": "theme/icons/bold.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "strong"
+				}
 			]
 		},
 		{
@@ -25,6 +30,12 @@
 					"type": "button",
 					"name": "code",
 					"iconPath": "theme/icons/code.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "code",
+					"classes": "ck-code_selected"
 				}
 			]
 		},
@@ -40,6 +51,11 @@
 					"name": "italic",
 					"iconPath": "theme/icons/italic.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "i"
+				}
 			]
 		},
 		{
@@ -53,6 +69,11 @@
 					"type": "button",
 					"name": "strikethrough",
 					"iconPath": "theme/icons/strikethrough.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "s"
 				}
 			]
 		},
@@ -68,6 +89,11 @@
 					"name": "subscript",
 					"iconPath": "theme/icons/subscript.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "sub"
+				}
 			]
 		},
 		{
@@ -82,6 +108,11 @@
 					"name": "superscript",
 					"iconPath": "theme/icons/superscript.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "sup"
+				}
 			]
 		},
 		{
@@ -95,6 +126,11 @@
 					"type": "button",
 					"name": "underline",
 					"iconPath": "theme/icons/underline.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "u"
 				}
 			]
 		}

@@ -12,6 +12,18 @@
 					"name": "alignment",
 					"pathToIcon": "TODO"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "$block",
+					"styles": "text-align",
+					"_comment": "By default, the alignment is set inline using `text-align` CSS property."
+				},
+				{
+					"elements": "$block",
+					"classes": "*",
+					"_comment": "If class names are defined in `config.alignment.options`, classes instead of inline styles are used for alignment."
+				}
 			]
 		}
 	]

@@ -12,6 +12,12 @@
 					"name": "restrictedEditing",
 					"iconPath": "theme/icons/contentlock.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"classes": "restricted-editing-exception"
+				}
 			]
 		},
 		{
@@ -25,6 +31,12 @@
 					"type": "button",
 					"name": "restrictedEditingException",
 					"iconPath": "theme/icons/contentunlock.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"classes": "restricted-editing-exception"
 				}
 			]
 		}

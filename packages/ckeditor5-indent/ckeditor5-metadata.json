@@ -27,6 +27,21 @@
 			"path": "src/indentblock.js",
 			"requires": [
 				"Indent"
+			],
+			"htmlOutput": [
+				{
+					"elements": "$block",
+					"styles": [
+						"margin-left",
+						"margin-right"
+					],
+					"_comment": "By default, plugin uses inline style for indentation."
+				},
+				{
+					"elements": "$block",
+					"classes": "*",
+					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline style."
+				}
 			]
 		}
 	]

@@ -12,6 +12,12 @@
 					"name": "fontBackgroundColor",
 					"iconPath": "theme/icons/font-background.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"styles": "background-color"
+				}
 			]
 		},
 		{
@@ -25,6 +31,12 @@
 					"type": "split button",
 					"name": "fontColor",
 					"iconPath": "theme/icons/font-color.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"styles": "color"
 				}
 			]
 		},
@@ -40,6 +52,29 @@
 					"name": "fontSize",
 					"iconPath": "theme/icons/font-size.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"classes": [
+						"text-tiny",
+						"text-small",
+						"text-big",
+						"text-huge"
+					],
+					"_comment": "If the configuration `config.fontSize.options` is not set or it contains predefined named presets, then font size is configured by class name."
+				},
+				{
+					"elements": "span",
+					"styles": "font-size",
+					"_comment": "If the configuration `config.fontSize.options` contains numerical values, the font size is configured inline using `font-size` CSS property."
+				},
+				{
+					"elements": "*",
+					"classes": "*",
+					"styles": "*",
+					"_comment": "Plugin can be configured to return custom classes, custom inline styles and any element name."
+				}
 			]
 		},
 		{
@@ -53,6 +88,19 @@
 					"type": "split button",
 					"name": "fontFamily",
 					"iconPath": "theme/icons/font-family.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"styles": "font-family",
+					"_comment": "By default, the font family is configured inline using `font-family` CSS property."
+				},
+				{
+					"elements": "*",
+					"classes": "*",
+					"styles": "*",
+					"_comment": "Plugin can be configured to return custom classes, custom inline styles and any element name."
 				}
 			]
 		}

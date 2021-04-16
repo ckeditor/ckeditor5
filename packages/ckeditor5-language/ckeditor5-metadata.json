@@ -12,6 +12,19 @@
 					"name": "codeBlock",
 					"iconPath": "theme/icons/codeblock.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "pre"
+				},
+				{
+					"elements": "code",
+					"classes": [
+						"*",
+						"language-*"
+					],
+					"_comment": "By default, the language of the code block is represented as a CSS class prefixed by 'language-'. CSS class name can be customized via `config.codeBlock.languages` array."
+				}
 			]
 		},
 		{
@@ -25,6 +38,15 @@
 					"type": "dropdown",
 					"name": "textPartLanguage",
 					"textContent": "Language"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"attributes": [
+						"dir",
+						"lang"
+					]
 				}
 			]
 		}

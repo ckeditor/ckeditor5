@@ -17,6 +17,18 @@
 					"name": "bulletedList",
 					"iconPath": "theme/icons/bulletedlist.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"ol",
+						"ul"
+					]
+				},
+				{
+					"elements": "li",
+					"implements": "$block"
+				}
 			]
 		},
 		{
@@ -31,6 +43,31 @@
 					"name": "todoList",
 					"iconPath": "theme/icons/todolist.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "ul",
+					"classes": "todo-list"
+				},
+				{
+					"elements": "li"
+				},
+				{
+					"elements": "label",
+					"classes": "todo-list__label"
+				},
+				{
+					"elements": "span",
+					"classes": "todo-list__label__description"
+				},
+				{
+					"elements": "input",
+					"attributes": [
+						"checked",
+						"disabled",
+						"type"
+					]
+				}
 			]
 		},
 		{
@@ -41,6 +78,15 @@
 			"path": "src/liststyle.js",
 			"requires": [
 				"List"
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"ol",
+						"ul"
+					],
+					"styles": "list-style-type"
+				}
 			]
 		}
 	]

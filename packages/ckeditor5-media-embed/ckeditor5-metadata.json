@@ -12,6 +12,57 @@
 					"name": "mediaEmbed",
 					"iconPath": "theme/icons/media.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "media"
+				},
+				{
+					"elements": "oembed",
+					"attributes": "url",
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the media preview is not displayed and media is represented using only the `<oembed>` tag (by default)."
+				},
+				{
+					"elements": "div",
+					"attributes": "data-oembed-url",
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
+				},
+				{
+					"elements": "*",
+					"attributes": "url",
+					"_comment": "If preview configuration `config.mediaEmbed.previewsInData` is turned off, plugin can be configured to return any element name using `config.mediaEmbed.elementName`."
+				},
+				{
+					"elements": "div",
+					"styles": [
+						"height",
+						"padding-bottom",
+						"position"
+					]
+				},
+				{
+					"elements": "iframe",
+					"styles": [
+						"height",
+						"left",
+						"position",
+						"top",
+						"width"
+					],
+					"attributes": [
+						"*allow*",
+						"frameborder",
+						"src"
+					]
+				},
+				{
+					"elements": "*",
+					"classes": "*",
+					"styles": "*",
+					"attributes": "*",
+					"_comment": "Plugin can be configured to return any class, inline style, attribute and element name via `config.mediaEmbed.providers` for previewable media."
+				}
 			]
 		},
 		{

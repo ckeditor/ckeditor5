@@ -12,6 +12,25 @@
 					"name": "highlight",
 					"iconPath": "theme/icons/pen.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "mark",
+					"classes": [
+						"marker-yellow",
+						"marker-green",
+						"marker-pink",
+						"marker-blue",
+						"pen-red",
+						"pen-green"
+					],
+					"_comment": "By default, this plugin has 4 markers and 2 pens preconfigured."
+				},
+				{
+					"elements": "mark",
+					"classes": "*",
+					"_comment": "Plugin can be configured to return any class name."
+				}
 			]
 		}
 	]

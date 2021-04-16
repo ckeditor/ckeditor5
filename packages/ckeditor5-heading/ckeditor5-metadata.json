@@ -5,7 +5,12 @@
 			"className": "Title",
 			"description": "Enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of the document.",
 			"docs": "features/title.html",
-			"path": "src/title.js"
+			"path": "src/title.js",
+			"htmlOutput": [
+				{
+					"elements": "h1"
+				}
+			]
 		},
 		{
 			"name": "Heading",
@@ -18,6 +23,21 @@
 					"type": "dropdown",
 					"name": "heading",
 					"textContent": "Heading"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"h1",
+						"h2",
+						"h3",
+						"h4"
+					],
+					"implements": "$block"
+				},
+				{
+					"elements": "*",
+					"_comment": "Plugin can be configured to return any element name as a heading."
 				}
 			]
 		}

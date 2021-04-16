@@ -12,6 +12,12 @@
 					"name": "htmlEmbed",
 					"iconPath": "theme/icons/html.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "div",
+					"classes": "raw-html-embed"
+				}
 			]
 		}
 	]

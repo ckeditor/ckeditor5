@@ -22,6 +22,27 @@
 					"name": "link",
 					"iconPath": "theme/icons/link.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "a",
+					"attributes": "href"
+				},
+				{
+					"elements": "a",
+					"attributes": [
+						"rel",
+						"target"
+					],
+					"_comment": "If `config.link.addTargetToExternalLinks` is enabled, external links are decorated with `rel` and `target` attributes."
+				},
+				{
+					"elements": "a",
+					"classes": "*",
+					"styles": "*",
+					"attributes": "*",
+					"_comment": "Plugin can be configured to set any class, style or attribute in the `<a>` tag via custom `config.link.decorators` configuration."
+				}
 			]
 		},
 		{
@@ -42,6 +63,12 @@
 					"toolbars": [
 						"image.toolbar"
 					]
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "a",
+					"attributes": "href"
 				}
 			]
 		}

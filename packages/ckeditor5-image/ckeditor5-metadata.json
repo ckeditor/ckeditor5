@@ -22,6 +22,22 @@
 					"name": "imageTextAlternative",
 					"iconPath": "TODO"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "image"
+				},
+				{
+					"elements": "img",
+					"attributes": [
+						"alt",
+						"sizes",
+						"src",
+						"srcset",
+						"width"
+					]
+				}
 			]
 		},
 		{
@@ -32,6 +48,11 @@
 			"path": "src/imagecaption.js",
 			"requires": [
 				"Image"
+			],
+			"htmlOutput": [
+				{
+					"elements": "figcaption"
+				}
 			]
 		},
 		{
@@ -42,6 +63,15 @@
 			"path": "src/imageresize.js",
 			"requires": [
 				"Image"
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "image_resized",
+					"styles": [
+						"width"
+					]
+				}
 			]
 		},
 		{
@@ -69,6 +99,22 @@
 						"image.toolbar"
 					],
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-right.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": [
+						"image-style-side",
+						"image-style-align-left",
+						"image-style-align-center",
+						"image-style-align-right"
+					]
+				},
+				{
+					"elements": "figure",
+					"classes": "*",
+					"_comment": "Plugin can be configured to return any class name."
 				}
 			]
 		},

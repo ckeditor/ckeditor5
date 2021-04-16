@@ -11,6 +11,11 @@
 					"name": "blockQuote",
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/quote.svg"
 				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "blockquote"
+				}
 			]
 		}
 	]

@@ -10,7 +10,18 @@
 				"type": "button",
 				"name": "pageBreak",
 				"iconPath": "theme/icons/pagebreak.svg"
-			} ]
+			} ],
+			"htmlOutput": [
+				{
+					"elements": "div",
+					"classes": "page-break",
+					"styles": "page-break-after"
+				},
+				{
+					"elements": "span",
+					"styles": "display"
+				}
+			]
 		}
 	]
 }

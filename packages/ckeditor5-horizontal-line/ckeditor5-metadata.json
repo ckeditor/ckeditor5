@@ -6,11 +6,16 @@
 			"description": "Allows for inserting horizontal lines into your content. It helps the authors separate and group document sections.",
 			"docs": "features/horizontal-line.html",
 			"path": "src/horizontalline.js",
-			"horizontalLine": [
+			"uiComponents": [
 				{
 					"type": "button",
 					"name": "horizontalLine",
 					"iconPath": "theme/icons/horizontalline.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "hr"
 				}
 			]
 		}
