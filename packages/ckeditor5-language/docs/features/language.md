@@ -5,7 +5,7 @@ menu-title: Text part language
 
 # Text part language
 
-The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to mark the language of selected text fragments as well as automatically set the text direction based on the language choice. It makes working with multilingual content convenient and ensures that user agents can correctly present the content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
+The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to mark the language of selected text fragments. It makes working with multilingual content convenient and ensures that user agents can correctly present the content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
 
 This feature is especially useful when your content includes text sections written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
 
