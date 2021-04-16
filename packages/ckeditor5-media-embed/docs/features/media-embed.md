@@ -101,6 +101,16 @@ By default, the media embed feature outputs semantic `<oembed url="...">` tags f
 </figure>
 ```
 
+Further customization of semantic data output can be done through the {@link module:media-embed/mediaembed~MediaEmbedConfig#elementName `config.mediaEmbed.elementName`}. As an example, if `elementName` is set to `o-embed`:
+
+```html
+<figure class="media">
+	<o-embed url="https://media-url"></o-embed>
+</figure>
+```
+
+If `elementName` is overridden to something beside the default value, existing `<oembed>` elements will still be shown when for backward compatibility purposes.
+
 #### Including previews in data
 
 Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor. So if the media element is "previewable", the media preview (HTML) is saved to the database:

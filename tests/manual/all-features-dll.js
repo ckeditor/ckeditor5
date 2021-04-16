@@ -33,6 +33,7 @@ import '@ckeditor/ckeditor5-heading/build/heading';
 import '@ckeditor/ckeditor5-highlight/build/highlight';
 import '@ckeditor/ckeditor5-horizontal-line/build/horizontal-line';
 import '@ckeditor/ckeditor5-html-embed/build/html-embed';
+import '@ckeditor/ckeditor5-language/build/language';
 import '@ckeditor/ckeditor5-media-embed/build/media-embed';
 import '@ckeditor/ckeditor5-mention/build/mention';
 import '@ckeditor/ckeditor5-page-break/build/page-break';
@@ -71,6 +72,7 @@ const { Mention } = window.CKEditor5.mention;
 const { PageBreak } = window.CKEditor5.pageBreak;
 const { PasteFromOffice } = window.CKEditor5.pasteFromOffice;
 const { RemoveFormat } = window.CKEditor5.removeFormat;
+const { TextPartLanguage } = window.CKEditor5.language;
 const { WordCount } = window.CKEditor5.wordCount;
 
 const { Plugin } = window.CKEditor5.core;
@@ -126,6 +128,7 @@ const config = {
 		RemoveFormat,
 		SpecialCharacters, SpecialCharactersEssentials,
 		Table, TableToolbar, TableCellProperties, TableProperties,
+		TextPartLanguage,
 		WordCount
 	],
 	toolbar: [
@@ -146,6 +149,8 @@ const config = {
 		'alignment', 'outdent', 'indent',
 		'|',
 		'pageBreak', 'horizontalLine', 'specialCharacters',
+		'|',
+		'textPartLanguage',
 		'|',
 		'undo', 'redo'
 	],

@@ -27,17 +27,17 @@ The proofreader badge in the bottom-right corner shows you the number of mistake
 
 {@snippet features/wproofreader}
 
+## Multi-language support
+
+As seen in the demo, the spell checking and grammar feature can support multilingual content. If the proofreader language is set to Auto Detect (or the `auto` language is set in the configuration), the feature will automatically recognize the text language and suggest error corrections and grammar specifically for that language.
+
+{@img assets/img/spellcheck-dictionary.png 800 Setting the spell checker dictionary to auto.}
+
 ## Supported languages
 
 By default the spell checker supports 18 languages: AI-based English (default), American English, Brazilian Portuguese, British English, Canadian English, Canadian French, Danish, Dutch, Finnish, French, German, Greek, Italian, Norwegian Bokmål, Portuguese, Spanish, Swedish and Ukrainian. Grammar checking is available for 16 of them &mdash; there is no grammar checking for Finnish and Norwegian.
 
 There are also over 150 additional languages and specialized dictionaries such as medical and legal available for an additional fee. You can check the full list [here](https://webspellchecker.com/additional-dictionaries/).
-
-## Related features
-
-There are other language-related CKEditor 5 features you may want to check:
-
-* {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.
 
 ## Installation
 
