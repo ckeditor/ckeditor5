@@ -62,18 +62,18 @@
 						"text-big",
 						"text-huge"
 					],
-					"_comment": "If the configuration `config.fontSize.options` is not set or it contains predefined named presets, then font size is configured by class name."
+					"_comment": "If the configuration `config.fontSize.options` is not set or it contains predefined named presets, then the font size is configured by the class name."
 				},
 				{
 					"elements": "span",
 					"styles": "font-size",
-					"_comment": "If the configuration `config.fontSize.options` contains numerical values, the font size is configured inline using `font-size` CSS property."
+					"_comment": "If the configuration `config.fontSize.options` contains numerical values, the font size is configured inline using the `font-size` CSS property."
 				},
 				{
 					"elements": "*",
 					"classes": "*",
 					"styles": "*",
-					"_comment": "Plugin can be configured to return custom classes, custom inline styles and any element name."
+					"_comment": "The plugin can be configured to return any element with any classes and any inline styles."
 				}
 			]
 		},
@@ -94,13 +94,13 @@
 				{
 					"elements": "span",
 					"styles": "font-family",
-					"_comment": "By default, the font family is configured inline using `font-family` CSS property."
+					"_comment": "By default, the font family is configured inline using the `font-family` CSS property."
 				},
 				{
 					"elements": "*",
 					"classes": "*",
 					"styles": "*",
-					"_comment": "Plugin can be configured to return custom classes, custom inline styles and any element name."
+					"_comment": "The plugin can be configured to return any element with any classes and any custom inline styles."
 				}
 			]
 		}

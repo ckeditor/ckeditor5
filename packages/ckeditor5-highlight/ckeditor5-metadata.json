@@ -29,7 +29,7 @@
 				{
 					"elements": "mark",
 					"classes": "*",
-					"_comment": "Plugin can be configured to return any class name."
+					"_comment": "The plugin can be configured to set any classes on the `mark` element."
 				}
 			]
 		}

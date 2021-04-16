@@ -35,12 +35,12 @@
 						"margin-left",
 						"margin-right"
 					],
-					"_comment": "By default, plugin uses inline style for indentation."
+					"_comment": "By default, the plugin uses inline styles for indentation."
 				},
 				{
 					"elements": "$block",
 					"classes": "*",
-					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline style."
+					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline styles."
 				}
 			]
 		}

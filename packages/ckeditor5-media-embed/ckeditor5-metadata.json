@@ -21,7 +21,7 @@
 				{
 					"elements": "oembed",
 					"attributes": "url",
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the media preview is not displayed and media is represented using only the `<oembed>` tag (by default)."
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the media preview is not displayed and the media is represented using only the `<oembed>` tag (by default)."
 				},
 				{
 					"elements": "div",
@@ -31,7 +31,7 @@
 				{
 					"elements": "*",
 					"attributes": "url",
-					"_comment": "If preview configuration `config.mediaEmbed.previewsInData` is turned off, plugin can be configured to return any element name using `config.mediaEmbed.elementName`."
+					"_comment": "If preview configuration `config.mediaEmbed.previewsInData` is turned off, the plugin can be configured to return any element name specified by `config.mediaEmbed.elementName`."
 				},
 				{
 					"elements": "div",
@@ -61,7 +61,7 @@
 					"classes": "*",
 					"styles": "*",
 					"attributes": "*",
-					"_comment": "Plugin can be configured to return any class, inline style, attribute and element name via `config.mediaEmbed.providers` for previewable media."
+					"_comment": "The plugin can be configured to return any element with any class, inline style, and attribute, via `config.mediaEmbed.providers` for previewable media."
 				}
 			]
 		},
