@@ -57,8 +57,8 @@
 
 	/* Simulates margin collapsing with the preceding paragraph, which does not work for the floating elements. */
 	& p + .image-style-align-left,
-	& p + .image-style-align-right
-	& p + .image-style-side, {
+	& p + .image-style-align-right,
+	& p + .image-style-side {
 		margin-top: 0;
 	}
 
