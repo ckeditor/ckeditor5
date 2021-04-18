@@ -44,7 +44,7 @@ export default class StylesMap {
 	/**
 	 * Returns true if style map has no styles set.
 	 *
-	 * @returns {Boolean}
+	 * @type {Boolean}
 	 */
 	get isEmpty() {
 		const entries = Object.entries( this._styles );
