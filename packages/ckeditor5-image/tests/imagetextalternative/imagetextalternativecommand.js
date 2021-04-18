@@ -31,6 +31,12 @@ describe( 'ImageTextAlternativeCommand', () => {
 					isInline: true,
 					allowAttributes: [ 'alt', 'src', 'srcset' ]
 				} );
+
+				model.schema.register( 'caption', {
+					allowContentOf: '$block',
+					allowIn: 'image',
+					isLimit: true
+				} );
 			} );
 	} );
 
@@ -62,6 +68,14 @@ describe( 'ImageTextAlternativeCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
+
+		describe( 'when the selection is in a block image caption', () => {
+			it( 'should be true if an inline image has no alt attribute', () => {
+				setData( model, '<image src="image.png"><caption>Foo[]</caption></image>' );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'the #value property', () => {
@@ -88,6 +102,20 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 			it( 'should have a proper value if an inline image the alt attribute', () => {
 				setData( model, '<p>[<imageInline src="image.png" alt="foo bar baz"></imageInline>]</p>' );
+
+				expect( command.value ).to.equal( 'foo bar baz' );
+			} );
+		} );
+
+		describe( 'when the selection is in a a block image caption', () => {
+			it( 'should be false if an image has no alt attribute', () => {
+				setData( model, '<image src="image.png"><caption>F[oo]</caption></image>' );
+
+				expect( command.value ).to.be.false;
+			} );
+
+			it( 'should have a proper value if an image has the alt attribute', () => {
+				setData( model, '<image src="image.png" alt="foo bar baz"><caption>[Foo]</caption></image>' );
 
 				expect( command.value ).to.equal( 'foo bar baz' );
 			} );
@@ -152,6 +180,24 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 					expect( writer.batch.operations ).to.length.above( 0 );
 				} );
+			} );
+		} );
+
+		describe( 'when the selection is in a block image caption', () => {
+			it( 'should set the proper alt attribute value if the image does not have one', () => {
+				setData( model, '<image src="image.png"><caption>[]Foo</caption></image>' );
+
+				command.execute( { newValue: 'fiz buz' } );
+
+				expect( getData( model ) ).to.equal( '<image alt="fiz buz" src="image.png"><caption>[]Foo</caption></image>' );
+			} );
+
+			it( 'should change the alt attribute if the image already has one', () => {
+				setData( model, '<image alt="foo bar" src="image.png"><caption>[]Foo</caption></image>' );
+
+				command.execute( { newValue: 'fiz buz' } );
+
+				expect( getData( model ) ).to.equal( '<image alt="fiz buz" src="image.png"><caption>[]Foo</caption></image>' );
 			} );
 		} );
 	} );

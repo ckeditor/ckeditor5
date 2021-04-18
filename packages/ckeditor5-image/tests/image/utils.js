@@ -90,7 +90,7 @@ describe( 'image widget utils', () => {
 	describe( 'getSelectedImageWidgetOrAncestor()', () => {
 		let frag;
 
-		it( 'should return true when image widget is the only element in the selection', () => {
+		it( 'should return an image widget when it is the only element in the selection', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = writer.createDocumentFragment( element );
 
@@ -99,7 +99,19 @@ describe( 'image widget utils', () => {
 			expect( getSelectedImageWidgetOrAncestor( selection ) ).to.equal( element );
 		} );
 
-		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
+		it( 'should return an image widget if the selection position is inside its caption', () => {
+			const caption = writer.createContainerElement( 'figcaption' );
+			const text = writer.createText( 'foo' );
+
+			writer.insert( writer.createPositionAt( element, 1 ), caption );
+			writer.insert( writer.createPositionAt( caption, 0 ), text );
+
+			const selection = writer.createSelection( writer.createRangeIn( caption ) );
+
+			expect( getSelectedImageWidgetOrAncestor( selection ) ).to.equal( element );
+		} );
+
+		it( 'should return null when non-widgetized elements is the only element in the selection', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			// We need to create a container for the element to be able to create a Range on this element.
@@ -110,7 +122,7 @@ describe( 'image widget utils', () => {
 			expect( getSelectedImageWidgetOrAncestor( selection ) ).to.be.null;
 		} );
 
-		it( 'should return false when widget element is not the only element in the selection', () => {
+		it( 'should return null when widget element is not the only element in the selection', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			frag = writer.createDocumentFragment( [ element, notWidgetizedElement ] );
@@ -939,7 +951,7 @@ describe( 'image widget utils', () => {
 			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
 
-		it( 'should return a image element if the selection range is inside its caption', () => {
+		it( 'should return an image element if the selection range is inside its caption', () => {
 			setModelData( model, '<image><caption>F[oo]</caption></image>' );
 
 			const image = getSelectedImageElementOrAncestor( model.document.selection );
@@ -947,7 +959,7 @@ describe( 'image widget utils', () => {
 			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
 
-		it( 'should return a image element if the selection position is inside its caption', () => {
+		it( 'should return an image element if the selection position is inside its caption', () => {
 			setModelData( model, '<image><caption>Foo[]</caption></image>' );
 
 			const image = getSelectedImageElementOrAncestor( model.document.selection );
