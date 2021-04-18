@@ -49,14 +49,14 @@ export function isImageWidget( viewElement ) {
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/view/element~Element|null}
  */
-export function getSelectedImageWidgetOrAncestor( selection ) {
+export function getSelectedOrAncestorImageWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
 	if ( viewElement && isImageWidget( viewElement ) ) {
 		return viewElement;
 	}
 
-	return getSelectedImageWidgetAncestor( selection );
+	return getSelectionAncestorImageWidget( selection );
 }
 
 /**
@@ -65,7 +65,7 @@ export function getSelectedImageWidgetOrAncestor( selection ) {
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/view/element~Element|null}
  */
-export function getSelectedImageWidgetAncestor( selection ) {
+export function getSelectionAncestorImageWidget( selection ) {
 	let parent = selection.getFirstPosition().parent;
 
 	while ( parent ) {
@@ -86,7 +86,7 @@ export function getSelectedImageWidgetAncestor( selection ) {
  * @returns {module:engine/model/element~Element|null}
  */
 
-export function getSelectedImageElementOrAncestor( selection ) {
+export function getSelectedOrAncestorImageElement( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
 	return isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'image' );

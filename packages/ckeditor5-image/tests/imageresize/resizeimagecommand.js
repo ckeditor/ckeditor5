@@ -11,7 +11,7 @@ describe( 'ResizeImageCommand', () => {
 	let model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( )
+		return ModelTestEditor.create()
 			.then( newEditor => {
 				model = newEditor.model;
 				command = new ResizeImageCommand( newEditor );
