@@ -139,6 +139,14 @@ describe( 'table caption utils', () => {
 
 			expect( captionElement.is( 'element', 'caption' ) ).to.be.true;
 		} );
+
+		it( 'should return null when no table has been found', () => {
+			setModelData( model,
+				'<paragraph>[]</paragraph>'
+			);
+
+			expect( getCaptionFromModelSelection( model.document.selection ) ).to.be.null;
+		} );
 	} );
 
 	describe( 'matchTableCaptionViewElement', () => {

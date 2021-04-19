@@ -13,16 +13,18 @@ import TableSelection from '../../src/tableselection';
 import TableClipboard from '../../src/tableclipboard';
 import TableProperties from '../../src/tableproperties';
 import TableCellProperties from '../../src/tablecellproperties';
+import TableCaption from '../../src/tablecaption';
 
 window.editors = {};
 
-createEditor( '#editor-content', 'content' );
-createEditor( '#editor-geometry', 'geometry' );
+createEditor( '#editor', 'content' );
 
 function createEditor( target, inspectorName ) {
 	ClassicEditor
 		.create( document.querySelector( target ), {
-			plugins: [ ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties ],
+			plugins: [
+				ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties, TableCaption
+			],
 			toolbar: [
 				'heading', '|',
 				'insertTable', '|',
@@ -31,7 +33,9 @@ function createEditor( target, inspectorName ) {
 				'undo', 'redo'
 			],
 			table: {
-				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
+				contentToolbar: [
+					'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+				]
 			}
 		} )
 		.then( editor => {

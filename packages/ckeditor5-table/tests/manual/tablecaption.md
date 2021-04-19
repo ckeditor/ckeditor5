@@ -1,21 +1,19 @@
 ### Testing
 
-Copying selected table cells:
+Adding a caption to a table
 
-1. Select a fragment of table cell.
-2. Use copy shortcut <kbd>ctrl</kbd>+<kbd>C</kbd>.
-3. Paste selected content:
-    - somewhere in the document.
-    - in the editable field on the right.
-4. The pasted table should:
-    - be rectangular (no missing nor exceeding table cells)
-    - have proper headings
-5. The editors are exposed as:
-    - `window.editor.content` and "content" editor in CKEditor inspector
-    - `window.editor.geometry` and "geometry" editor in CKEditor inspector
+1. Put selection in the table.
+1. In the opened toolbar click the last icon on the right to turn on the caption.
+1. The table caption should:
+    - show up **above** the table with a highlight effect
+	- be focused
+	- have a placeholder `Enter table caption`, when blurred
 
-Note that table copy:
+Editing the caption
 
-- have cut disabled
-- paste in table is not possible
-- pasted table can be fixed by a post-fixer (use content editable to verify what's being copied)
+1. Once there is a caption visible, type in any text.
+1. Turn off the caption.
+1. Toolbar button for toggling the caption should change from `Toggle caption off` to `Toggle caption on`.
+1. Turn on the caption.
+1. Toolbar button for toggling the caption should change from `Toggle caption on` to `Toggle caption off`.
+1. The text typed previously should be kept in the caption.
