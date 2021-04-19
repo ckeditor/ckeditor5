@@ -31,10 +31,10 @@ describe( 'BlockQuoteCommand', () => {
 
 				model.schema.extend( 'widget', {
 					allowIn: '$root',
+					allowChildren: '$text',
 					isLimit: true,
 					isObject: true
 				} );
-				model.schema.extend( '$text', { allowIn: 'widget' } );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'heading', view: 'h' } );
