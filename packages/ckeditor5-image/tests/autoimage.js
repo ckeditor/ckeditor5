@@ -42,12 +42,16 @@ describe( 'AutoImage - integration', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should load Clipboard plugin', () => {
-		expect( editor.plugins.get( Clipboard ) ).to.instanceOf( Clipboard );
+	it( 'should load the Clipboard plugin', () => {
+		expect( AutoImage.requires ).to.include( Clipboard );
 	} );
 
-	it( 'should load Undo plugin', () => {
-		expect( editor.plugins.get( Undo ) ).to.instanceOf( Undo );
+	it( 'should load the Undo plugin', () => {
+		expect( AutoImage.requires ).to.include( Undo );
+	} );
+
+	it( 'should load the ImageUtils plugin', () => {
+		expect( AutoImage.requires ).to.include( 'ImageUtils' );
 	} );
 
 	it( 'has proper name', () => {
