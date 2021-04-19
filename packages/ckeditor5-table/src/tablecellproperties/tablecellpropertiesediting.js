@@ -24,6 +24,18 @@ import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand'
 
 const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
 
+const TABLE_CELL_PROPERTIES = [
+	'borderStyle',
+	'borderColor',
+	'borderWidth',
+	'backgroundColor',
+	'padding',
+	'horizontalAlignment',
+	'verticalAlignment',
+	'width',
+	'height'
+];
+
 /**
  * The table cell properties editing feature.
  *
@@ -68,6 +80,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const locale = editor.locale;
+
+		editor.config.define( 'table.tableCellProperties.defaultProperties', {} );
 
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );

@@ -113,9 +113,10 @@ export function lineWidthFieldValidator( value ) {
  *
  * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
  * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} view
+ * @param {String} [defaultStyle='none']
  * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
  */
-export function getBorderStyleDefinitions( view ) {
+export function getBorderStyleDefinitions( view, defaultStyle = 'none' ) {
 	const itemDefinitions = new Collection();
 	const styleLabels = getBorderStyleLabels( view.t );
 
@@ -123,14 +124,20 @@ export function getBorderStyleDefinitions( view ) {
 		const definition = {
 			type: 'button',
 			model: new Model( {
-				_borderStyleValue: style === 'none' ? '' : style,
+				_borderStyleValue: style,
 				label: styleLabels[ style ],
 				withText: true
 			} )
 		};
 
 		if ( style === 'none' ) {
-			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => !value );
+			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
+				if ( defaultStyle === 'none' ) {
+					return !value;
+				}
+
+				return value === style;
+			} );
 		} else {
 			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
 				return value === style;

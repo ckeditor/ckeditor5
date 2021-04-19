@@ -155,7 +155,7 @@ export default class TablePropertiesUI extends Plugin {
 		const view = new TablePropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors
-		} );
+		}, config.defaultProperties );
 		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.
@@ -250,9 +250,15 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	_fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
+		const defaultProperties = this.editor.config.get( 'table.tableProperties.defaultProperties' );
 
 		Object.entries( propertyToCommandMap )
-			.map( ( [ property, commandName ] ) => [ property, commands.get( commandName ).value || '' ] )
+			.map( ( [ property, commandName ] ) => {
+				// If the default properties are specified, use their values.
+				const defaultValue = defaultProperties[ property ] || '';
+
+				return [ property, commands.get( commandName ).value || defaultValue ];
+			} )
 			.forEach( ( [ property, value ] ) => this.view.set( property, value ) );
 	}
 

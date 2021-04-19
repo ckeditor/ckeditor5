@@ -69,24 +69,28 @@ export default class TablePropertiesEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
+		editor.config.define( 'table.tableProperties.defaultProperties', {} );
+
+		const tableProperties = editor.config.get( 'table.tableProperties.defaultProperties' );
+
 		editor.data.addStyleProcessorRules( addBorderRules );
-		enableBorderProperties( schema, conversion );
-		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor ) );
-		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor ) );
-		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor ) );
+		enableBorderProperties( schema, conversion, tableProperties );
+		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor, tableProperties.borderColor || '' ) );
+		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, tableProperties.borderStyle || 'none' ) );
+		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor, tableProperties.borderWidth || '' ) );
 
-		enableAlignmentProperty( schema, conversion );
-		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor ) );
+		enableAlignmentProperty( schema, conversion, tableProperties );
+		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor, tableProperties.alignment || 'center' ) );
 
-		enableTableToFigureProperty( schema, conversion, 'width', 'width' );
-		editor.commands.add( 'tableWidth', new TableWidthCommand( editor ) );
+		enableTableToFigureProperty( schema, conversion, 'width', 'width', tableProperties );
+		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, tableProperties.width || '' ) );
 
-		enableTableToFigureProperty( schema, conversion, 'height', 'height' );
-		editor.commands.add( 'tableHeight', new TableHeightCommand( editor ) );
+		enableTableToFigureProperty( schema, conversion, 'height', 'height', tableProperties );
+		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, tableProperties.height || '' ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
-		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
-		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor ) );
+		enableProperty( schema, conversion, 'backgroundColor', 'background-color', tableProperties );
+		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor, tableProperties.backgroundColor || '' ) );
 	}
 }
 
@@ -118,13 +122,19 @@ function enableAlignmentProperty( schema, conversion ) {
 			model: {
 				name: 'table',
 				key: 'alignment',
-				values: [ 'left', 'right' ]
+				values: [ 'left', 'center', 'right' ]
 			},
 			view: {
 				left: {
 					key: 'style',
 					value: {
 						float: 'left'
+					}
+				},
+				center: {
+					key: 'style',
+					value: {
+						float: 'none'
 					}
 				},
 				right: {

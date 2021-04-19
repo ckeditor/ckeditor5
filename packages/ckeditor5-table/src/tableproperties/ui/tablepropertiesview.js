@@ -59,7 +59,7 @@ export default class TablePropertiesView extends View {
 	 * color palette used by the
 	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
 	 */
-	constructor( locale, options ) {
+	constructor( locale, options, defaultProperties ) {
 		super( locale );
 
 		this.set( {
@@ -106,7 +106,7 @@ export default class TablePropertiesView extends View {
 			 * @default ''
 			 * @member #width
 			 */
-			width: '',
+			width: defaultProperties.width || '',
 
 			/**
 			 * The value of the table height style.
@@ -134,6 +134,13 @@ export default class TablePropertiesView extends View {
 		 * @member {Object}
 		 */
 		this.options = options;
+
+		/**
+		 * TODO (pomek): Docs.
+		 * @protected
+		 * @member {Object}
+		 */
+		this.defaultProperties = defaultProperties;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { backgroundRowLabel, backgroundInput } = this._createBackgroundFields();
@@ -433,7 +440,7 @@ export default class TablePropertiesView extends View {
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, this.defaultProperties.borderStyle || 'none' ) );
 
 		// -- Width ---------------------------------------------------
 
@@ -626,7 +633,11 @@ export default class TablePropertiesView extends View {
 			labels: this._alignmentLabels,
 			propertyName: 'alignment',
 			nameToValue: name => {
-				return name === 'center' ? '' : name;
+				return name;
+				// "Center" is the default alignment. However, it can be change via editor's configuration.
+				// const defaultValue = this.defaultProperties.alignment || 'center';
+				//
+				// return name === defaultValue ? '' : name;
 			}
 		} );
 

@@ -37,9 +37,10 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	 * Creates a new `TableBorderWidthCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'borderWidth' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'borderWidth', defaultValue );
 	}
 
 	/**
@@ -57,6 +58,12 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	 * @inheritDoc
 	 */
 	_getValueToSet( value ) {
-		return addDefaultUnitToNumericValue( value, 'px' );
+		value = addDefaultUnitToNumericValue( value, 'px' );
+
+		if ( value === this.defaultValue ) {
+			return null;
+		}
+
+		return value;
 	}
 }
