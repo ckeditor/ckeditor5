@@ -34,31 +34,11 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		];
 		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
 	} else {
-		config.extraPlugins = [ ImageResize ];
 		config.image = {
-			resizeOptions: [
-				{
-					name: 'resizeImage:original',
-					label: 'Original',
-					value: null
-				},
-				{
-					name: 'resizeImage:50',
-					label: '50%',
-					value: '50'
-				},
-				{
-					name: 'resizeImage:75',
-					label: '75%',
-					value: '75'
-				}
-			],
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:wrapText',
 				'imageStyle:breakText',
-				'|',
-				'resizeImage',
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative'
