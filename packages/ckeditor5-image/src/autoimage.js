@@ -30,7 +30,7 @@ export default class AutoImage extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard, Undo ];
+		return [ Clipboard, 'ImageUtils', Undo ];
 	}
 
 	/**

@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import ImageTextAlternativeCommand from './imagetextalternativecommand';
-import ImageUtils from '../image/utils';
+import ImageUtils from '../imageutils';
 
 /**
  * The image text alternative editing plugin.

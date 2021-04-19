@@ -9,7 +9,7 @@
 
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
-import ImageUtils from '../image/utils';
+import ImageUtils from '../imageutils';
 
 import { getCaptionFromModelSelection } from './utils';
 

@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
-import ImageUtils from './image/utils';
+import ImageUtils from './imageutils';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).

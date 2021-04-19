@@ -117,7 +117,7 @@ function upcastLink( editor ) {
 				return;
 			}
 
-			const blockImageView = imageInLink.findAncestor( linkUtils.isBlockImageView.bind( linkUtils ) );
+			const blockImageView = imageInLink.findAncestor( element => linkUtils.isBlockImageView( element ) );
 
 			// There are two possible cases to consider here
 			//

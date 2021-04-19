@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ImageUtils from '../image/utils';
+import ImageUtils from '../imageutils';
 import ResizeImageCommand from './resizeimagecommand';
 
 /**

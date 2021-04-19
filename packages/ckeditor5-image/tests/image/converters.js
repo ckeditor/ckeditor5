@@ -8,6 +8,7 @@ import {
 	viewFigureToModel,
 	modelToViewAttributeConverter
 } from '../../src/image/converters';
+import { createImageViewElement } from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -46,10 +47,10 @@ describe( 'Image converters', () => {
 			} );
 
 			const imageEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( imageUtils.createImageViewElement( writer, 'image' ), writer, '' );
+				imageUtils.toImageWidget( createImageViewElement( writer, 'image' ), writer, '' );
 
 			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( imageUtils.createImageViewElement( writer, 'imageInline' ), writer, '' );
+				imageUtils.toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
 
 			editor.conversion.for( 'editingDowncast' ).elementToElement( {
 				model: 'image',

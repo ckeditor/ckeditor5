@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 import InsertImageCommand from './insertimagecommand';
-import ImageUtils from './utils';
+import ImageUtils from '../imageutils';
 
 /**
  * The image engine plugin. This module loads common code shared between

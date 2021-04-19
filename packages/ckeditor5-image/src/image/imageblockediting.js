@@ -15,7 +15,12 @@ import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToMo
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
-import ImageUtils from './utils';
+import ImageUtils from '../imageutils';
+import {
+	getImageTypeMatcher,
+	createImageViewElement,
+	determineImageTypeForInsertionAtSelection
+} from '../image/utils';
 
 /**
  * The image block plugin.
@@ -83,14 +88,14 @@ export default class ImageBlockEditing extends Plugin {
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'image',
-				view: ( modelElement, { writer } ) => imageUtils.createImageViewElement( writer, 'image' )
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'image' )
 			} );
 
 		conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'image',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					imageUtils.createImageViewElement( writer, 'image' ), writer, t( 'image widget' )
+					createImageViewElement( writer, 'image' ), writer, t( 'image widget' )
 				)
 			} );
 
@@ -102,7 +107,7 @@ export default class ImageBlockEditing extends Plugin {
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: editor.plugins.get( 'ImageUtils' ).getImageTypeMatcher( 'image' ),
+				view: getImageTypeMatcher( editor, 'image' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel( imageUtils ) );
@@ -155,7 +160,7 @@ export default class ImageBlockEditing extends Plugin {
 
 			// Convert inline images into block images only when the currently selected block is empty
 			// (e.g. an empty paragraph) or some object is selected (to replace it).
-			if ( imageUtils.determineImageTypeForInsertionAtSelection( selection ) === 'image' ) {
+			if ( determineImageTypeForInsertionAtSelection( editor, selection ) === 'image' ) {
 				const writer = new UpcastWriter( editingView.document );
 
 				// Wrap <img ... /> -> <figure class="image"><img .../></figure>

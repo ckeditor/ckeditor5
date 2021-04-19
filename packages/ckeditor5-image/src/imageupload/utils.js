@@ -64,7 +64,7 @@ export function fetchLocalImage( image ) {
 /**
  * Checks whether a given node is an image element with a local source (Base64 or blob).
  *
- * @param {module:image/image/utils~ImageUtils} imageUtils
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {module:engine/view/node~Node} node The node to check.
  * @returns {Boolean}
  */

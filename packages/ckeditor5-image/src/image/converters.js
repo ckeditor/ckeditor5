@@ -21,7 +21,7 @@ import { first } from 'ckeditor5/src/utils';
  * The entire content of the `<figure>` element except the first `<img>` is being converted as children
  * of the `<image>` model element.
  *
- * @param {module:image/image/utils~ImageUtils} imageUtils
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @returns {Function}
  */
 export function viewFigureToModel( imageUtils ) {
@@ -64,7 +64,7 @@ export function viewFigureToModel( imageUtils ) {
 /**
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
- * @param {module:image/image/utils~ImageUtils} imageUtils
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {'image'|'imageInline'} imageType The type of the image.
  * @returns {Function}
  */
@@ -112,7 +112,7 @@ export function srcsetAttributeConverter( imageUtils, imageType ) {
 /**
  * Converter used to convert a given image attribute from the model to the view.
  *
- * @param {module:image/image/utils~ImageUtils} imageUtils
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {'image'|'imageInline'} imageType The type of the image.
  * @param {String} attributeKey The name of the attribute to convert.
  * @returns {Function}

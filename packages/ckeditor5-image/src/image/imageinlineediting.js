@@ -15,7 +15,12 @@ import { modelToViewAttributeConverter, srcsetAttributeConverter } from './conve
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
-import ImageUtils from './utils';
+import ImageUtils from '../imageutils';
+import {
+	getImageTypeMatcher,
+	createImageViewElement,
+	determineImageTypeForInsertionAtSelection
+} from '../image/utils';
 
 /**
  * The image inline plugin.
@@ -90,7 +95,7 @@ export default class ImageInlineEditing extends Plugin {
 			.elementToElement( {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					imageUtils.createImageViewElement( writer, 'imageInline' ), writer, t( 'inline image widget' )
+					createImageViewElement( writer, 'imageInline' ), writer, t( 'inline image widget' )
 				)
 			} );
 
@@ -102,7 +107,7 @@ export default class ImageInlineEditing extends Plugin {
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: imageUtils.getImageTypeMatcher( 'imageInline' ),
+				view: getImageTypeMatcher( editor, 'imageInline' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
 	}
@@ -155,7 +160,7 @@ export default class ImageInlineEditing extends Plugin {
 
 			// Convert block images into inline images only when pasting or dropping into non-empty blocks
 			// and when the block is not an object (e.g. pasting to replace another widget).
-			if ( imageUtils.determineImageTypeForInsertionAtSelection( selection ) === 'imageInline' ) {
+			if ( determineImageTypeForInsertionAtSelection( editor, selection ) === 'imageInline' ) {
 				const writer = new UpcastWriter( editingView.document );
 
 				// Unwrap <figure class="image"><img .../></figure> -> <img ... />

@@ -14,7 +14,7 @@ import { toWidgetEditable } from 'ckeditor5/src/widget';
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 import ImageInlineEditing from '../image/imageinlineediting';
 import ImageBlockEditing from '../image/imageblockediting';
-import ImageUtils from '../image/utils';
+import ImageUtils from '../imageutils';
 
 import { matchImageCaptionViewElement } from './utils';
 

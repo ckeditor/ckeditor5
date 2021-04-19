@@ -148,7 +148,7 @@ function _stopAppearEffect( viewFigure, writer ) {
 
 // Shows placeholder together with infinite progress bar on given image figure.
 //
-// @param {module:image/image/utils~ImageUtils} imageUtils
+// @param {module:image/imageutils~ImageUtils} imageUtils
 // @param {String} Data-uri with a svg placeholder.
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -279,7 +279,7 @@ function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 
 // Displays local data from file loader.
 //
-// @param {module:image/image/utils~ImageUtils} imageUtils
+// @param {module:image/imageutils~ImageUtils} imageUtils
 // @param {module:engine/view/element~Element} imageFigure
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:upload/filerepository~FileLoader} loader

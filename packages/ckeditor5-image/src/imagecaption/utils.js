@@ -26,7 +26,7 @@ export function getCaptionFromImageModelElement( imageModelElement ) {
 /**
  * Returns the caption model element for a model selection. Returns `null` if the selection has no caption element ancestor.
  *
- * @param {module:image/image/utils~ImageUtils} imageUtils
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {module:engine/model/selection~Selection} selection
  * @returns {module:engine/model/element~Element|null}
  */
@@ -48,7 +48,7 @@ export function getCaptionFromModelSelection( imageUtils, selection ) {
  * {@link module:engine/view/matcher~Matcher} pattern. Checks if a given element is a `<figcaption>` element that is placed
  * inside the image `<figure>` element.
  *
- * @param {module:image/image/utils~ImageUtils} imageUtils
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {module:engine/view/element~Element} element
  * @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
  * cannot be matched.
