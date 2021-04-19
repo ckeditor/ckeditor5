@@ -343,9 +343,9 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should not insert image nor crash when pasted image could not be inserted', () => {
 		model.schema.register( 'other', {
 			allowIn: '$root',
+			allowChildren: '$text',
 			isLimit: true
 		} );
-		model.schema.extend( '$text', { allowIn: 'other' } );
 
 		model.schema.addChildCheck( ( context, childDefinition ) => {
 			if ( childDefinition.name.startsWith( 'image' ) && context.last.name === 'other' ) {

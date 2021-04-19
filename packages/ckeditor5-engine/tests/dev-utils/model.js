@@ -209,8 +209,7 @@ describe( 'model test utils', () => {
 		it( 'should work in a special root', () => {
 			const model = new Model();
 
-			model.schema.register( 'textOnly' );
-			model.schema.extend( '$text', { allowIn: 'textOnly' } );
+			model.schema.register( 'textOnly', { allowChildren: '$text' } );
 			model.document.createRoot( 'textOnly', 'textOnly' );
 
 			setData( model, 'a[b]c', { rootName: 'textOnly' } );
@@ -575,8 +574,7 @@ describe( 'model test utils', () => {
 
 		it( 'converts data in the specified context', () => {
 			const model = new Model();
-			model.schema.register( 'foo' );
-			model.schema.extend( '$text', { allowIn: 'foo' } );
+			model.schema.register( 'foo', { allowChildren: '$text' } );
 
 			expect( () => {
 				parse( 'text', model.schema, { context: [ 'foo' ] } );
