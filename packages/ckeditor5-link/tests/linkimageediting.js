@@ -1,15 +1,17 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LinkImageEditing from '../src/linkimageediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+
+import LinkImageEditing from '../src/linkimageediting';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -17,7 +19,7 @@ describe( 'LinkImageEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, LinkImageEditing ]
+				plugins: [ Paragraph, ImageEditing, LinkImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -36,6 +38,10 @@ describe( 'LinkImageEditing', () => {
 
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( LinkImageEditing ) ).to.be.instanceOf( LinkImageEditing );
+	} );
+
+	it( 'should require ImageEditing by name', () => {
+		expect( LinkImageEditing.requires ).to.include( 'ImageEditing' );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -245,7 +251,7 @@ describe( 'LinkImageEditing', () => {
 				it( 'should convert a link and the caption element', () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+							plugins: [ Paragraph, ImageEditing, LinkImageEditing, ImageCaptionEditing ]
 						} )
 						.then( editor => {
 							editor.setData(
@@ -327,7 +333,7 @@ describe( 'LinkImageEditing', () => {
 			it( 'should convert a link and the caption element', () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing, ImageCaptionEditing ]
 					} )
 					.then( editor => {
 						setModelData( editor.model,
@@ -396,7 +402,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false
 						}
@@ -441,7 +447,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: true
 						}
@@ -517,7 +523,7 @@ describe( 'LinkImageEditing', () => {
 
 				beforeEach( async () => {
 					editor = await VirtualTestEditor.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							addTargetToExternalLinks: false,
 							decorators: {
@@ -592,7 +598,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {
@@ -751,7 +757,7 @@ describe( 'LinkImageEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Paragraph, LinkImageEditing ],
+						plugins: [ Paragraph, ImageEditing, LinkImageEditing ],
 						link: {
 							decorators: {
 								isExternal: {
@@ -825,6 +831,81 @@ describe( 'LinkImageEditing', () => {
 						'</a>' +
 					'</p>'
 				);
+			} );
+
+			// See #8401.
+			it( 'should downcast without error if the image already has no link', () => {
+				setModelData( model,
+					'[<image alt="bar" src="sample.jpg"></image>]'
+				);
+
+				editor.execute( 'link', 'https://cksource.com', {
+					linkIsDownloadable: true,
+					linkIsExternal: true,
+					linkIsGallery: true
+				} );
+
+				// Attributes will be removed along with the link, but the downcast will be fired.
+				// The lack of link should not affect the downcasting.
+				expect( () => {
+					editor.execute( 'unlink', 'https://cksource.com', {
+						linkIsDownloadable: true,
+						linkIsExternal: true,
+						linkIsGallery: true
+					} );
+				} ).to.not.throw();
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image">' +
+							'<img src="sample.jpg" alt="bar">' +
+						'</figure>'
+				);
+			} );
+
+			// See #8401.
+			describe( 'order of model updates', () => {
+				it( 'should not affect converters - base link attributes first', () => {
+					setModelData( model,
+						'[<image src="https://cksource.com"></image>]'
+					);
+
+					model.change( writer => {
+						const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), 'linkIsDownloadable' );
+
+						for ( const range of ranges ) {
+							// The `linkHref` should be processed first - this is the default order of `LinkCommand`.
+							writer.setAttribute( 'linkHref', 'url', range );
+							writer.setAttribute( 'linkIsDownloadable', true, range );
+						}
+					} );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
+					);
+				} );
+
+				it( 'should not affect converters - decorators first', () => {
+					setModelData( model,
+						'[<image src="https://cksource.com"></image>]'
+					);
+
+					model.change( writer => {
+						const ranges = model.schema.getValidRanges( model.document.selection.getRanges(), 'linkIsDownloadable' );
+
+						for ( const range of ranges ) {
+							// Here we force attributes to be set on a model in a different order
+							// to force unusual order of downcast converters down the line.
+							// Normally, the `linkHref` gets processed first, as it is just the first property assigned
+							// to the model by `LinkCommand`.
+							writer.setAttribute( 'linkIsDownloadable', true, range );
+							writer.setAttribute( 'linkHref', 'url', range );
+						}
+					} );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
+					);
+				} );
 			} );
 		} );
 	} );

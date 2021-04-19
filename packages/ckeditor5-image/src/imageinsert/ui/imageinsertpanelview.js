@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,23 +7,11 @@
  * @module image/imageinsert/ui/imageinsertpanelview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { icons } from 'ckeditor5/src/core';
+import { ButtonView, View, SplitButtonView, ViewCollection, submitHandler, createDropdown, FocusCycler } from 'ckeditor5/src/ui';
+import { Collection, FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import ImageInsertFormRowView from './imageinsertformrowview';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../../../theme/imageinsert.css';
 
@@ -241,7 +229,7 @@ export default class ImageInsertPanelView extends View {
 
 		splitButtonView.set( {
 			label: t( 'Insert image' ),
-			icon: imageIcon,
+			icon: icons.image,
 			tooltip: true
 		} );
 
@@ -272,7 +260,7 @@ export default class ImageInsertPanelView extends View {
 
 		insertButtonView.set( {
 			label: t( 'Insert' ),
-			icon: checkIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true,
@@ -281,7 +269,7 @@ export default class ImageInsertPanelView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: cancelIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			withText: true
 		} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import Image from '../../src/image';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ImageResizeCommand from '../../src/imageresize/imageresizecommand';
+import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
 import ImageStyle from '../../src/imagestyle';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -55,22 +55,22 @@ describe( 'ImageResizeEditing', () => {
 
 		it( 'should define the default value for config.image.resizeOptions', () => {
 			expect( editor.config.get( 'image.resizeOptions' ) ).to.deep.equal( [ {
-				name: 'imageResize:original',
+				name: 'resizeImage:original',
 				value: null,
 				icon: 'original'
 			},
 			{
-				name: 'imageResize:25',
+				name: 'resizeImage:25',
 				value: '25',
 				icon: 'small'
 			},
 			{
-				name: 'imageResize:50',
+				name: 'resizeImage:50',
 				value: '50',
 				icon: 'medium'
 			},
 			{
-				name: 'imageResize:75',
+				name: 'resizeImage:75',
 				value: '75',
 				icon: 'large'
 			} ] );
@@ -153,23 +153,25 @@ describe( 'ImageResizeEditing', () => {
 			editor = await createEditor();
 		} );
 
-		it( 'defines the imageResize command', () => {
-			expect( editor.commands.get( 'imageResize' ) ).to.be.instanceOf( ImageResizeCommand );
+		it( 'defines the resizeImage command', () => {
+			expect( editor.commands.get( 'resizeImage' ) ).to.be.instanceOf( ResizeImageCommand );
+		} );
+
+		it( 'defines the imageResize command as an alias for resizeImage command', () => {
+			expect( editor.commands.get( 'imageResize' ) ).to.equal( editor.commands.get( 'resizeImage' ) );
 		} );
 	} );
 
-	function createEditor( config ) {
-		return ClassicEditor
-			.create( editorElement, config || {
-				plugins: [ Paragraph, Image, ImageStyle, ImageResizeEditing ],
-				image: {
-					resizeUnit: 'px'
-				}
-			} )
-			.then( newEditor => {
-				focusEditor( newEditor );
+	async function createEditor( config ) {
+		const newEditor = await ClassicEditor.create( editorElement, config || {
+			plugins: [ Paragraph, Image, ImageStyle, ImageResizeEditing ],
+			image: {
+				resizeUnit: 'px'
+			}
+		} );
 
-				return newEditor;
-			} );
+		await focusEditor( newEditor );
+
+		return newEditor;
 	}
 } );

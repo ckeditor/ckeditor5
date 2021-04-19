@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module font/fontfamily/fontfamilyediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
@@ -74,6 +74,7 @@ export default class FontFamilyEditing extends Plugin {
 		// Set-up the two-way conversion.
 		if ( editor.config.get( 'fontFamily.supportAllValues' ) ) {
 			this._prepareAnyValueConverters();
+			this._prepareCompatibilityConverter();
 		} else {
 			editor.conversion.attributeToElement( definition );
 		}
@@ -97,7 +98,7 @@ export default class FontFamilyEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_FAMILY,
 				value: viewElement => viewElement.getStyle( 'font-family' )
@@ -107,6 +108,28 @@ export default class FontFamilyEditing extends Plugin {
 				styles: {
 					'font-family': /.*/
 				}
+			}
+		} );
+	}
+
+	/**
+	 * Adds support for legacy `<font face="..">` formatting.
+	 *
+	 * @private
+	 */
+	_prepareCompatibilityConverter() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'font',
+				attributes: {
+					'face': /.*/
+				}
+			},
+			model: {
+				key: FONT_FAMILY,
+				value: viewElement => viewElement.getAttribute( 'face' )
 			}
 		} );
 	}

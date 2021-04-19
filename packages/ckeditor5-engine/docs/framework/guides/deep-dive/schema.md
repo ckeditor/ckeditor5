@@ -434,7 +434,7 @@ These listeners can be added either by listening directly to the {@link module:e
 For instance, the block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
 
 ```js
-schema.addChildCheck( context, childDefinition ) => {
+schema.addChildCheck( ( context, childDefinition ) => {
 	// Note that the context is automatically normalized to a SchemaContext instance and
 	// the child to its definition (SchemaCompiledItemDefinition).
 

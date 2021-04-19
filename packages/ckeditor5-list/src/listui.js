@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import { createUIComponent } from './utils';
 import numberedListIcon from '../theme/icons/numberedlist.svg';
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 /**
  * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
@@ -21,6 +21,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * @extends module:core/plugin~Plugin
  */
 export default class ListUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'ListUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

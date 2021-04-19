@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,8 @@ import createViewRoot from '../_utils/createroot';
 import ViewElement from '../../../src/view/element';
 import ViewSelection from '../../../src/view/selection';
 import { StylesProcessor } from '../../../src/view/stylesmap';
+import DocumentFragment from '../../../src/view/documentfragment';
+import HtmlDataProcessor from '../../../src/dataprocessor/htmldataprocessor';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
@@ -57,6 +59,40 @@ describe( 'DowncastWriter', () => {
 		} );
 	} );
 
+	describe( 'createDocumentFragment', () => {
+		let view;
+
+		beforeEach( () => {
+			const dataProcessor = new HtmlDataProcessor( doc );
+
+			const html = '' +
+				'<h1 style="color:blue;position:fixed;">Heading <strong>1</strong></h1>' +
+				'<p class="foo1 bar2" style="text-align:left;" data-attr="abc">Foo <i>Bar</i> <strong>Bold</strong></p>' +
+				'<p><u>Some underlined</u> text</p>' +
+				'<ul>' +
+				'<li class="single">Item 1</li>' +
+				'<li><span>Item <s>1</s></span></li>' +
+				'<li><h2>Item 1</h2></li>' +
+				'</ul>';
+
+			view = dataProcessor.toView( html );
+		} );
+
+		it( 'should create empty document fragment', () => {
+			const df = writer.createDocumentFragment();
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create document fragment with children', () => {
+			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 2 );
+		} );
+	} );
+
 	describe( 'createText()', () => {
 		it( 'should create Text instance', () => {
 			const text = writer.createText( 'foo bar' );
@@ -72,6 +108,7 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -80,6 +117,7 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			expect( element.priority ).to.equal( 99 );
 			expect( element.id ).to.equal( 'bar' );
 			assertElementAttributes( element, attributes );
@@ -92,6 +130,16 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'containerElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.false;
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createContainerElement( 'foo', attributes, { isAllowedInsideAttributeElement: true } );
+
+			expect( element.is( 'containerElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -102,6 +150,7 @@ describe( 'DowncastWriter', () => {
 
 			expect( element ).to.be.instanceOf( EditableElement );
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -112,6 +161,16 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'emptyElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.true;
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createEmptyElement( 'foo', attributes, { isAllowedInsideAttributeElement: false } );
+
+			expect( element.is( 'emptyElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -122,6 +181,7 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'uiElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -131,7 +191,18 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'uiElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			expect( element.render ).to.equal( renderFn );
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const renderFn = function() {};
+			const element = writer.createUIElement( 'foo', attributes, renderFn, { isAllowedInsideAttributeElement: false } );
+
+			expect( element.is( 'uiElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -142,6 +213,7 @@ describe( 'DowncastWriter', () => {
 
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.true;
 			assertElementAttributes( element, attributes );
 
 			expect( element.render ).to.be.a( 'function' );
@@ -164,6 +236,16 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.render ).to.equal( renderFn );
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass additional options', () => {
+			const renderFn = function() {};
+			const element = writer.createRawElement( 'foo', attributes, renderFn, { isAllowedInsideAttributeElement: false } );
+
+			expect( element.is( 'rawElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
 	} );

@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { LiveRange } from 'ckeditor5/src/engine';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -96,6 +96,14 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			return;
 		}
 
+		// Only list commands and custom callbacks can be applied inside a list.
+		if ( blockToFormat.is( 'element', 'listItem' ) &&
+			typeof callbackOrCommand !== 'function' &&
+			![ 'numberedList', 'bulletedList', 'todoList' ].includes( callbackOrCommand )
+		) {
+			return;
+		}
+
 		// In case a command is bound, do not re-execute it over an existing block style which would result with a style removal.
 		// Instead just drop processing so that autoformat trigger text is not lost. E.g. writing "# " in a level 1 heading.
 		if ( command && command.value === true ) {
@@ -129,8 +137,16 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			// Remove matched text.
 			if ( wasChanged !== false ) {
 				writer.remove( range );
-			}
 
+				const selectionRange = editor.model.document.selection.getFirstRange();
+				const blockRange = writer.createRangeIn( blockToFormat );
+
+				// If the block is empty and the document selection has been moved when
+				// applying formatting (e.g. is now in newly created block).
+				if ( blockToFormat.isEmpty && !blockRange.isEqual( selectionRange ) && !blockRange.containsRange( selectionRange, true ) ) {
+					writer.remove( blockToFormat );
+				}
+			}
 			range.detach();
 		} );
 	} );

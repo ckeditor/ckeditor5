@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ before( () => {
 	const originalWarn = console.warn;
 
 	console.warn = function( ...args ) {
-		if ( args[ 0 ] == 'Selection change observer detected an infinite rendering loop.' ) {
+		if ( args[ 0 ].endsWith( 'Selection change observer detected an infinite rendering loop.' ) ) {
 			throw new Error( 'Detected unwelcome "Selection change observer detected an infinite rendering loop." warning.' );
 		}
 

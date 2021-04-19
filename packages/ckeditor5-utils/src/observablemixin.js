@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,9 @@ import { extend, isObject } from 'lodash-es';
 const observablePropertiesSymbol = Symbol( 'observableProperties' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );
 const boundPropertiesSymbol = Symbol( 'boundProperties' );
+
+const _decoratedMethods = Symbol( 'decoratedMethods' );
+const _decoratedOriginal = Symbol( 'decoratedOriginal' );
 
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the
@@ -258,10 +261,36 @@ const ObservableMixin = {
 		this[ methodName ] = function( ...args ) {
 			return this.fire( methodName, args );
 		};
+
+		this[ methodName ][ _decoratedOriginal ] = originalMethod;
+
+		if ( !this[ _decoratedMethods ] ) {
+			this[ _decoratedMethods ] = [];
+		}
+
+		this[ _decoratedMethods ].push( methodName );
 	}
 };
 
 extend( ObservableMixin, EmitterMixin );
+
+// Override the EmitterMixin stopListening method to be able to clean (and restore) decorated methods.
+// This is needed in case of:
+//  1. Have x.foo() decorated.
+//  2. Call x.stopListening()
+//  3. Call x.foo(). Problem: nothing happens (the original foo() method is not executed)
+ObservableMixin.stopListening = function( emitter, event, callback ) {
+	// Removing all listeners so let's clean the decorated methods to the original state.
+	if ( !emitter && this[ _decoratedMethods ] ) {
+		for ( const methodName of this[ _decoratedMethods ] ) {
+			this[ methodName ] = this[ methodName ][ _decoratedOriginal ];
+		}
+
+		delete this[ _decoratedMethods ];
+	}
+
+	EmitterMixin.stopListening.call( this, emitter, event, callback );
+};
 
 export default ObservableMixin;
 

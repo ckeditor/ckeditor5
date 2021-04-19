@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,7 +26,7 @@ describe( 'WidgetResize', () => {
 
 		setModelData( editor.model, '[<widget></widget>]' );
 
-		focusEditor( editor );
+		await focusEditor( editor );
 
 		widget = editor.editing.view.document.getRoot().getChild( 0 );
 
@@ -527,7 +527,7 @@ describe( 'WidgetResize', () => {
 			const resizer = createResizer();
 			const redrawSpy = sinon.spy( resizer, 'redraw' );
 
-			focusEditor( editor );
+			await focusEditor( editor );
 
 			editor.model.change( writer => {
 				const widgetModel = editor.model.document.getRoot().getChild( 0 );

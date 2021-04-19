@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -324,6 +324,20 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>youtube.com/watch?v=H08tGjXNHO4&param=foo bar[]</paragraph>'
+			);
+		} );
+
+		// s/ckeditor5/3
+		it( 'should handle invalid URL with repeated characters', () => {
+			const invalidURL = 'a.' + 'a'.repeat( 100000 ) + '^';
+
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, invalidURL );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				`<paragraph>${ invalidURL }[]</paragraph>`
 			);
 		} );
 

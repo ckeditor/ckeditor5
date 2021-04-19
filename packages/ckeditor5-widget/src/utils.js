@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,16 +7,18 @@
  * @module widget/utils
  */
 
-import HighlightStack from './highlightstack';
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
-import dragHandleIcon from '../theme/icons/drag-handle.svg';
+import HighlightStack from './highlightstack';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
+
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
 /**
  * CSS class added to each widget element.
@@ -122,14 +124,45 @@ export function toWidget( element, writer, options = {} ) {
 		addSelectionHandle( element, writer );
 	}
 
-	setHighlightHandling(
-		element,
-		writer,
-		( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
-		( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
-	);
+	setHighlightHandling( element, writer, addHighlight, removeHighlight );
 
 	return element;
+}
+
+// Default handler for adding a highlight on a widget.
+// It adds CSS class and attributes basing on the given highlight descriptor.
+//
+// @param {module:engine/view/element~Element} element
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+function addHighlight( element, descriptor, writer ) {
+	if ( descriptor.classes ) {
+		writer.addClass( toArray( descriptor.classes ), element );
+	}
+
+	if ( descriptor.attributes ) {
+		for ( const key in descriptor.attributes ) {
+			writer.setAttribute( key, descriptor.attributes[ key ], element );
+		}
+	}
+}
+
+// Default handler for removing a highlight from a widget.
+// It removes CSS class and attributes basing on the given highlight descriptor.
+//
+// @param {module:engine/view/element~Element} element
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+function removeHighlight( element, descriptor, writer ) {
+	if ( descriptor.classes ) {
+		writer.removeClass( toArray( descriptor.classes ), element );
+	}
+
+	if ( descriptor.attributes ) {
+		for ( const key in descriptor.attributes ) {
+			writer.removeAttribute( key, element );
+		}
+	}
 }
 
 /**
@@ -302,6 +335,19 @@ export function findOptimalInsertionPosition( selection, model ) {
 	}
 
 	return selection.focus;
+}
+
+/**
+ * Checks if the selection is on an object.
+ *
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @param {module:engine/model/schema~Schema} schema
+ * @returns {Boolean}
+*/
+export function checkSelectionOnObject( selection, schema ) {
+	const selectedElement = selection.getSelectedElement();
+
+	return !!selectedElement && schema.isObject( selectedElement );
 }
 
 /**

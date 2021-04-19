@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module restricted-editing/restrictededitingmodeui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { Plugin } from 'ckeditor5/src/core';
+import { Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
+
 import lockIcon from '../theme/icons/contentlock.svg';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * The restricted editing mode UI feature.

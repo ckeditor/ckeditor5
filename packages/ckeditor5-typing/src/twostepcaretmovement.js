@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
  * This plugin enables the two-step caret (phantom) movement behavior for
@@ -147,17 +146,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		const modelSelection = model.document.selection;
 
 		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
-		//
-		// Note: This listener has the "high+1" priority:
-		// * "high" because of the filler logic implemented in the renderer which also engages on #keydown.
-		// When the gravity is overridden the attributes of the (model) selection attributes are reset.
-		// It may end up with the filler kicking in and breaking the selection.
-		// * "+1" because we would like to avoid collisions with other features (like Widgets), which
-		// take over the keydown events with the "high" priority. Two-step caret movement takes precedence
-		// over Widgets in that matter.
-		//
-		// Find out more in https://github.com/ckeditor/ckeditor5-engine/issues/1301.
-		this.listenTo( view.document, 'keydown', ( evt, data ) => {
+		this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 			// This implementation works only for collapsed selection.
 			if ( !modelSelection.isCollapsed ) {
 				return;
@@ -191,7 +180,7 @@ export default class TwoStepCaretMovement extends Plugin {
 			if ( isMovementHandled === true ) {
 				evt.stop();
 			}
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		}, { context: '$text', priority: 'highest' } );
 
 		/**
 		 * A flag indicating that the automatic gravity restoration should not happen upon the next

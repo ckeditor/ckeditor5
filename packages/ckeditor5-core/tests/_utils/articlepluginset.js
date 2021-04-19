@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -39,6 +39,10 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
  * @extends module:core/plugin~Plugin
  */
 export default class ArticlePluginSet extends Plugin {
+	static get pluginName() {
+		return 'ArticlePluginSet';
+	}
+
 	static get requires() {
 		return [
 			Essentials,

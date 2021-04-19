@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,27 +7,17 @@
  * @module image/imageresize/imageresizebuttons
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView, DropdownButtonView, Model, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import { CKEditorError, Collection } from 'ckeditor5/src/utils';
+
 import ImageResizeEditing from './imageresizeediting';
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
-
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
-import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
-import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
-import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
-import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
 
 const RESIZE_ICONS = {
-	small: iconSmall,
-	medium: iconMedium,
-	large: iconLarge,
-	original: iconFull
+	small: icons.objectSizeSmall,
+	medium: icons.objectSizeMedium,
+	large: icons.objectSizeLarge,
+	original: icons.objectSizeFull
 };
 
 /**
@@ -75,7 +65,7 @@ export default class ImageResizeButtons extends Plugin {
 	init() {
 		const editor = this.editor;
 		const options = editor.config.get( 'image.resizeOptions' );
-		const command = editor.commands.get( 'imageResize' );
+		const command = editor.commands.get( 'resizeImage' );
 
 		this.bind( 'isEnabled' ).to( command );
 
@@ -99,7 +89,7 @@ export default class ImageResizeButtons extends Plugin {
 
 		editor.ui.componentFactory.add( name, locale => {
 			const button = new ButtonView( locale );
-			const command = editor.commands.get( 'imageResize' );
+			const command = editor.commands.get( 'resizeImage' );
 			const labelText = this._getOptionLabelValue( option, true );
 
 			if ( !RESIZE_ICONS[ icon ] ) {
@@ -133,7 +123,7 @@ export default class ImageResizeButtons extends Plugin {
 			button.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( optionValueWithUnit ) );
 
 			this.listenTo( button, 'execute', () => {
-				editor.execute( 'imageResize', { width: optionValueWithUnit } );
+				editor.execute( 'resizeImage', { width: optionValueWithUnit } );
 			} );
 
 			return button;
@@ -152,16 +142,15 @@ export default class ImageResizeButtons extends Plugin {
 		const t = editor.t;
 		const originalSizeOption = options.find( option => !option.value );
 
-		// Register dropdown.
-		editor.ui.componentFactory.add( 'imageResize', locale => {
-			const command = editor.commands.get( 'imageResize' );
+		const componentCreator = locale => {
+			const command = editor.commands.get( 'resizeImage' );
 			const dropdownView = createDropdown( locale, DropdownButtonView );
 			const dropdownButton = dropdownView.buttonView;
 
 			dropdownButton.set( {
 				tooltip: t( 'Resize image' ),
 				commandValue: originalSizeOption.value,
-				icon: iconMedium,
+				icon: RESIZE_ICONS.medium,
 				isToggleable: true,
 				label: this._getOptionLabelValue( originalSizeOption ),
 				withText: true,
@@ -189,7 +178,11 @@ export default class ImageResizeButtons extends Plugin {
 			} );
 
 			return dropdownView;
-		} );
+		};
+
+		// Register `resizeImage` dropdown and add `imageResize` dropdown as an alias for backward compatibility.
+		editor.ui.componentFactory.add( 'resizeImage', componentCreator );
+		editor.ui.componentFactory.add( 'imageResize', componentCreator );
 	}
 
 	/**
@@ -226,7 +219,7 @@ export default class ImageResizeButtons extends Plugin {
 	 *
 	 * @private
 	 * @param {Array.<module:image/imageresize/imageresizebuttons~ImageResizeOption>} options The resize options.
-	 * @param {module:image/imageresize/imageresizecommand~ImageResizeCommand} command The resize image command.
+	 * @param {module:image/imageresize/resizeimagecommand~ResizeImageCommand} command The resize image command.
 	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} Dropdown item definitions.
 	 */
 	_getResizeDropdownListItemDefinitions( options, command ) {
@@ -237,7 +230,7 @@ export default class ImageResizeButtons extends Plugin {
 			const definition = {
 				type: 'button',
 				model: new Model( {
-					commandName: 'imageResize',
+					commandName: 'resizeImage',
 					commandValue: optionValueWithUnit,
 					label: this._getOptionLabelValue( option ),
 					withText: true,

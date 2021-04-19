@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -438,13 +438,102 @@ describe( 'ToolbarView', () => {
 			view.fillFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
 
 			const items = view.items;
-
 			expect( items ).to.have.length( 5 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
 			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
 			expect( items.get( 2 ).name ).to.equal( 'bar' );
 			expect( items.get( 3 ) ).to.be.instanceOf( ToolbarSeparatorView );
 			expect( items.get( 4 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'accepts configuration object', () => {
+			view.fillFromConfig( { items: [ 'foo', 'bar', 'foo' ] }, factory );
+
+			const items = view.items;
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'removes items listed in `removeItems`', () => {
+			view.fillFromConfig(
+				{
+					items: [ 'foo', 'bar', 'foo' ],
+					removeItems: [ 'foo' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+			expect( items ).to.have.length( 1 );
+			expect( items.get( 0 ).name ).to.equal( 'bar' );
+		} );
+
+		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the vertical separator case (`|`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '|', '|', 'foo', '|', 'bar', '|', 'foo' ],
+					removeItems: [ 'bar' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the line break case (`-`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '-', '-', 'foo', '-', 'bar', '-', 'foo' ],
+					removeItems: [ 'bar' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'removes trailing and leading separators from the item list - the vertical separator case (`|`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '|', '|', 'foo', '|', 'bar', '|' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
+		} );
+
+		it( 'removes trailing and leading separators from the item list - the line break case (`-`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '-', '-', 'foo', '-', 'bar', '-' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
 		} );
 
 		it( 'warns if there is no such component in the factory', () => {
@@ -477,6 +566,22 @@ describe( 'ToolbarView', () => {
 				sinon.match.array,
 				sinon.match.string // Link to the documentation.
 			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/8582
+		it( 'does not render line separator when the button grouping option is enabled', () => {
+			// Catch warn to stop tests from failing in production mode.
+			sinon.stub( console, 'warn' );
+
+			view.options.shouldGroupWhenFull = true;
+
+			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 2 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
 		} );
 	} );
 
@@ -980,6 +1085,26 @@ describe( 'ToolbarView', () => {
 				expect( view.children.has( groupedItemsDropdown ) ).to.be.true;
 				expect( groupedItemsDropdown.element.classList.contains( 'ck-toolbar__grouped-dropdown' ) );
 				expect( groupedItemsDropdown.buttonView.label ).to.equal( 'Show more items' );
+			} );
+
+			it( 'tooltip has the proper position depending on the UI language direction (LTR UI)', () => {
+				const locale = new Locale( { uiLanguage: 'en' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'sw' );
+
+				view.destroy();
+			} );
+
+			it( 'tooltip has the proper position depending on the UI language direction (RTL UI)', () => {
+				const locale = new Locale( { uiLanguage: 'ar' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'se' );
+
+				view.destroy();
 			} );
 
 			it( 'shares its toolbarView#items with grouped items', () => {

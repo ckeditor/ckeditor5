@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * @module image/imagestyle/converters
@@ -57,8 +57,9 @@ export function viewToModelStyleAttribute( styles ) {
 		const viewFigureElement = data.viewItem;
 		const modelImageElement = first( data.modelRange.getItems() );
 
-		// Check if `imageStyle` attribute is allowed for current element.
-		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
+		// Check if `modelImageElement` exists (see: https://github.com/ckeditor/ckeditor5/issues/8270)
+		// and `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
+		if ( modelImageElement && !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
 			return;
 		}
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 
 import CKFinderCommand from '../src/ckfindercommand';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -26,7 +26,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ]
+				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -105,9 +105,9 @@ describe( 'CKFinderCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true when imageInsert or link command is enabled', () => {
+		it( 'should be true when insertImage or link command is enabled', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
-			const insertImage = editor.commands.get( 'imageInsert' );
+			const insertImage = editor.commands.get( 'insertImage' );
 			const linkCommand = editor.commands.get( 'link' );
 
 			insertImage.isEnabled = false;
@@ -256,7 +256,7 @@ describe( 'CKFinderCommand', () => {
 
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ],
+					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, ClipboardPipeline ],
 					language: 'pl'
 				} )
 				.then( newEditor => {

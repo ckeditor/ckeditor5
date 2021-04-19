@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -171,8 +171,8 @@ for ( let code = 112; code <= 135; code++ ) {
  * @returns {Boolean}
  */
 export function isNonTypingKeystroke( keyData ) {
-	// Keystrokes which contain Ctrl don't represent typing.
-	if ( keyData.ctrlKey ) {
+	// Keystrokes which contain Ctrl or Cmd don't represent typing.
+	if ( keyData.ctrlKey || keyData.metaKey ) {
 		return true;
 	}
 

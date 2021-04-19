@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,10 @@
  * @module autoformat/autoformat
  */
 
+import { Plugin } from 'ckeditor5/src/core';
+
 import blockAutoformatEditing from './blockautoformatediting';
 import inlineAutoformatEditing from './inlineautoformatediting';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
  * Enables a set of predefined autoformatting actions.
@@ -36,6 +37,7 @@ export default class Autoformat extends Plugin {
 		this._addHeadingAutoformats();
 		this._addBlockQuoteAutoformats();
 		this._addCodeBlockAutoformats();
+		this._addHorizontalLineAutoformats();
 	}
 
 	/**
@@ -44,6 +46,8 @@ export default class Autoformat extends Plugin {
 	 * When typed:
 	 * - `* ` or `- ` &ndash; A paragraph will be changed to a bulleted list.
 	 * - `1. ` or `1) ` &ndash; A paragraph will be changed to a numbered list ("1" can be any digit or a list of digits).
+	 * - `[] ` or `[ ] ` &ndash; A paragraph will be changed to a to-do list.
+	 * - `[x] ` or `[ x ] ` &ndash; A paragraph will be changed to a checked to-do list.
 	 *
 	 * @private
 	 */
@@ -56,6 +60,17 @@ export default class Autoformat extends Plugin {
 
 		if ( commands.get( 'numberedList' ) ) {
 			blockAutoformatEditing( this.editor, this, /^1[.|)]\s$/, 'numberedList' );
+		}
+
+		if ( commands.get( 'todoList' ) ) {
+			blockAutoformatEditing( this.editor, this, /^\[\s?\]\s$/, 'todoList' );
+		}
+
+		if ( commands.get( 'checkTodoList' ) ) {
+			blockAutoformatEditing( this.editor, this, /^\[\s?x\s?\]\s$/, () => {
+				this.editor.execute( 'todoList' );
+				this.editor.execute( 'checkTodoList' );
+			} );
 		}
 	}
 
@@ -80,8 +95,8 @@ export default class Autoformat extends Plugin {
 		if ( commands.get( 'bold' ) ) {
 			const boldCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'bold' );
 
-			inlineAutoformatEditing( this.editor, this, /(\*\*)([^*]+)(\*\*)$/g, boldCallback );
-			inlineAutoformatEditing( this.editor, this, /(__)([^_]+)(__)$/g, boldCallback );
+			inlineAutoformatEditing( this.editor, this, /(?:^|\s)(\*\*)([^*]+)(\*\*)$/g, boldCallback );
+			inlineAutoformatEditing( this.editor, this, /(?:^|\s)(__)([^_]+)(__)$/g, boldCallback );
 		}
 
 		if ( commands.get( 'italic' ) ) {
@@ -89,8 +104,8 @@ export default class Autoformat extends Plugin {
 
 			// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
 			// text before the pattern (e.g. `(?:^|[^\*])`).
-			inlineAutoformatEditing( this.editor, this, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, italicCallback );
-			inlineAutoformatEditing( this.editor, this, /(?:^|[^_])(_)([^_]+)(_)$/g, italicCallback );
+			inlineAutoformatEditing( this.editor, this, /(?:^|\s)(\*)([^*_]+)(\*)$/g, italicCallback );
+			inlineAutoformatEditing( this.editor, this, /(?:^|\s)(_)([^_]+)(_)$/g, italicCallback );
 		}
 
 		if ( commands.get( 'code' ) ) {
@@ -164,6 +179,20 @@ export default class Autoformat extends Plugin {
 	_addCodeBlockAutoformats() {
 		if ( this.editor.commands.get( 'codeBlock' ) ) {
 			blockAutoformatEditing( this.editor, this, /^```$/, 'codeBlock' );
+		}
+	}
+
+	/**
+	 * Adds autoformatting related to {@link module:horizontal-line/horizontalline~HorizontalLine}.
+	 *
+	 * When typed:
+	 * - `` --- `` &ndash; Will be replaced with a horizontal line.
+	 *
+	 * @private
+	 */
+	_addHorizontalLineAutoformats() {
+		if ( this.editor.commands.get( 'horizontalLine' ) ) {
+			blockAutoformatEditing( this.editor, this, /^---$/, 'horizontalLine' );
 		}
 	}
 }

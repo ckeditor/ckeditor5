@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module font/fontcolor/fontcolorediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import FontColorCommand from './fontcolorcommand';
 import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
 
@@ -112,6 +112,20 @@ export default class FontColorEditing extends Plugin {
 			model: {
 				key: FONT_COLOR,
 				value: renderUpcastAttribute( 'color' )
+			}
+		} );
+
+		// Support legacy `<font color="..">` formatting.
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'font',
+				attributes: {
+					'color': /^#?\w+$/
+				}
+			},
+			model: {
+				key: FONT_COLOR,
+				value: viewElement => viewElement.getAttribute( 'color' )
 			}
 		} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -38,6 +38,12 @@ export function upcastStyleToAttribute( conversion, modelElement, modelAttribute
  */
 export function upcastBorderStyles( conversion, viewElementName ) {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
+		// If the element was not converted by element-to-element converter,
+		// we should not try to convert the style. See #8393.
+		if ( !data.modelRange ) {
+			return;
+		}
+
 		// TODO: this is counter-intuitive: ie.: if only `border-top` is defined then `hasStyle( 'border' )` also returns true.
 		// TODO: this might needs to be fixed in styles normalizer.
 		const stylesToConsume = [
@@ -58,12 +64,6 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 		// Try to consume appropriate values from consumable values list.
 		if ( !conversionApi.consumable.test( data.viewItem, matcherPattern ) ) {
 			return;
-		}
-
-		// This can happen when the upcasted table is nested table. As to why it happens, it remains a mystery.
-		// Take a look at https://github.com/ckeditor/ckeditor5/issues/6177.
-		if ( !data.modelRange ) {
-			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
 		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();

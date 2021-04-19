@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -159,7 +159,7 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 
 			testRunner( name, () => {
 				// Simulate data from Clipboard event
-				const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+				const clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
 				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
 				const dataTransfer = createDataTransfer( {
 					'text/html': fixtures.input[ name ],

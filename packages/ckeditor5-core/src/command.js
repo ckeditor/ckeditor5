@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -45,7 +45,7 @@ export default class Command {
 		 * For example, the `'bold'` command's value indicates whether the selection starts in a bolded text.
 		 * And the value of the `'link'` command may be an object with links details.
 		 *
-		 * It is possible for a command to have no value (e.g. for stateless actions such as `'imageUpload'`).
+		 * It is possible for a command to have no value (e.g. for stateless actions such as `'uploadImage'`).
 		 *
 		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
 		 *

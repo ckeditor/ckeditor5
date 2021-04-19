@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,17 +7,15 @@
  * @module link/linkediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
-import inlineHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
-import Input from '@ckeditor/ckeditor5-typing/src/input';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import { Plugin } from 'ckeditor5/src/core';
+import { MouseObserver } from 'ckeditor5/src/engine';
+import { Input, TwoStepCaretMovement, inlineHighlight, findAttributeRange } from 'ckeditor5/src/typing';
+import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import { keyCodes } from 'ckeditor5/src/utils';
+
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ManualDecorator from './utils/manualdecorator';
-import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
 
 import '../theme/link.css';
@@ -48,7 +46,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	static get requires() {
 		// Clipboard is required for handling cut and paste events while typing over the link.
-		return [ TwoStepCaretMovement, Input, Clipboard ];
+		return [ TwoStepCaretMovement, Input, ClipboardPipeline ];
 	}
 
 	/**

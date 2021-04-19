@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -231,8 +231,10 @@ export default class Renderer {
 			this._inlineFiller = null;
 		}
 
-		this._updateSelection();
+		// First focus the new editing host, then update the selection.
+		// Otherwise, FF may throw an error (https://github.com/ckeditor/ckeditor5/issues/721).
 		this._updateFocus();
+		this._updateSelection();
 
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
@@ -755,10 +757,6 @@ export default class Renderer {
 		// selected. If there is any editable selected, it is okay (editable is taken from selection anchor).
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
-
-		// Focus the new editing host.
-		// Otherwise, FF may throw an error (https://github.com/ckeditor/ckeditor5/issues/721).
-		domRoot.focus();
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
