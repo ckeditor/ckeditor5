@@ -40,6 +40,8 @@ The {@link module:table/tableselection~TableSelection} plugin introduces support
 
 The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demos above](#demos).
 
+
+
 ## Installation
 
 ### Basic table features
@@ -310,6 +312,25 @@ The above model structure will be rendered to the data and to the editing view a
 
 <info-box info>
 	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍 if you need this feature.
+</info-box>
+
+## Table captions
+
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions:
+
+```html
+<figure class="table">
+	<table>
+		<tr>
+			<td>...</td>
+		</tr>
+	</table>
+	<figcaption>A caption goes here...</figcaption>
+</figure>
+```
+
+<info-box hint>
+	You can change the placement of the table caption by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
 </info-box>
 
 ## Disallowing nesting tables
