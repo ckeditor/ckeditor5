@@ -55,8 +55,8 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 			],
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:full',
-				'imageStyle:side',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
 				'|',
 				'resizeImage',
 				'|',
