@@ -13,6 +13,7 @@ import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockedi
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
 
 import LinkImageEditing from '../src/linkimageediting';
+import LinkEditing from '../src/linkediting';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
@@ -63,6 +64,14 @@ describe( 'LinkImageEditing', () => {
 
 	it( 'should require ImageEditing by name', () => {
 		expect( LinkImageEditing.requires ).to.include( 'ImageEditing' );
+	} );
+
+	it( 'should require ImageUtils by name', () => {
+		expect( LinkImageEditing.requires ).to.include( 'ImageUtils' );
+	} );
+
+	it( 'should require LinkEditing', () => {
+		expect( LinkImageEditing.requires ).to.include( LinkEditing );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
