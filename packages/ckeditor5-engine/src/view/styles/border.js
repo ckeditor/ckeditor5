@@ -243,7 +243,7 @@ function normalizeBorderShorthand( string ) {
 //
 //      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
 //
-// It will produce: `border-style: top` output.
+// It will produce: `border-style: solid` output.
 // For border style and color:
 //
 //      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
