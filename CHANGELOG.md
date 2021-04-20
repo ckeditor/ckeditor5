@@ -5,7 +5,7 @@ Changelog
 
 ### Release highlights
 
-We are happy to announce the release of CKEditor 5 v27.0.0.
+We are happy to announce the release of CKEditor 5 v27.1.0.
 
 This release introduces some new features:
 
