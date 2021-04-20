@@ -138,16 +138,4 @@ describe( 'Image', () => {
 			);
 		} );
 	} );
-
-	describe( 'isImageWidget()', () => {
-		it( 'should expose isImageWidget() utility', () => {
-			expect( editor.plugins.get( 'Image' ) ).to.respondTo( 'isImageWidget' );
-		} );
-
-		it( 'should return true for elements marked with toImageWidget()', () => {
-			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
-			const element = viewDocument.getRoot().getChild( 0 );
-			expect( editor.plugins.get( 'Image' ).isImageWidget( element ) ).to.be.true;
-		} );
-	} );
 } );

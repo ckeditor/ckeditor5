@@ -6,38 +6,43 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
 
 describe( 'ImageTextAlternativeCommand', () => {
-	let model, command;
+	let editor, model, command;
 
-	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				model = newEditor.model;
-				command = new ImageTextAlternativeCommand( newEditor );
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ ImageTextAlternativeEditing ]
+		} );
+		model = editor.model;
+		command = new ImageTextAlternativeCommand( editor );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-				model.schema.register( 'image', {
-					allowWhere: '$block',
-					isObject: true,
-					isBlock: true,
-					alllowAttributes: [ 'alt', 'src' ]
-				} );
+		model.schema.register( 'image', {
+			allowWhere: '$block',
+			isObject: true,
+			isBlock: true,
+			alllowAttributes: [ 'alt', 'src' ]
+		} );
 
-				model.schema.register( 'imageInline', {
-					allowWhere: '$text',
-					isObject: true,
-					isInline: true,
-					allowAttributes: [ 'alt', 'src', 'srcset' ]
-				} );
+		model.schema.register( 'imageInline', {
+			allowWhere: '$text',
+			isObject: true,
+			isInline: true,
+			allowAttributes: [ 'alt', 'src', 'srcset' ]
+		} );
 
-				model.schema.register( 'caption', {
-					allowContentOf: '$block',
-					allowIn: 'image',
-					isLimit: true
-				} );
-			} );
+		model.schema.register( 'caption', {
+			allowContentOf: '$block',
+			allowIn: 'image',
+			isLimit: true
+		} );
+	} );
+
+	afterEach( async () => {
+		return editor.destroy();
 	} );
 
 	it( 'should have false value if no image is selected', () => {

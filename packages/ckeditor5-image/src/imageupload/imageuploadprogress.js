@@ -11,7 +11,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { FileRepository } from 'ckeditor5/src/upload';
-import { getViewImageFromWidget } from '../image/utils';
 
 import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 
@@ -80,6 +79,7 @@ export default class ImageUploadProgress extends Plugin {
 			return;
 		}
 
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const fileRepository = editor.plugins.get( FileRepository );
 		const status = uploadId ? data.attributeNewValue : null;
 		const placeholder = this.placeholder;
@@ -90,7 +90,7 @@ export default class ImageUploadProgress extends Plugin {
 			// Start "appearing" effect and show placeholder with infinite progress bar on the top
 			// while image is read from disk.
 			_startAppearEffect( viewFigure, viewWriter );
-			_showPlaceholder( placeholder, viewFigure, viewWriter );
+			_showPlaceholder( imageUtils, placeholder, viewFigure, viewWriter );
 
 			return;
 		}
@@ -106,12 +106,12 @@ export default class ImageUploadProgress extends Plugin {
 				// There is no loader associated with uploadId - this means that image came from external changes.
 				// In such cases we still want to show the placeholder until image is fully uploaded.
 				// Show placeholder if needed - see https://github.com/ckeditor/ckeditor5-image/issues/191.
-				_showPlaceholder( placeholder, viewFigure, viewWriter );
+				_showPlaceholder( imageUtils, placeholder, viewFigure, viewWriter );
 			} else {
 				// Hide placeholder and initialize progress bar showing upload progress.
 				_hidePlaceholder( viewFigure, viewWriter );
 				_showProgressBar( viewFigure, viewWriter, loader, editor.editing.view );
-				_displayLocalImage( viewFigure, viewWriter, loader );
+				_displayLocalImage( imageUtils, viewFigure, viewWriter, loader );
 			}
 
 			return;
@@ -148,15 +148,16 @@ function _stopAppearEffect( viewFigure, writer ) {
 
 // Shows placeholder together with infinite progress bar on given image figure.
 //
+// @param {module:image/imageutils~ImageUtils} imageUtils
 // @param {String} Data-uri with a svg placeholder.
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-function _showPlaceholder( placeholder, viewFigure, writer ) {
+function _showPlaceholder( imageUtils, placeholder, viewFigure, writer ) {
 	if ( !viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
 	}
 
-	const viewImg = getViewImageFromWidget( viewFigure );
+	const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
 
 	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
 		writer.setAttribute( 'src', placeholder, viewImg );
@@ -278,12 +279,13 @@ function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 
 // Displays local data from file loader.
 //
+// @param {module:image/imageutils~ImageUtils} imageUtils
 // @param {module:engine/view/element~Element} imageFigure
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:upload/filerepository~FileLoader} loader
-function _displayLocalImage( viewFigure, writer, loader ) {
+function _displayLocalImage( imageUtils, viewFigure, writer, loader ) {
 	if ( loader.data ) {
-		const viewImg = getViewImageFromWidget( viewFigure );
+		const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
 
 		writer.setAttribute( 'src', loader.data, viewImg );
 	}

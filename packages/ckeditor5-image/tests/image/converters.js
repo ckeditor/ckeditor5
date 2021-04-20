@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import ImageEditing from '../../src/image/imageediting';
 import {
 	viewFigureToModel,
 	modelToViewAttributeConverter
 } from '../../src/image/converters';
-import { toImageWidget, createImageViewElement } from '../../src/image/utils';
+import { createImageViewElement } from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -20,51 +21,53 @@ describe( 'Image converters', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				document = model.document;
-				viewDocument = editor.editing.view;
+		return VirtualTestEditor.create( {
+			plugins: [ ImageEditing ]
+		} ).then( newEditor => {
+			editor = newEditor;
+			model = editor.model;
+			document = model.document;
+			viewDocument = editor.editing.view;
 
-				const schema = model.schema;
+			const imageUtils = editor.plugins.get( 'ImageUtils' );
+			const schema = model.schema;
 
-				schema.register( 'image', {
-					allowWhere: '$block',
-					allowAttributes: [ 'alt', 'src' ],
-					isObject: true,
-					isBlock: true
-				} );
-
-				schema.register( 'imageInline', {
-					allowWhere: '$inline',
-					allowAttributes: [ 'alt', 'src' ],
-					isObject: true,
-					isInline: true
-				} );
-
-				const imageEditingElementCreator = ( modelElement, { writer } ) =>
-					toImageWidget( createImageViewElement( writer, 'image' ), writer, '' );
-
-				const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
-					toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
-
-				editor.conversion.for( 'editingDowncast' ).elementToElement( {
-					model: 'image',
-					view: imageEditingElementCreator
-				} );
-
-				editor.conversion.for( 'editingDowncast' ).elementToElement( {
-					model: 'imageInline',
-					view: imageInlineEditingElementCreator
-				} );
-
-				editor.conversion.for( 'downcast' )
-					.add( modelToViewAttributeConverter( 'image', 'src' ) )
-					.add( modelToViewAttributeConverter( 'imageInline', 'src' ) )
-					.add( modelToViewAttributeConverter( 'image', 'alt' ) )
-					.add( modelToViewAttributeConverter( 'imageInline', 'alt' ) );
+			schema.register( 'image', {
+				allowWhere: '$block',
+				allowAttributes: [ 'alt', 'src' ],
+				isObject: true,
+				isBlock: true
 			} );
+
+			schema.register( 'imageInline', {
+				allowWhere: '$inline',
+				allowAttributes: [ 'alt', 'src' ],
+				isObject: true,
+				isInline: true
+			} );
+
+			const imageEditingElementCreator = ( modelElement, { writer } ) =>
+				imageUtils.toImageWidget( createImageViewElement( writer, 'image' ), writer, '' );
+
+			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
+				imageUtils.toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
+
+			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+				model: 'image',
+				view: imageEditingElementCreator
+			} );
+
+			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+				model: 'imageInline',
+				view: imageInlineEditingElementCreator
+			} );
+
+			editor.conversion.for( 'downcast' )
+				.add( modelToViewAttributeConverter( imageUtils, 'image', 'src' ) )
+				.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
+				.add( modelToViewAttributeConverter( imageUtils, 'image', 'alt' ) )
+				.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) );
+		} );
 	} );
 
 	describe( 'viewFigureToModel', () => {
@@ -83,7 +86,7 @@ describe( 'Image converters', () => {
 			schema.extend( '$text', { allowIn: 'image' } );
 
 			editor.conversion.for( 'upcast' )
-				.add( viewFigureToModel() )
+				.add( viewFigureToModel( editor.plugins.get( 'ImageUtils' ) ) )
 				.elementToElement( {
 					view: {
 						name: 'img',

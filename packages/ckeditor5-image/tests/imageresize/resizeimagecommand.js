@@ -5,32 +5,37 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ResizeImageCommand', () => {
-	let model, command;
+	let editor, model, command;
 
-	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				model = newEditor.model;
-				command = new ResizeImageCommand( newEditor );
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ ImageResizeEditing ]
+		} );
+		model = editor.model;
+		command = new ResizeImageCommand( editor );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-				model.schema.register( 'image', {
-					isObject: true,
-					isBlock: true,
-					allowWhere: '$block',
-					allowAttributes: 'width'
-				} );
+		model.schema.register( 'image', {
+			isObject: true,
+			isBlock: true,
+			allowWhere: '$block',
+			allowAttributes: 'width'
+		} );
 
-				model.schema.register( 'caption', {
-					allowContentOf: '$block',
-					allowIn: 'image',
-					isLimit: true
-				} );
-			} );
+		model.schema.register( 'caption', {
+			allowContentOf: '$block',
+			allowIn: 'image',
+			isLimit: true
+		} );
+	} );
+
+	afterEach( async () => {
+		return editor.destroy();
 	} );
 
 	describe( '#isEnabled', () => {

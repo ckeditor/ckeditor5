@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 import InsertImageCommand from './insertimagecommand';
+import ImageUtils from '../imageutils';
 
 /**
  * The image engine plugin. This module loads common code shared between
@@ -21,6 +22,13 @@ import InsertImageCommand from './insertimagecommand';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageUtils ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
