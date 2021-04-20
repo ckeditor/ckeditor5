@@ -31,7 +31,7 @@ export default class ImageTextAlternativeCommand extends Command {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
-		this.isEnabled = editor.plugins.get( 'ImageUtils' ).isImage( element );
+		this.isEnabled = !!element;
 
 		if ( this.isEnabled && element.hasAttribute( 'alt' ) ) {
 			this.value = element.getAttribute( 'alt' );

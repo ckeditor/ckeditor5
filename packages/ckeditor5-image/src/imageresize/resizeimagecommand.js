@@ -23,7 +23,7 @@ export default class ResizeImageCommand extends Command {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( editor.model.document.selection );
 
-		this.isEnabled = imageUtils.isImage( element );
+		this.isEnabled = !!element;
 
 		if ( !element || !element.hasAttribute( 'width' ) ) {
 			this.value = null;
