@@ -115,6 +115,46 @@ export default class ImageUtils extends Plugin {
 	}
 
 	/**
+	 * Returns an image widget editing view element if one is selected or is among the selection's ancestors.
+	 *
+	 * @protected
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+	 * @returns {module:engine/view/element~Element|null}
+	 */
+	getClosestSelectedImageWidget( selection ) {
+		const viewElement = selection.getSelectedElement();
+
+		if ( viewElement && this.isImageWidget( viewElement ) ) {
+			return viewElement;
+		}
+
+		let parent = selection.getFirstPosition().parent;
+
+		while ( parent ) {
+			if ( parent.is( 'element' ) && this.isImageWidget( parent ) ) {
+				return parent;
+			}
+
+			parent = parent.parent;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns a image model element if one is selected or is among the selection's ancestors.
+	 *
+	 * @protected
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	getClosestSelectedImageElement( selection ) {
+		const selectedElement = selection.getSelectedElement();
+
+		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'image' );
+	}
+
+	/**
 	 * Checks if image can be inserted at current model selection.
 	 *
 	 * @protected
@@ -161,57 +201,6 @@ export default class ImageUtils extends Plugin {
 	 */
 	isImageWidget( viewElement ) {
 		return !!viewElement.getCustomProperty( 'image' ) && isWidget( viewElement );
-	}
-
-	/**
-	 * Returns an image widget editing view element if one is selected.
-	 *
-	 * @protected
-	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
-	 * @returns {module:engine/view/element~Element|null}
-	 */
-	getSelectedImageWidget( selection ) {
-		const viewElement = selection.getSelectedElement();
-
-		if ( viewElement ) {
-			if ( this.isImageWidget( viewElement ) ) {
-				return viewElement;
-			}
-
-			// If a selected inline image widget is the only child of a link, the selection will encompass
-			// that link. But this still counts as a selected image widget. This is what it looks like:
-			// [<a href="..."><span class="image-inline ck-widget ck-widget_selected"><img ... /></span></a>]
-			if ( viewElement.is( 'element', 'a' ) && viewElement.childCount === 1 ) {
-				const firstChild = viewElement.getChild( 0 );
-
-				if ( firstChild.is( 'element' ) && this.isImageWidget( firstChild ) ) {
-					return firstChild;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns a image widget editing view element if one is among the selection's ancestors.
-	 *
-	 * @protected
-	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
-	 * @returns {module:engine/view/element~Element|null}
-	 */
-	getImageWidgetAncestor( selection ) {
-		let parent = selection.getFirstPosition().parent;
-
-		while ( parent ) {
-			if ( parent.is( 'element' ) && this.isImageWidget( parent ) ) {
-				return parent;
-			}
-
-			parent = parent.parent;
-		}
-
-		return null;
 	}
 
 	/**

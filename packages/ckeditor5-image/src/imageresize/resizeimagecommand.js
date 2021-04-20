@@ -20,8 +20,8 @@ export default class ResizeImageCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const element = editor.model.document.selection.getSelectedElement();
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const element = imageUtils.getClosestSelectedImageElement( editor.model.document.selection );
 
 		this.isEnabled = imageUtils.isImage( element );
 
@@ -49,8 +49,10 @@ export default class ResizeImageCommand extends Command {
 	 * @fires execute
 	 */
 	execute( options ) {
-		const model = this.editor.model;
-		const imageElement = model.document.selection.getSelectedElement();
+		const editor = this.editor;
+		const model = editor.model;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
 		this.value = {
 			width: options.width,

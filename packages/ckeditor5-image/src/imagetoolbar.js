@@ -52,7 +52,7 @@ export default class ImageToolbar extends Plugin {
 			ariaLabel: t( 'Image toolbar' ),
 			items: editor.config.get( 'image.toolbar' ) || [],
 			// Get the selected image or an image containing the figcaption with the selection inside.
-			getRelatedElement: selection => imageUtils.getSelectedImageWidget( selection ) || imageUtils.getImageWidgetAncestor( selection )
+			getRelatedElement: selection => imageUtils.getClosestSelectedImageWidget( selection )
 		} );
 	}
 }

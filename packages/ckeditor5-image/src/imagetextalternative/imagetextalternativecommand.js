@@ -28,7 +28,8 @@ export default class ImageTextAlternativeCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const element = editor.model.document.selection.getSelectedElement();
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
 		this.isEnabled = editor.plugins.get( 'ImageUtils' ).isImage( element );
 
@@ -47,8 +48,10 @@ export default class ImageTextAlternativeCommand extends Command {
 	 * @param {String} options.newValue The new value of the `alt` attribute to set.
 	 */
 	execute( options ) {
-		const model = this.editor.model;
-		const imageElement = model.document.selection.getSelectedElement();
+		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const model = editor.model;
+		const imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
 		model.change( writer => {
 			writer.setAttribute( 'alt', options.newValue, imageElement );

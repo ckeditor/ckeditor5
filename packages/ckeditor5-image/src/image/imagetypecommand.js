@@ -39,8 +39,8 @@ export default class ImageTypeCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const element = editor.model.document.selection.getSelectedElement();
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
 		if ( this._modelElementName === 'image' ) {
 			this.isEnabled = imageUtils.isInlineImage( element );
@@ -54,13 +54,15 @@ export default class ImageTypeCommand extends Command {
 	 */
 	execute() {
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
-		const attributes = Object.fromEntries( selection.getSelectedElement().getAttributes() );
+		const model = this.editor.model;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
+		const attributes = Object.fromEntries( imageElement.getAttributes() );
 
 		if ( !attributes.src ) {
 			return;
 		}
 
-		editor.plugins.get( 'ImageUtils' ).insertImage( attributes, selection, this._modelElementName );
+		imageUtils.insertImage( attributes, model.createSelection( imageElement, 'on' ), this._modelElementName );
 	}
 }
