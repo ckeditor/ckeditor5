@@ -77,10 +77,6 @@ export function addBorderRules( stylesProcessor ) {
 	stylesProcessor.setExtractor( 'border-bottom', getBorderPositionExtractor( 'bottom' ) );
 	stylesProcessor.setExtractor( 'border-left', getBorderPositionExtractor( 'left' ) );
 
-	stylesProcessor.setExtractor( 'border-color', getBorderTypeExtractor( 'color' ) );
-	stylesProcessor.setExtractor( 'border-width', getBorderTypeExtractor( 'width' ) );
-	stylesProcessor.setExtractor( 'border-style', getBorderTypeExtractor( 'style' ) );
-
 	stylesProcessor.setExtractor( 'border-top-color', 'border.color.top' );
 	stylesProcessor.setExtractor( 'border-right-color', 'border.color.right' );
 	stylesProcessor.setExtractor( 'border-bottom-color', 'border.color.bottom' );
@@ -219,30 +215,6 @@ function extractBorderPosition( border, which ) {
 	}
 
 	return value;
-}
-
-// Returns a single style value for a given type if all 4 sides are equal.
-function getBorderTypeExtractor( type ) {
-	return ( name, styles ) => {
-		if ( !styles.border ) {
-			return;
-		}
-
-		const value = styles.border[ type ];
-
-		if ( !value ) {
-			return;
-		}
-
-		const values = Object.values( value );
-
-		if ( values.length != 4 ) {
-			return value;
-		}
-
-		// Return a single value if all 4 are equal.
-		return values.reduce( ( result, style ) => result == style ? result : null ) || value;
-	};
 }
 
 function normalizeBorderShorthand( string ) {

@@ -184,12 +184,6 @@ export function getBoxSidesValues( value = '' ) {
  */
 export function getBoxSidesValueReducer( styleShorthand ) {
 	return value => {
-		if ( typeof value == 'string' ) {
-			return [
-				[ styleShorthand, value ]
-			];
-		}
-
 		const { top, right, bottom, left } = value;
 
 		const reduced = [];

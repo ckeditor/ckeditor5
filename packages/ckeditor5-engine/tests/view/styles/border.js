@@ -428,90 +428,45 @@ describe( 'Border styles normalization', () => {
 		it( 'should parse #RGB color value', () => {
 			styles.setTo( 'border:#f00;' );
 
-			expect( styles.getNormalized( 'border-color' ) ).to.equal( '#f00' );
+			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
+				top: '#f00',
+				right: '#f00',
+				bottom: '#f00',
+				left: '#f00'
+			} );
 		} );
 
 		it( 'should parse #RGBA color value', () => {
 			styles.setTo( 'border:#f00A;' );
 
-			expect( styles.getNormalized( 'border-color' ) ).to.equal( '#f00A' );
+			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
+				top: '#f00A',
+				right: '#f00A',
+				bottom: '#f00A',
+				left: '#f00A'
+			} );
 		} );
 
 		it( 'should parse rgb() color value', () => {
 			styles.setTo( 'border:rgb(0, 30%,35);' );
 
-			expect( styles.getNormalized( 'border-color' ) ).to.equal( 'rgb(0, 30%, 35)' );
+			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
+				top: 'rgb(0, 30%, 35)',
+				right: 'rgb(0, 30%, 35)',
+				bottom: 'rgb(0, 30%, 35)',
+				left: 'rgb(0, 30%, 35)'
+			} );
 		} );
 
 		it( 'should parse hsl() color value', () => {
 			styles.setTo( 'border:hsl(0, 100%, 50%);' );
 
-			expect( styles.getNormalized( 'border-color' ) ).to.equal( 'hsl(0, 100%, 50%)' );
-		} );
-
-		it( 'should return object for a single border side set', () => {
-			styles.setTo( 'border-top:hsl(0, 100%, 50%);' );
-
-			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
-				top: 'hsl(0, 100%, 50%)'
-			} );
-		} );
-
-		it( 'should return object for two border sides set', () => {
-			styles.setTo(
-				'border-top:hsl(0, 100%, 50%);' +
-				'border-left:#f00;'
-			);
-
 			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
 				top: 'hsl(0, 100%, 50%)',
-				left: '#f00'
+				right: 'hsl(0, 100%, 50%)',
+				bottom: 'hsl(0, 100%, 50%)',
+				left: 'hsl(0, 100%, 50%)'
 			} );
-		} );
-
-		it( 'should return object for three border sides set', () => {
-			styles.setTo(
-				'border-top:hsl(0, 100%, 50%);' +
-				'border-left:#f00;' +
-				'border-bottom:#ff0;'
-			);
-
-			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
-				top: 'hsl(0, 100%, 50%)',
-				bottom: '#ff0',
-				left: '#f00'
-			} );
-		} );
-
-		it( 'should return object for all border side set (different values)', () => {
-			styles.setTo(
-				'border-top:hsl(0, 100%, 50%);' +
-				'border-left:#f00;' +
-				'border-bottom:#ff0;' +
-				'border-right:rgb(0, 30%, 35);'
-			);
-
-			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
-				top: 'hsl(0, 100%, 50%)',
-				bottom: '#ff0',
-				left: '#f00',
-				right: 'rgb(0, 30%, 35)'
-			} );
-		} );
-
-		it( 'should return string for all border side set (same values)', () => {
-			styles.setTo(
-				'border-top:#f00;' +
-				'border-left:#f00;' +
-				'border-bottom:#f00;' +
-				'border-right:#f00;'
-			);
-
-			expect( styles.getNormalized( 'border-color' ) ).to.equal( '#f00' );
-		} );
-
-		it( 'should return undefined for border not set', () => {
-			expect( styles.getNormalized( 'border-color' ) ).to.be.undefined;
 		} );
 	} );
 
@@ -571,13 +526,23 @@ describe( 'Border styles normalization', () => {
 		it( 'should parse none value', () => {
 			styles.setTo( 'border:none;' );
 
-			expect( styles.getNormalized( 'border-style' ) ).to.equal( 'none' );
+			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
+				top: 'none',
+				right: 'none',
+				bottom: 'none',
+				left: 'none'
+			} );
 		} );
 
 		it( 'should parse line-style value', () => {
 			styles.setTo( 'border:solid;' );
 
-			expect( styles.getNormalized( 'border-style' ) ).to.equal( 'solid' );
+			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
+				top: 'solid',
+				right: 'solid',
+				bottom: 'solid',
+				left: 'solid'
+			} );
 		} );
 
 		it( 'should not parse non line-style value', () => {
@@ -589,71 +554,6 @@ describe( 'Border styles normalization', () => {
 				bottom: undefined,
 				left: undefined
 			} );
-		} );
-
-		it( 'should return object for a single border side set', () => {
-			styles.setTo( 'border-top:dashed;' );
-
-			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
-				top: 'dashed'
-			} );
-		} );
-
-		it( 'should return object for two border sides set', () => {
-			styles.setTo(
-				'border-top:dashed;' +
-				'border-left:dotted;'
-			);
-
-			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
-				top: 'dashed',
-				left: 'dotted'
-			} );
-		} );
-
-		it( 'should return object for three border sides set', () => {
-			styles.setTo(
-				'border-top:dashed;' +
-				'border-left:dotted;' +
-				'border-bottom:solid;'
-			);
-
-			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
-				top: 'dashed',
-				left: 'dotted',
-				bottom: 'solid'
-			} );
-		} );
-
-		it( 'should return object for all border sides set (different values)', () => {
-			styles.setTo(
-				'border-top:dashed;' +
-				'border-left:dotted;' +
-				'border-bottom:solid;' +
-				'border-right:solid;'
-			);
-
-			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
-				top: 'dashed',
-				left: 'dotted',
-				bottom: 'solid',
-				right: 'solid'
-			} );
-		} );
-
-		it( 'should return string for all border sides set (same values)', () => {
-			styles.setTo(
-				'border-top:dotted;' +
-				'border-left:dotted;' +
-				'border-bottom:dotted;' +
-				'border-right:dotted;'
-			);
-
-			expect( styles.getNormalized( 'border-style' ) ).to.equal( 'dotted' );
-		} );
-
-		it( 'should return undefined for border not set', () => {
-			expect( styles.getNormalized( 'border-style' ) ).to.be.undefined;
 		} );
 	} );
 
@@ -713,96 +613,56 @@ describe( 'Border styles normalization', () => {
 		it( 'should parse px value', () => {
 			styles.setTo( 'border:1px;' );
 
-			expect( styles.getNormalized( 'border-width' ) ).to.equal( '1px' );
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: '1px',
+				right: '1px',
+				bottom: '1px',
+				left: '1px'
+			} );
 		} );
 
 		it( 'should parse em value', () => {
 			styles.setTo( 'border:1em;' );
 
-			expect( styles.getNormalized( 'border-width' ) ).to.equal( '1em' );
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: '1em',
+				right: '1em',
+				bottom: '1em',
+				left: '1em'
+			} );
 		} );
 
 		it( 'should parse thin value', () => {
 			styles.setTo( 'border:thin' );
 
-			expect( styles.getNormalized( 'border-width' ) ).to.equal( 'thin' );
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: 'thin',
+				right: 'thin',
+				bottom: 'thin',
+				left: 'thin'
+			} );
 		} );
 
 		it( 'should parse medium value', () => {
 			styles.setTo( 'border:medium' );
 
-			expect( styles.getNormalized( 'border-width' ) ).to.equal( 'medium' );
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: 'medium',
+				right: 'medium',
+				bottom: 'medium',
+				left: 'medium'
+			} );
 		} );
 
 		it( 'should parse thick value', () => {
 			styles.setTo( 'border:thick' );
 
-			expect( styles.getNormalized( 'border-width' ) ).to.equal( 'thick' );
-		} );
-
-		it( 'should return object for a single border side set', () => {
-			styles.setTo( 'border-top:2px;' );
-
 			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
-				top: '2px'
+				top: 'thick',
+				right: 'thick',
+				bottom: 'thick',
+				left: 'thick'
 			} );
-		} );
-
-		it( 'should return object for two border sides set', () => {
-			styles.setTo(
-				'border-top:1px;' +
-				'border-left:2px;'
-			);
-
-			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
-				top: '1px',
-				left: '2px'
-			} );
-		} );
-
-		it( 'should return object for three border sides set', () => {
-			styles.setTo(
-				'border-top:1px;' +
-				'border-left:2px;' +
-				'border-bottom:3px;'
-			);
-
-			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
-				top: '1px',
-				left: '2px',
-				bottom: '3px'
-			} );
-		} );
-
-		it( 'should return object for all border sides set (different values)', () => {
-			styles.setTo(
-				'border-top:1px;' +
-				'border-left:2px;' +
-				'border-bottom:3px;' +
-				'border-right:4px;'
-			);
-
-			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
-				top: '1px',
-				left: '2px',
-				bottom: '3px',
-				right: '4px'
-			} );
-		} );
-
-		it( 'should return string for all border sides set (same values)', () => {
-			styles.setTo(
-				'border-top:2px;' +
-				'border-left:2px;' +
-				'border-bottom:2px;' +
-				'border-right:2px;'
-			);
-
-			expect( styles.getNormalized( 'border-width' ) ).to.equal( '2px' );
-		} );
-
-		it( 'should return undefined for border not set', () => {
-			expect( styles.getNormalized( 'border-width' ) ).to.be.undefined;
 		} );
 	} );
 

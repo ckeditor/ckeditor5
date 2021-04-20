@@ -14,8 +14,9 @@
  * @param {String} modelElement
  * @param {String} modelAttribute
  * @param {String} styleName
+ * @param {Boolean} [reduceBoxSides=false]
  */
-export function upcastStyleToAttribute( conversion, modelElement, modelAttribute, styleName ) {
+export function upcastStyleToAttribute( conversion, modelElement, modelAttribute, styleName, reduceBoxSides = false ) {
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
 			styles: {
@@ -25,7 +26,11 @@ export function upcastStyleToAttribute( conversion, modelElement, modelAttribute
 		model: {
 			name: modelElement,
 			key: modelAttribute,
-			value: viewElement => viewElement.getNormalizedStyle( styleName )
+			value: viewElement => {
+				const normalized = viewElement.getNormalizedStyle( styleName );
+
+				return reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
+			}
 		}
 	} );
 }
@@ -78,9 +83,13 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 
 		conversionApi.consumable.consume( data.viewItem, matcherPattern );
 
-		conversionApi.writer.setAttribute( 'borderStyle', data.viewItem.getNormalizedStyle( 'border-style' ), modelElement );
-		conversionApi.writer.setAttribute( 'borderColor', data.viewItem.getNormalizedStyle( 'border-color' ), modelElement );
-		conversionApi.writer.setAttribute( 'borderWidth', data.viewItem.getNormalizedStyle( 'border-width' ), modelElement );
+		const normalizedBorderStyle = data.viewItem.getNormalizedStyle( 'border-style' );
+		const normalizedBorderColor = data.viewItem.getNormalizedStyle( 'border-color' );
+		const normalizedBorderWidth = data.viewItem.getNormalizedStyle( 'border-width' );
+
+		conversionApi.writer.setAttribute( 'borderStyle', reduceBoxSidesValue( normalizedBorderStyle ), modelElement );
+		conversionApi.writer.setAttribute( 'borderColor', reduceBoxSidesValue( normalizedBorderColor ), modelElement );
+		conversionApi.writer.setAttribute( 'borderWidth', reduceBoxSidesValue( normalizedBorderWidth ), modelElement );
 	} ) );
 }
 
@@ -131,4 +140,17 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 			writer.removeStyle( styleName, table );
 		}
 	} ) );
+}
+
+// Reduces the full top, right, bottom, left object to a single string if all sides are equal.
+function reduceBoxSidesValue( style ) {
+	if ( !style ) {
+		return;
+	}
+
+	const commonValue = [ 'top', 'right', 'bottom', 'left' ]
+		.map( side => style[ side ] )
+		.reduce( ( result, side ) => result == side ? result : null );
+
+	return commonValue || style;
 }

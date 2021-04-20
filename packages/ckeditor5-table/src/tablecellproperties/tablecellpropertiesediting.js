@@ -85,7 +85,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor ) );
 
 		editor.data.addStyleProcessorRules( addPaddingRules );
-		enableProperty( schema, conversion, 'padding', 'padding' );
+		enableProperty( schema, conversion, 'padding', 'padding', true );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
@@ -195,10 +195,11 @@ function enableVerticalAlignmentProperty( schema, conversion ) {
 // @param {String} styleName
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enableProperty( schema, conversion, modelAttribute, styleName ) {
+// @param {Boolean} [reduceBoxSides=false]
+function enableProperty( schema, conversion, modelAttribute, styleName, reduceBoxSides = false ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, 'tableCell', modelAttribute, styleName );
+	upcastStyleToAttribute( conversion, 'tableCell', modelAttribute, styleName, reduceBoxSides );
 	downcastAttributeToStyle( conversion, 'tableCell', modelAttribute, styleName );
 }
