@@ -45,7 +45,14 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative', '|', 'linkImage' ]
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'toggleImageCaption',
+				'imageTextAlternative', '|',
+				'linkImage'
+			]
 		},
 		table: {
 			contentToolbar: [

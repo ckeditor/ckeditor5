@@ -114,15 +114,10 @@ DecoupledEditor.defaultConfig = {
 		]
 	},
 	image: {
-		styles: [
-			'full',
-			'alignLeft',
-			'alignRight'
-		],
 		toolbar: [
-			'imageStyle:alignLeft',
-			'imageStyle:full',
-			'imageStyle:alignRight',
+			'imageStyle:inline',
+			'imageStyle:wrapText',
+			'imageStyle:breakText',
 			'|',
 			'toggleImageCaption',
 			'imageTextAlternative'
