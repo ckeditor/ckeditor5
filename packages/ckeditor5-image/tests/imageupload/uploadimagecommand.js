@@ -152,6 +152,25 @@ describe( 'UploadImageCommand', () => {
 				.to.equal( `<paragraph>f[<imageInline uploadId="${ id }"></imageInline>]o</paragraph>` );
 		} );
 
+		it( 'should insert multiple images at selection position, one after another', () => {
+			const file = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			command.execute( { file } );
+
+			const idA = fileRepository.getLoader( file[ 0 ] ).id;
+			const idB = fileRepository.getLoader( file[ 1 ] ).id;
+			const idC = fileRepository.getLoader( file[ 2 ] ).id;
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f' +
+					`<imageInline uploadId="${ idA }"></imageInline>` +
+					`<imageInline uploadId="${ idB }"></imageInline>` +
+					`[<imageInline uploadId="${ idC }"></imageInline>]` +
+				'o</paragraph>'
+			);
+		} );
+
 		it( 'should use parent batch', () => {
 			const file = createNativeFileMock();
 
@@ -171,9 +190,9 @@ describe( 'UploadImageCommand', () => {
 
 			model.schema.register( 'other', {
 				allowIn: '$root',
+				allowChildren: '$text',
 				isLimit: true
 			} );
-			model.schema.extend( '$text', { allowIn: 'other' } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
@@ -199,6 +218,56 @@ describe( 'UploadImageCommand', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
 			sinon.assert.calledOnce( consoleWarnStub );
+		} );
+
+		it( 'should set document selection attributes on an image to maintain attribute continuity in downcast (e.g. links)', () => {
+			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
+
+			editor.model.schema.extend( 'imageInline', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			const file = createNativeFileMock();
+			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
+
+			command.execute( { file } );
+
+			const id = fileRepository.getLoader( file ).id;
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text bar="b" baz="c" foo="a">f</$text>' +
+					`[<imageInline bar="b" foo="a" uploadId="${ id }"></imageInline>]` +
+					'<$text bar="b" baz="c" foo="a">o</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should set document selection attributes on multiple images to maintain attribute continuity in downcast (e.g. links)', () => {
+			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
+
+			editor.model.schema.extend( 'imageInline', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			const file = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
+			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
+
+			command.execute( { file } );
+
+			const idA = fileRepository.getLoader( file[ 0 ] ).id;
+			const idB = fileRepository.getLoader( file[ 1 ] ).id;
+			const idC = fileRepository.getLoader( file[ 2 ] ).id;
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text bar="b" baz="c" foo="a">f</$text>' +
+					`<imageInline bar="b" foo="a" uploadId="${ idA }"></imageInline>` +
+					`<imageInline bar="b" foo="a" uploadId="${ idB }"></imageInline>` +
+					`[<imageInline bar="b" foo="a" uploadId="${ idC }"></imageInline>]` +
+					'<$text bar="b" baz="c" foo="a">o</$text>' +
+				'</paragraph>'
+			);
 		} );
 	} );
 } );

@@ -99,6 +99,7 @@ const imageConfig2 = {
 		'imageStyle:wrapText',
 		'imageStyle:breakText',
 		'imageStyle:side', '|', // Purposely using side image to make sure it works well with both style types.
+		'toggleImageCaption', '|',
 		'resizeImage:50',
 		'resizeImage:75',
 		'resizeImage:original'

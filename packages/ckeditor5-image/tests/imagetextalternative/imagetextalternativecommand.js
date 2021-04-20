@@ -6,32 +6,43 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
 
 describe( 'ImageTextAlternativeCommand', () => {
-	let model, command;
+	let editor, model, command;
 
-	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				model = newEditor.model;
-				command = new ImageTextAlternativeCommand( newEditor );
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ ImageTextAlternativeEditing ]
+		} );
+		model = editor.model;
+		command = new ImageTextAlternativeCommand( editor );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-				model.schema.register( 'image', {
-					allowWhere: '$block',
-					isObject: true,
-					isBlock: true,
-					alllowAttributes: [ 'alt', 'src' ]
-				} );
+		model.schema.register( 'image', {
+			allowWhere: '$block',
+			isObject: true,
+			isBlock: true,
+			alllowAttributes: [ 'alt', 'src' ]
+		} );
 
-				model.schema.register( 'imageInline', {
-					allowWhere: '$text',
-					isObject: true,
-					isInline: true,
-					allowAttributes: [ 'alt', 'src', 'srcset' ]
-				} );
-			} );
+		model.schema.register( 'imageInline', {
+			allowWhere: '$text',
+			isObject: true,
+			isInline: true,
+			allowAttributes: [ 'alt', 'src', 'srcset' ]
+		} );
+
+		model.schema.register( 'caption', {
+			allowContentOf: '$block',
+			allowIn: 'image',
+			isLimit: true
+		} );
+	} );
+
+	afterEach( async () => {
+		return editor.destroy();
 	} );
 
 	it( 'should have false value if no image is selected', () => {
@@ -62,6 +73,14 @@ describe( 'ImageTextAlternativeCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
+
+		describe( 'when the selection is in a block image caption', () => {
+			it( 'should be true if an inline image has no alt attribute', () => {
+				setData( model, '<image src="image.png"><caption>Foo[]</caption></image>' );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'the #value property', () => {
@@ -88,6 +107,20 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 			it( 'should have a proper value if an inline image the alt attribute', () => {
 				setData( model, '<p>[<imageInline src="image.png" alt="foo bar baz"></imageInline>]</p>' );
+
+				expect( command.value ).to.equal( 'foo bar baz' );
+			} );
+		} );
+
+		describe( 'when the selection is in a a block image caption', () => {
+			it( 'should be false if an image has no alt attribute', () => {
+				setData( model, '<image src="image.png"><caption>F[oo]</caption></image>' );
+
+				expect( command.value ).to.be.false;
+			} );
+
+			it( 'should have a proper value if an image has the alt attribute', () => {
+				setData( model, '<image src="image.png" alt="foo bar baz"><caption>[Foo]</caption></image>' );
 
 				expect( command.value ).to.equal( 'foo bar baz' );
 			} );
@@ -152,6 +185,24 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 					expect( writer.batch.operations ).to.length.above( 0 );
 				} );
+			} );
+		} );
+
+		describe( 'when the selection is in a block image caption', () => {
+			it( 'should set the proper alt attribute value if the image does not have one', () => {
+				setData( model, '<image src="image.png"><caption>[]Foo</caption></image>' );
+
+				command.execute( { newValue: 'fiz buz' } );
+
+				expect( getData( model ) ).to.equal( '<image alt="fiz buz" src="image.png"><caption>[]Foo</caption></image>' );
+			} );
+
+			it( 'should change the alt attribute if the image already has one', () => {
+				setData( model, '<image alt="foo bar" src="image.png"><caption>[]Foo</caption></image>' );
+
+				command.execute( { newValue: 'fiz buz' } );
+
+				expect( getData( model ) ).to.equal( '<image alt="fiz buz" src="image.png"><caption>[]Foo</caption></image>' );
 			} );
 		} );
 	} );

@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import ImageUtils from '../imageutils';
 import ResizeImageCommand from './resizeimagecommand';
 
 /**
@@ -19,6 +20,13 @@ import ResizeImageCommand from './resizeimagecommand';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageResizeEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageUtils ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */

@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { isImage } from '../image/utils';
 
 /**
  * The image style command. It is used to apply {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements}
@@ -65,9 +64,11 @@ export default class ImageStyleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = this.editor.model.document.selection.getSelectedElement();
+		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
-		this.isEnabled = isImage( element );
+		this.isEnabled = !!element;
 
 		if ( !this.isEnabled ) {
 			this.value = false;
@@ -93,20 +94,22 @@ export default class ImageStyleCommand extends Command {
 	 * @fires execute
 	 */
 	execute( options ) {
-		const model = this.editor.model;
+		const editor = this.editor;
+		const model = editor.model;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.change( writer => {
 			const requestedArrangement = options.value;
 			const supportedTypes = this._arrangements.get( requestedArrangement ).modelElements;
 
-			let imageElement = model.document.selection.getSelectedElement();
+			let imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
 			// Change the image type if a style requires it.
 			if ( !supportedTypes.includes( imageElement.name ) ) {
 				this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
 
 				// Update the imageElement to the newly created image.
-				imageElement = model.document.selection.getSelectedElement();
+				imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 			}
 
 			// Default style means that there is no `imageStyle` attribute in the model.

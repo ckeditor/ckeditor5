@@ -14,8 +14,8 @@ import { toWidgetEditable } from 'ckeditor5/src/widget';
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 import ImageInlineEditing from '../image/imageinlineediting';
 import ImageBlockEditing from '../image/imageblockediting';
+import ImageUtils from '../imageutils';
 
-import { isBlockImage } from '../image/utils';
 import { matchImageCaptionViewElement } from './utils';
 
 /**
@@ -31,6 +31,13 @@ export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ ImageUtils ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'ImageCaptionEditing';
 	}
@@ -42,6 +49,7 @@ export default class ImageCaptionEditing extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const schema = editor.model.schema;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const t = editor.t;
 
 		// Schema configuration.
@@ -67,7 +75,7 @@ export default class ImageCaptionEditing extends Plugin {
 
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
-			view: matchImageCaptionViewElement,
+			view: element => matchImageCaptionViewElement( imageUtils, element ),
 			model: 'caption'
 		} );
 
@@ -75,7 +83,7 @@ export default class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isBlockImage( modelElement.parent ) ) {
+				if ( !imageUtils.isBlockImage( modelElement.parent ) ) {
 					return null;
 				}
 
@@ -87,7 +95,7 @@ export default class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isBlockImage( modelElement.parent ) ) {
+				if ( !imageUtils.isBlockImage( modelElement.parent ) ) {
 					return null;
 				}
 

@@ -3,17 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-link-image_icon {
-	position: absolute;
-	top: var(--ck-spacing-medium);
-	right: var(--ck-spacing-medium);
-	width: 28px;
-	height: 28px;
-	padding: 4px;
-	box-sizing: border-box;
-	border-radius: var(--ck-border-radius);
-
-	& svg {
-		fill: currentColor;
+.ck.ck-editor__editable {
+	/* Linked image indicator */
+	& figure.image > a,
+	& a span.image-inline {
+		&::after {
+			display: block;
+			position: absolute;
+		}
 	}
 }
+

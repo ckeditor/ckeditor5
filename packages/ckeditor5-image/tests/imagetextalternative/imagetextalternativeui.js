@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Image from '../../src/image';
 import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
 import ImageTextAlternativeUI from '../../src/imagetextalternative/imagetextalternativeui';
+import ImageCaption from '../../src/imagecaption';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -25,7 +26,7 @@ describe( 'ImageTextAlternativeUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImageTextAlternativeEditing, ImageTextAlternativeUI, Image, Paragraph ]
+				plugins: [ ImageTextAlternativeEditing, ImageTextAlternativeUI, Image, Paragraph, ImageCaption ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -252,6 +253,15 @@ describe( 'ImageTextAlternativeUI', () => {
 
 				sinon.assert.calledWithExactly( removeSpy, form );
 				sinon.assert.calledOnce( focusSpy );
+			} );
+
+			it( 'should not hide the form when the selection is moved to a block image caption', () => {
+				setData( model, '<image src=""><caption>[]</caption></image>' );
+				button.fire( 'execute' );
+
+				editor.ui.fire( 'update' );
+
+				expect( balloon.visibleView ).to.be.an.instanceOf( View );
 			} );
 		} );
 

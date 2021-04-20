@@ -8,7 +8,6 @@
  */
 
 import { first } from 'ckeditor5/src/utils';
-import { getViewImageFromWidget } from './utils';
 
 /**
  * Returns a function that converts the image view representation:
@@ -22,9 +21,10 @@ import { getViewImageFromWidget } from './utils';
  * The entire content of the `<figure>` element except the first `<img>` is being converted as children
  * of the `<image>` model element.
  *
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @returns {Function}
  */
-export function viewFigureToModel() {
+export function viewFigureToModel( imageUtils ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', converter );
 	};
@@ -36,7 +36,7 @@ export function viewFigureToModel() {
 		}
 
 		// Find an image element inside the figure element.
-		const viewImage = getViewImageFromWidget( data.viewItem );
+		const viewImage = imageUtils.getViewImageFromWidget( data.viewItem );
 
 		// Do not convert if image element is absent, is missing src attribute or was already converted.
 		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
@@ -64,10 +64,11 @@ export function viewFigureToModel() {
 /**
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {'image'|'imageInline'} imageType The type of the image.
  * @returns {Function}
  */
-export function srcsetAttributeConverter( imageType ) {
+export function srcsetAttributeConverter( imageUtils, imageType ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:srcset:${ imageType }`, converter );
 	};
@@ -79,7 +80,7 @@ export function srcsetAttributeConverter( imageType ) {
 
 		const writer = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item );
-		const img = getViewImageFromWidget( element );
+		const img = imageUtils.getViewImageFromWidget( element );
 
 		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
@@ -111,11 +112,12 @@ export function srcsetAttributeConverter( imageType ) {
 /**
  * Converter used to convert a given image attribute from the model to the view.
  *
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {'image'|'imageInline'} imageType The type of the image.
  * @param {String} attributeKey The name of the attribute to convert.
  * @returns {Function}
  */
-export function modelToViewAttributeConverter( imageType, attributeKey ) {
+export function modelToViewAttributeConverter( imageUtils, imageType, attributeKey ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:${ attributeKey }:${ imageType }`, converter );
 	};
@@ -127,7 +129,7 @@ export function modelToViewAttributeConverter( imageType, attributeKey ) {
 
 		const viewWriter = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item );
-		const img = getViewImageFromWidget( element );
+		const img = imageUtils.getViewImageFromWidget( element );
 
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}
