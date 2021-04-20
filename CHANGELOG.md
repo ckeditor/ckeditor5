@@ -9,16 +9,16 @@ We are happy to announce the release of CKEditor 5 v27.0.0.
 
 This release introduces some new features:
 
-* Support for [nested tables](https://github.com/ckeditor/ckeditor5/issues/3232) and [nested block quotes](https://github.com/ckeditor/ckeditor5/issues/9210).
+* Support for [nested tables](https://github.com/ckeditor/ckeditor5/issues/3232) and [nested block quotes](https://github.com/ckeditor/ckeditor5/issues/9210) was introduced.
 * The editor will now convert a text that uses [the deprecated `align` attribute](https://github.com/ckeditor/ckeditor5/issues/9193).
 
 There were also a few bug fixes:
 
-* The empty value in the configuration (`config.initialData`) will have [precedence when creating the editor over a non-empty DOM element](https://github.com/ckeditor/ckeditor5/issues/8974).
-* [The watchdog feature does not import CKEditor 5 utils](https://github.com/ckeditor/ckeditor5/issues/9315) to avoid code duplication in integration with external frameworks.
+* The empty value in the configuration (`config.initialData`) will have [precedence over a non-empty DOM element when creating the editor](https://github.com/ckeditor/ckeditor5/issues/8974).
+* [The watchdog feature does not import CKEditor 5 utils](https://github.com/ckeditor/ckeditor5/issues/9315) to avoid code duplication in external frameworks integrations.
 * [Dragging the entire table cell](https://github.com/ckeditor/ckeditor5/issues/9370) is no longer possible.
-* [The selection will not get stuck in read-only mode](https://github.com/ckeditor/ckeditor5/issues/9372).
-* [Attributes that had already been set are no longe overridden while setting attributes upon upcast conversion](https://github.com/ckeditor/ckeditor5/issues/8921), as this caused text styles to not be properly converted.
+* [The selection will no longer get stuck in read-only mode](https://github.com/ckeditor/ckeditor5/issues/9372).
+* [Attributes that had already been set are no longer overridden while setting attributes upon upcast conversion](https://github.com/ckeditor/ckeditor5/issues/8921), as this caused text styles to not be properly converted.
 
 <!-- TODO: Add a link to the blog post. -->
 
@@ -30,13 +30,13 @@ There were also a few bug fixes:
 ### Features
 
 * **[alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment)**: Added support for the deprecated `align` attribute. Closes [#9193](https://github.com/ckeditor/ckeditor5/issues/9193). ([commit](https://github.com/ckeditor/ckeditor5/commit/3c69604b2ed6b0c17bec666d66d6742bd711bca7))
-* **[block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote)**: Added support for nested block quotes. Check out the migration guide for how to disable it again if you do not want to allow nested block quotes. Closes [#9210](https://github.com/ckeditor/ckeditor5/issues/9210). ([commit](https://github.com/ckeditor/ckeditor5/commit/18de0e24681351d5ddcf7bdb605f066775369dcc))
+* **[block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote)**: Added support for nested block quotes. Check the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-27.1.0.html) if you want to disable it back and disallow nesting quotes. Closes [#9210](https://github.com/ckeditor/ckeditor5/issues/9210). ([commit](https://github.com/ckeditor/ckeditor5/commit/18de0e24681351d5ddcf7bdb605f066775369dcc))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced new block filler mode "markedNbsp" in `DomConverter`, in which `<span data-cke-filler="true">&nbsp;</span>` is inserted, to prevent leaking extra space characters into the data. ([commit](https://github.com/ckeditor/ckeditor5/commit/5217b3063db01fdebd46ebb6309ccf4ff21f7e03))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `useFillerType()` in `HtmlDataProcessor` and `XmlDataProcessor` to switch between using marked and regular `nbsp` block fillers. Closes [#9345](https://github.com/ckeditor/ckeditor5/issues/9345). ([commit](https://github.com/ckeditor/ckeditor5/commit/5217b3063db01fdebd46ebb6309ccf4ff21f7e03))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Enabled the marker downcast for document fragments. Closes [#9460](https://github.com/ckeditor/ckeditor5/issues/9460). ([commit](https://github.com/ckeditor/ckeditor5/commit/5b99c75814efb1b0caadd0c765879c28f2671415))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced the `uploadComplete` event in `ImageUploadEditing` that allows customizing the image element (e.g. setting custom attributes) based on data retrieved from the upload adapter. Closes [#5204](https://github.com/ckeditor/ckeditor5/issues/5204). ([commit](https://github.com/ckeditor/ckeditor5/commit/bf5b561425dd497a40b7ca6a074279823fb5a84e))
 * **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Introduced the `config.mediaEmbed.elementName` to allow setting semantic element name. Closes [#9373](https://github.com/ckeditor/ckeditor5/issues/9373). ([commit](https://github.com/ckeditor/ckeditor5/commit/aefc6a29b189cb5d9366d6344ee450b01130f3d1))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added support for nested tables. Check out the migration guide for how to disable it again if you do not want to allow nested tables. Closes [#3232](https://github.com/ckeditor/ckeditor5/issues/3232). ([commit](https://github.com/ckeditor/ckeditor5/commit/e0eca47a42dc3813e2a02ba811cc56675334051c))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added support for nested tables. Check the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-27.1.0.html) if you want to disable it back and disallow nesting tables. Closes [#3232](https://github.com/ckeditor/ckeditor5/issues/3232). ([commit](https://github.com/ckeditor/ckeditor5/commit/e0eca47a42dc3813e2a02ba811cc56675334051c))
 * **[upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)**: The upload adapters' asynchronous `#upload()` method resolves to an object with additional properties along with the `urls` hash. See more in [#5204](https://github.com/ckeditor/ckeditor5/issues/5204). ([commit](https://github.com/ckeditor/ckeditor5/commit/bf5b561425dd497a40b7ca6a074279823fb5a84e))
 
 ### Bug fixes
