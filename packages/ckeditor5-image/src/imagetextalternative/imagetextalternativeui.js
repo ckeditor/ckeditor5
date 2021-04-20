@@ -12,7 +12,7 @@ import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/sr
 
 import TextAlternativeFormView from './ui/textalternativeformview';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
-import { getSelectedOrAncestorImageWidget } from '../image/utils';
+import { getClosestSelectedImageWidget } from '../image/utils';
 
 /**
  * The image text alternative UI plugin.
@@ -133,7 +133,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		// Reposition the balloon or hide the form if an image widget is no longer selected.
 		this.listenTo( editor.ui, 'update', () => {
-			if ( !getSelectedOrAncestorImageWidget( viewDocument.selection ) ) {
+			if ( !getClosestSelectedImageWidget( viewDocument.selection ) ) {
 				this._hideForm( true );
 			} else if ( this._isVisible ) {
 				repositionContextualBalloon( editor );
