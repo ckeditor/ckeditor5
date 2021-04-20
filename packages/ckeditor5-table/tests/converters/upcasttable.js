@@ -570,8 +570,11 @@ describe( 'upcastTable()', () => {
 
 	describe( 'inline contents', () => {
 		it( 'should upcast inline element inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(
@@ -590,8 +593,12 @@ describe( 'upcastTable()', () => {
 		} );
 
 		it( 'should upcast inline object inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true, isObject: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true,
+				isObject: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(

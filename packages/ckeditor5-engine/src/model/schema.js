@@ -884,6 +884,10 @@ export default class Schema {
 		}
 
 		for ( const itemName of itemNames ) {
+			compileAllowChildren( compiledDefinitions, itemName );
+		}
+
+		for ( const itemName of itemNames ) {
 			compileAllowContentOf( compiledDefinitions, itemName );
 		}
 
@@ -898,6 +902,7 @@ export default class Schema {
 
 		for ( const itemName of itemNames ) {
 			cleanUpAllowIn( compiledDefinitions, itemName );
+			setupAllowChildren( compiledDefinitions, itemName );
 			cleanUpAllowAttributes( compiledDefinitions, itemName );
 		}
 
@@ -1090,6 +1095,7 @@ mix( Schema, ObservableMixin );
  * You can define the following rules:
  *
  * * {@link ~SchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
+ * * {@link ~SchemaItemDefinition#allowChildren `allowChildren`} &ndash; Defines which other items are allowed inside this item.
  * * {@link ~SchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
  * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Inherits "allowed children" from other items.
  * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Inherits "allowed in" from other items.
@@ -1157,6 +1163,14 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *
+ * Allow `paragraph` inside a `$root` and allow `$text` as a `paragraph` child:
+ *
+ *		schema.register( 'paragraph', {
+ *			allowIn: '$root',
+ *			allowChildren: '$text',
+ *			isBlock: true
+ *		} );
+ *
  * Make `image` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
@@ -1205,6 +1219,7 @@ mix( Schema, ObservableMixin );
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
  *
  * @property {String|Array.<String>} allowIn Defines in which other items this item will be allowed.
+ * @property {String|Array.<String>} allowChildren Defines which other items are allowed inside this item.
  * @property {String|Array.<String>} allowAttributes Defines allowed attributes of the given item.
  * @property {String|Array.<String>} allowContentOf Inherits "allowed children" from other items.
  * @property {String|Array.<String>} allowWhere Inherits "allowed in" from other items.
@@ -1280,6 +1295,7 @@ mix( Schema, ObservableMixin );
  * * The `name` property,
  * * The `is*` properties,
  * * The `allowIn` array,
+ * * The `allowChildren` array,
  * * The `allowAttributes` array.
  *
  * @typedef {Object} module:engine/model/schema~SchemaCompiledItemDefinition
@@ -1562,6 +1578,8 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 		allowAttributes: [],
 		allowAttributesOf: [],
 
+		allowChildren: [],
+
 		inheritTypesFrom: []
 	};
 
@@ -1574,11 +1592,32 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 	copyProperty( sourceItemRules, itemRule, 'allowAttributes' );
 	copyProperty( sourceItemRules, itemRule, 'allowAttributesOf' );
 
+	copyProperty( sourceItemRules, itemRule, 'allowChildren' );
+
 	copyProperty( sourceItemRules, itemRule, 'inheritTypesFrom' );
 
 	makeInheritAllWork( sourceItemRules, itemRule );
 
 	return itemRule;
+}
+
+function compileAllowChildren( compiledDefinitions, itemName ) {
+	const item = compiledDefinitions[ itemName ];
+
+	for ( const allowChildrenItem of item.allowChildren ) {
+		const allowedChildren = compiledDefinitions[ allowChildrenItem ];
+
+		// The allowChildren property may point to an unregistered element.
+		if ( !allowedChildren ) {
+			continue;
+		}
+
+		allowedChildren.allowIn.push( itemName );
+	}
+
+	// The allowIn property already includes correct items, reset the allowChildren property
+	// to avoid duplicates later when setting up compilation results.
+	item.allowChildren.length = 0;
 }
 
 function compileAllowContentOf( compiledDefinitions, itemName ) {
@@ -1652,6 +1691,17 @@ function cleanUpAllowIn( compiledDefinitions, itemName ) {
 	const existingItems = itemRule.allowIn.filter( itemToCheck => compiledDefinitions[ itemToCheck ] );
 
 	itemRule.allowIn = Array.from( new Set( existingItems ) );
+}
+
+// Setup allowChildren items based on allowIn.
+function setupAllowChildren( compiledDefinitions, itemName ) {
+	const itemRule = compiledDefinitions[ itemName ];
+
+	for ( const allowedParentItemName of itemRule.allowIn ) {
+		const allowedParentItem = compiledDefinitions[ allowedParentItemName ];
+
+		allowedParentItem.allowChildren.push( itemName );
+	}
 }
 
 function cleanUpAllowAttributes( compiledDefinitions, itemName ) {
