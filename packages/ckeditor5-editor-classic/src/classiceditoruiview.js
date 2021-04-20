@@ -27,9 +27,10 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
+	 * @param {String} [options.editorClass] When set to string adds custom class name to view instance.
 	 */
 	constructor( locale, editingView, options = {} ) {
-		super( locale );
+		super( locale, options );
 
 		/**
 		 * Sticky panel view instance. This is a parent view of a {@link #toolbar}

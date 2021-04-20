@@ -21,9 +21,13 @@ export default class BoxedEditorUIView extends EditorUIView {
 	 * Creates an instance of the boxed editor UI view class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance..
+	 * @param {Object} [options={}] Configuration options for the BoxedEditorUIView instance.
+	 * @param {String} [options.elementClass] When set to string adds custom class name to view instance.
 	 */
-	constructor( locale ) {
+	constructor( locale, options = {} ) {
 		super( locale );
+
+		this.editorClass = options.editorClass || '';
 
 		/**
 		 * Collection of the child views located in the top (`.ck-editor__top`)
@@ -60,7 +64,8 @@ export default class BoxedEditorUIView extends EditorUIView {
 					'ck',
 					'ck-reset',
 					'ck-editor',
-					'ck-rounded-corners'
+					'ck-rounded-corners',
+					this.editorClass
 				],
 				role: 'application',
 				dir: locale.uiLanguageDirection,

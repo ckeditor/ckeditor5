@@ -271,6 +271,21 @@
  */
 
 /**
+ * Specifies an additional editor class name to apply in the outermost editor element.
+ *
+ *		const config = {
+ *			editorClass: 'my-editor-instance'
+ *		};
+ *
+ * - {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `ClassicEditor#element`})
+ * - {@link module:editor-balloon/ballooneditorui~BalloonEditorUI#element `editor.ui.element`}
+ *
+ * This is useful when instantiating editors styled against special class names. This way you can avoid having to use your own `<div>` wrapper.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#editorClass
+ */
+
+/**
  * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
  * help users locate the editor in the application (form) and prompt them to input the content. Work similarly
  * as to the native DOM
