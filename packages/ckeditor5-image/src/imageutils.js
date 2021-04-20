@@ -349,7 +349,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 
 	// Try to replace the selected widget (e.g. another image).
 	if ( selectable.is( 'selection' ) ) {
-		return determineImageTypeForInsertionAtSelection( editor, selectable );
+		return determineImageTypeForInsertionAtSelection( schema, selectable );
 	}
 
 	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';

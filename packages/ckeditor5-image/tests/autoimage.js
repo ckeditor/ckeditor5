@@ -17,6 +17,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Image from '../src/image';
+import ImageUtils from '../src/imageutils';
 import ImageCaption from '../src/imagecaption';
 import AutoImage from '../src/autoimage';
 
@@ -51,7 +52,7 @@ describe( 'AutoImage - integration', () => {
 	} );
 
 	it( 'should load the ImageUtils plugin', () => {
-		expect( AutoImage.requires ).to.include( 'ImageUtils' );
+		expect( AutoImage.requires ).to.include( ImageUtils );
 	} );
 
 	it( 'has proper name', () => {

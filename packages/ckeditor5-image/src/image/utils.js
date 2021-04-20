@@ -87,11 +87,11 @@ export function getImageTypeMatcher( editor, matchImageType ) {
  * that already contain some text.
  *
  * @protected
+ * @param {module:engine/model/schema~Schema} schema
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * @returns {'image'|'imageInline'}
  */
-export function determineImageTypeForInsertionAtSelection( editor, selection ) {
-	const schema = editor.model.schema;
+export function determineImageTypeForInsertionAtSelection( schema, selection ) {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
 	return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';

@@ -160,7 +160,7 @@ export default class ImageBlockEditing extends Plugin {
 
 			// Convert inline images into block images only when the currently selected block is empty
 			// (e.g. an empty paragraph) or some object is selected (to replace it).
-			if ( determineImageTypeForInsertionAtSelection( editor, selection ) === 'image' ) {
+			if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'image' ) {
 				const writer = new UpcastWriter( editingView.document );
 
 				// Wrap <img ... /> -> <figure class="image"><img .../></figure>
