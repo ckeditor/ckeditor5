@@ -108,7 +108,6 @@ DecoupledEditor.builtinPlugins = [
 	ListStyle,
 	MediaEmbed,
 	PageBreak,
-	Pagination,
 	Paragraph,
 	PasteFromOffice,
 	Table,
@@ -144,16 +143,14 @@ DecoupledEditor.defaultConfig = {
 			'|',
 			'link',
 			'blockquote',
-			'uploadImage',
+			// Removing image btn until uploading images enabled
+			// 'uploadImage',
 			'insertTable',
 			'mediaEmbed',
 			'|',
 			'undo',
 			'redo',
-			'pageBreak',
-			'previousPage',
-			'nextPage',
-			'pageNavigation', '|'
+			'pageBreak'
 		]
 	},
 	image: {
@@ -187,20 +184,6 @@ DecoupledEditor.defaultConfig = {
 			backgroundColors: customColorPalette
 		}
 	},
-	pagination: {
-		// A4
-		pageWidth: '21cm',
-		pageHeight: '29.7cm',
-
-		pageMargins: {
-			top: '20mm',
-			bottom: '20mm',
-			right: '12mm',
-			left: '12mm'
-		}
-	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en',
-	// eslint-disable-next-line max-len
-	licenseKey: '566c5247daed2fac418057e31e39c928ec02336f54898003355084d6d9e47569876b9fe7fbd94bb4f7beaecae0ce3c48274bde10b2c62431935a7c1da5b9f75c7465501040015cc6a517e9c78bd3486a44b44ec1e367ce6bd803522aefb2fb1432e114c3cbe76f2c4919426104678d381fc3453c456bfef236b1b5156f0adbe83f4b1246c853d85146921a50d87da8c4d698416df37423006b8c98a9171c9c1e252af2ee1290b7cee6b8c23d768145f5bc063dfda4ae77f03fe788ac167c0d97a6fe1c45f51a21b488bc851e6006ded4c599090c9cce5c23b2ec847ff781d24b346526a4702b5327395f8575ac47fc61'
+	language: 'en'
 };
