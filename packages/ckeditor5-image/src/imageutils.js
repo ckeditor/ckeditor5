@@ -290,7 +290,7 @@ function isNotInsideImage( selection ) {
 // Returns a node that will be used to insert image with `model.insertContent`.
 //
 // @private
-// @param {module:engine/model/selection~Selectable} selection
+// @param {module:engine/model/selection~Selection} selection
 // @param {module:engine/model/model~Model} model
 // @returns {module:engine/model/element~Element}
 function getInsertImageParent( selection, model ) {
