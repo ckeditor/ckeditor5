@@ -45,6 +45,37 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 
+const customColorPalette = [
+	{
+		color: 'hsl(4, 90%, 58%)',
+		label: 'Red'
+	},
+	{
+		color: 'hsl(340, 82%, 52%)',
+		label: 'Pink'
+	},
+	{
+		color: 'hsl(291, 64%, 42%)',
+		label: 'Purple'
+	},
+	{
+		color: 'hsl(262, 52%, 47%)',
+		label: 'Deep Purple'
+	},
+	{
+		color: 'hsl(231, 48%, 48%)',
+		label: 'Indigo'
+	},
+	{
+		color: 'hsl(207, 90%, 54%)',
+		label: 'Blue'
+	},
+	{
+		color: 'hsl(207, 90%, 54%, 0)',
+		label: 'transparent'
+	}
+];
+
 // Plugins to include in the build.
 DecoupledEditor.builtinPlugins = [
 	Essentials,
@@ -141,7 +172,10 @@ DecoupledEditor.defaultConfig = {
 			'mergeTableCells',
 			'tableProperties',
 			'tableCellProperties'
-		]
+		],
+		tableCellProperties: {
+			borderColors: customColorPalette
+		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
