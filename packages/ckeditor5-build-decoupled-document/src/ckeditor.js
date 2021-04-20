@@ -173,8 +173,13 @@ DecoupledEditor.defaultConfig = {
 			'tableProperties',
 			'tableCellProperties'
 		],
+		tableProperties: {
+			borderColors: customColorPalette,
+			backgroundColors: customColorPalette
+		},
 		tableCellProperties: {
-			borderColors: customColorPalette
+			borderColors: customColorPalette,
+			backgroundColors: customColorPalette
 		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
