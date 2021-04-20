@@ -83,7 +83,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		table: {
 			contentToolbar: [
-				'toggleTableCaption', 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
 			],
 			tableToolbar: [ 'toggleTableCaption' ]
 		},
