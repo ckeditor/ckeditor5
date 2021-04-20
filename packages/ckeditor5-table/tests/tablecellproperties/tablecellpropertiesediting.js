@@ -92,9 +92,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00' );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid' );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px' );
+					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -102,7 +102,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00' );
+					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -110,7 +110,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderStyle', 'ridge' );
+					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -118,7 +118,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px' );
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
