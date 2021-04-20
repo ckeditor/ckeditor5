@@ -6,6 +6,7 @@
 /* global document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import ImageToolbar from '../src/imagetoolbar';
 import ImageCaption from '../src/imagecaption';
 import Image from '../src/image';
@@ -28,7 +29,7 @@ describe( 'ImageToolbar', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, ImageToolbar, ImageCaption, FakeButton ],
+				plugins: [ Paragraph, Image, ImageToolbar, ImageCaption, LinkImage, FakeButton ],
 				image: {
 					toolbar: [ 'fake_button' ]
 				}
@@ -166,6 +167,54 @@ describe( 'ImageToolbar', () => {
 				// Select the [<image></image>]
 				writer.setSelection(
 					writer.createRangeOn( doc.getRoot().getChild( 1 ) )
+				);
+			} );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			// Make sure successive change does not throw, e.g. attempting
+			// to insert the toolbar twice.
+			editor.ui.fire( 'update' );
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
+
+		it( 'should show the toolbar on ui#update when the inline image is selected', () => {
+			setData( model, '<paragraph>[foo]<imageInline src=""></imageInline></paragraph>' );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			editor.ui.fire( 'update' );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			model.change( writer => {
+				// Select the [<imageInline src=""></imageInline>]
+				writer.setSelection(
+					writer.createRangeOn( doc.getRoot().getChild( 0 ).getChild( 1 ) )
+				);
+			} );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			// Make sure successive change does not throw, e.g. attempting
+			// to insert the toolbar twice.
+			editor.ui.fire( 'update' );
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
+
+		it( 'should show the toolbar on ui#update when the linked inline image is selected', () => {
+			setData( model, '<paragraph>[foo]<imageInline linkHref="https://ckeditor.com" src=""></imageInline></paragraph>' );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			editor.ui.fire( 'update' );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			model.change( writer => {
+				// Select the [<a href="https://ckeditor.com"><imageInline src=""></imageInline></a>]
+				writer.setSelection(
+					writer.createRangeOn( doc.getRoot().getChild( 0 ).getChild( 1 ) )
 				);
 			} );
 
