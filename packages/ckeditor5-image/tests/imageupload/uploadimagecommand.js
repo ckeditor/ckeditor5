@@ -166,9 +166,9 @@ describe( 'UploadImageCommand', () => {
 
 			model.schema.register( 'other', {
 				allowIn: '$root',
+				allowChildren: '$text',
 				isLimit: true
 			} );
-			model.schema.extend( '$text', { allowIn: 'other' } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 

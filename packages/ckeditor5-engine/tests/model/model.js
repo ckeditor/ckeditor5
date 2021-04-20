@@ -54,6 +54,13 @@ describe( 'Model', () => {
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).to.be.true;
 		} );
 
+		it( 'registers $documentFragment to the schema', () => {
+			expect( schema.isRegistered( '$documentFragment' ) ).to.be.true;
+			expect( schema.isLimit( '$documentFragment' ) ).to.be.true;
+			expect( schema.checkChild( [ '$documentFragment' ], '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$documentFragment' ], '$block' ) ).to.be.true;
+		} );
+
 		it( 'registers $marker to the schema', () => {
 			model.document.createRoot( '$anywhere', 'anywhere' );
 			schema.register( 'anything' );

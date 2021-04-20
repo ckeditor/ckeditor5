@@ -30,16 +30,16 @@ export default class MouseObserver extends DomEventObserver {
 }
 
 /**
- * Fired when mouse button is pressed down on one of the editing roots of the editor.
+ * Fired when the mouse button is pressed down on one of the editing roots of the editor.
  *
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
- * Note that this event is not available by default. To make it available {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
+ * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
+ * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @event module:engine/view/document~Document#event:mousedown
- * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data The event data.
  */
 
 /**
@@ -47,10 +47,10 @@ export default class MouseObserver extends DomEventObserver {
  *
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
- * Note that this event is not available by default. To make it available {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
+ * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
+ * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @event module:engine/view/document~Document#event:mouseup
- * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data The event data.
  */
