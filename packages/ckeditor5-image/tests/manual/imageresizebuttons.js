@@ -56,7 +56,7 @@ const imageConfig1 = {
 			value: '75'
 		}
 	],
-	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'resizeImage' ],
+	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'toggleImageCaption', '|', 'resizeImage' ],
 	styles: [
 		'alignLeft',
 		'alignCenter',
@@ -103,6 +103,7 @@ const imageConfig2 = {
 		'imageStyle:alignLeft',
 		'imageStyle:full',
 		'imageStyle:side', '|',
+		'toggleImageCaption', '|',
 		'resizeImage:50',
 		'resizeImage:75',
 		'resizeImage:original'

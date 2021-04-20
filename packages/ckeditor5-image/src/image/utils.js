@@ -44,28 +44,18 @@ export function isImageWidget( viewElement ) {
 }
 
 /**
- * Returns an image widget editing view element if one is selected.
+ * Returns an image widget editing view element if one is selected or is among the selection's ancestors.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/view/element~Element|null}
  */
-export function getSelectedImageWidget( selection ) {
+export function getClosestSelectedImageWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
 	if ( viewElement && isImageWidget( viewElement ) ) {
 		return viewElement;
 	}
 
-	return null;
-}
-
-/**
- * Returns a image widget editing view element if one is among the selection's ancestors.
- *
- * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {module:engine/view/element~Element|null}
- */
-export function getImageWidgetAncestor( selection ) {
 	let parent = selection.getFirstPosition().parent;
 
 	while ( parent ) {
@@ -77,6 +67,19 @@ export function getImageWidgetAncestor( selection ) {
 	}
 
 	return null;
+}
+
+/**
+ * Returns a image model element if one is selected or is among the selection's ancestors.
+ *
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @returns {module:engine/model/element~Element|null}
+ */
+
+export function getClosestSelectedImageElement( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	return isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'image' );
 }
 
 /**

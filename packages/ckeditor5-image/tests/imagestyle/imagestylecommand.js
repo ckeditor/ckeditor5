@@ -245,61 +245,78 @@ describe( 'ImageStyleCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be true when the selection is in a block image caption', () => {
+			setData( model, '<image><caption>[]Foo</caption></image>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( 'execute()', () => {
+		const imgSrc = 'assets/sample.png';
+
 		describe( 'converting image type', () => {
 			describe( 'when an inline image is selected', () => {
 				it( 'should change the image type if the requested type is other than imageInline', () => {
-					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+					setData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 					command.execute( { value: onlyBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( '[<image imageStyle="alignCenter" src="assets/sample.png"></image>]' );
+						.to.equal( `[<image imageStyle="alignCenter" src="${ imgSrc }"></image>]` );
 				} );
 
 				it( 'should not change the image type if the requested type equals imageInline', () => {
-					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+					setData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 					command.execute( { value: defaultInline.name } );
 
 					expect( getData( model ) )
-						.to.equal( '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+						.to.equal( `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 				} );
 
 				it( 'should not change the image type if the requested type is not specified', () => {
-					setData( model, '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+					setData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 					command.execute( { value: anyImage.name } );
 
 					expect( getData( model ) ).to.equal(
-						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="assets/sample.png"></imageInline>]</paragraph>`
+						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="${ imgSrc }"></imageInline>]</paragraph>`
 					);
 				} );
 			} );
 
 			describe( 'when a block image is selected', () => {
 				it( 'should change the image type if the requested type is other than imageBlock', () => {
-					setData( model, '[<image src="assets/sample.png"></image>]' );
+					setData( model, `[<image src="${ imgSrc }"></image>]` );
 					command.execute( { value: onlyInline.name } );
 
 					expect( getData( model ) )
-						.to.equal( '<paragraph>[<imageInline src="assets/sample.png"></imageInline>]</paragraph>' );
+						.to.equal( `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 				} );
 
 				it( 'should not change the image type if the requested type equals imageBlock', () => {
-					setData( model, '[<image src="assets/sample.png"><caption></caption></image>]' );
+					setData( model, `[<image src="${ imgSrc }"><caption></caption></image>]` );
 					command.execute( { value: onlyBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ onlyBlock.name }" src="assets/sample.png"><caption></caption></image>]` );
+						.to.equal( `[<image imageStyle="${ onlyBlock.name }" src="${ imgSrc }"><caption></caption></image>]` );
 				} );
 
 				it( 'should not change the image type if the requested type is not specified', () => {
-					setData( model, '[<image src="assets/sample.png"><caption></caption></image>]' );
+					setData( model, `[<image src="${ imgSrc }"><caption></caption></image>]` );
 					command.execute( { value: anyImage.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ anyImage.name }" src="assets/sample.png"><caption></caption></image>]` );
+						.to.equal( `[<image imageStyle="${ anyImage.name }" src="${ imgSrc }"><caption></caption></image>]` );
 				} );
+			} );
+
+			it( 'should change the image type if the selection is inside a caption', () => {
+				setData( model, `<image src="${ imgSrc }"><caption>[]Foo</caption></image>` );
+				command.execute( { value: onlyInline.name } );
+
+				expect( getData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
 			} );
 		} );
 
@@ -401,6 +418,14 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '[<image><caption></caption></image>]' );
 					expect( command.value ).to.equal( defaultBlock.name );
 				} );
+			} );
+
+			it( 'should set the style if the selection is inside a caption', () => {
+				setData( model, `<image imageStyle="${ onlyBlock.name }"><caption>Fo[o]</caption></image>` );
+				command.execute( { value: anyImage.name } );
+
+				expect( getData( model ) )
+					.to.equal( `<image imageStyle="${ anyImage.name }"><caption>Fo[o]</caption></image>` );
 			} );
 		} );
 	} );

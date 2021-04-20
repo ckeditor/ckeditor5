@@ -23,22 +23,23 @@ import Image from '../../src/image';
 import ImageEditing from '../../src/image/imageediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 
 import {
 	toImageWidget,
 	isImageWidget,
-	getSelectedImageWidget,
+	getClosestSelectedImageWidget,
 	isImage,
 	isInlineImage,
 	isBlockImage,
 	isImageAllowed,
 	insertImage,
 	getViewImageFromWidget,
-	getImageWidgetAncestor,
 	isInlineImageView,
 	isBlockImageView,
 	determineImageTypeForInsertionAtSelection,
-	getImageTypeMatcher
+	getImageTypeMatcher,
+	getClosestSelectedImageElement
 } from '../../src/image/utils';
 
 describe( 'image widget utils', () => {
@@ -85,44 +86,21 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'getSelectedImageWidget()', () => {
+	describe( 'getClosestSelectedImageWidget()', () => {
 		let frag;
 
-		it( 'should return true when image widget is the only element in the selection', () => {
+		it( 'should return an image widget when it is the only element in the selection', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = writer.createDocumentFragment( element );
 
 			const selection = writer.createSelection( element, 'on' );
 
-			expect( getSelectedImageWidget( selection ) ).to.equal( element );
+			expect( getClosestSelectedImageWidget( selection ) ).to.equal( element );
 		} );
 
-		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
-			const notWidgetizedElement = writer.createContainerElement( 'p' );
+		describe( 'when the selection is inside a block image caption', () => {
+			let caption;
 
-			// We need to create a container for the element to be able to create a Range on this element.
-			frag = writer.createDocumentFragment( notWidgetizedElement );
-
-			const selection = writer.createSelection( notWidgetizedElement, 'on' );
-
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
-		} );
-
-		it( 'should return false when widget element is not the only element in the selection', () => {
-			const notWidgetizedElement = writer.createContainerElement( 'p' );
-
-			frag = writer.createDocumentFragment( [ element, notWidgetizedElement ] );
-
-			const selection = writer.createSelection( writer.createRangeIn( frag ) );
-
-			expect( getSelectedImageWidget( selection ) ).to.be.null;
-		} );
-	} );
-
-	describe( 'getImageWidgetAncestor()', () => {
-		let frag, caption;
-
-		describe( 'when the selection is inside a caption', () => {
 			beforeEach( () => {
 				caption = writer.createContainerElement( 'figcaption' );
 				writer.insert( writer.createPositionAt( element, 1 ), caption );
@@ -135,23 +113,35 @@ describe( 'image widget utils', () => {
 
 				const selection = writer.createSelection( writer.createRangeIn( caption ) );
 
-				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
+				expect( getClosestSelectedImageWidget( selection ) ).to.equal( element );
 			} );
 
 			it( 'should return the widget element if the selection is collapsed', () => {
 				const selection = writer.createSelection( caption, 'in' );
 
-				expect( getImageWidgetAncestor( selection ) ).to.equal( element );
+				expect( getClosestSelectedImageWidget( selection ) ).to.equal( element );
 			} );
 		} );
 
-		it( 'should return null if an image is selected', () => {
+		it( 'should return null when non-widgetized elements is the only element in the selection', () => {
+			const notWidgetizedElement = writer.createContainerElement( 'p' );
+
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = writer.createDocumentFragment( element );
+			frag = writer.createDocumentFragment( notWidgetizedElement );
 
-			const selection = writer.createSelection( element, 'on' );
+			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( getClosestSelectedImageWidget( selection ) ).to.be.null;
+		} );
+
+		it( 'should return null when widget element is not the only element in the selection', () => {
+			const notWidgetizedElement = writer.createContainerElement( 'p' );
+
+			frag = writer.createDocumentFragment( [ element, notWidgetizedElement ] );
+
+			const selection = writer.createSelection( writer.createRangeIn( frag ) );
+
+			expect( getClosestSelectedImageWidget( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if an image is a part of the selection', () => {
@@ -161,18 +151,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
-		} );
-
-		it( 'should return null if a non-widgetized element is the only element in the selection', () => {
-			const notWidgetizedElement = writer.createContainerElement( 'p' );
-
-			// We need to create a container for the element to be able to create a Range on this element.
-			frag = writer.createDocumentFragment( notWidgetizedElement );
-
-			const selection = writer.createSelection( notWidgetizedElement, 'on' );
-
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( getClosestSelectedImageWidget( selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if the selection is inside a figure element, which is not an image', () => {
@@ -186,7 +165,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( innerContainer, 'in' );
 
-			expect( getImageWidgetAncestor( selection ) ).to.be.null;
+			expect( getClosestSelectedImageWidget( selection ) ).to.be.null;
 		} );
 	} );
 
@@ -888,6 +867,69 @@ describe( 'image widget utils', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'getClosestSelectedImageElement()', () => {
+		let model;
+
+		beforeEach( async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph, ImageCaptionEditing ]
+			} );
+
+			model = editor.model;
+
+			model.schema.register( 'blockWidget', {
+				isObject: true,
+				allowIn: '$root'
+			} );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'blockWidget', view: 'blockWidget' } );
+		} );
+
+		it( 'should return null if no element is selected and the selection has no image ancestor', () => {
+			setModelData( model, '<paragraph>F[]oo</paragraph>' );
+
+			expect( getClosestSelectedImageElement( model.document.selection ) ).to.be.null;
+		} );
+
+		it( 'should return null if a non-image element is selected', () => {
+			setModelData( model, '[<blockWidget></blockWidget>]' );
+
+			expect( getClosestSelectedImageElement( model.document.selection ) ).to.be.null;
+		} );
+
+		it( 'should return an imageInline element if it is selected', () => {
+			setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+
+			const image = getClosestSelectedImageElement( model.document.selection );
+
+			expect( image.is( 'element', 'imageInline' ) ).to.be.true;
+		} );
+
+		it( 'should return an image element if it is selected', () => {
+			setModelData( model, '[<image></image>]' );
+
+			const image = getClosestSelectedImageElement( model.document.selection );
+
+			expect( image.is( 'element', 'image' ) ).to.be.true;
+		} );
+
+		it( 'should return an image element if the selection range is inside its caption', () => {
+			setModelData( model, '<image><caption>F[oo]</caption></image>' );
+
+			const image = getClosestSelectedImageElement( model.document.selection );
+
+			expect( image.is( 'element', 'image' ) ).to.be.true;
+		} );
+
+		it( 'should return an image element if the selection position is inside its caption', () => {
+			setModelData( model, '<image><caption>Foo[]</caption></image>' );
+
+			const image = getClosestSelectedImageElement( model.document.selection );
+
+			expect( image.is( 'element', 'image' ) ).to.be.true;
 		} );
 	} );
 } );

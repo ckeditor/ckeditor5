@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { isImage } from '../image/utils';
+import { isImage, getClosestSelectedImageElement } from '../image/utils';
 
 /**
  * The resize image command. Currently, it only supports the width attribute.
@@ -20,7 +20,7 @@ export default class ResizeImageCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = this.editor.model.document.selection.getSelectedElement();
+		const element = getClosestSelectedImageElement( this.editor.model.document.selection );
 
 		this.isEnabled = isImage( element );
 
@@ -49,7 +49,7 @@ export default class ResizeImageCommand extends Command {
 	 */
 	execute( options ) {
 		const model = this.editor.model;
-		const imageElement = model.document.selection.getSelectedElement();
+		const imageElement = getClosestSelectedImageElement( model.document.selection );
 
 		this.value = {
 			width: options.width,

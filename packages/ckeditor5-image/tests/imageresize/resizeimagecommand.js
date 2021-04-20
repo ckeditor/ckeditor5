@@ -24,12 +24,24 @@ describe( 'ResizeImageCommand', () => {
 					allowWhere: '$block',
 					allowAttributes: 'width'
 				} );
+
+				model.schema.register( 'caption', {
+					allowContentOf: '$block',
+					allowIn: 'image',
+					isLimit: true
+				} );
 			} );
 	} );
 
 	describe( '#isEnabled', () => {
 		it( 'is true when image is selected', () => {
 			setData( model, '<p>x</p>[<image width="50px"></image>]<p>x</p>' );
+
+			expect( command ).to.have.property( 'isEnabled', true );
+		} );
+
+		it( 'is true when the selection is inside a block image caption', () => {
+			setData( model, '<image width="50px"><caption>[F]oo</caption></image>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
@@ -54,8 +66,14 @@ describe( 'ResizeImageCommand', () => {
 			expect( command ).to.have.property( 'value', null );
 		} );
 
-		it( 'is set to an object with a width property (and height set to null)', () => {
+		it( 'is set to an object with a width property (and height set to null) when a block image is selected', () => {
 			setData( model, '<p>x</p>[<image width="50px"></image>]<p>x</p>' );
+
+			expect( command ).to.have.deep.property( 'value', { width: '50px', height: null } );
+		} );
+
+		it( 'is set to an object with a width property (and height set to null) when the selection is in a block image caption', () => {
+			setData( model, '<image width="50px"><caption>[]Foo</caption></image>' );
 
 			expect( command ).to.have.deep.property( 'value', { width: '50px', height: null } );
 		} );
@@ -74,6 +92,14 @@ describe( 'ResizeImageCommand', () => {
 			command.execute( { width: '100%' } );
 
 			expect( getData( model ) ).to.equal( '[<image width="100%"></image>]' );
+		} );
+
+		it( 'sets image width when selection is in a block image caption', () => {
+			setData( model, '<image width="50px"><caption>F[o]o</caption></image>' );
+
+			command.execute( { width: '100%' } );
+
+			expect( getData( model ) ).to.equal( '<image width="100%"><caption>F[o]o</caption></image>' );
 		} );
 
 		it( 'removes image width when null passed', () => {
