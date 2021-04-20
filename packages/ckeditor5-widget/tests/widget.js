@@ -50,14 +50,16 @@ describe( 'Widget', () => {
 				} );
 				model.schema.register( 'inline', {
 					allowWhere: '$text',
-					isObject: true
+					isObject: true,
+					allowAttributes: [ 'attr' ]
 				} );
 				model.schema.register( 'nested', {
 					allowIn: 'widget',
 					isLimit: true
 				} );
 				model.schema.extend( '$text', {
-					allowIn: [ 'nested', 'editable' ]
+					allowIn: [ 'nested', 'editable' ],
+					allowAttributes: [ 'attr' ]
 				} );
 				model.schema.register( 'editable', {
 					allowIn: [ 'widget', '$root' ]
@@ -65,7 +67,8 @@ describe( 'Widget', () => {
 				model.schema.register( 'inline-widget', {
 					allowWhere: '$text',
 					isObject: true,
-					isInline: true
+					isInline: true,
+					allowAttributes: [ 'attr' ]
 				} );
 
 				// Image feature.
@@ -87,7 +90,9 @@ describe( 'Widget', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.elementToElement( { model: 'inline', view: 'figure' } )
+					.elementToElement( { model: 'inline', view: ( modelItem, { writer } ) => {
+						return writer.createContainerElement( 'figure', null, { isAllowedInsideAttributeElement: true } );
+					} } )
 					.elementToElement( { model: 'image', view: 'img' } )
 					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
 					.elementToElement( { model: 'div', view: 'div' } )
@@ -104,7 +109,7 @@ describe( 'Widget', () => {
 					.elementToElement( {
 						model: 'inline-widget',
 						view: ( modelItem, { writer } ) => {
-							const span = writer.createContainerElement( 'span' );
+							const span = writer.createContainerElement( 'span', null, { isAllowedInsideAttributeElement: true } );
 
 							return toWidget( span, writer );
 						}
@@ -116,7 +121,10 @@ describe( 'Widget', () => {
 					.elementToElement( {
 						model: 'editable',
 						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
-					} );
+					} )
+					.attributeToElement( { model: 'attr', view: ( modelAttributeValue, conversionApi ) => {
+						return conversionApi.writer.createAttributeElement( 'attr', { value: modelAttributeValue } );
+					} } );
 			} );
 	} );
 
@@ -226,6 +234,51 @@ describe( 'Widget', () => {
 			'</div>]'
 		);
 		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should apply fake view selection when an inline widget is surrounded by an attribute element', () => {
+		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget>] bar</paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>foo ' +
+				'<attr value="foo">' +
+					'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+				'</attr>' +
+			' bar</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should not apply fake view selection when an inline widget and some other content is surrounded by an attribute element', () => {
+		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget><$text attr="foo">bar]</$text></paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+
+			'<p>foo ' +
+				'{<attr value="foo">' +
+					'<span class="ck-widget ck-widget_selected" contenteditable="false"></span>bar' +
+				'</attr>]' +
+			'</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.false;
+	} );
+
+	it( 'should not apply fake view selection when a non-widget element is surrounded by an attribute element', () => {
+		setModelData( model, '<paragraph>foo [<inline attr="foo"></inline>] bar</paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+
+			'<p>foo ' +
+				'{<attr value="foo">' +
+					'<figure></figure>' +
+				'</attr>}' +
+				' bar' +
+			'</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.false;
 	} );
 
 	it( 'should use element\'s label to set fake selection if one is provided', () => {

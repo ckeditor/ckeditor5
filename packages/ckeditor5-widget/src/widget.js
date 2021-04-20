@@ -71,8 +71,29 @@ export default class Widget extends Plugin {
 
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			const selectedElement = viewSelection.getSelectedElement();
+			let selectedElement = viewSelection.getSelectedElement();
 			let lastMarked = null;
+
+			// By default, the selection is downcasted by the engine to surround the attribute element, even though its only
+			// child is an inline widget. This prevents creating a correct fake selection when this inline widget is selected.
+			// Normalize the selection in this case
+			//
+			//		[<attributeElement><inlineWidget /><attributeElement>] -> <attributeElement>[<inlineWidget />]<attributeElement>
+			//
+			// Thanks to this:
+			//
+			// * fake selection can be set correctly,
+			// * any logic depending on (View)Selection#getSelectedElement() also works OK.
+			//
+			// See https://github.com/ckeditor/ckeditor5/issues/9524.
+			if ( selectedElement && selectedElement.is( 'attributeElement' ) && selectedElement.childCount === 1 ) {
+				const firstElement = selectedElement.getChild( 0 );
+
+				if ( isWidget( firstElement ) ) {
+					selectedElement = firstElement;
+					viewWriter.setSelection( viewWriter.createRangeOn( firstElement ) );
+				}
+			}
 
 			for ( const range of viewSelection.getRanges() ) {
 				for ( const value of range ) {
