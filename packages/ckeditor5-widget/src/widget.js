@@ -86,12 +86,14 @@ export default class Widget extends Plugin {
 			// * any logic depending on (View)Selection#getSelectedElement() also works OK.
 			//
 			// See https://github.com/ckeditor/ckeditor5/issues/9524.
-			if ( selectedElement && selectedElement.is( 'attributeElement' ) && selectedElement.childCount === 1 ) {
-				const firstElement = selectedElement.getChild( 0 );
+			if ( selectedElement ) {
+				selectedElement = viewWriter.createRangeOn( selectedElement ).getTrimmed().getContainedElement();
 
-				if ( isWidget( firstElement ) ) {
-					selectedElement = firstElement;
-					viewWriter.setSelection( viewWriter.createRangeOn( firstElement ) );
+				if ( selectedElement && isWidget( selectedElement ) ) {
+					viewWriter.setSelection( viewWriter.createRangeOn( selectedElement ), {
+						fake: true,
+						label: getLabel( selectedElement )
+					} );
 				}
 			}
 
@@ -105,11 +107,6 @@ export default class Widget extends Plugin {
 
 						this._previouslySelected.add( node );
 						lastMarked = node;
-
-						// Check if widget is a single element selected.
-						if ( node == selectedElement ) {
-							viewWriter.setSelection( viewSelection.getRanges(), { fake: true, label: getLabel( selectedElement ) } );
-						}
 					}
 				}
 			}
