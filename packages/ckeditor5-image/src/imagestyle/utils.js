@@ -97,7 +97,7 @@ const DEFAULT_ARRANGEMENTS = {
 	full: {
 		name: 'full',
 		title: 'Full size image',
-		icon: objectFullWidth,
+		icon: objectCenter,
 		modelElements: [ 'image' ],
 		isDefault: true
 	},
@@ -137,8 +137,8 @@ const DEFAULT_GROUPS = {
 	breakText: {
 		name: 'breakText',
 		title: 'Break text',
-		defaultItem: 'alignCenter',
-		items: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
+		defaultItem: 'full',
+		items: [ 'alignBlockLeft', 'full', 'alignBlockRight' ]
 	}
 };
 

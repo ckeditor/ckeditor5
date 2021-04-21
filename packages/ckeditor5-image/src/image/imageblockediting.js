@@ -12,16 +12,15 @@ import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
-import {
-	toImageWidget,
-	createImageViewElement,
-	getImageTypeMatcher,
-	determineImageTypeForInsertionAtSelection,
-	isInlineImageView
-} from './utils';
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
+import ImageUtils from '../imageutils';
+import {
+	getImageTypeMatcher,
+	createImageViewElement,
+	determineImageTypeForInsertionAtSelection
+} from '../image/utils';
 
 /**
  * The image block plugin.
@@ -40,7 +39,7 @@ export default class ImageBlockEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, ClipboardPipeline ];
+		return [ ImageEditing, ImageUtils, ClipboardPipeline ];
 	}
 
 	/**
@@ -84,6 +83,7 @@ export default class ImageBlockEditing extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const conversion = editor.conversion;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
@@ -94,23 +94,23 @@ export default class ImageBlockEditing extends Plugin {
 		conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'image',
-				view: ( modelElement, { writer } ) => toImageWidget(
+				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
 					createImageViewElement( writer, 'image' ), writer, t( 'image widget' )
 				)
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( 'image', 'src' ) )
-			.add( modelToViewAttributeConverter( 'image', 'alt' ) )
-			.add( srcsetAttributeConverter( 'image' ) );
+			.add( modelToViewAttributeConverter( imageUtils, 'image', 'src' ) )
+			.add( modelToViewAttributeConverter( imageUtils, 'image', 'alt' ) )
+			.add( srcsetAttributeConverter( imageUtils, 'image' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( 'image', editor ),
+				view: getImageTypeMatcher( editor, 'image' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
-			.add( viewFigureToModel() );
+			.add( viewFigureToModel( imageUtils ) );
 	}
 
 	/**
@@ -132,8 +132,8 @@ export default class ImageBlockEditing extends Plugin {
 	_setupClipboardIntegration() {
 		const editor = this.editor;
 		const model = editor.model;
-		const schema = model.schema;
 		const editingView = editor.editing.view;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
 			const docFragmentChildren = Array.from( data.content.getChildren() );
@@ -141,7 +141,7 @@ export default class ImageBlockEditing extends Plugin {
 
 			// Make sure only <img> elements are dropped or pasted. Otherwise, if there some other HTML
 			// mixed up, this should be handled as a regular paste.
-			if ( !docFragmentChildren.every( isInlineImageView ) ) {
+			if ( !docFragmentChildren.every( imageUtils.isInlineImageView ) ) {
 				return;
 			}
 
@@ -160,7 +160,7 @@ export default class ImageBlockEditing extends Plugin {
 
 			// Convert inline images into block images only when the currently selected block is empty
 			// (e.g. an empty paragraph) or some object is selected (to replace it).
-			if ( determineImageTypeForInsertionAtSelection( schema, selection ) === 'image' ) {
+			if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'image' ) {
 				const writer = new UpcastWriter( editingView.document );
 
 				// Wrap <img ... /> -> <figure class="image"><img .../></figure>

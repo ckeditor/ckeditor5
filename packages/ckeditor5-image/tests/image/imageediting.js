@@ -19,7 +19,6 @@ import InsertImageCommand from '../../src/image/insertimagecommand';
 import ImageTypeCommand from '../../src/image/imagetypecommand';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
-import { isImageWidget } from '../../src/image/utils';
 
 describe( 'ImageEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -733,13 +732,13 @@ describe( 'ImageEditing', () => {
 				const figure = viewDocument.getRoot().getChild( 0 );
 
 				expect( figure.name ).to.equal( 'figure' );
-				expect( isImageWidget( figure ) ).to.be.true;
+				expect( editor.plugins.get( 'ImageUtils' ).isImageWidget( figure ) ).to.be.true;
 
 				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 				const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
 				expect( element.name ).to.equal( 'span' );
-				expect( isImageWidget( element ) ).to.be.true;
+				expect( editor.plugins.get( 'ImageUtils' ).isImageWidget( element ) ).to.be.true;
 			} );
 
 			it( 'should convert attribute change', () => {

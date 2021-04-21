@@ -13,7 +13,7 @@ import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 
-import { isBlockImage } from '../image/utils';
+import ImageUtils from '../imageutils';
 import { getCaptionFromImageModelElement, matchImageCaptionViewElement } from './utils';
 
 /**
@@ -26,6 +26,13 @@ import { getCaptionFromImageModelElement, matchImageCaptionViewElement } from '.
  * @extends module:core/plugin~Plugin
  */
 export default class ImageCaptionEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageUtils ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -79,11 +86,12 @@ export default class ImageCaptionEditing extends Plugin {
 	_setupConversion() {
 		const editor = this.editor;
 		const view = editor.editing.view;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const t = editor.t;
 
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
-			view: matchImageCaptionViewElement,
+			view: element => matchImageCaptionViewElement( imageUtils, element ),
 			model: 'caption'
 		} );
 
@@ -91,7 +99,7 @@ export default class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isBlockImage( modelElement.parent ) ) {
+				if ( !imageUtils.isBlockImage( modelElement.parent ) ) {
 					return null;
 				}
 
@@ -103,7 +111,7 @@ export default class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !isBlockImage( modelElement.parent ) ) {
+				if ( !imageUtils.isBlockImage( modelElement.parent ) ) {
 					return null;
 				}
 
@@ -134,6 +142,7 @@ export default class ImageCaptionEditing extends Plugin {
 	 */
 	_setupImageTypeCommandsIntegration() {
 		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
 		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
 
@@ -145,7 +154,7 @@ export default class ImageCaptionEditing extends Plugin {
 
 			const { oldElement, newElement } = evt.return;
 
-			if ( isBlockImage( oldElement ) ) {
+			if ( imageUtils.isBlockImage( oldElement ) ) {
 				const oldCaptionElement = getCaptionFromImageModelElement( oldElement );
 
 				// If the old element was a captioned block image (the caption was visible),

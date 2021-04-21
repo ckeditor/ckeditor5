@@ -11,7 +11,6 @@ import { Command } from 'ckeditor5/src/core';
 import { Element } from 'ckeditor5/src/engine';
 
 import ImageBlockEditing from '../image/imageblockediting';
-import { isImage, isInlineImage } from '../image/utils';
 import { getCaptionFromImageModelElement, getCaptionFromModelSelection } from './utils';
 
 /**
@@ -43,6 +42,7 @@ export default class ToggleImageCaptionCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Only block images can get captions.
 		if ( !editor.plugins.has( ImageBlockEditing ) ) {
@@ -56,7 +56,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		const selectedElement = selection.getSelectedElement();
 
 		if ( !selectedElement ) {
-			const ancestorCaptionElement = getCaptionFromModelSelection( selection );
+			const ancestorCaptionElement = getCaptionFromModelSelection( imageUtils, selection );
 
 			this.isEnabled = !!ancestorCaptionElement;
 			this.value = !!ancestorCaptionElement;
@@ -66,7 +66,7 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Block images support captions by default but the command should also be enabled for inline
 		// images because toggling the caption when one is selected should convert it into a block image.
-		this.isEnabled = isImage( selectedElement );
+		this.isEnabled = this.editor.plugins.get( 'ImageUtils' ).isImage( selectedElement );
 
 		if ( !this.isEnabled ) {
 			this.value = false;
@@ -117,7 +117,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		const savedCaption = imageCaptionEditing._getSavedCaption( selectedImage );
 
 		// Convert imageInline -> image first.
-		if ( isInlineImage( selectedImage ) ) {
+		if ( this.editor.plugins.get( 'ImageUtils' ).isInlineImage( selectedImage ) ) {
 			this.editor.execute( 'imageTypeBlock' );
 
 			// Executing the command created a new model element. Let's pick it again.
@@ -148,16 +148,17 @@ export default class ToggleImageCaptionCommand extends Command {
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
 	_hideImageCaption( writer ) {
-		const model = this.editor.model;
-		const selection = model.document.selection;
-		const imageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+		const imageCaptionEditing = editor.plugins.get( 'ImageCaptionEditing' );
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		let selectedImage = selection.getSelectedElement();
 		let captionElement;
 
 		if ( selectedImage ) {
 			captionElement = getCaptionFromImageModelElement( selectedImage );
 		} else {
-			captionElement = getCaptionFromModelSelection( selection );
+			captionElement = getCaptionFromModelSelection( imageUtils, selection );
 			selectedImage = captionElement.parent;
 		}
 

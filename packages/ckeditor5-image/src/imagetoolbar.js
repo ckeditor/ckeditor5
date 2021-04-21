@@ -9,8 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
-
-import { getImageWidgetAncestor, getSelectedImageWidget } from './image/utils';
+import ImageUtils from './imageutils';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).
@@ -30,7 +29,7 @@ export default class ImageToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetToolbarRepository ];
+		return [ WidgetToolbarRepository, ImageUtils ];
 	}
 
 	/**
@@ -47,12 +46,13 @@ export default class ImageToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		widgetToolbarRepository.register( 'image', {
 			ariaLabel: t( 'Image toolbar' ),
 			items: editor.config.get( 'image.toolbar' ) || [],
 			// Get the selected image or an image containing the figcaption with the selection inside.
-			getRelatedElement: selection => getSelectedImageWidget( selection ) || getImageWidgetAncestor( selection )
+			getRelatedElement: selection => imageUtils.getClosestSelectedImageWidget( selection )
 		} );
 	}
 }

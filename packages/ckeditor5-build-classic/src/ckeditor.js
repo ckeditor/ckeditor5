@@ -86,6 +86,7 @@ ClassicEditor.defaultConfig = {
 	},
 	image: {
 		toolbar: [
+			'imageStyle:inline',
 			'imageStyle:full',
 			'imageStyle:side',
 			'|',

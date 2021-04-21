@@ -398,9 +398,8 @@ MultirootEditor
 			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
 		image: {
 			toolbar: [
-				'toggleImageCaption', 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side'
-			],
-			styles: [ 'full', 'side' ]
+				'imageStyle:inline', 'imageStyle:full', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative'
+			]
 		},
 		table: {
 			contentToolbar: [

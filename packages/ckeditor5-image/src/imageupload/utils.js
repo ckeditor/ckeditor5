@@ -10,7 +10,6 @@
 /* global fetch, File */
 
 import { global } from 'ckeditor5/src/utils';
-import { isInlineImageView } from '../image/utils';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -65,11 +64,12 @@ export function fetchLocalImage( image ) {
 /**
  * Checks whether a given node is an image element with a local source (Base64 or blob).
  *
+ * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {module:engine/view/node~Node} node The node to check.
  * @returns {Boolean}
  */
-export function isLocalImage( node ) {
-	if ( !isInlineImageView( node ) || !node.getAttribute( 'src' ) ) {
+export function isLocalImage( imageUtils, node ) {
+	if ( !imageUtils.isInlineImageView( node ) || !node.getAttribute( 'src' ) ) {
 		return false;
 	}
 

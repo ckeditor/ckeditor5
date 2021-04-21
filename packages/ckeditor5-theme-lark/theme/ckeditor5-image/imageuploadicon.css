@@ -7,6 +7,7 @@
 	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
 	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
 
+	/* Match the icon size with the linked image indicator brought by the link image feature. */
 	--ck-image-upload-icon-size: 20;
 	--ck-image-upload-icon-width: 2px;
 	--ck-image-upload-icon-is-visible: clamp(0px, 100% - 50px, 1px);

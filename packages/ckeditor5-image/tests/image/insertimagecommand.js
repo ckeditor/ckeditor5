@@ -56,8 +56,7 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( '$text', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
@@ -248,6 +247,28 @@ describe( 'InsertImageCommand', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo[<imageInline src="new/image.jpg"></imageInline>]bar</paragraph>'
+			);
+		} );
+
+		it( 'should set document selection attributes on an image to maintain their continuity in downcast (e.g. links)', () => {
+			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
+
+			editor.model.schema.extend( 'imageInline', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
+
+			command.execute( { source: imgSrc } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text bar="b" baz="c" foo="a">f</$text>' +
+					'[<imageInline bar="b" foo="a" src="foo/bar.jpg"></imageInline>]' +
+					'<$text bar="b" baz="c" foo="a">o</$text>' +
+				'</paragraph>'
 			);
 		} );
 	} );

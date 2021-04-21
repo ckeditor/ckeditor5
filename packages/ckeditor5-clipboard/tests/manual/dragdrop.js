@@ -194,14 +194,9 @@ ClassicEditor
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
 		image: {
-			styles: [
-				'alignCenter',
-				'alignLeft',
-				'alignRight'
-			],
 			toolbar: [
 				'imageTextAlternative', '|',
-				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
 				'resizeImage'
 			]
 		},
