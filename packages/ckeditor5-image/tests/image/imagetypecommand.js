@@ -277,26 +277,50 @@ describe( 'ImageTypeCommand', () => {
 			} );
 		} );
 
-		it( 'should preserve the caption so it can be restored (integration with ImageCaptionEditing)', () => {
-			const imgSrc = 'foo/bar.jpg';
+		describe( 'integration with ImageCaptionEditing', () => {
+			it( 'should preserve the caption so it can be restored', () => {
+				const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
 
-			inlineCommand.execute();
+				inlineCommand.execute();
 
-			expect( getModelData( model ) ).to.equal(
-				`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
-			);
+				expect( getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
 
-			blockCommand.execute();
+				blockCommand.execute();
 
-			expect( getModelData( model ) ).to.equal(
-				`[<image src="${ imgSrc }"></image>]`
-			);
+				expect( getModelData( model ) ).to.equal(
+					`[<image src="${ imgSrc }"></image>]`
+				);
 
-			editor.execute( 'toggleImageCaption' );
+				editor.execute( 'toggleImageCaption' );
 
-			setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+			} );
+
+			it( 'should preserve the caption if the selection was in the caption at the moment of type change', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model, `<image src="${ imgSrc }"><caption>f[o]o</caption></image>` );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`[<image src="${ imgSrc }"></image>]`
+				);
+
+				editor.execute( 'toggleImageCaption' );
+
+				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+			} );
 		} );
 	} );
 } );
