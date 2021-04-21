@@ -60,7 +60,7 @@ export default class ImageStyleEditing extends Plugin {
 		this._setupConversion( isBlockPluginLoaded, isInlinePluginLoaded );
 
 		// Register imageStyle command.
-		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, this.normalizedStyles.arrangements ) );
+		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, this.normalizedStyles ) );
 	}
 
 	/**
@@ -75,10 +75,9 @@ export default class ImageStyleEditing extends Plugin {
 	_setupConversion( isBlockPluginLoaded, isInlinePluginLoaded ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const arrangements = this.normalizedStyles.arrangements;
 
-		const modelToViewConverter = modelToViewStyleAttribute( arrangements );
-		const viewToModelConverter = viewToModelStyleAttribute( arrangements );
+		const modelToViewConverter = modelToViewStyleAttribute( this.normalizedStyles );
+		const viewToModelConverter = viewToModelStyleAttribute( this.normalizedStyles );
 
 		editor.editing.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
 		editor.data.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );

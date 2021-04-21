@@ -112,6 +112,7 @@ const DEFAULT_ARRANGEMENTS = {
 	}
 };
 
+// TODO: Fix and move this description
 /**
  * Default image style arrangement groups provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
  * configuration. The groups are containers for {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements} and
@@ -126,21 +127,6 @@ const DEFAULT_ARRANGEMENTS = {
  * @readonly
  * @type {Object.<String,module:image/imagestyle~ImageStyleGroupDefinition>}
  */
-const DEFAULT_GROUPS = {
-	wrapText: {
-		name: 'wrapText',
-		title: 'Wrap text',
-		defaultItem: 'alignLeft',
-		items: [ 'alignLeft', 'alignRight' ]
-	},
-
-	breakText: {
-		name: 'breakText',
-		title: 'Break text',
-		defaultItem: 'full',
-		items: [ 'alignBlockLeft', 'full', 'alignBlockRight' ]
-	}
-};
 
 /**
  * Default image style arrangement icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
@@ -183,17 +169,12 @@ const DEFAULT_ICONS = {
  */
 function normalizeStyles( options ) {
 	const configuredArrangements = options.configuredStyles.arrangements || [];
-	const configuredGroups = options.configuredStyles.groups || [];
 
 	const arrangements = configuredArrangements
-		.map( arrangement => normalizeDefinition( DEFAULT_ARRANGEMENTS, arrangement, 'arrangement' ) )
+		.map( arrangement => normalizeDefinition( arrangement ) )
 		.filter( arrangement => isValidArrangement( arrangement, options ) );
 
-	const groups = configuredGroups
-		.map( group => normalizeDefinition( DEFAULT_GROUPS, group, 'group' ) )
-		.filter( group => group.items && group.items.length );
-
-	return { arrangements, groups };
+	return arrangements;
 }
 
 /**
@@ -235,39 +216,53 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 	return {};
 }
 
+// TODO
+function getDefaultDropdowns( loadedPlugins ) {
+	if ( loadedPlugins.has( 'ImageBlockEditing' ) && loadedPlugins.has( 'ImageInlineEditing' ) ) {
+		return [ {
+			name: 'wrapText',
+			title: 'Wrap text',
+			defaultItem: 'alignLeft',
+			items: [ 'alignLeft', 'alignRight' ]
+		}, {
+			name: 'breakText',
+			title: 'Break text',
+			defaultItem: 'full',
+			items: [ 'alignBlockLeft', 'full', 'alignBlockRight' ]
+		} ];
+	}
+}
+
 // Normalizes an image arrangement or group provided in the {@link module:image/image~ImageConfig#styles}
-// and returns it in a {@link module:image/imagestyle~ImageStyleArrangementDefinition}/
-// {@link module:image/imagestyle~ImageStyleGroupDefinition}.
+// and returns it in a {@link module:image/imagestyle~ImageStyleArrangementDefinition}.
 //
-// @param {DEFAULT_ARRANGEMENTS|DEFAULT_GROUPS} defaults
 // @param {Object|String} definition
-// @param {'arrangement'|'group'} definitionType
 //
-// @returns {module:image/imagestyle~ImageArrangementDefinition}|{module:image/imagestyle~ImageStyleGroupDefinition}
-function normalizeDefinition( defaults, definition, definitionType ) {
+// @returns {module:image/imagestyle~ImageArrangementDefinition}}
+function normalizeDefinition( definition ) {
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
-		if ( !defaults[ definition ] ) {
+		if ( !DEFAULT_ARRANGEMENTS[ definition ] ) {
 			// Normalize the style anyway to prevent errors.
 			definition = { name: definition };
 		}
 		// Just the name of the style has been passed and it's one of the defaults, just use it.
 		// Clone the style to avoid overriding defaults.
 		else {
-			definition = { ...defaults[ definition ] };
+			definition = { ...DEFAULT_ARRANGEMENTS[ definition ] };
 		}
 	} else {
 		// If an object style has been passed and if the name matches one of the defaults,
 		// extend it with defaults – the user wants to customize a default style.
 		// Note: Don't override the user–defined style object, clone it instead.
-		definition = extendStyle( defaults[ definition.name ], definition );
+		definition = extendStyle( DEFAULT_ARRANGEMENTS[ definition.name ], definition );
 	}
 
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
-	if ( definitionType === 'arrangement' && typeof definition.icon === 'string' ) {
-		definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
-	}
+	// if ( definitionType === 'arrangement' && typeof definition.icon === 'string' ) {
+	definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
+	// }
 
 	return definition;
 }
@@ -360,8 +355,8 @@ function warnInvalidStyle( info ) {
 export default {
 	normalizeStyles,
 	getDefaultStylesConfiguration,
+	getDefaultDropdowns,
 	warnInvalidStyle,
 	DEFAULT_ARRANGEMENTS,
-	DEFAULT_GROUPS,
 	DEFAULT_ICONS
 };

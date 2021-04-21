@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 import ImageStyleEditing from './imagestyleediting';
 import utils from './utils';
+import { isObject } from 'lodash-es';
 
 import '../../theme/imagestyle.css';
 
@@ -73,22 +74,25 @@ export default class ImageStyleUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const normalizedStyles = this.editor.plugins.get( 'ImageStyleEditing' ).normalizedStyles;
+		const plugins = this.editor.plugins;
+		const toolbarConfig = this.editor.config.get( 'image.toolbar' ) || [];
 
 		const definedArrangements = translateStyles(
-			normalizedStyles.arrangements,
-			this.localizedDefaultStylesTitles );
+			plugins.get( 'ImageStyleEditing' ).normalizedStyles,
+			this.localizedDefaultStylesTitles
+		);
 
 		for ( const arrangementConfig of definedArrangements ) {
 			this._createButton( arrangementConfig );
 		}
 
-		const definedGroups = translateStyles(
-			normalizedStyles.groups,
-			this.localizedDefaultStylesTitles );
+		const definedDropdowns = translateStyles(
+			toolbarConfig.filter( isObject ).map( normalizeDropdownConfig ).concat( utils.getDefaultDropdowns( plugins ) || [] ),
+			this.localizedDefaultStylesTitles
+		);
 
-		for ( const groupConfig of definedGroups ) {
-			this._createDropdown( groupConfig, definedArrangements );
+		for ( const dropdownConfig of definedDropdowns ) {
+			this._createDropdown( dropdownConfig, definedArrangements );
 		}
 	}
 
@@ -215,4 +219,26 @@ function translateStyles( styles, titles ) {
 // @returns {String}
 function getUIComponentName( name ) {
 	return `imageStyle:${ name }`;
+}
+
+// Returns the image style definition name without the `imageStyle:` prefix.
+//
+// @param {String} name
+// @returns {String}
+function getComponentDefinitionName( name ) {
+	return name.replace( 'imageStyle:', '' );
+}
+
+// TODO
+function normalizeDropdownConfig( config ) {
+	try {
+		return {
+			items: config.items.map( getComponentDefinitionName ),
+			name: getComponentDefinitionName( config.name ),
+			defaultItem: getComponentDefinitionName( config.defaultItem ),
+			title: config.title
+		};
+	} catch ( e ) {
+		// warning
+	}
 }

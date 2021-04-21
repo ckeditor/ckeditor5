@@ -47,7 +47,12 @@ async function startEditors() {
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:wrapText',
-				'imageStyle:breakText',
+				{
+					name: 'custom', // or imageStyle:custom?
+					title: 'Custom title',
+					defaultItem: 'imageStyle:inline',
+					items: [ 'imageStyle:inline', 'imageStyle:alignLeft' ]
+				},
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative'

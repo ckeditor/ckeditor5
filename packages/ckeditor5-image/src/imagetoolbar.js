@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 import ImageUtils from './imageutils';
+import { isObject } from 'lodash-es';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).
@@ -50,7 +51,7 @@ export default class ImageToolbar extends Plugin {
 
 		widgetToolbarRepository.register( 'image', {
 			ariaLabel: t( 'Image toolbar' ),
-			items: editor.config.get( 'image.toolbar' ) || [],
+			items: normalizeDeclarativeConfig( editor.config.get( 'image.toolbar' ) || [] ),
 			// Get the selected image or an image containing the figcaption with the selection inside.
 			getRelatedElement: selection => imageUtils.getClosestSelectedImageWidget( selection )
 		} );
@@ -80,3 +81,8 @@ export default class ImageToolbar extends Plugin {
  *
  * @member {Array.<String>} module:image/image~ImageConfig#toolbar
  */
+
+// TODO
+function normalizeDeclarativeConfig( config ) {
+	return config.map( item => isObject( item ) ? `imageStyle:${ item.name }` : item ); // or `imageStyle:declarative:${ item.name }` ?
+}
