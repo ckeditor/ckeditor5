@@ -28,6 +28,7 @@
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry The registry providing
  * the media and their content.
  * @param {Object} options
+ * @param {String} [options.elementName] When set, overrides the default element name for semantic media embeds.
  * @param {String} [options.renderMediaPreview] When `true`, the converter will create the view in the non-semantic form.
  * @param {String} [options.renderForEditingView] When `true`, the converter will create a view specific for the
  * editing pipeline (e.g. including CSS classes, content placeholders).

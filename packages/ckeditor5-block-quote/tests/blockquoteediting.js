@@ -48,8 +48,8 @@ describe( 'BlockQuoteEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'paragraph' ) ).to.be.true;
 	} );
 
-	it( 'does not allow for blockQuote in blockQuote', () => {
-		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'blockQuote' ) ).to.be.false;
+	it( 'allows for blockQuote in blockQuote', () => {
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'blockQuote' ) ).to.be.true;
 	} );
 
 	it( 'does not break when checking an unregisterd item', () => {
@@ -102,7 +102,7 @@ describe( 'BlockQuoteEditing', () => {
 		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' ); // Autoparagraphed.
 	} );
 
-	it( 'should unwrap a blockQuote if it was inserted into another blockQuote', () => {
+	it( 'should not unwrap a blockQuote if it was inserted into another blockQuote', () => {
 		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
 		model.change( writer => {
@@ -115,10 +115,10 @@ describe( 'BlockQuoteEditing', () => {
 			writer.insert( bq, root.getChild( 0 ), 1 ); // Insert after <p>Foo</p>.
 		} );
 
-		expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+		expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><blockquote><p>Bar</p></blockquote></blockquote>' );
 	} );
 
-	it( 'should unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
+	it( 'should not unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
 		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
 
 		model.change( writer => {
@@ -127,7 +127,7 @@ describe( 'BlockQuoteEditing', () => {
 			writer.wrap( writer.createRangeIn( root ), 'blockQuote' );
 		} );
 
-		expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+		expect( editor.getData() ).to.equal( '<blockquote><blockquote><p>Foo</p></blockquote><p>Bar</p></blockquote>' );
 	} );
 
 	it( 'postfixer should do nothing on attribute change', () => {
@@ -142,5 +142,45 @@ describe( 'BlockQuoteEditing', () => {
 		} );
 
 		expect( editor.getData() ).to.equal( '<blockquote><p><strong>Foo</strong></p></blockquote>' );
+	} );
+
+	describe( 'nested blockQuote forbidden by custom rule', () => {
+		// Nested block quotes are supported since https://github.com/ckeditor/ckeditor5/issues/9210, so let's check
+		// if the editor will not blow up in case nested block quotes are forbidden by custom scheme rule.
+		beforeEach( () => {
+			model.schema.addChildCheck( ( ctx, childDef ) => {
+				if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'blockQuote' ) {
+					return false;
+				}
+			} );
+		} );
+
+		it( 'should unwrap a blockQuote if it was inserted into another blockQuote', () => {
+			setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+
+			model.change( writer => {
+				const root = model.document.getRoot();
+				const bq = writer.createElement( 'blockQuote' );
+				const p = writer.createElement( 'paragraph' );
+
+				writer.insertText( 'Bar', p, 0 ); // <p>Bar</p>.
+				writer.insert( p, bq, 0 ); // <blockquote><p>Bar</p></blockquote>.
+				writer.insert( bq, root.getChild( 0 ), 1 ); // Insert after <p>Foo</p>.
+			} );
+
+			expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+		} );
+
+		it( 'should unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
+			setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const root = model.document.getRoot();
+
+				writer.wrap( writer.createRangeIn( root ), 'blockQuote' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+		} );
 	} );
 } );
