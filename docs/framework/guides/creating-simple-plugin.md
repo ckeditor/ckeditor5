@@ -295,6 +295,6 @@ If you would like to read more tutorials, check out the following one:
 * {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget}
 * {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget}
 
-If you are more into reading about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
+If you want to read more about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
 
-If you would like know, how to check what kind of HTML output our plugins return or what UI components are exposed by them, check out the {@link framework/guides/contributing/plugin-metadata plugin metadata guide}.
+If you would like know, how to check what kind of HTML output our plugins return or what UI components are exposed by them, check out the {@link framework/guides/contributing/plugin-metadata plugin metadata} guide.
