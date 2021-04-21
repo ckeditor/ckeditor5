@@ -62,7 +62,7 @@
 		padding-left: inherit;
 		padding-right: inherit;
 
-		/* 
+		/*
 		 * Make sure the image caption placeholder doesn't overflow the placeholder area.
 		 * See https://github.com/ckeditor/ckeditor5/issues/9162.
 		 */
@@ -77,6 +77,15 @@
 	 */
 	& .image-inline.ck-widget_selected {
 		z-index: 1;
+
+		/*
+		 * Make sure the native browser selection style is not displayed.
+		 * Inline image widgets have their own styles for the selected state and
+		 * leaving this up to the browser is asking for a visual collision.
+		 */
+		& ::selection {
+			display: none;
+		}
 	}
 
 	/* The inline image nested in the table should have its original size if not resized.

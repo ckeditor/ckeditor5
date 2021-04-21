@@ -11,18 +11,16 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
-import {
-	toImageWidget,
-	createImageViewElement,
-	getImageTypeMatcher,
-	getViewImageFromWidget,
-	determineImageTypeForInsertionAtSelection,
-	isBlockImageView
-} from './utils';
 import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
+import ImageUtils from '../imageutils';
+import {
+	getImageTypeMatcher,
+	createImageViewElement,
+	determineImageTypeForInsertionAtSelection
+} from '../image/utils';
 
 /**
  * The image inline plugin.
@@ -41,7 +39,7 @@ export default class ImageInlineEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, ClipboardPipeline ];
+		return [ ImageEditing, ImageUtils, ClipboardPipeline ];
 	}
 
 	/**
@@ -85,6 +83,7 @@ export default class ImageInlineEditing extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const conversion = editor.conversion;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
@@ -95,20 +94,20 @@ export default class ImageInlineEditing extends Plugin {
 		conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'imageInline',
-				view: ( modelElement, { writer } ) => toImageWidget(
+				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
 					createImageViewElement( writer, 'imageInline' ), writer, t( 'inline image widget' )
 				)
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( 'imageInline', 'src' ) )
-			.add( modelToViewAttributeConverter( 'imageInline', 'alt' ) )
-			.add( srcsetAttributeConverter( 'imageInline' ) );
+			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
+			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) )
+			.add( srcsetAttributeConverter( imageUtils, 'imageInline' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( 'imageInline', editor ),
+				view: getImageTypeMatcher( editor, 'imageInline' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
 	}
@@ -133,8 +132,8 @@ export default class ImageInlineEditing extends Plugin {
 	_setupClipboardIntegration() {
 		const editor = this.editor;
 		const model = editor.model;
-		const schema = model.schema;
 		const editingView = editor.editing.view;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		this.listenTo( editor.plugins.get( 'ClipboardPipeline' ), 'inputTransformation', ( evt, data ) => {
 			const docFragmentChildren = Array.from( data.content.getChildren() );
@@ -142,7 +141,7 @@ export default class ImageInlineEditing extends Plugin {
 
 			// Make sure only <figure class="image"></figure> elements are dropped or pasted. Otherwise, if there some other HTML
 			// mixed up, this should be handled as a regular paste.
-			if ( !docFragmentChildren.every( isBlockImageView ) ) {
+			if ( !docFragmentChildren.every( imageUtils.isBlockImageView ) ) {
 				return;
 			}
 
@@ -161,17 +160,18 @@ export default class ImageInlineEditing extends Plugin {
 
 			// Convert block images into inline images only when pasting or dropping into non-empty blocks
 			// and when the block is not an object (e.g. pasting to replace another widget).
-			if ( determineImageTypeForInsertionAtSelection( schema, selection ) === 'imageInline' ) {
+			if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'imageInline' ) {
 				const writer = new UpcastWriter( editingView.document );
 
 				// Unwrap <figure class="image"><img .../></figure> -> <img ... />
 				// but <figure class="image"><img .../><figcaption>...</figcaption></figure> -> stays the same
 				const inlineViewImages = docFragmentChildren.map( blockViewImage => {
+					// If there's just one child, it can be either <img /> or <a><img></a>.
 					// If there are other children than <img>, this means that the block image
 					// has a caption or some other features and this kind of image should be
 					// pasted/dropped without modifications.
 					if ( blockViewImage.childCount === 1 ) {
-						return getViewImageFromWidget( blockViewImage );
+						return blockViewImage.getChild( 0 );
 					} else {
 						return blockViewImage;
 					}

@@ -11,11 +11,13 @@
  * Conversion helper for upcasting attributes using normalized styles.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelElement
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelElement
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
+ * @param {Boolean} [options.reduceBoxSides=false]
  */
-export function upcastStyleToAttribute( conversion, modelElement, modelAttribute, styleName ) {
+export function upcastStyleToAttribute( conversion, { modelElement, modelAttribute, styleName, reduceBoxSides = false } ) {
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
 			styles: {
@@ -25,7 +27,11 @@ export function upcastStyleToAttribute( conversion, modelElement, modelAttribute
 		model: {
 			name: modelElement,
 			key: modelAttribute,
-			value: viewElement => viewElement.getNormalizedStyle( styleName )
+			value: viewElement => {
+				const normalized = viewElement.getNormalizedStyle( styleName );
+
+				return reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
+			}
 		}
 	} );
 }
@@ -44,13 +50,21 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 			return;
 		}
 
-		// TODO: this is counter-intuitive: ie.: if only `border-top` is defined then `hasStyle( 'border' )` also returns true.
-		// TODO: this might needs to be fixed in styles normalizer.
+		// Check the most detailed properties. These will be always set directly or
+		// when using the "group" properties like: `border-(top|right|bottom|left)` or `border`.
 		const stylesToConsume = [
-			'border-top',
-			'border-right',
-			'border-bottom',
-			'border-left'
+			'border-top-width',
+			'border-top-color',
+			'border-top-style',
+			'border-bottom-width',
+			'border-bottom-color',
+			'border-bottom-style',
+			'border-right-width',
+			'border-right-color',
+			'border-right-style',
+			'border-left-width',
+			'border-left-color',
+			'border-left-style'
 		].filter( styleName => data.viewItem.hasStyle( styleName ) );
 
 		if ( !stylesToConsume.length ) {
@@ -70,9 +84,13 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 
 		conversionApi.consumable.consume( data.viewItem, matcherPattern );
 
-		conversionApi.writer.setAttribute( 'borderStyle', data.viewItem.getNormalizedStyle( 'border-style' ), modelElement );
-		conversionApi.writer.setAttribute( 'borderColor', data.viewItem.getNormalizedStyle( 'border-color' ), modelElement );
-		conversionApi.writer.setAttribute( 'borderWidth', data.viewItem.getNormalizedStyle( 'border-width' ), modelElement );
+		const normalizedBorderStyle = data.viewItem.getNormalizedStyle( 'border-style' );
+		const normalizedBorderColor = data.viewItem.getNormalizedStyle( 'border-color' );
+		const normalizedBorderWidth = data.viewItem.getNormalizedStyle( 'border-width' );
+
+		conversionApi.writer.setAttribute( 'borderStyle', reduceBoxSidesValue( normalizedBorderStyle ), modelElement );
+		conversionApi.writer.setAttribute( 'borderColor', reduceBoxSidesValue( normalizedBorderColor ), modelElement );
+		conversionApi.writer.setAttribute( 'borderWidth', reduceBoxSidesValue( normalizedBorderWidth ), modelElement );
 	} ) );
 }
 
@@ -80,11 +98,12 @@ export function upcastBorderStyles( conversion, viewElementName ) {
  * Conversion helper for downcasting an attribute to a style.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelElement
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelElement
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
  */
-export function downcastAttributeToStyle( conversion, modelElement, modelAttribute, styleName ) {
+export function downcastAttributeToStyle( conversion, { modelElement, modelAttribute, styleName } ) {
 	conversion.for( 'downcast' ).attributeToAttribute( {
 		model: {
 			name: modelElement,
@@ -103,10 +122,11 @@ export function downcastAttributeToStyle( conversion, modelElement, modelAttribu
  * Conversion helper for downcasting attributes from the model table to a view table (not to `<figure>`).
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
  */
-export function downcastTableAttribute( conversion, modelAttribute, styleName ) {
+export function downcastTableAttribute( conversion, { modelAttribute, styleName } ) {
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
@@ -123,4 +143,17 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 			writer.removeStyle( styleName, table );
 		}
 	} ) );
+}
+
+// Reduces the full top, right, bottom, left object to a single string if all sides are equal.
+function reduceBoxSidesValue( style ) {
+	if ( !style ) {
+		return;
+	}
+
+	const commonValue = [ 'top', 'right', 'bottom', 'left' ]
+		.map( side => style[ side ] )
+		.reduce( ( result, side ) => result == side ? result : null );
+
+	return commonValue || style;
 }

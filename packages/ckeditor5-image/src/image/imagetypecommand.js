@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { insertImage, isBlockImage, isInlineImage } from './utils';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
@@ -39,12 +38,14 @@ export default class ImageTypeCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = this.editor.model.document.selection.getSelectedElement();
+		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
 		if ( this._modelElementName === 'image' ) {
-			this.isEnabled = isInlineImage( element );
+			this.isEnabled = imageUtils.isInlineImage( element );
 		} else {
-			this.isEnabled = isBlockImage( element );
+			this.isEnabled = imageUtils.isBlockImage( element );
 		}
 	}
 
@@ -52,13 +53,16 @@ export default class ImageTypeCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const selection = this.editor.model.document.selection;
-		const attributes = Object.fromEntries( selection.getSelectedElement().getAttributes() );
+		const editor = this.editor;
+		const model = this.editor.model;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
+		const attributes = Object.fromEntries( imageElement.getAttributes() );
 
 		if ( !attributes.src ) {
 			return;
 		}
 
-		insertImage( this.editor, attributes, selection, this._modelElementName );
+		imageUtils.insertImage( attributes, model.createSelection( imageElement, 'on' ), this._modelElementName );
 	}
 }

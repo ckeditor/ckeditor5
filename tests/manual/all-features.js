@@ -108,7 +108,7 @@ ClassicEditor
 			],
 			toolbar: [
 				'imageTextAlternative', 'toggleImageCaption', '|',
-				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
 				'resizeImage'
 			],
 			insert: {

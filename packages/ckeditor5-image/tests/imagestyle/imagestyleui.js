@@ -440,6 +440,36 @@ describe( 'ImageStyleUI', () => {
 				}
 			} );
 		} );
+
+		it( 'should be enabled when at least one of the nested buttons are enabled', () => {
+			for ( const group of groups ) {
+				const groupItems = group.view.toolbarView.items;
+
+				for ( const item of groupItems ) {
+					item.isEnabled = false;
+				}
+
+				groupItems.first.isEnabled = true;
+			}
+
+			for ( const { buttonView, config } of groups ) {
+				expect( buttonView.isEnabled, `Failing group name: "${ config.name }"` ).to.be.true;
+			}
+		} );
+
+		it( 'should be disabled when none of the nested buttons are enabled', () => {
+			for ( const group of groups ) {
+				const groupItems = group.view.toolbarView.items;
+
+				for ( const item of groupItems ) {
+					item.isEnabled = false;
+				}
+			}
+
+			for ( const { buttonView, config } of groups ) {
+				expect( buttonView.isEnabled, `Failing group name: "${ config.name }"` ).to.be.false;
+			}
+		} );
 	} );
 } );
 

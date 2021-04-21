@@ -12,12 +12,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 DecoupledEditor
 	.create( document.querySelector( '.document-editor__editable' ), {
 		extraPlugins: [ ImageResize ],
-		cloudServices: CS_CONFIG,
-		image: {
-			toolbar: [
-				'toggleImageCaption', 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight'
-			]
-		}
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
