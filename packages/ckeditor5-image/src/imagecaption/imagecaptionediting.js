@@ -154,6 +154,10 @@ export default class ImageCaptionEditing extends Plugin {
 
 			const { oldElement, newElement } = evt.return;
 
+			if ( !oldElement ) {
+				return;
+			}
+
 			if ( imageUtils.isBlockImage( oldElement ) ) {
 				const oldCaptionElement = getCaptionFromImageModelElement( oldElement );
 

@@ -61,15 +61,14 @@ export default class ImageTypeCommand extends Command {
 		const editor = this.editor;
 		const model = this.editor.model;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
-		const imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
-		const oldElement = model.document.selection.getSelectedElement();
-		const attributes = Object.fromEntries( imageElement.getAttributes() );
+		const oldElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
+		const attributes = Object.fromEntries( oldElement.getAttributes() );
 
 		if ( !attributes.src ) {
 			return null;
 		}
 
-		const newElement = imageUtils.insertImage( attributes, model.createSelection( imageElement, 'on' ), this._modelElementName );
+		const newElement = imageUtils.insertImage( attributes, model.createSelection( oldElement, 'on' ), this._modelElementName );
 
 		return {
 			oldElement,
