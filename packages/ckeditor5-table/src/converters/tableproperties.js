@@ -11,12 +11,13 @@
  * Conversion helper for upcasting attributes using normalized styles.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelElement
- * @param {String} modelAttribute
- * @param {String} styleName
- * @param {Boolean} [reduceBoxSides=false]
+ * @param {Object} options
+ * @param {String} options.modelElement
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
+ * @param {Boolean} [options.reduceBoxSides=false]
  */
-export function upcastStyleToAttribute( conversion, modelElement, modelAttribute, styleName, reduceBoxSides = false ) {
+export function upcastStyleToAttribute( conversion, { modelElement, modelAttribute, styleName, reduceBoxSides = false } ) {
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
 			styles: {
@@ -97,11 +98,12 @@ export function upcastBorderStyles( conversion, viewElementName ) {
  * Conversion helper for downcasting an attribute to a style.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelElement
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelElement
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
  */
-export function downcastAttributeToStyle( conversion, modelElement, modelAttribute, styleName ) {
+export function downcastAttributeToStyle( conversion, { modelElement, modelAttribute, styleName } ) {
 	conversion.for( 'downcast' ).attributeToAttribute( {
 		model: {
 			name: modelElement,
@@ -120,10 +122,11 @@ export function downcastAttributeToStyle( conversion, modelElement, modelAttribu
  * Conversion helper for downcasting attributes from the model table to a view table (not to `<figure>`).
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
- * @param {String} modelAttribute
- * @param {String} styleName
+ * @param {Object} options
+ * @param {String} options.modelAttribute
+ * @param {String} options.styleName
  */
-export function downcastTableAttribute( conversion, modelAttribute, styleName ) {
+export function downcastTableAttribute( conversion, { modelAttribute, styleName } ) {
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
