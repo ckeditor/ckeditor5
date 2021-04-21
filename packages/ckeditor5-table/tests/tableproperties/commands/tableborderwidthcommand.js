@@ -126,7 +126,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 25 } );
 
-					assertTableStyle( editor, 'border-bottom:25px;border-left:25px;border-right:25px;border-top:25px;' );
+					assertTableStyle( editor, 'border-width:25px;' );
 				} );
 
 				it( 'should add default unit for numeric values (string passed)', () => {
@@ -134,7 +134,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 25 } );
 
-					assertTableStyle( editor, 'border-bottom:25px;border-left:25px;border-right:25px;border-top:25px;' );
+					assertTableStyle( editor, 'border-width:25px;' );
 				} );
 
 				it( 'should not add default unit for numeric values with unit', () => {
@@ -142,7 +142,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: '25pt' } );
 
-					assertTableStyle( editor, 'border-bottom:25pt;border-left:25pt;border-right:25pt;border-top:25pt;' );
+					assertTableStyle( editor, 'border-width:25pt;' );
 				} );
 
 				it( 'should add default unit to floats (number passed)', () => {
@@ -150,7 +150,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 25.1 } );
 
-					assertTableStyle( editor, 'border-bottom:25.1px;border-left:25.1px;border-right:25.1px;border-top:25.1px;' );
+					assertTableStyle( editor, 'border-width:25.1px;' );
 				} );
 
 				it( 'should add default unit to floats (string passed)', () => {
@@ -158,7 +158,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: '0.1' } );
 
-					assertTableStyle( editor, 'border-bottom:0.1px;border-left:0.1px;border-right:0.1px;border-top:0.1px;' );
+					assertTableStyle( editor, 'border-width:0.1px;' );
 				} );
 
 				it( 'should pass invalid values', () => {
@@ -166,7 +166,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 'bar' } );
 
-					assertTableStyle( editor, 'border-bottom:bar;border-left:bar;border-right:bar;border-top:bar;' );
+					assertTableStyle( editor, 'border-width:bar;' );
 				} );
 
 				it( 'should pass invalid value (string passed, CSS float without leading 0)', () => {
@@ -174,7 +174,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: '.2' } );
 
-					assertTableStyle( editor, 'border-bottom:.2;border-left:.2;border-right:.2;border-top:.2;' );
+					assertTableStyle( editor, 'border-width:.2;' );
 				} );
 
 				describe( 'collapsed selection', () => {
@@ -183,7 +183,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '1px' } );
 
-						assertTableStyle( editor, 'border-bottom:1px;border-left:1px;border-right:1px;border-top:1px;' );
+						assertTableStyle( editor, 'border-width:1px;' );
 					} );
 
 					it( 'should change selected table borderWidth to a passed value', () => {
@@ -191,7 +191,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '1px' } );
 
-						assertTableStyle( editor, 'border-bottom:1px;border-left:1px;border-right:1px;border-top:1px;' );
+						assertTableStyle( editor, 'border-width:1px;' );
 					} );
 
 					it( 'should remove borderWidth from a selected table if no value is passed', () => {
@@ -209,7 +209,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '1px' } );
 
-						assertTableStyle( editor, 'border-bottom:1px;border-left:1px;border-right:1px;border-top:1px;' );
+						assertTableStyle( editor, 'border-width:1px;' );
 					} );
 
 					it( 'should change selected table borderWidth to a passed value', () => {
@@ -217,7 +217,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '1px' } );
 
-						assertTableStyle( editor, 'border-bottom:1px;border-left:1px;border-right:1px;border-top:1px;' );
+						assertTableStyle( editor, 'border-width:1px;' );
 					} );
 
 					it( 'should remove borderWidth from a selected table if no value is passed', () => {
