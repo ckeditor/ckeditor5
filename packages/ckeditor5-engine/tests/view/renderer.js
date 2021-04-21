@@ -3438,26 +3438,23 @@ describe( 'Renderer', () => {
 
 			it( 'should correctly handle multiple changes when using fastDiff', () => {
 				let str = '';
+
 				for ( let i = 0; i < 100; i++ ) {
-					str = `${ str }${ i }<attribute:span>${ i }</attribute:span>`;
+					str += `${ i }<attribute:span>${ i }</attribute:span>`;
 				}
 
-				viewRoot._insertChild( 0,
-					parse( str )
-				);
+				viewRoot._insertChild( 0, parse( str ) );
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
 
 				viewRoot._removeChildren( 0, 1 );
 				viewRoot._removeChildren( 4, 1 );
-
 				renderer.markToSync( 'children', viewRoot );
-
-				// This would throw without a fix.
 				renderer.render();
 
 				expect( domRoot.innerHTML ).to.equal(
-					str.slice( 1 ).replaceAll( 'attribute:span', 'span' ).replace( '<span>2</span>', '' ) );
+					str.slice( 1 ).replaceAll( 'attribute:span', 'span' ).replace( '<span>2</span>', '' )
+				);
 			} );
 		} );
 

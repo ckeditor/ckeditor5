@@ -259,7 +259,15 @@ export default class Renderer {
 			return;
 		}
 
-		const actualDomChildren = this.domConverter.mapViewToDom( viewElement ).childNodes;
+		// Removing nodes from the DOM as we iterate can cause `actualDomChildren`
+		// (which is a live-updating `NodeList`) to get out of sync with the
+		// indices that we compute as we iterate over `actions`, producing
+		// incorrect element mappings.
+		//
+		// Converting live list to an array to make the list static.
+		const actualDomChildren = Array.from(
+			this.domConverter.mapViewToDom( viewElement ).childNodes
+		);
 		const expectedDomChildren = Array.from(
 			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { withChildren: false } )
 		);
@@ -268,12 +276,6 @@ export default class Renderer {
 
 		if ( actions.indexOf( 'replace' ) !== -1 ) {
 			const counter = { equal: 0, insert: 0, delete: 0 };
-			// Removing nodes from the DOM as we iterate can cause `actualDomChildren`
-			// (which is a live-updating `NodeList`) to get out of sync with the
-			// indices that we compute as we iterate over `actions`, producing
-			// incorrect element mappings. So collect all the DOM nodes that need to
-			// be removed and remove them after the iteration is complete.
-			const toRemove = [];
 
 			for ( const action of actions ) {
 				if ( action === 'replace' ) {
@@ -288,14 +290,12 @@ export default class Renderer {
 						this._updateElementMappings( viewChild, actualDomChildren[ deleteIndex ] );
 					}
 
-					toRemove.push( expectedDomChildren[ insertIndex ] );
+					remove( expectedDomChildren[ insertIndex ] );
 					counter.equal++;
 				} else {
 					counter[ action ]++;
 				}
 			}
-
-			toRemove.forEach( remove );
 		}
 	}
 
