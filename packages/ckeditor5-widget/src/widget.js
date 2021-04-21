@@ -78,7 +78,7 @@ export default class Widget extends Plugin {
 			// child is an inline widget. This prevents creating a correct fake selection when this inline widget is selected.
 			// Normalize the selection in this case
 			//
-			//		[<attributeElement><inlineWidget /><attributeElement>] -> <attributeElement>[<inlineWidget />]<attributeElement>
+			//		[<attributeElement><inlineWidget /></attributeElement>] -> <attributeElement>[<inlineWidget />]</attributeElement>
 			//
 			// Thanks to this:
 			//
@@ -87,6 +87,8 @@ export default class Widget extends Plugin {
 			//
 			// See https://github.com/ckeditor/ckeditor5/issues/9524.
 			if ( selectedElement ) {
+				// Trim the range first because the selection could be on a couple of nested attributes enclosing the widget:
+				// [<attributeElementA><attributeElementB><inlineWidget /></attributeElementB></attributeElementA>]
 				selectedElement = viewWriter.createRangeOn( selectedElement ).getTrimmed().getContainedElement();
 
 				if ( selectedElement && isWidget( selectedElement ) ) {

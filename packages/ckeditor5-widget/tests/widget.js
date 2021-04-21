@@ -59,7 +59,7 @@ describe( 'Widget', () => {
 				} );
 				model.schema.extend( '$text', {
 					allowIn: [ 'nested', 'editable' ],
-					allowAttributes: [ 'attr' ]
+					allowAttributes: [ 'attr', 'bttr' ]
 				} );
 				model.schema.register( 'editable', {
 					allowIn: [ 'widget', '$root' ]
@@ -68,7 +68,7 @@ describe( 'Widget', () => {
 					allowWhere: '$text',
 					isObject: true,
 					isInline: true,
-					allowAttributes: [ 'attr' ]
+					allowAttributes: [ 'attr', 'bttr' ]
 				} );
 
 				// Image feature.
@@ -124,6 +124,9 @@ describe( 'Widget', () => {
 					} )
 					.attributeToElement( { model: 'attr', view: ( modelAttributeValue, conversionApi ) => {
 						return conversionApi.writer.createAttributeElement( 'attr', { value: modelAttributeValue } );
+					} } )
+					.attributeToElement( { model: 'bttr', view: ( modelAttributeValue, conversionApi ) => {
+						return conversionApi.writer.createAttributeElement( 'bttr', { value: modelAttributeValue } );
 					} } );
 			} );
 	} );
@@ -243,6 +246,22 @@ describe( 'Widget', () => {
 			'<p>foo ' +
 				'<attr value="foo">' +
 					'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+				'</attr>' +
+			' bar</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should apply fake view selection when an inline widget is surrounded by a couple of nested attribute elements', () => {
+		setModelData( model, '<paragraph>foo [<inline-widget attr="foo" bttr="bar"></inline-widget>] bar</paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>foo ' +
+				'<attr value="foo">' +
+					'<bttr value="bar">' +
+						'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+					'</bttr>' +
 				'</attr>' +
 			' bar</p>'
 		);
