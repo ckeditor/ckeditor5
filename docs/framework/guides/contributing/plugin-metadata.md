@@ -1,6 +1,6 @@
 ---
 category: framework-contributing
-order: 50
+order: 40
 ---
 
 # Plugin metadata
