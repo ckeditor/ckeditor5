@@ -58,8 +58,10 @@ export default class TablePropertiesView extends View {
 	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
 	 * color palette used by the
 	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
+	 * @param {Object} [defaultTableProperties={}]
+	 * // TODO (pomek): Update the param type.
 	 */
-	constructor( locale, options, defaultProperties ) {
+	constructor( locale, options, defaultTableProperties = {} ) {
 		super( locale );
 
 		this.set( {
@@ -106,7 +108,7 @@ export default class TablePropertiesView extends View {
 			 * @default ''
 			 * @member #width
 			 */
-			width: defaultProperties.width || '',
+			width: defaultTableProperties.width,
 
 			/**
 			 * The value of the table height style.
@@ -136,11 +138,12 @@ export default class TablePropertiesView extends View {
 		this.options = options;
 
 		/**
-		 * TODO (pomek): Docs.
+		 * The default table properties.
+		 *
 		 * @protected
 		 * @member {Object}
 		 */
-		this.defaultProperties = defaultProperties;
+		this._defaultTableProperties = defaultTableProperties;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { backgroundRowLabel, backgroundInput } = this._createBackgroundFields();
@@ -403,9 +406,17 @@ export default class TablePropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
+		const defaultTableProperties = this._defaultTableProperties;
+		const defaultBorder = {
+			style: defaultTableProperties.borderStyle,
+			width: defaultTableProperties.borderWidth,
+			color: defaultTableProperties.borderColor
+		};
+
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
-			columns: 5
+			columns: 5,
+			defaultColorValue: defaultBorder.color
 		} );
 		const locale = this.locale;
 		const t = this.t;
@@ -440,7 +451,7 @@ export default class TablePropertiesView extends View {
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, this.defaultProperties.borderStyle || 'none' ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style ) );
 
 		// -- Width ---------------------------------------------------
 
@@ -473,12 +484,19 @@ export default class TablePropertiesView extends View {
 			this.borderColor = borderColorInput.fieldView.value;
 		} );
 
-		// Reset the border color and width fields when style is "none".
-		// https://github.com/ckeditor/ckeditor5/issues/6227
-		this.on( 'change:borderStyle', ( evt, name, value ) => {
-			if ( !isBorderStyleSet( value ) ) {
+		// Reset the border color and width fields depending on the `border-style` value.
+		this.on( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
+			// When removing the border (`border-style:none`), clear the remaining `border-*` properties.
+			// See: https://github.com/ckeditor/ckeditor5/issues/6227.
+			if ( !isBorderStyleSet( newValue ) ) {
 				this.borderColor = '';
 				this.borderWidth = '';
+			}
+
+			// When setting the `border-style` from `none`, set the default `border-color` and `border-width` properties.
+			if ( !isBorderStyleSet( oldValue ) ) {
+				this.borderColor = defaultBorder.color;
+				this.borderWidth = defaultBorder.width;
 			}
 		} );
 
@@ -511,7 +529,8 @@ export default class TablePropertiesView extends View {
 
 		const backgroundInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
-			columns: 5
+			columns: 5,
+			defaultColorValue: this._defaultTableProperties.backgroundColor
 		} );
 
 		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );
@@ -634,10 +653,6 @@ export default class TablePropertiesView extends View {
 			propertyName: 'alignment',
 			nameToValue: name => {
 				return name;
-				// "Center" is the default alignment. However, it can be change via editor's configuration.
-				// const defaultValue = this.defaultProperties.alignment || 'center';
-				//
-				// return name === defaultValue ? '' : name;
 			}
 		} );
 
@@ -721,5 +736,5 @@ export default class TablePropertiesView extends View {
 }
 
 function isBorderStyleSet( value ) {
-	return !!value;
+	return value !== 'none';
 }

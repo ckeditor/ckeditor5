@@ -113,10 +113,10 @@ export function lineWidthFieldValidator( value ) {
  *
  * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
  * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} view
- * @param {String} [defaultStyle='none']
+ * @param {String} defaultStyle The default border.
  * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
  */
-export function getBorderStyleDefinitions( view, defaultStyle = 'none' ) {
+export function getBorderStyleDefinitions( view, defaultStyle ) {
 	const itemDefinitions = new Collection();
 	const styleLabels = getBorderStyleLabels( view.t );
 
@@ -354,13 +354,16 @@ export const defaultColors = [
  * displayed in the input's dropdown.
  * @param {Number} options.columns The configuration of the number of columns the color palette consists of
  * in the input's dropdown.
+ * @param {String} [options.defaultColorValue] If specified, the color input view will replace the "Remove color" button with
+ * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
  * @returns {Function}
  */
 export function getLabeledColorInputCreator( options ) {
 	return ( labeledFieldView, viewUid, statusUid ) => {
 		const inputView = new ColorInputView( labeledFieldView.locale, {
 			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
-			columns: options.columns
+			columns: options.columns,
+			defaultColorValue: options.defaultColorValue
 		} );
 
 		inputView.set( {

@@ -15,25 +15,36 @@
  * @param {String} options.modelElement
  * @param {String} options.modelAttribute
  * @param {String} options.styleName
+ * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
  * @param {Boolean} [options.reduceBoxSides=false]
  */
-export function upcastStyleToAttribute( conversion, { modelElement, modelAttribute, styleName, reduceBoxSides = false } ) {
-	conversion.for( 'upcast' ).attributeToAttribute( {
-		view: {
-			styles: {
-				[ styleName ]: /[\s\S]+/
-			}
-		},
-		model: {
-			name: modelElement,
-			key: modelAttribute,
-			value: viewElement => {
-				const normalized = viewElement.getNormalizedStyle( styleName );
+export function upcastStyleToAttribute( conversion, options ) {
+	const { viewElementName, modelAttribute, styleName, defaultValue } = options;
 
-				return reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
-			}
+	// TODO (pomek): Is it required change?
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
+		if ( !data.modelRange ) {
+			return;
 		}
-	} );
+
+		const matcherPattern = {
+			styles: [ styleName ]
+		};
+
+		// Try to consume appropriate values.
+		if ( !conversionApi.consumable.test( data.viewItem, matcherPattern ) ) {
+			return;
+		}
+
+		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
+		const value = data.viewItem.getNormalizedStyle( styleName );
+
+		conversionApi.consumable.consume( data.viewItem, matcherPattern );
+
+		if ( value !== defaultValue ) {
+			conversionApi.writer.setAttribute( modelAttribute, value, modelElement );
+		}
+	}, { priority: 'lowest' } ) );
 }
 
 /**
@@ -41,8 +52,12 @@ export function upcastStyleToAttribute( conversion, { modelElement, modelAttribu
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} viewElementName
+ * @param {Object} [defaultBorder={}] The default border values.
+ * @param {String} defaultBorder.style
+ * @param {String} defaultBorder.color
+ * @param {String} defaultBorder.width
  */
-export function upcastBorderStyles( conversion, viewElementName ) {
+export function upcastBorderStyles( conversion, viewElementName, defaultBorder = {} ) {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
 		// If the element was not converted by element-to-element converter,
 		// we should not try to convert the style. See #8393.
@@ -84,13 +99,29 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 
 		conversionApi.consumable.consume( data.viewItem, matcherPattern );
 
-		const normalizedBorderStyle = data.viewItem.getNormalizedStyle( 'border-style' );
-		const normalizedBorderColor = data.viewItem.getNormalizedStyle( 'border-color' );
-		const normalizedBorderWidth = data.viewItem.getNormalizedStyle( 'border-width' );
+		const normalizedBorder = {
+			style: data.viewItem.getNormalizedStyle( 'border-style' ),
+			color: data.viewItem.getNormalizedStyle( 'border-color' ),
+			width: data.viewItem.getNormalizedStyle( 'border-width' )
+		};
 
-		conversionApi.writer.setAttribute( 'borderStyle', reduceBoxSidesValue( normalizedBorderStyle ), modelElement );
-		conversionApi.writer.setAttribute( 'borderColor', reduceBoxSidesValue( normalizedBorderColor ), modelElement );
-		conversionApi.writer.setAttribute( 'borderWidth', reduceBoxSidesValue( normalizedBorderWidth ), modelElement );
+		const reducedBorder = {
+			style: reduceBoxSidesValue( normalizedBorder.style ),
+			color: reduceBoxSidesValue( normalizedBorder.color ),
+			width: reduceBoxSidesValue( normalizedBorder.width )
+		};
+
+		if ( reducedBorder.style !== defaultBorder.style ) {
+			conversionApi.writer.setAttribute( 'borderStyle', reducedBorder.style, modelElement );
+		}
+
+		if ( reducedBorder.color !== defaultBorder.color ) {
+			conversionApi.writer.setAttribute( 'borderColor', reducedBorder.color, modelElement );
+		}
+
+		if ( reducedBorder.width !== defaultBorder.width ) {
+			conversionApi.writer.setAttribute( 'borderWidth', reducedBorder.width, modelElement );
+		}
 	} ) );
 }
 

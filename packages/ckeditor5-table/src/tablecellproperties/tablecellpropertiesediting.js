@@ -24,18 +24,6 @@ import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand'
 
 const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
 
-const TABLE_CELL_PROPERTIES = [
-	'borderStyle',
-	'borderColor',
-	'borderWidth',
-	'backgroundColor',
-	'padding',
-	'horizontalAlignment',
-	'verticalAlignment',
-	'width',
-	'height'
-];
-
 /**
  * The table cell properties editing feature.
  *
@@ -218,6 +206,6 @@ function enableProperty( schema, conversion, options ) {
 		allowAttributes: [ modelAttribute ]
 	} );
 
-	upcastStyleToAttribute( conversion, { modelElement: 'tableCell', ...options } );
+	upcastStyleToAttribute( conversion, { viewElementName: 'td', modelElement: 'tableCell', ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
 }

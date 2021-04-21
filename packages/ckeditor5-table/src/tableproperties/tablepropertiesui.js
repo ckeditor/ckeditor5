@@ -24,6 +24,7 @@ import {
 } from '../utils/ui/table-properties';
 import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
+import TablePropertiesEditing from './tablepropertiesediting';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -52,7 +53,7 @@ export default class TablePropertiesUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ContextualBalloon ];
+		return [ ContextualBalloon, TablePropertiesEditing ];
 	}
 
 	/**
@@ -80,6 +81,15 @@ export default class TablePropertiesUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
+
+		/**
+		 * The default table properties.
+		 *
+		 * @protected
+		 * @member {Object}
+		 */
+		// TODO (pomek): Update the member type.
+		this._defaultTableProperties = editor.plugins.get( TablePropertiesEditing )._defaultTableProperties;
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -152,10 +162,11 @@ export default class TablePropertiesUI extends Plugin {
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+
 		const view = new TablePropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors
-		}, config.defaultProperties );
+		}, this._defaultTableProperties );
 		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.
@@ -250,16 +261,23 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	_fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
-		const defaultProperties = this.editor.config.get( 'table.tableProperties.defaultProperties' );
+		const borderStyleCommand = commands.get( 'tableBorderStyle' );
 
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
 				// If the default properties are specified, use their values.
-				const defaultValue = defaultProperties[ property ] || '';
+				const defaultValue = this._defaultTableProperties[ property ] || '';
 
 				return [ property, commands.get( commandName ).value || defaultValue ];
 			} )
-			.forEach( ( [ property, value ] ) => this.view.set( property, value ) );
+			.forEach( ( [ property, value ] ) => {
+				// Do not set the `border-color` and `border-width` inputs if `border-style:none`.
+				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
+					return;
+				}
+
+				this.view.set( property, value );
+			} );
 	}
 
 	/**
