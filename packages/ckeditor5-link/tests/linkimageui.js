@@ -126,7 +126,7 @@ describe( 'LinkImageUI', () => {
 				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'in' );
 			} );
 
-			const imageWidget = viewDocument.selection.getSelectedElement().getChild( 0 );
+			const imageWidget = viewDocument.selection.getSelectedElement();
 			const data = fakeEventData();
 			const eventInfo = new EventInfo( imageWidget, 'click' );
 			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
