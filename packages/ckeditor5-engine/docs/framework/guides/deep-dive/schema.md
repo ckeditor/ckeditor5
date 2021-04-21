@@ -444,8 +444,6 @@ schema.register( 'blockQuote', {
 
 Thanks to that, despite the fact that block quote and paragraph features know nothing about themselves, paragraphs will be allowed in block quotes and block quotes will be allowed in all places where blocks are allowed. So if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), that `<section>` elements will allow block quotes, too.
 
-The side effect of such a definition inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be resolved by a callback which will disallow this specific structure.
-
 <info-box>
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
 </info-box>
