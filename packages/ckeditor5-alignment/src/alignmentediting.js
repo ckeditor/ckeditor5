@@ -72,6 +72,13 @@ export default class AlignmentEditing extends Plugin {
 			editor.conversion.for( 'upcast' ).attributeToAttribute( definition );
 		}
 
+		const upcastCompatibilityDefinitions = buildUpcastCompatibilityDefinitions( optionsToConvert );
+
+		// Always upcast from deprecated `align` attribute.
+		for ( const definition of upcastCompatibilityDefinitions ) {
+			editor.conversion.for( 'upcast' ).attributeToAttribute( definition );
+		}
+
 		editor.commands.add( 'alignment', new AlignmentCommand( editor ) );
 	}
 }
@@ -111,6 +118,27 @@ function buildUpcastInlineDefinitions( options ) {
 				value: {
 					'text-align': name
 				}
+			},
+			model: {
+				key: 'alignment',
+				value: name
+			}
+		} );
+	}
+
+	return definitions;
+}
+
+// Prepare upcast definitions for deprecated `align` attribute.
+// @private
+function buildUpcastCompatibilityDefinitions( options ) {
+	const definitions = [];
+
+	for ( const { name } of options ) {
+		definitions.push( {
+			view: {
+				key: 'align',
+				value: name
 			},
 			model: {
 				key: 'alignment',

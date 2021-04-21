@@ -311,14 +311,15 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
-	it( 'should strip table in table', () => {
+	it( 'should not strip table in table', () => {
 		editor.setData(
 			'<table>' +
 				'<tr>' +
+					'<td>foo</td>' +
 					'<td>' +
 						'<table>' +
 							'<tr>' +
-								'<td>tableception</td>' +
+								'<td>bar</td>' +
 							'</tr>' +
 						'</table>' +
 					'</td>' +
@@ -330,7 +331,52 @@ describe( 'upcastTable()', () => {
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
-						'<paragraph>tableception</paragraph>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>bar</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should strip table in table if nested tables are forbidden', () => {
+		model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+				return false;
+			}
+		} );
+
+		editor.setData(
+			'<table>' +
+				'<tr>' +
+					'<td>foo</td>' +
+					'<td>' +
+						'<table>' +
+							'<tr>' +
+								'<td>bar</td>' +
+							'</tr>' +
+						'</table>' +
+					'</td>' +
+				'</tr>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<paragraph>bar</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
 			'</table>'
@@ -524,8 +570,11 @@ describe( 'upcastTable()', () => {
 
 	describe( 'inline contents', () => {
 		it( 'should upcast inline element inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(
@@ -544,8 +593,12 @@ describe( 'upcastTable()', () => {
 		} );
 
 		it( 'should upcast inline object inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true, isObject: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true,
+				isObject: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(

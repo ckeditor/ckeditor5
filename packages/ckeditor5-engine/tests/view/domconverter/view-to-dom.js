@@ -14,7 +14,7 @@ import ViewEmptyElement from '../../../src/view/emptyelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import ViewDocument from '../../../src/view/document';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 
 import { parse } from '../../../src/dev-utils/view';
 
@@ -661,6 +661,39 @@ describe( 'DomConverter', () => {
 			expect( domChildren.length ).to.equal( 2 );
 			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).to.be.true;
 			expect( domChildren[ 1 ].data ).to.equal( 'foo' );
+		} );
+
+		it( 'should add proper filler type - br', () => {
+			converter.blockFillerMode = 'br';
+
+			const viewP = parse( '<container:p></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+			const filler = domChildren[ 0 ];
+
+			expect( filler.isEqualNode( BR_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
+		} );
+
+		it( 'should add proper filler type - nbsp', () => {
+			converter.blockFillerMode = 'nbsp';
+
+			const viewP = parse( '<container:p></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+			const filler = domChildren[ 0 ];
+
+			expect( filler.isEqualNode( NBSP_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
+		} );
+
+		it( 'should add proper filler type - markedNbsp', () => {
+			converter.blockFillerMode = 'markedNbsp';
+
+			const viewP = parse( '<container:p></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+			const filler = domChildren[ 0 ];
+
+			expect( filler.isEqualNode( MARKED_NBSP_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
 		} );
 
 		it( 'should pass options', () => {

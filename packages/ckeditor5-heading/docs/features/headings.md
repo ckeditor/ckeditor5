@@ -43,7 +43,7 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 ## Related features
 
 There are more CKEditor 5 features that can help you format your content:
-* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
 * {@link features/indent Block indentation}  &ndash; Set indentation for text blocks such as paragraphs or lists.
 * {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered lists you can style.
