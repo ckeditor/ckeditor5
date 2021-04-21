@@ -160,8 +160,7 @@ describe( 'DataController', () => {
 		it( 'should accept parsing context', () => {
 			modelDocument.createRoot( 'inlineRoot', 'inlineRoot' );
 
-			schema.register( 'inlineRoot' );
-			schema.extend( '$text', { allowIn: 'inlineRoot' } );
+			schema.register( 'inlineRoot', { allowChildren: '$text' } );
 
 			const viewFragment = new ViewDocumentFragment( viewDocument, [ parseView( 'foo' ) ] );
 
