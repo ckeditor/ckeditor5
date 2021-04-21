@@ -82,6 +82,21 @@ describe( 'TextPartLanguageEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p><span lang="fr" dir="ltr">foo</span>bar</p>' );
 		} );
+
+		it( 'should respect nested element language ', () => {
+			editor.setData( '<p><span dir="rtl" lang="he">hebrew<span dir="ltr" lang="fr">french</span>hebrew</span></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>' +
+					'<$text language="he:rtl">hebrew</$text>' +
+					'<$text language="fr:ltr">french</$text>' +
+					'<$text language="he:rtl">hebrew</$text></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>' +
+				'<span lang="he" dir="rtl">hebrew</span>' +
+				'<span lang="fr" dir="ltr">french</span>' +
+				'<span lang="he" dir="rtl">hebrew</span></p>' );
+		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {

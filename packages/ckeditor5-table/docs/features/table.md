@@ -312,6 +312,33 @@ The above model structure will be rendered to the data and to the editing view a
 	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍 if you need this feature.
 </info-box>
 
+## Disallowing nesting tables
+
+By default, the editor allows nesting a table inside another table's cell.
+
+In order to disallow nesting tables you need to register an additional schema rule. It needs to be added before the data gets loaded into the editor, hence it is best to implement it as a plugin:
+
+```js
+function DisallowNestingTables( editor ) {
+	editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+		if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			return false;
+		}
+	} );
+}
+
+// Pass it via config.extraPlugins or config.plugins:
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ DisallowNestingTables ],
+
+		// The rest of the config.
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 ## Common API
 
 ### UI components
