@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { Element } from 'ckeditor5/src/engine';
 
 import ImageBlockEditing from '../image/imageblockediting';
 import { getCaptionFromImageModelElement, getCaptionFromModelSelection } from './utils';
@@ -112,7 +111,6 @@ export default class ToggleImageCaptionCommand extends Command {
 		const imageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
 
 		let selectedImage = selection.getSelectedElement();
-		let newCaptionElement;
 
 		const savedCaption = imageCaptionEditing._getSavedCaption( selectedImage );
 
@@ -125,11 +123,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		}
 
 		// Try restoring the caption from the ImageCaptionEditing plugin storage.
-		if ( savedCaption ) {
-			newCaptionElement = Element.fromJSON( savedCaption );
-		} else {
-			newCaptionElement = writer.createElement( 'caption' );
-		}
+		const newCaptionElement = savedCaption || writer.createElement( 'caption' );
 
 		writer.append( newCaptionElement, selectedImage );
 
@@ -164,7 +158,7 @@ export default class ToggleImageCaptionCommand extends Command {
 
 		// Store the caption content so it can be restored quickly if the user changes their mind even if they toggle image<->imageInline.
 		if ( captionElement.childCount ) {
-			imageCaptionEditing._saveCaption( selectedImage, captionElement.toJSON() );
+			imageCaptionEditing._saveCaption( selectedImage, captionElement );
 		}
 
 		writer.setSelection( selectedImage, 'on' );

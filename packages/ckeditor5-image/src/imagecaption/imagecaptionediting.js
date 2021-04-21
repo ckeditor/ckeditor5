@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
@@ -160,7 +160,7 @@ export default class ImageCaptionEditing extends Plugin {
 				// If the old element was a captioned block image (the caption was visible),
 				// simply save it so it can be restored.
 				if ( oldCaptionElement ) {
-					return this._saveCaption( newElement, oldCaptionElement.toJSON() );
+					return this._saveCaption( newElement, oldCaptionElement );
 				}
 			}
 
@@ -200,11 +200,12 @@ export default class ImageCaptionEditing extends Plugin {
 	 * @protected
 	 * @param {module:engine/model/element~Element} imageModelElement The model element the
 	 * caption should be returned for.
-	 * @returns {Object|undefined} The JSONified caption element or `undefined` if there is none.
-	 * See {@link module:engine/model/element~Element.fromJSON} to learn more.
+	 * @returns {module:engine/model/element~Element|null} The model caption element or `null` if there is none.
 	 */
 	_getSavedCaption( imageModelElement ) {
-		return this._savedCaptionsMap.get( imageModelElement );
+		const jsonObject = this._savedCaptionsMap.get( imageModelElement );
+
+		return jsonObject ? Element.fromJSON( jsonObject ) : null;
 	}
 
 	/**
@@ -224,11 +225,10 @@ export default class ImageCaptionEditing extends Plugin {
 	 * @protected
 	 * @param {module:engine/model/element~Element} imageModelElement The model element the
 	 * caption is saved for.
-	 * @param {Object} caption The JSONified caption element to be saved.
-	 * See {@link module:engine/model/element~Element#toJSON} to learn more.
+	 * @param {module:engine/model/element~Element} caption The caption model element to be saved.
 	 */
 	_saveCaption( imageModelElement, caption ) {
-		this._savedCaptionsMap.set( imageModelElement, caption );
+		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() );
 	}
 }
 

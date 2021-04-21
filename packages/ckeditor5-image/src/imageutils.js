@@ -69,12 +69,13 @@ export default class ImageUtils extends Plugin {
 	 * @param {module:engine/model/selection~Selectable} [selectable] Place to insert the image. If not specified,
 	 * the {@link module:widget/utils~findOptimalInsertionRange} logic will be applied for the block images
 	 * and `model.document.selection` for the inline images.
-	 * @return {module:engine/view/element~Element} The inserted model image element.
 	 *
 	 * **Note**: If `selectable` is passed, this helper will not be able to set selection attributes (such as `linkHref`)
 	 * and apply them to the new image. In this case, make sure all selection attributes are passed in `attributes`.
+	 *
 	 * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
 	 * it will be determined automatically depending of editor config or place of the insertion.
+	 * @return {module:engine/view/element~Element|null} The inserted model image element.
 	 */
 	insertImage( attributes = {}, selectable = null, imageType = null ) {
 		const editor = this.editor;
@@ -111,9 +112,11 @@ export default class ImageUtils extends Plugin {
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
 				writer.setSelection( imageElement, 'on' );
+
+				return imageElement;
 			}
 
-			return imageElement;
+			return null;
 		} );
 	}
 
