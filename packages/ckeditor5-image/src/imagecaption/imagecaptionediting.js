@@ -164,7 +164,9 @@ export default class ImageCaptionEditing extends Plugin {
 				// If the old element was a captioned block image (the caption was visible),
 				// simply save it so it can be restored.
 				if ( oldCaptionElement ) {
-					return this._saveCaption( newElement, oldCaptionElement );
+					this._saveCaption( newElement, oldCaptionElement );
+
+					return;
 				}
 			}
 
