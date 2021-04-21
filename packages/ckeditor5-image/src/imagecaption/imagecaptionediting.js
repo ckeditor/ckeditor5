@@ -154,6 +154,7 @@ export default class ImageCaptionEditing extends Plugin {
 
 			const { oldElement, newElement } = evt.return;
 
+			/* istanbul ignore if: paranoid check */
 			if ( !oldElement ) {
 				return;
 			}
