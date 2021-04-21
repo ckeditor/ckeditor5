@@ -671,6 +671,34 @@ describe( 'ImageUtils plugin', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
 		} );
+
+		it( 'should return the inserted image element', () => {
+			setModelData( model, '[]' );
+
+			const imageElement = imageUtils.insertImage( editor );
+
+			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+			expect( imageElement.is( 'element', 'image' ) ).to.be.true;
+			expect( imageElement ).to.equal( model.document.getRoot().getChild( 0 ) );
+		} );
+
+		it( 'should return null when the image could not be inserted', () => {
+			model.schema.register( 'other', {
+				allowIn: '$root',
+				allowChildren: '$text',
+				isLimit: true
+			} );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
+
+			setModelData( model, '<other>[]</other>' );
+
+			const imageElement = imageUtils.insertImage();
+
+			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+
+			expect( imageElement ).to.be.null;
+		} );
 	} );
 
 	describe( 'getViewImageFromWidget()', () => {

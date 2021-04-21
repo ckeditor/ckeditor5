@@ -145,9 +145,22 @@ describe( 'ImageTypeCommand', () => {
 
 	describe( 'execute()', () => {
 		describe( 'block command', () => {
-			it( 'should convert inline image to block image', () => {
-				const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'foo/bar.jpg';
 
+			it( 'should return an object containing the old and new image elements', () => {
+				setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const oldElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
+				const returned = blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
+
+				const newElement = model.document.getRoot().getChild( 0 );
+
+				expect( returned ).to.deep.equal( { oldElement, newElement } );
+			} );
+
+			it( 'should convert inline image to block image', () => {
 				setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
 
 				blockCommand.execute();
@@ -156,12 +169,10 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should convert inline image with alt attribute to block image', () => {
-				const imgSrc = 'foo/bar.jpg';
-
 				setModelData( model,
 					`<paragraph>
 						[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]
-						</paragraph>`
+					</paragraph>`
 				);
 
 				blockCommand.execute();
@@ -172,12 +183,10 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should convert inline image with srcset attribute to block image', () => {
-				const imgSrc = 'foo/bar.jpg';
-
 				setModelData( model,
 					`<paragraph>
 						[<imageInline src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageInline>]
-						</paragraph>`
+					</paragraph>`
 				);
 
 				blockCommand.execute();
@@ -187,33 +196,35 @@ describe( 'ImageTypeCommand', () => {
 				);
 			} );
 
-			it( 'should convert inline image with caption attribute to block image', () => {
-				const imgSrc = 'foo/bar.jpg';
-
-				setModelData( model,
-					`<paragraph>
-						[<imageInline caption="foo" src="${ imgSrc }"></imageInline>]
-						</paragraph>`
-				);
-
-				blockCommand.execute();
-
-				expect( getModelData( model ) ).to.equal(
-					`[<image caption="foo" src="${ imgSrc }"></image>]`
-				);
-			} );
-
 			it( 'should not convert if "src" attribute is not set', () => {
 				setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
-				blockCommand.execute();
+				const returned = blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+				expect( returned ).to.be.null;
 			} );
 		} );
 
 		describe( 'inline command', () => {
 			const imgSrc = 'foo/bar.jpg';
+
+			it( 'should return an object containing the old and new image elements', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+
+				const oldElement = model.document.getRoot().getChild( 0 );
+				const returned = inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
+
+				const newElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				expect( returned ).to.deep.equal( { oldElement, newElement } );
+			} );
 
 			it( 'should convert block image to inline image', () => {
 				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
@@ -234,7 +245,7 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-					`[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]` +
+						`[<imageInline alt="alt text" src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
 				);
 			} );
@@ -248,21 +259,7 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>' +
-					`[<imageInline src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
-					'</paragraph>'
-				);
-			} );
-
-			it( 'should convert block image with caption attribute to inline image', () => {
-				setModelData( model,
-					`[<image caption="foo" src="${ imgSrc }"></image>]`
-				);
-
-				inlineCommand.execute();
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>' +
-					`[<imageInline caption="foo" src="${ imgSrc }"></imageInline>]` +
+						`[<imageInline src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageInline>]` +
 					'</paragraph>'
 				);
 			} );
@@ -277,6 +274,52 @@ describe( 'ImageTypeCommand', () => {
 					`[<imageInline src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
 				);
+			} );
+		} );
+
+		describe( 'integration with ImageCaptionEditing', () => {
+			it( 'should preserve the caption so it can be restored', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`[<image src="${ imgSrc }"></image>]`
+				);
+
+				editor.execute( 'toggleImageCaption' );
+
+				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+			} );
+
+			it( 'should preserve the caption if the selection was in the caption at the moment of type change', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model, `<image src="${ imgSrc }"><caption>f[o]o</caption></image>` );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				);
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					`[<image src="${ imgSrc }"></image>]`
+				);
+
+				editor.execute( 'toggleImageCaption' );
+
+				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
 			} );
 		} );
 	} );
