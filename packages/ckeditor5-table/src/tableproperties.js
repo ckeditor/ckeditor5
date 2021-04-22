@@ -65,6 +65,36 @@ export default class TableProperties extends Plugin {
  *			}
  *		};
  *
+ * * The default styles for tables (`tableProperties.defaultProperties`):
+ *
+ *		const tableConfig = {
+ *			tableProperties: {
+ *				defaultProperties: {
+ *					borderStyle: 'dashed',
+ *					borderColor: 'hsl(0, 0%, 90%)',
+ *					borderWidth: '3px',
+ *					alignment: 'left'
+ *				}
+ *			}
+ *		}
+ *
+ * 	 The following properties are supported:
+ *
+ * 	 * `alignment` – sets the table alignment
+ * 	 * `backgroundColor` – sets the table background color
+ * 	 * `borderColor` – sets the border color
+ * 	 * `borderStyle` – sets the border style
+ * 	 * `borderWidth` – sets the border width
+ * 	 * `height` – sets the table height
+ * 	 * `width` – sets the table width
+ *
+ * 	 The default table properties are connected with the `.ck-content table` CSS selector.
+ * 	 These properties will not be kept in the editor's data because there is no need for that.
+ * 	 If a property is missing, the default value will be applied automatically.
+ *
+ * 	 The editor's UI will respect default table properties and will display their values.
+ * 	 The user can modify any property, and the model will save the change.
+ *
  * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
  * allowing users to pick colors in a more convenient way.
