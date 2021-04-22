@@ -320,8 +320,6 @@ describe( 'InsertRowCommand', () => {
 				view: 'foo'
 			} );
 
-			command = new InsertRowCommand( editor );
-
 			setData( model,
 				'<table>' +
 					'<tableRow>' +
@@ -504,8 +502,6 @@ describe( 'InsertRowCommand', () => {
 				model: 'foo',
 				view: 'foo'
 			} );
-
-			command = new InsertRowCommand( editor, { order: 'above' } );
 
 			setData( model,
 				'<table>' +

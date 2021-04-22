@@ -225,8 +225,6 @@ describe( 'InsertColumnCommand', () => {
 				view: 'foo'
 			} );
 
-			command = new InsertColumnCommand( editor );
-
 			setData( model,
 				'<table>' +
 					'<tableRow>' +
@@ -414,8 +412,6 @@ describe( 'InsertColumnCommand', () => {
 				model: 'foo',
 				view: 'foo'
 			} );
-
-			command = new InsertColumnCommand( editor, { order: 'left' } );
 
 			setData( model,
 				'<table>' +
