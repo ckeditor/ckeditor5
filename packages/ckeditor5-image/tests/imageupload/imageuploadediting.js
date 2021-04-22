@@ -84,8 +84,11 @@ describe( 'ImageUploadEditing', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register proper schema rules', () => {
+	it( 'should register proper schema rules when both ImageBlock and ImageInline are enabled', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
 	} );
 
 	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
@@ -100,6 +103,22 @@ describe( 'ImageUploadEditing', () => {
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
 		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
 		await newEditor.destroy();
+	} );
+
+	it( 'should wait for ImageInlineEditing and ImageBlockEditing before extending their model elements in schema', async () => {
+		const editor = await VirtualTestEditor.create( {
+			plugins: [
+				// The order matters.
+				ImageUploadEditing, ImageBlockEditing, ImageInlineEditing
+			]
+		} );
+
+		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
+
+		await editor.destroy();
 	} );
 
 	it( 'should register the uploadImage command', () => {

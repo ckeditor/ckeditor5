@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, setTimeout */
+/* globals console, window, setTimeout */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
@@ -21,6 +21,8 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 // EasyImage requires the `CloudServicesCore` plugin as a soft-requirement.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin
 // and override the `#createToken()` method which creates an instance of the `Token` class.
@@ -33,13 +35,12 @@ class CloudServicesCoreMock extends CloudServicesCore {
 		return new UploadGatewayMock( token, apiAddress );
 	}
 }
+
 describe( 'EasyImage', () => {
+	testUtils.createSinonSandbox();
+
 	it( 'should require other plugins', () => {
 		expect( EasyImage.requires ).to.include( CloudServicesUploadAdapter );
-	} );
-
-	it( 'should require Image by name', () => {
-		expect( EasyImage.requires ).to.include( 'Image' );
 	} );
 
 	it( 'should require ImageUpload by name', () => {
@@ -67,6 +68,28 @@ describe( 'EasyImage', () => {
 
 				return editor.destroy();
 			} );
+	} );
+
+	it( 'should warn if there is no image feature loaded in the editor', async () => {
+		const stub = testUtils.sinon.stub( console, 'warn' );
+		const div = window.document.createElement( 'div' );
+
+		window.document.body.appendChild( div );
+
+		const editor = await ClassicTestEditor.create( div, {
+			plugins: [ Clipboard, ImageUpload, CloudServices, EasyImage ],
+			substitutePlugins: [ CloudServicesCoreMock ],
+			cloudServices: {
+				tokenUrl: 'abc',
+				uploadUrl: 'def'
+			}
+		} );
+
+		sinon.assert.calledOnceWithExactly( stub, 'easy-image-image-feature-missing', editor, sinon.match.string );
+
+		window.document.body.removeChild( div );
+
+		await editor.destroy();
 	} );
 
 	describe( 'integration tests', () => {

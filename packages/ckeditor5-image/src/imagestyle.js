@@ -48,9 +48,9 @@ export default class ImageStyle extends Plugin {
  */
 
 /**
- * A list of the image style arrangements.
+ * A list of the image style options.
  *
- * @member {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} module:image/imagestyle~ImageStyleConfig#arrangements
+ * @member {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} module:image/imagestyle~ImageStyleConfig#options
  */
 
 /**
@@ -60,19 +60,20 @@ export default class ImageStyle extends Plugin {
  */
 
 /**
- * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the image
- * {@link module:image/imagestyle~ImageStyleConfig#arrangements} and {@link module:image/imagestyle~ImageStyleConfig#groups}
+ * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the image style
+ * {@link module:image/imagestyle~ImageStyleConfig#options} and {@link module:image/imagestyle~ImageStyleConfig#groups}
  * to work properly. It provides the default configuration (listed below), which can be customized while creating the editor instance.
  *
  * The feature creates the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `imageStyle`}
- * command based on defined {@link module:image/imagestyle~ImageStyleConfig#arrangements}, so you can change the arrangement of a
+ * command based on defined {@link module:image/imagestyle~ImageStyleConfig#options}, so you can change the style of a
  * selected image by executing the following command:
  *
  *		editor.execute( 'imageStyle' { value: 'alignLeft' } );
  *
- * The feature also creates buttons that execute the command with different values. Assuming that you use the
- * default image arrangements setting, you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
- * (or any other toolbar) to contain these options:
+ * The feature also registers in the {@link module:ui/componentfactory~ComponentFactory UI components factory} buttons
+ * that execute the command with different values. Assuming that you use the
+ * default image style configuration, you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
+ * (or any other toolbar) to contain any of the registered buttons:
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -80,6 +81,8 @@ export default class ImageStyle extends Plugin {
  *					toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
  *				}
  *			} );
+ *
+ * **Note**: The buttons created by the `ImageStyle` plugin must be prefixed with "imageStyle:" in the toolbar configuration.
  *
  * The feature also creates drop-downs that contains a set of buttons defined in the
  * {@link module:image/imagestyle~ImageStyleGroupDefinition#items `items`} property.
@@ -92,7 +95,7 @@ export default class ImageStyle extends Plugin {
  *				}
  *			} );
  *
- * Each of the drop-downs added to the toolbar will be displayed as the split button. The arrangement applied on click will correspond to
+ * Each of the drop-downs added to the toolbar will be displayed as the split button. The style applied on click will correspond to
  * the one specified in the {@link module:image/imagestyle~ImageStyleGroupDefinition#defaultItem `defaultItem`} property.
  *
  * Read more about styling images in the {@glink features/image#image-styles Image styles guide}.
@@ -104,12 +107,12 @@ export default class ImageStyle extends Plugin {
  *
  * * If both {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} and
  * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugins are loaded
- * (which is usually the default editor configuration), the following arrangements and groups will be available for the toolbar
+ * (which is usually the default editor configuration), the following buttons (options) and groups will be available for the toolbar
  * configuration:
  *
  *		const imageDefaultConfig = {
  *			styles: {
- *				arrangements: [
+ *				options: [
  *					'inline', 'alignLeft', 'alignRight',
  *					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
  *				],
@@ -118,21 +121,21 @@ export default class ImageStyle extends Plugin {
  *		};
  *
  * * If only the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin is loaded,
- * the following arrangements and groups will be available for the toolbar configuration:
+ * the following buttons (options) and groups will be available for the toolbar configuration:
  *
  *		const imageDefaultConfig = {
  *			styles: {
- *				arrangements: [ 'full', 'side' ],
+ *				options: [ 'full', 'side' ],
  *				groups: []
  *			}
  *		};
  *
  * * If only the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin is loaded,
- * the following arrangements and groups will available for the toolbar configuration:
+ * the following buttons (options) and groups will available for the toolbar configuration:
  *
  *		const imageDefaultConfig = {
  *			styles: {
- *				arrangements: [ 'inline', 'alignLeft', 'alignRight' ],
+ *				options: [ 'inline', 'alignLeft', 'alignRight' ],
  *				groups: []
  *			}
  *		};
@@ -141,7 +144,7 @@ export default class ImageStyle extends Plugin {
  *
  * The image styles configuration can be customized in several ways:
  *
- * * Any of the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} or
+ * * Any of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} or
  * {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} can be loaded by the reference to its name
  * as follows:
  *
@@ -149,20 +152,20 @@ export default class ImageStyle extends Plugin {
  *			.create( editorElement, {
  *				image: {
  *					styles: {
- *						arrangements: [ 'alignLeft', 'alignRight' ]
+ *						options: [ 'alignLeft', 'alignRight' ]
  *						groups: [ 'wrapText' ]
  *					}
  *				}
  *			} );
  *
- * **Note**: Custom arrangements will override the arrangements array only, the groups will stay as in the default configuration.
+ * **Note**: Custom options will override the options array only, the groups will stay as in the default configuration.
  * The same goes for applying the custom groups.
  *
  * **Note**: Every {@link module:image/imagestyle~ImageStyleGroupDefinition#items item} in the referenced groups
- * must be listed in the provided arrangements.
+ * must be listed in the provided options.
  *
- * * Each of the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} can be customized,
- * e.g. to change the `icon`, `title` or CSS `className` of the arrangement. The feature also provides several
+ * * Each of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options} can be customized,
+ * e.g. to change the `icon`, `title` or CSS `className` of the style. The feature also provides several
  * {@link module:image/imagestyle/utils~DEFAULT_ICONS default icons} to choose from.
  *
  *		import customIcon from 'custom-icon.svg';
@@ -171,7 +174,7 @@ export default class ImageStyle extends Plugin {
  *
  *		ClassicEditor.create( editorElement, { image:
  *			styles: {
- *				arrangements: {
+ *				options: {
  *					// This will only customize the icon of the "full" style.
  *					// Note: 'right' is one of default icons provided by the feature.
  *					{
@@ -195,9 +198,9 @@ export default class ImageStyle extends Plugin {
  *
  *		ClassicEditor.create( editorElement, { image:
  *			styles: {
- *				// The 'full' and 'side' arrangements are used in the 'breakText' group,
- *				// so they must be defined as the arrangements.
- *				arrangements: [ 'full', 'side' ],
+ *				// The 'full' and 'side' styles are used in the 'breakText' group,
+ *				// so they must be defined as the options.
+ *				options: [ 'full', 'side' ],
  *				groups: {
  *					// This will only customize the default item.
  *					// Note: 'alignRight' is one of items defined in the default group.
@@ -218,12 +221,12 @@ export default class ImageStyle extends Plugin {
  *		} );
  *
  * * If none of the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} or
- * {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} works for the integration,
+ * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options} works for the integration,
  * it is possible to define independent custom styles, too.
  *
- * See the documentation about the image
+ * See the documentation about the image style
  *
- * * {@link module:image/imagestyle~ImageStyleArrangementDefinition arrangements} and
+ * * {@link module:image/imagestyle~ImageStyleOptionDefinition options}
  * * {@link module:image/imagestyle~ImageStyleGroupDefinition groups}
  *
  * to define the custom image style configuration properly.
@@ -235,8 +238,8 @@ export default class ImageStyle extends Plugin {
  *
  *		ClassicEditor.create( editorElement, { image:
  *			styles: {
- *				// A list of completely custom arrangements.
- *				arrangements: [
+ *				// A list of completely custom styling options.
+ *				options: [
  *					{
  *						name: 'regular',
  *						modelElements: [ 'image', 'imageInline' ],
@@ -273,17 +276,17 @@ export default class ImageStyle extends Plugin {
  */
 
 /**
- * The image arrangement definition descriptor.
+ * The image styling option definition descriptor.
  *
  * This definition should be implemented in the `Image` plugin {@link module:image/image~ImageConfig#styles configuration} for:
  *
- * * customizing one of the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} by providing the proper name
- * of the default arrangement and the properties that should be overridden,
- * * or defining a completely custom arrangement by providing a custom name and implementing the following properties.
+ * * customizing one of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} by providing the proper name
+ * of the default style and the properties that should be overridden,
+ * * or defining a completely custom styling option by providing a custom name and implementing the following properties.
  *
  *		import fullSizeIcon from 'path/to/icon.svg';
  *
- *		const imageStyleArrangementDefinition = {
+ *		const imageStyleOptionDefinition = {
  *			name: 'fullSize',
  *			icon: fullSizeIcon,
  *			title: 'Full size image',
@@ -291,61 +294,61 @@ export default class ImageStyle extends Plugin {
  *			modelElements: [ 'image', 'imageInline' ]
  *		}
  *
- * The arrangement will be registered as the button under the name `'imageStyle:{name}'` in the
+ * The styling option will be registered as the button under the name `'imageStyle:{name}'` in the
  * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
  * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin).
  *
- * @property {String} name The unique name of the arrangement. It will be used to:
+ * @property {String} name The unique name of the styling option. It will be used to:
  *
- * * refer to one of the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} or define the custom arrangement,
- * * store the chosen arrangement in the model by setting the `imageStyle` attribute of the model image element,
+ * * refer to one of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} or define the custom style,
+ * * store the chosen style in the model by setting the `imageStyle` attribute of the model image element,
  * * as a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
- * * when registering a button for the arrangement (`'imageStyle:{name}'`).
+ * * when registering a button for the style (`'imageStyle:{name}'`).
  *
- * @property {Boolean} [isDefault] When set, the arrangement will be used as the default one for the model elements
- * listed in the `modelElements` property. A default arrangement does not apply any CSS class to the view element.
+ * @property {Boolean} [isDefault] When set, the style will be used as the default one for the model elements
+ * listed in the `modelElements` property. A default style does not apply any CSS class to the view element.
  *
  * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangement} addressed in the name property.
+ * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
  *
- * @property {String} icon One of the following to be used when creating the arrangement's button:
+ * @property {String} icon One of the following to be used when creating the styles's button:
  *
  * * an SVG icon source (as an XML string),
  * * one of the keys in {@link module:image/imagestyle/utils~DEFAULT_ICONS} to use one of default icons provided by the plugin.
  *
  * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangement} addressed in the name property.
+ * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
  *
- * @property {String} title The arrangement's title. Setting `title` to one of
+ * @property {String} title The styles's title. Setting `title` to one of
  * {@link module:image/imagestyle/imagestyleui~ImageStyleUI#localizedDefaultStylesTitles}
  * will automatically translate it to the language of the editor.
  *
  * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangement} addressed in the name property.
+ * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
  *
- * @property {String} [className] The CSS class used to represent the arrangement in the view.
- * It should be used only for the non-default arrangements.
+ * @property {String} [className] The CSS class used to represent the style in the view.
+ * It should be used only for the non-default styles.
  *
  * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangement} addressed in the name property.
+ * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
  *
- * @property {Array.<String>} modelElements The list of the names of the model elements that are supported by the arrangement.
+ * @property {Array.<String>} modelElements The list of the names of the model elements that are supported by the style.
  * The possible values are:
- * * `[ 'image' ]` if the arrangement can be applied to the image type introduced by the
+ * * `[ 'image' ]` if the style can be applied to the image type introduced by the
  * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin,
- * * `[ 'imageInline' ]` if the arrangement can be applied to the image type introduced by the
+ * * `[ 'imageInline' ]` if the style can be applied to the image type introduced by the
  * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin,
- * * `[ 'imageInline', 'image' ]` if the arrangement can be applied to both image types introduced by the plugins mentioned above.
+ * * `[ 'imageInline', 'image' ]` if the style can be applied to both image types introduced by the plugins mentioned above.
  *
- * This property determines which model element names work with the arrangement. If the model element name of the currently selected
+ * This property determines which model element names work with the style. If the model element name of the currently selected
  * image is different, upon executing the
  * {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle`} command the image type (model element name)
  * will automatically change.
  *
  * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangement} addressed in the name property.
+ * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
  *
- * @typedef {Object} module:image/imagestyle~ImageStyleArrangementDefinition
+ * @typedef {Object} module:image/imagestyle~ImageStyleOptionDefinition
  */
 
 /**
@@ -382,13 +385,13 @@ export default class ImageStyle extends Plugin {
  *
  * @property {Array.<String>} [items] The list of the names of the buttons that will be placed in the dropdown toolbar.
  * Each of the buttons has to be defined
- * as the {@link module:image/imagestyle~ImageStyleArrangementDefinition image arrangement} to be registered in the
+ * as the {@link module:image/imagestyle~ImageStyleOptionDefinition image styling option} to be registered in the
  * {@link module:ui/componentfactory~ComponentFactory UI components factory}.
  *
  * If this property is not defined, its value is inherited
  * from the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default group} addressed in the name property.
  *
- * @property {String} [defaultItem] The name of one of the arrangements from the items list,
+ * @property {String} [defaultItem] The name of one of the styling options from the items list,
  * which will be used as a default button for the drop-down's split button.
  *
  * If this property is not defined, its value is inherited

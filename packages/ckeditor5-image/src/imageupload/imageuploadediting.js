@@ -61,26 +61,10 @@ export default class ImageUploadEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const doc = editor.model.document;
-		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
-
 		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' ) );
-
-		// Setup schema to allow uploadId and uploadStatus for images.
-		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			schema.extend( 'image', {
-				allowAttributes: [ 'uploadId', 'uploadStatus' ]
-			} );
-		}
-
-		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			schema.extend( 'imageInline', {
-				allowAttributes: [ 'uploadId', 'uploadStatus' ]
-			} );
-		}
-
 		const uploadImageCommand = new UploadImageCommand( editor );
 
 		// Register `uploadImage` command and add `imageUpload` command as an alias for backward compatibility.
@@ -214,6 +198,28 @@ export default class ImageUploadEditing extends Plugin {
 				this._parseAndSetSrcsetAttributeOnImage( urls, imageElement, writer );
 			} );
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const schema = this.editor.model.schema;
+
+		// Setup schema to allow uploadId and uploadStatus for images.
+		// Wait for ImageBlockEditing or ImageInlineEditing to register their elements first,
+		// that's why doing this in afterInit() instead of init().
+		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
+			schema.extend( 'image', {
+				allowAttributes: [ 'uploadId', 'uploadStatus' ]
+			} );
+		}
+
+		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
+			schema.extend( 'imageInline', {
+				allowAttributes: [ 'uploadId', 'uploadStatus' ]
+			} );
+		}
 	}
 
 	/**

@@ -66,7 +66,7 @@ async function startEditors() {
 		toolbar: TOOLBAR_CONFIG,
 		image: {
 			styles: {
-				arrangements: [ 'full', 'side' ],
+				options: [ 'full', 'side' ],
 				groups: []
 			},
 			toolbar: [

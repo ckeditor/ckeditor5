@@ -20,7 +20,6 @@ import ImageInlineEditing from '../src/image/imageinlineediting';
 import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
 
 import ImageUtils from '../src/imageutils';
-import { createImageViewElement } from '../src/image/utils';
 
 describe( 'ImageUtils plugin', () => {
 	let editor, imageUtils, element, image, writer, viewDocument;
@@ -158,56 +157,6 @@ describe( 'ImageUtils plugin', () => {
 			frag = writer.createDocumentFragment( element );
 
 			const selection = writer.createSelection( innerContainer, 'in' );
-
-			expect( imageUtils.getClosestSelectedImageWidget( selection ) ).to.be.null;
-		} );
-
-		it( 'should return true when an inline image widget is encompassed by a link', () => {
-			const paragraph = writer.createContainerElement( 'p' );
-			const inlineImageView = createImageViewElement( writer, 'imageInline' );
-			imageUtils.toImageWidget( inlineImageView, writer, 'image widget' );
-
-			writer.insert( writer.createPositionAt( paragraph, 0 ), inlineImageView );
-
-			writer.wrap( writer.createRangeOn( inlineImageView ), writer.createAttributeElement( 'a', {
-				href: 'https://ckeditor.com'
-			} ) );
-
-			// <p>[<a href="..."><span class="image-inline ...">...</span></a>]</p>
-			const selection = writer.createSelection( writer.createRangeOn( inlineImageView.parent ) );
-
-			expect( imageUtils.getClosestSelectedImageWidget( selection ) ).to.equal( inlineImageView );
-		} );
-
-		it( 'should return false when an inline image widget is encompassed by a link that has some additional content', () => {
-			const paragraph = writer.createContainerElement( 'p' );
-			const inlineImageView = createImageViewElement( writer, 'imageInline' );
-			imageUtils.toImageWidget( inlineImageView, writer, 'image widget' );
-
-			writer.insert( writer.createPositionAt( paragraph, 0 ), inlineImageView );
-			writer.insert( writer.createPositionAt( paragraph, 1 ), writer.createText( 'foo' ) );
-
-			writer.wrap( writer.createRangeIn( paragraph ), writer.createAttributeElement( 'a', {
-				href: 'https://ckeditor.com'
-			} ) );
-
-			// <p>[<a href="..."><span class="image-inline ...">...</span>foo</a>]</p>
-			const selection = writer.createSelection( writer.createRangeOn( inlineImageView.parent ) );
-
-			expect( imageUtils.getClosestSelectedImageWidget( selection ) ).to.be.null;
-		} );
-
-		it( 'should return false when a link that does not have an image but something else is selected', () => {
-			const paragraph = writer.createContainerElement( 'p' );
-
-			writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foo' ) );
-
-			writer.wrap( writer.createRangeIn( paragraph ), writer.createAttributeElement( 'a', {
-				href: 'https://ckeditor.com'
-			} ) );
-
-			// <p>[<a href="...">foo</a>]</p>
-			const selection = writer.createSelection( writer.createRangeOn( paragraph.getChild( 0 ) ) );
 
 			expect( imageUtils.getClosestSelectedImageWidget( selection ) ).to.be.null;
 		} );
@@ -721,6 +670,34 @@ describe( 'ImageUtils plugin', () => {
 			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
+		} );
+
+		it( 'should return the inserted image element', () => {
+			setModelData( model, '[]' );
+
+			const imageElement = imageUtils.insertImage( editor );
+
+			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+			expect( imageElement.is( 'element', 'image' ) ).to.be.true;
+			expect( imageElement ).to.equal( model.document.getRoot().getChild( 0 ) );
+		} );
+
+		it( 'should return null when the image could not be inserted', () => {
+			model.schema.register( 'other', {
+				allowIn: '$root',
+				allowChildren: '$text',
+				isLimit: true
+			} );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
+
+			setModelData( model, '<other>[]</other>' );
+
+			const imageElement = imageUtils.insertImage();
+
+			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+
+			expect( imageElement ).to.be.null;
 		} );
 	} );
 

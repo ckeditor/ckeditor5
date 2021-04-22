@@ -38,14 +38,14 @@ export default class ImageStyleEditing extends Plugin {
 		editor.config.define( 'image.styles', getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) );
 
 		/**
-		 * It contains lists of the normalized and validated style arrangements and style groups.
+		 * It contains lists of the normalized and validated style options and groups.
 		 *
-		 * * Each arrangement contains a complete icon markup.
-		 * * The arrangements not supported by any of the loaded image editing plugins (
+		 * * Each option contains a complete icon markup.
+		 * * The style options not supported by any of the loaded image editing plugins (
 		 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} or
 		 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`}) are filtered out.
 		 * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
-		 * * All of the group items not defined in the arrangements are filtered out.
+		 * * All of the group items not defined in the options are filtered out.
 		 *
 		 * @protected
 		 * @readonly

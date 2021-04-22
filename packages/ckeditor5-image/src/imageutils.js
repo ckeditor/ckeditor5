@@ -72,8 +72,10 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * **Note**: If `selectable` is passed, this helper will not be able to set selection attributes (such as `linkHref`)
 	 * and apply them to the new image. In this case, make sure all selection attributes are passed in `attributes`.
+	 *
 	 * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
 	 * it will be determined automatically depending of editor config or place of the insertion.
+	 * @return {module:engine/view/element~Element|null} The inserted model image element.
 	 */
 	insertImage( attributes = {}, selectable = null, imageType = null ) {
 		const editor = this.editor;
@@ -96,7 +98,7 @@ export default class ImageUtils extends Plugin {
 			}
 		}
 
-		model.change( writer => {
+		return model.change( writer => {
 			const imageElement = writer.createElement( imageType, attributes );
 
 			// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
@@ -110,7 +112,11 @@ export default class ImageUtils extends Plugin {
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
 				writer.setSelection( imageElement, 'on' );
+
+				return imageElement;
 			}
+
+			return null;
 		} );
 	}
 
@@ -124,21 +130,8 @@ export default class ImageUtils extends Plugin {
 	getClosestSelectedImageWidget( selection ) {
 		const viewElement = selection.getSelectedElement();
 
-		if ( viewElement ) {
-			if ( this.isImageWidget( viewElement ) ) {
-				return viewElement;
-			}
-
-			// If a selected inline image widget is the only child of a link, the selection will encompass
-			// that link. But this still counts as a selected image widget. This is what it looks like:
-			// [<a href="..."><span class="image-inline ck-widget ck-widget_selected"><img ... /></span></a>]
-			if ( viewElement.is( 'element', 'a' ) && viewElement.childCount === 1 ) {
-				const firstChild = viewElement.getChild( 0 );
-
-				if ( firstChild.is( 'element' ) && this.isImageWidget( firstChild ) ) {
-					return firstChild;
-				}
-			}
+		if ( viewElement && this.isImageWidget( viewElement ) ) {
+			return viewElement;
 		}
 
 		let parent = selection.getFirstPosition().parent;

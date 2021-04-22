@@ -22,8 +22,8 @@ import { SplitButtonView } from '../../../../src/ui';
 describe( 'ImageStyleUI', () => {
 	let editor, editorElement, factory;
 
-	const { DEFAULT_ARRANGEMENTS, DEFAULT_GROUPS } = utils;
-	const allArrangements = Object.values( DEFAULT_ARRANGEMENTS );
+	const { DEFAULT_OPTIONS, DEFAULT_GROUPS } = utils;
+	const allStyles = Object.values( DEFAULT_OPTIONS );
 	const allGroups = Object.values( DEFAULT_GROUPS );
 
 	beforeEach( async () => {
@@ -35,7 +35,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						arrangements: allArrangements,
+						options: allStyles,
 						groups: allGroups
 					}
 				}
@@ -58,9 +58,9 @@ describe( 'ImageStyleUI', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should register a button for each of the provided arrangements', () => {
-			allArrangements.forEach( arrangement => {
-				expect( factory.has( `imageStyle:${ arrangement.name }` ) ).to.be.true;
+		it( 'should register a button for each of the provided styles', () => {
+			allStyles.forEach( style => {
+				expect( factory.has( `imageStyle:${ style.name }` ) ).to.be.true;
 			} );
 		} );
 
@@ -86,13 +86,13 @@ describe( 'ImageStyleUI', () => {
 		} );
 	} );
 
-	describe( 'arrangement buttons', () => {
+	describe( 'style buttons', () => {
 		let buttons;
 
 		beforeEach( () => {
-			buttons = allArrangements.map( arrangement => ( {
-				config: arrangement,
-				buttonView: factory.create( `imageStyle:${ arrangement.name }` )
+			buttons = allStyles.map( style => ( {
+				config: style,
+				buttonView: factory.create( `imageStyle:${ style.name }` )
 			} ) );
 		} );
 
@@ -154,7 +154,7 @@ describe( 'ImageStyleUI', () => {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 					image: {
 						styles: {
-							arrangements: allArrangements,
+							styles: allStyles,
 							groups: allGroups
 						},
 						toolbar: [ 'foo', 'bar' ]
@@ -179,7 +179,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ TranslationMock, ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						arrangements: allArrangements,
+						options: allStyles,
 						groups: allGroups
 					}
 				}
@@ -201,7 +201,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						arrangements: [ { name: 'foo', modelElements: [ 'image' ], title: 'Custom title' } ],
+						options: [ { name: 'foo', modelElements: [ 'image' ], title: 'Custom title' } ],
 						groups: []
 					}
 				}
@@ -258,7 +258,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ TranslationMock, ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						arrangements: allArrangements,
+						options: allStyles,
 						groups: allGroups
 					}
 				}
@@ -280,7 +280,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						arrangements: allArrangements,
+						options: allStyles,
 						groups: [ { name: 'foo', items: [ 'alignLeft' ], defaultItem: 'alignLeft', title: 'Custom title' } ]
 					}
 				}
@@ -294,7 +294,7 @@ describe( 'ImageStyleUI', () => {
 			await customEditor.destroy();
 		} );
 
-		it( 'should warn and filter out the items that are not defined as the arrangements while creating a toolbar', async () => {
+		it( 'should warn and filter out the items that are not defined as the styles while creating a toolbar', async () => {
 			sinon.stub( console, 'warn' );
 
 			const customEditorElement = global.document.createElement( 'div' );
@@ -304,7 +304,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageToolbar, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						arrangements: allArrangements,
+						options: allStyles,
 						groups: [ { name: 'breakText', items: [ 'alignLeft', 'foo', 'bar' ], defaultItem: 'alignLeft' } ]
 					},
 					toolbar: [ 'imageStyle:breakText' ]
@@ -334,7 +334,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ ImageBlockEditing, ImageToolbar, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						arrangements: [ { name: 'foo', modelElements: [ 'imageInline' ] }, 'alignLeft' ],
+						options: [ { name: 'foo', modelElements: [ 'imageInline' ] }, 'alignLeft' ],
 						groups: [ { name: 'breakText', items: [ 'alignLeft', 'foo' ], defaultItem: 'alignLeft' } ]
 					},
 					toolbar: [ 'imageStyle:breakText' ]
@@ -345,7 +345,7 @@ describe( 'ImageStyleUI', () => {
 			sinon.assert.calledWithExactly( console.warn,
 				sinon.match( /^image-style-missing-dependency/ ),
 				{
-					arrangement: { name: 'foo', modelElements: [ 'imageInline' ] },
+					style: { name: 'foo', modelElements: [ 'imageInline' ] },
 					missingPlugins: [ 'ImageInlineEditing' ]
 				},
 				sinon.match.string // Link to the documentation
@@ -413,7 +413,7 @@ describe( 'ImageStyleUI', () => {
 		describe( 'when none of the nested buttons are on', () => {
 			it( 'should inherit the icon of the defaultItem', () => {
 				for ( const { buttonView, config } of groups ) {
-					expect( buttonView.icon ).to.equal( DEFAULT_ARRANGEMENTS[ config.defaultItem ].icon );
+					expect( buttonView.icon ).to.equal( DEFAULT_OPTIONS[ config.defaultItem ].icon );
 				}
 			} );
 

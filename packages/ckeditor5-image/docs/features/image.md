@@ -272,7 +272,7 @@ See the result below:
 
 ### Defining custom styles
 
-Besides using the {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS five predefined styles}:
+Besides using the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS five predefined styles}:
 
 * `'full'`,
 * `'side'`,

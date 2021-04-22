@@ -128,10 +128,11 @@ Then add {@link module:easy-image/easyimage~EasyImage} to your plugin list and [
 
 ```js
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import Image from '@ckeditor/ckeditor5-image/src/image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EasyImage, ... ],
+		plugins: [ EasyImage, Image, ... ],
 		toolbar: [ 'uploadImage', ... ],
 
 		// Configure the endpoint. See the "Configuration" section above.
@@ -143,6 +144,10 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+<info-box info>
+	Please note that most integrations will also require the {@link module:image/image~Image} plugin to be loaded in the editor to make this feature work properly (or one of {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline}). Check out the comprehensive {@link features/image#installation guide to images} in CKEditor 5 to learn more.
+</info-box>
 
 ## What's next?
 

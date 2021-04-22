@@ -70,11 +70,6 @@ describe( 'ImageCaptionEditing', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'image', 'caption' ], 'alignment' ) ).to.be.false;
 		} );
 
-		it( 'should set proper schema rules for image and imageInline', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'image' ], 'caption' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'caption' ) ).to.be.true;
-		} );
-
 		it( 'should not set rules for image when ImageBlockEditing is not loaded', async () => {
 			const editor = await VirtualTestEditor.create( {
 				plugins: [ ImageInlineEditing, ImageCaptionEditing ]

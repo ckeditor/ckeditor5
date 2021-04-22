@@ -127,7 +127,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table borderColor to a passed value', () => {
@@ -135,7 +135,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table if no value is passed', () => {
@@ -153,7 +153,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table borderColor to a passed value', () => {
@@ -161,7 +161,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table if no value is passed', () => {

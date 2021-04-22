@@ -71,8 +71,33 @@ export default class Widget extends Plugin {
 
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			const selectedElement = viewSelection.getSelectedElement();
+			let selectedElement = viewSelection.getSelectedElement();
 			let lastMarked = null;
+
+			// By default, the selection is downcasted by the engine to surround the attribute element, even though its only
+			// child is an inline widget. This prevents creating a correct fake selection when this inline widget is selected.
+			// Normalize the selection in this case
+			//
+			//		[<attributeElement><inlineWidget /></attributeElement>] -> <attributeElement>[<inlineWidget />]</attributeElement>
+			//
+			// Thanks to this:
+			//
+			// * fake selection can be set correctly,
+			// * any logic depending on (View)Selection#getSelectedElement() also works OK.
+			//
+			// See https://github.com/ckeditor/ckeditor5/issues/9524.
+			if ( selectedElement ) {
+				// Trim the range first because the selection could be on a couple of nested attributes enclosing the widget:
+				// [<attributeElementA><attributeElementB><inlineWidget /></attributeElementB></attributeElementA>]
+				selectedElement = viewWriter.createRangeOn( selectedElement ).getTrimmed().getContainedElement();
+
+				if ( selectedElement && isWidget( selectedElement ) ) {
+					viewWriter.setSelection( viewWriter.createRangeOn( selectedElement ), {
+						fake: true,
+						label: getLabel( selectedElement )
+					} );
+				}
+			}
 
 			for ( const range of viewSelection.getRanges() ) {
 				for ( const value of range ) {
@@ -84,11 +109,6 @@ export default class Widget extends Plugin {
 
 						this._previouslySelected.add( node );
 						lastMarked = node;
-
-						// Check if widget is a single element selected.
-						if ( node == selectedElement ) {
-							viewWriter.setSelection( viewSelection.getRanges(), { fake: true, label: getLabel( selectedElement ) } );
-						}
 					}
 				}
 			}

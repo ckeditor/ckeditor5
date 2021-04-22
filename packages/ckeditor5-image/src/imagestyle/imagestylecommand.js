@@ -10,10 +10,10 @@
 import { Command } from 'ckeditor5/src/core';
 
 /**
- * The image style command. It is used to apply {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements}
+ * The image style command. It is used to apply {@link module:image/imagestyle~ImageStyleConfig#options image style option}
  * to a selected image.
  *
- * **Note**: Executing this command may change the image model element if the desired style arrangement requires an image of a different
+ * **Note**: Executing this command may change the image model element if the desired style requires an image of a different
  * type. See {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute} to learn more.
  *
  * @extends module:core/command~Command
@@ -21,42 +21,42 @@ import { Command } from 'ckeditor5/src/core';
 export default class ImageStyleCommand extends Command {
 	/**
 	 * Creates an instance of the image style command. When executed, the command applies one of
-	 * {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements} to the currently selected image.
+	 * {@link module:image/imagestyle~ImageStyleConfig#options style options} to the currently selected image.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} arrangements
-	 * The style arrangements that this command supports.
+	 * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} styles
+	 * The style options that this command supports.
 	 */
-	constructor( editor, arrangements ) {
+	constructor( editor, styles ) {
 		super( editor );
 
 		/**
-		 * An object containing names of default style arrangements for the inline and block images.
-		 * If there is no default arrangement for the given image type in the configuration,
+		 * An object containing names of default style options for the inline and block images.
+		 * If there is no default style option for the given image type in the configuration,
 		 * the name will be `false`.
 		 *
 		 * @private
-		 * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementDefinition#name>}
+		 * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition#name>}
 		 */
-		this._defaultArrangements = {
+		this._defaultStyles = {
 			image: false,
 			imageInline: false
 		};
 
 		/**
-		 * The style arrangements handled by this command.
+		 * The styles handled by this command.
 		 *
 		 * @private
-		 * @type {module:image/imagestyle~ImageStyleConfig#arrangements}
+		 * @type {module:image/imagestyle~ImageStyleConfig#options}
 		 */
-		this._arrangements = new Map( arrangements.map( arrangement => {
-			if ( arrangement.isDefault ) {
-				for ( const modelElementName of arrangement.modelElements ) {
-					this._defaultArrangements[ modelElementName ] = arrangement.name;
+		this._styles = new Map( styles.map( style => {
+			if ( style.isDefault ) {
+				for ( const modelElementName of style.modelElements ) {
+					this._defaultStyles[ modelElementName ] = style.name;
 				}
 			}
 
-			return [ arrangement.name, arrangement ];
+			return [ style.name, style ];
 		} ) );
 	}
 
@@ -75,22 +75,22 @@ export default class ImageStyleCommand extends Command {
 		} else if ( element.hasAttribute( 'imageStyle' ) ) {
 			this.value = element.getAttribute( 'imageStyle' );
 		} else {
-			this.value = this._defaultArrangements[ element.name ];
+			this.value = this._defaultStyles[ element.name ];
 		}
 	}
 
 	/**
-	 * Executes the command and applies the style arrangement to the currently selected image:
+	 * Executes the command and applies the style to the currently selected image:
 	 *
 	 *		editor.execute( 'imageStyle', { value: 'side' } );
 	 *
-	 * **Note**: Executing this command may change the image model element if the desired style arrangement requires an image
-	 * of a different type. Learn more about {@link module:image/imagestyle~ImageStyleArrangementDefinition#modelElements model element}
-	 * configuration for the style arrangements.
+	 * **Note**: Executing this command may change the image model element if the desired style requires an image
+	 * of a different type. Learn more about {@link module:image/imagestyle~ImageStyleOptionDefinition#modelElements model element}
+	 * configuration for the style option.
 	 *
 	 * @param {Object} options
-	 * @param {module:image/imagestyle~ImageStyleArrangementDefinition#name} options.value The name of the arrangement (as configured in
-	 * {@link module:image/imagestyle~ImageStyleConfig#arrangements}).
+	 * @param {module:image/imagestyle~ImageStyleOptionDefinition#name} options.value The name of the style (as configured in
+	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
 	 * @fires execute
 	 */
 	execute( options ) {
@@ -99,8 +99,8 @@ export default class ImageStyleCommand extends Command {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.change( writer => {
-			const requestedArrangement = options.value;
-			const supportedTypes = this._arrangements.get( requestedArrangement ).modelElements;
+			const requestedStyle = options.value;
+			const supportedTypes = this._styles.get( requestedStyle ).modelElements;
 
 			let imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
@@ -114,10 +114,10 @@ export default class ImageStyleCommand extends Command {
 
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
-			if ( this._arrangements.get( requestedArrangement ).isDefault ) {
+			if ( this._styles.get( requestedStyle ).isDefault ) {
 				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
-				writer.setAttribute( 'imageStyle', requestedArrangement, imageElement );
+				writer.setAttribute( 'imageStyle', requestedStyle, imageElement );
 			}
 		} );
 	}

@@ -18,7 +18,7 @@ const {
 } = icons;
 
 /**
- * Default image style arrangements provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * Default image style options provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
  * configuration.
  *
  * There are available 5 styles focused on formatting:
@@ -36,9 +36,9 @@ const {
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
  *
  * @readonly
- * @type {Object.<String,module:image/imagestyle~ImageStyleArrangementDefinition>}
+ * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition>}
  */
-const DEFAULT_ARRANGEMENTS = {
+const DEFAULT_OPTIONS = {
 	// This style represents an image placed in the line of text.
 	inline: {
 		name: 'inline',
@@ -114,14 +114,14 @@ const DEFAULT_ARRANGEMENTS = {
 
 // TODO: Fix and move this description
 /**
- * Default image style arrangement groups provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
- * configuration. The groups are containers for {@link module:image/imagestyle~ImageStyleConfig#arrangements style arrangements} and
+ * Default image style groups provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * configuration. The groups are containers for {@link module:image/imagestyle~ImageStyleConfig#options style options} and
  * correspond to available drop-down button created by the {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin.
  *
  * There are 2 groups available:
  *
- * * **`'wrapText'`**, which contains the `alignLeft` and `alignRight` arrangements, that is, those that wraps the text around the image,
- * * **`'breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` arrangements, that is,
+ * * **`'wrapText'`**, which contains the `alignLeft` and `alignRight` options, that is, those that wraps the text around the image,
+ * * **`'breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
  * those that breaks the text around the image.
  *
  * @readonly
@@ -129,10 +129,10 @@ const DEFAULT_ARRANGEMENTS = {
  */
 
 /**
- * Default image style arrangement icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
+ * Default image style icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
  * configuration.
  *
- * See {@link module:image/imagestyle~ImageStyleArrangementDefinition#icon} to learn more.
+ * See {@link module:image/imagestyle~ImageStyleOptionDefinition#icon} to learn more.
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  *
@@ -150,31 +150,31 @@ const DEFAULT_ICONS = {
 };
 
 /**
- * Returns lists of the normalized and validated arrangements and groups.
+ * Returns lists of the normalized and validated image style options and groups.
  *
  * @protected
- * @param {Object} options
- * @param {Boolean} options.isInlinePluginLoaded
+ * @param {Object} config
+ * @param {Boolean} config.isInlinePluginLoaded
  * Determines whether the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin has been loaded.
- * @param {Boolean} options.isBlockPluginLoaded
+ * @param {Boolean} config.isBlockPluginLoaded
  * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
- * @param {module:image/imagestyle~ImageStyleConfig} options.configuredStyles
+ * @param {module:image/imagestyle~ImageStyleConfig} config.configuredStyles
  * The image styles configuration provided in the image styles {@link module:image/image~ImageConfig#styles configuration}
  * as a default or custom value.
  * @returns {module:image/imagestyle~ImageStyleConfig}
- * * Each of arrangements contains a complete icon markup.
- * * The arrangements not supported by any of the loaded plugins are filtered out.
+ * * Each of options contains a complete icon markup.
+ * * The image style options not supported by any of the loaded plugins are filtered out.
  * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
- * * All of the group items not defined in the arrangements are filtered out.
+ * * All of the group items not defined in the options are filtered out.
  */
-function normalizeStyles( options ) {
-	const configuredArrangements = options.configuredStyles.arrangements || [];
+function normalizeStyles( config ) {
+	const configuredStyles = config.configuredStyles.options || [];
 
-	const arrangements = configuredArrangements
+	const styles = configuredStyles
 		.map( arrangement => normalizeDefinition( arrangement ) )
-		.filter( arrangement => isValidArrangement( arrangement, options ) );
+		.filter( arrangement => isValidOption( arrangement, config ) );
 
-	return arrangements;
+	return styles;
 }
 
 /**
@@ -188,28 +188,27 @@ function normalizeStyles( options ) {
  * Determines whether the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin has been loaded.
  *
  * @returns {Object<String,Array>}
- * It returns an object with the lists of the image arrangements and groups defined as strings related to the
- * {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS default arrangements} and the
+ * It returns an object with the lists of the image style options and groups defined as strings related to the
+ * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options} and the
  * {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups}.
  */
 function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) {
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {
 		return {
-			arrangements: [
+			options: [
 				'inline', 'alignLeft', 'alignRight',
 				'alignCenter', 'alignBlockLeft', 'alignBlockRight',
-				// Added to serve the builds with these arrangements in the toolbar
 				'full', 'side'
 			],
 			groups: [ 'wrapText', 'breakText' ]
 		};
 	} else if ( isBlockPluginLoaded ) {
 		return {
-			arrangements: [ 'full', 'side' ]
+			options: [ 'full', 'side' ]
 		};
 	} else if ( isInlinePluginLoaded ) {
 		return {
-			arrangements: [ 'inline', 'alignLeft', 'alignRight' ]
+			options: [ 'inline', 'alignLeft', 'alignRight' ]
 		};
 	}
 
@@ -233,78 +232,78 @@ function getDefaultDropdowns( loadedPlugins ) {
 	}
 }
 
-// Normalizes an image arrangement or group provided in the {@link module:image/image~ImageConfig#styles}
-// and returns it in a {@link module:image/imagestyle~ImageStyleArrangementDefinition}.
+// Normalizes an image style option or group provided in the {@link module:image/image~ImageConfig#styles}
+// and returns it in a {@link module:image/imagestyle~ImageStyleOptionDefinition}/
 //
 // @param {Object|String} definition
 //
-// @returns {module:image/imagestyle~ImageArrangementDefinition}}
+// @returns {module:image/imagestyle~ImageStyleOptionDefinition}}
 function normalizeDefinition( definition ) {
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
-		if ( !DEFAULT_ARRANGEMENTS[ definition ] ) {
+		if ( !DEFAULT_OPTIONS[ definition ] ) {
 			// Normalize the style anyway to prevent errors.
 			definition = { name: definition };
 		}
 		// Just the name of the style has been passed and it's one of the defaults, just use it.
 		// Clone the style to avoid overriding defaults.
 		else {
-			definition = { ...DEFAULT_ARRANGEMENTS[ definition ] };
+			definition = { ...DEFAULT_OPTIONS[ definition ] };
 		}
 	} else {
 		// If an object style has been passed and if the name matches one of the defaults,
 		// extend it with defaults – the user wants to customize a default style.
 		// Note: Don't override the user–defined style object, clone it instead.
-		definition = extendStyle( DEFAULT_ARRANGEMENTS[ definition.name ], definition );
+		definition = extendStyle( DEFAULT_OPTIONS[ definition.name ], definition );
 	}
 
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
-	// if ( definitionType === 'arrangement' && typeof definition.icon === 'string' ) {
+	// if ( definitionType === 'option' && typeof definition.icon === 'string' ) {
 	definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
 	// }
 
 	return definition;
 }
 
-// Checks if the arrangement is valid:
+// Checks if the image style option is valid:
 // * if it has the modelElements fields defined and filled,
 // * if the defined modelElements are supported by any of the loaded image editing plugins.
 // It also displays a console warning these conditions are not met.
 //
-// @param {module:image/imagestyle~ImageStyleArrangementDefinition} arrangement
+// @param {module:image/imagestyle~ImageStyleOptionDefinition} image style option
 // @param {Object.<String,Boolean>} { isBlockPluginLoaded, isInlinePluginLoaded }
 //
 // @returns Boolean
-function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginLoaded } ) {
-	const { modelElements, name } = arrangement;
+function isValidOption( option, { isBlockPluginLoaded, isInlinePluginLoaded } ) {
+	const { modelElements, name } = option;
 
 	if ( !modelElements || !modelElements.length || !name ) {
-		warnInvalidStyle( { arrangement } );
+		warnInvalidStyle( { style: option } );
 
 		return false;
 	} else {
 		const supportedElements = [ isBlockPluginLoaded ? 'image' : null, isInlinePluginLoaded ? 'imageInline' : null ];
 
-		// Check if the arrangement is supported by any of the loaded plugins.
+		// Check if the option is supported by any of the loaded plugins.
 		if ( !modelElements.some( elementName => supportedElements.includes( elementName ) ) ) {
 			/**
-			 * In order to work correctly, each image {@link module:image/imagestyle~ImageStyleArrangementDefinition style arrangement}
+			 * In order to work correctly, each image style {@link module:image/imagestyle~ImageStyleOptionDefinition option}
 			 * requires specific model elements (also: types of images) to be supported by the editor.
 			 *
-			 * Model element names to which the arrangement can be applied are defined in the
-			 * {@link module:image/imagestyle~ImageStyleArrangementDefinition#modelElements} property of the style arrangement
+			 * Model element names to which the image style option can be applied are defined in the
+			 * {@link module:image/imagestyle~ImageStyleOptionDefinition#modelElements} property of the style option
 			 * definition.
 			 *
-			 * Explore the warning in the console to find out precisely which arrangement is not supported and which editor plugins
-			 * are missing. Make sure these plugins are loaded in your editor to get this style arrangement working.
+			 * Explore the warning in the console to find out precisely which option is not supported and which editor plugins
+			 * are missing. Make sure these plugins are loaded in your editor to get this image style option working.
 			 *
 			 * @error image-style-missing-dependency
-			 * @param {String} [arrangement] The name of the unsupported arrangement.
-			 * @param {String} [missingPlugins] The names of the plugins one of which has to be loaded for the particular arrangement.
+			 * @param {String} [option] The name of the unsupported option.
+			 * @param {String} [missingPlugins] The names of the plugins one of which has to be loaded for the particular option.
 			 */
 			logWarning( 'image-style-missing-dependency', {
-				arrangement,
+				style: option,
 				missingPlugins: modelElements.map( name => name === 'image' ? 'ImageBlockEditing' : 'ImageInlineEditing' )
 			} );
 
@@ -318,10 +317,10 @@ function isValidArrangement( arrangement, { isBlockPluginLoaded, isInlinePluginL
 // Extends the default style with a style provided by the developer.
 // Note: Don't override the custom–defined style object, clone it instead.
 //
-// @param {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleArrangementDefinition} source
+// @param {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleOptionDefinition} source
 // @param {Object} style
 //
-// @returns {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleArrangementDefinition}
+// @returns {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleOptionDefinition}
 function extendStyle( source, style ) {
 	const extendedStyle = { ...style };
 
@@ -342,12 +341,12 @@ function warnInvalidStyle( info ) {
 	 *
 	 * Please make sure the definition implements properly one of the following:
 	 *
-	 * * {@link module:image/imagestyle~ImageStyleArrangementDefinition image style arrangement definition},
+	 * * {@link module:image/imagestyle~ImageStyleOptionDefinition image style option definition},
 	 * * {@link module:image/imagestyle~ImageStyleGroupDefinition image style group definition}
 	 *
 	 * @error image-style-configuration-definition-invalid
 	 * @param {String} [group] The name of the invalid group
-	 * @param {String} [arrangement] The name of the invalid arrangement
+	 * @param {String} [style] The name of the invalid image style option
 	 */
 	logWarning( 'image-style-configuration-definition-invalid', info );
 }
@@ -357,6 +356,6 @@ export default {
 	getDefaultStylesConfiguration,
 	getDefaultDropdowns,
 	warnInvalidStyle,
-	DEFAULT_ARRANGEMENTS,
+	DEFAULT_OPTIONS,
 	DEFAULT_ICONS
 };
