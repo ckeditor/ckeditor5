@@ -84,8 +84,7 @@ ClassicEditor
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-			],
-			tableToolbar: [ 'toggleTableCaption' ]
+			]
 		},
 		image: {
 			styles: [
