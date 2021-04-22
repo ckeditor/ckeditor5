@@ -350,9 +350,20 @@ export default class TableUtils extends Plugin {
 		const rowsToRemove = options.rows || 1;
 		const rowCount = this.getRows( table );
 		const first = options.at;
+		const last = first + rowsToRemove - 1;
 
-		// Make sure we are not removing too much, e.g. non-row elements at the end of the table.
-		const last = Math.min( first + rowsToRemove - 1, rowCount - 1 );
+		if ( last > rowCount - 1 ) {
+			/**
+			 * The `options.at` param must point at existing row and `options.rows` must not exceed the rows in the table.
+			 *
+			 * @error tableutils-removerows-row-index-out-of-range
+			 */
+			throw new CKEditorError(
+				'tableutils-removerows-row-index-out-of-range',
+				this,
+				{ table, options }
+			);
+		}
 
 		model.change( writer => {
 			// Removing rows from the table require that most calculations to be done prior to changing table structure.
@@ -496,10 +507,6 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} numberOfCells
 	 */
 	splitCellVertically( tableCell, numberOfCells = 2 ) {
-		if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
-			return;
-		}
-
 		const model = this.editor.model;
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
@@ -636,10 +643,6 @@ export default class TableUtils extends Plugin {
 	 * @param {Number} numberOfCells
 	 */
 	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
-		if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
-			return;
-		}
-
 		const model = this.editor.model;
 
 		const tableRow = tableCell.parent;

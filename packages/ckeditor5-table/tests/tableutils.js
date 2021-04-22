@@ -11,9 +11,8 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import TableEditing from '../src/tableediting';
-import { modelTable } from './_utils/utils';
-
 import TableUtils from '../src/tableutils';
+import { modelTable } from './_utils/utils';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
@@ -945,30 +944,6 @@ describe( 'TableUtils', () => {
 				'</table>'
 			);
 		} );
-
-		it( 'should ignore non-cell elements', () => {
-			setData( model,
-				'<table>' +
-					'<tableRow>' +
-						'<tableCell><paragraph>00</paragraph></tableCell>' +
-						'<tableCell><paragraph>01</paragraph></tableCell>' +
-					'</tableRow>' +
-					'<foo>An extra element</foo>' +
-				'</table>'
-			);
-
-			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
-
-			assertEqualMarkup( getData( model ),
-				'[<table>' +
-					'<tableRow>' +
-						'<tableCell><paragraph>00</paragraph></tableCell>' +
-						'<tableCell><paragraph>01</paragraph></tableCell>' +
-					'</tableRow>' +
-					'<foo>An extra element</foo>' +
-				'</table>]'
-			);
-		} );
 	} );
 
 	describe( 'splitCellHorizontally()', () => {
@@ -1177,30 +1152,6 @@ describe( 'TableUtils', () => {
 						'<tableCell>' +
 							'<paragraph></paragraph>' +
 						'</tableCell>' +
-					'</tableRow>' +
-					'<foo>An extra element</foo>' +
-				'</table>]'
-			);
-		} );
-
-		it( 'should ignore non-cell elements', () => {
-			setData( model,
-				'<table>' +
-					'<tableRow>' +
-						'<tableCell><paragraph>00</paragraph></tableCell>' +
-						'<tableCell><paragraph>01</paragraph></tableCell>' +
-					'</tableRow>' +
-					'<foo>An extra element</foo>' +
-				'</table>'
-			);
-
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
-
-			assertEqualMarkup( getData( model ),
-				'[<table>' +
-					'<tableRow>' +
-						'<tableCell><paragraph>00</paragraph></tableCell>' +
-						'<tableCell><paragraph>01</paragraph></tableCell>' +
 					'</tableRow>' +
 					'<foo>An extra element</foo>' +
 				'</table>]'
@@ -1662,16 +1613,11 @@ describe( 'TableUtils', () => {
 					'</table>'
 				);
 
-				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
-
-				assertEqualMarkup( getData( model ),
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>00</paragraph></tableCell>' +
-							'<tableCell><paragraph>01</paragraph></tableCell>' +
-						'</tableRow>' +
-						'<foo>[]An extra element</foo>' +
-					'</table>'
+				expect(
+					() => tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } )
+				).to.throw(
+					CKEditorError,
+					'tableutils-removerows-row-index-out-of-range'
 				);
 			} );
 		} );
@@ -1862,15 +1808,15 @@ describe( 'TableUtils', () => {
 					'</table>'
 				);
 
-				tableUtils.removeColumns( root.getChild( 0 ), { at: 1 } );
+				tableUtils.removeColumns( root.getChild( 0 ), { at: 0 } );
 
 				assertEqualMarkup( getData( model ),
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
 						'</tableRow>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+							'<tableCell><paragraph>[]11</paragraph></tableCell>' +
 						'</tableRow>' +
 						'<foo>An extra element</foo>' +
 					'</table>'

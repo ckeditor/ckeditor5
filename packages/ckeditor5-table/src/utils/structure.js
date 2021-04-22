@@ -19,7 +19,7 @@ import { createEmptyTableCell, updateNumericAttribute } from './common';
  *			startRow: 1,
  *			endRow: 3,
  *			startColumn: 1,
- *			endColumn: 3done
+ *			endColumn: 3
  *		}, writer );
  *
  * Calling the code above for the table below:
