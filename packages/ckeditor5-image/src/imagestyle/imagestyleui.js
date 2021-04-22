@@ -41,7 +41,7 @@ export default class ImageStyleUI extends Plugin {
 	 * Returns the default localized style titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:image/imagestyle/utils~DEFAULT_ARRANGEMENTS} are available:
+	 * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS} are available:
 	 *
 	 * * `'Wrap text'`,
 	 * * `'Break text'`,
@@ -75,12 +75,12 @@ export default class ImageStyleUI extends Plugin {
 	init() {
 		const normalizedStyles = this.editor.plugins.get( 'ImageStyleEditing' ).normalizedStyles;
 
-		const definedArrangements = translateStyles(
-			normalizedStyles.arrangements,
+		const definedStyles = translateStyles(
+			normalizedStyles.options,
 			this.localizedDefaultStylesTitles );
 
-		for ( const arrangementConfig of definedArrangements ) {
-			this._createButton( arrangementConfig );
+		for ( const styleConfig of definedStyles ) {
+			this._createButton( styleConfig );
 		}
 
 		const definedGroups = translateStyles(
@@ -88,7 +88,7 @@ export default class ImageStyleUI extends Plugin {
 			this.localizedDefaultStylesTitles );
 
 		for ( const groupConfig of definedGroups ) {
-			this._createDropdown( groupConfig, definedArrangements );
+			this._createDropdown( groupConfig, definedStyles );
 		}
 	}
 
@@ -97,15 +97,15 @@ export default class ImageStyleUI extends Plugin {
 	 *
 	 * @private
 	 * @param {module:image/imagestyle~ImageStyleGroupDefinition} dropdownConfig
-	 * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} definedArrangements
+	 * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} definedStyles
 	 */
-	_createDropdown( dropdownConfig, definedArrangements ) {
+	_createDropdown( dropdownConfig, definedStyles ) {
 		const factory = this.editor.ui.componentFactory;
 
 		factory.add( getUIComponentName( dropdownConfig.name ), locale => {
 			const { defaultItem, items, title, icon } = dropdownConfig;
 			const buttonViews = items
-				.filter( itemName => definedArrangements.find( definedArrangements => definedArrangements.name === itemName ) )
+				.filter( itemName => definedStyles.find( definedStyles => definedStyles.name === itemName ) )
 				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
 
 			if ( !buttonViews.length || dropdownConfig.items.length !== buttonViews.length ) {
@@ -114,7 +114,7 @@ export default class ImageStyleUI extends Plugin {
 
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-			const defaultIcon = definedArrangements.find( item => item.name === defaultItem ).icon;
+			const defaultIcon = definedStyles.find( item => item.name === defaultItem ).icon;
 
 			addToolbarToDropdown( dropdownView, buttonViews );
 
@@ -161,7 +161,7 @@ export default class ImageStyleUI extends Plugin {
 	 * Creates a button and stores it in the editor {@link module:ui/componentfactory~ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle~ImageStyleArrangementDefinition} buttonConfig
+	 * @param {module:image/imagestyle~ImageStyleOptionDefinition} buttonConfig
 	 */
 	_createButton( buttonConfig ) {
 		const buttonName = buttonConfig.name;
@@ -193,10 +193,10 @@ export default class ImageStyleUI extends Plugin {
 
 // Returns the translated `title` from the passed styles array.
 //
-// @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition|module:image/imagestyle~ImageStyleGroupDefinition>} styles
+// @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleGroupDefinition>} styles
 // @param {Object.<String,String>} titles
 //
-// @returns {Array.<module:image/imagestyle~ImageStyleArrangementDefinition|module:image/imagestyle~ImageStyleGroupDefinition>}
+// @returns {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleGroupDefinition>}
 function translateStyles( styles, titles ) {
 	for ( const style of styles ) {
 		// Localize the titles of the styles, if a title corresponds with
