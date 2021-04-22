@@ -416,6 +416,10 @@ The table plugins register the following UI components:
 			<td>{@link module:table/tableproperties~TableProperties}</td>
 		</tr>
 		<tr>
+			<td>The <code>'toggleTableCaption'</code> button</td>
+			<td>{@link module:table/tablecaption~TableCaption}</td>
+		</tr>
+		<tr>
 			<td>The <code>'tableCellProperties'</code> button</td>
 			<td>{@link module:table/tablecellproperties~TableCellProperties}</td>
 		</tr>

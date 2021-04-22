@@ -11,18 +11,19 @@ ClassicEditor
 			CKEditorPlugins.TableCaption
 		],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', '|', 'toggleTableCaption' ]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption' ]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
-
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Toggle caption off' ),
-			text: 'Click to hide table caption.',
-			editor
-		} );
+		window.editorCaption = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
