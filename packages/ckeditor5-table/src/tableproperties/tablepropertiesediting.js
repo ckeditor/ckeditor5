@@ -27,6 +27,7 @@ import TableAlignmentCommand from './commands/tablealignmentcommand';
 import { getNormalizedDefaultProperties } from '../utils/table-properties';
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
+const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
 
 /**
  * The table properties editing feature.
@@ -144,26 +145,11 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 		allowAttributes: [ 'alignment' ]
 	} );
 
-	conversion
+	conversion.for( 'downcast' )
 		.attributeToAttribute( {
 			model: {
 				name: 'table',
-				key: 'alignment',
-				value: viewElement => {
-					let align = viewElement.getStyle( 'float' );
-
-					// CSS: `float:none` => Model: `alignment:center`.
-					if ( align === 'none' ) {
-						align = 'center';
-					}
-
-					// Do not convert unsupported values.
-					if ( !ALIGN_VALUES_REG_EXP.test( align ) ) {
-						return;
-					}
-
-					return align === defaultValue ? null : align;
-				}
+				key: 'alignment'
 			},
 			view: alignment => ( {
 				key: 'style',
@@ -176,7 +162,29 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 		} );
 
 	conversion.for( 'upcast' )
-		// Support for backwards compatibility and pasting from other sources.
+		// Support for the `float:*;` CSS definition for the table alignment.
+		.attributeToAttribute( {
+			view: {
+				styles: {
+					float: FLOAT_VALUES_REG_EXP
+				}
+			},
+			model: {
+				name: 'table',
+				key: 'alignment',
+				value: viewElement => {
+					let align = viewElement.getStyle( 'float' );
+
+					// CSS: `float:none` => Model: `alignment:center`.
+					if ( align === 'none' ) {
+						align = 'center';
+					}
+
+					return align === defaultValue ? null : align;
+				}
+			}
+		} )
+		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
 		.attributeToAttribute( {
 			view: {
 				attributes: {

@@ -390,7 +390,7 @@ describe( 'table properties', () => {
 						);
 					} );
 
-					describe.skip( 'nested tables forbidden by custom rule', () => {
+					describe( 'nested tables forbidden by custom rule', () => {
 						// Nested tables are supported since https://github.com/ckeditor/ckeditor5/issues/3232, so let's check
 						// if the editor will not blow up in case nested tables are forbidden by custom scheme rule.
 						beforeEach( () => {
@@ -431,8 +431,6 @@ describe( 'table properties', () => {
 											'<paragraph>' +
 												'child:00' +
 											'</paragraph>' +
-											// '<paragraph>' +
-											// '</paragraph>' +
 										'</tableCell>' +
 									'</tableRow>' +
 								'</table>]'
