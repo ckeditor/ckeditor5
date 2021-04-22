@@ -158,8 +158,12 @@ describe( 'SimpleUploadAdapter', () => {
 							return uploadPromise;
 						} )
 						.then( uploadResponse => {
-							expect( uploadResponse ).to.be.a( 'object' );
-							expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
+							expect( uploadResponse ).to.deep.equal( {
+								url: 'http://example.com/images/image.jpeg',
+								urls: {
+									default: 'http://example.com/images/image.jpeg'
+								}
+							} );
 						} );
 				} );
 
@@ -200,8 +204,12 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.be.a( 'object' );
-									expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
+									expect( uploadResponse ).to.deep.equal( {
+										url: 'http://example.com/images/image.jpeg',
+										urls: {
+											default: 'http://example.com/images/image.jpeg'
+										}
+									} );
 
 									editorElement.remove();
 								} )
@@ -241,8 +249,12 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.be.a( 'object' );
-									expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
+									expect( uploadResponse ).to.deep.equal( {
+										url: 'http://example.com/images/image.jpeg',
+										urls: {
+											default: 'http://example.com/images/image.jpeg'
+										}
+									} );
 
 									editorElement.remove();
 								} )
@@ -280,8 +292,12 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.be.a( 'object' );
-									expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
+									expect( uploadResponse ).to.deep.equal( {
+										url: 'http://example.com/images/image.jpeg',
+										urls: {
+											default: 'http://example.com/images/image.jpeg'
+										}
+									} );
 
 									editorElement.remove();
 								} )
@@ -318,8 +334,12 @@ describe( 'SimpleUploadAdapter', () => {
 									return uploadPromise;
 								} )
 								.then( uploadResponse => {
-									expect( uploadResponse ).to.be.a( 'object' );
-									expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
+									expect( uploadResponse ).to.deep.equal( {
+										url: 'http://example.com/images/image.jpeg',
+										urls: {
+											default: 'http://example.com/images/image.jpeg'
+										}
+									} );
 
 									editorElement.remove();
 								} )
@@ -348,7 +368,32 @@ describe( 'SimpleUploadAdapter', () => {
 						return uploadPromise;
 					} )
 					.then( uploadResponse => {
-						expect( uploadResponse ).to.deep.equal( validResponse.urls );
+						expect( uploadResponse ).to.deep.equal( validResponse );
+					} );
+			} );
+
+			it( 'should pass additional properties to the response', () => {
+				const validResponse = {
+					urls: {
+						default: 'http://example.com/images/image.jpeg',
+						'120': 'http://example.com/images/image-120.jpeg',
+						'240': 'http://example.com/images/image-240.jpeg'
+					},
+					customProperty: 'foo'
+				};
+
+				const uploadPromise = adapter.upload();
+
+				return loader.file
+					.then( () => {
+						sinonXHR.requests[ 0 ].respond( 200, {
+							'Content-Type': 'application/json'
+						}, JSON.stringify( validResponse ) );
+
+						return uploadPromise;
+					} )
+					.then( uploadResponse => {
+						expect( uploadResponse ).to.deep.equal( validResponse );
 					} );
 			} );
 

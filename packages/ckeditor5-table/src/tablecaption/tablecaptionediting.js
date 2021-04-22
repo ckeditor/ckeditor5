@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
+
 import injectTableCaptionPostFixer from '../converters/table-caption-post-fixer';
 import ToggleTableCaptionCommand from './toggletablecaptioncommand';
 import { isTable, matchTableCaptionViewElement } from './utils';
@@ -82,7 +83,8 @@ export default class TableCaptionEditing extends Plugin {
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter table caption' )
+					text: t( 'Enter table caption' ),
+					keepOnFocus: true
 				} );
 
 				return toWidgetEditable( figcaptionElement, writer );

@@ -6,7 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableEditing from '../src/tableediting';
 import { modelTable } from './_utils/utils';
@@ -27,7 +27,10 @@ describe( 'TableWalker', () => {
 	} );
 
 	function testWalker( tableData, expected, options, skip ) {
-		setData( model, modelTable( tableData ) );
+		// Accept either a table of cells or a HTML-like string describing model.
+		const modelData = Array.isArray( tableData ) ? modelTable( tableData ) : tableData;
+
+		setData( model, modelData );
 
 		const walker = new TableWalker( root.getChild( 0 ), options );
 
@@ -38,11 +41,12 @@ describe( 'TableWalker', () => {
 		const result = [ ...walker ];
 
 		const formattedResult = result.map( tableSlot => {
-			const { cell, row, column, isAnchor, cellWidth, cellHeight, cellAnchorRow, cellAnchorColumn } = tableSlot;
+			const { cell, row, column, rowIndex, isAnchor, cellWidth, cellHeight, cellAnchorRow, cellAnchorColumn } = tableSlot;
 
 			return {
 				row,
 				column,
+				rowIndex,
 				data: cell && cell.getChild( 0 ).getChild( 0 ).data,
 				index: tableSlot.getPositionBefore().offset,
 				...( cellAnchorRow != row ? { anchorRow: cellAnchorRow } : null ),
@@ -66,10 +70,10 @@ describe( 'TableWalker', () => {
 			[ '00', '01' ],
 			[ '10', '11' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '00', isAnchor: true },
-			{ row: 0, column: 1, index: 1, data: '01', isAnchor: true },
-			{ row: 1, column: 0, index: 0, data: '10', isAnchor: true },
-			{ row: 1, column: 1, index: 1, data: '11', isAnchor: true }
+			{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true },
+			{ row: 0, column: 1, rowIndex: 0, index: 1, data: '01', isAnchor: true },
+			{ row: 1, column: 0, rowIndex: 1, index: 0, data: '10', isAnchor: true },
+			{ row: 1, column: 1, rowIndex: 1, index: 1, data: '11', isAnchor: true }
 		] );
 	} );
 
@@ -80,8 +84,8 @@ describe( 'TableWalker', () => {
 		testWalker( [
 			[ { colspan: 2, contents: '00' }, '13' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '00', isAnchor: true, width: 2 },
-			{ row: 0, column: 2, index: 1, data: '13', isAnchor: true }
+			{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true, width: 2 },
+			{ row: 0, column: 2, rowIndex: 0, index: 1, data: '13', isAnchor: true }
 		] );
 	} );
 
@@ -101,13 +105,13 @@ describe( 'TableWalker', () => {
 			[ '22' ],
 			[ '30', '31', '32' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '00', isAnchor: true, width: 2, height: 3 },
-			{ row: 0, column: 2, index: 1, data: '02', isAnchor: true },
-			{ row: 1, column: 2, index: 0, data: '12', isAnchor: true },
-			{ row: 2, column: 2, index: 0, data: '22', isAnchor: true },
-			{ row: 3, column: 0, index: 0, data: '30', isAnchor: true },
-			{ row: 3, column: 1, index: 1, data: '31', isAnchor: true },
-			{ row: 3, column: 2, index: 2, data: '32', isAnchor: true }
+			{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true, width: 2, height: 3 },
+			{ row: 0, column: 2, rowIndex: 0, index: 1, data: '02', isAnchor: true },
+			{ row: 1, column: 2, rowIndex: 1, index: 0, data: '12', isAnchor: true },
+			{ row: 2, column: 2, rowIndex: 2, index: 0, data: '22', isAnchor: true },
+			{ row: 3, column: 0, rowIndex: 3, index: 0, data: '30', isAnchor: true },
+			{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true },
+			{ row: 3, column: 2, rowIndex: 3, index: 2, data: '32', isAnchor: true }
 		] );
 	} );
 
@@ -127,16 +131,68 @@ describe( 'TableWalker', () => {
 			[ '33' ],
 			[ '41', '42', '43' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '11', isAnchor: true, height: 3 },
-			{ row: 0, column: 1, index: 1, data: '12', isAnchor: true },
-			{ row: 0, column: 2, index: 2, data: '13', isAnchor: true },
-			{ row: 1, column: 1, index: 0, data: '22', isAnchor: true, height: 2 },
-			{ row: 1, column: 2, index: 1, data: '23', isAnchor: true },
-			{ row: 2, column: 2, index: 0, data: '33', isAnchor: true },
-			{ row: 3, column: 0, index: 0, data: '41', isAnchor: true },
-			{ row: 3, column: 1, index: 1, data: '42', isAnchor: true },
-			{ row: 3, column: 2, index: 2, data: '43', isAnchor: true }
+			{ row: 0, column: 0, rowIndex: 0, index: 0, data: '11', isAnchor: true, height: 3 },
+			{ row: 0, column: 1, rowIndex: 0, index: 1, data: '12', isAnchor: true },
+			{ row: 0, column: 2, rowIndex: 0, index: 2, data: '13', isAnchor: true },
+			{ row: 1, column: 1, rowIndex: 1, index: 0, data: '22', isAnchor: true, height: 2 },
+			{ row: 1, column: 2, rowIndex: 1, index: 1, data: '23', isAnchor: true },
+			{ row: 2, column: 2, rowIndex: 2, index: 0, data: '33', isAnchor: true },
+			{ row: 3, column: 0, rowIndex: 3, index: 0, data: '41', isAnchor: true },
+			{ row: 3, column: 1, rowIndex: 3, index: 1, data: '42', isAnchor: true },
+			{ row: 3, column: 2, rowIndex: 3, index: 2, data: '43', isAnchor: true }
 		] );
+	} );
+
+	it( 'should iterate over a table, but ignore non-row elements', () => {
+		model.schema.register( 'foo', {
+			allowIn: 'table',
+			allowContentOf: '$block',
+			isLimit: true
+		} );
+
+		// +----+----+
+		// | 00 | 01 |
+		// +----+----+
+		// |  <foo>  |
+		// +----+----+
+		// | 10 | 11 |
+		// +---------+
+		const modelTable =
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><paragraph>00</paragraph></tableCell>' +
+					'<tableCell><paragraph>01</paragraph></tableCell>' +
+				'</tableRow>' +
+				'<foo>An extra element</foo>' +
+				'<tableRow>' +
+					'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+					'<tableCell><paragraph>11</paragraph></tableCell>' +
+				'</tableRow>' +
+			'</table>';
+
+		const parsed = parse( modelTable, model.schema );
+
+		// We don't want post-fixers to be applied here, as the TableWalker can be used inside them,
+		// when the structure of the table is not yet corrected.
+		const tableWalker = Array.from( new TableWalker( parsed.model ) );
+
+		expect( tableWalker.length ).to.equal( 4 );
+
+		expect( tableWalker[ 0 ].row ).to.equal( 0 );
+		expect( tableWalker[ 0 ].column ).to.equal( 0 );
+		expect( tableWalker[ 0 ].rowIndex ).to.equal( 0 );
+
+		expect( tableWalker[ 1 ].row ).to.equal( 0 );
+		expect( tableWalker[ 1 ].column ).to.equal( 1 );
+		expect( tableWalker[ 1 ].rowIndex ).to.equal( 0 );
+
+		expect( tableWalker[ 2 ].row ).to.equal( 1 );
+		expect( tableWalker[ 2 ].column ).to.equal( 0 );
+		expect( tableWalker[ 2 ].rowIndex ).to.equal( 2 );
+
+		expect( tableWalker[ 3 ].row ).to.equal( 1 );
+		expect( tableWalker[ 3 ].column ).to.equal( 1 );
+		expect( tableWalker[ 3 ].rowIndex ).to.equal( 2 );
 	} );
 
 	describe( 'option.startRow', () => {
@@ -156,10 +212,10 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 2, column: 2, index: 0, data: '33', isAnchor: true },
-				{ row: 3, column: 0, index: 0, data: '41', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '42', isAnchor: true },
-				{ row: 3, column: 2, index: 2, data: '43', isAnchor: true }
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '33', isAnchor: true },
+				{ row: 3, column: 0, rowIndex: 3, index: 0, data: '41', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '42', isAnchor: true },
+				{ row: 3, column: 2, rowIndex: 3, index: 2, data: '43', isAnchor: true }
 			], { startRow: 2 } );
 		} );
 
@@ -179,12 +235,12 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 2, column: 0, index: 0, data: '11', width: 2, height: 3, anchorRow: 0 },
-				{ row: 2, column: 1, index: 0, data: '11', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
-				{ row: 2, column: 2, index: 0, data: '33', isAnchor: true },
-				{ row: 3, column: 0, index: 0, data: '41', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '42', isAnchor: true },
-				{ row: 3, column: 2, index: 2, data: '43', isAnchor: true }
+				{ row: 2, column: 0, rowIndex: 2, index: 0, data: '11', width: 2, height: 3, anchorRow: 0 },
+				{ row: 2, column: 1, rowIndex: 2, index: 0, data: '11', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '33', isAnchor: true },
+				{ row: 3, column: 0, rowIndex: 3, index: 0, data: '41', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '42', isAnchor: true },
+				{ row: 3, column: 2, rowIndex: 3, index: 2, data: '43', isAnchor: true }
 			], { startRow: 2, includeAllSlots: true } );
 		} );
 	} );
@@ -206,10 +262,10 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '11', isAnchor: true, width: 2, height: 3 },
-				{ row: 0, column: 2, index: 1, data: '13', isAnchor: true },
-				{ row: 1, column: 2, index: 0, data: '23', isAnchor: true },
-				{ row: 2, column: 2, index: 0, data: '33', isAnchor: true }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '11', isAnchor: true, width: 2, height: 3 },
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '13', isAnchor: true },
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '23', isAnchor: true },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '33', isAnchor: true }
 			], { endRow: 2 } );
 		} );
 
@@ -229,8 +285,8 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '11', isAnchor: true, width: 2, height: 3 },
-				{ row: 0, column: 2, index: 1, data: '13', isAnchor: true }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '11', isAnchor: true, width: 2, height: 3 },
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '13', isAnchor: true }
 			], { endRow: 0 } );
 		} );
 
@@ -250,12 +306,12 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '11', width: 2, height: 3, isAnchor: true },
-				{ row: 0, column: 1, index: 0, data: '11', width: 2, height: 3, anchorColumn: 0 },
-				{ row: 0, column: 2, index: 1, data: '13', isAnchor: true },
-				{ row: 1, column: 0, index: 0, data: '11', width: 2, height: 3, anchorRow: 0 },
-				{ row: 1, column: 1, index: 0, data: '11', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
-				{ row: 1, column: 2, index: 0, data: '23', isAnchor: true }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '11', width: 2, height: 3, isAnchor: true },
+				{ row: 0, column: 1, rowIndex: 0, index: 0, data: '11', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '13', isAnchor: true },
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '11', width: 2, height: 3, anchorRow: 0 },
+				{ row: 1, column: 1, rowIndex: 1, index: 0, data: '11', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '23', isAnchor: true }
 			], { endRow: 1, includeAllSlots: true } );
 		} );
 	} );
@@ -277,7 +333,7 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true }
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '12', isAnchor: true }
 			], { row: 1 } );
 		} );
 
@@ -297,9 +353,9 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 1, column: 0, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
-				{ row: 1, column: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
-				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true }
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
+				{ row: 1, column: 1, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '12', isAnchor: true }
 			], { row: 1, includeAllSlots: true } );
 		} );
 	} );
@@ -321,11 +377,11 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 2, index: 1, data: '02', isAnchor: true },
-				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true },
-				{ row: 2, column: 2, index: 0, data: '22', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true },
-				{ row: 3, column: 2, index: 2, data: '32', isAnchor: true }
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '02', isAnchor: true },
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '12', isAnchor: true },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '22', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true },
+				{ row: 3, column: 2, rowIndex: 3, index: 2, data: '32', isAnchor: true }
 			], { startColumn: 1 } );
 		} );
 
@@ -345,14 +401,14 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
-				{ row: 0, column: 2, index: 1, data: '02', isAnchor: true },
-				{ row: 1, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
-				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true },
-				{ row: 2, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
-				{ row: 2, column: 2, index: 0, data: '22', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true },
-				{ row: 3, column: 2, index: 2, data: '32', isAnchor: true }
+				{ row: 0, column: 1, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '02', isAnchor: true },
+				{ row: 1, column: 1, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '12', isAnchor: true },
+				{ row: 2, column: 1, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '22', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true },
+				{ row: 3, column: 2, rowIndex: 3, index: 2, data: '32', isAnchor: true }
 			], { startColumn: 1, includeAllSlots: true } );
 		} );
 	} );
@@ -374,9 +430,9 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isAnchor: true, width: 2, height: 3 },
-				{ row: 3, column: 0, index: 0, data: '30', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true, width: 2, height: 3 },
+				{ row: 3, column: 0, rowIndex: 3, index: 0, data: '30', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true }
 			], { endColumn: 1 } );
 		} );
 
@@ -396,14 +452,14 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', width: 2, height: 3, isAnchor: true },
-				{ row: 0, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
-				{ row: 1, column: 0, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
-				{ row: 1, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
-				{ row: 2, column: 0, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
-				{ row: 2, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
-				{ row: 3, column: 0, index: 0, data: '30', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, isAnchor: true },
+				{ row: 0, column: 1, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
+				{ row: 1, column: 1, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 2, column: 0, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
+				{ row: 2, column: 1, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 3, column: 0, rowIndex: 3, index: 0, data: '30', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true }
 			], { endColumn: 1, includeAllSlots: true } );
 		} );
 	} );
@@ -425,7 +481,7 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true }
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true }
 			], { column: 1 } );
 		} );
 
@@ -445,10 +501,10 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
-				{ row: 1, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
-				{ row: 2, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true }
+				{ row: 0, column: 1, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 1, column: 1, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 2, column: 1, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true }
 			], { column: 1, includeAllSlots: true } );
 		} );
 	} );
@@ -464,10 +520,10 @@ describe( 'TableWalker', () => {
 				[ '00', { rowspan: 2, contents: '01' } ],
 				[ '10' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isAnchor: true },
-				{ row: 0, column: 1, index: 1, data: '01', isAnchor: true, height: 2 },
-				{ row: 1, column: 0, index: 0, data: '10', isAnchor: true },
-				{ row: 1, column: 1, index: 1, data: '01', anchorRow: 0, height: 2 }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true },
+				{ row: 0, column: 1, rowIndex: 0, index: 1, data: '01', isAnchor: true, height: 2 },
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '10', isAnchor: true },
+				{ row: 1, column: 1, rowIndex: 1, index: 1, data: '01', anchorRow: 0, height: 2 }
 			], { includeAllSlots: true } );
 		} );
 
@@ -487,18 +543,18 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', { colspan: 2, contents: '31' } ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', width: 2, height: 3, isAnchor: true },
-				{ row: 0, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
-				{ row: 0, column: 2, index: 1, data: '02', isAnchor: true },
-				{ row: 1, column: 0, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
-				{ row: 1, column: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
-				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true },
-				{ row: 2, column: 0, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
-				{ row: 2, column: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
-				{ row: 2, column: 2, index: 0, data: '22', isAnchor: true },
-				{ row: 3, column: 0, index: 0, data: '30', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '31', width: 2, isAnchor: true },
-				{ row: 3, column: 2, index: 1, data: '31', width: 2, anchorColumn: 1 }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, isAnchor: true },
+				{ row: 0, column: 1, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '02', isAnchor: true },
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
+				{ row: 1, column: 1, rowIndex: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '12', isAnchor: true },
+				{ row: 2, column: 0, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
+				{ row: 2, column: 1, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '22', isAnchor: true },
+				{ row: 3, column: 0, rowIndex: 3, index: 0, data: '30', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', width: 2, isAnchor: true },
+				{ row: 3, column: 2, rowIndex: 3, index: 1, data: '31', width: 2, anchorColumn: 1 }
 			], { includeAllSlots: true } );
 		} );
 
@@ -512,10 +568,10 @@ describe( 'TableWalker', () => {
 				[ '00', { rowspan: 2, contents: '01' } ],
 				[ '10' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isAnchor: true },
-				{ row: 0, column: 1, index: 1, data: '01', isAnchor: true, height: 2 },
-				{ row: 1, column: 0, index: 0, data: '10', isAnchor: true },
-				{ row: 1, column: 1, index: 1, data: '01', anchorRow: 0, height: 2 }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true },
+				{ row: 0, column: 1, rowIndex: 0, index: 1, data: '01', isAnchor: true, height: 2 },
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '10', isAnchor: true },
+				{ row: 1, column: 1, rowIndex: 1, index: 1, data: '01', anchorRow: 0, height: 2 }
 			], { includeAllSlots: true } );
 		} );
 
@@ -535,12 +591,12 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 1, column: 0, index: 0, data: '00', anchorRow: 0, width: 2, height: 3 },
-				{ row: 1, column: 1, index: 0, data: '00', anchorRow: 0, width: 2, height: 3, anchorColumn: 0 },
-				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true },
-				{ row: 2, column: 0, index: 0, data: '00', anchorRow: 0, width: 2, height: 3 },
-				{ row: 2, column: 1, index: 0, data: '00', anchorRow: 0, width: 2, height: 3, anchorColumn: 0 },
-				{ row: 2, column: 2, index: 0, data: '22', isAnchor: true }
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '00', anchorRow: 0, width: 2, height: 3 },
+				{ row: 1, column: 1, rowIndex: 1, index: 0, data: '00', anchorRow: 0, width: 2, height: 3, anchorColumn: 0 },
+				{ row: 1, column: 2, rowIndex: 1, index: 0, data: '12', isAnchor: true },
+				{ row: 2, column: 0, rowIndex: 2, index: 0, data: '00', anchorRow: 0, width: 2, height: 3 },
+				{ row: 2, column: 1, rowIndex: 2, index: 0, data: '00', anchorRow: 0, width: 2, height: 3, anchorColumn: 0 },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '22', isAnchor: true }
 			], { includeAllSlots: true, startRow: 1, endRow: 2 } );
 		} );
 
@@ -557,10 +613,10 @@ describe( 'TableWalker', () => {
 				[ '10' ],
 				[ '20', '21' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isAnchor: true },
-				{ row: 0, column: 1, index: 1, data: '01', isAnchor: true, height: 2 },
-				{ row: 1, column: 0, index: 0, data: '10', isAnchor: true },
-				{ row: 1, column: 1, index: 1, data: '01', anchorRow: 0, height: 2 }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true },
+				{ row: 0, column: 1, rowIndex: 0, index: 1, data: '01', isAnchor: true, height: 2 },
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '10', isAnchor: true },
+				{ row: 1, column: 1, rowIndex: 1, index: 1, data: '01', anchorRow: 0, height: 2 }
 			], { startRow: 0, endRow: 1, includeAllSlots: true } );
 		} );
 	} );
@@ -582,12 +638,12 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isAnchor: true, width: 2, height: 3 },
-				{ row: 0, column: 2, index: 1, data: '02', isAnchor: true },
-				{ row: 2, column: 2, index: 0, data: '22', isAnchor: true },
-				{ row: 3, column: 0, index: 0, data: '30', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true },
-				{ row: 3, column: 2, index: 2, data: '32', isAnchor: true }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', isAnchor: true, width: 2, height: 3 },
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '02', isAnchor: true },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '22', isAnchor: true },
+				{ row: 3, column: 0, rowIndex: 3, index: 0, data: '30', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true },
+				{ row: 3, column: 2, rowIndex: 3, index: 2, data: '32', isAnchor: true }
 			], {}, 1 );
 		} );
 
@@ -607,15 +663,15 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', width: 2, height: 3, isAnchor: true },
-				{ row: 0, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
-				{ row: 0, column: 2, index: 1, data: '02', isAnchor: true },
-				{ row: 2, column: 0, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
-				{ row: 2, column: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
-				{ row: 2, column: 2, index: 0, data: '22', isAnchor: true },
-				{ row: 3, column: 0, index: 0, data: '30', isAnchor: true },
-				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true },
-				{ row: 3, column: 2, index: 2, data: '32', isAnchor: true }
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, isAnchor: true },
+				{ row: 0, column: 1, rowIndex: 0, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 0, column: 2, rowIndex: 0, index: 1, data: '02', isAnchor: true },
+				{ row: 2, column: 0, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
+				{ row: 2, column: 1, rowIndex: 2, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 2, column: 2, rowIndex: 2, index: 0, data: '22', isAnchor: true },
+				{ row: 3, column: 0, rowIndex: 3, index: 0, data: '30', isAnchor: true },
+				{ row: 3, column: 1, rowIndex: 3, index: 1, data: '31', isAnchor: true },
+				{ row: 3, column: 2, rowIndex: 3, index: 2, data: '32', isAnchor: true }
 			], { includeAllSlots: true }, 1 );
 		} );
 	} );

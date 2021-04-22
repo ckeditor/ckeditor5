@@ -33,6 +33,7 @@ import '@ckeditor/ckeditor5-heading/build/heading';
 import '@ckeditor/ckeditor5-highlight/build/highlight';
 import '@ckeditor/ckeditor5-horizontal-line/build/horizontal-line';
 import '@ckeditor/ckeditor5-html-embed/build/html-embed';
+import '@ckeditor/ckeditor5-language/build/language';
 import '@ckeditor/ckeditor5-media-embed/build/media-embed';
 import '@ckeditor/ckeditor5-mention/build/mention';
 import '@ckeditor/ckeditor5-page-break/build/page-break';
@@ -54,7 +55,7 @@ const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor
 const { Indent, IndentBlock } = window.CKEditor5.indent;
 const { List, ListStyle, TodoList } = window.CKEditor5.list;
 const { SpecialCharacters, SpecialCharactersEssentials } = window.CKEditor5.specialCharacters;
-const { Table, TableToolbar, TableCellProperties, TableProperties } = window.CKEditor5.table;
+const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption } = window.CKEditor5.table;
 const { Alignment } = window.CKEditor5.alignment;
 const { Autoformat } = window.CKEditor5.autoformat;
 const { BlockQuote } = window.CKEditor5.blockQuote;
@@ -71,6 +72,7 @@ const { Mention } = window.CKEditor5.mention;
 const { PageBreak } = window.CKEditor5.pageBreak;
 const { PasteFromOffice } = window.CKEditor5.pasteFromOffice;
 const { RemoveFormat } = window.CKEditor5.removeFormat;
+const { TextPartLanguage } = window.CKEditor5.language;
 const { WordCount } = window.CKEditor5.wordCount;
 
 const { Plugin } = window.CKEditor5.core;
@@ -125,7 +127,8 @@ const config = {
 		PasteFromOffice,
 		RemoveFormat,
 		SpecialCharacters, SpecialCharactersEssentials,
-		Table, TableToolbar, TableCellProperties, TableProperties,
+		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption,
+		TextPartLanguage,
 		WordCount
 	],
 	toolbar: [
@@ -147,11 +150,13 @@ const config = {
 		'|',
 		'pageBreak', 'horizontalLine', 'specialCharacters',
 		'|',
+		'textPartLanguage',
+		'|',
 		'undo', 'redo'
 	],
 	cloudServices: CS_CONFIG,
 	table: {
-		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption' ]
 	},
 	image: {
 		styles: [

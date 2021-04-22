@@ -5,12 +5,13 @@
 
 /* globals document */
 
-// Sometimes the request to `badge.fury.io` fails for unknown reason, so ignore it.
+// Sometimes the request to external resources (like `badge.fury.io` or `emojics.com`) fails for unknown reasons,
+// so ignore all navigation timeouts for framework integration docs.
 const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
 metaElement.content = JSON.stringify( {
-	'request-failure': 'badge.fury.io'
+	'navigation-error': 'timeout'
 } );
 
 document.head.appendChild( metaElement );

@@ -33,29 +33,16 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 ### Table caption
 
-The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, add caption, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions.
 
 {@snippet features/table-caption}
 
-Use the **"Insert table"** button in the toolbar to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
-
-## Table captions
-
-The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions:
-
-```html
-<figure class="table">
-	<table>
-		...
-	</table>
-	<figcaption>A caption goes here...</figcaption>
-</figure>
-```
-
-By default, if the table caption is empty, the `<figcaption>` element is not visible to the user. You can click the table to reveal the caption field and write one.
+<info-box>
+	By default, table caption feature is not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
+</info-box>
 
 <info-box hint>
-	Table caption is positioned above the table by default. You can change that placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
+	By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
 </info-box>
 
 ## Table selection
@@ -143,6 +130,39 @@ ClassicEditor
 <info-box info>
 	Learn more about [configuring color palettes](#configuring-styling-tools) in the table and table cell property pop–ups.
 </info-box>
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+### Table caption
+
+To enable table caption feature in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+
+```
+npm install --save @ckeditor/ckeditor5-table
+```
+
+Then add the `Table`, `TableToolbar`, and **`TableCaption`** plugins to your plugin list and configure the table toolbar:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, TableCaption, Bold, ... ],
+		toolbar: [ 'insertTable', ... ],
+		table: {
+			contentToolbar: [
+				'toggleTableCaption'
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
@@ -338,6 +358,33 @@ The above model structure will be rendered to the data and to the editing view a
 <info-box info>
 	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍 if you need this feature.
 </info-box>
+
+## Disallowing nesting tables
+
+By default, the editor allows nesting a table inside another table's cell.
+
+In order to disallow nesting tables you need to register an additional schema rule. It needs to be added before the data gets loaded into the editor, hence it is best to implement it as a plugin:
+
+```js
+function DisallowNestingTables( editor ) {
+	editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+		if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			return false;
+		}
+	} );
+}
+
+// Pass it via config.extraPlugins or config.plugins:
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ DisallowNestingTables ],
+
+		// The rest of the config.
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Common API
 

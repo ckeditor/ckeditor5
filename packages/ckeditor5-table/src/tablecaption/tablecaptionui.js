@@ -60,7 +60,6 @@ export default class TableCaptionUI extends Plugin {
 
 					editingView.scrollToTheSelection();
 					editingView.change( writer => {
-						// TODO: Write CSS for that.
 						writer.addClass( 'table__caption_highlighted', figcaptionElement );
 					} );
 				}

@@ -10,7 +10,7 @@
 /**
  * Checks if the provided model element is a `table`.
  *
- * @param {module:engine/model/element~Element} modelElement
+ * @param {module:engine/model/element~Element} modelElement Element to check if it is a table.
  * @returns {Boolean}
  */
 export function isTable( modelElement ) {
@@ -20,12 +20,12 @@ export function isTable( modelElement ) {
 /**
  * Returns the caption model element from a given table element. Returns `null` if no caption is found.
  *
- * @param {module:engine/model/element~Element} tableModelElement
+ * @param {module:engine/model/element~Element} tableModelElement Table element in which we will try to find a caption element.
  * @returns {module:engine/model/element~Element|null}
  */
 export function getCaptionFromTableModelElement( tableModelElement ) {
 	for ( const node of tableModelElement.getChildren() ) {
-		if ( !!node && node.is( 'element', 'caption' ) ) {
+		if ( node.is( 'element', 'caption' ) ) {
 			return node;
 		}
 	}
@@ -36,19 +36,18 @@ export function getCaptionFromTableModelElement( tableModelElement ) {
 /**
  * Returns the caption model element for a model selection. Returns `null` if the selection has no caption element ancestor.
  *
- * @param {module:engine/model/selection~Selection} selection
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * The selection checked for caption presence.
  * @returns {module:engine/model/element~Element|null}
  */
 export function getCaptionFromModelSelection( selection ) {
-	const tableElement = locateTable( selection );
-	const captionElement = tableElement && getCaptionFromTableModelElement( tableElement );
+	const tableElement = getSelectionAffectedTable( selection );
 
-	// Make sure we are getting caption from the table and not, for example, image.
-	if ( !captionElement || !isTable( captionElement.parent ) ) {
+	if ( !tableElement ) {
 		return null;
 	}
 
-	return captionElement;
+	return getCaptionFromTableModelElement( tableElement );
 }
 
 /**
@@ -82,18 +81,7 @@ export function matchTableCaptionViewElement( element ) {
  * @param {module:engine/model/position~Position} position
  * @returns {module:engine/model/element~Element}
  */
-// export function locateTable( position ) {
-// 	const nodeAfter = position.nodeAfter;
-
-// 	// Is the command triggered from the `tableToolbar`?
-// 	if ( nodeAfter && nodeAfter.is( 'element', 'table' ) ) {
-// 		return nodeAfter;
-// 	}
-
-// 	return position.findAncestor( 'table' );
-// }
-
-export function locateTable( selection ) {
+export function getSelectionAffectedTable( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
 	// Is the command triggered from the `tableToolbar`?

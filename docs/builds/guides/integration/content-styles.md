@@ -48,8 +48,8 @@ Below there is a full list of content styles used by the editor features. You ca
 
 ```css
 /*
- * CKEditor 5 (v26.0.0) content styles.
- * Generated on Wed, 03 Mar 2021 08:21:28 GMT.
+ * CKEditor 5 (v27.0.0) content styles.
+ * Generated on Wed, 24 Mar 2021 08:00:59 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -82,6 +82,33 @@ Below there is a full list of content styles used by the editor features. You ca
 .ck-content .text-huge {
 	font-size: 1.8em;
 }
+/* ckeditor5-code-block/theme/codeblock.css */
+.ck-content pre {
+	padding: 1em;
+	color: hsl(0, 0%, 20.8%);
+	background: hsla(0, 0%, 78%, 0.3);
+	border: 1px solid hsl(0, 0%, 77%);
+	border-radius: 2px;
+	text-align: left;
+	direction: ltr;
+	tab-size: 4;
+	white-space: pre-wrap;
+	font-style: normal;
+	min-width: 200px;
+}
+/* ckeditor5-code-block/theme/codeblock.css */
+.ck-content pre code {
+	background: unset;
+	padding: 0;
+	border-radius: 0;
+}
+/* ckeditor5-horizontal-line/theme/horizontalline.css */
+.ck-content hr {
+	margin: 15px 0;
+	height: 4px;
+	background: hsl(0, 0%, 87%);
+	border: 0;
+}
 /* ckeditor5-highlight/theme/highlight.css */
 .ck-content .marker-yellow {
 	background-color: var(--ck-highlight-marker-yellow);
@@ -108,52 +135,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	color: var(--ck-highlight-pen-green);
 	background-color: transparent;
 }
-/* ckeditor5-image/theme/image.css */
-.ck-content .image {
-	display: table;
-	clear: both;
-	text-align: center;
-	margin: 1em auto;
-}
-/* ckeditor5-image/theme/image.css */
-.ck-content .image img {
-	display: block;
-	margin: 0 auto;
-	max-width: 100%;
-	min-width: 50px;
-}
-/* ckeditor5-image/theme/imagecaption.css */
-.ck-content .image > figcaption {
-	display: table-caption;
-	caption-side: bottom;
-	word-break: break-word;
-	color: hsl(0, 0%, 20%);
-	background-color: hsl(0, 0%, 97%);
-	padding: .6em;
-	font-size: .75em;
-	outline-offset: -1px;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized {
-	max-width: 100%;
-	display: block;
-	box-sizing: border-box;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized img {
-	width: 100%;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized > figcaption {
-	display: block;
-}
-/* ckeditor5-horizontal-line/theme/horizontalline.css */
-.ck-content hr {
-	margin: 15px 0;
-	height: 4px;
-	background: hsl(0, 0%, 87%);
-	border: 0;
-}
 /* ckeditor5-image/theme/imagestyle.css */
 .ck-content .image-style-side {
 	float: right;
@@ -174,6 +155,49 @@ Below there is a full list of content styles used by the editor features. You ca
 .ck-content .image-style-align-right {
 	float: right;
 	margin-left: var(--ck-image-style-spacing);
+}
+/* ckeditor5-image/theme/imagecaption.css */
+.ck-content .image > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: break-word;
+	color: hsl(0, 0%, 20%);
+	background-color: hsl(0, 0%, 97%);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image {
+	display: table;
+	clear: both;
+	text-align: center;
+	margin: 1em auto;
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image img {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	min-width: 50px;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized > figcaption {
+	display: block;
+}
+/* ckeditor5-language/theme/language.css */
+.ck-content span[lang] {
+	font-style: italic;
 }
 /* ckeditor5-block-quote/theme/blockquote.css */
 .ck-content blockquote {
@@ -344,26 +368,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	margin: 1em auto;
 	min-width: 15em;
 	font-style: normal;
-}
-/* ckeditor5-code-block/theme/codeblock.css */
-.ck-content pre {
-	padding: 1em;
-	color: hsl(0, 0%, 20.8%);
-	background: hsla(0, 0%, 78%, 0.3);
-	border: 1px solid hsl(0, 0%, 77%);
-	border-radius: 2px;
-	text-align: left;
-	direction: ltr;
-	tab-size: 4;
-	white-space: pre-wrap;
-	font-style: normal;
-	min-width: 200px;
-}
-/* ckeditor5-code-block/theme/codeblock.css */
-.ck-content pre code {
-	background: unset;
-	padding: 0;
-	border-radius: 0;
 }
 /* ckeditor5-mention/theme/mention.css */
 .ck-content .mention {

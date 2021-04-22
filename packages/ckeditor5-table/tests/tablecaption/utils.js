@@ -4,21 +4,20 @@
  */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
 import TableEditing from '../../src/tableediting';
-
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import {
-	isTable,
-	getCaptionFromTableModelElement,
 	getCaptionFromModelSelection,
-	matchTableCaptionViewElement,
-	locateTable
+	getCaptionFromTableModelElement,
+	getSelectionAffectedTable,
+	isTable,
+	matchTableCaptionViewElement
 } from '../../src/tablecaption/utils';
 
 describe( 'table caption utils', () => {
@@ -139,6 +138,14 @@ describe( 'table caption utils', () => {
 
 			expect( captionElement.is( 'element', 'caption' ) ).to.be.true;
 		} );
+
+		it( 'should return null when no table has been found', () => {
+			setModelData( model,
+				'<paragraph>[]</paragraph>'
+			);
+
+			expect( getCaptionFromModelSelection( model.document.selection ) ).to.be.null;
+		} );
 	} );
 
 	describe( 'matchTableCaptionViewElement', () => {
@@ -206,12 +213,12 @@ describe( 'table caption utils', () => {
 		} );
 	} );
 
-	describe( 'locateTable', () => {
+	describe( 'getSelectionAffectedTable', () => {
 		it( 'should return null if table is not present', () => {
 			setModelData( model, '<paragraph>Foo[]</paragraph>' );
 			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
 
-			const tableElement = locateTable( selection );
+			const tableElement = getSelectionAffectedTable( selection );
 
 			expect( tableElement ).to.be.null;
 		} );
@@ -219,7 +226,7 @@ describe( 'table caption utils', () => {
 		it( 'should return table if present higher in the model tree', () => {
 			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
 
-			const tableElement = locateTable( selection );
+			const tableElement = getSelectionAffectedTable( selection );
 
 			expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
 		} );

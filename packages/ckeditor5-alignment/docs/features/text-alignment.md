@@ -50,7 +50,7 @@ ClassicEditor
 
 ### Using classes instead of inline style
 
-By default alignment is set inline using `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the  `className` property in `config.alignment.options` and style them by using a stylesheet.
+By default, alignment is set inline using the `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the `className` property in `config.alignment.options` and style them by using a stylesheet.
 
 <info-box>
 	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
@@ -138,6 +138,12 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+## Content compatibility
+
+The {@link module:alignment/alignment~Alignment} plugin provides support for the deprecated `align` attribute.
+
+Block elements such as `<p>` with the `align` attribute are accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
 
 ## Contribute
 
