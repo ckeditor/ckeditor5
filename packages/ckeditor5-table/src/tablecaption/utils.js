@@ -41,7 +41,7 @@ export function getCaptionFromTableModelElement( tableModelElement ) {
  * @returns {module:engine/model/element~Element|null}
  */
 export function getCaptionFromModelSelection( selection ) {
-	const tableElement = findClosestParentTable( selection );
+	const tableElement = getSelectionAffectedTable( selection );
 
 	if ( !tableElement ) {
 		return null;
@@ -81,7 +81,7 @@ export function matchTableCaptionViewElement( element ) {
  * @param {module:engine/model/position~Position} position
  * @returns {module:engine/model/element~Element}
  */
-export function findClosestParentTable( selection ) {
+export function getSelectionAffectedTable( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
 	// Is the command triggered from the `tableToolbar`?

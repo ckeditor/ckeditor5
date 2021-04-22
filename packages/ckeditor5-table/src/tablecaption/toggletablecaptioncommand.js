@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { Element } from 'ckeditor5/src/engine';
 
-import { getCaptionFromTableModelElement, findClosestParentTable } from './utils';
+import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './utils';
 
 /**
  * The toggle table caption command.
@@ -39,7 +39,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const tableElement = findClosestParentTable( editor.model.document.selection );
+		const tableElement = getSelectionAffectedTable( editor.model.document.selection );
 
 		this.isEnabled = !!tableElement;
 
@@ -83,7 +83,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 */
 	_showTableCaption( writer, focusCaptionOnShow ) {
 		const model = this.editor.model;
-		const tableElement = findClosestParentTable( model.document.selection );
+		const tableElement = getSelectionAffectedTable( model.document.selection );
 
 		let newCaptionElement;
 
@@ -115,7 +115,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 */
 	_hideTableCaption( writer ) {
 		const model = this.editor.model;
-		const tableElement = findClosestParentTable( model.document.selection );
+		const tableElement = getSelectionAffectedTable( model.document.selection );
 		const captionElement = getCaptionFromTableModelElement( tableElement );
 
 		// Store the caption content so it can be restored quickly if the user changes their mind.
