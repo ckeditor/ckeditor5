@@ -368,7 +368,7 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 ### More information
 
-Deeper introduction with examples could be found in {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
+A more in-depth introduction with examples could be found in the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 
 <!--TODO: upcasting, downcasting, mapping nodes and positions, API.
 
