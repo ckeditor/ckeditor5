@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -438,6 +438,19 @@ describe( 'TableKeyboard', () => {
 			setModelData( model, modelData );
 
 			editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+			sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+			sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+
+			assertEqualMarkup( getModelData( model ), modelData );
+		} );
+
+		it( 'should do nothing if the selection is on a table', () => {
+			const modelData = '<paragraph>foobar</paragraph>[' + modelTable( [ [ '00', '01' ] ] ) + ']';
+
+			setModelData( model, modelData );
+
+			editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
 			sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
 			sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
@@ -2585,10 +2598,10 @@ describe( 'TableKeyboard', () => {
 							] ) );
 						} );
 
-						it( 'should not move the caret if it\'s just before the last space in the line next to last one', () => {
+						it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
 							setModelData( model, modelTable( [
 								[ '00', '01', '02' ],
-								[ '10', text.substring( 0, text.length - 1 ) + '[]d word word word', '12' ],
+								[ '10', text.substring( 0, text.length - 2 ) + '[]od word word word', '12' ],
 								[ '20', '21', '22' ]
 							] ) );
 

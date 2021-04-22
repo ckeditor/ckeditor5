@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 
 import CKFinderCommand from '../src/ckfindercommand';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -26,7 +26,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ]
+				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -59,9 +59,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be true where only image is allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
-			model.schema.extend( 'image', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: [ 'paragraph', 'image' ]
+			} );
 
 			// Block link attribute.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
@@ -74,8 +75,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be true where only link is allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
@@ -92,8 +95,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be false where link & image are not allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block link attribute - image is not allowed in 'block'.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
@@ -105,9 +110,9 @@ describe( 'CKFinderCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true when imageInsert or link command is enabled', () => {
+		it( 'should be true when insertImage or link command is enabled', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
-			const insertImage = editor.commands.get( 'imageInsert' );
+			const insertImage = editor.commands.get( 'insertImage' );
 			const linkCommand = editor.commands.get( 'link' );
 
 			insertImage.isEnabled = false;
@@ -256,7 +261,7 @@ describe( 'CKFinderCommand', () => {
 
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ],
+					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, ClipboardPipeline ],
 					language: 'pl'
 				} )
 				.then( newEditor => {
@@ -368,8 +373,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should show warning notification if image cannot be inserted', done => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
@@ -403,9 +410,9 @@ describe( 'CKFinderCommand', () => {
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			model.schema.register( 'other', {
 				allowIn: '$root',
+				allowChildren: '$text',
 				isLimit: true
 			} );
-			model.schema.extend( '$text', { allowIn: 'other' } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 

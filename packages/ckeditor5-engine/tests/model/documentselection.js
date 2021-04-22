@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1808,7 +1808,10 @@ describe( 'DocumentSelection', () => {
 				} );
 
 				const batch = new Batch();
-				const splitOperation = new SplitOperation( new Position( root, [ 1, 2 ] ), 4, null, 0 );
+				const splitPosition = new Position( root, [ 1, 2 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
+
+				const splitOperation = new SplitOperation( splitPosition, 4, insertionPosition, null, 0 );
 
 				batch.addOperation( splitOperation );
 				model.applyOperation( splitOperation );

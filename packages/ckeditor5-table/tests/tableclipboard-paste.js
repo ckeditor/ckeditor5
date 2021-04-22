@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -117,8 +117,13 @@ describe( 'table clipboard', () => {
 				model.insertContent( tableToInsert, selectedTableCells );
 			} );
 
+			const tableModelData = modelTable( [
+				[ 'foo', 'foo' ],
+				[ 'foo', 'foo' ]
+			] );
+
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '', '', '02', '03' ],
+				[ tableModelData, '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -223,21 +228,24 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const table = viewTable( [
+			const tableToInsert = [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
-			] );
+			];
+
+			const tableViewData = viewTable( tableToInsert );
+			const tableModelData = modelTable( tableToInsert );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-			data.dataTransfer.setData( 'text/html', `${ table }<p>foo</p>` );
+			data.dataTransfer.setData( 'text/html', `${ tableViewData }<p>foo</p>` );
 			viewDocument.fire( 'paste', data );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ 'foo', '', '02', '03' ],
+				[ tableModelData + '<paragraph>foo</paragraph>', '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -250,21 +258,24 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const table = viewTable( [
+			const tableToInsert = [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
-			] );
+			];
+
+			const tableViewData = viewTable( tableToInsert );
+			const tableModelData = modelTable( tableToInsert );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-			data.dataTransfer.setData( 'text/html', `<p>foo</p>${ table }` );
+			data.dataTransfer.setData( 'text/html', `<p>foo</p>${ tableViewData }` );
 			viewDocument.fire( 'paste', data );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ 'foo', '', '02', '03' ],
+				[ '<paragraph>foo</paragraph>' + tableModelData, '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -277,21 +288,24 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const table = viewTable( [
+			const tableToInsert = [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
-			] );
+			];
+
+			const tableViewData = viewTable( tableToInsert );
+			const tableModelData = modelTable( tableToInsert );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-			data.dataTransfer.setData( 'text/html', `${ table }${ table }` );
+			data.dataTransfer.setData( 'text/html', `${ tableViewData }${ tableViewData }` );
 			viewDocument.fire( 'paste', data );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '', '', '02', '03' ],
+				[ tableModelData + tableModelData, '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -3863,24 +3877,9 @@ describe( 'table clipboard', () => {
 
 			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( tableCell.getAttribute( 'borderColor' ) ).to.deep.equal( {
-				top: '#f00',
-				right: '#f00',
-				bottom: '#f00',
-				left: '#f00'
-			} );
-			expect( tableCell.getAttribute( 'borderStyle' ) ).to.deep.equal( {
-				top: 'solid',
-				right: 'solid',
-				bottom: 'solid',
-				left: 'solid'
-			} );
-			expect( tableCell.getAttribute( 'borderWidth' ) ).to.deep.equal( {
-				top: '1px',
-				right: '1px',
-				bottom: '1px',
-				left: '1px'
-			} );
+			expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+			expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+			expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 			expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#ba7' );
 			expect( tableCell.getAttribute( 'width' ) ).to.equal( '1337px' );
 		} );
@@ -3942,8 +3941,12 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
-		it( 'should not blow up when pasting unsupported element in table', async () => {
+		it( 'should allow pasting table inside table cell with style', async () => {
 			await createEditor( [ TableCellPropertiesEditing ] );
+
+			const color = 'rgb(242, 242, 242)';
+			const style = 'solid';
+			const width = '2px';
 
 			pasteHtml( editor,
 				'<table>' +
@@ -3954,7 +3957,7 @@ describe( 'table clipboard', () => {
 									'<table>' +
 										'<tbody>' +
 											'<tr>' +
-												'<td style="border: 2px solid rgb(242, 242, 242);">' +
+												`<td style="border: ${ width } ${ style } ${ color };">` +
 													'<p>Test</p>' +
 												'</td>' +
 											'</tr>' +
@@ -3967,8 +3970,17 @@ describe( 'table clipboard', () => {
 				'</table>'
 			);
 
+			const tableModelData = modelTable( [
+				[ {
+					contents: '<paragraph>Test</paragraph>',
+					borderColor: color,
+					borderStyle: style,
+					borderWidth: width
+				} ]
+			] );
+
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '<paragraph>Test</paragraph><paragraph></paragraph>' ]
+				[ tableModelData ]
 			] ) );
 		} );
 	} );

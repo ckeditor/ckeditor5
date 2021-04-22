@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		const clipboard = editor.plugins.get( 'Clipboard' );
+		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		editor.editing.view.document.on( 'paste', ( evt, data ) => {
 			console.clear();

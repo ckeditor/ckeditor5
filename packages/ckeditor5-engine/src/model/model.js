@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -95,20 +95,29 @@ export default class Model {
 		this.schema.register( '$root', {
 			isLimit: true
 		} );
+
 		this.schema.register( '$block', {
 			allowIn: '$root',
 			isBlock: true
 		} );
+
 		this.schema.register( '$text', {
 			allowIn: '$block',
 			isInline: true,
 			isContent: true
 		} );
+
 		this.schema.register( '$clipboardHolder', {
 			allowContentOf: '$root',
+			allowChildren: '$text',
 			isLimit: true
 		} );
-		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
+
+		this.schema.register( '$documentFragment', {
+			allowContentOf: '$root',
+			allowChildren: '$text',
+			isLimit: true
+		} );
 
 		// An element needed by the `upcastElementToMarker` converter.
 		// This element temporarily represents a marker boundary during the conversion process and is removed

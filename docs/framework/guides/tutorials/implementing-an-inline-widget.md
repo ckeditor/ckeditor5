@@ -272,6 +272,9 @@ export default class PlaceholderEditing extends Plugin {
 			// The inline widget is self-contained so it cannot be split by the caret and can be selected:
 			isObject: true,
 
+			// The inline widget can have the same attributes as text (for example linkHref, bold).
+			allowAttributesOf: '$text',
+
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
 		} );
@@ -354,6 +357,8 @@ export default class PlaceholderEditing extends Plugin {
 
 			const placeholderView = viewWriter.createContainerElement( 'span', {
 				class: 'placeholder'
+			}, {
+				isAllowedInsideAttributeElement: true
 			} );
 
 			// Insert the placeholder name (as a text).
@@ -398,10 +403,14 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: value } );
+			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...
+			const placeholder = writer.createElement( 'placeholder', {
+				...Object.fromEntries( selection.getAttributes() ),
+                name: value
+			} );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
@@ -767,10 +776,14 @@ class Placeholder extends Plugin {
 class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: value } );
+			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...
+			const placeholder = writer.createElement( 'placeholder', {
+				...Object.fromEntries( selection.getAttributes() ),
+				name: value
+			} );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
@@ -882,6 +895,9 @@ class PlaceholderEditing extends Plugin {
 			// The inline widget is self-contained so it cannot be split by the caret and it can be selected:
 			isObject: true,
 
+			// The inline widget can have the same attributes as text (for example linkHref, bold).
+			allowAttributesOf: '$text',
+
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
 		} );
@@ -924,6 +940,8 @@ class PlaceholderEditing extends Plugin {
 
 			const placeholderView = viewWriter.createContainerElement( 'span', {
 				class: 'placeholder'
+			}, {
+				isAllowedInsideAttributeElement: true
 			} );
 
 			// Insert the placeholder name (as a text).

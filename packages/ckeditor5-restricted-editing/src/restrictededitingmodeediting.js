@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module restricted-editing/restrictededitingmodeediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+
 import RestrictedEditingNavigationCommand from './restrictededitingmodenavigationcommand';
 import {
 	extendMarkerOnTypingPostFixer,
@@ -58,13 +59,13 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		/**
 		 * Commands allowed in non-restricted areas.
 		 *
-		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'forwardDelete'` with commands defined
+		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'deleteForward'` with commands defined
 		 * in the feature configuration.
 		 *
 		 * @type {Set<string>}
 		 * @private
 		 */
-		this._allowedInException = new Set( [ 'input', 'delete', 'forwardDelete' ] );
+		this._allowedInException = new Set( [ 'input', 'delete', 'deleteForward' ] );
 	}
 
 	/**
@@ -199,6 +200,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 		const viewDoc = editor.editing.view.document;
+		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
@@ -210,12 +212,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
 
-		// Block clipboard outside exception marker on paste.
-		this.listenTo( viewDoc, 'clipboardInput', function( evt ) {
+		// Block clipboard outside exception marker on paste and drop.
+		this.listenTo( clipboard, 'contentInsertion', evt => {
 			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
 				evt.stop();
 			}
-		}, { priority: 'high' } );
+		} );
 
 		// Block clipboard outside exception marker on cut.
 		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
@@ -355,11 +357,11 @@ function getSelectAllHandler( editor ) {
 	};
 }
 
-// Additional filtering rule for enabling "delete" and "forwardDelete" commands if selection is on range boundaries:
+// Additional filtering rule for enabling "delete" and "deleteForward" commands if selection is on range boundaries:
 //
 // Does not allow to enable command when selection focus is:
 // - is on marker start - "delete" - to prevent removing content before marker
-// - is on marker end - "forwardDelete" - to prevent removing content after marker
+// - is on marker end - "deleteForward" - to prevent removing content after marker
 function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
 	return name => {
 		if ( name == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
@@ -367,7 +369,7 @@ function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
 		}
 
 		// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
-		if ( name == 'forwardDelete' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
+		if ( name == 'deleteForward' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
 			return false;
 		}
 

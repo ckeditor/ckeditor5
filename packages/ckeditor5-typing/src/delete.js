@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -32,7 +32,12 @@ export default class Delete extends Plugin {
 
 		view.addObserver( DeleteObserver );
 
-		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
+		const deleteForwardCommand = new DeleteCommand( editor, 'forward' );
+
+		// Register `deleteForward` command and add `forwardDelete` command as an alias for backward compatibility.
+		editor.commands.add( 'deleteForward', deleteForwardCommand );
+		editor.commands.add( 'forwardDelete', deleteForwardCommand );
+
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
@@ -52,12 +57,12 @@ export default class Delete extends Plugin {
 				deleteCommandParams.selection = modelSelection;
 			}
 
-			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', deleteCommandParams );
+			editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
 
 			data.preventDefault();
 
 			view.scrollToTheSelection();
-		} );
+		}, { priority: 'low' } );
 
 		// Android IMEs have a quirk - they change DOM selection after the input changes were performed by the browser.
 		// This happens on `keyup` event. Android doesn't know anything about our deletion and selection handling. Even if the selection

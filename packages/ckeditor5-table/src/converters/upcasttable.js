@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,7 @@
 import { createEmptyTableCell } from '../utils/common';
 
 /**
- * View the table element to model the table element conversion helper.
+ * View table element to model table element conversion helper.
  *
  * This conversion helper converts the table element as well as table rows.
  *
@@ -64,13 +64,13 @@ export default function upcastTable() {
 }
 
 /**
- * A conversion helper that skips empty <tr> from upcasting at the beginning of the table.
+ * A conversion helper that skips empty <tr> elements from upcasting at the beginning of the table.
  *
- * AN empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
- * and empty TR-s are used to maintain table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only rows
- * that have related `tableRow` elements).
+ * An empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
+ * and empty TR-s are used to maintain the table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only
+ * rows that have related `tableRow` elements).
  *
- * *Note:* Only the first empty rows are removed because those have no meaning and it solves the issue
+ * *Note:* Only the first empty rows are removed because they have no meaning and it solves the issue
  * of an improper table with all empty rows.
  *
  * @returns {Function} Conversion helper.
@@ -82,6 +82,30 @@ export function skipEmptyTableRow() {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
+	};
+}
+
+/**
+ * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
+ *
+ * @returns {Function} Conversion helper.
+ */
+export function ensureParagraphInTableCell( elementName ) {
+	return dispatcher => {
+		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
+			// The default converter will create a model range on converted table cell.
+			if ( !data.modelRange ) {
+				return;
+			}
+
+			// Ensure a paragraph in the model for empty table cells for converted table cells.
+			if ( data.viewItem.isEmpty ) {
+				const tableCell = data.modelRange.start.nodeAfter;
+				const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
+
+				conversionApi.writer.insertElement( 'paragraph', modelCursor );
+			}
+		}, { priority: 'low' } );
 	};
 }
 

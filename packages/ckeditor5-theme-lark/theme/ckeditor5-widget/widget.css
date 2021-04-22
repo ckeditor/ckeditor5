@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -94,16 +94,16 @@
 		}
 	}
 
-	/* Show the selection handler on mouse hover over the widget. */
-	&:hover .ck-widget__selection-handle {
+	/* Show the selection handler on mouse hover over the widget, but not for nested widgets. */
+	&:hover > .ck-widget__selection-handle {
 		opacity: 1;
 		background-color: var(--ck-color-widget-hover-border);
 	}
 
-	/* Show the selection handler when the widget is selected. */
+	/* Show the selection handler when the widget is selected, but not for nested widgets. */
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
-		& .ck-widget__selection-handle {
+		& > .ck-widget__selection-handle {
 			opacity: 1;
 			background-color: var(--ck-color-focus-border);
 
@@ -153,8 +153,8 @@
 		outline-color: var(--ck-color-widget-blurred-border);
 
 		&.ck-widget_with-selection-handle {
-			& .ck-widget__selection-handle,
-			& .ck-widget__selection-handle:hover {
+			& > .ck-widget__selection-handle,
+			& > .ck-widget__selection-handle:hover {
 				background: var(--ck-color-widget-blurred-border);
 			}
 		}

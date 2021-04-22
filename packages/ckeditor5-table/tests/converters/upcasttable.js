@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -197,6 +197,28 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
+	it( 'should create valid table model from table with empty cells', () => {
+		model.schema.register( 'block', {
+			allowWhere: '$block',
+			allowContentOf: '$root'
+		} );
+		editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+
+		editor.setData(
+			'<block>' +
+				'<table>' +
+					'<tr>' +
+						'<td></td>' +
+					'</tr>' +
+				'</table>' +
+			'</block>'
+		);
+
+		expectModel(
+			'<block><table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table></block>'
+		);
+	} );
+
 	it( 'should skip empty table rows', () => {
 		editor.setData(
 			'<table>' +
@@ -289,14 +311,15 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
-	it( 'should strip table in table', () => {
+	it( 'should not strip table in table', () => {
 		editor.setData(
 			'<table>' +
 				'<tr>' +
+					'<td>foo</td>' +
 					'<td>' +
 						'<table>' +
 							'<tr>' +
-								'<td>tableception</td>' +
+								'<td>bar</td>' +
 							'</tr>' +
 						'</table>' +
 					'</td>' +
@@ -308,7 +331,52 @@ describe( 'upcastTable()', () => {
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
-						'<paragraph>tableception</paragraph>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>bar</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should strip table in table if nested tables are forbidden', () => {
+		model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+				return false;
+			}
+		} );
+
+		editor.setData(
+			'<table>' +
+				'<tr>' +
+					'<td>foo</td>' +
+					'<td>' +
+						'<table>' +
+							'<tr>' +
+								'<td>bar</td>' +
+							'</tr>' +
+						'</table>' +
+					'</td>' +
+				'</tr>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<paragraph>bar</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
 			'</table>'
@@ -502,8 +570,11 @@ describe( 'upcastTable()', () => {
 
 	describe( 'inline contents', () => {
 		it( 'should upcast inline element inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(
@@ -522,8 +593,12 @@ describe( 'upcastTable()', () => {
 		} );
 
 		it( 'should upcast inline object inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true, isObject: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true,
+				isObject: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(

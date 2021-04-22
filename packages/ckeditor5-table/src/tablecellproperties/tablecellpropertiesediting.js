@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,8 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
-import { addPaddingRules } from '@ckeditor/ckeditor5-engine/src/view/styles/padding';
-import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
+import { Plugin } from 'ckeditor5/src/core';
+import { addBorderRules, addPaddingRules, addBackgroundRules } from 'ckeditor5/src/engine';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
 import TableEditing from './../tableediting';
@@ -80,18 +78,18 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableHorizontalAlignmentProperty( schema, conversion, locale );
 		editor.commands.add( 'tableCellHorizontalAlignment', new TableCellHorizontalAlignmentCommand( editor ) );
 
-		enableProperty( schema, conversion, 'width', 'width' );
+		enableProperty( schema, conversion, { modelAttribute: 'width', styleName: 'width' } );
 		editor.commands.add( 'tableCellWidth', new TableCellWidthCommand( editor ) );
 
-		enableProperty( schema, conversion, 'height', 'height' );
+		enableProperty( schema, conversion, { modelAttribute: 'height', styleName: 'height' } );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor ) );
 
 		editor.data.addStyleProcessorRules( addPaddingRules );
-		enableProperty( schema, conversion, 'padding', 'padding' );
+		enableProperty( schema, conversion, { modelAttribute: 'padding', styleName: 'padding', reduceBoxSides: true } );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
-		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
+		enableProperty( schema, conversion, { modelAttribute: 'backgroundColor', styleName: 'background-color' } );
 		editor.commands.add( 'tableCellBackgroundColor', new TableCellBackgroundColorCommand( editor ) );
 
 		enableVerticalAlignmentProperty( schema, conversion );
@@ -109,9 +107,9 @@ function enableBorderProperties( schema, conversion ) {
 	} );
 	upcastBorderStyles( conversion, 'td' );
 	upcastBorderStyles( conversion, 'th' );
-	downcastAttributeToStyle( conversion, 'tableCell', 'borderStyle', 'border-style' );
-	downcastAttributeToStyle( conversion, 'tableCell', 'borderColor', 'border-color' );
-	downcastAttributeToStyle( conversion, 'tableCell', 'borderWidth', 'border-width' );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: 'borderStyle', styleName: 'border-style' } );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: 'borderColor', styleName: 'border-color' } );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: 'borderWidth', styleName: 'border-width' } );
 }
 
 // Enables the `'horizontalAlignment'` attribute for table cells.
@@ -193,14 +191,19 @@ function enableVerticalAlignmentProperty( schema, conversion ) {
 
 // Enables conversion for an attribute for simple view-model mappings.
 //
-// @param {String} modelAttribute
-// @param {String} styleName
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enableProperty( schema, conversion, modelAttribute, styleName ) {
+// @param {Object} options
+// @param {String} options.modelAttribute
+// @param {String} options.styleName
+// @param {Boolean} [options.reduceBoxSides=false]
+function enableProperty( schema, conversion, options ) {
+	const { modelAttribute } = options;
+
 	schema.extend( 'tableCell', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, 'tableCell', modelAttribute, styleName );
-	downcastAttributeToStyle( conversion, 'tableCell', modelAttribute, styleName );
+
+	upcastStyleToAttribute( conversion, { modelElement: 'tableCell', ...options } );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
 }

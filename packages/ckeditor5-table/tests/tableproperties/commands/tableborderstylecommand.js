@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -127,7 +127,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table borderStyle to a passed value', () => {
@@ -135,7 +135,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table if no value is passed', () => {
@@ -153,7 +153,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table borderStyle to a passed value', () => {
@@ -161,7 +161,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table if no value is passed', () => {

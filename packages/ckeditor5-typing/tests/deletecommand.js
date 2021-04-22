@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -192,7 +192,7 @@ describe( 'DeleteCommand', () => {
 		it( 'should pass the "direction" option to Model#deleteContent method', () => {
 			const spy = sinon.spy();
 			const forwardCommand = new DeleteCommand( editor, 'forward' );
-			editor.commands.add( 'forwardDelete', forwardCommand );
+			editor.commands.add( 'deleteForward', forwardCommand );
 
 			editor.model.on( 'deleteContent', spy );
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
@@ -204,7 +204,7 @@ describe( 'DeleteCommand', () => {
 			let deleteOpts = spy.args[ 0 ][ 1 ][ 1 ];
 			expect( deleteOpts ).to.have.property( 'direction', 'backward' );
 
-			editor.execute( 'forwardDelete' );
+			editor.execute( 'deleteForward' );
 
 			expect( spy.callCount ).to.equal( 2 );
 

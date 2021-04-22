@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,7 @@ import UpdateHtmlEmbedCommand from '../src/updatehtmlembedcommand';
 import InsertHtmlEmbedCommand from '../src/inserthtmlembedcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 describe( 'HtmlEmbedEditing', () => {
 	let element, editor, model, view, viewDocument;
@@ -24,7 +25,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ HtmlEmbedEditing ]
+				plugins: [ HtmlEmbedEditing, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -246,6 +247,33 @@ describe( 'HtmlEmbedEditing', () => {
 				const rawHtml = model.document.getRoot().getChild( 0 );
 
 				expect( rawHtml.getAttribute( 'value' ) ).to.equal( rawContent );
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5/issues/8789.
+			it( 'should convert content from clipboard', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html':
+						'<div class="raw-html-embed">' +
+							'<b>Foo B.</b>' +
+							'<i>Foo I.</i>' +
+							'<u>Foo U.</u>' +
+						'</div>',
+					'text/plain': 'plain text'
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation: sinon.spy(),
+					preventDefault: sinon.spy()
+				} );
+
+				const rawHtml = model.document.getRoot().getChild( 0 );
+
+				expect( rawHtml.getAttribute( 'value' ) ).to.equal(
+					'<b>Foo B.</b>' +
+					'<i>Foo I.</i>' +
+					'<u>Foo U.</u>'
+				);
 			} );
 		} );
 	} );
@@ -667,16 +695,20 @@ describe( 'HtmlEmbedEditing', () => {
 					} );
 			} );
 
-			it( 'renders a div with a preview', () => {
+			it( 'should render a div with a preview and placeholder', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'foo' );
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML )
+					.to.equal( 'foo' );
+
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-placeholder' ) )
+					.to.not.equal( null );
 			} );
 
-			it( 'updates the preview once the model changes', () => {
+			it( 'should update the preview once the model changes', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 
 				editor.model.change( writer => writer.setAttribute( 'value', 'bar', editor.model.document.getRoot().getChild( 0 ) ) );
@@ -685,7 +717,38 @@ describe( 'HtmlEmbedEditing', () => {
 				const contentWrapper = widget.getChild( 1 );
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'bar' );
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' ).innerHTML ).to.equal( 'bar' );
+			} );
+
+			describe( 'placeholder', () => {
+				function getPlaceholder() {
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const contentWrapper = widget.getChild( 1 );
+					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+					return domContentWrapper.querySelector( 'div.raw-html-embed__preview-placeholder' );
+				}
+
+				it( 'should inherit the styles from the editor', () => {
+					setModelData( model, '<rawHtml value=""></rawHtml>' );
+					const placeholder = getPlaceholder();
+
+					expect( placeholder.classList.value ).to.contain( 'ck ck-reset_all' );
+				} );
+
+				it( 'should display the proper information if the snippet is empty', () => {
+					setModelData( model, '<rawHtml value=""></rawHtml>' );
+					const placeholder = getPlaceholder();
+
+					expect( placeholder.innerHTML ).to.equal( 'Empty snippet content' );
+				} );
+
+				it( 'should display the proper information if the snippet is not empty', () => {
+					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+					const placeholder = getPlaceholder();
+
+					expect( placeholder.innerHTML ).to.equal( 'No preview available' );
+				} );
 			} );
 
 			describe( 'different setting of ui and content language', () => {
@@ -741,7 +804,7 @@ describe( 'HtmlEmbedEditing', () => {
 					const contentWrapper = widget.getChild( 1 );
 					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-					return domContentWrapper.querySelector( 'div.raw-html-embed__preview' );
+					return domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' );
 				}
 			} );
 		} );
@@ -750,4 +813,12 @@ describe( 'HtmlEmbedEditing', () => {
 
 function isRawHtmlWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( 'rawHtml' ) && isWidget( viewElement );
+}
+
+function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
 }

@@ -325,6 +325,7 @@ By default, the view adds the following observers:
 * {@link module:engine/view/observer/keyobserver~KeyObserver}
 * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}
 * {@link module:engine/view/observer/compositionobserver~CompositionObserver}
+* {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}
 
 Additionally, some features add their own observers. For instance, the {@link module:clipboard/clipboard~Clipboard clipboard feature} adds {@link module:clipboard/clipboardobserver~ClipboardObserver}.
 

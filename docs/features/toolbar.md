@@ -112,7 +112,7 @@ toolbar: {
 		'bulletedList', 'numberedList', 'todoList', '|',
 		'code', 'codeBlock', '|',
 		'insertTable', '|',
-		'imageUpload', 'blockQuote', '|',
+		'uploadImage', 'blockQuote', '|',
 		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true
@@ -134,12 +134,13 @@ toolbar: {
 		'alignment', '|',
 		'bold', 'italic', 'strikethrough', 'underline', 'subscript', 'superscript', '|',
 		'link', '|',
-		'bulletedList', 'numberedList', 'todoList', '-',
+		'bulletedList', 'numberedList', 'todoList',
+		'-', // break point
 		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
 		'code', 'codeBlock', '|',
 		'insertTable', '|',
 		'outdent', 'indent', '|',
-		'imageUpload', 'blockQuote', '|',
+		'uploadImage', 'blockQuote', '|',
 		'undo', 'redo'
     ],
     shouldNotGroupWhenFull: true

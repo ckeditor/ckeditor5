@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,7 @@ import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcomm
 import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand';
 import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
@@ -86,9 +86,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', '#f00' );
-					assertTRBLAttribute( table, 'borderStyle', 'solid' );
-					assertTRBLAttribute( table, 'borderWidth', '1px' );
+					expect( table.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+					expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -96,7 +96,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', '#f00' );
+					expect( table.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -104,7 +104,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderStyle', 'ridge' );
+					expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -112,7 +112,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderWidth', '1px' );
+					expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
@@ -211,22 +211,323 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
 				} );
 
-				// https://github.com/ckeditor/ckeditor5/issues/6177
-				it( 'should upcast tables with nested tables in their cells', () => {
-					editor.setData( '<table style="border:1px solid red">' +
-						'<tr>' +
-							'<td>parent:00</td>' +
-							'<td>' +
-								'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
-							'</td>' +
-						'</tr>' +
-					'</table>' );
+				describe( 'nested tables', () => {
+					// https://github.com/ckeditor/ckeditor5/issues/6177.
+					it( 'should upcast tables with nested tables in their cells', () => {
+						editor.setData(
+							'<table style="border:1px solid red">' +
+								'<tr>' +
+									'<td>parent:00</td>' +
+									'<td>' +
+										'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+									'</td>' +
+								'</tr>' +
+							'</table>'
+						);
 
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', 'red' );
-					assertTRBLAttribute( table, 'borderStyle', 'solid' );
-					assertTRBLAttribute( table, 'borderWidth', '1px' );
+						expect( table.getAttribute( 'borderColor' ) ).to.equal( 'red' );
+						expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+						expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+
+						// Also check the entire structure of the model.
+						// Previously the test was too loose in that regard.
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table borderColor="red" borderStyle="solid" borderWidth="1px">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>' +
+											'parent:00' +
+										'</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<table borderColor="green" borderStyle="solid" borderWidth="1px">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>' +
+														'child:00' +
+													'</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+										'</table>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - inner cell with border style', () => {
+						expect( () => {
+							editor.setData(
+								'<table>' +
+									'<tbody>' +
+										'<tr>' +
+											'<td> ' +
+												'<table>' +
+													'<tbody>' +
+														'<tr>' +
+															'<td style="border-bottom: 0 solid #fff;"></td>' +
+														'</tr>' +
+													'</tbody>' +
+												'</table>' +
+											'</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>'
+							);
+						} ).not.to.throw();
+
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<table>' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph></paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+										'</table>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - inner empty table with border style', () => {
+						expect( () => {
+							editor.setData(
+								'<table>' +
+									'<tbody>' +
+										'<tr>' +
+											'<td> ' +
+												'<table style="border-bottom: 0 solid #fff;"></table>' +
+											'</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>'
+							);
+						} ).not.to.throw();
+
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<table ' +
+											'borderColor="{"bottom":"#fff"}" ' +
+											'borderStyle="{"bottom":"solid"}" ' +
+											'borderWidth="{"bottom":"0"}"' +
+										'>' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph></paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+										'</table>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					// https://github.com/ckeditor/ckeditor5/issues/8393.
+					it( 'should not throw error - no tables allowed in an element', () => {
+						// Conversion will create a merged text node out of all the text contents,
+						// including the one in elements not allowed by schema in this scope.
+						// Let's make sure that upcasting will not try to use model that got processed this way.
+						expect( () => {
+							editor.setData(
+								'<figure class="image">' +
+									'<img src="X">' +
+									'<figcaption>' +
+										'<table>' +
+											'<tr>' +
+												'<td>parent:00</td>' +
+												'<td>' +
+													'<table style="border:1px solid green">' +
+														'<tr>' +
+															'<td>child:00</td>' +
+														'</tr>' +
+													'</table>' +
+												'</td>' +
+											'</tr>' +
+										'</table>' +
+									'</figcaption>' +
+								'</figure>'
+							);
+						} ).not.to.throw();
+
+						expect( getModelData( editor.model ) ).to.equal(
+							'[<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>parent:00</paragraph>' +
+									'</tableCell>' +
+									'<tableCell>' +
+										'<table borderColor="green" borderStyle="solid" borderWidth="1px">' +
+											'<tableRow>' +
+												'<tableCell>' +
+													'<paragraph>child:00</paragraph>' +
+												'</tableCell>' +
+											'</tableRow>' +
+										'</table>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>]'
+						);
+					} );
+
+					describe( 'nested tables forbidden by custom rule', () => {
+						// Nested tables are supported since https://github.com/ckeditor/ckeditor5/issues/3232, so let's check
+						// if the editor will not blow up in case nested tables are forbidden by custom scheme rule.
+						beforeEach( () => {
+							model.schema.addChildCheck( ( context, childDefinition ) => {
+								if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+									return false;
+								}
+							} );
+						} );
+
+						it( 'should upcast tables with nested tables in their cells', () => {
+							editor.setData(
+								'<table style="border:1px solid red">' +
+									'<tr>' +
+										'<td>parent:00</td>' +
+										'<td>' +
+											'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+										'</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+							expect( table.getAttribute( 'borderColor' ) ).to.equal( 'red' );
+							expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+							expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+
+							expect( getModelData( editor.model ) ).to.equal(
+								'[<table borderColor="red" borderStyle="solid" borderWidth="1px">' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>' +
+												'parent:00' +
+											'</paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph>' +
+												'child:00' +
+											'</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>]'
+							);
+						} );
+
+						// https://github.com/ckeditor/ckeditor5/issues/8393.
+						it( 'should not throw error - inner cell with border style', () => {
+							expect( () => {
+								editor.setData(
+									'<table>' +
+										'<tbody>' +
+											'<tr>' +
+												'<td> ' +
+													'<table>' +
+														'<tbody>' +
+															'<tr>' +
+																'<td style="border-bottom: 0 solid #fff;"></td>' +
+															'</tr>' +
+														'</tbody>' +
+													'</table>' +
+												'</td>' +
+											'</tr>' +
+										'</tbody>' +
+									'</table>'
+								);
+							} ).not.to.throw();
+
+							expect( getModelData( editor.model ) ).to.equal(
+								'[<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+										'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>]'
+							);
+						} );
+
+						// https://github.com/ckeditor/ckeditor5/issues/8393.
+						it( 'should not throw error - inner empty table with border style', () => {
+							expect( () => {
+								editor.setData(
+									'<table>' +
+										'<tbody>' +
+											'<tr>' +
+												'<td> ' +
+													'<table style="border-bottom: 0 solid #fff;"></table>' +
+												'</td>' +
+											'</tr>' +
+										'</tbody>' +
+									'</table>'
+								);
+							} ).not.to.throw();
+
+							expect( getModelData( editor.model ) ).to.equal(
+								'[<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+										'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>]'
+							);
+						} );
+
+						// https://github.com/ckeditor/ckeditor5/issues/8393.
+						it( 'should not throw error - no tables allowed in an element', () => {
+							// Conversion will create a merged text node out of all the text contents,
+							// including the one in elements not allowed by schema in this scope.
+							// Let's make sure that upcasting will not try to use model that got processed this way.
+							expect( () => {
+								editor.setData(
+									'<figure class="image">' +
+										'<img src="X">' +
+										'<figcaption>' +
+											'<table>' +
+												'<tr>' +
+													'<td>parent:00</td>' +
+													'<td>' +
+														'<table style="border:1px solid green">' +
+															'<tr>' +
+																'<td>child:00</td>' +
+															'</tr>' +
+														'</table>' +
+													'</td>' +
+												'</tr>' +
+											'</table>' +
+										'</figcaption>' +
+									'</figure>'
+								);
+							} ).not.to.throw();
+
+							expect( getModelData( editor.model ) ).to.equal(
+								'[<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>parent:00</paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph>child:00</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>]'
+							);
+						} );
+					} );
 				} );
 			} );
 
@@ -265,7 +566,7 @@ describe( 'table properties', () => {
 						left: '#f00'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+					assertTableStyle( editor, 'border-color:#f00;' );
 				} );
 
 				it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
@@ -277,10 +578,10 @@ describe( 'table properties', () => {
 					}, table ) );
 
 					assertTableStyle( editor,
-						'border-bottom:deeppink;' +
-						'border-left:rgb(255, 0, 0);' +
-						'border-right:hsla(0, 100%, 50%, 0.5);' +
-						'border-top:#f00;'
+						'border-bottom-color:deeppink;' +
+						'border-left-color:rgb(255, 0, 0);' +
+						'border-right-color:hsla(0, 100%, 50%, 0.5);' +
+						'border-top-color:#f00;'
 					);
 				} );
 
@@ -312,7 +613,7 @@ describe( 'table properties', () => {
 						left: 'solid'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+					assertTableStyle( editor, 'border-style:solid;' );
 				} );
 
 				it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
@@ -323,7 +624,12 @@ describe( 'table properties', () => {
 						left: 'dashed'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:dotted;border-left:dashed;border-right:ridge;border-top:solid;' );
+					assertTableStyle( editor,
+						'border-bottom-style:dotted;' +
+						'border-left-style:dashed;' +
+						'border-right-style:ridge;' +
+						'border-top-style:solid;'
+					);
 				} );
 
 				it( 'should consume converted item borderWidth attribute', () => {
@@ -354,7 +660,10 @@ describe( 'table properties', () => {
 						left: 'thick'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:1337rem;border-left:thick;border-right:.1em;border-top:42px;' );
+					assertTableStyle(
+						editor,
+						'border-bottom-width:1337rem;border-left-width:thick;border-right-width:.1em;border-top-width:42px;'
+					);
 				} );
 
 				it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
@@ -365,7 +674,7 @@ describe( 'table properties', () => {
 						left: '42px'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:42px;border-left:42px;border-right:42px;border-top:42px;' );
+					assertTableStyle( editor, 'border-width:42px;' );
 				} );
 
 				it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
@@ -392,12 +701,7 @@ describe( 'table properties', () => {
 						}, table );
 					} );
 
-					assertTableStyle( editor,
-						'border-bottom:42px solid #f00;' +
-						'border-left:42px solid #f00;' +
-						'border-right:42px solid #f00;' +
-						'border-top:42px solid #f00;'
-					);
+					assertTableStyle( editor, 'border:42px solid #f00;' );
 				} );
 
 				it(
@@ -469,12 +773,7 @@ describe( 'table properties', () => {
 							left: 'deeppink'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:42px solid deeppink;' +
-							'border-left:42px solid deeppink;' +
-							'border-right:42px solid deeppink;' +
-							'border-top:42px solid deeppink;'
-						);
+						assertTableStyle( editor, 'border:42px solid deeppink;' );
 					} );
 
 					it( 'should downcast borderStyle attribute change', () => {
@@ -485,12 +784,7 @@ describe( 'table properties', () => {
 							left: 'ridge'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:42px ridge #f00;' +
-							'border-left:42px ridge #f00;' +
-							'border-right:42px ridge #f00;' +
-							'border-top:42px ridge #f00;'
-						);
+						assertTableStyle( editor, 'border:42px ridge #f00;' );
 					} );
 
 					it( 'should downcast borderWidth attribute change', () => {
@@ -501,22 +795,15 @@ describe( 'table properties', () => {
 							left: 'thick'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:thick solid #f00;' +
-							'border-left:thick solid #f00;' +
-							'border-right:thick solid #f00;' +
-							'border-top:thick solid #f00;'
-						);
+						assertTableStyle( editor, 'border:thick solid #f00;' );
 					} );
 
 					it( 'should downcast borderColor attribute removal', () => {
 						model.change( writer => writer.removeAttribute( 'borderColor', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:42px solid;' +
-							'border-left:42px solid;' +
-							'border-right:42px solid;' +
-							'border-top:42px solid;'
+							'border-style:solid;' +
+							'border-width:42px;'
 						);
 					} );
 
@@ -524,10 +811,9 @@ describe( 'table properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderStyle', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:42px #f00;' +
-							'border-left:42px #f00;' +
-							'border-right:42px #f00;' +
-							'border-top:42px #f00;'
+							'border-color:#f00;' +
+							'border-width:42px;'
+
 						);
 					} );
 
@@ -535,10 +821,8 @@ describe( 'table properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderWidth', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:solid #f00;' +
-							'border-left:solid #f00;' +
-							'border-right:solid #f00;' +
-							'border-top:solid #f00;'
+							'border-color:#f00;' +
+							'border-style:solid;'
 						);
 					} );
 

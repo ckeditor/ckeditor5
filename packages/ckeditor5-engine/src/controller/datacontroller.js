@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,6 +25,7 @@ import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
 import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
+import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -58,21 +59,6 @@ export default class DataController {
 		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = model;
-
-		/**
-		 * Styles processor used during the conversion.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
-		this.stylesProcessor = stylesProcessor;
-
-		/**
-		 * Data processor used during the conversion.
-		 *
-		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
-		 */
-		this.processor = undefined;
 
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and
@@ -113,6 +99,30 @@ export default class DataController {
 		 * @member {module:engine/view/document~Document}
 		 */
 		this.viewDocument = new ViewDocument( stylesProcessor );
+
+		/**
+		 * Styles processor used during the conversion.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = stylesProcessor;
+
+		/**
+		 * Data processor used specifically for HTML conversion.
+		 *
+		 * @readonly
+		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #htmlProcessor
+		 */
+		this.htmlProcessor = new HtmlDataProcessor( this.viewDocument );
+
+		/**
+		 * Data processor used during the conversion.
+		 * Same instance as {@link #htmlProcessor} by default. Can be replaced at run time to handle different format, e.g. XML or Markdown.
+		 *
+		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
+		 */
+		this.processor = this.htmlProcessor;
 
 		/**
 		 * The view downcast writer just for data conversion purposes, i.e. to modify
@@ -198,7 +208,7 @@ export default class DataController {
 	 * @param {Object} [options] Additional configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElementOrFragment, options ) {
+	stringify( modelElementOrFragment, options = {} ) {
 		// Model -> view.
 		const viewDocumentFragment = this.toView( modelElementOrFragment, options );
 
@@ -214,11 +224,11 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
-	 * @param {Object} [options] Additional configuration that will be available through
+	 * @param {Object} [options={}] Additional configuration that will be available through
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
-	toView( modelElementOrFragment, options ) {
+	toView( modelElementOrFragment, options = {} ) {
 		const viewDocument = this.viewDocument;
 		const viewWriter = this._viewWriter;
 
@@ -237,14 +247,16 @@ export default class DataController {
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
-		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
-			// Then, if a document element is converted, convert markers.
-			// From all document markers, get those, which "intersect" with the converter element.
-			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
+		// Convert markers.
+		// For document fragment, simply take the markers assigned to this document fragment.
+		// For model root, all markers in that root will be taken.
+		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
+		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
+			Array.from( modelElementOrFragment.markers ) :
+			_getMarkersRelativeToElement( modelElementOrFragment );
 
-			for ( const [ name, range ] of markers ) {
-				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
-			}
+		for ( const [ name, range ] of markers ) {
+			this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 		}
 
 		// Clean `conversionApi`.
@@ -429,6 +441,26 @@ export default class DataController {
 	 */
 	addStyleProcessorRules( callback ) {
 		callback( this.stylesProcessor );
+	}
+
+	/**
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} on {@link #htmlProcessor htmlProcessor}
+	 * and {@link #processor processor} for view elements whose content should be treated as a raw data
+	 * and not processed during conversion from DOM to view elements.
+	 *
+	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+	 * `"$rawContent"`.
+	 *
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
+	 * be treated as a raw data.
+	 */
+	registerRawContentMatcher( pattern ) {
+		// No need to register the pattern if both `htmlProcessor` and `processor` are the same instances.
+		if ( this.processor && this.processor !== this.htmlProcessor ) {
+			this.processor.registerRawContentMatcher( pattern );
+		}
+
+		this.htmlProcessor.registerRawContentMatcher( pattern );
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -86,7 +86,7 @@ export function isLineStyle( string ) {
 	return lineStyleValues.includes( string );
 }
 
-const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+(px|cm|mm|in|pc|pt|ch|em|ex|rem|vh|vw|vmin|vmax)|0)$/;
+const lengthRegExp = /^([+-]?[0-9]*([.][0-9]+)?(px|cm|mm|in|pc|pt|ch|em|ex|rem|vh|vw|vmin|vmax)|0)$/;
 
 /**
  * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
@@ -98,7 +98,7 @@ export function isLength( string ) {
 	return lengthRegExp.test( string );
 }
 
-const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*[.]?[0-9]+%$/;
+const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*([.][0-9]+)?%$/;
 
 /**
  * Checks if string contains [percentage](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) CSS value.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -200,6 +200,18 @@ describe( 'ClassicEditor', () => {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			return ClassicEditor.create( editorElement, {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
 
 				editor.destroy();
 			} );

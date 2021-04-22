@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,21 +7,18 @@
  * @module link/ui/linkactionsview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
 import { ensureSafeUrl } from '../utils';
 
-import unlinkIcon from '../../theme/icons/unlink.svg';
-import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import '../../theme/linkactions.css';
+// See: #8833.
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+import '../../theme/linkactions.css';
+
+import unlinkIcon from '../../theme/icons/unlink.svg';
 
 /**
  * The link actions view class. This view displays the link preview, allows
@@ -73,7 +70,7 @@ export default class LinkActionsView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon, 'edit' );
+		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
 
 		/**
 		 * The value of the "href" attribute of the link to use in the {@link #previewButtonView}.

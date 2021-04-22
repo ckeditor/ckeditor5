@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -256,9 +256,9 @@ describe( 'image widget utils', () => {
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			model.schema.register( 'other', {
 				allowIn: '$root',
+				allowChildren: '$text',
 				isLimit: true
 			} );
-			model.schema.extend( '$text', { allowIn: 'other' } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 

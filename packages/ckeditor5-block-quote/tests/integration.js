@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -354,6 +354,62 @@ describe( 'BlockQuote integration', () => {
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
 			);
+		} );
+
+		it( 'does nothing if selection is in an empty block but not in a block quote', () => {
+			const data = fakeEventData();
+			const execSpy = sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
+
+			viewDocument.fire( 'delete', data );
+
+			// Only enter command should be executed.
+			expect( data.preventDefault.called ).to.be.true;
+			expect( execSpy.calledOnce ).to.be.true;
+			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
+		} );
+
+		it( 'does nothing if selection is in a non-empty block (at the end) in a block quote', () => {
+			const data = fakeEventData();
+			const execSpy = sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
+
+			viewDocument.fire( 'delete', data );
+
+			// Only enter command should be executed.
+			expect( data.preventDefault.called ).to.be.true;
+			expect( execSpy.calledOnce ).to.be.true;
+			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
+		} );
+
+		it( 'does nothing if selection is in a non-empty block (at the beginning) in a block quote', () => {
+			const data = fakeEventData();
+			const execSpy = sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
+
+			viewDocument.fire( 'delete', data );
+
+			// Only enter command should be executed.
+			expect( data.preventDefault.called ).to.be.true;
+			expect( execSpy.calledOnce ).to.be.true;
+			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
+		} );
+
+		it( 'does nothing if selection is not collapsed', () => {
+			const data = fakeEventData();
+			const execSpy = sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
+
+			viewDocument.fire( 'delete', data );
+
+			// Only enter command should be executed.
+			expect( data.preventDefault.called ).to.be.true;
+			expect( execSpy.calledOnce ).to.be.true;
+			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'delete' );
 		} );
 	} );
 

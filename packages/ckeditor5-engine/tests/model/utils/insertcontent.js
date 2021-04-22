@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,7 +29,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'a' ) );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
 			} );
 		} );
 
@@ -241,6 +241,55 @@ describe( 'DataController utils', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
 		} );
 
+		it( 'should group multiple node inserts', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>f[]oo</paragraph>' );
+			const affectedRange = insertHelper(
+				'<paragraph>abc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl</paragraph>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>fabc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl[]oo</paragraph>'
+			);
+			expect( stringify( root, affectedRange ) ).to.equal(
+				'<paragraph>f[abc</paragraph>' +
+				'<paragraph>def</paragraph>' +
+				'<paragraph>ghi</paragraph>' +
+				'<paragraph>jkl]oo</paragraph>'
+			);
+
+			const batch = model.document.history.getOperation( model.document.version - 1 ).batch;
+			const operations = batch.operations.filter( operation => operation.isDocumentOperation );
+
+			expect( operations.length ).to.equal( 5 );
+
+			expect( operations[ 0 ].type ).to.equal( 'split' );
+			expect( operations[ 0 ].splitPosition.path ).to.deep.equal( [ 0, 1 ] );
+
+			// First node should always be inserted by a separate operation (to avoid operation transformation
+			// on multiple nodes on undoing (insert + merge).
+			expect( operations[ 1 ].type ).to.equal( 'insert' );
+			expect( operations[ 1 ].position.path ).to.deep.equal( [ 1 ] );
+			expect( operations[ 1 ].nodes.length ).to.equal( 1 );
+
+			expect( operations[ 2 ].type ).to.equal( 'merge' );
+			expect( operations[ 2 ].targetPosition.path ).to.deep.equal( [ 0, 1 ] );
+
+			expect( operations[ 3 ].type ).to.equal( 'insert' );
+			expect( operations[ 3 ].position.path ).to.deep.equal( [ 1 ] );
+			expect( operations[ 3 ].nodes.length ).to.equal( 3 );
+
+			expect( operations[ 4 ].type ).to.equal( 'merge' );
+			expect( operations[ 4 ].targetPosition.path ).to.deep.equal( [ 3, 3 ] );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				model = new Model();
@@ -416,6 +465,7 @@ describe( 'DataController utils', () => {
 					inheritAllFrom: '$block',
 					allowAttributes: [ 'listType', 'listIndent' ]
 				} );
+				schema.extend( '$text', { allowAttributes: 'foo' } );
 			} );
 
 			it( 'inserts one text node', () => {
@@ -789,31 +839,14 @@ describe( 'DataController utils', () => {
 					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx]oo</paragraph>' );
 				} );
 
-				// This is the expected result, but it was so hard to achieve at this stage that I
-				// decided to go with the what the next test represents.
-				// it( 'inserts paragraph + text + inlineWidget + text', () => {
-				// 	setData( model, '<paragraph>f[]oo</paragraph>' );
-				// 	insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
-				// 	expect( getData( model ) )
-				// 		.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
-				// } );
-
-				// See the comment above.
 				it( 'inserts paragraph + text + inlineWidget + text', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
 
-					expect( getData( model ) ).to.equal(
-						'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph>' +
-						'<paragraph><inlineWidget></inlineWidget></paragraph>' +
-						'<paragraph>zzz[]oo</paragraph>'
-					);
-
-					expect( stringify( root, affectedRange ) ).to.equal(
-						'<paragraph>f[yyy</paragraph><paragraph>xxx</paragraph>' +
-						'<paragraph><inlineWidget></inlineWidget></paragraph>' +
-						'<paragraph>zzz]oo</paragraph>'
-					);
+					expect( getData( model ) )
+						.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
+					expect( stringify( root, affectedRange ) )
+						.to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz]oo</paragraph>' );
 				} );
 
 				it( 'inserts paragraph + text + paragraph', () => {
@@ -1007,6 +1040,23 @@ describe( 'DataController utils', () => {
 
 					expect( stringify( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<paragraph><inlineWidget></inlineWidget></paragraph>]<paragraph>bar</paragraph>'
+					);
+				} );
+
+				it( 'inserts multiple text nodes with different attribute values', () => {
+					setData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					const affectedRange = insertHelper( '<$text foo="a">yyy</$text><$text foo="b">xxx</$text>' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						'<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx[]</$text></paragraph>' +
+						'<paragraph>bar</paragraph>'
+					);
+
+					expect( stringify( root, affectedRange ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						'[<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx</$text></paragraph>]' +
+						'<paragraph>bar</paragraph>'
 					);
 				} );
 			} );

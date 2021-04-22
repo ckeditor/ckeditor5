@@ -17,7 +17,7 @@ Elements and attributes are checked by features separately by using the {@link m
 
 ## Defining allowed structures
 
-When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed:
+When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by the {@link module:engine/model/schema~SchemaItemDefinition#allowIn} property of the {@link module:engine/model/schema~SchemaItemDefinition}:
 
 ```js
 schema.register( 'myElement', {
@@ -37,13 +37,38 @@ In other words, this would be correct:
 
 While this would be incorrect:
 
-```js
+```xml
 <$root>
 	<foo>
 		<myElement></myElement>
 	</foo>
 </$root>
 ```
+
+To declare which nodes could be inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
+
+```js
+schema.register( 'myElement', {
+	allowIn: '$root',
+	allowChildren: '$text'
+} );
+```
+
+To allow the following structure:
+
+```xml
+<$root>
+	<myElement>
+		foobar
+	</myElement>
+</$root>
+```
+
+Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can be also inherited from other `SchemaItemDefinition` items. 
+
+<info-box>
+	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
+</info-box>
 
 ## Defining additional semantics
 
@@ -419,8 +444,6 @@ schema.register( 'blockQuote', {
 
 Thanks to that, despite the fact that block quote and paragraph features know nothing about themselves, paragraphs will be allowed in block quotes and block quotes will be allowed in all places where blocks are allowed. So if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), that `<section>` elements will allow block quotes, too.
 
-The side effect of such a definition inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be resolved by a callback which will disallow this specific structure.
-
 <info-box>
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
 </info-box>
@@ -431,10 +454,10 @@ The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} m
 
 These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
 
-For instance, the block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
+For instance, to disallow nested `<blockQuote>` structures, you can define such a listener:
 
 ```js
-schema.addChildCheck( context, childDefinition ) => {
+schema.addChildCheck( ( context, childDefinition ) => {
 	// Note that the context is automatically normalized to a SchemaContext instance and
 	// the child to its definition (SchemaCompiledItemDefinition).
 

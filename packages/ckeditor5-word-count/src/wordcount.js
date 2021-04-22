@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,11 @@
  * @module word-count/wordcount
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { modelElementToPlainText } from './utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { View, Template } from 'ckeditor5/src/ui';
+import { env } from 'ckeditor5/src/utils';
 import { throttle, isElement } from 'lodash-es';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import { modelElementToPlainText } from './utils';
 
 /**
  * The word count plugin.
@@ -37,7 +36,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * 		// Words: 0, Characters: 5
  *
  * 		<paragraph>foo(bar)</paragraph>
- * 		//Words: 2, Characters: 8
+ * 		//Words: 1, Characters: 8
  *
  * 		<paragraph>12345</paragraph>
  * 		// Words: 1, Characters: 5
@@ -134,11 +133,8 @@ export default class WordCount extends Plugin {
 			// Groups:
 			// {L} - Any kind of letter from any language.
 			// {N} - Any kind of numeric character in any script.
-			// {M} - A character intended to be combined with another character (e.g. accents, umlauts, enclosing boxes, etc.).
-			// {Pd} - Any kind of hyphen or dash.
-			// {Pc} - A punctuation character such as an underscore that connects words.
-			new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) :
-			/[_\-a-zA-Z0-9À-ž]+/gu;
+			new RegExp( '([\\p{L}\\p{N}]+\\S?)+', 'gu' ) :
+			/([a-zA-Z0-9À-ž]+\S?)+/gu;
 	}
 
 	/**

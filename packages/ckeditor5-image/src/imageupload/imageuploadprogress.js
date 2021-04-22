@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,10 +9,11 @@
 
 /* globals setTimeout */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
+import { Plugin } from 'ckeditor5/src/core';
+import { FileRepository } from 'ckeditor5/src/upload';
 import { getViewImgFromWidget } from '../image/utils';
+
+import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
@@ -25,6 +26,13 @@ import '../../theme/imageuploadloader.css';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadProgress extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'ImageUploadProgress';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

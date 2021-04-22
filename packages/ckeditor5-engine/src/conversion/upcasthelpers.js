@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -889,8 +889,8 @@ function prepareToAttributeConverter( config, shallow ) {
 			return;
 		}
 
-		// Since we are converting to attribute we need an range on which we will set the attribute.
-		// If the range is not created yet, we will create it.
+		// Since we are converting to attribute we need a range on which we will set the attribute.
+		// If the range is not created yet, let's create it by converting children of the current node first.
 		if ( !data.modelRange ) {
 			// Convert children and set conversion result as a current data.
 			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
@@ -899,6 +899,8 @@ function prepareToAttributeConverter( config, shallow ) {
 		// Set attribute on current `output`. `Schema` is checked inside this helper function.
 		const attributeWasSet = setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
 
+		// It may happen that a converter will try to set an attribute that is not allowed in the given context.
+		// In such a situation we cannot consume the attribute. See: https://github.com/ckeditor/ckeditor5/pull/9249#issuecomment-815658459.
 		if ( attributeWasSet ) {
 			conversionApi.consumable.consume( data.viewItem, match.match );
 		}
@@ -923,6 +925,8 @@ function onlyViewNameIsDefined( viewConfig, viewItem ) {
 // Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
 // to ensure proper model structure.
 //
+// If any node on the given range has already defined an attribute with the same name, its value will not be updated.
+//
 // @param {module:engine/model/range~Range} modelRange Model range on which attribute should be set.
 // @param {Object} modelAttribute Model attribute to set.
 // @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion API.
@@ -934,11 +938,21 @@ function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 
 	// Set attribute on each item in range according to Schema.
 	for ( const node of Array.from( modelRange.getItems( { shallow } ) ) ) {
-		if ( conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
-			conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
-
-			result = true;
+		// Skip if not allowed.
+		if ( !conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
+			continue;
 		}
+
+		// Mark the node as consumed even if the attribute will not be updated because it's in a valid context (schema)
+		// and would be converted if the attribute wouldn't be present. See #8921.
+		result = true;
+
+		// Do not override the attribute if it's already present.
+		if ( node.hasAttribute( modelAttribute.key ) ) {
+			continue;
+		}
+
+		conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
 	}
 
 	return result;

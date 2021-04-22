@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -181,6 +181,23 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p>Hello world!</p>';
+
+			return InlineEditor.create( editorElement, {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
+			} );
+		} );
+
 		it( 'should pass the config.toolbar.shouldNotGroupWhenFull configuration to the view', () => {
 			const editorElement = document.createElement( 'div' );
 
@@ -323,9 +340,10 @@ describe( 'InlineEditor', () => {
 
 					const schema = editor.model.schema;
 
-					schema.register( 'heading' );
-					schema.extend( 'heading', { allowIn: '$root' } );
-					schema.extend( '$text', { allowIn: 'heading' } );
+					schema.register( 'heading', {
+						allowIn: '$root',
+						allowChildren: '$text'
+					} );
 
 					editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading', view: 'heading' } );
 					editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'heading', view: 'heading' } );

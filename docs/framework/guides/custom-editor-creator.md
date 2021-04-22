@@ -17,7 +17,6 @@ The `*Editor` class is the main class of each editor type. It initializes the wh
 ```js
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -47,8 +46,6 @@ class MultirootEditor extends Editor {
 	 */
 	constructor( sourceElements, config ) {
 		super( config );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
@@ -298,7 +295,8 @@ class MultirootEditorUI extends EditorUI {
 					view: editingView,
 					element: editingRoot,
 					text: placeholderText,
-					isDirectHost: false
+					isDirectHost: false,
+					keepOnFocus: true
 				} );
 			}
 		}
@@ -441,7 +439,7 @@ MultirootEditor
 	}, {
 		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
 			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'imageUpload', 'blockQuote',
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',
 			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],

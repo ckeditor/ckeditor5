@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -36,9 +36,12 @@ import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -52,7 +55,8 @@ ClassicEditor
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,
-			SpecialCharacters, SpecialCharactersEssentials, WordCount
+			SpecialCharacters, SpecialCharactersEssentials, WordCount,
+			ImageUpload, CloudServices, TextPartLanguage
 		],
 		toolbar: [
 			'heading',
@@ -63,13 +67,15 @@ ClassicEditor
 			'|',
 			'bulletedList', 'numberedList', 'todoList',
 			'|',
-			'blockQuote', 'imageUpload', 'insertTable', 'mediaEmbed', 'codeBlock',
+			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 			'|',
 			'htmlEmbed',
 			'|',
 			'alignment', 'outdent', 'indent',
 			'|',
 			'pageBreak', 'horizontalLine', 'specialCharacters',
+			'|',
+			'textPartLanguage',
 			'|',
 			'undo', 'redo'
 		],
@@ -85,17 +91,17 @@ ClassicEditor
 			],
 			resizeOptions: [
 				{
-					name: 'imageResize:original',
+					name: 'resizeImage:original',
 					label: 'Original size',
 					value: null
 				},
 				{
-					name: 'imageResize:50',
+					name: 'resizeImage:50',
 					label: '50%',
 					value: '50'
 				},
 				{
-					name: 'imageResize:75',
+					name: 'resizeImage:75',
 					label: '75%',
 					value: '75'
 				}
@@ -103,7 +109,7 @@ ClassicEditor
 			toolbar: [
 				'imageTextAlternative', '|',
 				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
-				'imageResize'
+				'resizeImage'
 			],
 			insert: {
 				integrations: [

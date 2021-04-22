@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,9 @@
  * @module block-quote/blockquoteediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { Plugin } from 'ckeditor5/src/core';
+import { Enter } from 'ckeditor5/src/enter';
+import { Delete } from 'ckeditor5/src/typing';
 
 import BlockQuoteCommand from './blockquotecommand';
 
@@ -30,6 +31,13 @@ export default class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ Enter, Delete ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
@@ -39,13 +47,6 @@ export default class BlockQuoteEditing extends Plugin {
 		schema.register( 'blockQuote', {
 			allowWhere: '$block',
 			allowContentOf: '$root'
-		} );
-
-		// Disallow blockQuote in blockQuote.
-		schema.addChildCheck( ( ctx, childDef ) => {
-			if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'blockQuote' ) {
-				return false;
-			}
 		} );
 
 		editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
@@ -69,13 +70,12 @@ export default class BlockQuoteEditing extends Plugin {
 
 						return true;
 					} else if ( element.is( 'element', 'blockQuote' ) && !schema.checkChild( entry.position, element ) ) {
-						// Added a blockQuote in incorrect place - most likely inside another blockQuote. Unwrap it
-						// so the content inside is not lost.
+						// Added a blockQuote in incorrect place. Unwrap it so the content inside is not lost.
 						writer.unwrap( element );
 
 						return true;
 					} else if ( element.is( 'element' ) ) {
-						// Just added an element. Check its children to see if there are no nested blockQuotes somewhere inside.
+						// Just added an element. Check that all children meet the scheme rules.
 						const range = writer.createRangeIn( element );
 
 						for ( const child of range.getItems() ) {
@@ -110,8 +110,6 @@ export default class BlockQuoteEditing extends Plugin {
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
-		//
-		// Priority normal - 10 to override default handler but not list's feature listener.
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
 			if ( !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
@@ -126,12 +124,10 @@ export default class BlockQuoteEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: priorities.normal - 10 } );
+		}, { context: 'blockquote' } );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed in first empty block inside a quote, break the quote.
-		//
-		// Priority high + 5 to override widget's feature listener but not list's feature listener.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			if ( data.direction != 'backward' || !selection.isCollapsed || !blockQuoteCommand.value ) {
 				return;
@@ -146,6 +142,6 @@ export default class BlockQuoteEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: priorities.high + 5 } );
+		}, { context: 'blockquote' } );
 	}
 }

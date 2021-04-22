@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module image/image/imageediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageLoadObserver from './imageloadobserver';
 
 import {
@@ -18,7 +18,7 @@ import {
 
 import { toImageWidget } from './utils';
 
-import ImageInsertCommand from './imageinsertcommand';
+import InsertImageCommand from './insertimagecommand';
 
 /**
  * The image engine plugin.
@@ -27,7 +27,8 @@ import ImageInsertCommand from './imageinsertcommand';
  *
  * * `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
  * * converters for editing and data pipelines.
- * * `'imageInsert'` command.
+ * * `'insertImage'` command.
+ * * `'imageInsert'` command as an alias for `insertImage` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -113,7 +114,11 @@ export default class ImageEditing extends Plugin {
 			} )
 			.add( viewFigureToModel() );
 
-		editor.commands.add( 'imageInsert', new ImageInsertCommand( editor ) );
+		const insertImageCommand = new InsertImageCommand( editor );
+
+		// Register `insertImage` command and add `imageInsert` command as an alias for backward compatibility.
+		editor.commands.add( 'insertImage', insertImageCommand );
+		editor.commands.add( 'imageInsert', insertImageCommand );
 	}
 }
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,7 +18,8 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
  * it is transparent for the selection, so when the caret is before the `<br>` and user presses right arrow he will be
  * moved to the next paragraph, not after the `<br>`. The disadvantage is that it breaks a block, so it can not be used
  * in the middle of a line of text. The {@link module:engine/view/filler~BR_FILLER `<br>` filler} can be replaced with any other
- * character in the data output, for instance {@link module:engine/view/filler~NBSP_FILLER non-breaking space}.
+ * character in the data output, for instance {@link module:engine/view/filler~NBSP_FILLER non-breaking space} or
+ * {@link module:engine/view/filler~MARKED_NBSP_FILLER marked non-breaking space}.
  *
  * * Inline filler is a filler which does not break a line of text, so it can be used inside the text, for instance in the empty
  * `<b>` surrendered by text: `foo<b></b>bar`, if we want to put the caret there. CKEditor uses a sequence of the zero-width
@@ -38,16 +39,34 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
  * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
  * It defines how the filler is created.
  *
+ * @see module:engine/view/filler~MARKED_NBSP_FILLER
  * @see module:engine/view/filler~BR_FILLER
  * @function
  */
 export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
 
 /**
+ * Marked non-breaking space filler creator. This is a function which creates `<span data-cke-filler="true">&nbsp;</span>` element.
+ * It defines how the filler is created.
+ *
+ * @see module:engine/view/filler~NBSP_FILLER
+ * @see module:engine/view/filler~BR_FILLER
+ * @function
+ */
+export const MARKED_NBSP_FILLER = domDocument => {
+	const span = domDocument.createElement( 'span' );
+	span.dataset.ckeFiller = true;
+	span.innerHTML = '\u00A0';
+
+	return span;
+};
+
+/**
  * `<br>` filler creator. This is a function which creates `<br data-cke-filler="true">` element.
  * It defines how the filler is created.
  *
  * @see module:engine/view/filler~NBSP_FILLER
+ * @see module:engine/view/filler~MARKED_NBSP_FILLER
  * @function
  */
 export const BR_FILLER = domDocument => {
@@ -63,19 +82,11 @@ export const BR_FILLER = domDocument => {
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
- * Inline filler which is a sequence of the zero width spaces.
+ * Inline filler which is a sequence of the word joiners.
  *
  * @type {String}
  */
-export const INLINE_FILLER = ( () => {
-	let inlineFiller = '';
-
-	for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
-		inlineFiller += '\u200b';
-	}
-
-	return inlineFiller;
-} )(); // Usu IIF so the INLINE_FILLER appears as a constant in the docs.
+export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
@@ -130,7 +141,7 @@ export function getDataWithoutFiller( domText ) {
  * @param {module:engine/view/view~View} view View controller instance we should inject quirks handling on.
  */
 export function injectQuirksHandling( view ) {
-	view.document.on( 'keydown', jumpOverInlineFiller );
+	view.document.on( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
 }
 
 // Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.

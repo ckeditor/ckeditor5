@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,12 @@
  * @module image/image
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEditing from '../src/image/imageediting';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
+
+import ImageEditing from './image/imageediting';
 import ImageTextAlternative from './imagetextalternative';
+import { isImageWidget } from './image/utils';
 
 import '../theme/image.css';
 
@@ -42,6 +44,16 @@ export default class Image extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Image';
+	}
+
+	/**
+	 * Checks if a given view element is an image widget.
+	 *
+	 * @param {module:engine/view/element~Element} viewElement
+	 * @returns {Boolean}
+	 */
+	isImageWidget( viewElement ) {
+		return isImageWidget( viewElement );
 	}
 }
 

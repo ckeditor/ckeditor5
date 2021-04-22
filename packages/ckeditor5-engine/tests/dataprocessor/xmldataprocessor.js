@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -120,6 +120,22 @@ describe( 'XmlDataProcessor', () => {
 
 			expect( stringify( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
 			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
+		} );
+	} );
+
+	describe( 'useFillerType()', () => {
+		it( 'should turn on and off using marked block fillers', () => {
+			const fragment = parse( '<container:p></container:p>' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
+
+			dataProcessor.useFillerType( 'marked' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
+
+			dataProcessor.useFillerType( 'default' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
 	} );
 } );

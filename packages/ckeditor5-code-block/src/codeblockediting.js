@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,23 @@
  * @module code-block/codeblockediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import { Plugin } from 'ckeditor5/src/core';
+import { ShiftEnter } from 'ckeditor5/src/enter';
+import { UpcastWriter } from 'ckeditor5/src/engine';
+
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
 import OutdentCodeBlockCommand from './outdentcodeblockcommand';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
-	rawSnippetTextToModelDocumentFragment
+	rawSnippetTextToViewDocumentFragment
 } from './utils';
 import {
 	modelToViewCodeBlockInsertion,
 	modelToDataViewSoftBreakInsertion,
-	dataViewToModelCodeBlockInsertion
+	dataViewToModelCodeBlockInsertion,
+	dataViewToModelTextNewlinesInsertion
 } from './converters';
 
 const DEFAULT_ELEMENT = 'paragraph';
@@ -83,6 +86,7 @@ export default class CodeBlockEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const model = editor.model;
+		const view = editor.editing.view;
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -109,12 +113,9 @@ export default class CodeBlockEditing extends Plugin {
 
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
+			allowChildren: '$text',
 			isBlock: true,
 			allowAttributes: [ 'language' ]
-		} );
-
-		schema.extend( '$text', {
-			allowIn: 'codeBlock'
 		} );
 
 		// Disallow all attributes on $text inside `codeBlock`.
@@ -128,24 +129,30 @@ export default class CodeBlockEditing extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
 		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
-		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelCodeBlockInsertion( editor.editing.view, normalizedLanguagesDefs ) );
+
+		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
+		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
 		// "spill out" as separate paragraphs.
 		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
-			const modelSelection = model.document.selection;
+			let insertionRange = model.createRange( model.document.selection.anchor );
 
-			if ( !modelSelection.anchor.parent.is( 'element', 'codeBlock' ) ) {
+			// Use target ranges in case this is a drop.
+			if ( data.targetRanges ) {
+				insertionRange = editor.editing.mapper.toModelRange( data.targetRanges[ 0 ] );
+			}
+
+			if ( !insertionRange.start.parent.is( 'element', 'codeBlock' ) ) {
 				return;
 			}
 
 			const text = data.dataTransfer.getData( 'text/plain' );
+			const writer = new UpcastWriter( editor.editing.view.document );
 
-			model.change( writer => {
-				model.insertContent( rawSnippetTextToModelDocumentFragment( writer, text ), modelSelection );
-				evt.stop();
-			} );
+			// Pass the view fragment to the default clipboardInput handler.
+			data.content = rawSnippetTextToViewDocumentFragment( writer, text );
 		} );
 
 		// Make sure multi–line selection is always wrapped in a code block when `getSelectedContent()`
@@ -220,7 +227,7 @@ export default class CodeBlockEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		} );
+		}, { context: 'pre' } );
 	}
 }
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -134,7 +134,7 @@ export default class Selection {
 	 * Returns true if selection instance is marked as `fake`.
 	 *
 	 * @see #setTo
-	 * @returns {Boolean}
+	 * @type {Boolean}
 	 */
 	get isFake() {
 		return this._isFake;
@@ -144,7 +144,7 @@ export default class Selection {
 	 * Returns fake selection label.
 	 *
 	 * @see #setTo
-	 * @returns {String}
+	 * @type {String}
 	 */
 	get fakeSelectionLabel() {
 		return this._fakeSelectionLabel;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -268,6 +268,21 @@ describe( 'PasteFromOffice - filters', () => {
 
 						expect( stringify( view ) ).to.equal(
 							`<ol style="list-style-type:upper-roman"><li ${ level1 }>Foo</li></ol>`
+						);
+					} );
+
+					// s/ckeditor5/3
+					it( 'should handle invalid style with repeated characters', () => {
+						const styles = '@list l0:level1\n' +
+							'{' + 'mso-level-number-format:'.repeat( 100000 ) + '}';
+
+						const html = `<p ${ level1 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, styles );
+
+						expect( stringify( view ) ).to.equal(
+							`<ol><li ${ level1 }>Foo</li></ol>`
 						);
 					} );
 

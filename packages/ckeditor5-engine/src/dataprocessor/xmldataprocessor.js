@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -97,17 +97,32 @@ export default class XmlDataProcessor {
 	}
 
 	/**
-	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as a raw data
-	 * and not processed during conversion from XML to view elements.
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
+	 * and not processed during the conversion from XML to view elements.
 	 *
-	 * The raw data can be later accessed by {@link module:engine/view/element~Element#getCustomProperty view element custom property}
-	 * `"$rawContent"`.
+	 * The raw data can be later accessed by a
+	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern matching all view elements whose content should
-	 * be treated as a raw data.
+	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
 		this._domConverter.registerRawContentMatcher( pattern );
+	}
+
+	/**
+	 * If the processor is set to use marked fillers, it will insert nbsp fillers wrapped in spans
+	 * (`<span data-cke-filler="true">&nbsp;</span>`), instead of regular nbsp characters (`&nbsp;`).
+	 *
+	 * This mode allows for more precise handling of block fillers (so they don't leak into editor content) but bloats the editor
+	 * data with additional markup.
+	 *
+	 * This mode may be required by some features and will be turned on by them automatically.
+	 *
+	 * @param {'default'|'marked'} type Whether to use default or marked nbsp block fillers.
+	 */
+	useFillerType( type ) {
+		this._domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
 	}
 
 	/**

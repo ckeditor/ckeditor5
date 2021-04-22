@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -74,7 +74,7 @@ export default class InputTextView extends View {
 		this.set( 'ariaDescribedById' );
 
 		/**
-		 * Stores the information about the editor UI focus and propagates it so various plugins and components
+		 * Stores information about the editor UI focus and propagates it so various plugins and components
 		 * are unified as a focus group.
 		 *
 		 * @readonly
@@ -84,7 +84,7 @@ export default class InputTextView extends View {
 
 		/**
 		 * An observable flag set to `true` when the input is currently focused by the user.
-		 * `false` otherwise.
+		 * Set to `false` otherwise.
 		 *
 		 * @readonly
 		 * @observable

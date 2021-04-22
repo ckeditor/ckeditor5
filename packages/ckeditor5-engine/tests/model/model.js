@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -52,6 +52,13 @@ describe( 'Model', () => {
 			expect( schema.isLimit( '$clipboardHolder' ) ).to.be.true;
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).to.be.true;
+		} );
+
+		it( 'registers $documentFragment to the schema', () => {
+			expect( schema.isRegistered( '$documentFragment' ) ).to.be.true;
+			expect( schema.isLimit( '$documentFragment' ) ).to.be.true;
+			expect( schema.checkChild( [ '$documentFragment' ], '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$documentFragment' ], '$block' ) ).to.be.true;
 		} );
 
 		it( 'registers $marker to the schema', () => {
@@ -429,7 +436,7 @@ describe( 'Model', () => {
 
 			model.change( writer => {
 				model.insertContent( new ModelText( 'abc' ) );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
 			} );
 		} );
 	} );

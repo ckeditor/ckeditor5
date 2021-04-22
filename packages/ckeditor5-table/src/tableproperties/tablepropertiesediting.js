@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,8 @@
  * @module table/tableproperties/tablepropertiesediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
-import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
+import { Plugin } from 'ckeditor5/src/core';
+import { addBackgroundRules, addBorderRules } from 'ckeditor5/src/engine';
 
 import TableEditing from '../tableediting';
 import {
@@ -79,14 +78,14 @@ export default class TablePropertiesEditing extends Plugin {
 		enableAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor ) );
 
-		enableTableToFigureProperty( schema, conversion, 'width', 'width' );
+		enableTableToFigureProperty( schema, conversion, { modelAttribute: 'width', styleName: 'width' } );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor ) );
 
-		enableTableToFigureProperty( schema, conversion, 'height', 'height' );
+		enableTableToFigureProperty( schema, conversion, { modelAttribute: 'height', styleName: 'height' } );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
-		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
+		enableProperty( schema, conversion, { modelAttribute: 'backgroundColor', styleName: 'background-color' } );
 		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor ) );
 	}
 }
@@ -100,9 +99,9 @@ function enableBorderProperties( schema, conversion ) {
 		allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
 	} );
 	upcastBorderStyles( conversion, 'table' );
-	downcastTableAttribute( conversion, 'borderColor', 'border-color' );
-	downcastTableAttribute( conversion, 'borderStyle', 'border-style' );
-	downcastTableAttribute( conversion, 'borderWidth', 'border-width' );
+	downcastTableAttribute( conversion, { modelAttribute: 'borderColor', styleName: 'border-color' } );
+	downcastTableAttribute( conversion, { modelAttribute: 'borderStyle', styleName: 'border-style' } );
+	downcastTableAttribute( conversion, { modelAttribute: 'borderWidth', styleName: 'border-width' } );
 }
 
 // Enables the `'alignment'` attribute for table.
@@ -156,28 +155,34 @@ function enableAlignmentProperty( schema, conversion ) {
 
 // Enables conversion for an attribute for simple view-model mappings.
 //
-// @param {String} modelAttribute
-// @param {String} styleName
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enableProperty( schema, conversion, modelAttribute, styleName ) {
+// @param {Object} options
+// @param {String} options.modelAttribute
+// @param {String} options.styleName
+function enableProperty( schema, conversion, options ) {
+	const { modelAttribute } = options;
+
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
-	downcastTableAttribute( conversion, modelAttribute, styleName );
+	upcastStyleToAttribute( conversion, { modelElement: 'table', ...options } );
+	downcastTableAttribute( conversion, options );
 }
 
 // Enables conversion for an attribute for simple view (figure) to model (table) mappings.
 //
-// @param {String} modelAttribute
-// @param {String} styleName
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enableTableToFigureProperty( schema, conversion, modelAttribute, styleName ) {
+// @param {Object} options
+// @param {String} options.modelAttribute
+// @param {String} options.styleName
+function enableTableToFigureProperty( schema, conversion, options ) {
+	const { modelAttribute } = options;
+
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
-	downcastAttributeToStyle( conversion, 'table', modelAttribute, styleName );
+	upcastStyleToAttribute( conversion, { modelElement: 'table', ...options } );
+	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }

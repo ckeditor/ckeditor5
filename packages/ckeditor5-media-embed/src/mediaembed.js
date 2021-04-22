@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,12 @@
  * @module media-embed/mediaembed
  */
 
+import { Plugin } from 'ckeditor5/src/core';
+import { Widget } from 'ckeditor5/src/widget';
+
 import MediaEmbedEditing from './mediaembedediting';
 import AutoMediaEmbed from './automediaembed';
 import MediaEmbedUI from './mediaembedui';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import '../theme/mediaembed.css';
 
@@ -233,6 +234,34 @@ export default class MediaEmbed extends Plugin {
  *		}
  *
  * @member {Array.<String>} module:media-embed/mediaembed~MediaEmbedConfig#removeProviders
+ */
+
+/**
+ * Overrides the element name used for "semantic" data.
+ *
+ * This is not relevant if {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`}
+ * is set to `true`.
+ *
+ * When unset, the feature produces tag `<oembed>`:
+ *
+ *		<figure class="media">
+ *			<oembed url="https://url"></oembed>
+ *		</figure>
+ *
+ * To override the element name with, for instance, the `o-embed` name:
+ *
+ *		mediaEmbed: {
+ *			elementName: 'o-embed'
+ *		}
+ *
+ * This will produce semantic data with `<o-embed>` tag:
+ *
+ *		<figure class="media">
+ *			<o-embed url="https://url"></o-embed>
+ *		</figure>
+ *
+ * @default 'oembed'
+ * @member {String} [module:media-embed/mediaembed~MediaEmbedConfig#elementName]
  */
 
 /**

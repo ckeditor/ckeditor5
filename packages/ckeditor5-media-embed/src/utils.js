@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module media-embed/utils
  */
 
-import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget, toWidget } from 'ckeditor5/src/widget';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a media embed widget:
@@ -68,6 +68,7 @@ export function isMediaWidget( viewElement ) {
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
+ * @param {String} [options.elementName]
  * @param {String} [options.useSemanticWrapper]
  * @param {String} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}

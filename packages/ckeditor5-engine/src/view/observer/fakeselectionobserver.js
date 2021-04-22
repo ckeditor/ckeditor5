@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@
 
 import Observer from './observer';
 import ViewSelection from '../selection';
-import { keyCodes, isArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { debounce } from 'lodash-es';
 
 /**
@@ -46,13 +46,19 @@ export default class FakeSelectionObserver extends Observer {
 	observe() {
 		const document = this.document;
 
-		document.on( 'keydown', ( eventInfo, data ) => {
+		document.on( 'arrowKey', ( eventInfo, data ) => {
 			const selection = document.selection;
 
-			if ( selection.isFake && isArrowKeyCode( data.keyCode ) && this.isEnabled ) {
+			if ( selection.isFake && this.isEnabled ) {
 				// Prevents default key down handling - no selection change will occur.
 				data.preventDefault();
+			}
+		}, { context: '$capture' } );
 
+		document.on( 'arrowKey', ( eventInfo, data ) => {
+			const selection = document.selection;
+
+			if ( selection.isFake && this.isEnabled ) {
 				this._handleSelectionMove( data.keyCode );
 			}
 		}, { priority: 'lowest' } );
