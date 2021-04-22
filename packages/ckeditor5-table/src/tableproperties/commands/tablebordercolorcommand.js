@@ -45,7 +45,7 @@ export default class TableBorderColorCommand extends TablePropertyCommand {
 
 		const value = getSingleValue( table.getAttribute( this.attributeName ) );
 
-		if ( value === this.defaultValue ) {
+		if ( value === this._defaultValue ) {
 			return;
 		}
 

@@ -24,7 +24,7 @@ import {
 } from '../utils/ui/table-properties';
 import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
-import TablePropertiesEditing from './tablepropertiesediting';
+import { getNormalizedDefaultProperties } from '../utils/table-properties';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -53,7 +53,7 @@ export default class TablePropertiesUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ContextualBalloon, TablePropertiesEditing ];
+		return [ ContextualBalloon ];
 	}
 
 	/**
@@ -89,7 +89,9 @@ export default class TablePropertiesUI extends Plugin {
 		 * @member {Object}
 		 */
 		// TODO (pomek): Update the member type.
-		this._defaultTableProperties = editor.plugins.get( TablePropertiesEditing )._defaultTableProperties;
+		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
+			includeAlignmentProperty: true
+		} );
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -165,8 +167,9 @@ export default class TablePropertiesUI extends Plugin {
 
 		const view = new TablePropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
-			backgroundColors: localizedBackgroundColors
-		}, this._defaultTableProperties );
+			backgroundColors: localizedBackgroundColors,
+			defaultTableProperties: this._defaultTableProperties
+		} );
 		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.

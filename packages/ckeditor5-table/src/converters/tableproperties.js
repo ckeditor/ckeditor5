@@ -12,9 +12,9 @@
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {Object} options
- * @param {String} options.modelElement
- * @param {String} options.modelAttribute
- * @param {String} options.styleName
+ * @param {String} options.modelAttribute The attribute to set.
+ * @param {String} options.styleName The style name to convert.
+ * @param {String} options.viewElement The view element name that should be converted.
  * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
  * @param {Boolean} [options.reduceBoxSides=false]
  */
@@ -34,11 +34,9 @@ export function upcastStyleToAttribute( conversion, options ) {
 				const normalized = viewElement.getNormalizedStyle( styleName );
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
 
-				if ( defaultValue === value ) {
-					return;
+				if ( defaultValue !== value ) {
+					return value;
 				}
-
-				return value;
 			}
 		}
 	} );
@@ -50,9 +48,9 @@ export function upcastStyleToAttribute( conversion, options ) {
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} viewElementName
  * @param {Object} [defaultBorder={}] The default border values.
- * @param {String} defaultBorder.style
- * @param {String} defaultBorder.color
- * @param {String} defaultBorder.width
+ * @param {String} defaultBorder.color The default `borderColor` value.
+ * @param {String} defaultBorder.style The default `borderStyle` value.
+ * @param {String} defaultBorder.width The default `borderWidth` value.
  */
 export function upcastBorderStyles( conversion, viewElementName, defaultBorder = {} ) {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {

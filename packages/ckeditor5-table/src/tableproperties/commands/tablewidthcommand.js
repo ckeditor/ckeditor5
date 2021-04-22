@@ -49,7 +49,7 @@ export default class TableWidthCommand extends TablePropertyCommand {
 	_getValueToSet( value ) {
 		value = addDefaultUnitToNumericValue( value, 'px' );
 
-		if ( value === this.defaultValue ) {
+		if ( value === this._defaultValue ) {
 			return;
 		}
 

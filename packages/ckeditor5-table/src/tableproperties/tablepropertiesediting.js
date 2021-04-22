@@ -72,49 +72,46 @@ export default class TablePropertiesEditing extends Plugin {
 
 		editor.config.define( 'table.tableProperties.defaultProperties', {} );
 
-		/**
-		 * The normalized, default table properties.
-		 *
-		 * @protected
-		 * @member {Object}
-		 */
-		// TODO (pomek): Update the member type.
-		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
+		const defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
 			includeAlignmentProperty: true
 		} );
 
 		editor.data.addStyleProcessorRules( addBorderRules );
-		enableBorderProperties( schema, conversion, this._defaultTableProperties );
-		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor, this._defaultTableProperties.borderColor ) );
-		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, this._defaultTableProperties.borderStyle ) );
-		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor, this._defaultTableProperties.borderWidth ) );
+		enableBorderProperties( schema, conversion, {
+			color: defaultTableProperties.color,
+			style: defaultTableProperties.style,
+			width: defaultTableProperties.width
+		} );
+		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor, defaultTableProperties.borderColor ) );
+		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, defaultTableProperties.borderStyle ) );
+		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor, defaultTableProperties.borderWidth ) );
 
-		enableAlignmentProperty( schema, conversion, this._defaultTableProperties.alignment );
-		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor, this._defaultTableProperties.alignment ) );
+		enableAlignmentProperty( schema, conversion, defaultTableProperties.alignment );
+		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor, defaultTableProperties.alignment ) );
 
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'width',
 			styleName: 'width',
-			defaultValue: this._defaultTableProperties.width
+			defaultValue: defaultTableProperties.width
 		} );
-		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, this._defaultTableProperties.width ) );
+		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, defaultTableProperties.width ) );
 
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'height',
 			styleName: 'height',
-			defaultValue: this._defaultTableProperties.height
+			defaultValue: defaultTableProperties.height
 		} );
-		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, this._defaultTableProperties.height ) );
+		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, defaultTableProperties.height ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'backgroundColor',
 			styleName: 'background-color',
-			defaultValue: this._defaultTableProperties.backgroundColor
+			defaultValue: defaultTableProperties.backgroundColor
 		} );
 		editor.commands.add(
 			'tableBackgroundColor',
-			new TableBackgroundColorCommand( editor, this._defaultTableProperties.backgroundColor )
+			new TableBackgroundColorCommand( editor, defaultTableProperties.backgroundColor )
 		);
 	}
 }
@@ -123,17 +120,15 @@ export default class TablePropertiesEditing extends Plugin {
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-// @param {Object} tableProperties
-// TODO (pomek): Update the param type.
-function enableBorderProperties( schema, conversion, tableProperties ) {
+// @param {Object} defaultBorder The default border values.
+// @param {String} defaultBorder.color The default `borderColor` value.
+// @param {String} defaultBorder.style The default `borderStyle` value.
+// @param {String} defaultBorder.width The default `borderWidth` value.
+function enableBorderProperties( schema, conversion, defaultBorder ) {
 	schema.extend( 'table', {
 		allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
 	} );
-	upcastBorderStyles( conversion, 'table', {
-		style: tableProperties.borderStyle,
-		width: tableProperties.borderWidth,
-		color: tableProperties.borderColor
-	} );
+	upcastBorderStyles( conversion, 'table', defaultBorder );
 	downcastTableAttribute( conversion, { modelAttribute: 'borderColor', styleName: 'border-color' } );
 	downcastTableAttribute( conversion, { modelAttribute: 'borderStyle', styleName: 'border-style' } );
 	downcastTableAttribute( conversion, { modelAttribute: 'borderWidth', styleName: 'border-width' } );
@@ -160,6 +155,11 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 					// CSS: `float:none` => Model: `alignment:center`.
 					if ( align === 'none' ) {
 						align = 'center';
+					}
+
+					// Do not convert unsupported values.
+					if ( !ALIGN_VALUES_REG_EXP.test( align ) ) {
+						return;
 					}
 
 					return align === defaultValue ? null : align;
@@ -208,7 +208,7 @@ function enableProperty( schema, conversion, options ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, { viewElementName: 'table', ...options } );
+	upcastStyleToAttribute( conversion, { viewElement: 'table', ...options } );
 	downcastTableAttribute( conversion, options );
 }
 
@@ -225,6 +225,6 @@ function enableTableToFigureProperty( schema, conversion, options ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, { viewElementName: /^(table|figure)$/, ...options } );
+	upcastStyleToAttribute( conversion, { viewElement: /^(table|figure)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }

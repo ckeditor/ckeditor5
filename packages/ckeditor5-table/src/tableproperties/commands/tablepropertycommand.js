@@ -27,8 +27,22 @@ export default class TablePropertyCommand extends Command {
 	constructor( editor, attributeName, defaultValue ) {
 		super( editor );
 
+		/**
+		 * The attribute that will be set by the command.
+		 *
+		 * @readonly
+		 * @member {String}
+		 */
 		this.attributeName = attributeName;
-		this.defaultValue = defaultValue;
+
+		/**
+		 * The default value for the attribute.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {String}
+		 */
+		this._defaultValue = defaultValue;
 	}
 
 	/**
@@ -86,7 +100,7 @@ export default class TablePropertyCommand extends Command {
 
 		const attribute = table.getAttribute( this.attributeName );
 
-		if ( attribute === this.defaultValue ) {
+		if ( attribute === this._defaultValue ) {
 			return;
 		}
 
@@ -101,7 +115,7 @@ export default class TablePropertyCommand extends Command {
 	 * @returns {*}
 	 */
 	_getValueToSet( value ) {
-		if ( value === this.defaultValue ) {
+		if ( value === this._defaultValue ) {
 			return;
 		}
 

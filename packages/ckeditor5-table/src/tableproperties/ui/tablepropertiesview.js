@@ -58,10 +58,10 @@ export default class TablePropertiesView extends View {
 	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
 	 * color palette used by the
 	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
-	 * @param {Object} [defaultTableProperties={}]
+	 * @param {Object} [options.defaultTableProperties={}]
 	 * // TODO (pomek): Update the param type.
 	 */
-	constructor( locale, options, defaultTableProperties = {} ) {
+	constructor( locale, options ) {
 		super( locale );
 
 		this.set( {
@@ -108,7 +108,7 @@ export default class TablePropertiesView extends View {
 			 * @default ''
 			 * @member #width
 			 */
-			width: defaultTableProperties.width,
+			width: '',
 
 			/**
 			 * The value of the table height style.
@@ -136,14 +136,6 @@ export default class TablePropertiesView extends View {
 		 * @member {Object}
 		 */
 		this.options = options;
-
-		/**
-		 * The default table properties.
-		 *
-		 * @protected
-		 * @member {Object}
-		 */
-		this._defaultTableProperties = defaultTableProperties;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { backgroundRowLabel, backgroundInput } = this._createBackgroundFields();
@@ -406,7 +398,7 @@ export default class TablePropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
-		const defaultTableProperties = this._defaultTableProperties;
+		const defaultTableProperties = this.options.defaultTableProperties;
 		const defaultBorder = {
 			style: defaultTableProperties.borderStyle,
 			width: defaultTableProperties.borderWidth,
@@ -530,7 +522,7 @@ export default class TablePropertiesView extends View {
 		const backgroundInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
 			columns: 5,
-			defaultColorValue: this._defaultTableProperties.backgroundColor
+			defaultColorValue: this.options.defaultTableProperties.backgroundColor
 		} );
 
 		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );
