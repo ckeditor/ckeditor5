@@ -87,7 +87,7 @@ export default class TablePropertyCommand extends Command {
 		const attribute = table.getAttribute( this.attributeName );
 
 		if ( attribute === this.defaultValue ) {
-			return null;
+			return;
 		}
 
 		return attribute;
@@ -102,7 +102,7 @@ export default class TablePropertyCommand extends Command {
 	 */
 	_getValueToSet( value ) {
 		if ( value === this.defaultValue ) {
-			return null;
+			return;
 		}
 
 		return value;

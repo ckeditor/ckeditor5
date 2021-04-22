@@ -50,7 +50,7 @@ export default class TableWidthCommand extends TablePropertyCommand {
 		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this.defaultValue ) {
-			return null;
+			return;
 		}
 
 		return value;

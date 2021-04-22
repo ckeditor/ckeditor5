@@ -51,7 +51,13 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 			return;
 		}
 
-		return getSingleValue( table.getAttribute( this.attributeName ) );
+		const value = getSingleValue( table.getAttribute( this.attributeName ) );
+
+		if ( value === this.defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 
 	/**
@@ -61,7 +67,7 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 		value = addDefaultUnitToNumericValue( value, 'px' );
 
 		if ( value === this.defaultValue ) {
-			return null;
+			return;
 		}
 
 		return value;

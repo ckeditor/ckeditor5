@@ -165,26 +165,13 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 					return align === defaultValue ? null : align;
 				}
 			},
-			view: {
-				left: {
-					key: 'style',
-					value: {
-						float: 'left'
-					}
-				},
-				center: {
-					key: 'style',
-					value: {
-						float: 'none'
-					}
-				},
-				right: {
-					key: 'style',
-					value: {
-						float: 'right'
-					}
+			view: alignment => ( {
+				key: 'style',
+				value: {
+					// Model: `alignment:center` => CSS: `float:none`.
+					float: alignment === 'center' ? 'none' : alignment
 				}
-			},
+			} ),
 			converterPriority: 'high'
 		} );
 
