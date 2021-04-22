@@ -214,6 +214,29 @@ describe( 'InsertColumnCommand', () => {
 				] ) );
 			} );
 		} );
+
+		it( 'should be false when non-cell elements are in the selection', () => {
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block'
+			} );
+			editor.conversion.elementToElement( {
+				model: 'foo',
+				view: 'foo'
+			} );
+
+			command = new InsertColumnCommand( editor );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell></tableCell>' +
+					'</tableRow>' +
+					'<foo>bar[]</foo>' +
+				'</table>'
+			);
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'order=left', () => {
@@ -381,28 +404,28 @@ describe( 'InsertColumnCommand', () => {
 				], { headingColumns: 5 } ) );
 			} );
 		} );
-	} );
 
-	it( 'should be false when non-cell elements are in the selection', () => {
-		model.schema.register( 'foo', {
-			allowIn: 'table',
-			allowContentOf: '$block'
+		it( 'should be false when non-cell elements are in the selection', () => {
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block'
+			} );
+			editor.conversion.elementToElement( {
+				model: 'foo',
+				view: 'foo'
+			} );
+
+			command = new InsertColumnCommand( editor, { order: 'left' } );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell></tableCell>' +
+					'</tableRow>' +
+					'<foo>bar[]</foo>' +
+				'</table>'
+			);
+			expect( command.isEnabled ).to.be.false;
 		} );
-		editor.conversion.elementToElement( {
-			model: 'foo',
-			view: 'foo'
-		} );
-
-		command = new InsertColumnCommand( editor );
-
-		setData( model,
-			'<table>' +
-				'<tableRow>' +
-					'<tableCell></tableCell>' +
-				'</tableRow>' +
-				'<foo>bar[]</foo>' +
-			'</table>'
-		);
-		expect( command.isEnabled ).to.be.false;
 	} );
 } );

@@ -3,22 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
 import TableEditing from '../../src/tableediting';
-
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import {
-	isTable,
-	getCaptionFromTableModelElement,
 	getCaptionFromModelSelection,
-	matchTableCaptionViewElement,
-	getSelectionAffectedTable
+	getCaptionFromTableModelElement,
+	getSelectionAffectedTable,
+	isTable,
+	matchTableCaptionViewElement
 } from '../../src/tablecaption/utils';
 
 describe( 'table caption utils', () => {

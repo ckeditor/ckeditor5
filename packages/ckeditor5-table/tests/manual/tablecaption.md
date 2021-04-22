@@ -1,4 +1,4 @@
-### Testing
+### Table Caption
 
 Adding a caption to a table
 
@@ -7,7 +7,7 @@ Adding a caption to a table
 1. The table caption should:
     - show up **above** the table with a highlight effect
 	- be focused
-	- have a placeholder `Enter table caption`, when blurred
+	- have a placeholder `Enter table caption` visible
 
 Editing the caption
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, document, window, CKEditorInspector */
+/* globals console, document, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -15,34 +15,27 @@ import TableProperties from '../../src/tableproperties';
 import TableCellProperties from '../../src/tablecellproperties';
 import TableCaption from '../../src/tablecaption';
 
-window.editors = {};
-
-createEditor( '#editor', 'content' );
-
-function createEditor( target, inspectorName ) {
-	ClassicEditor
-		.create( document.querySelector( target ), {
-			plugins: [
-				ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties, TableCaption
-			],
-			toolbar: [
-				'heading', '|',
-				'insertTable', '|',
-				'bold', 'italic', 'link', '|',
-				'bulletedList', 'numberedList', 'blockQuote', '|',
-				'undo', 'redo'
-			],
-			table: {
-				contentToolbar: [
-					'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-				]
-			}
-		} )
-		.then( editor => {
-			window.editors[ inspectorName ] = editor;
-			CKEditorInspector.attach( inspectorName, editor );
-		} )
-		.catch( err => {
-			console.error( err.stack );
-		} );
-}
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties, TableCaption
+		],
+		toolbar: [
+			'heading', '|',
+			'insertTable', '|',
+			'bold', 'italic', 'link', '|',
+			'bulletedList', 'numberedList', 'blockQuote', '|',
+			'undo', 'redo'
+		],
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

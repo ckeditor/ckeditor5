@@ -83,7 +83,8 @@ export default class TableCaptionEditing extends Plugin {
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter table caption' )
+					text: t( 'Enter table caption' ),
+					keepOnFocus: true
 				} );
 
 				return toWidgetEditable( figcaptionElement, writer );
