@@ -146,7 +146,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Please note that most integrations will also require the {@link module:image/image~Image} plugin to be loaded in the editor to make this feature work properly (or one of {@link module:image/image~ImageBlock} or {@link module:image/image~ImageInline}). Check out the comprehensive {@link features/image#installation guide to images} in CKEditor 5 to learn more.
+	Please note that most integrations will also require the {@link module:image/image~Image} plugin to be loaded in the editor to make this feature work properly (or one of {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline}). Check out the comprehensive {@link features/image#installation guide to images} in CKEditor 5 to learn more.
 </info-box>
 
 ## What's next?
