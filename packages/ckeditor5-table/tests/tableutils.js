@@ -1247,7 +1247,7 @@ describe( 'TableUtils', () => {
 			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
 		} );
 
-		it( 'should return proper number of columns for a table with a non-row element', () => {
+		it( 'should return proper number of rows for a table with a non-row element', () => {
 			setData( model,
 				'<table>' +
 					'<tableRow>' +
