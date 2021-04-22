@@ -12,19 +12,19 @@ import { first } from 'ckeditor5/src/utils';
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
- * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} arrangements
- * An array containing available arrangements.
+ * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} styles
+ * An array containing available image style options.
  * @returns {Function} A model-to-view attribute converter.
  */
-export function modelToViewStyleAttribute( arrangements ) {
+export function modelToViewStyleAttribute( styles ) {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
 		// Check if there is class name associated with given value.
-		const newStyle = getArrangementDefinitionByName( data.attributeNewValue, arrangements );
-		const oldStyle = getArrangementDefinitionByName( data.attributeOldValue, arrangements );
+		const newStyle = getStyleDefinitionByName( data.attributeNewValue, styles );
+		const oldStyle = getStyleDefinitionByName( data.attributeOldValue, styles );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -42,15 +42,15 @@ export function modelToViewStyleAttribute( arrangements ) {
 /**
  * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition>} arrangements
- * Arrangements for which the converter is created.
+ * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} styles
+ * Image style options for which the converter is created.
  * @returns {Function} A view-to-model converter.
  */
-export function viewToModelStyleAttribute( arrangements ) {
-	// Convert only non–default arrangements.
-	const nonDefaultArrangements = {
-		imageInline: arrangements.filter( arrangement => !arrangement.isDefault && arrangement.modelElements.includes( 'imageInline' ) ),
-		image: arrangements.filter( arrangement => !arrangement.isDefault && arrangement.modelElements.includes( 'image' ) )
+export function viewToModelStyleAttribute( styles ) {
+	// Convert only non–default styles.
+	const nonDefaultStyles = {
+		imageInline: styles.filter( style => !style.isDefault && style.modelElements.includes( 'imageInline' ) ),
+		image: styles.filter( style => !style.isDefault && style.modelElements.includes( 'image' ) )
 	};
 
 	return ( evt, data, conversionApi ) => {
@@ -67,23 +67,23 @@ export function viewToModelStyleAttribute( arrangements ) {
 			return;
 		}
 
-		// Convert arrangements one by one.
-		for ( const arrangement of nonDefaultArrangements[ modelImageElement.name ] ) {
-			// Try to consume class corresponding with arrangement.
-			if ( conversionApi.consumable.consume( viewElement, { classes: arrangement.className } ) ) {
-				// And convert this arrangement to model attribute.
-				conversionApi.writer.setAttribute( 'imageStyle', arrangement.name, modelImageElement );
+		// Convert styles one by one.
+		for ( const style of nonDefaultStyles[ modelImageElement.name ] ) {
+			// Try to consume class corresponding with the style.
+			if ( conversionApi.consumable.consume( viewElement, { classes: style.className } ) ) {
+				// And convert this style to model attribute.
+				conversionApi.writer.setAttribute( 'imageStyle', style.name, modelImageElement );
 			}
 		}
 	};
 }
 
-// Returns the style with a given `name` from an array of arrangements.
+// Returns the style with a given `name` from an array of styles.
 //
 // @param {String} name
-// @param {Array.<module:image/imagestyle~ImageStyleArrangementDefinition> } styles
-// @returns {module:image/imagestyle~ImageStyleArrangementDefinition|undefined}
-function getArrangementDefinitionByName( name, styles ) {
+// @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition> } styles
+// @returns {module:image/imagestyle~ImageStyleOptionDefinition|undefined}
+function getStyleDefinitionByName( name, styles ) {
 	for ( const style of styles ) {
 		if ( style.name === name ) {
 			return style;

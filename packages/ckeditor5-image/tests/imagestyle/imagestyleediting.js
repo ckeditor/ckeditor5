@@ -51,14 +51,14 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 					image: {
 						styles: {
-							arrangements: [ 'full' ],
+							options: [ 'full' ],
 							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 						}
 					}
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					arrangements: [ 'full' ],
+					options: [ 'full' ],
 					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 				} );
 
@@ -70,26 +70,26 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 					image: {
 						styles: {
-							arrangements: [ { name: 'full', modelElements: [ 'image' ] } ],
+							options: [ { name: 'full', modelElements: [ 'image' ] } ],
 							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 						}
 					}
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					arrangements: [ { name: 'full', modelElements: [ 'image' ] } ],
+					options: [ { name: 'full', modelElements: [ 'image' ] } ],
 					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
 				} );
 
 				await editor.destroy();
 			} );
 
-			it( 'should set the proper default config for groups if only arrangements are defined', async () => {
+			it( 'should set the proper default config for groups if only style options are defined', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 					image: {
 						styles: {
-							arrangements: [
+							options: [
 								{ name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight'
 							]
 						}
@@ -97,14 +97,14 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					arrangements: [ { name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight' ],
+					options: [ { name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight' ],
 					groups: [ 'wrapText', 'breakText' ]
 				} );
 
 				await editor.destroy();
 			} );
 
-			it( 'should set the proper default config for arrangements if only groups are defined', async () => {
+			it( 'should set the proper default config for style options if only groups are defined', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 					image: {
@@ -115,7 +115,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					arrangements: [
+					options: [
 						'inline', 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight',
 						'full', 'side'
 					],
@@ -132,7 +132,7 @@ describe( 'ImageStyleEditing', () => {
 					} );
 
 					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-						arrangements: [
+						options: [
 							'inline', 'alignLeft', 'alignRight',
 							'alignCenter', 'alignBlockLeft', 'alignBlockRight',
 							'full', 'side'
@@ -159,7 +159,7 @@ describe( 'ImageStyleEditing', () => {
 					} );
 
 					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-						arrangements: [ 'inline', 'alignLeft', 'alignRight' ]
+						options: [ 'inline', 'alignLeft', 'alignRight' ]
 					} );
 
 					await editor.destroy();
@@ -171,7 +171,7 @@ describe( 'ImageStyleEditing', () => {
 					} );
 
 					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-						arrangements: [ 'full', 'side' ]
+						options: [ 'full', 'side' ]
 					} );
 
 					await editor.destroy();
@@ -232,7 +232,7 @@ describe( 'ImageStyleEditing', () => {
 
 		it( 'should set the normalizedStyles properly', async () => {
 			const customStyles = {
-				arrangements: [],
+				options: [],
 				groups: [],
 				customProperty: true
 			};
@@ -291,7 +291,7 @@ describe( 'ImageStyleEditing', () => {
 					// ASK: Why class is once on the span element and once on the image?
 				} );
 
-				it( 'should not convert from view to model if class refers to not defined arrangement', () => {
+				it( 'should not convert from view to model if class refers to not defined style', () => {
 					editor.setData( '<p><span><img class="foo-bar" src="/assets/sample.png" /></span></p>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -344,7 +344,7 @@ describe( 'ImageStyleEditing', () => {
 						'</figure>' );
 				} );
 
-				it( 'should not convert from view to model if class refers to not defined arrangement', () => {
+				it( 'should not convert from view to model if class refers to not defined style', () => {
 					editor.setData( '<figure class="image foo-bar"><img src="/assets/sample.png" /></figure>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
@@ -381,7 +381,7 @@ describe( 'ImageStyleEditing', () => {
 						plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
 						image: {
 							styles: {
-								arrangements: [ {
+								options: [ {
 									name: 'onlyInline',
 									modelElements: [ 'imageInline' ],
 									className: 'image-style-inline'

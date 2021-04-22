@@ -16,7 +16,7 @@ describe( 'ImageStyleCommand', () => {
 		alignLeft: anyImage,
 		inline: onlyInline,
 		alignCenter: onlyBlock
-	} = utils.DEFAULT_ARRANGEMENTS;
+	} = utils.DEFAULT_OPTIONS;
 
 	let editor, model, command, editorElement;
 
@@ -29,7 +29,7 @@ describe( 'ImageStyleCommand', () => {
 			plugins: [ ArticlePluginSet ],
 			image: {
 				styles: {
-					arrangements: [ 'full', 'inline', 'alignLeft', 'alignCenter' ],
+					options: [ 'full', 'inline', 'alignLeft', 'alignCenter' ],
 					groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
 				},
 				toolbar: [ 'imageStyle:full' ]
@@ -72,14 +72,14 @@ describe( 'ImageStyleCommand', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should set default arrangement names properly if both of them are defined in the config', () => {
-			expect( command._defaultArrangements ).to.deep.equal( {
+		it( 'should set default styles\' names properly if both of them are defined in the config', () => {
+			expect( command._defaultStyles ).to.deep.equal( {
 				image: defaultBlock.name,
 				imageInline: defaultInline.name
 			} );
 		} );
 
-		it( 'should set default arrangements names properly if one of them is missing in the config', async () => {
+		it( 'should set default styles\' names properly if one of them is missing in the config', async () => {
 			const customElement = document.createElement( 'div' );
 
 			document.body.appendChild( customElement );
@@ -88,7 +88,7 @@ describe( 'ImageStyleCommand', () => {
 				plugins: [ ArticlePluginSet ],
 				image: {
 					styles: {
-						arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+						options: [ 'full', 'alignLeft', 'alignCenter' ],
 						groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
 					},
 					toolbar: [ 'imageStyle:full' ]
@@ -97,7 +97,7 @@ describe( 'ImageStyleCommand', () => {
 
 			const customCommand = customEditor.commands.get( 'imageStyle' );
 
-			expect( customCommand._defaultArrangements ).to.deep.equal( {
+			expect( customCommand._defaultStyles ).to.deep.equal( {
 				image: defaultBlock.name,
 				imageInline: false
 			} );
@@ -106,8 +106,8 @@ describe( 'ImageStyleCommand', () => {
 			await customEditor.destroy();
 		} );
 
-		it( 'should set the supported arrangements properly', () => {
-			expect( command._arrangements ).to.deep.equal( new Map( [
+		it( 'should set the supported styles properly', () => {
+			expect( command._styles ).to.deep.equal( new Map( [
 				[ onlyBlock.name, onlyBlock ],
 				[ onlyInline.name, onlyInline ],
 				[ anyImage.name, anyImage ],
@@ -143,13 +143,13 @@ describe( 'ImageStyleCommand', () => {
 				expect( command.value ).to.equal( anyImage.name );
 			} );
 
-			it( 'should match the proper default arrangement if the imageStyle attribute is not present', () => {
+			it( 'should match the proper default style if the imageStyle attribute is not present', () => {
 				setData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
 				expect( command.value ).to.equal( defaultInline.name );
 			} );
 
-			it( 'should be false if the imageStyle attribute is not present and no default arrangement is provided', async () => {
+			it( 'should be false if the imageStyle attribute is not present and no default style is provided', async () => {
 				const customElement = document.createElement( 'div' );
 
 				document.body.appendChild( customElement );
@@ -158,7 +158,7 @@ describe( 'ImageStyleCommand', () => {
 					plugins: [ ArticlePluginSet ],
 					image: {
 						styles: {
-							arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+							options: [ 'full', 'alignLeft', 'alignCenter' ],
 							groups: []
 						},
 						toolbar: [ 'imageStyle:full' ]
@@ -182,13 +182,13 @@ describe( 'ImageStyleCommand', () => {
 				expect( command.value ).to.equal( anyImage.name );
 			} );
 
-			it( 'should match the proper default arrangement if the imageStyle attribute is not present', () => {
+			it( 'should match the proper default style if the imageStyle attribute is not present', () => {
 				setData( model, '[<image></image>]' );
 
 				expect( command.value ).to.equal( defaultBlock.name );
 			} );
 
-			it( 'should be false if the imageStyle attribute is not present and no default arrangement is provided', async () => {
+			it( 'should be false if the imageStyle attribute is not present and no default style is provided', async () => {
 				const customElement = document.createElement( 'div' );
 
 				document.body.appendChild( customElement );
@@ -197,7 +197,7 @@ describe( 'ImageStyleCommand', () => {
 					plugins: [ ArticlePluginSet ],
 					image: {
 						styles: {
-							arrangements: [ 'full', 'alignLeft', 'alignCenter' ],
+							options: [ 'full', 'alignLeft', 'alignCenter' ],
 							groups: []
 						},
 						toolbar: [ 'imageStyle:full' ]
@@ -320,9 +320,9 @@ describe( 'ImageStyleCommand', () => {
 			} );
 		} );
 
-		describe( 'converting image arrangement', () => {
+		describe( 'converting image style', () => {
 			describe( 'when an inline image is selected', () => {
-				it( 'should remove the imageStyle attribute if the requested arrangement is set as default', () => {
+				it( 'should remove the imageStyle attribute if the requested style is set as default', () => {
 					setData( model, `<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>` );
 					command.execute( { value: defaultInline.name } );
 
@@ -372,7 +372,7 @@ describe( 'ImageStyleCommand', () => {
 			} );
 
 			describe( 'when a block image is selected', () => {
-				it( 'should remove the imageStyle attribute if the requested arrangement is set as default', () => {
+				it( 'should remove the imageStyle attribute if the requested style is set as default', () => {
 					setData( model, `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
 					command.execute( { value: defaultBlock.name } );
 
