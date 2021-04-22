@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
+import injectTableCaptionPostFixer from '../converters/table-caption-post-fixer';
 
 /**
  * The table caption editing plugin.
@@ -83,6 +84,8 @@ export default class TableCaptionEditing extends Plugin {
 				return toWidgetEditable( figcaptionElement, writer );
 			}
 		} );
+
+		injectTableCaptionPostFixer( editor.model );
 	}
 }
 
