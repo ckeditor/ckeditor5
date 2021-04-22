@@ -19,11 +19,11 @@
  * @param {Boolean} [options.reduceBoxSides=false]
  */
 export function upcastStyleToAttribute( conversion, options ) {
-	const { viewElementName, defaultValue, modelAttribute, styleName, reduceBoxSides = false } = options;
+	const { viewElement, defaultValue, modelAttribute, styleName, reduceBoxSides = false } = options;
 
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
-			name: viewElementName,
+			name: viewElement,
 			styles: {
 				[ styleName ]: /[\s\S]+/
 			}

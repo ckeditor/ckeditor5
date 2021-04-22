@@ -166,7 +166,8 @@ export function getBorderStyleDefinitions( view, defaultStyle ) {
  * @param {String} propertyName
  * @param {Function} nameToValue A function that maps a button name to a value. By default names are the same as values.
  */
-export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameToValue } ) {
+export function fillToolbar( options ) {
+	const { view, icons, toolbar, labels, propertyName, nameToValue, defaultValue } = options;
 	for ( const name in labels ) {
 		const button = new ButtonView( view.locale );
 
@@ -176,12 +177,23 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameT
 			tooltip: labels[ name ]
 		} );
 
+		// If specified the `nameToValue()` callback, map the value based on the option's name.
+		const buttonValue = nameToValue ? nameToValue( name ) : name;
+
 		button.bind( 'isOn' ).to( view, propertyName, value => {
-			return value === nameToValue( name );
+			// `value` comes from `view[ propertyName ]`.
+			let valueToCompare = value;
+
+			// If it's empty, and the `defaultValue` is specified, use it instead.
+			if ( value === '' && defaultValue ) {
+				valueToCompare = defaultValue;
+			}
+
+			return buttonValue === valueToCompare;
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = nameToValue( name );
+			view[ propertyName ] = buttonValue;
 		} );
 
 		toolbar.items.add( button );

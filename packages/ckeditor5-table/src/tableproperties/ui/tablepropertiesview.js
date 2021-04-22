@@ -643,9 +643,7 @@ export default class TablePropertiesView extends View {
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
 			propertyName: 'alignment',
-			nameToValue: name => {
-				return name;
-			}
+			defaultValue: this.options.defaultTableProperties.alignment
 		} );
 
 		return {

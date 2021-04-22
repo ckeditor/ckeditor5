@@ -45,32 +45,42 @@ describe( 'table properties', () => {
 			expect( TablePropertiesEditing.pluginName ).to.equal( 'TablePropertiesEditing' );
 		} );
 
-		it( 'adds tableBorderColor command', () => {
-			expect( editor.commands.get( 'tableBorderColor' ) ).to.be.instanceOf( TableBorderColorCommand );
-		} );
+		describe( 'init()', () => {
+			it( 'should define table.tableProperties config', () => {
+				const config = editor.config.get( 'table.tableProperties' );
 
-		it( 'adds tableBorderStyle command', () => {
-			expect( editor.commands.get( 'tableBorderStyle' ) ).to.be.instanceOf( TableBorderStyleCommand );
-		} );
+				expect( config ).to.be.an( 'object' );
+				expect( config ).to.have.property( 'defaultProperties' );
+				expect( config.defaultProperties ).to.deep.equal( {} );
+			} );
 
-		it( 'adds tableBorderWidth command', () => {
-			expect( editor.commands.get( 'tableBorderWidth' ) ).to.be.instanceOf( TableBorderWidthCommand );
-		} );
+			it( 'adds tableBorderColor command', () => {
+				expect( editor.commands.get( 'tableBorderColor' ) ).to.be.instanceOf( TableBorderColorCommand );
+			} );
 
-		it( 'adds tableAlignment command', () => {
-			expect( editor.commands.get( 'tableAlignment' ) ).to.be.instanceOf( TableAlignmentCommand );
-		} );
+			it( 'adds tableBorderStyle command', () => {
+				expect( editor.commands.get( 'tableBorderStyle' ) ).to.be.instanceOf( TableBorderStyleCommand );
+			} );
 
-		it( 'adds tableWidth command', () => {
-			expect( editor.commands.get( 'tableWidth' ) ).to.be.instanceOf( TableWidthCommand );
-		} );
+			it( 'adds tableBorderWidth command', () => {
+				expect( editor.commands.get( 'tableBorderWidth' ) ).to.be.instanceOf( TableBorderWidthCommand );
+			} );
 
-		it( 'adds tableHeight command', () => {
-			expect( editor.commands.get( 'tableHeight' ) ).to.be.instanceOf( TableHeightCommand );
-		} );
+			it( 'adds tableAlignment command', () => {
+				expect( editor.commands.get( 'tableAlignment' ) ).to.be.instanceOf( TableAlignmentCommand );
+			} );
 
-		it( 'adds tableBackgroundColor command', () => {
-			expect( editor.commands.get( 'tableBackgroundColor' ) ).to.be.instanceOf( TableBackgroundColorCommand );
+			it( 'adds tableWidth command', () => {
+				expect( editor.commands.get( 'tableWidth' ) ).to.be.instanceOf( TableWidthCommand );
+			} );
+
+			it( 'adds tableHeight command', () => {
+				expect( editor.commands.get( 'tableHeight' ) ).to.be.instanceOf( TableHeightCommand );
+			} );
+
+			it( 'adds tableBackgroundColor command', () => {
+				expect( editor.commands.get( 'tableBackgroundColor' ) ).to.be.instanceOf( TableBackgroundColorCommand );
+			} );
 		} );
 
 		describe( 'border', () => {
@@ -380,7 +390,7 @@ describe( 'table properties', () => {
 						);
 					} );
 
-					describe( 'nested tables forbidden by custom rule', () => {
+					describe.skip( 'nested tables forbidden by custom rule', () => {
 						// Nested tables are supported since https://github.com/ckeditor/ckeditor5/issues/3232, so let's check
 						// if the editor will not blow up in case nested tables are forbidden by custom scheme rule.
 						beforeEach( () => {
@@ -421,6 +431,8 @@ describe( 'table properties', () => {
 											'<paragraph>' +
 												'child:00' +
 											'</paragraph>' +
+											// '<paragraph>' +
+											// '</paragraph>' +
 										'</tableCell>' +
 									'</tableRow>' +
 								'</table>]'
@@ -1091,6 +1103,13 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
 				} );
 
+				it( 'should discord the unknown float value (style="float:foo;")', () => {
+					editor.setData( '<table style="float:foo;"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
+				} );
+
 				it( 'should upcast align=right attribute', () => {
 					editor.setData( '<table align="right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
@@ -1159,10 +1178,10 @@ describe( 'table properties', () => {
 					assertTableStyle( editor, null, 'float:left;' );
 				} );
 
-				it( 'should not downcast "center" alignment', () => {
+				it( 'should downcast "center" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, null, null );
+					assertTableStyle( editor, null, 'float:none;' );
 				} );
 
 				it( 'should downcast changed alignment (left -> right)', () => {
@@ -1203,6 +1222,154 @@ describe( 'table properties', () => {
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 
 					assertTableStyle( editor );
+				} );
+			} );
+		} );
+
+		// When default properties are specified, we do not want to put them into the model values if they are equal to the defaults.
+		describe( 'default table properties', () => {
+			let editor, model;
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left',
+									borderStyle: 'dashed',
+									borderColor: '#ff0',
+									borderWidth: '2px',
+									backgroundColor: '#00f',
+									width: '250px',
+									height: '150px'
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						model = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				editor.destroy();
+			} );
+
+			describe( 'border', () => {
+				it( 'should not upcast the default `border` values', () => {
+					editor.setData( '<table style="border:2px dashed #ff0"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'borderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-color` value', () => {
+					editor.setData( '<table style="border-color:#ff0"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderColor' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-style` value', () => {
+					editor.setData( '<table style="border-style:dashed"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderStyle' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-width` value', () => {
+					editor.setData( '<table style="border-width:2px"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'background color', () => {
+				it( 'should not upcast the default `background-color` value', () => {
+					editor.setData( '<table style="background-color:#00f"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `background` value', () => {
+					editor.setData( '<table style="background:#00f"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'width', () => {
+				it( 'should not upcast the default `width` value from <table>', () => {
+					editor.setData( '<table style="width:250px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'width' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `width` value from <figure>', () => {
+					editor.setData( '<figure style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'width' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'height', () => {
+				it( 'should not upcast the default `height` value from <table>', () => {
+					editor.setData( '<table style="height:150px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'height' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `height` value from <figure>', () => {
+					editor.setData( '<figure style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'height' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'alignment', () => {
+				it( 'should not upcast the default value from the style attribute (float:left)', () => {
+					editor.setData( '<table style="float:left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the align attribute (left)', () => {
+					editor.setData( '<table align="left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should upcast style="float:none" as "center" option', () => {
+					editor.setData( '<table style="float:none;""><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
+				} );
+
+				it( 'should upcast align=center attribute', () => {
+					editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
 				} );
 			} );
 		} );

@@ -69,8 +69,6 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const conversion = editor.conversion;
 		const locale = editor.locale;
 
-		editor.config.define( 'table.tableCellProperties.defaultProperties', {} );
-
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableCellBorderStyle', new TableCellBorderStyleCommand( editor ) );

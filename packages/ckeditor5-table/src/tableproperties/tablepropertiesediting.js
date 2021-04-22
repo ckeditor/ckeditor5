@@ -78,9 +78,9 @@ export default class TablePropertiesEditing extends Plugin {
 
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion, {
-			color: defaultTableProperties.color,
-			style: defaultTableProperties.style,
-			width: defaultTableProperties.width
+			color: defaultTableProperties.borderColor,
+			style: defaultTableProperties.borderStyle,
+			width: defaultTableProperties.borderWidth
 		} );
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor, defaultTableProperties.borderColor ) );
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, defaultTableProperties.borderStyle ) );
@@ -178,6 +178,11 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 	conversion.for( 'upcast' )
 		// Support for backwards compatibility and pasting from other sources.
 		.attributeToAttribute( {
+			view: {
+				attributes: {
+					align: ALIGN_VALUES_REG_EXP
+				}
+			},
 			model: {
 				name: 'table',
 				key: 'alignment',
@@ -185,11 +190,6 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 					const align = viewElement.getAttribute( 'align' );
 
 					return align === defaultValue ? null : align;
-				}
-			},
-			view: {
-				attributes: {
-					align: ALIGN_VALUES_REG_EXP
 				}
 			}
 		} );

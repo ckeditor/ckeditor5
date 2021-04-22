@@ -71,9 +71,6 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
  * @param {Object} config
  * @param {Object} [options={}]
  * @param {Boolean} [options.includeAlignmentProperty=false] Whether the "alignment" property should be added.
- * @param {Boolean} [options.includeHorizontalAlignmentProperty=false] Whether the "horizontalAlignment" property should be added.
- * @param {Boolean} [options.includeVerticalAlignmentProperty=false] Whether the "verticalAlignment" property should be added.
- * @param {Boolean} [options.includePaddingProperty=false] Whether the "padding" property should be added.
  * @returns {Object}
  */
 export function getNormalizedDefaultProperties( config, options = {} ) {
@@ -88,18 +85,6 @@ export function getNormalizedDefaultProperties( config, options = {} ) {
 
 	if ( options.includeAlignmentProperty && !normalizedConfig.alignment ) {
 		normalizedConfig.alignment = 'center';
-	}
-
-	if ( options.includeHorizontalAlignmentProperty && !normalizedConfig.horizontalAlignment ) {
-		normalizedConfig.horizontalAlignment = 'center';
-	}
-
-	if ( options.includeVerticalAlignmentProperty && !normalizedConfig.verticalAlignment ) {
-		normalizedConfig.verticalAlignment = 'middle';
-	}
-
-	if ( options.includePaddingProperty && !normalizedConfig.padding ) {
-		normalizedConfig.padding = '';
 	}
 
 	return normalizedConfig;
