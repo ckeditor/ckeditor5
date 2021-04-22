@@ -206,6 +206,6 @@ function enableProperty( schema, conversion, options ) {
 		allowAttributes: [ modelAttribute ]
 	} );
 
-	upcastStyleToAttribute( conversion, { viewElementName: 'td', modelElement: 'tableCell', ...options } );
+	upcastStyleToAttribute( conversion, { viewElementName: /^(td|th)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
 }

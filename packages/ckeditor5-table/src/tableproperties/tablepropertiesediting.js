@@ -208,7 +208,7 @@ function enableProperty( schema, conversion, options ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, { viewElementName: 'table', modelElement: 'table', ...options } );
+	upcastStyleToAttribute( conversion, { viewElementName: 'table', ...options } );
 	downcastTableAttribute( conversion, options );
 }
 
@@ -225,7 +225,6 @@ function enableTableToFigureProperty( schema, conversion, options ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastStyleToAttribute( conversion, { viewElementName: 'table', modelElement: 'table', ...options } );
-	upcastStyleToAttribute( conversion, { viewElementName: 'figure', modelElement: 'table', ...options } );
+	upcastStyleToAttribute( conversion, { viewElementName: /^(table|figure)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }

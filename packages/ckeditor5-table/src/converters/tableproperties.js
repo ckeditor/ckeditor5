@@ -19,32 +19,29 @@
  * @param {Boolean} [options.reduceBoxSides=false]
  */
 export function upcastStyleToAttribute( conversion, options ) {
-	const { viewElementName, modelAttribute, styleName, defaultValue } = options;
+	const { viewElementName, defaultValue, modelAttribute, styleName, reduceBoxSides = false } = options;
 
-	// TODO (pomek): Is it required change?
-	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
-		if ( !data.modelRange ) {
-			return;
+	conversion.for( 'upcast' ).attributeToAttribute( {
+		view: {
+			name: viewElementName,
+			styles: {
+				[ styleName ]: /[\s\S]+/
+			}
+		},
+		model: {
+			key: modelAttribute,
+			value: viewElement => {
+				const normalized = viewElement.getNormalizedStyle( styleName );
+				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
+
+				if ( defaultValue === value ) {
+					return;
+				}
+
+				return value;
+			}
 		}
-
-		const matcherPattern = {
-			styles: [ styleName ]
-		};
-
-		// Try to consume appropriate values.
-		if ( !conversionApi.consumable.test( data.viewItem, matcherPattern ) ) {
-			return;
-		}
-
-		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
-		const value = data.viewItem.getNormalizedStyle( styleName );
-
-		conversionApi.consumable.consume( data.viewItem, matcherPattern );
-
-		if ( value !== defaultValue ) {
-			conversionApi.writer.setAttribute( modelAttribute, value, modelElement );
-		}
-	}, { priority: 'lowest' } ) );
+	} );
 }
 
 /**
