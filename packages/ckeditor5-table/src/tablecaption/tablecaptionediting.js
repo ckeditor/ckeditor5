@@ -10,7 +10,10 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
+
 import injectTableCaptionPostFixer from '../converters/table-caption-post-fixer';
+import ToggleTableCaptionCommand from './toggletablecaptioncommand';
+import { isTable, matchTableCaptionViewElement } from './utils';
 
 /**
  * The table caption editing plugin.
@@ -46,6 +49,8 @@ export default class TableCaptionEditing extends Plugin {
 			} );
 		}
 
+		editor.commands.add( 'toggleTableCaption', new ToggleTableCaptionCommand( this.editor ) );
+
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: matchTableCaptionViewElement,
@@ -78,7 +83,8 @@ export default class TableCaptionEditing extends Plugin {
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter table caption' )
+					text: t( 'Enter table caption' ),
+					keepOnFocus: true
 				} );
 
 				return toWidgetEditable( figcaptionElement, writer );
@@ -89,35 +95,3 @@ export default class TableCaptionEditing extends Plugin {
 	}
 }
 
-// {@link module:engine/view/matcher~Matcher} pattern. Checks if a given element is a caption.
-//
-// There are two possible forms of the valid caption:
-//  - A `<figcaption>` element inside a `<figure class="table">` element.
-//  - A `<caption>` inside a <table>.
-//
-// @private
-// @param {module:engine/view/element~Element} element
-// @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
-// cannot be matched.
-function matchTableCaptionViewElement( element ) {
-	const parent = element.parent;
-
-	if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'table' ) ) {
-		return { name: true };
-	}
-
-	if ( element.name == 'caption' && parent && parent.name == 'table' ) {
-		return { name: true };
-	}
-
-	return null;
-}
-
-// Checks if the provided model element is a `table`.
-//
-// @private
-// @param {module:engine/model/element~Element} modelElement
-// @returns {Boolean}
-function isTable( modelElement ) {
-	return !!modelElement && modelElement.is( 'element', 'table' );
-}

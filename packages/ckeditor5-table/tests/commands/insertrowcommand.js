@@ -309,6 +309,27 @@ describe( 'InsertRowCommand', () => {
 				] ) );
 			} );
 		} );
+
+		it( 'should be false when non-cell elements are in the selection', () => {
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block'
+			} );
+			editor.conversion.elementToElement( {
+				model: 'foo',
+				view: 'foo'
+			} );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell></tableCell>' +
+					'</tableRow>' +
+					'<foo>bar[]</foo>' +
+				'</table>'
+			);
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'order=above', () => {
@@ -470,6 +491,27 @@ describe( 'InsertRowCommand', () => {
 					[ '10', '11', '12' ]
 				] ) );
 			} );
+		} );
+
+		it( 'should be false when non-cell elements are in the selection', () => {
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block'
+			} );
+			editor.conversion.elementToElement( {
+				model: 'foo',
+				view: 'foo'
+			} );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell></tableCell>' +
+					'</tableRow>' +
+					'<foo>bar[]</foo>' +
+				'</table>'
+			);
+			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 } );

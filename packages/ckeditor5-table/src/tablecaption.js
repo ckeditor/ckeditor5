@@ -9,6 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import TableCaptionEditing from './tablecaption/tablecaptionediting';
+import TableCaptionUI from './tablecaption/tablecaptionui';
+
+import '../theme/tablecaption.css';
 
 /**
  * The table caption plugin.
@@ -27,6 +30,6 @@ export default class TableCaption extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableCaptionEditing ];
+		return [ TableCaptionEditing, TableCaptionUI ];
 	}
 }

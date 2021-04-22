@@ -31,6 +31,25 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 	By default, table styling tools are not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
+### Table caption
+
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions:
+
+```html
+<figure class="table">
+	<table>
+		<tr>
+			<td>...</td>
+		</tr>
+	</table>
+	<figcaption>A caption goes here...</figcaption>
+</figure>
+```
+
+<info-box hint>
+	By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
+</info-box>
+
 ## Table selection
 
 The {@link module:table/tableselection~TableSelection} plugin introduces support for the custom selection system for tables that lets you:
@@ -116,6 +135,39 @@ ClassicEditor
 <info-box info>
 	Learn more about [configuring color palettes](#configuring-styling-tools) in the table and table cell property pop–ups.
 </info-box>
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+### Table caption
+
+To enable table caption feature in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+
+```
+npm install --save @ckeditor/ckeditor5-table
+```
+
+Then add the `Table`, `TableToolbar`, and **`TableCaption`** plugins to your plugin list and configure the table toolbar:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, TableCaption, Bold, ... ],
+		toolbar: [ 'insertTable', ... ],
+		table: {
+			contentToolbar: [
+				'toggleTableCaption'
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
