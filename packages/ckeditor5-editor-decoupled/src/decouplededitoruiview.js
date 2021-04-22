@@ -26,7 +26,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
-	 * @param {Object} [options={}] Configuration options fo the view instance.
+	 * @param {Object} [options={}] Configuration options for the view instance.
 	 * @param {HTMLElement} [options.editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
 	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
