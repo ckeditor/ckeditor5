@@ -1598,7 +1598,7 @@ describe( 'TableUtils', () => {
 				expect( createdBatches.size ).to.equal( 1 );
 			} );
 
-			it( 'should remove rows in a table with a non-row element', () => {
+			it( 'should throw the error when provided options point to a non-existent rows', () => {
 				setData( model,
 					'<table>' +
 						'<tableRow>' +
