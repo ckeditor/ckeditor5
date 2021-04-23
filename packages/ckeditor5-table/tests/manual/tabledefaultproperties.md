@@ -1,11 +1,11 @@
 ### Table Default Properties
 
-* CSS stylesheet defined on the page is also displayed.
+* CSS stylesheet defined on the page is also displayed above the editor.
 * Default values should not be applied in the model.
-* Color pickers (for border-color and background-color) should not have the "Remove color" button. It should be replaced with the "Restore default" option.
+* Color pickers (for `border-color` and `background-color`) should not have the `Remove color` button. It should be replaced with the `Restore default` option.
 * The editor was initialized with the following configuration:
     ```js
-     defaultProperties: {
+     const defaultProperties = {
         borderStyle: 'dashed',
         borderColor: 'hsl(0, 0%, 60%)',
         borderWidth: '3px',
@@ -16,7 +16,7 @@
     }
     ```
 * Calling `editor.getData()` on the initial data should return the data without any attribute (even if the editor's UI shows them).
-* Non-default values should be applied. Use the snippet for testing:
+* Non-default values should be upcasted (set on the model element). Use the snippet for testing:
     ```js
     editor.setData(
         '<table style="border:1px solid red">' +

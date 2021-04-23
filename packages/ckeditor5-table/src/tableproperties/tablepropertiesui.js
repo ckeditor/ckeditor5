@@ -86,9 +86,8 @@ export default class TablePropertiesUI extends Plugin {
 		 * The default table properties.
 		 *
 		 * @protected
-		 * @member {Object}
+		 * @member {module:table/tableproperties~TablePropertiesOptions}
 		 */
-		// TODO (pomek): Update the member type.
 		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
 			includeAlignmentProperty: true
 		} );
