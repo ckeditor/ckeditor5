@@ -155,7 +155,7 @@ export default class DowncastDispatcher {
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type === 'reconvert' ) {
-				this.reconvertElement( entry.element, writer );
+				this.reconvertElement( entry.range, writer, entry );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -269,53 +269,82 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/element~Element} element The element to be reconverted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	reconvertElement( element, writer ) {
-		const elementRange = Range._createOn( element );
+	reconvertElement( range, writer, data ) {
+		const mapper = this.conversionApi.mapper;
+
+		console.log( 'reconverting range:', range.start.path + ' - ' + range.end.path ); // eslint-disable-line
 
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		this.conversionApi.consumable = this._createInsertConsumable( elementRange );
+		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		const mapper = this.conversionApi.mapper;
-		const currentView = mapper.toViewElement( element );
+		const elements = Array.from( range.getWalker( { shallow: true } ) ).map( ( { item } ) => item );
+		const currentViewElements = new Set();
 
-		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-		writer.remove( currentView );
+		for ( const element of elements ) {
+			let currentView = mapper.toViewElement( element );
+
+			do {
+				const parentView = currentView.parent;
+
+				currentViewElements.add( currentView );
+
+				// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
+				writer.remove( currentView );
+
+				// But also go up the view tree and remove all elements that are mapped to the same model element.
+				currentView = parentView;
+			} while ( mapper.toModelElement( currentView ) === element );
+		}
 
 		// Convert the element - without converting children.
-		this._convertInsertWithAttributes( {
-			item: element,
-			range: elementRange
-		} );
+		for ( const element of elements ) {
+			this._convertInsertWithAttributes( {
+				...data, // Custom data from reconversion trigger.
+				item: element,
+				range: Range._createOn( element )
+			} );
+		}
 
-		const convertedViewElement = mapper.toViewElement( element );
+		for ( const element of elements ) {
+			const convertedViewElement = mapper.toViewElement( element );
 
-		// Iterate over children of reconverted element in order to...
-		for ( const value of Range._createIn( element ) ) {
-			const { item } = value;
+			// Conversion could already reuse old view element.
+			if ( currentViewElements.has( convertedViewElement ) ) {
+				currentViewElements.delete( convertedViewElement );
 
-			const view = elementOrTextProxyToView( item, mapper );
-
-			// ...either bring back previously converted view...
-			if ( view ) {
-				// Do not move views that are already in converted element - those might be created by the main element converter in case
-				// when main element converts also its direct children.
-				if ( view.root !== convertedViewElement.root ) {
-					writer.move(
-						writer.createRangeOn( view ),
-						mapper.toViewPosition( Position._createBefore( item ) )
-					);
-				}
+				continue;
 			}
-			// ... or by converting newly inserted elements.
-			else {
-				this._convertInsertWithAttributes( walkerValueToEventData( value ) );
+
+			// Iterate over children of reconverted element in order to...
+			for ( const value of Range._createIn( element ) ) {
+				const { item } = value;
+
+				const view = elementOrTextProxyToView( item, mapper );
+
+				// ...either bring back previously converted view...
+				if ( view ) {
+					// Do not move views that are already in converted element - those might be created by the main element converter
+					// in case when main element converts also its direct children.
+					if ( view.root !== convertedViewElement.root ) {
+						writer.move(
+							writer.createRangeOn( view ),
+							mapper.toViewPosition( Position._createBefore( item ) )
+						);
+					}
+				}
+				// ... or by converting newly inserted elements.
+				else {
+					this._convertInsertWithAttributes( walkerValueToEventData( value ) );
+				}
 			}
 		}
 
 		// After reconversion is done we can unbind the old view.
-		mapper.unbindViewElement( currentView );
+		for ( const currentView of currentViewElements ) {
+			mapper.unbindViewElement( currentView );
+		}
 
 		this._clearConversionApi();
 	}
@@ -623,6 +652,8 @@ export default class DowncastDispatcher {
 	 * @private
 	 */
 	_mapChangesWithAutomaticReconversion( differ ) {
+		const mapper = this.conversionApi.mapper;
+
 		const itemsToReconvert = new Set();
 		const updated = [];
 
@@ -649,15 +680,18 @@ export default class DowncastDispatcher {
 				continue;
 			}
 
-			let eventName;
+			let removedElement = null;
 
-			if ( entry.type === 'attribute' ) {
-				eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
-			} else {
-				eventName = `${ entry.type }:${ entry.name }`;
+			if ( entry.type === 'remove' ) {
+				// Try to find a model element by mapping to view and back.
+				// TODO maybe .getTrimmed() to skip UI and AttributeElement?
+				removedElement = mapper.toModelElement( mapper.toViewPosition( position, { isPhantom: true } ).nodeAfter );
 			}
 
-			if ( this._isReconvertTriggerEvent( eventName, element.name ) ) {
+			const reconvertData = this._isReconvertTrigger( entry, element, removedElement );
+
+			if ( reconvertData ) {
+				// TODO Check if ranges not intersect and join overlapping ones
 				if ( itemsToReconvert.has( element ) ) {
 					// Element is already reconverted, so skip this change.
 					continue;
@@ -665,8 +699,9 @@ export default class DowncastDispatcher {
 
 				itemsToReconvert.add( element );
 
+				// TODO element is not needed here
 				// Add special "reconvert" change.
-				updated.push( { type: 'reconvert', element } );
+				updated.push( { type: 'reconvert', element, ...reconvertData } );
 			} else {
 				updated.push( entry );
 			}
@@ -682,12 +717,72 @@ export default class DowncastDispatcher {
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
 	 * @private
-	 * @param {String} eventName The event name to check.
-	 * @param {String} elementName The element name to check.
+	 * @param {module:engine/model/differ~DiffItem} diffItem The differ item.
+	 * @param {module:engine/model/element~Element} element The element to check.
 	 * @returns {Boolean}
 	 */
-	_isReconvertTriggerEvent( eventName, elementName ) {
-		return this._reconversionEventsMapping.get( eventName ) === elementName;
+	// TODO rename - it returns reconversion data
+	_isReconvertTrigger( diffItem, element, removedElement ) {
+		let eventName;
+
+		if ( diffItem.type === 'attribute' ) {
+			eventName = `attribute:${ diffItem.attributeKey }:${ element.name }`;
+		} else {
+			eventName = `${ diffItem.type }:${ diffItem.name }`;
+		}
+
+		if ( this._reconversionEventsMapping.get( eventName ) === element.name ) {
+			return { range: Range._createOn( element ), element };
+		}
+
+		// TODO all below should be registered from list editing plugin.
+		// TODO mark for reconversion - API dla list editing
+
+		const listItemAttributes = [ 'listIndent', 'listType', 'listItem' ];
+
+		const isChangedListItem = diffItem.type === 'attribute' && listItemAttributes.includes( diffItem.attributeKey );
+		const isRemovedListItem = !!removedElement && removedElement.hasAttribute( 'listItem' );
+
+		// Find sibling list item for removed list item.
+		if ( isRemovedListItem ) {
+			const nodeBefore = diffItem.position.nodeBefore;
+			const nodeAfter = diffItem.position.nodeAfter;
+
+			if ( nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
+				element = nodeBefore;
+			} else if ( nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
+				element = nodeAfter;
+			}
+		}
+
+		if ( isChangedListItem || isRemovedListItem ) {
+			let startElement = element;
+			let endElement = element;
+
+			let node;
+
+			while (
+				( node = startElement.previousSibling ) &&
+				node.is( 'element' ) && node.hasAttribute( 'listItem' )
+			) {
+				startElement = node;
+			}
+
+			while (
+				( node = endElement.nextSibling ) &&
+				node.is( 'element' ) && node.hasAttribute( 'listItem' )
+			) {
+				endElement = node;
+			}
+
+			const range = new Range( Position._createBefore( startElement ), Position._createAfter( endElement ) );
+
+			return { range, element };
+		}
+
+		// TODO insert anything without list attributes between the list items
+
+		return null;
 	}
 
 	/**
