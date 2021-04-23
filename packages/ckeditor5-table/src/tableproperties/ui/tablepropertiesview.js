@@ -58,7 +58,7 @@ export default class TablePropertiesView extends View {
 	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
 	 * color palette used by the
 	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
-	 * @param {module:table/tableproperties~TablePropertiesOptions} [options.defaultTableProperties={}] The default table properties.
+	 * @param {module:table/tableproperties~TablePropertiesOptions} options.defaultTableProperties The default table properties.
 	 */
 	constructor( locale, options ) {
 		super( locale );
