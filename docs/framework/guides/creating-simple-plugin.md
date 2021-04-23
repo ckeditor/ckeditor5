@@ -297,4 +297,4 @@ If you would like to read more tutorials, check out the following one:
 
 If you want to read more about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
 
-If you want your plugin to be easily integrated and used by other developers, try to define a metadata file for the package that contains it, as described in the {@link framework/guides/contributing/plugin-metadata plugin metadata} guide.
+If you want your plugin to be easily integrated and used by other developers, try to define a metadata file for the package that contains it, as described in the {@link framework/guides/contributing/package-metadata package metadata} guide.

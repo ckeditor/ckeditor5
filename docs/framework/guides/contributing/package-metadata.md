@@ -3,13 +3,13 @@ category: framework-contributing
 order: 40
 ---
 
-# Plugin metadata
+# Package metadata
 
-The plugin metadata is located in a `ckeditor5-metadata.json` file in the package root directory. The purpose of this file is to simplify the integration and usage of plugins in CKEditor 5, because this file contains the basic information about plugins that are exported by the package. Only the main ones that put the given functionality together are described in `ckeditor5-metadata.json`. For example, the [metadata file](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/ckeditor5-metadata.json) in the `ckeditor5-mention` package does not contain the `MentionEditing` and `MentionUI` plugins, but instead it only contains the metadata for the main `Mention` plugin, which is a "glue plugin", that loads the editing and UI features.
+The package metadata should be located in the `ckeditor5-metadata.json` file in the package root directory. The purpose of this file is to simplify the integration and usage of plugins in CKEditor 5, because this file contains the basic information about plugins that are exported by the package. Only the main ones that put the given functionality together should be described in `ckeditor5-metadata.json`. For example, the [metadata file](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/ckeditor5-metadata.json) in the `ckeditor5-mention` package does not contain the `MentionEditing` and `MentionUI` plugins, but instead it only contains the metadata for the main `Mention` plugin, which is a "glue plugin", that loads the editing and UI features.
 
 ## Data format for plugin metadata
 
-The `ckeditor5-metadata.json` file is a JavaScript object that holds a `plugins` array. Each element of this array is an object containing information about a different plugin  delivered by the package. Below is a list of all properties that can be used to define the metadata for a plugin:
+The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` array. Each element of this array should be an object containing information about a different plugin delivered by the package. Below is a list of all matadata properties that can be used to describe the plugin:
 
 * `name` &ndash; A human-readable name of the plugin.
 * `description` &ndash; A human-readable short description of the plugin.
