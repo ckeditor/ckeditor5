@@ -15,17 +15,17 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 * `description` &ndash; A human-readable short description of the plugin.
 * `docs` &ndash; An absolute or relative URL for the plugin's documentation. If this URL is relative, it leads to the CKEditor 5 documentation in [https://ckeditor.com/docs/ckeditor5/latest/](https://ckeditor.com/docs/ckeditor5/latest/).
 * `path` &ndash; A path to the file, relative to the metadata file that exports the plugin.
-* `className` &ndash; The name of the class used to create the plugin.
-* `requires` &ndash; An array of the plugin's soft requirements and other non-explicit requirements.
-* `registeredToolbars` &ndash; An array of all toolbar names registered by the plugin. These names need to contain the full configuration path (e.g. `table.contentToolbar` and `table.tableToolbar` for `Table` plugin).
-* `uiComponents` &ndash; An array of objects, that describe UI components exported by the plugin. Each object in this array may contain:
-	* `name` &ndash; A name of the component the plugin exports.
+* `className` &ndash; The name of the class used to create the plugin. This class should be exported from the file using the `export default` syntax.
+* `requires` &ndash; An array of the plugin's soft requirements and other non-explicit requirements. It should contain class names of plugins that should be included if this plugin is added.
+* `registeredToolbars` &ndash; An array of all toolbar names registered by the plugin. These names need to represent the configuration path (e.g. `table.contentToolbar` for `editorConfig.table.contentToolbar` and `table.tableToolbar` for the `editorConfig.table.tableToolbar`, which are registered by the `Table` plugin).
+* `uiComponents` &ndash; An array of objects, that describes UI components exported by the plugin. Each object in this array may contain:
+	* `name` &ndash; A name of the component the plugin exports. It should match the actual UI name registered by the plugin.
 	* `type` &ndash; Component type: `Button`, `SplitButton` or `Dropdown`.
 	* `iconPath` &ndash; A path to the SVG icon for `Button` or `SplitButton` components.
 	* `label` &ndash; Text content for `Dropdown` components.
-	* `toolbars` &ndash; An array of toolbar names, a given UI component can be added to. Some features may be added to multiple toolbars.
-* `htmlOutput` &ndash; An array of objects, that define all possible HTML elements, which can be created by a given plugin. The main property in this object is `elements`. Other properties (e.g. `classes`, `styles`, `attributes`) only apply to items defined in the `elements` property within a given object. Wildcard character `*` is used to mark any value. Full list of all these properties includes:
-	* `elements` &ndash; HTML elements (a single one or an array of these) that are created by the plugin. The pseudo-element `$block` indicates that a given plugin applies classes, styles or attributes (defined in appropriate properties) for all block elements.
+	* `toolbars` &ndash; An array of toolbar names, a given UI component can be added to. Some UI components may be added to multiple toolbars.
+* `htmlOutput` &ndash; An array of objects, that defines all possible HTML elements, which can be created by a given plugin. The main property in this object is `elements`. Other properties (e.g. `classes`, `styles`, `attributes`) only apply to items defined in the `elements` property within a given object. Wildcard character `*` is used to mark any value. Full list of all these properties includes:
+	* `elements` &ndash; HTML elements (a single one or an array of these) that are created or altered by the plugin. The pseudo-element `$block` indicates that a given plugin applies classes, styles or attributes (defined in appropriate properties) for all block elements.
 	* `classes` &ndash; CSS class names (a single one or an array of these) that may be applied to the HTML elements defined in the `elements` property.
 	* `styles` &ndash; Inline CSS styles (a single one or an array of these) that may be applied to the HTML elements defined in the `elements` property.
 	* `attributes` &ndash; HTML attributes (a single one or an array of these) other than `class` and `styles` (covered separately), that might be applied to the HTML elements defined in the `elements` property.
