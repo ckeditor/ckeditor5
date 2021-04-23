@@ -5,15 +5,19 @@ order: 40
 
 # Package metadata
 
-The package metadata should be located in the `ckeditor5-metadata.json` file in the package root directory. The purpose of this file is to simplify the integration and usage of plugins in CKEditor 5, because this file contains the basic information about plugins that are exported by the package. Only the main ones that put the given functionality together should be described in `ckeditor5-metadata.json`. For example, the [metadata file](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/ckeditor5-metadata.json) in the `ckeditor5-mention` package does not contain the `MentionEditing` and `MentionUI` plugins, but instead it only contains the metadata for the main `Mention` plugin, which is a "glue plugin", that loads the editing and UI features.
+The package metadata is a set of CKEditor 5-related data describing plugins that the package exposes. It allows an automated detection of plugins and building them by external builder - e.g by the [CKEditor 5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/)) and building the [Feature Overview page](TODO) presenting all CKEditor 5 plugins. This data should be saved in the special `ckeditor5-metadata.json` file in the root of the package published on NPM.
+
+<info-box>
+	Only plugins that provide major functionalities should be described in the metadata file. For example, [the metadata file for the `@ckeditor/ckeditor5-mention` package](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/ckeditor5-metadata.json) exposes only the `Mention` plugin, which is a "glue plugin", that loads both, the editing and UI parts of the Mention feature. This package does not expose `MentionEditing` and `MentionUI` plugins that cannot be used alone.
+</info-box>
 
 ## Data format for plugin metadata
 
-The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` array. Each element of this array should be an object containing information about a different plugin delivered by the package. Below is a list of all matadata properties that can be used to describe the plugin:
+The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` array. Each element of this array should be an object containing information about a different plugin delivered by the package. Below is a list of all matadata properties that can be used to describe a plugin:
 
 * `name` &ndash; A human-readable name of the plugin.
 * `description` &ndash; A human-readable short description of the plugin.
-* `docs` &ndash; An absolute or relative URL for the plugin's documentation. If this URL is relative, it leads to the CKEditor 5 documentation in [https://ckeditor.com/docs/ckeditor5/latest/](https://ckeditor.com/docs/ckeditor5/latest/).
+* `docs` &ndash; An absolute or relative URL to the plugin's documentation. If this URL is relative, it leads to the CKEditor 5 documentation in [https://ckeditor.com/docs/ckeditor5/latest/](https://ckeditor.com/docs/ckeditor5/latest/).
 * `path` &ndash; A path to the file, relative to the metadata file that exports the plugin.
 * `className` &ndash; The name of the class used to create the plugin. This class should be exported from the file using the `export default` syntax.
 * `requires` &ndash; An array of the plugin's soft requirements and other non-explicit requirements. It should contain class names of plugins that should be included if this plugin is added.
@@ -21,7 +25,7 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 * `uiComponents` &ndash; An array of objects, that describes UI components exported by the plugin. Each object in this array may contain:
 	* `name` &ndash; A name of the component the plugin exports. It should match the actual UI name registered by the plugin.
 	* `type` &ndash; Component type: `Button`, `SplitButton` or `Dropdown`.
-	* `iconPath` &ndash; A path to the SVG icon for `Button` or `SplitButton` components.
+	* `iconPath` &ndash; A path to the SVG icon for `Button` or `SplitButton`. The path can be either relative to the package or absolute - linking to a resource from another package.
 	* `label` &ndash; Text content for `Dropdown` components.
 	* `toolbars` &ndash; An array of toolbar names, a given UI component can be added to. Some UI components may be added to multiple toolbars.
 * `htmlOutput` &ndash; An array of objects, that defines all possible HTML elements, which can be created by a given plugin. The main property in this object is `elements`. Other properties (e.g. `classes`, `styles`, `attributes`) only apply to items defined in the `elements` property within a given object. Wildcard character `*` is used to mark any value. Full list of all these properties includes:
@@ -32,4 +36,28 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 	* `implements` &ndash; A name of an element or a pseudo-element which indicates that HTML elements defined in the `elements` property may contain classes, styles or attributes that are created by other plugins. For example, `implements` equal to `$block` means, that HTML elements may contain classes, styles or attributes that are defined by another plugin, which have `elements` equal to `$block`.
 	* `_comment` &ndash; A human-readable description to explain more complicated cases, for example: the conditions when a given element, class or style can be created.
 
-If you want to check out what the plugin metadata file looks like in other packages, visit the [CKEditor 5 packages on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages) and find the `ckeditor5-metadata.json` file in the package you are interested in.
+Below is an example showing how the `Bold` plugin can be documented using this format:
+
+```json
+{
+	"name": "Bold",
+	"className": "Bold",
+	"description": "Implements bold formatting support. It is a part of the basic text styles package.",
+	"docs": "features/basic-styles.html",
+	"path": "src/bold.js",
+	"uiComponents": [
+		{
+			"type": "Button",
+			"name": "bold",
+			"iconPath": "theme/icons/bold.svg"
+		}
+	],
+	"htmlOutput": [
+		{
+			"elements": "strong"
+		}
+	]
+}
+```
+
+If you want to check how plugins are documented in other packages, visit the [CKEditor 5 packages on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages) and find the `ckeditor5-metadata.json` file in a package you are interested in.
