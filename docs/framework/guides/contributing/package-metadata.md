@@ -5,7 +5,7 @@ order: 40
 
 # Package metadata
 
-The package metadata is a set of CKEditor 5-related data describing plugins that the package exposes. It allows an automated detection of plugins and building them by external builder - e.g by the [CKEditor 5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/)) and building the [Feature Overview page](TODO) presenting all CKEditor 5 plugins. This data should be saved in the special `ckeditor5-metadata.json` file in the root of the package published on NPM.
+The package metadata is a set of CKEditor 5-related data describing plugins that the package exposes. It allows an automated detection of plugins and building them by external builder - e.g by the [CKEditor 5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/) and building the "Feature Overview page" (to be defined) presenting all CKEditor 5 plugins. This data should be saved in the special `ckeditor5-metadata.json` file in the root of the package published on NPM.
 
 <info-box>
 	Only plugins that provide major functionalities should be described in the metadata file. For example, [the metadata file for the `@ckeditor/ckeditor5-mention` package](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/ckeditor5-metadata.json) exposes only the `Mention` plugin, which is a "glue plugin", that loads both, the editing and UI parts of the Mention feature. This package does not expose `MentionEditing` and `MentionUI` plugins that cannot be used alone.
