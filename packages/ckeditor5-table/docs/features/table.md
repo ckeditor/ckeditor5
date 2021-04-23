@@ -205,6 +205,58 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Default table styles
+
+The default tables feature allows configuring the default look of tables in the editor. The configuration object should be synchronized with the {@link builds/guides/integration/content-styles editor content styles}.
+
+The **“Table properties”** button in the toolbar will show the applied table properties to the table.
+
+The stylesheet for the editor displayed below are specified as follow:
+
+```css
+.ck-content .table {
+    float: right;
+    width: 500px;
+    height: 250px;
+}
+
+.ck-content .table table {
+    border-style: dashed;
+    border-color: 'hsl(90, 75%, 60%)';
+    border-width: 3px;
+}
+```
+
+The same values must be passed to the editor configuration as the {@link module:table/tableproperties~TablePropertiesOptions `table.tableProperties.defaultProperties`} object:
+
+```js
+const tableConfig = {
+    table: {
+        tableProperties: {
+            // The default styles for tables in the editor. They should be synchronized with the content styles.
+            defaultProperties: {
+	            borderStyle: 'dashed',
+	            borderColor: 'hsl(90, 75%, 60%)',
+	            borderWidth: '3px',
+	            alignment: 'right',
+	            width: '500px',
+	            height: '250px'
+            }
+        }
+    }
+};
+```
+
+The table element should be aligned to the `right` side by default. Its side should `500x250px`. Border style should be `dashed`, `3px` of its width, and color specified as `“Light green”`. The same touches new tables if they will be inserted into the editor
+
+{@snippet features/table-default-properties}
+
+Read more about {@link module:table/tableproperties~TablePropertiesOptions all supported styles} for the table default properties feature.
+
+<info-box>
+	The default table styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
+</info-box>
+
 ## Block vs inline content in table cells
 
 The table feature allows creating block content (like paragraphs, lists, headings, etc.) in table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), the cell content is considered "inline" and the paragraph is not rendered.
