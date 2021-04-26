@@ -33,7 +33,7 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 	* `classes` &ndash; CSS class names (a single one or an array of these) that may be applied to the HTML elements defined in the `elements` property.
 	* `styles` &ndash; Inline CSS styles (a single one or an array of these) that may be applied to the HTML elements defined in the `elements` property.
 	* `attributes` &ndash; HTML attributes (a single one or an array of these) other than `class` and `styles` (covered separately), that might be applied to the HTML elements defined in the `elements` property.
-	* `implements` &ndash; A name of an element or a pseudo-element which indicates that HTML elements defined in the `elements` property may contain classes, styles or attributes that are created by other plugins. For example, `implements` equal to `$block` means that HTML elements may contain classes, styles or attributes that are defined by another plugin, which have `elements` equal to `$block`.
+	* `implements` &ndash; A name of an element or a pseudo-element which indicates that HTML elements defined in the `elements` property may contain classes, styles or attributes that are created by other plugins. For example, `implements` equal to `$block` means that HTML elements may contain classes, styles or attributes that are defined by another plugin, which has `elements` equal to `$block`.
 	* `_comment` &ndash; A human-readable description to explain more complicated cases, for example: the conditions when a given element, class or style can be created.
 
 Below is an example showing how the `Bold` plugin can be documented using this format:
