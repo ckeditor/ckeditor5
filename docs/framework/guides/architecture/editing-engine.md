@@ -367,6 +367,10 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 * It does not have its counterpart &mdash; there is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
 * Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document's for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &mdash; i.e. if the DOM actually differs from the view at this stage).
 
+### More information
+
+A more in-depth introduction with examples could be found in the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
+
 <!--TODO: upcasting, downcasting, mapping nodes and positions, API.
 
 ## Architecture of a typical feature
