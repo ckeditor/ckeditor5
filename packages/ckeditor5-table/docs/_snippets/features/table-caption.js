@@ -8,7 +8,7 @@
 ClassicEditor
 	.create( document.querySelector( '#snippet-table-caption' ), {
 		extraPlugins: [
-			CKEditorPlugins.TableCaption
+			CKEditorPlugins.TableCaption, CKEditorPlugins.Superscript
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption' ]
