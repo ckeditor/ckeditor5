@@ -3435,6 +3435,27 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.innerHTML ).to.equal( '<span>2</span><strong>6</strong><span>5</span>1<span>3</span><strong>7</strong>4' );
 			} );
+
+			it( 'should correctly handle multiple changes when using fastDiff', () => {
+				let str = '';
+
+				for ( let i = 0; i < 100; i++ ) {
+					str += `${ i }<attribute:span>${ i }</attribute:span>`;
+				}
+
+				viewRoot._insertChild( 0, parse( str ) );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				viewRoot._removeChildren( 0, 1 );
+				viewRoot._removeChildren( 4, 1 );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal(
+					str.slice( 1 ).replaceAll( 'attribute:span', 'span' ).replace( '<span>2</span>', '' )
+				);
+			} );
 		} );
 
 		describe( 'optimal (minimal) rendering – minimal children changes', () => {
