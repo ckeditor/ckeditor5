@@ -11,7 +11,7 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 ### Basic table features
 
-The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
+The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, add caption, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
 
 {@snippet features/table}
 
@@ -33,18 +33,13 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 ### Table caption
 
-The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions:
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions.
 
-```html
-<figure class="table">
-	<table>
-		<tr>
-			<td>...</td>
-		</tr>
-	</table>
-	<figcaption>A caption goes here...</figcaption>
-</figure>
-```
+{@snippet features/table-caption}
+
+<info-box>
+	By default, table caption feature is not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
+</info-box>
 
 <info-box hint>
 	By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
@@ -421,6 +416,10 @@ The table plugins register the following UI components:
 			<td>{@link module:table/tableproperties~TableProperties}</td>
 		</tr>
 		<tr>
+			<td>The <code>'toggleTableCaption'</code> button</td>
+			<td>{@link module:table/tablecaption~TableCaption}</td>
+		</tr>
+		<tr>
 			<td>The <code>'tableCellProperties'</code> button</td>
 			<td>{@link module:table/tablecellproperties~TableCellProperties}</td>
 		</tr>
@@ -447,7 +446,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 		<tr>
 			<td><code>'insertTable'</code></td>
 			<td>{@link module:table/commands/inserttablecommand~InsertTableCommand}</td>
-			<td rowspan="15">{@link module:table/table~Table}</td>
+			<td rowspan="17">{@link module:table/table~Table}</td>
 		</tr>
 		<tr>
 			<td><code>'insertTableColumnLeft'</code></td>
@@ -512,6 +511,11 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 		<tr>
 			<td><code>'splitTableCellHorizontally'</code></td>
 			<td>{@link module:table/commands/splitcellcommand~SplitCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'toggleTableCaption'</code></td>
+			<td>{@link module:table/tablecaption/toggletablecaptioncommand~ToggleTableCaptionCommand}</td>
+			<td>{@link module:table/tablecaption~TableCaption}</td>
 		</tr>
 		<tr>
 			<td><code>'tableBorderColor'</code></td>
