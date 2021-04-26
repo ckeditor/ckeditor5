@@ -201,7 +201,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table cell borderColor to a passed value', () => {
@@ -209,7 +209,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table cell if no value is passed', () => {
@@ -227,7 +227,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table cell borderColor to a passed value', () => {
@@ -235,7 +235,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table cell if no value is passed', () => {
@@ -259,8 +259,8 @@ describe( 'table cell properties', () => {
 						command.execute( { value: '#f00' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
-							[ { contents: '00', style: 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' }, '01' ],
-							[ '10', { contents: '11', style: 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' } ]
+							[ { contents: '00', style: 'border-color:#f00;' }, '01' ],
+							[ '10', { contents: '11', style: 'border-color:#f00;' } ]
 						] ) );
 					} );
 

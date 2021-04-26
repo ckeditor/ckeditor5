@@ -76,13 +76,11 @@ export default class TableEditing extends Plugin {
 
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
+			allowChildren: '$block',
 			allowAttributes: [ 'colspan', 'rowspan' ],
 			isLimit: true,
 			isSelectable: true
 		} );
-
-		// Allow all $block content inside a table cell.
-		schema.extend( '$block', { allowIn: 'tableCell' } );
 
 		// Figure conversion.
 		conversion.for( 'upcast' ).add( upcastTableFigure() );

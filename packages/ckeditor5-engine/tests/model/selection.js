@@ -953,9 +953,9 @@ describe( 'Selection', () => {
 			model.schema.extend( '$block', { allowIn: 'blockquote' } );
 
 			model.schema.register( 'image', {
-				allowIn: [ '$root', '$block' ]
+				allowIn: [ '$root', '$block' ],
+				allowChildren: '$text'
 			} );
-			model.schema.extend( '$text', { allowIn: 'image' } );
 
 			// Special block which can contain another blocks.
 			model.schema.register( 'nestedBlock', { inheritAllFrom: '$block' } );

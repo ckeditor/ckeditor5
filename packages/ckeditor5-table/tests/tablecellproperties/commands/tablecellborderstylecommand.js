@@ -201,7 +201,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table cell borderStyle to a passed value', () => {
@@ -209,7 +209,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table cell if no value is passed', () => {
@@ -227,7 +227,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table cell borderStyle to a passed value', () => {
@@ -235,7 +235,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table cell if no value is passed', () => {
@@ -260,12 +260,12 @@ describe( 'table cell properties', () => {
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[
-								{ contents: '00', style: 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' },
+								{ contents: '00', style: 'border-style:solid;' },
 								'01'
 							],
 							[
 								'10',
-								{ contents: '11', style: 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' }
+								{ contents: '11', style: 'border-style:solid;' }
 							]
 						] ) );
 					} );
