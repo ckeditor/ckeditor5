@@ -108,6 +108,7 @@ DecoupledEditor.builtinPlugins = [
 	ListStyle,
 	MediaEmbed,
 	PageBreak,
+	Pagination,
 	Paragraph,
 	PasteFromOffice,
 	Table,
@@ -150,7 +151,10 @@ DecoupledEditor.defaultConfig = {
 			'|',
 			'undo',
 			'redo',
-			'pageBreak'
+			'pageBreak',
+			'previousPage',
+			'nextPage',
+			'pageNavigation', '|'
 		]
 	},
 	image: {
