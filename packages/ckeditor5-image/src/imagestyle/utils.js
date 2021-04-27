@@ -199,8 +199,7 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 				'inline', 'alignLeft', 'alignRight',
 				'alignCenter', 'alignBlockLeft', 'alignBlockRight',
 				'full', 'side'
-			],
-			groups: [ 'wrapText', 'breakText' ]
+			]
 		};
 	} else if ( isBlockPluginLoaded ) {
 		return {
@@ -229,6 +228,8 @@ function getDefaultDropdowns( loadedPlugins ) {
 			defaultItem: 'imageStyle:full',
 			items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
 		} ];
+	} else {
+		return [];
 	}
 }
 
@@ -259,9 +260,9 @@ function normalizeDefinition( definition ) {
 
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
-	// if ( definitionType === 'option' && typeof definition.icon === 'string' ) {
-	definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
-	// }
+	if ( typeof definition.icon === 'string' ) {
+		definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
+	}
 
 	return definition;
 }

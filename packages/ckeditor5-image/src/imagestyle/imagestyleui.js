@@ -87,7 +87,7 @@ export default class ImageStyleUI extends Plugin {
 		}
 
 		const definedDropdowns = translateStyles(
-			toolbarConfig.filter( isObject ).concat( utils.getDefaultDropdowns( plugins ) || [] ),
+			[ ...toolbarConfig.filter( isObject ), ...utils.getDefaultDropdowns( plugins ) ],
 			this.localizedDefaultStylesTitles
 		);
 
@@ -122,8 +122,8 @@ export default class ImageStyleUI extends Plugin {
 					return button;
 				} );
 
-			if ( !buttonViews.length || items.length !== buttonViews.length ) {
-				utils.warnInvalidStyle( { group: dropdownConfig } );
+			if ( items.length !== buttonViews.length ) {
+				utils.warnInvalidStyle( { dropdown: dropdownConfig } );
 			}
 
 			const dropdownView = createDropdown( locale, SplitButtonView );
@@ -132,7 +132,7 @@ export default class ImageStyleUI extends Plugin {
 			addToolbarToDropdown( dropdownView, buttonViews );
 
 			splitButtonView.set( {
-				label: `${ title }: ${ defaultButton.label }`,
+				label: getDropdownButtonTitle( title, defaultButton.label ),
 				class: null,
 				tooltip: true
 			} );
@@ -146,7 +146,7 @@ export default class ImageStyleUI extends Plugin {
 			splitButtonView.bind( 'label' ).toMany( buttonViews, 'isOn', ( ...areOn ) => {
 				const index = areOn.findIndex( identity );
 
-				return `${ title }: ` + ( ( index < 0 ) ? defaultButton.label : buttonViews[ index ].label );
+				return getDropdownButtonTitle( title, ( index < 0 ) ? defaultButton.label : buttonViews[ index ].label );
 			} );
 
 			splitButtonView.bind( 'isOn' ).toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.some( identity ) );
@@ -227,4 +227,8 @@ function translateStyles( styles, titles ) {
 // @returns {String}
 function getUIComponentName( name ) {
 	return `imageStyle:${ name }`;
+}
+
+function getDropdownButtonTitle( dropdownTitle, buttonTitle ) {
+	return ( dropdownTitle ? dropdownTitle + ': ' : '' ) + buttonTitle;
 }
