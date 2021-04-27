@@ -44,7 +44,7 @@ You can test this feature in the demo below by adding a table in the *"abandoned
 {@snippet features/table-nesting}
 
 <info-box>
-	If you would want to disallow nesting tables in your editor, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section to learn how to disable this functionality.
+    If you would like to block the possibility to nest tables in your editor, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section to learn how to disable this functionality.
 </info-box>
 
 ## Table selection
