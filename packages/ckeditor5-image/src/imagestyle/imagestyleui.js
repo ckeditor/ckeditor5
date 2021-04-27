@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 import ImageStyleEditing from './imagestyleediting';
 import utils from './utils';
-import { isObject } from 'lodash-es';
+import { isObject, identity } from 'lodash-es';
 
 import '../../theme/imagestyle.css';
 
@@ -87,7 +87,7 @@ export default class ImageStyleUI extends Plugin {
 		}
 
 		const definedDropdowns = translateStyles(
-			toolbarConfig.filter( isObject ).map( normalizeDropdownConfig ).concat( utils.getDefaultDropdowns( plugins ) || [] ),
+			toolbarConfig.filter( isObject ).concat( utils.getDefaultDropdowns( plugins ) || [] ),
 			this.localizedDefaultStylesTitles
 		);
 
@@ -106,19 +106,28 @@ export default class ImageStyleUI extends Plugin {
 	_createDropdown( dropdownConfig, definedStyles ) {
 		const factory = this.editor.ui.componentFactory;
 
-		factory.add( getUIComponentName( dropdownConfig.name ), locale => {
+		factory.add( dropdownConfig.name, locale => {
+			let defaultButton;
+
 			const { defaultItem, items, title, icon } = dropdownConfig;
 			const buttonViews = items
-				.filter( itemName => definedStyles.find( definedStyles => definedStyles.name === itemName ) )
-				.map( buttonName => factory.create( getUIComponentName( buttonName ) ) );
+				.filter( itemName => definedStyles.find( ( { name } ) => getUIComponentName( name ) === itemName ) )
+				.map( buttonName => {
+					const button = factory.create( buttonName );
 
-			if ( !buttonViews.length || dropdownConfig.items.length !== buttonViews.length ) {
+					if ( buttonName === defaultItem ) {
+						defaultButton = button;
+					}
+
+					return button;
+				} );
+
+			if ( !buttonViews.length || items.length !== buttonViews.length ) {
 				utils.warnInvalidStyle( { group: dropdownConfig } );
 			}
 
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
-			const defaultIcon = definedStyles.find( item => item.name === defaultItem ).icon;
 
 			addToolbarToDropdown( dropdownView, buttonViews );
 
@@ -130,32 +139,26 @@ export default class ImageStyleUI extends Plugin {
 			} );
 
 			splitButtonView.bind( 'icon' ).toMany( buttonViews, 'isOn', ( ...areOn ) => {
-				const index = areOn.findIndex( isOn => isOn );
+				const index = areOn.findIndex( identity );
 
-				if ( index < 0 ) {
-					return defaultIcon;
-				}
-
-				return buttonViews[ index ].icon;
+				return ( index < 0 ) ? defaultButton.icon : buttonViews[ index ].icon;
 			} );
 
-			splitButtonView.bind( 'isOn' ).toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.find( isOn => isOn ) );
+			splitButtonView.bind( 'isOn' ).toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.some( identity ) );
 
 			splitButtonView.bind( 'class' )
-				.toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.some( isOn => isOn ) ? 'ck-splitbutton_flatten' : null );
+				.toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.some( identity ) ? 'ck-splitbutton_flatten' : null );
 
 			splitButtonView.on( 'execute', () => {
-				const currentCommandName = buttonViews.some( ( { isOn } ) => isOn ) ? false : defaultItem;
-
-				if ( currentCommandName ) {
-					this._executeCommand( currentCommandName );
+				if ( !buttonViews.some( ( { isOn } ) => isOn ) ) {
+					defaultButton.fire( 'execute' );
 				} else {
 					dropdownView.isOpen = !dropdownView.isOpen;
 				}
 			} );
 
 			dropdownView.bind( 'isEnabled' )
-				.toMany( buttonViews, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
+				.toMany( buttonViews, 'isEnabled', ( ...areEnabled ) => areEnabled.some( identity ) );
 
 			return dropdownView;
 		} );
@@ -213,32 +216,10 @@ function translateStyles( styles, titles ) {
 	return styles;
 }
 
-// Returns the image style component name with the `imageStyle:` prefix.
+// Returns the image style component name with the "imageStyle:" prefix.
 //
 // @param {String} name
 // @returns {String}
 function getUIComponentName( name ) {
 	return `imageStyle:${ name }`;
-}
-
-// Returns the image style definition name without the `imageStyle:` prefix.
-//
-// @param {String} name
-// @returns {String}
-function getComponentDefinitionName( name ) {
-	return name.replace( 'imageStyle:', '' );
-}
-
-// TODO
-function normalizeDropdownConfig( config ) {
-	try {
-		return {
-			items: config.items.map( getComponentDefinitionName ),
-			name: getComponentDefinitionName( config.name ),
-			defaultItem: getComponentDefinitionName( config.defaultItem ),
-			title: config.title
-		};
-	} catch ( e ) {
-		// warning
-	}
 }

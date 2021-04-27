@@ -48,7 +48,7 @@ async function startEditors() {
 				'imageStyle:inline',
 				'imageStyle:wrapText',
 				{
-					name: 'custom', // or imageStyle:custom?
+					name: 'imageStyle:custom',
 					title: 'Custom title',
 					defaultItem: 'imageStyle:inline',
 					items: [ 'imageStyle:inline', 'imageStyle:alignLeft' ]
@@ -66,7 +66,7 @@ async function startEditors() {
 		toolbar: TOOLBAR_CONFIG,
 		image: {
 			styles: {
-				options: [ 'full', 'side' ],
+				options: [ 'inline', 'full', 'side' ],
 				groups: []
 			},
 			toolbar: [

@@ -219,15 +219,15 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 function getDefaultDropdowns( loadedPlugins ) {
 	if ( loadedPlugins.has( 'ImageBlockEditing' ) && loadedPlugins.has( 'ImageInlineEditing' ) ) {
 		return [ {
-			name: 'wrapText',
+			name: 'imageStyle:wrapText',
 			title: 'Wrap text',
-			defaultItem: 'alignLeft',
-			items: [ 'alignLeft', 'alignRight' ]
+			defaultItem: 'imageStyle:alignLeft',
+			items: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
 		}, {
-			name: 'breakText',
+			name: 'imageStyle:breakText',
 			title: 'Break text',
-			defaultItem: 'full',
-			items: [ 'alignBlockLeft', 'full', 'alignBlockRight' ]
+			defaultItem: 'imageStyle:full',
+			items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
 		} ];
 	}
 }

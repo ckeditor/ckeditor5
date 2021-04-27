@@ -84,5 +84,5 @@ export default class ImageToolbar extends Plugin {
 
 // TODO
 function normalizeDeclarativeConfig( config ) {
-	return config.map( item => isObject( item ) ? `imageStyle:${ item.name }` : item ); // or `imageStyle:declarative:${ item.name }` ?
+	return config.map( item => isObject( item ) ? item.name : item );
 }
