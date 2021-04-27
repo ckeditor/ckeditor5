@@ -349,7 +349,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		extraPlugins: [ DisallowNestingTables ],
 
-		// The rest of the config.
+		// The rest of the configuration.
 	} )
 	.then( ... )
 	.catch( ... );
