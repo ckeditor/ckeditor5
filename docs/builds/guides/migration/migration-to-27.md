@@ -1,16 +1,18 @@
 ---
 category: builds-migration
-menu-title: Migration to v27.0.0
+menu-title: Migration to v27.x
 order: 10
 ---
 
 # Migration to CKEditor 5 v27.0.0
 
+## Migration to CKEditor 5 v27.0.0
+
 For the entire list of changes introduced in version 27.0.0, see the [changelog for CKEditor 5 v27.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2700-2021-03-22).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v27.0.0.
 
-## Clipboard input pipeline integration
+### Clipboard input pipeline integration
 
 Starting from v27.0.0, the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin is no longer firing the `inputTransformation` events. The code of this feature was refactored and split into:
 
@@ -26,13 +28,13 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 
 You can read about the whole input pipeline in details in the {@link framework/guides/deep-dive/clipboard#input-pipeline Clipboard deep-dive guide}.
 
-## The `view.Document` event bubbling
+### The `view.Document` event bubbling
 
 CKEditor v27.0.0 introduces bubbling of the {@link module:engine/view/document~Document `view.Document`} events, similar to how bubbling works in the DOM. This allowed us to re-prioritize many listeners that previously had to rely on the `priority` property. However, it means that existing listeners that use priorities may now be executed at a wrong time (in the different order). These listeners should be reviewed in terms of when they should be executed (in what context/element/phase).
 
 Read more about bubbling events in the {@link framework/guides/deep-dive/event-system#view-events-bubbling Event system guide}.
 
-### The `delete` event
+#### The `delete` event
 
 Previously, the {@link module:engine/view/document~Document#event:delete `delete`} event was handled by different features on different priority levels to, for example, ensure the precedence of the list item over the block quote that is wrapping it. From v27.0.0 on, this precedence is handled by the events bubbling over the view document tree. Listeners registered for the view elements deeper in the view tree are now triggered before listeners for elements closer to the {@link module:engine/view/rooteditableelement~RootEditableElement root element}.
 
@@ -64,7 +66,7 @@ this.listenTo( view.document, 'delete', ( evt, data ) => {
 
 We recommend reviewing your integration if some of your listeners were attached to the `delete` event.
 
-### The `enter` event
+#### The `enter` event
 
 The case for the {@link module:engine/view/document~Document#event:enter `enter`} event is similar to the `delete` event.
 
@@ -91,8 +93,26 @@ this.listenTo( view.document, 'enter', ( evt, data ) => {
 
 We recommend reviewing your integration if some of your listeners were attached to the `enter` event.
 
-### The `arrowKey` event
+#### The `arrowKey` event
 
 This is a new event type that is introduced by the {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}. It listens to the `keydown` events at the `normal` priority and fires the {@link module:engine/view/document~Document#event:arrowKey `arrowKey`} events that bubble down the view document tree. This is similar behavior to the {@link module:enter/enterobserver~EnterObserver} and {@link module:typing/deleteobserver~DeleteObserver}.
 
 You should review your integration if some of your listeners were attached to the `keydown` event to handle arrow key presses.
+
+## Migration to CKEditor 5 v27.1.0
+
+For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v27.1.0](https://github.com/ckeditor/ckeditor5/blob/release/CHANGELOG.md#2710-2021-04-19).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v27.1.0.
+
+### Disallowing nesting tables
+
+Prior to version 27.1.0 inserting a table into another table was not allowed.
+
+If you wish to bring back this restriction, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section of the table feature guide.
+
+### Disallowing nesting block quotes
+
+Prior to version 27.1.0 inserting a block quote into another block quote was not allowed.
+
+If you wish to bring back this restriction, see the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section in the block quote feature guide.
