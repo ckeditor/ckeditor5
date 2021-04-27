@@ -39,7 +39,7 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 Starting from version 27.1.0 CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 
-Test this feature by adding a table in the *"abandoned"* section that was left blank at the bottom of the main table. To nest a table, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
+You can test this feature in the demo below by adding a table in the *"abandoned"* section that was left blank at the bottom of the main table. To nest a table, simply click in the selected cell and use the **"Insert table"** button in the toolbar to insert a new, nested table into an existing one.
 
 {@snippet features/table-nesting}
 
