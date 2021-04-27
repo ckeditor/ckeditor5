@@ -5,6 +5,9 @@
 
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import BallonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
@@ -31,7 +34,8 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+class ClassicEditor extends ClassicEditorBase {}
+class BalloonEditor extends BallonEditorBase {}
 
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
@@ -58,8 +62,15 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
 ];
+
+BalloonEditor.builtinPlugins = [AutoLink, Essentials, Link, Paragraph];
+BalloonEditor.defaultConfig = {
+	toolbar: {
+		items: [['|', 'link', 'redo', 'undo']],
+	},
+};
 
 // Editor configuration.
 ClassicEditor.defaultConfig = {
@@ -81,24 +92,22 @@ ClassicEditor.defaultConfig = {
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo'
-		]
+			'redo',
+		],
 	},
 	image: {
 		toolbar: [
 			'imageStyle:full',
 			'imageStyle:side',
 			'|',
-			'imageTextAlternative'
-		]
+			'imageTextAlternative',
+		],
 	},
 	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
+		contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+	language: 'en',
 };
+
+export default { ClassicEditor, BalloonEditor };
