@@ -343,5 +343,60 @@ describe( 'FontColorEditing', () => {
 				'<p>foo<span style="color:rgb(10,20,30);">bar</span>o</p>'
 			);
 		} );
+
+		// #8921
+		describe( 'nested elements that will be converted into the fontColor attribute', () => {
+			it( 'should use the most inner value while converting nested font elements', () => {
+				const data = '<p><font color="#00ffff"><font color="#ff0000">foo</font></font></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#ff0000;">foo</span></p>'
+				);
+			} );
+
+			it( 'should use the most inner value while converting a span with defined the color styles', () => {
+				const data = '<p><font color="#00ffff"><span style="color:#ff0000">foo</span></font></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#ff0000;">foo</span></p>'
+				);
+			} );
+
+			it( 'should use the most inner value while converting the font element inside a span', () => {
+				const data = '<p><span style="color:#ff0000"><font color="#00ffff">foo</font></span></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#00ffff">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#00ffff;">foo</span></p>'
+				);
+			} );
+
+			it( 'should use the most inner value while converting nested spans with the color styles', () => {
+				const data = '<p><span style="color:#00ffff"><span style="color:#ff0000">foo</span></span></p>';
+
+				editor.setData( data );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
+				);
+				expect( editor.getData() ).to.equal(
+					'<p><span style="color:#ff0000;">foo</span></p>'
+				);
+			} );
+		} );
 	} );
 } );
