@@ -52,7 +52,8 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const view = this.editor.editing.view;
+		const editor = this.editor;
+		const view = editor.editing.view;
 		const viewDocument = view.document;
 
 		/**
@@ -71,14 +72,18 @@ export default class Widget extends Plugin {
 
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			let selectedElement = viewSelection.getSelectedElement();
-			let lastMarked = null;
+			const modelSelection = editor.model.document.selection;
+			const selectedModelElement = modelSelection.getSelectedElement();
 
 			// By default, the selection is downcasted by the engine to surround the attribute element, even though its only
-			// child is an inline widget. This prevents creating a correct fake selection when this inline widget is selected.
-			// Normalize the selection in this case
+			// child is an inline widget. A similar thing also happens when a collapsed marker is rendered as a UI element
+			// next to an inline widget: the view selection contains both the widget and the marker.
+			//
+			// This prevents creating a correct fake selection when this inline widget is selected. Normalize the selection
+			// in these cases based on the model:
 			//
 			//		[<attributeElement><inlineWidget /></attributeElement>] -> <attributeElement>[<inlineWidget />]</attributeElement>
+			//		[<uiElement></uiElement><inlineWidget />] -> <uiElement></uiElement>[<inlineWidget />]
 			//
 			// Thanks to this:
 			//
@@ -86,20 +91,22 @@ export default class Widget extends Plugin {
 			// * any logic depending on (View)Selection#getSelectedElement() also works OK.
 			//
 			// See https://github.com/ckeditor/ckeditor5/issues/9524.
-			if ( selectedElement ) {
-				// Trim the range first because the selection could be on a couple of nested attributes enclosing the widget:
-				// [<attributeElementA><attributeElementB><inlineWidget /></attributeElementB></attributeElementA>]
-				selectedElement = viewWriter.createRangeOn( selectedElement ).getTrimmed().getContainedElement();
+			if ( selectedModelElement ) {
+				const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
 
-				if ( selectedElement && isWidget( selectedElement ) ) {
-					viewWriter.setSelection( viewWriter.createRangeOn( selectedElement ), {
+				if ( isWidget( selectedViewElement ) ) {
+					viewWriter.setSelection( viewWriter.createRangeOn( selectedViewElement ), {
 						fake: true,
-						label: getLabel( selectedElement )
+						label: getLabel( selectedViewElement )
 					} );
 				}
 			}
 
+			let lastMarked = null;
+
 			for ( const range of viewSelection.getRanges() ) {
+				// Note: There could be multiple selected widgets in a range but no fake selection.
+				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item;
 

@@ -269,6 +269,33 @@ describe( 'Widget', () => {
 		expect( viewDocument.selection.isFake ).to.be.true;
 	} );
 
+	it( 'should apply fake view selection when the model selection surrounds the inline widget and an UI element', () => {
+		setModelData( model, '<paragraph>[]<inline-widget></inline-widget></paragraph>' );
+
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
+			model: 'testMarker',
+			view: ( data, { writer } ) => writer.createUIElement( 'span', { class: 'ui' } )
+		} );
+
+		model.change( writer => {
+			writer.addMarker( 'testMarker', {
+				range: writer.createRange( writer.createPositionAt( model.document.getRoot().getChild( 0 ), 0 ) ),
+				usingOperation: true
+			} );
+
+			writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>' +
+				'<span class="ui"></span>' +
+				'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+			'</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
 	it( 'should not apply fake view selection when an inline widget and some other content is surrounded by an attribute element', () => {
 		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget><$text attr="foo">bar]</$text></paragraph>' );
 
