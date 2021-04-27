@@ -109,7 +109,7 @@ export default class ImageStyleUI extends Plugin {
 		factory.add( dropdownConfig.name, locale => {
 			let defaultButton;
 
-			const { defaultItem, items, title, icon } = dropdownConfig;
+			const { defaultItem, items, title } = dropdownConfig;
 			const buttonViews = items
 				.filter( itemName => definedStyles.find( ( { name } ) => getUIComponentName( name ) === itemName ) )
 				.map( buttonName => {
@@ -132,8 +132,7 @@ export default class ImageStyleUI extends Plugin {
 			addToolbarToDropdown( dropdownView, buttonViews );
 
 			splitButtonView.set( {
-				label: title,
-				icon,
+				label: `${ title }: ${ defaultButton.label }`,
 				class: null,
 				tooltip: true
 			} );
@@ -142,6 +141,12 @@ export default class ImageStyleUI extends Plugin {
 				const index = areOn.findIndex( identity );
 
 				return ( index < 0 ) ? defaultButton.icon : buttonViews[ index ].icon;
+			} );
+
+			splitButtonView.bind( 'label' ).toMany( buttonViews, 'isOn', ( ...areOn ) => {
+				const index = areOn.findIndex( identity );
+
+				return `${ title }: ` + ( ( index < 0 ) ? defaultButton.label : buttonViews[ index ].label );
 			} );
 
 			splitButtonView.bind( 'isOn' ).toMany( buttonViews, 'isOn', ( ...areOn ) => areOn.some( identity ) );
