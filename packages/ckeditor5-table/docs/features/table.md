@@ -247,7 +247,7 @@ const tableConfig = {
 };
 ```
 
-The table element should be aligned to the `right` side by default. Its side should `500x250px`. Border style should be `dashed`, `3px` of its width, and color specified as `“Light green”`. The same touches new tables if they will be inserted into the editor
+The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and color specified as `“Light green”`. The same will be applied for new tables if they will be inserted into the editor
 
 {@snippet features/table-default-properties}
 
