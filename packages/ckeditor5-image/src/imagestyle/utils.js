@@ -230,7 +230,7 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
  */
 function getDefaultDropdowns( pluginCollection ) {
 	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
-		return DEFAULT_DROPDOWNS;
+		return [ ...DEFAULT_DROPDOWNS ];
 	} else {
 		return [];
 	}

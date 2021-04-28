@@ -232,18 +232,8 @@ describe( 'ImageStyle utils', () => {
 		} );
 
 		describe( 'getDefaultDropdowns', () => {
-			it( 'should return default dropdown if both image editing plugins are loaded', () => {
-				expect( utils.getDefaultDropdowns( { has: () => true } ) ).to.deep.equal( [ {
-					name: 'imageStyle:wrapText',
-					title: 'Wrap text',
-					defaultItem: 'imageStyle:alignLeft',
-					items: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
-				}, {
-					name: 'imageStyle:breakText',
-					title: 'Break text',
-					defaultItem: 'imageStyle:full',
-					items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
-				} ] );
+			it( 'should return default drop-downs list if both image editing plugins are loaded', () => {
+				expect( utils.getDefaultDropdowns( { has: () => true } ) ).to.deep.equal( utils.DEFAULT_DROPDOWNS );
 			} );
 
 			it( 'should return an empty array if only `ImageBlockEditing` plugin is loaded', () => {
@@ -252,6 +242,10 @@ describe( 'ImageStyle utils', () => {
 
 			it( 'should return an empty array if only `ImageInlineEditing` plugin is loaded', () => {
 				expect( utils.getDefaultDropdowns( { has: pluginName => pluginName === 'ImageInlineEditing' } ) ).to.deep.equal( [] );
+			} );
+
+			it( 'should always return a new instance of the drop-downs list', () => {
+				expect( utils.getDefaultDropdowns( { has: () => true } ) ).to.not.equal( utils.DEFAULT_DROPDOWNS );
 			} );
 		} );
 	} );
