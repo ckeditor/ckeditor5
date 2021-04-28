@@ -142,7 +142,6 @@
 
 	& .raw-html-embed__preview-content {
 		box-sizing: border-box;
-		text-align: center;
 		background-color: var(--ck-color-base-foreground);
 
 		& > * {
