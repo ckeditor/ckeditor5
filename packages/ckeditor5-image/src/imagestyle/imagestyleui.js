@@ -18,8 +18,9 @@ import '../../theme/imagestyle.css';
 /**
  * The image style UI plugin.
  *
- * It creates buttons and drop-downs corresponding to the {@link module:image/image~ImageConfig#styles configuration} of the
- * {@link module:image/imagestyle~ImageStyle} plugin.
+ * It registers buttons corresponding to the {@link module:image/image~ImageConfig#styles} configuration.
+ * It also registers the {@link module:image/imagestyle/utils~DEFAULT_DROPDOWNS default drop-downs} and the
+ * custom drop-downs defined by the developer in the {@link module:image/image~ImageConfig#toolbar} configuration.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -100,7 +101,7 @@ export default class ImageStyleUI extends Plugin {
 	 * Creates a dropdown and stores it in the editor {@link module:ui/componentfactory~ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle~ImageStyleGroupDefinition} dropdownConfig
+	 * @param {module:image/imagestyle~ImageStyleDropdownDefinition} dropdownConfig
 	 * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} definedStyles
 	 */
 	_createDropdown( dropdownConfig, definedStyles ) {
@@ -205,10 +206,10 @@ export default class ImageStyleUI extends Plugin {
 
 // Returns the translated `title` from the passed styles array.
 //
-// @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleGroupDefinition>} styles
+// @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleDropdownDefinition>} styles
 // @param {Object.<String,String>} titles
 //
-// @returns {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleGroupDefinition>}
+// @returns {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleDropdownDefinition>}
 function translateStyles( styles, titles ) {
 	for ( const style of styles ) {
 		// Localize the titles of the styles, if a title corresponds with
@@ -229,6 +230,11 @@ function getUIComponentName( name ) {
 	return `imageStyle:${ name }`;
 }
 
+// Returns title for the splitbutton containing the dropdown title and default action item title.
+//
+// @param {String|undefined} dropdownTitle
+// @param {String} buttonTitle
+// @returns {String}
 function getDropdownButtonTitle( dropdownTitle, buttonTitle ) {
 	return ( dropdownTitle ? dropdownTitle + ': ' : '' ) + buttonTitle;
 }

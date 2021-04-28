@@ -112,22 +112,6 @@ const DEFAULT_OPTIONS = {
 	}
 };
 
-// TODO: Fix and move this description
-/**
- * Default image style groups provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
- * configuration. The groups are containers for {@link module:image/imagestyle~ImageStyleConfig#options style options} and
- * correspond to available drop-down button created by the {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin.
- *
- * There are 2 groups available:
- *
- * * **`'wrapText'`**, which contains the `alignLeft` and `alignRight` options, that is, those that wraps the text around the image,
- * * **`'breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
- * those that breaks the text around the image.
- *
- * @readonly
- * @type {Object.<String,module:image/imagestyle~ImageStyleGroupDefinition>}
- */
-
 /**
  * Default image style icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
  * configuration.
@@ -150,7 +134,33 @@ const DEFAULT_ICONS = {
 };
 
 /**
- * Returns lists of the normalized and validated image style options and groups.
+ * Default drop-downs provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#toolbar}
+ * configuration. The drop-downs are containers for the {@link module:image/imagestyle~ImageStyleConfig#options image style options}.
+ *
+ * If both of the `ImageEditing` plugins are loaded, there are 2 predefined drop-downs available:
+ *
+ * * **`'imageStyle:wrapText'`**, which contains the `alignLeft` and `alignRight` options, that is,
+ * those that wraps the text around the image,
+ * * **`'imageStyle:breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
+ * those that breaks the text around the image.
+ *
+ * @readonly
+ * @type {Array.<module:image/imagestyle~ImageStyleDropdownDefinition>}
+ */
+const DEFAULT_DROPDOWNS = [ {
+	name: 'imageStyle:wrapText',
+	title: 'Wrap text',
+	defaultItem: 'imageStyle:alignLeft',
+	items: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
+}, {
+	name: 'imageStyle:breakText',
+	title: 'Break text',
+	defaultItem: 'imageStyle:full',
+	items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
+} ];
+
+/**
+ * Returns a list of the normalized and validated image style options.
  *
  * @protected
  * @param {Object} config
@@ -164,8 +174,6 @@ const DEFAULT_ICONS = {
  * @returns {module:image/imagestyle~ImageStyleConfig}
  * * Each of options contains a complete icon markup.
  * * The image style options not supported by any of the loaded plugins are filtered out.
- * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
- * * All of the group items not defined in the options are filtered out.
  */
 function normalizeStyles( config ) {
 	const configuredStyles = config.configuredStyles.options || [];
@@ -189,8 +197,7 @@ function normalizeStyles( config ) {
  *
  * @returns {Object<String,Array>}
  * It returns an object with the lists of the image style options and groups defined as strings related to the
- * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options} and the
- * {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups}.
+ * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options}
  */
 function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) {
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {
@@ -214,20 +221,16 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 	return {};
 }
 
-// TODO
-function getDefaultDropdowns( loadedPlugins ) {
-	if ( loadedPlugins.has( 'ImageBlockEditing' ) && loadedPlugins.has( 'ImageInlineEditing' ) ) {
-		return [ {
-			name: 'imageStyle:wrapText',
-			title: 'Wrap text',
-			defaultItem: 'imageStyle:alignLeft',
-			items: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
-		}, {
-			name: 'imageStyle:breakText',
-			title: 'Break text',
-			defaultItem: 'imageStyle:full',
-			items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
-		} ];
+/**
+ * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
+ * @protected
+ *
+ * @param {module:core/plugincollection~PluginCollection} pluginCollection
+ * @returns {Array.<module:image/imagestyle~ImageStyleDropdownDefinition>}
+ */
+function getDefaultDropdowns( pluginCollection ) {
+	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
+		return DEFAULT_DROPDOWNS;
 	} else {
 		return [];
 	}
@@ -318,10 +321,10 @@ function isValidOption( option, { isBlockPluginLoaded, isInlinePluginLoaded } ) 
 // Extends the default style with a style provided by the developer.
 // Note: Don't override the custom–defined style object, clone it instead.
 //
-// @param {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleOptionDefinition} source
+// @param {module:image/imagestyle~ImageStyleOptionDefinition} source
 // @param {Object} style
 //
-// @returns {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleOptionDefinition}
+// @returns {module:image/imagestyle~ImageStyleOptionDefinition}
 function extendStyle( source, style ) {
 	const extendedStyle = { ...style };
 
@@ -343,10 +346,10 @@ function warnInvalidStyle( info ) {
 	 * Please make sure the definition implements properly one of the following:
 	 *
 	 * * {@link module:image/imagestyle~ImageStyleOptionDefinition image style option definition},
-	 * * {@link module:image/imagestyle~ImageStyleGroupDefinition image style group definition}
+	 * * {@link module:image/imagestyle~ImageStyleDropdownDefinition image style dropdown definition}
 	 *
 	 * @error image-style-configuration-definition-invalid
-	 * @param {String} [group] The name of the invalid group
+	 * @param {String} [dropdown] The name of the invalid drop-down
 	 * @param {String} [style] The name of the invalid image style option
 	 */
 	logWarning( 'image-style-configuration-definition-invalid', info );
@@ -358,5 +361,6 @@ export default {
 	getDefaultDropdowns,
 	warnInvalidStyle,
 	DEFAULT_OPTIONS,
-	DEFAULT_ICONS
+	DEFAULT_ICONS,
+	DEFAULT_DROPDOWNS
 };
