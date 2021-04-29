@@ -14,7 +14,7 @@ import TableBorderWidthCommand from '../../../src/tableproperties/commands/table
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableBorderWidthCommand', () => {
+		describe( 'TableBorderWidthCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -23,7 +23,7 @@ describe( 'table properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableBorderWidthCommand( editor );
+				command = new TableBorderWidthCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -224,6 +224,75 @@ describe( 'table properties', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableBorderWidthCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TablePropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableBorderWidthCommand( editor, '3px' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '3px' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has borderWidth property other than the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '1px' } ) );
+
+						expect( command.value ).to.equal( '1px' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined if selected table has set the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderWidth: '3px' } ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if selected table has borderWidth property other than the default value', () => {
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderWidth: '1px' } ) );
+
+						expect( command.value ).to.equal( '1px' );
+					} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove borderWidth from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '1px' } ) );
+
+						command.execute( { value: '3px' } );
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove borderWidth from a selected table if passed the default value', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ], { borderWidth: '1px' } ) );
+
+						command.execute( { value: '3px' } );
 
 						assertTableStyle( editor, '' );
 					} );
