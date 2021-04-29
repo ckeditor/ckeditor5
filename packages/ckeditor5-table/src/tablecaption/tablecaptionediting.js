@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 import injectTableCaptionPostFixer from '../converters/table-caption-post-fixer';
@@ -26,6 +26,23 @@ export default class TableCaptionEditing extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TableCaptionEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * A map that keeps saved JSONified table captions and table model elements they are
+		 * associated with.
+		 *
+		 * To learn more about this system, see {@link #_saveCaption}.
+		 *
+		 * @member {WeakMap.<module:engine/model/element~Element,Object>}
+		 */
+		this._savedCaptionsMap = new WeakMap();
 	}
 
 	/**
@@ -92,6 +109,46 @@ export default class TableCaptionEditing extends Plugin {
 		} );
 
 		injectTableCaptionPostFixer( editor.model );
+	}
+
+	/**
+	 * Returns the saved {@link module:engine/model/element~Element#toJSON JSONified} caption
+	 * of an table model element.
+	 *
+	 * See {@link #_saveCaption}.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} tableModelElement The model element the
+	 * caption should be returned for.
+	 * @returns {module:engine/model/element~Element|null} The model caption element or `null` if there is none.
+	 */
+	_getSavedCaption( tableModelElement ) {
+		const jsonObject = this._savedCaptionsMap.get( tableModelElement );
+
+		return jsonObject ? Element.fromJSON( jsonObject ) : null;
+	}
+
+	/**
+	 * Saves a {@link module:engine/model/element~Element#toJSON JSONified} caption for
+	 * an table element to allow restoring it in the future.
+	 *
+	 * A caption is saved every time it gets hidden and/or the type of an table changes. The
+	 * user should be able to restore it on demand.
+	 *
+	 * **Note**: The caption cannot be stored in the table model element attribute because,
+	 * for instance, when the model state propagates to collaborators, the attribute would get
+	 * lost (mainly because it does not convert to anything when the caption is hidden) and
+	 * the states of collaborators' models would de-synchronize causing numerous issues.
+	 *
+	 * See {@link #_getSavedCaption}.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} tableModelElement The model element the
+	 * caption is saved for.
+	 * @param {module:engine/model/element~Element} caption The caption model element to be saved.
+	 */
+	_saveCaption( tableModelElement, caption ) {
+		this._savedCaptionsMap.set( tableModelElement, caption.toJSON() );
 	}
 }
 

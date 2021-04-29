@@ -221,14 +221,14 @@ describe( 'ToggleTableCaptionCommand', () => {
 							'<paragraph></paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
-					'<caption>Foo caption[]</caption>' +
+					'<caption>Foo<$text bold="true">bar</$text></caption>' +
 				'</table>'
 			);
 
 			command.execute();
 
 			assertEqualMarkup( getData( model ),
-				'<table caption="{"name":"caption","children":[{"data":"Foo caption"}]}">' +
+				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>[]</paragraph>' +
@@ -246,7 +246,64 @@ describe( 'ToggleTableCaptionCommand', () => {
 							'<paragraph>[]</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
-					'<caption>Foo caption</caption>' +
+					'<caption>Foo<$text bold="true">bar</$text></caption>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should overwrite caption with an empty one', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<caption>Foo</caption>' +
+				'</table>'
+			);
+
+			// Hide the caption.
+			command.execute();
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>[]</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			// Show the caption.
+			command.execute();
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<caption></caption>' +
+				'</table>'
+			);
+
+			// Hide and then show the caption.
+			command.execute();
+			command.execute();
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>[]</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+
+					// Caption should be empty.
+					'<caption></caption>' +
 				'</table>'
 			);
 		} );
