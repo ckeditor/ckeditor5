@@ -12,7 +12,7 @@ import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 
 describe( 'ImageTypeCommand', () => {
-	let editor, blockCommand, inlineCommand, model;
+	let editor, blockCommand, inlineCommand, model, root;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,6 +22,7 @@ describe( 'ImageTypeCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
+				root = model.document.getRoot();
 
 				blockCommand = editor.commands.get( 'imageTypeBlock' );
 				inlineCommand = editor.commands.get( 'imageTypeInline' );
@@ -204,6 +205,157 @@ describe( 'ImageTypeCommand', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 				expect( returned ).to.be.null;
 			} );
+
+			it( 'should not convert an inline image to a block image if it is not allowed by the schema', () => {
+				model.schema.addChildCheck( ( context, childDefinition ) => {
+					if ( childDefinition.name == 'image' ) {
+						return false;
+					}
+				} );
+
+				setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const result = blockCommand.execute();
+
+				expect( result ).to.be.null;
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			describe( 'should preserve markers', () => {
+				it( 'on the image while converting inline image to block image', () => {
+					setModelData( model, `<paragraph>foo[<imageInline src="${ imgSrc }"></imageInline>]bar</paragraph>` );
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.document.selection.getFirstRange(),
+							usingOperation: true
+						} );
+					} );
+
+					blockCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRangeOn( root.getChild( 1 ) );
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+
+				it( 'ending on the image while converting inline image to block image', () => {
+					setModelData( model, `<paragraph>foo[<imageInline src="${ imgSrc }"></imageInline>]bar</paragraph>` );
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.createRange(
+								model.createPositionFromPath( root, [ 0, 1 ] ),
+								model.createPositionFromPath( root, [ 0, 4 ] )
+							),
+							usingOperation: true
+						} );
+					} );
+
+					blockCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRange(
+						model.createPositionFromPath( root, [ 0, 1 ] ),
+						model.createPositionFromPath( root, [ 2 ] )
+					);
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+
+				it( 'starting on the image while converting inline image to block image', () => {
+					setModelData( model, `<paragraph>foo[<imageInline src="${ imgSrc }"></imageInline>]bar</paragraph>` );
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.createRange(
+								model.createPositionFromPath( root, [ 0, 3 ] ),
+								model.createPositionFromPath( root, [ 0, 6 ] )
+							),
+							usingOperation: true
+						} );
+					} );
+
+					blockCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRange(
+						model.createPositionFromPath( root, [ 1 ] ),
+						model.createPositionFromPath( root, [ 2, 2 ] )
+					);
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+
+				it( 'overlapping the image while converting inline image to block image', () => {
+					setModelData( model, `<paragraph>foo[<imageInline src="${ imgSrc }"></imageInline>]bar</paragraph>` );
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.createRange(
+								model.createPositionFromPath( root, [ 0, 1 ] ),
+								model.createPositionFromPath( root, [ 0, 6 ] )
+							),
+							usingOperation: true
+						} );
+					} );
+
+					blockCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRange(
+						model.createPositionFromPath( root, [ 0, 1 ] ),
+						model.createPositionFromPath( root, [ 2, 2 ] )
+					);
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+			} );
+
+			it( 'should not preserve markers inside the image element', () => {
+				setModelData( model, `<paragraph>foo[<imageInline src="${ imgSrc }"></imageInline>]bar</paragraph>` );
+
+				model.change( writer => {
+					writer.addMarker( 'foo', {
+						range: model.createRange(
+							model.createPositionFromPath( root, [ 0, 3, 0 ] ),
+							model.createPositionFromPath( root, [ 0, 3, 0 ] )
+						),
+						usingOperation: true
+					} );
+				} );
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					`[<image src="${ imgSrc }"></image>]` +
+					'<paragraph>bar</paragraph>'
+				);
+
+				expect( model.markers.get( 'foo' ).getRange().root.rootName ).to.equal( '$graveyard' );
+			} );
 		} );
 
 		describe( 'inline command', () => {
@@ -274,6 +426,177 @@ describe( 'ImageTypeCommand', () => {
 					`[<imageInline src="${ imgSrc }"></imageInline>]` +
 					'</paragraph>'
 				);
+			} );
+
+			it( 'should not convert a block image to an inline image if it is not allowed by the schema', () => {
+				model.schema.addChildCheck( ( context, childDefinition ) => {
+					if ( childDefinition.name == 'imageInline' ) {
+						return false;
+					}
+				} );
+
+				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+
+				const result = inlineCommand.execute();
+
+				expect( result ).to.be.null;
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			describe( 'should preserve markers', () => {
+				it( 'on the image while converting block image to inline image', () => {
+					setModelData( model,
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.document.selection.getFirstRange(),
+							usingOperation: true
+						} );
+					} );
+
+					inlineCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRangeOn( root.getNodeByPath( [ 1, 0 ] ) );
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+
+				it( 'ending on the image while converting block image to inline image', () => {
+					setModelData( model,
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.createRange(
+								model.createPositionFromPath( root, [ 0, 1 ] ),
+								model.createPositionFromPath( root, [ 2 ] )
+							),
+							usingOperation: true
+						} );
+					} );
+
+					inlineCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRange(
+						model.createPositionFromPath( root, [ 0, 1 ] ),
+						model.createPositionFromPath( root, [ 1, 1 ] )
+					);
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+
+				it( 'starting on the image while converting block image to inline image', () => {
+					setModelData( model,
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.createRange(
+								model.createPositionFromPath( root, [ 1 ] ),
+								model.createPositionFromPath( root, [ 2, 2 ] )
+							),
+							usingOperation: true
+						} );
+					} );
+
+					inlineCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRange(
+						model.createPositionFromPath( root, [ 1, 0 ] ),
+						model.createPositionFromPath( root, [ 2, 2 ] )
+					);
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+
+				it( 'overlapping the image while converting block image to inline image', () => {
+					setModelData( model,
+						'<paragraph>foo</paragraph>' +
+						`[<image src="${ imgSrc }"></image>]` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'foo', {
+							range: model.createRange(
+								model.createPositionFromPath( root, [ 0, 1 ] ),
+								model.createPositionFromPath( root, [ 2, 2 ] )
+							),
+							usingOperation: true
+						} );
+					} );
+
+					inlineCommand.execute();
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+						`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
+						'<paragraph>bar</paragraph>'
+					);
+
+					const expectedRange = model.createRange(
+						model.createPositionFromPath( root, [ 0, 1 ] ),
+						model.createPositionFromPath( root, [ 2, 2 ] )
+					);
+
+					expect( model.markers.get( 'foo' ).getRange().isEqual( expectedRange ) ).to.be.true;
+				} );
+			} );
+
+			it( 'should not preserve markers inside the image element', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					`[<image src="${ imgSrc }"></image>]` +
+					'<paragraph>bar</paragraph>'
+				);
+
+				model.change( writer => {
+					writer.addMarker( 'foo', {
+						range: model.createRange(
+							model.createPositionFromPath( root, [ 1, 0 ] ),
+							model.createPositionFromPath( root, [ 1, 0 ] )
+						),
+						usingOperation: true
+					} );
+				} );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					`<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` +
+					'<paragraph>bar</paragraph>'
+				);
+
+				expect( model.markers.get( 'foo' ).getRange().root.rootName ).to.equal( '$graveyard' );
 			} );
 		} );
 
