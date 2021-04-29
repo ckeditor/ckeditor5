@@ -73,9 +73,7 @@ export default class TablePropertiesEditing extends Plugin {
 
 		editor.config.define( 'table.tableProperties.defaultProperties', {} );
 
-		const defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
-			includeAlignmentProperty: true
-		} );
+		const defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ) );
 
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion, {

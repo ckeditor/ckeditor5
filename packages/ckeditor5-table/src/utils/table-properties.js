@@ -68,13 +68,13 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
 /**
  * Returns the normalized configuration.
  *
+ * @protected
  * @param {Object} config
- * @param {Object} [options={}]
- * @param {Boolean} [options.includeAlignmentProperty=false] Whether the "alignment" property should be added.
- * @returns {Object}
+ * @returns {module:table/tableproperties~TablePropertiesOptions}
  */
-export function getNormalizedDefaultProperties( config, options = {} ) {
-	const normalizedConfig = Object.assign( {
+export function getNormalizedDefaultProperties( config ) {
+	return Object.assign( {
+		alignment: 'center',
 		borderStyle: 'none',
 		borderWidth: '',
 		borderColor: '',
@@ -82,10 +82,4 @@ export function getNormalizedDefaultProperties( config, options = {} ) {
 		width: '',
 		height: ''
 	}, config );
-
-	if ( options.includeAlignmentProperty && !normalizedConfig.alignment ) {
-		normalizedConfig.alignment = 'center';
-	}
-
-	return normalizedConfig;
 }

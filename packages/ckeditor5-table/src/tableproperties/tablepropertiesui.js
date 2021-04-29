@@ -88,9 +88,7 @@ export default class TablePropertiesUI extends Plugin {
 		 * @protected
 		 * @member {module:table/tableproperties~TablePropertiesOptions}
 		 */
-		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
-			includeAlignmentProperty: true
-		} );
+		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ) );
 
 		/**
 		 * The contextual balloon plugin instance.
