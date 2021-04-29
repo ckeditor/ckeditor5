@@ -85,7 +85,7 @@ export default class GFMDataProcessor {
 	}
 
 	/**
-	 * This method does not have an effect on data processor result. It exists for compatibility with
+	 * This method does not have any effect on the data processor result. It exists for compatibility with the
 	 * {@link module:engine/dataprocessor/dataprocessor~DataProcessor `DataProcessor` interface}.
 	 */
 	useFillerType() {}
