@@ -128,6 +128,19 @@ describe( 'CodeBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'codeBlock' ) ).to.be.false;
 	} );
 
+	it( 'disallows for object elements in codeBlock', () => {
+		// Fake "inline-widget".
+		model.schema.register( 'inline-widget', {
+			inheritAllFrom: '$block',
+			// Allow to be a child of the `codeBlock` element.
+			allowIn: 'codeBlock',
+			// And mark as an object.
+			isObject: true
+		} );
+
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'inline-widget' ) ).to.be.false;
+	} );
+
 	it( 'allows only for $text in codeBlock', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], '$text' ) ).to.equal( true );
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], '$block' ) ).to.equal( false );

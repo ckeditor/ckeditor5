@@ -125,6 +125,13 @@ export default class CodeBlockEditing extends Plugin {
 			}
 		} );
 
+		// Disallow object elements inside `codeBlock`. See #9567.
+		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
+				return false;
+			}
+		} );
+
 		// Conversion.
 		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
 		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
@@ -228,15 +235,6 @@ export default class CodeBlockEditing extends Plugin {
 			data.preventDefault();
 			evt.stop();
 		}, { context: 'pre' } );
-
-		// Disallow `imageInline` inside `codeBlock`. See #9567.
-		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
-			editor.model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( context.endsWith( 'codeBlock' ) && childDefinition.name == 'imageInline' ) {
-					return false;
-				}
-			} );
-		}
 	}
 }
 
