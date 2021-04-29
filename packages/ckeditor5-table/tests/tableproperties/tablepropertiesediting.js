@@ -1101,7 +1101,7 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
 				} );
 
-				it( 'should discord the unknown float value (style="float:foo;")', () => {
+				it( 'should discard the unknown float value (style="float:foo;")', () => {
 					editor.setData( '<table style="float:foo;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
