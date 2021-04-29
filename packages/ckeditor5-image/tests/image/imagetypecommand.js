@@ -429,18 +429,25 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should not convert a block image to an inline image if it is not allowed by the schema', () => {
+				model.schema.register( 'block', {
+					inheritAllFrom: '$block',
+					allowChildren: 'image'
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
+
 				model.schema.addChildCheck( ( context, childDefinition ) => {
 					if ( childDefinition.name == 'imageInline' ) {
 						return false;
 					}
 				} );
 
-				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+				setModelData( model, `<block>[<image src="${ imgSrc }"></image>]</block>` );
 
 				const result = inlineCommand.execute();
 
 				expect( result ).to.be.null;
-				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( getModelData( model ) ).to.equal( '<block>[]</block>' );
 			} );
 
 			describe( 'should preserve markers', () => {
