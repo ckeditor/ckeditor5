@@ -7,7 +7,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
- * Set of utils related to block and inline fillers handling.
+ * Set of utilities related to handling block and inline fillers.
  *
  * Browsers do not allow to put caret in elements which does not have height. Because of it, we need to fill all
  * empty elements which should be selectable with elements or characters called "fillers". Unfortunately there is no one
@@ -36,7 +36,7 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
  */
 
 /**
- * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
+ * Non-breaking space filler creator. This function creates the `&nbsp;` text node.
  * It defines how the filler is created.
  *
  * @see module:engine/view/filler~MARKED_NBSP_FILLER
@@ -46,7 +46,7 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
 
 /**
- * Marked non-breaking space filler creator. This is a function which creates `<span data-cke-filler="true">&nbsp;</span>` element.
+ * Marked non-breaking space filler creator. This function creates the `<span data-cke-filler="true">&nbsp;</span>` element.
  * It defines how the filler is created.
  *
  * @see module:engine/view/filler~NBSP_FILLER
@@ -62,7 +62,7 @@ export const MARKED_NBSP_FILLER = domDocument => {
 };
 
 /**
- * `<br>` filler creator. This is a function which creates `<br data-cke-filler="true">` element.
+ * `<br>` filler creator. This function creates the `<br data-cke-filler="true">` element.
  * It defines how the filler is created.
  *
  * @see module:engine/view/filler~NBSP_FILLER
