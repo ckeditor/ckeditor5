@@ -52,7 +52,8 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const view = this.editor.editing.view;
+		const editor = this.editor;
+		const view = editor.editing.view;
 		const viewDocument = view.document;
 
 		/**
@@ -64,42 +65,69 @@ export default class Widget extends Plugin {
 		this._previouslySelected = new Set();
 
 		// Model to view selection converter.
-		// Converts selection placed over widget element to fake selection
+		// Converts selection placed over widget element to fake selection.
+		//
+		// By default, the selection is downcasted by the engine to surround the attribute element, even though its only
+		// child is an inline widget. A similar thing also happens when a collapsed marker is rendered as a UI element
+		// next to an inline widget: the view selection contains both the widget and the marker.
+		//
+		// This prevents creating a correct fake selection when this inline widget is selected. Normalize the selection
+		// in these cases based on the model:
+		//
+		//		[<attributeElement><inlineWidget /></attributeElement>] -> <attributeElement>[<inlineWidget />]</attributeElement>
+		//		[<uiElement></uiElement><inlineWidget />] -> <uiElement></uiElement>[<inlineWidget />]
+		//
+		// Thanks to this:
+		//
+		// * fake selection can be set correctly,
+		// * any logic depending on (View)Selection#getSelectedElement() also works OK.
+		//
+		// See https://github.com/ckeditor/ckeditor5/issues/9524.
+		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			const modelSelection = data.selection;
+
+			// The collapsed selection can't contain any widget.
+			if ( modelSelection.isCollapsed ) {
+				return;
+			}
+
+			const selectedModelElement = modelSelection.getSelectedElement();
+
+			if ( !selectedModelElement ) {
+				return;
+			}
+
+			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
+			if ( !isWidget( selectedViewElement ) ) {
+				return;
+			}
+
+			if ( !conversionApi.consumable.consume( modelSelection, 'selection' ) ) {
+				return;
+			}
+
+			viewWriter.setSelection( viewWriter.createRangeOn( selectedViewElement ), {
+				fake: true,
+				label: getLabel( selectedViewElement )
+			} );
+		} );
+
+		// Mark all widgets inside the selection with the css class.
+		// This handler is registered at the 'low' priority so it's triggered after the real selection conversion.
 		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
 			this._clearPreviouslySelectedWidgets( conversionApi.writer );
 
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			let selectedElement = viewSelection.getSelectedElement();
+
 			let lastMarked = null;
 
-			// By default, the selection is downcasted by the engine to surround the attribute element, even though its only
-			// child is an inline widget. This prevents creating a correct fake selection when this inline widget is selected.
-			// Normalize the selection in this case
-			//
-			//		[<attributeElement><inlineWidget /></attributeElement>] -> <attributeElement>[<inlineWidget />]</attributeElement>
-			//
-			// Thanks to this:
-			//
-			// * fake selection can be set correctly,
-			// * any logic depending on (View)Selection#getSelectedElement() also works OK.
-			//
-			// See https://github.com/ckeditor/ckeditor5/issues/9524.
-			if ( selectedElement ) {
-				// Trim the range first because the selection could be on a couple of nested attributes enclosing the widget:
-				// [<attributeElementA><attributeElementB><inlineWidget /></attributeElementB></attributeElementA>]
-				selectedElement = viewWriter.createRangeOn( selectedElement ).getTrimmed().getContainedElement();
-
-				if ( selectedElement && isWidget( selectedElement ) ) {
-					viewWriter.setSelection( viewWriter.createRangeOn( selectedElement ), {
-						fake: true,
-						label: getLabel( selectedElement )
-					} );
-				}
-			}
-
 			for ( const range of viewSelection.getRanges() ) {
+				// Note: There could be multiple selected widgets in a range but no fake selection.
+				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item;
 
