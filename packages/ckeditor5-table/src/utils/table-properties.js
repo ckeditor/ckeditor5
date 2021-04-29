@@ -64,3 +64,22 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
 
 	return `${ numericValue }${ defaultUnit }`;
 }
+
+/**
+ * Returns the normalized configuration.
+ *
+ * @protected
+ * @param {Object} config
+ * @returns {module:table/tableproperties~TablePropertiesOptions}
+ */
+export function getNormalizedDefaultProperties( config ) {
+	return Object.assign( {
+		alignment: 'center',
+		borderStyle: 'none',
+		borderWidth: '',
+		borderColor: '',
+		backgroundColor: '',
+		width: '',
+		height: ''
+	}, config );
+}
