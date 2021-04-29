@@ -23,6 +23,7 @@ import InsertImageCommand from '../../src/image/insertimagecommand';
 import ImageCaption from '../../src/imagecaption';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -641,7 +642,7 @@ describe( 'ImageInlineEditing', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ ImageInlineEditing, ImageBlockEditing, ImageCaption, Clipboard, LinkImage, Paragraph ]
+				plugins: [ ImageInlineEditing, ImageBlockEditing, ImageCaption, ImageResizeEditing, Clipboard, LinkImage, Paragraph ]
 			} );
 
 			model = editor.model;
@@ -787,6 +788,45 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline linkHref="https://cksource.com" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'should pass custom attributes present only on the figure when converting to an inline image', () => {
+			model.schema.extend( 'imageInline', { allowAttributes: [ 'foo' ] } );
+			editor.conversion.for( 'upcast' ).attributeToAttribute( { model: 'foo', view: 'foo' } );
+
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => (
+					'<figure class="image" foo="bar">' +
+						'<img src="/assets/sample.png" />' +
+					'</figure>'
+				)
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f<imageInline foo="bar" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'should pass the style#width from figure when converting to an inline image (ImageResize integration)', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => (
+					'<figure class="image image_resized" style="width:25%">' +
+						'<img src="/assets/sample.png" />' +
+					'</figure>'
+				)
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f<imageInline src="/assets/sample.png" width="25%"></imageInline>[]oo</paragraph>'
 			);
 		} );
 	} );
