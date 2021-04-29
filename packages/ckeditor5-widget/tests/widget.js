@@ -269,11 +269,69 @@ describe( 'Widget', () => {
 		expect( viewDocument.selection.isFake ).to.be.true;
 	} );
 
+	it( 'should apply fake view selection when the model selection surrounds the inline widget and an UI element', () => {
+		setModelData( model, '<paragraph>[]<inline-widget></inline-widget></paragraph>' );
+
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
+			model: 'testMarker',
+			view: ( data, { writer } ) => writer.createUIElement( 'span', { class: 'ui' } )
+		} );
+
+		model.change( writer => {
+			writer.addMarker( 'testMarker', {
+				range: writer.createRange( writer.createPositionAt( model.document.getRoot().getChild( 0 ), 0 ) ),
+				usingOperation: true
+			} );
+
+			writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>' +
+				'<span class="ui"></span>' +
+				'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+			'</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should allow overriding the selection downcast', () => {
+		const spy = sinon.spy();
+
+		editor.conversion.for( 'editingDowncast' ).add(
+			dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+				const selection = data.selection;
+
+				if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
+					return;
+				}
+
+				const position = model.createPositionAt( selection.getFirstPosition().findAncestor( 'paragraph' ), 'end' );
+				const viewPosition = conversionApi.mapper.toViewPosition( position );
+
+				conversionApi.writer.setSelection( viewPosition );
+
+				spy();
+			}, { priority: 'high' } )
+		);
+
+		setModelData( model, '<paragraph>foo[<inline-widget></inline-widget>]bar</paragraph>' );
+
+		expect( spy.calledOnce ).to.be.true;
+		expect( getViewData( view ) ).to.equal(
+			'<p>' +
+				'foo' +
+				'<span class="ck-widget" contenteditable="false"></span>' +
+				'bar{}' +
+			'</p>'
+		);
+	} );
+
 	it( 'should not apply fake view selection when an inline widget and some other content is surrounded by an attribute element', () => {
 		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget><$text attr="foo">bar]</$text></paragraph>' );
 
 		expect( getViewData( view ) ).to.equal(
-
 			'<p>foo ' +
 				'{<attr value="foo">' +
 					'<span class="ck-widget ck-widget_selected" contenteditable="false"></span>bar' +
@@ -288,7 +346,6 @@ describe( 'Widget', () => {
 		setModelData( model, '<paragraph>foo [<inline attr="foo"></inline>] bar</paragraph>' );
 
 		expect( getViewData( view ) ).to.equal(
-
 			'<p>foo ' +
 				'{<attr value="foo">' +
 					'<figure></figure>' +
@@ -311,7 +368,6 @@ describe( 'Widget', () => {
 
 		expect( viewDocument.selection.isFake ).to.be.false;
 		expect( getViewData( view ) ).to.equal(
-
 			'<p>{foo</p>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false">' +
 				'<b></b>' +
