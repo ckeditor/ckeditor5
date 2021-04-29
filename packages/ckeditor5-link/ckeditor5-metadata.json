@@ -12,7 +12,7 @@
 		},
 		{
 			"name": "Link",
-			"pluginName": "Link",
+			"className": "Link",
 			"description": "Brings support for inserting hyperlinks into the content and offers the UI to create and edit them.",
 			"docs": "features/link.html",
 			"path": "src/link.js",
