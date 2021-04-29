@@ -171,6 +171,14 @@ export default class ImageInlineEditing extends Plugin {
 					// has a caption or some other features and this kind of image should be
 					// pasted/dropped without modifications.
 					if ( blockViewImage.childCount === 1 ) {
+						// Pass the attributes which are present only in the <figure> to the <img>
+						// (e.g. the style="width:10%" attribute applied by the ImageResize plugin).
+						Array.from( blockViewImage.getAttributes() )
+							.forEach( attribute => writer.setAttribute(
+								...attribute,
+								imageUtils.getViewImageFromWidget( blockViewImage )
+							) );
+
 						return blockViewImage.getChild( 0 );
 					} else {
 						return blockViewImage;
