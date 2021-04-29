@@ -426,6 +426,7 @@ export default class Range {
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
 	 * @param {Boolean} [options.ignoreElementEnd=false]
+	 * @returns {module:engine/model/treewalker~TreeWalker}
 	 */
 	getWalker( options = {} ) {
 		options.boundaries = this;

@@ -86,7 +86,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		extraPlugins: [ DisallowNestingBlockQuotes ],
 
-		// The rest of the config.
+		// The rest of the configuration.
 	} )
 	.then( ... )
 	.catch( ... );
