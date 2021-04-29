@@ -250,6 +250,19 @@ describe( 'CodeBlockCommand', () => {
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
 		} );
+
+		it( 'should remove all non-text nodes when inserting the "codeBlock" element', () => {
+			model.schema.register( 'div', { inheritAllFrom: '$block', allowIn: 'paragraph' } );
+			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
+
+			setModelData( model, '[<paragraph>Foo<div></div>Bar</paragraph>]' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[FooBar]</codeBlock>'
+			);
+		} );
 	} );
 
 	describe( 'BlockQuote integration', () => {
