@@ -825,5 +825,10 @@ export default class TableCellPropertiesView extends View {
 }
 
 function isBorderStyleSet( value ) {
-	return !!value;
+	// TODO: Unify this with TablePropertiesView when implementing the default cell properties.
+	if ( !value || !value.length ) {
+		return false;
+	}
+
+	return value !== 'none';
 }
