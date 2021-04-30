@@ -94,5 +94,18 @@ export function getImageTypeMatcher( editor, matchImageType ) {
 export function determineImageTypeForInsertionAtSelection( schema, selection ) {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
-	return ( !firstBlock || firstBlock.isEmpty || schema.isObject( firstBlock ) ) ? 'image' : 'imageInline';
+	if ( !firstBlock ) {
+		return 'image';
+	}
+
+	if ( firstBlock.isEmpty ) {
+		// When inserting the image into the lists, use inline image. See #9391.
+		if ( firstBlock.name === 'listItem' ) {
+			return 'imageInline';
+		}
+
+		return 'image';
+	}
+
+	return schema.isObject( firstBlock ) ? 'image' : 'imageInline';
 }
