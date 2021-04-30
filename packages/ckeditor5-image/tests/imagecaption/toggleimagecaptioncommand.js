@@ -249,16 +249,24 @@ describe( 'ToggleImageCaptionCommand', () => {
 				);
 			} );
 
-			it( 'should not save the caption content if empty', () => {
-				setModelData( model, '[<image src="test.png"><caption></caption></image>]' );
+			it( 'should save the empty caption content', () => {
+				const imgSrc = 'foo/bar.jpg';
+
+				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
 
 				editor.execute( 'toggleImageCaption' );
-
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
-
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption></caption></image>]' );
+				const caption = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( writer.createRangeIn( caption ) );
+				} );
+
+				editor.execute( 'toggleImageCaption' );
+				editor.execute( 'toggleImageCaption' );
+
+				expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"><caption></caption></image>]` );
 			} );
 		} );
 
