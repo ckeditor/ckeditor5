@@ -59,8 +59,9 @@ export default class ImageCaptionUI extends Plugin {
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
 				// Scroll to the selection and highlight the caption if the caption showed up.
-				if ( command.value ) {
-					const modelCaptionElement = getCaptionFromModelSelection( imageUtils, editor.model.document.selection );
+				const modelCaptionElement = getCaptionFromModelSelection( imageUtils, editor.model.document.selection );
+
+				if ( modelCaptionElement ) {
 					const figcaptionElement = editor.editing.mapper.toViewElement( modelCaptionElement );
 
 					editingView.scrollToTheSelection();

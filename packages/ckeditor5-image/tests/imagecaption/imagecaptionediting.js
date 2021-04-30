@@ -252,6 +252,55 @@ describe( 'ImageCaptionEditing', () => {
 					'</figure>'
 				);
 			} );
+
+			it( 'should apply marker class on figcaption', () => {
+				editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+					model: 'marker',
+					view: data => ( {
+						classes: 'highlight-' + data.markerName.split( ':' )[ 1 ]
+					} )
+				} );
+
+				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+
+				const caption = doc.getRoot().getNodeByPath( [ 0, 0 ] );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( caption ),
+						usingOperation: false
+					} );
+				} );
+
+				const viewElement = editor.editing.mapper.toViewElement( caption );
+
+				expect( typeof viewElement.getCustomProperty( 'addHighlight' ) ).to.equal( 'function' );
+				expect( typeof viewElement.getCustomProperty( 'removeHighlight' ) ).to.equal( 'function' );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<img src="img.png"></img>' +
+						'<figcaption class="ck-editor__editable ck-editor__nested-editable highlight-yellow" ' +
+								'contenteditable="true" data-placeholder="Enter image caption">' +
+							'Foo bar baz.' +
+						'</figcaption>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<img src="img.png"></img>' +
+						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+								'contenteditable="true" data-placeholder="Enter image caption">' +
+							'Foo bar baz.' +
+						'</figcaption>' +
+					'</figure>'
+				);
+			} );
 		} );
 	} );
 
