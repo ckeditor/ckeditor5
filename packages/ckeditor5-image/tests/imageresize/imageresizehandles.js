@@ -13,6 +13,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import {
@@ -855,11 +856,17 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		describe( 'Link image integration', () => {
-			it( 'should attach the resizer to the image inside the link', async () => {
+			beforeEach( async () => {
 				editor = await createEditor( {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, Paragraph ]
 				} );
+			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should attach the resizer to the image inside the link', async () => {
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 				setData( editor.model,
@@ -873,6 +880,42 @@ describe( 'ImageResizeHandles', () => {
 				expect( attachToSpy ).calledOnce;
 
 				attachToSpy.restore();
+			} );
+
+			it( 'should set the paragraph as the resize host for an image wrapped with a link', async () => {
+				setData( editor.model,
+					'<paragraph>' +
+						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+					'</paragraph>'
+				);
+
+				await waitForAllImagesLoaded( editor );
+
+				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
+
+				expect( resizer._getResizeHost().nodeName ).to.equal( 'P' );
+			} );
+		} );
+
+		describe( 'to-do list integration', () => {
+			it( 'should set the list item as the resize host if an image is inside a to-do list', async () => {
+				editor = await createEditor( {
+					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, TodoList, Paragraph ]
+				} );
+
+				setData( editor.model,
+					'<listItem listType="todo" listIndent="0">' +
+						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+					'</listItem>'
+				);
+
+				await waitForAllImagesLoaded( editor );
+
+				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
+
+				expect( resizer._getResizeHost().nodeName ).to.equal( 'LI' );
+
+				await editor.destroy();
 			} );
 		} );
 	} );
