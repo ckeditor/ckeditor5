@@ -12,6 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Widget from '../src/widget';
 import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import {
@@ -664,6 +665,86 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
 			} );
 		} );
+	} );
+} );
+
+describe( 'WidgetToolbarRepository - integration with the drag and drop feature', () => {
+	let editor, widgetToolbarRepository, editorElement, viewDocument;
+
+	beforeEach( () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, WidgetToolbarRepository, Clipboard ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				viewDocument = editor.editing.view.document;
+				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+
+				editor.setData( '<p></p>' );
+			} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
+	} );
+
+	describe( 'isEnabled', () => {
+		it( 'is enabled by default', () => {
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+
+		it( 'is disabled when starts dragging', () => {
+			viewDocument.fire( 'dragstart', {
+				preventDefault: sinon.spy()
+			} );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.false;
+		} );
+
+		it( 'is enabled when ends dragging (drop in the editable)', () => {
+			viewDocument.fire( 'dragstart', {
+				preventDefault: sinon.spy()
+			} );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+			viewDocument.fire( 'drop', {
+				preventDefault: sinon.spy(),
+				target: viewDocument.getRoot().getChild( 0 ),
+				dataTransfer: createDataTransfer( '' )
+			} );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+
+		it( 'is enabled when ends dragging (drop outside the editable)', () => {
+			viewDocument.fire( 'dragstart', {
+				preventDefault: sinon.spy()
+			} );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+			viewDocument.fire( 'dragend', {
+				preventDefault: sinon.spy(),
+				dataTransfer: createDataTransfer( '' )
+			} );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+
+		function createDataTransfer( data ) {
+			return {
+				getData( type ) {
+					return data[ type ];
+				}
+			};
+		}
 	} );
 } );
 

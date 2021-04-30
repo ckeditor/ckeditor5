@@ -86,6 +86,21 @@ export default class WidgetToolbarRepository extends Plugin {
 		 */
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
+		// When starting dragging the content, do not display any toolbar. See: #9566.
+		this.listenTo( editor.editing.view.document, 'dragstart', () => {
+			this.forceDisabled( 'WidgetToolbar:drag&drop' );
+		} );
+
+		// Enable the plugin after dropping the content in the editor...
+		this.listenTo( editor.editing.view.document, 'drop', () => {
+			this.clearForceDisabled( 'WidgetToolbar:drag&drop' );
+		} );
+
+		// ...or if drag ends outside the editable area.
+		this.listenTo( editor.editing.view.document, 'dragend', () => {
+			this.clearForceDisabled( 'WidgetToolbar:drag&drop' );
+		} );
+
 		this.on( 'change:isEnabled', () => {
 			this._updateToolbarsVisibility();
 		} );
