@@ -86,21 +86,6 @@ export default class WidgetToolbarRepository extends Plugin {
 		 */
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
-		// When starting dragging the content, do not display any toolbar. See: #9566.
-		this.listenTo( editor.editing.view.document, 'dragstart', () => {
-			this.forceDisabled( 'WidgetToolbar:drag&drop' );
-		} );
-
-		// Enable the plugin after dropping the content in the editor...
-		this.listenTo( editor.editing.view.document, 'drop', () => {
-			this.clearForceDisabled( 'WidgetToolbar:drag&drop' );
-		} );
-
-		// ...or if drag ends outside the editable area.
-		this.listenTo( editor.editing.view.document, 'dragend', () => {
-			this.clearForceDisabled( 'WidgetToolbar:drag&drop' );
-		} );
-
 		this.on( 'change:isEnabled', () => {
 			this._updateToolbarsVisibility();
 		} );
@@ -113,6 +98,15 @@ export default class WidgetToolbarRepository extends Plugin {
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => {
 			this._updateToolbarsVisibility();
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		if ( this.editor.plugins.has( 'DragDrop' ) ) {
+			this._disableToolbarsWhenDraggingWidgets();
+		}
 	}
 
 	destroy() {
@@ -281,6 +275,37 @@ export default class WidgetToolbarRepository extends Plugin {
 	 */
 	_isToolbarInBalloon( toolbar ) {
 		return this._balloon.hasView( toolbar.view );
+	}
+
+	/**
+	 * Disable the `WidgetToolbarRepository` plugin whenever the widget is being dragged into hiding all toolbars.
+	 * That can be problematic if the drag should end in the place covered by the toolbar view.
+	 *
+	 * @private
+	 */
+	_disableToolbarsWhenDraggingWidgets() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
+		const dragDrop = editor.plugins.get( 'DragDrop' );
+
+		// When starting dragging the widget, do not display any toolbar. See: #9566.
+		this.listenTo( viewDocument, 'dragstart', ( evt, data ) => {
+			const widget = data.target ? dragDrop.findDraggableWidget( data.target ) : null;
+
+			if ( widget ) {
+				this.forceDisabled( 'WidgetToolbar:drag&drop' );
+			}
+		} );
+
+		// Enable the plugin after dropping the widget in the editor...
+		this.listenTo( viewDocument, 'drop', () => {
+			this.clearForceDisabled( 'WidgetToolbar:drag&drop' );
+		} );
+
+		// ...or if drag ends outside the editable area.
+		this.listenTo( viewDocument, 'dragend', () => {
+			this.clearForceDisabled( 'WidgetToolbar:drag&drop' );
+		} );
 	}
 }
 

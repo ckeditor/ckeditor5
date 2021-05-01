@@ -13,6 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Widget from '../src/widget';
 import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import {
@@ -677,7 +678,7 @@ describe( 'WidgetToolbarRepository - integration with the drag and drop feature'
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, WidgetToolbarRepository, Clipboard ]
+				plugins: [ Paragraph, WidgetToolbarRepository, Clipboard, HorizontalLine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -694,22 +695,63 @@ describe( 'WidgetToolbarRepository - integration with the drag and drop feature'
 		return editor.destroy();
 	} );
 
+	it( 'should not listen to drag events if the "DragDrop" plugin is missing', () => {
+		const draggingEventsMethodStub = sinon.stub( WidgetToolbarRepository.prototype, '_disableToolbarsWhenDraggingWidgets' );
+
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ WidgetToolbarRepository ]
+			} )
+			.then( editor => {
+				expect( draggingEventsMethodStub.called ).to.equal( false );
+
+				return editor.destroy();
+			} )
+			.then( () => {
+				draggingEventsMethodStub.restore();
+				editorElement.remove();
+			} );
+	} );
+
 	describe( 'isEnabled', () => {
 		it( 'is enabled by default', () => {
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 
-		it( 'is disabled when starts dragging', () => {
+		it( 'is enabled when starts dragging the text node', () => {
+			setData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
 			viewDocument.fire( 'dragstart', {
-				preventDefault: sinon.spy()
+				preventDefault: sinon.spy(),
+				target: viewDocument.getRoot().getChild( 1 ),
+				dataTransfer: createDataTransfer( {} )
+			} );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.false;
+		} );
+
+		it( 'is disabled when starts dragging the widget', () => {
+			setData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
+
+			viewDocument.fire( 'dragstart', {
+				preventDefault: sinon.spy(),
+				target: viewDocument.getRoot().getChild( 1 ),
+				dataTransfer: createDataTransfer( {} )
 			} );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.false;
 		} );
 
 		it( 'is enabled when ends dragging (drop in the editable)', () => {
+			setData( editor.model, '[<horizontalLine></horizontalLine>]' );
+
 			viewDocument.fire( 'dragstart', {
-				preventDefault: sinon.spy()
+				preventDefault: sinon.spy(),
+				target: viewDocument.getRoot().getChild( 0 ),
+				dataTransfer: createDataTransfer( {} )
 			} );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -717,22 +759,26 @@ describe( 'WidgetToolbarRepository - integration with the drag and drop feature'
 			viewDocument.fire( 'drop', {
 				preventDefault: sinon.spy(),
 				target: viewDocument.getRoot().getChild( 0 ),
-				dataTransfer: createDataTransfer( '' )
+				dataTransfer: createDataTransfer( {} )
 			} );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 
 		it( 'is enabled when ends dragging (drop outside the editable)', () => {
+			setData( editor.model, '[<horizontalLine></horizontalLine>]' );
+
 			viewDocument.fire( 'dragstart', {
-				preventDefault: sinon.spy()
+				preventDefault: sinon.spy(),
+				target: viewDocument.getRoot().getChild( 0 ),
+				dataTransfer: createDataTransfer( {} )
 			} );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.false;
 
 			viewDocument.fire( 'dragend', {
 				preventDefault: sinon.spy(),
-				dataTransfer: createDataTransfer( '' )
+				dataTransfer: createDataTransfer( {} )
 			} );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
@@ -742,6 +788,10 @@ describe( 'WidgetToolbarRepository - integration with the drag and drop feature'
 			return {
 				getData( type ) {
 					return data[ type ];
+				},
+
+				setData() {
+
 				}
 			};
 		}
