@@ -726,11 +726,10 @@ describe( 'WidgetToolbarRepository - integration with the drag and drop feature'
 
 			viewDocument.fire( 'dragstart', {
 				preventDefault: sinon.spy(),
-				target: viewDocument.getRoot().getChild( 1 ),
 				dataTransfer: createDataTransfer( {} )
 			} );
 
-			expect( widgetToolbarRepository.isEnabled ).to.be.false;
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 
 		it( 'is disabled when starts dragging the widget', () => {
