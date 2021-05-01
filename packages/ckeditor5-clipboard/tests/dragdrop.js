@@ -22,6 +22,8 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
 describe( 'Drag and Drop', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
@@ -1756,6 +1758,80 @@ describe( 'Drag and Drop', () => {
 				expect( data.targetRanges.length ).to.equal( 1 );
 				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
 			} );
+		} );
+	} );
+
+	describe( 'findDraggableWidget()', () => {
+		let editor, model, view, viewDocument, dragDrop;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ DragDrop, ImageBlock, ImageCaption, Table, HorizontalLine, Paragraph ]
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+			viewDocument = view.document;
+			dragDrop = editor.plugins.get( 'DragDrop' );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+			await editorElement.remove();
+		} );
+
+		it( 'should return null for the paragraph view element', () => {
+			setModelData( model, '<paragraph>Foo.</paragraph>' );
+			const viewElement = viewDocument.getRoot().getChild( 0 );
+
+			expect( dragDrop.findDraggableWidget( viewElement ) ).to.equal( null );
+		} );
+
+		it( 'should return the specified target element if passed the widget (horizontal line)', () => {
+			setModelData( model, '<horizontalLine></horizontalLine>' );
+			const viewElement = viewDocument.getRoot().getChild( 0 );
+
+			expect( dragDrop.findDraggableWidget( viewElement ) ).to.equal( viewElement );
+		} );
+
+		it( 'should return the specified target element if passed the widget (image)', () => {
+			setModelData( model, '<image src="/assets/sample.png"></image>' );
+			const viewElement = viewDocument.getRoot().getChild( 0 );
+
+			expect( dragDrop.findDraggableWidget( viewElement ) ).to.equal( viewElement );
+		} );
+
+		it( 'should return the widget if passed a child (figure > img)', () => {
+			setModelData( model, '<image src="/assets/sample.png"></image>' );
+
+			const viewFigure = viewDocument.getRoot().getChild( 0 );
+			const viewImg = Array.from( viewFigure.getChildren() ).find( child => child.name === 'img' );
+
+			expect( dragDrop.findDraggableWidget( viewImg ) ).to.equal( viewFigure );
+		} );
+
+		it( 'should return null if passed the image caption element', () => {
+			setModelData( model, '<image src="/assets/sample.png"><caption></caption></image>' );
+
+			const viewFigure = viewDocument.getRoot().getChild( 0 );
+			const viewCaption = Array.from( viewFigure.getChildren() ).find( child => child.name === 'figcaption' );
+
+			expect( dragDrop.findDraggableWidget( viewCaption ) ).to.equal( null );
+		} );
+
+		it( 'should return the widget element if the target is the selection handle element', () => {
+			setModelData( model,
+				'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+			);
+
+			const widgetViewElement = viewDocument.getRoot().getChild( 0 );
+			const selectionHandleElement = Array.from( widgetViewElement.getChildren() )
+				.find( child => child.hasClass( 'ck-widget__selection-handle' ) );
+
+			expect( dragDrop.findDraggableWidget( selectionHandleElement ) ).to.equal( widgetViewElement );
 		} );
 	} );
 
