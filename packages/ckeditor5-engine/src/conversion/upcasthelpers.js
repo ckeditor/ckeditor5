@@ -868,15 +868,6 @@ function prepareToAttributeConverter( config, shallow ) {
 			return;
 		}
 
-		const modelKey = config.model.key;
-		const modelValue = typeof config.model.value == 'function' ?
-			config.model.value( data.viewItem, conversionApi ) : config.model.value;
-
-		// Do not convert if attribute building function returned falsy value.
-		if ( modelValue === null ) {
-			return;
-		}
-
 		if ( onlyViewNameIsDefined( config.view, data.viewItem ) ) {
 			match.match.name = true;
 		} else {
@@ -886,6 +877,15 @@ function prepareToAttributeConverter( config, shallow ) {
 
 		// Try to consume appropriate values from consumable values list.
 		if ( !conversionApi.consumable.test( data.viewItem, match.match ) ) {
+			return;
+		}
+
+		const modelKey = config.model.key;
+		const modelValue = typeof config.model.value == 'function' ?
+			config.model.value( data.viewItem, conversionApi ) : config.model.value;
+
+		// Do not convert if attribute building function returned falsy value.
+		if ( modelValue === null ) {
 			return;
 		}
 
