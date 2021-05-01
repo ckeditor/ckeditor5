@@ -251,7 +251,7 @@ describe( 'CodeBlockCommand', () => {
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
 		} );
 
-		it( 'should remove all non-text nodes when inserting the "codeBlock" element', () => {
+		it( 'should remove all non-allowed nodes when inserting the "codeBlock" element', () => {
 			model.schema.register( 'div', { inheritAllFrom: '$block', allowIn: 'paragraph' } );
 			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
@@ -261,6 +261,19 @@ describe( 'CodeBlockCommand', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[FooBar]</codeBlock>'
+			);
+		} );
+
+		it( 'should remove all non-allowed nodes when inserting the "codeBlock" element (the softBreak check)', () => {
+			model.schema.register( 'div', { inheritAllFrom: '$block', allowIn: 'paragraph' } );
+			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
+
+			setModelData( model, '[<paragraph>Foo<div></div>Bar<softBreak></softBreak>Baz</paragraph>]' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[FooBar<softBreak></softBreak>Baz]</codeBlock>'
 			);
 		} );
 	} );
