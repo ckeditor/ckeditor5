@@ -43,6 +43,14 @@ describe( 'table cell properties', () => {
 			expect( TableCellPropertiesEditing.pluginName ).to.equal( 'TableCellPropertiesEditing' );
 		} );
 
+		it( 'should define table.tableCellProperties config', () => {
+			const config = editor.config.get( 'table.tableCellProperties' );
+
+			expect( config ).to.be.an( 'object' );
+			expect( config ).to.have.property( 'defaultProperties' );
+			expect( config.defaultProperties ).to.deep.equal( {} );
+		} );
+
 		it( 'adds tableCellBorderColor command', () => {
 			expect( editor.commands.get( 'tableCellBorderColor' ) ).to.be.instanceOf( TableCellBorderColorCommand );
 		} );
@@ -669,11 +677,11 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast text-align:left style', () => {
+				it( 'should upcast text-align:left style (due to the default value of the property)', () => {
 					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should upcast text-align:right style', () => {
@@ -683,11 +691,11 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
 				} );
 
-				it( 'should not upcast text-align:center style (due to the default value of the property)', () => {
+				it( 'should not upcast text-align:center style', () => {
 					editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
 				} );
 
 				it( 'should upcast text-align:justify style', () => {
@@ -695,6 +703,36 @@ describe( 'table cell properties', () => {
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+				} );
+
+				describe( 'the [align] attribute', () => {
+					it( 'should not upcast the align=left attribute (due to the default value of the property)', () => {
+						editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					} );
+
+					it( 'should upcast the align=right attribute', () => {
+						editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
+					} );
+
+					it( 'should upcast the align=center attribute', () => {
+						editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+					} );
+
+					it( 'should upcast the align=justify attribute', () => {
+						editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+					} );
 				} );
 
 				describe( 'for RTL content language', () => {
@@ -713,11 +751,11 @@ describe( 'table cell properties', () => {
 						await editor.destroy();
 					} );
 
-					it( 'should not upcast text-align:right style', () => {
+					it( 'should not upcast text-align:right style (due to the default value of the property)', () => {
 						editor.setData( '<table><tr><td style="text-align:right">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
 					} );
 
 					it( 'should upcast text-align:left style', () => {
@@ -727,11 +765,11 @@ describe( 'table cell properties', () => {
 						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
 					} );
 
-					it( 'should not upcast text-align:center style (due to the default value of the property)', () => {
+					it( 'should not upcast text-align:center style', () => {
 						editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
 					} );
 
 					it( 'should upcast text-align:justify style', () => {
@@ -739,6 +777,36 @@ describe( 'table cell properties', () => {
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+					} );
+
+					describe( 'the [align] attribute', () => {
+						it( 'should upcast the align=left attribute', () => {
+							editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+						} );
+
+						it( 'should not upcast the align=right attribute  (due to the default value of the property)', () => {
+							editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+						} );
+
+						it( 'should upcast the align=center attribute', () => {
+							editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+						} );
+
+						it( 'should upcast the align=justify attribute', () => {
+							editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+						} );
 					} );
 				} );
 			} );

@@ -77,7 +77,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 			{
 				includeVerticalAlignmentProperty: true,
 				includeHorizontalAlignmentProperty: true,
-				padding: true
+				padding: true,
+				isRightToLeftContent: editor.locale.contentLanguageDirection === 'rtl'
 			}
 		);
 

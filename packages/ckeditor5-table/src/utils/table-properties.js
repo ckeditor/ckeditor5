@@ -74,6 +74,7 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
  * @param {Boolean} [options.includePaddingProperty=false] Whether the "padding" property should be added.
  * @param {Boolean} [options.includeVerticalAlignmentProperty=false] Whether the "verticalAlignment" property should be added.
  * @param {Boolean} [options.includeHorizontalAlignmentProperty=false] Whether the "horizontalAlignment" property should be added.
+ * @param {Boolean} [options.isRightToLeftContent=false] Whether the content is right-to-left.
  * @returns {Object}
  */
 export function getNormalizedDefaultProperties( config, options = {} ) {
@@ -99,7 +100,7 @@ export function getNormalizedDefaultProperties( config, options = {} ) {
 	}
 
 	if ( options.includeHorizontalAlignmentProperty && !normalizedConfig.horizontalAlignment ) {
-		normalizedConfig.horizontalAlignment = 'center';
+		normalizedConfig.horizontalAlignment = options.isRightToLeftContent ? 'right' : 'left';
 	}
 
 	return normalizedConfig;

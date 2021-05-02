@@ -95,7 +95,8 @@ export default class TableCellPropertiesUI extends Plugin {
 			{
 				includeVerticalAlignmentProperty: true,
 				includeHorizontalAlignmentProperty: true,
-				padding: true
+				padding: true,
+				isRightToLeftContent: editor.locale.contentLanguageDirection === 'rtl'
 			}
 		);
 

@@ -68,11 +68,26 @@ describe( 'table utils', () => {
 				} );
 			} );
 
-			it( 'should add the horizontalAlignment property', () => {
+			it( 'should add the horizontalAlignment property (left-to-right)', () => {
 				const editorConfig = {};
 
 				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).to.deep.equal( {
-					horizontalAlignment: 'center',
+					horizontalAlignment: 'left',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should add the horizontalAlignment property (right-to-left)', () => {
+				const editorConfig = {};
+				const options = { includeHorizontalAlignmentProperty: true, isRightToLeftContent: true };
+
+				expect( getNormalizedDefaultProperties( editorConfig, options ) ).to.deep.equal( {
+					horizontalAlignment: 'right',
 					borderStyle: 'none',
 					borderWidth: '',
 					borderColor: '',
@@ -84,11 +99,11 @@ describe( 'table utils', () => {
 
 			it( 'should not overwrite the horizontalAlignment property', () => {
 				const editorConfig = {
-					horizontalAlignment: 'left'
+					horizontalAlignment: 'center'
 				};
 
 				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).to.deep.equal( {
-					horizontalAlignment: 'left',
+					horizontalAlignment: 'center',
 					borderStyle: 'none',
 					borderWidth: '',
 					borderColor: '',
@@ -119,6 +134,36 @@ describe( 'table utils', () => {
 
 				expect( getNormalizedDefaultProperties( editorConfig, { includeVerticalAlignmentProperty: true } ) ).to.deep.equal( {
 					verticalAlignment: 'top',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should add the alignment padding', () => {
+				const editorConfig = {};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includePaddingProperty: true } ) ).to.deep.equal( {
+					padding: '',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should not overwrite the alignment padding', () => {
+				const editorConfig = {
+					padding: '10px'
+				};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includePaddingProperty: true } ) ).to.deep.equal( {
+					padding: '10px',
 					borderStyle: 'none',
 					borderWidth: '',
 					borderColor: '',

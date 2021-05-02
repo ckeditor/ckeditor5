@@ -709,6 +709,7 @@ export default class TableCellPropertiesView extends View {
 		// -- Horizontal ---------------------------------------------------
 
 		const horizontalAlignmentToolbar = new ToolbarView( locale );
+		const isContentRTL = this.locale.contentLanguageDirection === 'rtl';
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
@@ -721,6 +722,18 @@ export default class TableCellPropertiesView extends View {
 			toolbar: horizontalAlignmentToolbar,
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
+			nameToValue: name => {
+				// For the RTL content, we want to swap the buttons "align to the left" and "align to the right".
+				if ( isContentRTL ) {
+					if ( name === 'left' ) {
+						return 'right';
+					} else if ( name === 'right' ) {
+						return 'left';
+					}
+				}
+
+				return name;
+			},
 			defaultValue: this.options.defaultTableCellProperties.horizontalAlignment
 		} );
 
