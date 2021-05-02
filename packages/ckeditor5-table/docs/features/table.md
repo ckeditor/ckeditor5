@@ -288,10 +288,10 @@ The same will be applied for new tables and cells if they will be inserted into 
 
 {@snippet features/table-default-properties}
 
-Read more about {@link module:table/tableproperties~TablePropertiesOptions all supported styles} for the table default properties feature.
+Read more about all supported properties for the {@link module:table/tableproperties~TablePropertiesOptions table}, and {@link module:table/tablecellproperties~TableCellPropertiesOptions table cells} features.
 
 <info-box>
-	The default table styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
+	The default table, and table cell styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
 
 ## Block vs inline content in table cells
