@@ -15,7 +15,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableCellHorizontalAlignmentCommand', () => {
+		describe( 'TableCellHorizontalAlignmentCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -24,7 +24,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableCellHorizontalAlignmentCommand( editor );
+				command = new TableCellHorizontalAlignmentCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -252,6 +252,101 @@ describe( 'table cell properties', () => {
 							[ '10', '11' ]
 						] ) );
 					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableCellHorizontalAlignmentCommand: non-0empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TableCellPropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableCellHorizontalAlignmentCommand( editor, 'left' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default value', () => {
+						setData( model, modelTable( [ [ { horizontalAlignment: 'left', contents: '[]foo' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined is selection contains the default value', () => {
+						setData( model, modelTable( [ [ { horizontalAlignment: 'left', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it(
+						'should be set if all table cells have the same "horizontalAlignment" property value which is the default value',
+						() => {
+							setData( model, modelTable( [
+								[
+									{ contents: '00', isSelected: true, horizontalAlignment: 'left' },
+									{ contents: '01', isSelected: true, horizontalAlignment: 'left' }
+								],
+								[
+									'10',
+									{ contents: '11', isSelected: true, horizontalAlignment: 'left' }
+								]
+							] ) );
+
+							expect( command.value ).to.be.undefined;
+						} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove horizontalAlignment from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { horizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
+
+						command.execute( { value: 'left' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove horizontalAlignment from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute( { value: 'left' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it(
+						'should remove the "horizontalAlignment" attribute from selected table cells if the default value is passed',
+						() => {
+							setData( model, modelTable( [
+								[ { contents: '00', isSelected: true, horizontalAlignment: 'right' }, '01' ],
+								[ '10', { contents: '11', isSelected: true, horizontalAlignment: 'right' } ]
+							] ) );
+
+							command.execute( { value: 'left' } );
+
+							assertEqualMarkup( editor.getData(), viewTable( [
+								[ '00', '01' ],
+								[ '10', '11' ]
+							] ) );
+						}
+					);
 				} );
 			} );
 		} );

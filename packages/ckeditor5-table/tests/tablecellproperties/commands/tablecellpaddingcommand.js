@@ -15,7 +15,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableCellPaddingCommand', () => {
+		describe( 'TableCellPaddingCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -327,6 +327,108 @@ describe( 'table cell properties', () => {
 						] ) );
 
 						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableCellPaddingCommand: non-default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TableCellPropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableCellPaddingCommand( editor, '10px' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default padding property (single string)', () => {
+						setData( model, modelTable( [ [ { padding: '10px', contents: '[]foo' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if selected table cell has the default property object with same values', () => {
+						setTableCellWithObjectAttributes( model, {
+							padding: {
+								top: '10px',
+								right: '10px',
+								bottom: '10px',
+								left: '10px'
+							}
+						}, '[]foo' );
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined is selection contains the default value', () => {
+						setData( model, modelTable( [ [ { padding: '10px', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if all table cells have the same "padding" property value which is the default value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, padding: '10px' },
+								{ contents: '01', isSelected: true, padding: '10px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, padding: '10px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove padding from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { padding: '2em', contents: '[]foo' } ] ] ) );
+
+						command.execute( { value: '10px' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove padding from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute( { value: '10px' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should remove "padding" from selected table cells if the default value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, padding: '25px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, padding: '25px' } ]
+						] ) );
+
+						command.execute( { value: '10px' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[ '00', '01' ],
