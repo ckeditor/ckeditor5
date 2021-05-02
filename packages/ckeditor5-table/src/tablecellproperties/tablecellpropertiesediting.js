@@ -107,7 +107,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, {
 			modelAttribute: 'height',
 			styleName: 'height',
-			defaultValue: defaultTableCellProperties.width
+			defaultValue: defaultTableCellProperties.height
 		} );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor, defaultTableCellProperties.height ) );
 
@@ -116,7 +116,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 			modelAttribute: 'padding',
 			styleName: 'padding',
 			reduceBoxSides: true,
-			defaultValue: defaultTableCellProperties.width
+			defaultValue: defaultTableCellProperties.padding
 		} );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor, defaultTableCellProperties.padding ) );
 
@@ -124,7 +124,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, {
 			modelAttribute: 'backgroundColor',
 			styleName: 'background-color',
-			defaultValue: defaultTableCellProperties.width
+			defaultValue: defaultTableCellProperties.backgroundColor
 		} );
 		editor.commands.add(
 			'tableCellBackgroundColor',
@@ -180,8 +180,7 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 				value: {
 					'text-align': alignment
 				}
-			} ),
-			converterPriority: 'high'
+			} )
 		} );
 
 	conversion.for( 'upcast' )
@@ -242,8 +241,7 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 				value: {
 					'vertical-align': alignment
 				}
-			} ),
-			converterPriority: 'high'
+			} )
 		} );
 
 	conversion.for( 'upcast' )
