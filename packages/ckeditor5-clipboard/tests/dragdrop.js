@@ -10,6 +10,7 @@ import DragDrop from '../src/dragdrop';
 import PastePlainText from '../src/pasteplaintext';
 
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -22,8 +23,6 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
 describe( 'Drag and Drop', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
@@ -1761,77 +1760,119 @@ describe( 'Drag and Drop', () => {
 		} );
 	} );
 
-	describe( 'findDraggableWidget()', () => {
-		let editor, model, view, viewDocument, dragDrop;
+	describe( 'integration with the WidgetToolbarRepository plugin', () => {
+		let editor, widgetToolbarRepository, editorElement, viewDocument;
 
-		beforeEach( async () => {
+		beforeEach( () => {
 			editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ DragDrop, ImageBlock, ImageCaption, Table, HorizontalLine, Paragraph ]
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, WidgetToolbarRepository, DragDrop, HorizontalLine ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					viewDocument = editor.editing.view.document;
+					widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+
+					editor.setData( '<p></p>' );
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should not listen to drag events if the "WidgetToolbarRepository" plugin is missing', () => {
+			const draggingEventsMethodStub = sinon.stub( DragDrop.prototype, '_disableToolbarsWhenDraggingWidgets' );
+
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ DragDrop ]
+				} )
+				.then( editor => {
+					expect( draggingEventsMethodStub.called ).to.equal( false );
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					draggingEventsMethodStub.restore();
+					editorElement.remove();
+				} );
+		} );
+
+		describe( 'WidgetToolbarRepository#isEnabled', () => {
+			it( 'is enabled by default', () => {
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
 			} );
 
-			model = editor.model;
-			view = editor.editing.view;
-			viewDocument = view.document;
-			dragDrop = editor.plugins.get( 'DragDrop' );
-		} );
+			it( 'is enabled when starts dragging the text node', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
 
-		afterEach( async () => {
-			await editor.destroy();
-			await editorElement.remove();
-		} );
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					dataTransfer: createDataTransfer( {} )
+				} );
 
-		it( 'should return null for the paragraph view element', () => {
-			setModelData( model, '<paragraph>Foo.</paragraph>' );
-			const viewElement = viewDocument.getRoot().getChild( 0 );
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
 
-			expect( dragDrop.findDraggableWidget( viewElement ) ).to.equal( null );
-		} );
+			it( 'is disabled when starts dragging the widget', () => {
+				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
 
-		it( 'should return the specified target element if passed the widget (horizontal line)', () => {
-			setModelData( model, '<horizontalLine></horizontalLine>' );
-			const viewElement = viewDocument.getRoot().getChild( 0 );
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 1 ),
+					dataTransfer: createDataTransfer( {} )
+				} );
 
-			expect( dragDrop.findDraggableWidget( viewElement ) ).to.equal( viewElement );
-		} );
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+			} );
 
-		it( 'should return the specified target element if passed the widget (image)', () => {
-			setModelData( model, '<image src="/assets/sample.png"></image>' );
-			const viewElement = viewDocument.getRoot().getChild( 0 );
+			it( 'is enabled when ends dragging (drop in the editable)', () => {
+				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
 
-			expect( dragDrop.findDraggableWidget( viewElement ) ).to.equal( viewElement );
-		} );
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer: createDataTransfer( {} )
+				} );
 
-		it( 'should return the widget if passed a child (figure > img)', () => {
-			setModelData( model, '<image src="/assets/sample.png"></image>' );
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
 
-			const viewFigure = viewDocument.getRoot().getChild( 0 );
-			const viewImg = Array.from( viewFigure.getChildren() ).find( child => child.name === 'img' );
+				viewDocument.fire( 'drop', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer: createDataTransfer( {} )
+				} );
 
-			expect( dragDrop.findDraggableWidget( viewImg ) ).to.equal( viewFigure );
-		} );
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
 
-		it( 'should return null if passed the image caption element', () => {
-			setModelData( model, '<image src="/assets/sample.png"><caption></caption></image>' );
+			it( 'is enabled when ends dragging (drop outside the editable)', () => {
+				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
 
-			const viewFigure = viewDocument.getRoot().getChild( 0 );
-			const viewCaption = Array.from( viewFigure.getChildren() ).find( child => child.name === 'figcaption' );
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer: createDataTransfer( {} )
+				} );
 
-			expect( dragDrop.findDraggableWidget( viewCaption ) ).to.equal( null );
-		} );
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
 
-		it( 'should return the widget element if the target is the selection handle element', () => {
-			setModelData( model,
-				'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
-			);
+				viewDocument.fire( 'dragend', {
+					preventDefault: sinon.spy(),
+					dataTransfer: createDataTransfer( {} )
+				} );
 
-			const widgetViewElement = viewDocument.getRoot().getChild( 0 );
-			const selectionHandleElement = Array.from( widgetViewElement.getChildren() )
-				.find( child => child.hasClass( 'ck-widget__selection-handle' ) );
-
-			expect( dragDrop.findDraggableWidget( selectionHandleElement ) ).to.equal( widgetViewElement );
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
 		} );
 	} );
 

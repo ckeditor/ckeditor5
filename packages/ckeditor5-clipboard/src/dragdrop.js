@@ -212,6 +212,16 @@ export default class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	afterInit() {
+		// See: #9566.
+		if ( this.editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+			this._disableToolbarsWhenDraggingWidgets();
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		if ( this._draggedRange ) {
 			this._draggedRange.detach();
@@ -223,39 +233,6 @@ export default class DragDrop extends Plugin {
 		this._clearDraggableAttributesDelayed.cancel();
 
 		return super.destroy();
-	}
-
-	/**
-	 * Returns a widget element that should be dragged.
-	 *
-	 * @param {module:engine/view/element~Element} target
-	 * @returns {module:engine/view/element~Element}
-	 */
-	findDraggableWidget( target ) {
-		// This is directly an editable so not a widget for sure.
-		if ( target.is( 'editableElement' ) ) {
-			return null;
-		}
-
-		// TODO: Let's have a isWidgetSelectionHandleDomElement() helper in ckeditor5-widget utils.
-		if ( target.hasClass( 'ck-widget__selection-handle' ) ) {
-			return target.findAncestor( isWidget );
-		}
-
-		// Direct hit on a widget.
-		if ( isWidget( target ) ) {
-			return target;
-		}
-
-		// Find closest ancestor that is either a widget or an editable element...
-		const ancestor = target.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) );
-
-		// ...and if closer was the widget then enable dragging it.
-		if ( isWidget( ancestor ) ) {
-			return ancestor;
-		}
-
-		return null;
 	}
 
 	/**
@@ -286,7 +263,7 @@ export default class DragDrop extends Plugin {
 			// data.dataTransfer._native.setDragImage( data.domTarget, 0, 0 );
 
 			// Check if this is dragstart over the widget (but not a nested editable).
-			const draggableWidget = data.target ? this.findDraggableWidget( data.target ) : null;
+			const draggableWidget = data.target ? findDraggableWidget( data.target ) : null;
 
 			if ( draggableWidget ) {
 				const modelElement = editor.editing.mapper.toModelElement( draggableWidget );
@@ -495,7 +472,7 @@ export default class DragDrop extends Plugin {
 			this._clearDraggableAttributesDelayed.cancel();
 
 			// Check if this is a mousedown over the widget (but not a nested editable).
-			let draggableElement = this.findDraggableWidget( data.target );
+			let draggableElement = findDraggableWidget( data.target );
 
 			// Note: There is a limitation that if more than a widget is selected (a widget and some text)
 			// and dragging starts on the widget, then only the widget is dragged.
@@ -656,6 +633,37 @@ export default class DragDrop extends Plugin {
 
 		this._draggedRange.detach();
 		this._draggedRange = null;
+	}
+
+	/**
+	 * Disable the `WidgetToolbarRepository` plugin whenever the widget is being dragged into hiding all toolbars.
+	 * Dragging widgets can be problematic if the drag should end in the place covered by the toolbar view.
+	 *
+	 * @private
+	 */
+	_disableToolbarsWhenDraggingWidgets() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
+		const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+		// When starting dragging the widget, do not display any toolbar. See: #9566.
+		this.listenTo( viewDocument, 'dragstart', ( evt, data ) => {
+			const widget = data.target ? findDraggableWidget( data.target ) : null;
+
+			if ( widget ) {
+				widgetToolbarRepository.forceDisabled( 'dragDrop' );
+			}
+		} );
+
+		// Enable the plugin after dropping the widget in the editor...
+		this.listenTo( viewDocument, 'drop', () => {
+			widgetToolbarRepository.clearForceDisabled( 'dragDrop' );
+		} );
+
+		// ...or if drag ends outside the editable area.
+		this.listenTo( viewDocument, 'dragend', () => {
+			widgetToolbarRepository.clearForceDisabled( 'dragDrop' );
+		} );
 	}
 }
 
@@ -863,4 +871,35 @@ function delay( func, wait ) {
 	};
 
 	return delayed;
+}
+
+// Returns a widget element that should be dragged.
+//
+// @param {module:engine/view/element~Element} target
+// @returns {module:engine/view/element~Element}
+function findDraggableWidget( target ) {
+	// This is directly an editable so not a widget for sure.
+	if ( target.is( 'editableElement' ) ) {
+		return null;
+	}
+
+	// TODO: Let's have a isWidgetSelectionHandleDomElement() helper in ckeditor5-widget utils.
+	if ( target.hasClass( 'ck-widget__selection-handle' ) ) {
+		return target.findAncestor( isWidget );
+	}
+
+	// Direct hit on a widget.
+	if ( isWidget( target ) ) {
+		return target;
+	}
+
+	// Find closest ancestor that is either a widget or an editable element...
+	const ancestor = target.findAncestor( node => isWidget( node ) || node.is( 'editableElement' ) );
+
+	// ...and if closer was the widget then enable dragging it.
+	if ( isWidget( ancestor ) ) {
+		return ancestor;
+	}
+
+	return null;
 }
