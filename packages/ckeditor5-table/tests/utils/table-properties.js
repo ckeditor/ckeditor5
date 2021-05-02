@@ -12,7 +12,6 @@ describe( 'table utils', () => {
 				const editorConfig = {};
 
 				expect( getNormalizedDefaultProperties( editorConfig ) ).to.deep.equal( {
-					alignment: 'center',
 					borderStyle: 'none',
 					borderWidth: '',
 					borderColor: '',
@@ -24,20 +23,108 @@ describe( 'table utils', () => {
 
 			it( 'should return an object with provided configuration and added missing properties', () => {
 				const editorConfig = {
-					alignment: 'left',
 					borderStyle: 'dashed',
 					width: '500px',
 					height: '300px'
 				};
 
 				expect( getNormalizedDefaultProperties( editorConfig ) ).to.deep.equal( {
-					alignment: 'left',
 					backgroundColor: '',
 					borderColor: '',
 					borderStyle: 'dashed',
 					borderWidth: '',
 					height: '300px',
 					width: '500px'
+				} );
+			} );
+
+			it( 'should add the alignment property', () => {
+				const editorConfig = {};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includeAlignmentProperty: true } ) ).to.deep.equal( {
+					alignment: 'center',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should not overwrite the alignment property', () => {
+				const editorConfig = {
+					alignment: 'left'
+				};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includeAlignmentProperty: true } ) ).to.deep.equal( {
+					alignment: 'left',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should add the horizontalAlignment property', () => {
+				const editorConfig = {};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).to.deep.equal( {
+					horizontalAlignment: 'center',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should not overwrite the horizontalAlignment property', () => {
+				const editorConfig = {
+					horizontalAlignment: 'left'
+				};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includeHorizontalAlignmentProperty: true } ) ).to.deep.equal( {
+					horizontalAlignment: 'left',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should add the verticalAlignment property', () => {
+				const editorConfig = {};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includeVerticalAlignmentProperty: true } ) ).to.deep.equal( {
+					verticalAlignment: 'middle',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+
+			it( 'should not overwrite the verticalAlignment property', () => {
+				const editorConfig = {
+					verticalAlignment: 'top'
+				};
+
+				expect( getNormalizedDefaultProperties( editorConfig, { includeVerticalAlignmentProperty: true } ) ).to.deep.equal( {
+					verticalAlignment: 'top',
+					borderStyle: 'none',
+					borderWidth: '',
+					borderColor: '',
+					backgroundColor: '',
+					width: '',
+					height: ''
 				} );
 			} );
 		} );

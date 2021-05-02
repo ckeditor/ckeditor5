@@ -78,3 +78,28 @@ export default class TableCellProperties extends Plugin {
  *
  * @member {Object} module:table/table~TableConfig#tableCellProperties
  */
+
+/**
+ * The configuration of the table cell default properties feature.
+ *
+ * @typedef {Object} module:table/tablecellproperties~TableCellPropertiesOptions
+ *
+ * @property {String} width The default `width` of the table.
+ *
+ * @property {String} height The default `height` of the table.
+ *
+ * @property {String} padding The default `padding` of the table.
+ *
+ * @property {String} backgroundColor The default `background-color` of the table.
+ *
+ * @property {String} borderColor The default `border-color` of the table.
+ *
+ * @property {String} borderWidth The default `border-width` of the table.
+ *
+ * @property {String} [borderStyle='none'] The default `border-style` of the table.
+ *
+ * @property {String} [horizontalAlignment='center'] The default `horizontalAlignment` of the table.
+ *
+ * @property {String} [verticalAlignment='middle'] The default `verticalAlignment` of the table.
+ */
+

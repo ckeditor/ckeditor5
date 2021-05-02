@@ -68,13 +68,16 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
 /**
  * Returns the normalized configuration.
  *
- * @protected
  * @param {Object} config
- * @returns {module:table/tableproperties~TablePropertiesOptions}
+ * @param {Object} [options={}]
+ * @param {Boolean} [options.includeAlignmentProperty=false] Whether the "alignment" property should be added.
+ * @param {Boolean} [options.includePaddingProperty=false] Whether the "padding" property should be added.
+ * @param {Boolean} [options.includeVerticalAlignmentProperty=false] Whether the "verticalAlignment" property should be added.
+ * @param {Boolean} [options.includeHorizontalAlignmentProperty=false] Whether the "horizontalAlignment" property should be added.
+ * @returns {Object}
  */
-export function getNormalizedDefaultProperties( config ) {
-	return Object.assign( {
-		alignment: 'center',
+export function getNormalizedDefaultProperties( config, options = {} ) {
+	const normalizedConfig = Object.assign( {
 		borderStyle: 'none',
 		borderWidth: '',
 		borderColor: '',
@@ -82,4 +85,22 @@ export function getNormalizedDefaultProperties( config ) {
 		width: '',
 		height: ''
 	}, config );
+
+	if ( options.includeAlignmentProperty && !normalizedConfig.alignment ) {
+		normalizedConfig.alignment = 'center';
+	}
+
+	if ( options.includePaddingProperty && !normalizedConfig.padding ) {
+		normalizedConfig.padding = '';
+	}
+
+	if ( options.includeVerticalAlignmentProperty && !normalizedConfig.verticalAlignment ) {
+		normalizedConfig.verticalAlignment = 'middle';
+	}
+
+	if ( options.includeHorizontalAlignmentProperty && !normalizedConfig.horizontalAlignment ) {
+		normalizedConfig.horizontalAlignment = 'center';
+	}
+
+	return normalizedConfig;
 }
