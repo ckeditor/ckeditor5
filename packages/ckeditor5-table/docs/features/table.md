@@ -221,11 +221,11 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### Default table styles
+### Default table and table cell styles
 
 The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link builds/guides/integration/content-styles editor content styles}.
 
-The **“Table properties”** button in the toolbar will show the table properties applied to the table.
+The **“Table properties”**, and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
 
 The stylesheet for the editor displayed below looks as follows:
 
@@ -241,9 +241,18 @@ The stylesheet for the editor displayed below looks as follows:
     border-color: 'hsl(90, 75%, 60%)';
     border-width: 3px;
 }
+
+.ck-content .table table td {
+    text-align: center;
+    vertical-align: bottom;
+    padding: 10px
+}
 ```
 
-The same values must be passed to the editor configuration as the {@link module:table/tableproperties~TablePropertiesOptions `table.tableProperties.defaultProperties`} object:
+The same values must be passed to the editor configuration as:
+
+* the {@link module:table/tableproperties~TablePropertiesOptions `table.tableProperties.defaultProperties`} object for the table properties,
+* the {@link module:table/tablecellproperties~TableCellPropertiesOptions `table.tableCellProperties.defaultProperties`} object for the table cell properties.
 
 ```js
 const tableConfig = {
@@ -257,13 +266,25 @@ const tableConfig = {
 	            alignment: 'right',
 	            width: '500px',
 	            height: '250px'
-            }
+            },
+            // The default styles for table cells in the editor. They should be synchronized with the content styles.
+	        tableCellProperties: {
+		        defaultProperties: {
+			        horizontalAlignment: 'center',
+			        verticalAlignment: 'bottom',
+			        padding: '10px'
+		        }
+	        }
         }
     }
 };
 ```
 
-The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`. The same will be applied for new tables if they will be inserted into the editor
+The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`. 
+
+The content should be away about `10px` from the cell's edges (`padding`), vertically aligned to `bottom` and horizontally to `center`.
+
+The same will be applied for new tables and cells if they will be inserted into the editor.
 
 {@snippet features/table-default-properties}
 
