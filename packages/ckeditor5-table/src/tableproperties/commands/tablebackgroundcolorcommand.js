@@ -28,8 +28,9 @@ export default class TableBackgroundColorCommand extends TablePropertyCommand {
 	 * Creates a new `TableBackgroundColorCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'backgroundColor' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'backgroundColor', defaultValue );
 	}
 }

@@ -221,14 +221,66 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Block vs inline content in table cells
+### Default table styles
 
-The table feature allows creating block content (like paragraphs, lists, headings, etc.) in table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), the cell content is considered "inline" and the paragraph is not rendered.
+The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link builds/guides/integration/content-styles editor content styles}.
 
-This means that a table cell can be in two states: with inline content or with block content. The reason for this differentiation is that most tables contain only inline content (e.g. in the [demo](#demos) above) and it is common for "data tables" to not contain any block content. In such scenario, printing out `<p>` elements would be semantically incorrect and also unnecessary. There are, however, scenarios where the user wants to create, for example, a list inside the table and then support for block content is necessary, too.
+The **“Table properties”** button in the toolbar will show the table properties applied to the table.
+
+The stylesheet for the editor displayed below looks as follows:
+
+```css
+.ck-content .table {
+    float: right;
+    width: 500px;
+    height: 250px;
+}
+
+.ck-content .table table {
+    border-style: dashed;
+    border-color: 'hsl(90, 75%, 60%)';
+    border-width: 3px;
+}
+```
+
+The same values must be passed to the editor configuration as the {@link module:table/tableproperties~TablePropertiesOptions `table.tableProperties.defaultProperties`} object:
+
+```js
+const tableConfig = {
+    table: {
+        tableProperties: {
+            // The default styles for tables in the editor. They should be synchronized with the content styles.
+            defaultProperties: {
+	            borderStyle: 'dashed',
+	            borderColor: 'hsl(90, 75%, 60%)',
+	            borderWidth: '3px',
+	            alignment: 'right',
+	            width: '500px',
+	            height: '250px'
+            }
+        }
+    }
+};
+```
+
+The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`. The same will be applied for new tables if they will be inserted into the editor
+
+{@snippet features/table-default-properties}
+
+Read more about {@link module:table/tableproperties~TablePropertiesOptions all supported styles} for the table default properties feature.
 
 <info-box>
-	"Rendering" here means the view layer. In the model a cell is always filled with at least a `<paragraph>`. This is because of consistency, as &mdash; since a cell always has some block content &mdash; the text is never directly inside `<tableCell>`. This also allows features like <kbd>Enter</kbd> support to work out of the box (since a `<paragraph>` exists in the model, it can be split despite the fact that it is not present in the view).
+	The default table styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
+</info-box>
+
+## Block vs inline content in table cells
+
+The table feature allows for creating block content (like paragraphs, lists, headings, etc.) inside table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), the cell content is considered "inline" and the paragraph is not rendered.
+
+This means that a table cell can have two states: with inline content or with block content. The reason for this differentiation is that most tables contain only inline content (e.g. in the [demo](#demos) above) and it is common for "data tables" to not contain any block content. In such a scenario, printing out `<p>` elements would be semantically incorrect and also unnecessary. There are, however, scenarios where the user wants to create, for example, a list inside a table cell and then the support for block content is necessary.
+
+<info-box>
+	"Rendering" here refers to the view layer. In the model, a cell is always filled with at least a `<paragraph>`. This is because of consistency, as &mdash; since a cell always has some block content &mdash; the text is never directly inside the `<tableCell>`. This also allows features like <kbd>Enter</kbd> support to work out of the box (since a `<paragraph>` exists in the model, it can be split despite the fact that it is not present in the view).
 </info-box>
 
 ### Inline content
@@ -325,7 +377,7 @@ The above model structure will be rendered to the data and to the editing view a
 ```
 
 <info-box info>
-	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍&nbsp; if you need this feature.
+	At the moment, it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Feel free to upvote 👍&nbsp; if this feature is important to you.
 </info-box>
 
 ## Disallow nesting tables

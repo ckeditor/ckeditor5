@@ -713,6 +713,41 @@ describe( 'UpcastHelpers', () => {
 				'<div border="border"><div shade="shade"></div></div>'
 			);
 		} );
+
+		// #9536.
+		describe( 'calling the `model.value()` callback', () => {
+			it( 'should not call the `model.view()` callback if the attribute was already consumed', () => {
+				const spy = sinon.spy();
+
+				upcastHelpers.attributeToAttribute( {
+					view: {
+						name: 'span',
+						styles: {
+							'text-align': /[\s\S]+/
+						}
+					},
+					model: {
+						key: 'alignment',
+						value: spy
+					}
+				} );
+
+				upcastDispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, {
+						styles: [ 'text-align' ]
+					} );
+				} );
+
+				const viewElement = viewParse( '<span style="text-align:center;">Foo.</span>' );
+
+				expectResult(
+					viewElement,
+					'Foo.'
+				);
+
+				expect( spy.called ).to.equal( false );
+			} );
+		} );
 	} );
 
 	describe( 'elementToMarker()', () => {

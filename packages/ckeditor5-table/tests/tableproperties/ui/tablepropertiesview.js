@@ -37,7 +37,16 @@ const VIEW_OPTIONS = {
 			label: 'Green',
 			hasBorder: false
 		}
-	]
+	],
+	defaultTableProperties: {
+		borderColor: '',
+		borderStyle: 'none',
+		borderWidth: '',
+		alignment: 'center',
+		width: '',
+		height: '',
+		backgroundColor: ''
+	}
 };
 
 describe( 'table properties', () => {
@@ -159,7 +168,7 @@ describe( 'table properties', () => {
 
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( '' );
+							expect( view.borderStyle ).to.equal( 'none' );
 
 							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );
@@ -178,7 +187,7 @@ describe( 'table properties', () => {
 							view.borderWidth = '1px';
 							view.borderColor = 'red';
 
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 
 							expect( view.borderColor ).to.equal( '' );
 							expect( view.borderWidth ).to.equal( '' );
@@ -207,7 +216,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -269,7 +278,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -703,6 +712,98 @@ describe( 'table properties', () => {
 				view.focus();
 
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'default table properties', () => {
+			let view, locale;
+
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				locale = { t: val => val };
+				view = new TablePropertiesView( locale, {
+					...VIEW_OPTIONS,
+					defaultTableProperties: {
+						alignment: 'left',
+						borderStyle: 'dashed',
+						borderColor: '#ff0',
+						borderWidth: '2px',
+						backgroundColor: '#00f',
+						width: '250px',
+						height: '150px'
+					}
+				} );
+				view.render();
+			} );
+
+			afterEach( () => {
+				view.destroy();
+			} );
+
+			describe( 'form rows', () => {
+				describe( 'border row', () => {
+					describe( 'border style labeled dropdown', () => {
+						it( 'should reset border width and color inputs when setting style to none', () => {
+							view.borderStyle = 'dotted';
+							view.borderWidth = '1px';
+							view.borderColor = 'red';
+
+							view.borderStyle = 'none';
+
+							expect( view.borderColor ).to.equal( '' );
+							expect( view.borderWidth ).to.equal( '' );
+						} );
+					} );
+
+					describe( 'border width input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.borderWidthInput;
+						} );
+
+						it( 'should be enabled only when #borderStyle is different than "none"', () => {
+							view.borderStyle = 'none';
+							expect( labeledInput.isEnabled ).to.be.false;
+
+							view.borderStyle = 'dotted';
+							expect( labeledInput.isEnabled ).to.be.true;
+						} );
+					} );
+
+					describe( 'border color input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.borderColorInput;
+						} );
+
+						it( 'should be enabled only when #borderStyle is different than "none"', () => {
+							view.borderStyle = 'none';
+							expect( labeledInput.isEnabled ).to.be.false;
+
+							view.borderStyle = 'dotted';
+							expect( labeledInput.isEnabled ).to.be.true;
+						} );
+
+						it( 'should replace "Remove color" with the "Restore default" label', () => {
+							const { borderColorInput } = view;
+							const { panelView } = borderColorInput.fieldView._dropdownView;
+
+							expect( panelView.children.first.label ).to.equal( 'Restore default' );
+						} );
+					} );
+				} );
+
+				describe( 'background row', () => {
+					it( 'should replace "Remove color" with the "Restore default" label', () => {
+						const { backgroundInput } = view;
+						const { panelView } = backgroundInput.fieldView._dropdownView;
+
+						expect( panelView.children.first.label ).to.equal( 'Restore default' );
+					} );
+				} );
 			} );
 		} );
 	} );

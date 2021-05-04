@@ -157,9 +157,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		}
 
 		// Store the caption content so it can be restored quickly if the user changes their mind even if they toggle image<->imageInline.
-		if ( captionElement.childCount ) {
-			imageCaptionEditing._saveCaption( selectedImage, captionElement );
-		}
+		imageCaptionEditing._saveCaption( selectedImage, captionElement );
 
 		writer.setSelection( selectedImage, 'on' );
 		writer.remove( captionElement );
