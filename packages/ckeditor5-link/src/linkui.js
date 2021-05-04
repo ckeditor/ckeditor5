@@ -10,8 +10,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ClickObserver } from 'ckeditor5/src/engine';
 import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
-import { isWidget } from 'ckeditor5/src/widget';
-
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';
 import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
@@ -245,6 +243,10 @@ export default class LinkUI extends Plugin {
 		// Keep panel open until selection will be inside the same link element.
 		this.listenTo( viewDocument, 'click', () => {
 			const parentLink = this._getSelectedLinkElement();
+
+			if ( !this.isEnabled ) {
+				return;
+			}
 
 			if ( parentLink ) {
 				// Then show panel but keep focus inside editor editable.
@@ -642,13 +644,6 @@ export default class LinkUI extends Plugin {
 
 			// Check if the link element is fully selected.
 			if ( view.createRangeIn( startLink ).getTrimmed().isEqual( range ) ) {
-				// The link element is not fully selected when, for instance, there's an inline image widget directly inside.
-				// This should be interpreted as a selected inline image and the image UI should be displayed instead
-				// (LinkUI should not interact).
-				if ( startLink.childCount === 1 && isWidget( startLink.getChild( 0 ) ) ) {
-					return null;
-				}
-
 				return startLink;
 			} else {
 				return null;

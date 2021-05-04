@@ -136,6 +136,81 @@ describe( 'LinkImageUI', () => {
 			expect( imageWidget.getChild( 0 ).name ).to.equal( 'img' );
 			expect( data.preventDefault.called ).to.be.true;
 		} );
+
+		// See: #9607.
+		describe( 'blocking the LinkUI plugin', () => {
+			let linkUI;
+
+			beforeEach( () => {
+				linkUI = editor.plugins.get( 'LinkUI' );
+			} );
+
+			it( 'should disable the LinkUI plugin when clicked the linked image', () => {
+				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'in' );
+				} );
+
+				const imageWidget = viewDocument.selection.getSelectedElement();
+				const data = fakeEventData();
+				const eventInfo = new EventInfo( imageWidget, 'click' );
+				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+				viewDocument.fire( 'click', domEventDataMock );
+
+				expect( linkUI.isEnabled ).to.equal( false );
+			} );
+
+			it( 'should disable the LinkUI plugin when clicked the linked inline image', () => {
+				editor.setData( '<p><a href="https://example.com"><img src="" /></a></p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'in' );
+				} );
+
+				const imageWidget = viewDocument.selection.getSelectedElement();
+				const data = fakeEventData();
+				const eventInfo = new EventInfo( imageWidget, 'click' );
+				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+				viewDocument.fire( 'click', domEventDataMock );
+
+				expect( linkUI.isEnabled ).to.equal( false );
+			} );
+
+			it( 'should enable the LinkUI plugin when clicked other element', () => {
+				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure><p>Foo.</p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'on' );
+				} );
+
+				const imageWidget = viewDocument.selection.getSelectedElement();
+				const imageData = fakeEventData();
+				const imageEventInfo = new EventInfo( imageWidget, 'click' );
+				const imageDomEventDataMock = new DomEventData( viewDocument, imageEventInfo, imageData );
+
+				// Click the image first.
+				viewDocument.fire( 'click', imageDomEventDataMock );
+
+				expect( linkUI.isEnabled ).to.equal( false );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'in' );
+				} );
+
+				const paragraphElement = viewDocument.selection.getSelectedElement();
+				const paragraphData = fakeEventData();
+				const paragraphEventInfo = new EventInfo( paragraphElement, 'click' );
+				const paragraphDomEventDataMock = new DomEventData( viewDocument, paragraphEventInfo, paragraphData );
+
+				// Then, click the paragraph.
+				viewDocument.fire( 'click', paragraphDomEventDataMock );
+
+				expect( linkUI.isEnabled ).to.equal( true );
+			} );
+		} );
 	} );
 
 	describe( 'event handling', () => {

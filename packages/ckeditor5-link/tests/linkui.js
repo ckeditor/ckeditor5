@@ -1083,9 +1083,11 @@ describe( 'LinkUI', () => {
 				editor.model.schema.register( 'inlineWidget', {
 					allowWhere: '$text',
 					isObject: true,
-					isInline: true
+					isInline: true,
+					allowAttributesOf: '$text'
 				} );
 
+				// The view element has no children.
 				editor.conversion.for( 'downcast' )
 					.elementToElement( {
 						model: 'inlineWidget',
@@ -1100,6 +1102,46 @@ describe( 'LinkUI', () => {
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
+			} );
+
+			// See: #9607.
+			it( 'should show the UI when clicking on the linked inline widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isInline: true,
+					isObject: true,
+					allowAttributesOf: '$text'
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'inlineWidget',
+					view: ( modelItem, { writer } ) => {
+						const spanView = writer.createContainerElement( 'span', {}, {
+							isAllowedInsideAttributeElement: true
+						} );
+
+						const innerText = writer.createText( '{' + modelItem.name + '}' );
+						writer.insert( writer.createPositionAt( spanView, 0 ), innerText );
+
+						return toWidget( spanView, writer );
+					}
+				} );
+
+				setModelData( editor.model, '<paragraph>Foo [<inlineWidget linkHref="foo"></inlineWidget>] Foo.</paragraph>' );
+
+				observer.fire( 'click', { target: document.body } );
+				sinon.assert.calledWithExactly( spy );
+			} );
+
+			it( 'should do nothing if the plugin is disabled', () => {
+				setModelData( editor.model, '<$text linkHref="url">fo[]o</$text>' );
+
+				linkUIFeature.forceDisabled( 'foo' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.notCalled( spy );
+
+				linkUIFeature.clearForceDisabled( 'foo' );
 			} );
 		} );
 	} );
