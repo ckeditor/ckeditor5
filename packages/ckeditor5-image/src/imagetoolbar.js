@@ -82,8 +82,8 @@ export default class ImageToolbar extends Plugin {
  *			]
  *		};
  *
- * Besides that, the `ImageStyle` plugin allows to define a {@link module:image/imagestyle~ImageStyleDropdownDefinition custom drop-down}
- * while configuring the toolbar.
+ * Besides that, the `ImageStyle` plugin allows to define a
+ * {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition custom drop-down} while configuring the toolbar.
  *
  * The same items can also be used in the {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
  *
@@ -95,7 +95,7 @@ export default class ImageToolbar extends Plugin {
 // Convert the dropdown definitions to their keys registered in the ComponentFactory.
 // The registration precess should be handled by the plugin which handles the UI of a particular feature.
 //
-// @param {Array.<String|module:image/imagestyle~ImageStyleDropdownDefinition>} config
+// @param {Array.<String|module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>} config
 //
 // @returns {Array.<String>}
 function normalizeDeclarativeConfig( config ) {

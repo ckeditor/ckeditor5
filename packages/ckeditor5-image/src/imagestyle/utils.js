@@ -145,7 +145,7 @@ const DEFAULT_ICONS = {
  * those that breaks the text around the image.
  *
  * @readonly
- * @type {Array.<module:image/imagestyle~ImageStyleDropdownDefinition>}
+ * @type {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
  */
 const DEFAULT_DROPDOWN_DEFINITIONS = [ {
 	name: 'imageStyle:wrapText',
@@ -226,7 +226,7 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
  * @protected
  *
  * @param {module:core/plugincollection~PluginCollection} pluginCollection
- * @returns {Array.<module:image/imagestyle~ImageStyleDropdownDefinition>}
+ * @returns {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
  */
 function getDefaultDropdownDefinitions( pluginCollection ) {
 	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
@@ -346,7 +346,7 @@ function warnInvalidStyle( info ) {
 	 * Please make sure the definition implements properly one of the following:
 	 *
 	 * * {@link module:image/imagestyle~ImageStyleOptionDefinition image style option definition},
-	 * * {@link module:image/imagestyle~ImageStyleDropdownDefinition image style dropdown definition}
+	 * * {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition image style dropdown definition}
 	 *
 	 * @error image-style-configuration-definition-invalid
 	 * @param {String} [dropdown] The name of the invalid drop-down

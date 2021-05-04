@@ -101,7 +101,7 @@ export default class ImageStyleUI extends Plugin {
 	 * Creates a dropdown and stores it in the editor {@link module:ui/componentfactory~ComponentFactory}.
 	 *
 	 * @private
-	 * @param {module:image/imagestyle~ImageStyleDropdownDefinition} dropdownConfig
+	 * @param {module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition} dropdownConfig
 	 * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} definedStyles
 	 */
 	_createDropdown( dropdownConfig, definedStyles ) {
@@ -206,10 +206,11 @@ export default class ImageStyleUI extends Plugin {
 
 // Returns the translated `title` from the passed styles array.
 //
-// @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleDropdownDefinition>} styles
+// @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition|
+// module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>} styles
 // @param {Object.<String,String>} titles
 //
-// @returns {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle~ImageStyleDropdownDefinition>}
+// @returns {Array.<module:image/imagestyle~ImageStyleOptionDefinition|module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
 function translateStyles( styles, titles ) {
 	for ( const style of styles ) {
 		// Localize the titles of the styles, if a title corresponds with
@@ -283,5 +284,5 @@ function getDropdownButtonTitle( dropdownTitle, buttonTitle ) {
  * @property {String} defaultItem The name of one of the buttons from the items list,
  * which will be used as a default button for the drop-down's split button.
  *
- * @typedef {Object} module:image/imagestyle/imagestyleUI~ImageStyleDropdownDefinition
+ * @typedef {Object} module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition
  */
