@@ -11,7 +11,7 @@ menu-title: Spelling and grammar checking
 
 [WProofreader](https://webspellchecker.com/wsc-proofreader) is an innovative, multi-language proofreading tool that combines the functionality of "spell check as you type" and "spell check in a dialog" in a modern, distraction-free UI. Spelling, punctuation and grammar suggestions are available on hover with no clicking needed or as a convenient dialog, both with additional in-place replacement suggestions.
 
-You can fine-tune the spell checking rules via the dedicated settings menu. You can choose from a set of predefined languages (more may be added as language packs) and manage additional dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, the spell checker can be easily disabled and enabled again with a click.
+You can fine-tune the spell checking rules via the dedicated settings menu. You can choose from a set of predefined languages (easily chosen and added as language packs) and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, the spell checker can be easily disabled and enabled again with a click.
 
 ## Demo
 
@@ -19,12 +19,12 @@ See the spelling and grammar checking feature working in the editor below.
 
 {@snippet features/wproofreader}
 
-The proofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. This hover card allows the user to empoloy the feature on the go. If you want to see an overview of all mistakes, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a dedicated, detached panel, easy to navigate and perfect for dedicated proofreading sessions.
+The proofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. This hover card allows the user to empoloy the feature on the go. If you want to see an overview of all mistakes, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating panel, easy to navigate and perfect for dedicated proofreading sessions.
 
 You can access the proofreader settings from the toolbar, too. These can be used to set the language dictionary and some additional proofreading settings.
 
 <info-box>
-	The toolbar button has been introduced in version 2.x of the WProofreader. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. If you are still using version 1.x, the available settings and dialog options can be accessed through the bottom-right badge.
+	The toolbar button has been introduced in version 2.x of the WProofreader. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. If you are still using version 1.x, the available settings and dialog options can be accessed through the bottom-right corner badge instead.
 </info-box>
 
 ## Multi-language support
@@ -37,21 +37,21 @@ The {@link features/language text part language} features lets the user set diff
 
 ### Language support
 
-The most popular languages used with WProofreader include: American English, British English, Canadian English, Canadian French, French, German, Italian, Greek, Spanish, Finnish, Danish, Dutch, Portuguese, Swedish, Ukrainian, Norwegian Bokmal, Brazilian Portuguese. There are, however, over 160 languages altogether, available for download from the Webspellchecker site. Grammar checking is available for over 20 languages.
+The most popular languages used with WProofreader include: American English, British English, Canadian English, Canadian French, French, German, Italian, Greek, Spanish, Finnish, Danish, Dutch, Portuguese, Swedish, Ukrainian, Norwegian Bokmal, Brazilian Portuguese. There are, however, over 160 languages altogether, available for download from the WebSpellChecker site. Grammar checking is available for over 20 languages.
 
-A recent addition to the software are AI-driven tools. Smart algorithms employed in the AI-based language dictionaries offer better a far better checking quality, generating proofreading suggestions based on the context of the sentence. They provide more suitable suggestions that address mistakes with thrice the accuracy of traditional dictionaries. The AI-based support is currently available for English and German.
+A recent addition to the software are AI-driven tools. Smart algorithms employed in the AI-based language dictionaries offer a far better checking quality, generating proofreading suggestions based on the context of the sentence. They provide more suitable suggestions that address mistakes with thrice the accuracy of traditional dictionaries. The AI-based support is currently available for English and German.
 
-You can check the full list [here](https://webspellchecker.com/additional-dictionaries/).
+Here you can check the [full list of available languages](https://webspellchecker.com/additional-dictionaries/).
 
 ### Custom dictionaries
 
- Apart from the language dictionaries, Webspellchecker offers also two specialized dictionaries: a medical and a legal one, available for an additional fee.
+Apart from the language dictionaries, WebSpellChecker offers two specialized dictionaries: a medical and a legal one, available for an additional fee.
 
- There are also two types of custom dictionaries available. One is the user-dictionary, that can be expanded and grown during a regular use of the feature simply by adding new words to the dictionary. This is a perfect solution for editors and writers working on specific content, that may contain slang or professional jargon. The other is the so-called "company wide dictionary".  These premade dictionaries can be uploaded byt the system administrators or CKEditor 5 integrators and can be made company wide and accessible to all users. This way all benefits of a user-generated dictionary can be shared among the team, making the proof reading process more structured and controlled.
+There are also two types of custom dictionaries available. One is the user-dictionary, that can be expanded and will grow during a regular use of the feature simply by adding new words to the dictionary. This is a perfect solution for editors and writers working on specific content, that may contain slang or professional jargon. The other is the so-called "company-wide dictionary".  These premade dictionaries can be uploaded by the system administrators or CKEditor 5 integrators and can be made available company-wide and accessible for all users. This way all benefits of a user-generated dictionary can be shared among the team, making the proofreading process more structured and controlled.
 
- ## Accessibility
+## Accessibility
 
-The feature's US is designed and oriented toward the comfort and ease of use. The proofreading floating dialog can be easily moved around, addressing the needs of left-handed editors and right-to-left language users. The clear, simple design is more readable for users with vision impairment. The dialog can also be navigated and operated with keyboard, eliminating the need to use a mouse or other pointing device.
+The feature's US is designed and oriented toward the comfort and ease of use. The proofreading floating dialog can be easily moved around, addressing the needs of left-handed editors and right-to-left language users. The clear, simple design is more readable for users with vision impairments. The dialog can also be navigated and operated with keyboard, eliminating the need to use a mouse or other pointing device.
 
 The feature is compliant with WCAG 2.1 and Section 508 accessibility standards.
 
