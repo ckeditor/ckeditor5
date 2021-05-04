@@ -37,7 +37,7 @@ The {@link features/language text part language} features lets the user set diff
 
 ### Language support
 
-The most popular languages used with WProofreader include: American English, British English, Canadian English, Canadian French, French, German, Italian, Greek, Spanish, Finnish, Danish, Dutch, Portuguese, Swedish, Ukrainian, Norwegian Bokmal, Brazilian Portuguese. There are, however, over 160 languages altogether, available for download from the WebSpellChecker site. Grammar checking is available for over 20 languages.
+The most popular languages used with WProofreader include: American English, British English, Canadian English, Canadian French, French, German, Italian, Greek, Spanish, Finnish, Danish, Dutch, Portuguese, Swedish, Ukrainian, Norwegian Bokmål, Brazilian Portuguese. There are, however, over 160 languages altogether, available for download from the WebSpellChecker site. Grammar checking is available for over 20 languages.
 
 A recent addition to the software are AI-driven tools. Smart algorithms employed in the AI-based language dictionaries offer a far better checking quality, generating proofreading suggestions based on the context of the sentence. They provide more suitable suggestions that address mistakes with thrice the accuracy of traditional dictionaries. The AI-based support is currently available for English and German.
 
