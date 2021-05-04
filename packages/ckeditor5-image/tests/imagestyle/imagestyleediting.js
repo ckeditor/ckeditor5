@@ -329,6 +329,18 @@ describe( 'ImageStyleEditing', () => {
 						'<p><span class="ck-widget image-inline" contenteditable="false"><img src="/assets/sample.png"></img></span></p>'
 					);
 				} );
+
+				// See: #9563.
+				describe( 'with non-existing resource', () => {
+					it( 'inserts an empty paragraph when the "src" attribute is missing', () => {
+						editor.setData(
+							'<p><span><img class="image-style-align-left" /></span></p>'
+						);
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( '<paragraph></paragraph>' );
+					} );
+				} );
 			} );
 
 			describe( 'of the block image', () => {
@@ -401,6 +413,44 @@ describe( 'ImageStyleEditing', () => {
 					);
 
 					await customEditor.destroy();
+				} );
+
+				// See: #9563.
+				describe( 'with non-existing resource', () => {
+					it( 'inserts an empty paragraph when the "src" attribute is missing', () => {
+						editor.setData(
+							'<figure class="image image-style-align-center">' +
+								'<img alt="Foo." />' +
+							'</figure>'
+						);
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( '<paragraph></paragraph>' );
+					} );
+
+					it( 'inserts a paragraph with the "figcaption" content when the "src" attribute is missing (img + figcaption)', () => {
+						editor.setData(
+							'<figure class="image image-style-align-center">' +
+								'<img alt="Foo." />' +
+								'<figcaption>Bar.</figcaption>' +
+							'</figure>'
+						);
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( '<paragraph>Bar.</paragraph>' );
+					} );
+
+					it( 'inserts a paragraph with the "figcaption" content when the "src" attribute is missing (figcaption + img)', () => {
+						editor.setData(
+							'<figure class="image image-style-align-center">' +
+								'<figcaption>Bar.</figcaption>' +
+								'<img alt="Foo." />' +
+							'</figure>'
+						);
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( '<paragraph>Bar.</paragraph>' );
+					} );
 				} );
 			} );
 		} );

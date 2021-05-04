@@ -61,9 +61,13 @@ export function viewToModelStyleAttribute( styles ) {
 		const viewElement = data.viewItem;
 		const modelImageElement = first( data.modelRange.getItems() );
 
-		// Check if `modelImageElement` exists (see: https://github.com/ckeditor/ckeditor5/issues/8270)
-		// and `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
-		if ( modelImageElement && !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
+		// Check if `modelImageElement` exists (see: #8270, and #9563)...
+		if ( !modelImageElement ) {
+			return;
+		}
+
+		// ...and the `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
+		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
 			return;
 		}
 
