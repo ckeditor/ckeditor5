@@ -1786,27 +1786,6 @@ describe( 'Drag and Drop', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should not listen to drag events if the "WidgetToolbarRepository" plugin is missing', () => {
-			const draggingEventsMethodStub = sinon.stub( DragDrop.prototype, '_disableToolbarsWhenDraggingWidgets' );
-
-			const editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ DragDrop ]
-				} )
-				.then( editor => {
-					expect( draggingEventsMethodStub.called ).to.equal( false );
-
-					return editor.destroy();
-				} )
-				.then( () => {
-					draggingEventsMethodStub.restore();
-					editorElement.remove();
-				} );
-		} );
-
 		describe( 'WidgetToolbarRepository#isEnabled', () => {
 			it( 'is enabled by default', () => {
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
@@ -1838,18 +1817,22 @@ describe( 'Drag and Drop', () => {
 			it( 'is enabled when ends dragging (drop in the editable)', () => {
 				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
 
+				const dataTransfer = createDataTransfer( {} );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 0 ),
-					dataTransfer: createDataTransfer( {} )
+					dataTransfer
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
 
 				viewDocument.fire( 'drop', {
 					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 0 ),
-					dataTransfer: createDataTransfer( {} )
+					dataTransfer,
+					method: 'drop'
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
@@ -1858,17 +1841,19 @@ describe( 'Drag and Drop', () => {
 			it( 'is enabled when ends dragging (drop outside the editable)', () => {
 				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
 
+				const dataTransfer = createDataTransfer( {} );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 0 ),
-					dataTransfer: createDataTransfer( {} )
+					dataTransfer
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
 
 				viewDocument.fire( 'dragend', {
 					preventDefault: sinon.spy(),
-					dataTransfer: createDataTransfer( {} )
+					dataTransfer
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;

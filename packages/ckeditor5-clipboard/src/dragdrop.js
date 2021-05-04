@@ -212,16 +212,6 @@ export default class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
-		// See: #9566.
-		if ( this.editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-			this._disableToolbarsWhenDraggingWidgets();
-		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	destroy() {
 		if ( this._draggedRange ) {
 			this._draggedRange.detach();
@@ -269,6 +259,11 @@ export default class DragDrop extends Plugin {
 				const modelElement = editor.editing.mapper.toModelElement( draggableWidget );
 
 				this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
+
+				// Disable toolbars so they won't obscure the drop area.
+				if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+					editor.plugins.get( 'WidgetToolbarRepository' ).forceDisabled( 'dragDrop' );
+				}
 			}
 
 			// If this was not a widget we should check if we need to drag some text content.
@@ -620,6 +615,10 @@ export default class DragDrop extends Plugin {
 		this._removeDropMarker();
 		this._clearDraggableAttributes();
 
+		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+			editor.plugins.get( 'WidgetToolbarRepository' ).clearForceDisabled( 'dragDrop' );
+		}
+
 		this._draggingUid = '';
 
 		if ( !this._draggedRange ) {
@@ -633,37 +632,6 @@ export default class DragDrop extends Plugin {
 
 		this._draggedRange.detach();
 		this._draggedRange = null;
-	}
-
-	/**
-	 * Disable the `WidgetToolbarRepository` plugin whenever the widget is being dragged into hiding all toolbars.
-	 * Dragging widgets can be problematic if the drag should end in the place covered by the toolbar view.
-	 *
-	 * @private
-	 */
-	_disableToolbarsWhenDraggingWidgets() {
-		const editor = this.editor;
-		const viewDocument = editor.editing.view.document;
-		const widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-
-		// When starting dragging the widget, do not display any toolbar. See: #9566.
-		this.listenTo( viewDocument, 'dragstart', ( evt, data ) => {
-			const widget = data.target ? findDraggableWidget( data.target ) : null;
-
-			if ( widget ) {
-				widgetToolbarRepository.forceDisabled( 'dragDrop' );
-			}
-		} );
-
-		// Enable the plugin after dropping the widget in the editor...
-		this.listenTo( viewDocument, 'drop', () => {
-			widgetToolbarRepository.clearForceDisabled( 'dragDrop' );
-		} );
-
-		// ...or if drag ends outside the editable area.
-		this.listenTo( viewDocument, 'dragend', () => {
-			widgetToolbarRepository.clearForceDisabled( 'dragDrop' );
-		} );
 	}
 }
 
