@@ -73,10 +73,14 @@ describe( 'image utils', () => {
 				isObject: true,
 				allowIn: [ '$block' ]
 			} );
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block'
+			} );
 
 			schema.extend( '$text', { allowIn: [ 'block', '$root' ] } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'listItem', view: 'li' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'blockWidget', view: 'blockWidget' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'inlineWidget', view: 'inlineWidget' } );
 		} );
@@ -95,6 +99,12 @@ describe( 'image utils', () => {
 			setModelData( model, '<block>[]</block>' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+		} );
+
+		it( 'should return "imageInline" when the selected listItem in the selection is empty', () => {
+			setModelData( model, '<listItem>[]</listItem>' );
+
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 
 		it( 'should return "image" when the selected block is an object (a widget)', () => {
