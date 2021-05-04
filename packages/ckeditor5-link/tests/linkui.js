@@ -1037,6 +1037,33 @@ describe( 'LinkUI', () => {
 				sinon.assert.calledWithExactly( spy );
 			} );
 
+			it( 'should show the UI when the selection spans over a link which only child is a widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isObject: true,
+					isInline: true,
+					allowAttributesOf: '$text'
+				} );
+
+				// The view element has no children.
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'inlineWidget',
+						view: ( modelItem, { writer } ) => toWidget(
+							writer.createContainerElement( 'inlineWidget', {}, {
+								isAllowedInsideAttributeElement: true
+							} ),
+							writer,
+							{ label: 'inline widget' }
+						)
+					} );
+
+				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.calledWithExactly( spy );
+			} );
+
 			it( 'should do nothing when selection is not inside link element', () => {
 				setModelData( editor.model, '[]' );
 
@@ -1079,31 +1106,6 @@ describe( 'LinkUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should do nothing when the selection spans over a link which only child is a widget', () => {
-				editor.model.schema.register( 'inlineWidget', {
-					allowWhere: '$text',
-					isObject: true,
-					isInline: true,
-					allowAttributesOf: '$text'
-				} );
-
-				// The view element has no children.
-				editor.conversion.for( 'downcast' )
-					.elementToElement( {
-						model: 'inlineWidget',
-						view: ( modelItem, { writer } ) => toWidget(
-							writer.createContainerElement( 'inlineWidget' ),
-							writer,
-							{ label: 'inline widget' }
-						)
-					} );
-
-				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
-
-				observer.fire( 'click', { target: {} } );
-				sinon.assert.notCalled( spy );
-			} );
-
 			// See: #9607.
 			it( 'should show the UI when clicking on the linked inline widget', () => {
 				editor.model.schema.register( 'inlineWidget', {
@@ -1131,17 +1133,6 @@ describe( 'LinkUI', () => {
 
 				observer.fire( 'click', { target: document.body } );
 				sinon.assert.calledWithExactly( spy );
-			} );
-
-			it( 'should do nothing if the plugin is disabled', () => {
-				setModelData( editor.model, '<$text linkHref="url">fo[]o</$text>' );
-
-				linkUIFeature.forceDisabled( 'foo' );
-
-				observer.fire( 'click', { target: {} } );
-				sinon.assert.notCalled( spy );
-
-				linkUIFeature.clearForceDisabled( 'foo' );
 			} );
 		} );
 	} );

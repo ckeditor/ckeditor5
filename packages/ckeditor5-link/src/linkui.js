@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ClickObserver } from 'ckeditor5/src/engine';
 import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
+import { isWidget } from 'ckeditor5/src/widget';
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';
 import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
@@ -243,10 +244,6 @@ export default class LinkUI extends Plugin {
 		// Keep panel open until selection will be inside the same link element.
 		this.listenTo( viewDocument, 'click', () => {
 			const parentLink = this._getSelectedLinkElement();
-
-			if ( !this.isEnabled ) {
-				return;
-			}
 
 			if ( parentLink ) {
 				// Then show panel but keep focus inside editor editable.
@@ -619,8 +616,9 @@ export default class LinkUI extends Plugin {
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 *
-	 * **Note**: For a non–collapsed selection, the link element is only returned when **fully**
-	 * selected and the **only** element within the selection boundaries.
+	 * **Note**: For a non–collapsed selection, the link element is returned when **fully**
+	 * selected and the **only** element within the selection boundaries, or when
+	 * a linked widget is selected.
 	 *
 	 * @private
 	 * @returns {module:engine/view/attributeelement~AttributeElement|null}
@@ -628,8 +626,10 @@ export default class LinkUI extends Plugin {
 	_getSelectedLinkElement() {
 		const view = this.editor.editing.view;
 		const selection = view.document.selection;
+		const selectedElement = selection.getSelectedElement();
 
-		if ( selection.isCollapsed ) {
+		// The selection is collapsed or some widget is selected (especially inline widget).
+		if ( selection.isCollapsed || selectedElement && isWidget( selectedElement ) ) {
 			return findLinkElementAncestor( selection.getFirstPosition() );
 		} else {
 			// The range for fully selected link is usually anchored in adjacent text nodes.

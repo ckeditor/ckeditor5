@@ -46,17 +46,15 @@ export default class LinkImageUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
-		const linkUI = editor.plugins.get( 'LinkUI' );
 
-		// Prevent browser navigation when clicking a linked image.
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
-			// Block the `LinkUI` plugin when an image was clicked. In such a case, we'd like to display the image toolbar.
-			// See: #9607.
 			if ( this._isSelectedLinkedImage( editor.model.document.selection ) ) {
-				linkUI.forceDisabled( 'LinkImageUI:link' );
+				// Prevent browser navigation when clicking a linked image.
 				data.preventDefault();
-			} else {
-				linkUI.clearForceDisabled( 'LinkImageUI:link' );
+
+				// Block the `LinkUI` plugin when an image was clicked.
+				// In such a case, we'd like to display the image toolbar.
+				evt.stop();
 			}
 		}, { priority: 'high' } );
 

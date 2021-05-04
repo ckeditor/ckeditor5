@@ -145,7 +145,9 @@ describe( 'LinkImageUI', () => {
 				linkUI = editor.plugins.get( 'LinkUI' );
 			} );
 
-			it( 'should disable the LinkUI plugin when clicked the linked image', () => {
+			it( 'should not show the LinkUI when clicked the linked image', () => {
+				const spy = sinon.stub( linkUI, '_showUI' ).returns( {} );
+
 				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
 				editor.model.change( writer => {
@@ -159,10 +161,13 @@ describe( 'LinkImageUI', () => {
 
 				viewDocument.fire( 'click', domEventDataMock );
 
-				expect( linkUI.isEnabled ).to.equal( false );
+				expect( editor.model.document.getRoot().getChild( 0 ).is( 'element', 'image' ) ).to.be.true;
+				expect( spy.notCalled ).to.be.true;
 			} );
 
-			it( 'should disable the LinkUI plugin when clicked the linked inline image', () => {
+			it( 'should not show the LinkUI when clicked the linked inline image', () => {
+				const spy = sinon.stub( linkUI, '_showUI' ).returns( {} );
+
 				editor.setData( '<p><a href="https://example.com"><img src="" /></a></p>' );
 
 				editor.model.change( writer => {
@@ -176,39 +181,8 @@ describe( 'LinkImageUI', () => {
 
 				viewDocument.fire( 'click', domEventDataMock );
 
-				expect( linkUI.isEnabled ).to.equal( false );
-			} );
-
-			it( 'should enable the LinkUI plugin when clicked other element', () => {
-				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure><p>Foo.</p>' );
-
-				editor.model.change( writer => {
-					writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'on' );
-				} );
-
-				const imageWidget = viewDocument.selection.getSelectedElement();
-				const imageData = fakeEventData();
-				const imageEventInfo = new EventInfo( imageWidget, 'click' );
-				const imageDomEventDataMock = new DomEventData( viewDocument, imageEventInfo, imageData );
-
-				// Click the image first.
-				viewDocument.fire( 'click', imageDomEventDataMock );
-
-				expect( linkUI.isEnabled ).to.equal( false );
-
-				editor.model.change( writer => {
-					writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'in' );
-				} );
-
-				const paragraphElement = viewDocument.selection.getSelectedElement();
-				const paragraphData = fakeEventData();
-				const paragraphEventInfo = new EventInfo( paragraphElement, 'click' );
-				const paragraphDomEventDataMock = new DomEventData( viewDocument, paragraphEventInfo, paragraphData );
-
-				// Then, click the paragraph.
-				viewDocument.fire( 'click', paragraphDomEventDataMock );
-
-				expect( linkUI.isEnabled ).to.equal( true );
+				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).is( 'element', 'imageInline' ) ).to.be.true;
+				expect( spy.notCalled ).to.be.true;
 			} );
 		} );
 	} );
