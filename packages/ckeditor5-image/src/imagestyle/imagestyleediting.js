@@ -38,14 +38,12 @@ export default class ImageStyleEditing extends Plugin {
 		editor.config.define( 'image.styles', getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) );
 
 		/**
-		 * It contains lists of the normalized and validated style options and groups.
+		 * It contains a list of the normalized and validated style options.
 		 *
 		 * * Each option contains a complete icon markup.
 		 * * The style options not supported by any of the loaded image editing plugins (
 		 * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} or
 		 * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`}) are filtered out.
-		 * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
-		 * * All of the group items not defined in the options are filtered out.
 		 *
 		 * @protected
 		 * @readonly
@@ -60,7 +58,7 @@ export default class ImageStyleEditing extends Plugin {
 		this._setupConversion( isBlockPluginLoaded, isInlinePluginLoaded );
 
 		// Register imageStyle command.
-		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, this.normalizedStyles.options ) );
+		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, this.normalizedStyles ) );
 	}
 
 	/**
@@ -75,10 +73,9 @@ export default class ImageStyleEditing extends Plugin {
 	_setupConversion( isBlockPluginLoaded, isInlinePluginLoaded ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const styles = this.normalizedStyles.options;
 
-		const modelToViewConverter = modelToViewStyleAttribute( styles );
-		const viewToModelConverter = viewToModelStyleAttribute( styles );
+		const modelToViewConverter = modelToViewStyleAttribute( this.normalizedStyles );
+		const viewToModelConverter = viewToModelStyleAttribute( this.normalizedStyles );
 
 		editor.editing.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );
 		editor.data.downcastDispatcher.on( 'attribute:imageStyle', modelToViewConverter );

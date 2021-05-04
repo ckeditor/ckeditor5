@@ -49,18 +49,10 @@ describe( 'ImageStyleEditing', () => {
 			it( 'should not alter the image.styles configuration', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
-					image: {
-						styles: {
-							options: [ 'full' ],
-							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
-						}
-					}
+					image: { styles: { options: [ 'full' ] } }
 				} );
 
-				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					options: [ 'full' ],
-					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
-				} );
+				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( { options: [ 'full' ] } );
 
 				await editor.destroy();
 			} );
@@ -68,59 +60,11 @@ describe( 'ImageStyleEditing', () => {
 			it( 'should not alter the object definitions in the image.styles configuration', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
-					image: {
-						styles: {
-							options: [ { name: 'full', modelElements: [ 'image' ] } ],
-							groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
-						}
-					}
+					image: { styles: { options: [ { name: 'full', modelElements: [ 'image' ] } ] } }
 				} );
 
-				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					options: [ { name: 'full', modelElements: [ 'image' ] } ],
-					groups: [ { name: 'wrapText', items: [ 'full' ], defaultItem: 'full' } ]
-				} );
-
-				await editor.destroy();
-			} );
-
-			it( 'should set the proper default config for groups if only style options are defined', async () => {
-				const editor = await ModelTestEditor.create( {
-					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
-					image: {
-						styles: {
-							options: [
-								{ name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight'
-							]
-						}
-					}
-				} );
-
-				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					options: [ { name: 'full' }, 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight' ],
-					groups: [ 'wrapText', 'breakText' ]
-				} );
-
-				await editor.destroy();
-			} );
-
-			it( 'should set the proper default config for style options if only groups are defined', async () => {
-				const editor = await ModelTestEditor.create( {
-					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
-					image: {
-						styles: {
-							groups: [ { name: 'wrapText' } ]
-						}
-					}
-				} );
-
-				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-					options: [
-						'inline', 'alignLeft', 'alignRight', 'alignCenter', 'alignBlockLeft', 'alignBlockRight',
-						'full', 'side'
-					],
-					groups: [ { name: 'wrapText' } ]
-				} );
+				expect( editor.config.get( 'image.styles' ) )
+					.to.deep.equal( { options: [ { name: 'full', modelElements: [ 'image' ] } ] } );
 
 				await editor.destroy();
 			} );
@@ -136,8 +80,7 @@ describe( 'ImageStyleEditing', () => {
 							'inline', 'alignLeft', 'alignRight',
 							'alignCenter', 'alignBlockLeft', 'alignBlockRight',
 							'full', 'side'
-						],
-						groups: [ 'wrapText', 'breakText' ]
+						]
 					} );
 
 					editor.destroy();
@@ -231,11 +174,10 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should set the normalizedStyles properly', async () => {
-			const customStyles = {
-				options: [],
-				groups: [],
-				customProperty: true
-			};
+			const customStyles = [ {
+				name: 'customStyle',
+				modelElements: [ 'image' ]
+			} ];
 
 			testUtils.sinon.stub( imageStyleUtils, 'normalizeStyles' ).callsFake( () => customStyles );
 
@@ -397,8 +339,7 @@ describe( 'ImageStyleEditing', () => {
 									name: 'onlyInline',
 									modelElements: [ 'imageInline' ],
 									className: 'image-style-inline'
-								} ],
-								groups: []
+								} ]
 							}
 						}
 					} );
