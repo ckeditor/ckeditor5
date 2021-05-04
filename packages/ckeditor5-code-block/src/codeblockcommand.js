@@ -115,6 +115,11 @@ export default class CodeBlockCommand extends Command {
 			writer.rename( block, 'codeBlock' );
 			writer.setAttribute( 'language', language, block );
 			schema.removeDisallowedAttributes( [ block ], writer );
+
+			// Remove children of the  `codeBlock` element that are not allowed. See #9567.
+			Array.from( block.getChildren() )
+				.filter( child => !schema.checkChild( block, child ) )
+				.forEach( child => writer.remove( child ) );
 		}
 
 		allowedBlocks.reverse().forEach( ( currentBlock, i ) => {
