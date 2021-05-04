@@ -19,7 +19,7 @@ import '../../theme/imagestyle.css';
  * The image style UI plugin.
  *
  * It registers buttons corresponding to the {@link module:image/image~ImageConfig#styles} configuration.
- * It also registers the {@link module:image/imagestyle/utils~DEFAULT_DROPDOWNS default drop-downs} and the
+ * It also registers the {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} and the
  * custom drop-downs defined by the developer in the {@link module:image/image~ImageConfig#toolbar} configuration.
  *
  * @extends module:core/plugin~Plugin
@@ -88,7 +88,7 @@ export default class ImageStyleUI extends Plugin {
 		}
 
 		const definedDropdowns = translateStyles(
-			[ ...toolbarConfig.filter( isObject ), ...utils.getDefaultDropdowns( plugins ) ],
+			[ ...toolbarConfig.filter( isObject ), ...utils.getDefaultDropdownDefinitions( plugins ) ],
 			this.localizedDefaultStylesTitles
 		);
 
@@ -238,3 +238,50 @@ function getUIComponentName( name ) {
 function getDropdownButtonTitle( dropdownTitle, buttonTitle ) {
 	return ( dropdownTitle ? dropdownTitle + ': ' : '' ) + buttonTitle;
 }
+
+/**
+ * # **The image style custom drop-down definition descriptor**
+ *
+ * This definition can be implemented in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}
+ * to define a completely custom drop-down in the image toolbar.
+ *
+ *		ClassicEditor.create( editorElement, {
+ *			image: { toolbar: [
+ *	 			// One of the predefined drop-downs
+ *	 			'imageStyle:wrapText',
+ *				// Custom drop-down
+ *				{
+ *					name: 'imageStyle:customDropdown',
+ *					title: Custom drop-down title,
+ *					items: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ],
+ *					defaultItem: 'imageStyle:alignLeft'
+ *				}
+ *			] }
+ *		} );
+ *
+ * **Note:** At the moment it is possible to populate the custom drop-down with only the buttons registered by the `ImageStyle` plugin.
+ *
+ * The defined drop-down will be registered
+ * as the {@link module:ui/dropdown/dropdownview~DropdownView}
+ * with the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} under the provided name in the
+ * {@link module:ui/componentfactory~ComponentFactory}
+ *
+ * @property {String} name The unique name of the drop-down. It is recommended to precede it with the "imageStyle:" prefix
+ * to avoid collision with the components' names registered by other plugins.
+ *
+ * @property {String} [title] The drop-down's title. It will be used as the split button label along with the title of the default item
+ * in the following manner: "Custom drop-down title: Default item title".
+ *
+ * Setting `title` to one of
+ * {@link module:image/imagestyle/imagestyleui~ImageStyleUI#localizedDefaultStylesTitles}
+ * will automatically translate it to the language of the editor.
+ *
+ * @property {Array.<String>} items The list of the names of the buttons that will be placed in the drop-down's toolbar.
+ * Each of the buttons has to be one of the {@link module:image/image~ImageConfig#styles default image style buttons}
+ * or to be defined as the {@link module:image/imagestyle~ImageStyleOptionDefinition image styling option}.
+ *
+ * @property {String} defaultItem The name of one of the buttons from the items list,
+ * which will be used as a default button for the drop-down's split button.
+ *
+ * @typedef {Object} module:image/imagestyle/imagestyleUI~ImageStyleDropdownDefinition
+ */

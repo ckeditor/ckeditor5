@@ -39,35 +39,11 @@ const PLUGINS_CONFIG = [
 startEditors();
 
 async function startEditors() {
-	window.editorInline = await ClassicEditor.create( document.querySelector( '#editor-inline' ), {
-		cloudServices: CS_CONFIG,
-		plugins: PLUGINS_CONFIG,
-		toolbar: TOOLBAR_CONFIG,
-		image: {
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:wrapText',
-				{
-					name: 'imageStyle:custom',
-					title: 'Custom title',
-					defaultItem: 'imageStyle:inline',
-					items: [ 'imageStyle:inline', 'imageStyle:alignLeft' ]
-				},
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
-			]
-		}
-	} );
-
 	window.editorSemantic = await ClassicEditor.create( document.querySelector( '#editor-semantic' ), {
 		cloudServices: CS_CONFIG,
 		plugins: PLUGINS_CONFIG,
 		toolbar: TOOLBAR_CONFIG,
 		image: {
-			styles: {
-				options: [ 'inline', 'full', 'side' ]
-			},
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:full',
@@ -79,9 +55,49 @@ async function startEditors() {
 		}
 	} );
 
+	window.editorFormatting = await ClassicEditor.create( document.querySelector( '#editor-formatting' ), {
+		cloudServices: CS_CONFIG,
+		plugins: PLUGINS_CONFIG,
+		toolbar: TOOLBAR_CONFIG,
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
+		}
+	} );
+
+	window.editorWithDropdown = await ClassicEditor.create( document.querySelector( '#editor-with-dropdown' ), {
+		cloudServices: CS_CONFIG,
+		plugins: PLUGINS_CONFIG,
+		toolbar: TOOLBAR_CONFIG,
+		image: {
+			toolbar: [
+				{
+					name: 'imageStyle:inlineImages',
+					title: 'Inline image',
+					defaultItem: 'imageStyle:inline',
+					items: [ 'imageStyle:inline', 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
+				}, {
+					name: 'imageStyle:blockImages',
+					title: 'Block image',
+					defaultItem: 'imageStyle:full',
+					items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
+				},
+				'|',
+				'toggleImageCaption'
+			]
+		}
+	} );
+
 	CKEditorInspector.attach( {
-		inline: window.editorInline,
-		semantic: window.editorSemantic
+		semantic: window.editorSemantic,
+		formatting: window.editorFormatting,
+		withDropdown: window.editorWithDropdown
 	} );
 }
 

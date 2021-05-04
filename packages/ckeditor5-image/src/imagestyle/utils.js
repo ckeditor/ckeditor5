@@ -147,7 +147,7 @@ const DEFAULT_ICONS = {
  * @readonly
  * @type {Array.<module:image/imagestyle~ImageStyleDropdownDefinition>}
  */
-const DEFAULT_DROPDOWNS = [ {
+const DEFAULT_DROPDOWN_DEFINITIONS = [ {
 	name: 'imageStyle:wrapText',
 	title: 'Wrap text',
 	defaultItem: 'imageStyle:alignLeft',
@@ -228,9 +228,9 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
  * @param {module:core/plugincollection~PluginCollection} pluginCollection
  * @returns {Array.<module:image/imagestyle~ImageStyleDropdownDefinition>}
  */
-function getDefaultDropdowns( pluginCollection ) {
+function getDefaultDropdownDefinitions( pluginCollection ) {
 	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
-		return [ ...DEFAULT_DROPDOWNS ];
+		return [ ...DEFAULT_DROPDOWN_DEFINITIONS ];
 	} else {
 		return [];
 	}
@@ -358,9 +358,9 @@ function warnInvalidStyle( info ) {
 export default {
 	normalizeStyles,
 	getDefaultStylesConfiguration,
-	getDefaultDropdowns,
+	getDefaultDropdownDefinitions,
 	warnInvalidStyle,
 	DEFAULT_OPTIONS,
 	DEFAULT_ICONS,
-	DEFAULT_DROPDOWNS
+	DEFAULT_DROPDOWN_DEFINITIONS
 };

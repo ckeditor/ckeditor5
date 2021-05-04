@@ -231,21 +231,23 @@ describe( 'ImageStyle utils', () => {
 			} );
 		} );
 
-		describe( 'getDefaultDropdowns', () => {
+		describe( 'getDefaultDropdownDefinitions', () => {
 			it( 'should return default drop-downs list if both image editing plugins are loaded', () => {
-				expect( utils.getDefaultDropdowns( { has: () => true } ) ).to.deep.equal( utils.DEFAULT_DROPDOWNS );
+				expect( utils.getDefaultDropdownDefinitions( { has: () => true } ) ).to.deep.equal( utils.DEFAULT_DROPDOWN_DEFINITIONS );
 			} );
 
 			it( 'should return an empty array if only `ImageBlockEditing` plugin is loaded', () => {
-				expect( utils.getDefaultDropdowns( { has: pluginName => pluginName === 'ImageBlockEditing' } ) ).to.deep.equal( [] );
+				expect( utils.getDefaultDropdownDefinitions( { has: pluginName => pluginName === 'ImageBlockEditing' } ) )
+					.to.deep.equal( [] );
 			} );
 
 			it( 'should return an empty array if only `ImageInlineEditing` plugin is loaded', () => {
-				expect( utils.getDefaultDropdowns( { has: pluginName => pluginName === 'ImageInlineEditing' } ) ).to.deep.equal( [] );
+				expect( utils.getDefaultDropdownDefinitions( { has: pluginName => pluginName === 'ImageInlineEditing' } ) )
+					.to.deep.equal( [] );
 			} );
 
 			it( 'should always return a new instance of the drop-downs list', () => {
-				expect( utils.getDefaultDropdowns( { has: () => true } ) ).to.not.equal( utils.DEFAULT_DROPDOWNS );
+				expect( utils.getDefaultDropdownDefinitions( { has: () => true } ) ).to.not.equal( utils.DEFAULT_DROPDOWN_DEFINITIONS );
 			} );
 		} );
 	} );

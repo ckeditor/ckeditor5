@@ -22,7 +22,7 @@ import { SplitButtonView } from '../../../../src/ui';
 describe( 'ImageStyleUI', () => {
 	let editor, editorElement, factory, defaultDropdowns;
 
-	const { DEFAULT_OPTIONS, getDefaultDropdowns } = utils;
+	const { DEFAULT_OPTIONS, getDefaultDropdownDefinitions } = utils;
 	const allStyles = Object.values( DEFAULT_OPTIONS );
 	const customDropdowns = [ {
 		name: 'imageStyle:custom',
@@ -49,7 +49,7 @@ describe( 'ImageStyleUI', () => {
 			} );
 
 		factory = editor.ui.componentFactory;
-		defaultDropdowns = getDefaultDropdowns( editor.plugins );
+		defaultDropdowns = getDefaultDropdownDefinitions( editor.plugins );
 	} );
 
 	afterEach( () => {

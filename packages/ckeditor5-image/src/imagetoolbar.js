@@ -64,14 +64,14 @@ export default class ImageToolbar extends Plugin {
  * Assuming that you use the following features:
  *
  * * {@link module:image/imagestyle~ImageStyle} (with a default configuration),
- * * {@link module:image/imagetextalternative~ImageTextAlternative}
- * * {@link module:image/imagecaption~ImageCaption}
+ * * {@link module:image/imagetextalternative~ImageTextAlternative},
+ * * {@link module:image/imagecaption~ImageCaption},
  *
  * the following toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
  * * `'imageTextAlternative'`,
  * * `'toggleImageCaption'`,
- * * {@link module:image/image~ImageConfig#styles the buttons provided by the `ImageStyle` plugin},
- * * {@link module:image/imagestyle/utils~DEFAULT_DROPDOWNS the drop-downs provided by the `ImageStyle` plugin},
+ * * {@link module:image/image~ImageConfig#styles buttons provided by the `ImageStyle` plugin},
+ * * {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS drop-downs provided by the `ImageStyle` plugin},
  *
  * so you can configure the toolbar like this:
  *
@@ -92,7 +92,12 @@ export default class ImageToolbar extends Plugin {
  * @member {Array.<String>} module:image/image~ImageConfig#toolbar
  */
 
-// TODO
+// Convert the dropdown definitions to their keys registered in the ComponentFactory.
+// The registration precess should be handled by the plugin which handles the UI of a particular feature.
+//
+// @param {Array.<String|module:image/imagestyle~ImageStyleDropdownDefinition>} config
+//
+// @returns {Array.<String>}
 function normalizeDeclarativeConfig( config ) {
 	return config.map( item => isObject( item ) ? item.name : item );
 }
