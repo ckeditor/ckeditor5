@@ -94,18 +94,17 @@ export function getImageTypeMatcher( editor, matchImageType ) {
 export function determineImageTypeForInsertionAtSelection( schema, selection ) {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
-	if ( !firstBlock ) {
+	// Insert a block image if the selection is not in/on block elements or it's on a block widget.
+	if ( !firstBlock || schema.isObject( firstBlock ) ) {
 		return 'image';
 	}
 
-	if ( firstBlock.isEmpty ) {
-		// When inserting the image into the lists, use inline image. See #9391.
-		if ( firstBlock.name === 'listItem' ) {
-			return 'imageInline';
-		}
-
+	// A block image should also be inserted into an empty block element
+	// (that is not an empty list item so the list won't get split).
+	if ( firstBlock.isEmpty && firstBlock.name != 'listItem' ) {
 		return 'image';
 	}
 
-	return schema.isObject( firstBlock ) ? 'image' : 'imageInline';
+	// Otherwise insert an inline image.
+	return 'imageInline';
 }
