@@ -119,9 +119,7 @@ export default class CodeBlockCommand extends Command {
 			// Remove children of the  `codeBlock` element that are not allowed. See #9567.
 			Array.from( block.getChildren() )
 				.filter( child => !schema.checkChild( block, child ) )
-				.forEach( child => {
-					writer.remove( child );
-				} );
+				.forEach( child => writer.remove( child ) );
 		}
 
 		allowedBlocks.reverse().forEach( ( currentBlock, i ) => {

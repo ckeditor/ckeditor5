@@ -124,11 +124,11 @@ describe( 'CodeBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'codeBlock' ) ).to.be.true;
 	} );
 
-	it( 'disallows for codeBlock in the other codeBlock', () => {
+	it( 'disallows codeBlock in the other codeBlock', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'codeBlock' ) ).to.be.false;
 	} );
 
-	it( 'disallows for object elements in codeBlock', () => {
+	it( 'disallows object elements in codeBlock', () => {
 		// Fake "inline-widget".
 		model.schema.register( 'inline-widget', {
 			inheritAllFrom: '$block',
