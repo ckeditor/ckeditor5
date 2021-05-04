@@ -15,7 +15,7 @@
 				{
 					"name": "CKFinder",
 					"type": "Button",
-					"iconPath": "theme/icons/browser-files.svg"
+					"iconPath": "theme/icons/browse-files.svg"
 				}
 			]
 		}
