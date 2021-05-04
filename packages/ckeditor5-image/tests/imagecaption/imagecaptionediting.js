@@ -274,8 +274,8 @@ describe( 'ImageCaptionEditing', () => {
 
 				const viewElement = editor.editing.mapper.toViewElement( caption );
 
-				expect( typeof viewElement.getCustomProperty( 'addHighlight' ) ).to.equal( 'function' );
-				expect( typeof viewElement.getCustomProperty( 'removeHighlight' ) ).to.equal( 'function' );
+				expect( viewElement.getCustomProperty( 'addHighlight' ) ).to.be.a( 'function' );
+				expect( viewElement.getCustomProperty( 'removeHighlight' ) ).to.be.a( 'function' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
