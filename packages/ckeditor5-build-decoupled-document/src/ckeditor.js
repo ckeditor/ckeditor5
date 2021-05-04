@@ -116,6 +116,7 @@ DecoupledEditor.defaultConfig = {
 		]
 	},
 	image: {
+		resizeUnit: 'px',
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:wrapText',
