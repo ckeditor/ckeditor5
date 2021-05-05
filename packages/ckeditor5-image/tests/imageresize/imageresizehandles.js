@@ -700,6 +700,30 @@ describe( 'ImageResizeHandles', () => {
 			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
 		} );
 
+		it( 'should be able to get the proper resizeHost size when the image it is wrapped with an inline element', async () => {
+			// https://github.com/ckeditor/ckeditor5/issues/9568
+			editor = await createEditor( {
+				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, Paragraph ],
+				image: { resizeUnit: 'px' }
+			} );
+
+			await setModelAndWaitForImages( editor,
+				'<paragraph>' +
+					`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+				'</paragraph>' );
+
+			widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+			const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
+			const finalPointerPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' ).moveBy( 10, -10 );
+
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+
+			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '88px' } );
+
+			await editor.destroy();
+		} );
+
 		describe( 'srcset integration', () => {
 			// The image is 96x96 pixels.
 			const imageBaseUrl = '/assets/sample.png';
@@ -869,13 +893,11 @@ describe( 'ImageResizeHandles', () => {
 			it( 'should attach the resizer to the image inside the link', async () => {
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-				setData( editor.model,
+				await setModelAndWaitForImages( editor,
 					'<paragraph>' +
-							`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
-						'</paragraph>'
+						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+					'</paragraph>'
 				);
-
-				await waitForAllImagesLoaded( editor );
 
 				expect( attachToSpy ).calledOnce;
 
@@ -883,13 +905,11 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'should set the paragraph as the resize host for an image wrapped with a link', async () => {
-				setData( editor.model,
+				await setModelAndWaitForImages( editor,
 					'<paragraph>' +
 						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
 					'</paragraph>'
 				);
-
-				await waitForAllImagesLoaded( editor );
 
 				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
 
@@ -903,13 +923,11 @@ describe( 'ImageResizeHandles', () => {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, TodoList, Paragraph ]
 				} );
 
-				setData( editor.model,
+				await setModelAndWaitForImages( editor,
 					'<listItem listType="todo" listIndent="0">' +
 						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
 					'</listItem>'
 				);
-
-				await waitForAllImagesLoaded( editor );
 
 				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
 
