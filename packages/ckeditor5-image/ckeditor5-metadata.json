@@ -114,7 +114,7 @@
 				{
 					"elements": "figure",
 					"classes": "*",
-					"_comment": "The plugin can be configured to set any class names on the figure element."
+					"_comment": "The plugin can be configured to set any class names on the `<figure>` element."
 				}
 			]
 		},

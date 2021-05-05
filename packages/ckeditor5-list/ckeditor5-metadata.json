@@ -4,7 +4,7 @@
 			"name": "List",
 			"className": "List",
 			"description": "Implements bulleted and numbered list features. Add the to-do list plugin to bring support for inserting interactive checkboxes.",
-			"docs": "features/lists.html",
+			"docs": "features/lists/lists.html",
 			"path": "src/list.js",
 			"uiComponents": [
 				{
@@ -35,7 +35,7 @@
 			"name": "Todo list",
 			"className": "TodoList",
 			"description": "Allows for creating a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with bulleted and numbered lists in any combination.",
-			"docs": "features/todo-lists.html",
+			"docs": "features/lists/todo-lists.html",
 			"path": "src/todolist",
 			"uiComponents": [
 				{
@@ -74,7 +74,7 @@
 			"name": "List style",
 			"className": "ListStyle",
 			"description": "Enables styling the list item markers for both ordered and unordered lists. You can choose various types of numerals and letters or visual markers to use with lists.",
-			"docs": "features/lists.html#list-styles",
+			"docs": "features/lists/lists.html#list-styles",
 			"path": "src/liststyle.js",
 			"requires": [
 				"List"
