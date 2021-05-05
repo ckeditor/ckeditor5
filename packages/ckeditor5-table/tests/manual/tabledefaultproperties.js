@@ -48,7 +48,8 @@ ClassicEditor
 					borderColor: 'hsl(120, 75%, 60%)',
 					borderWidth: '2px',
 					horizontalAlignment: 'right',
-					verticalAlignment: 'bottom'
+					verticalAlignment: 'bottom',
+					padding: '10px'
 				}
 			}
 		}
