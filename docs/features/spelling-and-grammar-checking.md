@@ -13,6 +13,8 @@ menu-title: Spelling and grammar checking
 
 You can fine-tune the spell checking rules via the dedicated settings menu. You can choose from a set of predefined languages (easily chosen and added as language packs) and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, the spell checker can be easily disabled and enabled again with a click.
 
+After reading this guide, you may find additional interesting details and examples in the [dedicated post on CKSource blog](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/).
+
 ## Demo
 
 See the spelling and grammar checking feature working in the editor below.
