@@ -159,7 +159,7 @@ describe( 'table cell properties', () => {
 
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( '' );
+							expect( view.borderStyle ).to.equal( 'none' );
 
 							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );

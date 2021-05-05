@@ -45,32 +45,42 @@ describe( 'table properties', () => {
 			expect( TablePropertiesEditing.pluginName ).to.equal( 'TablePropertiesEditing' );
 		} );
 
-		it( 'adds tableBorderColor command', () => {
-			expect( editor.commands.get( 'tableBorderColor' ) ).to.be.instanceOf( TableBorderColorCommand );
-		} );
+		describe( 'init()', () => {
+			it( 'should define table.tableProperties config', () => {
+				const config = editor.config.get( 'table.tableProperties' );
 
-		it( 'adds tableBorderStyle command', () => {
-			expect( editor.commands.get( 'tableBorderStyle' ) ).to.be.instanceOf( TableBorderStyleCommand );
-		} );
+				expect( config ).to.be.an( 'object' );
+				expect( config ).to.have.property( 'defaultProperties' );
+				expect( config.defaultProperties ).to.deep.equal( {} );
+			} );
 
-		it( 'adds tableBorderWidth command', () => {
-			expect( editor.commands.get( 'tableBorderWidth' ) ).to.be.instanceOf( TableBorderWidthCommand );
-		} );
+			it( 'adds tableBorderColor command', () => {
+				expect( editor.commands.get( 'tableBorderColor' ) ).to.be.instanceOf( TableBorderColorCommand );
+			} );
 
-		it( 'adds tableAlignment command', () => {
-			expect( editor.commands.get( 'tableAlignment' ) ).to.be.instanceOf( TableAlignmentCommand );
-		} );
+			it( 'adds tableBorderStyle command', () => {
+				expect( editor.commands.get( 'tableBorderStyle' ) ).to.be.instanceOf( TableBorderStyleCommand );
+			} );
 
-		it( 'adds tableWidth command', () => {
-			expect( editor.commands.get( 'tableWidth' ) ).to.be.instanceOf( TableWidthCommand );
-		} );
+			it( 'adds tableBorderWidth command', () => {
+				expect( editor.commands.get( 'tableBorderWidth' ) ).to.be.instanceOf( TableBorderWidthCommand );
+			} );
 
-		it( 'adds tableHeight command', () => {
-			expect( editor.commands.get( 'tableHeight' ) ).to.be.instanceOf( TableHeightCommand );
-		} );
+			it( 'adds tableAlignment command', () => {
+				expect( editor.commands.get( 'tableAlignment' ) ).to.be.instanceOf( TableAlignmentCommand );
+			} );
 
-		it( 'adds tableBackgroundColor command', () => {
-			expect( editor.commands.get( 'tableBackgroundColor' ) ).to.be.instanceOf( TableBackgroundColorCommand );
+			it( 'adds tableWidth command', () => {
+				expect( editor.commands.get( 'tableWidth' ) ).to.be.instanceOf( TableWidthCommand );
+			} );
+
+			it( 'adds tableHeight command', () => {
+				expect( editor.commands.get( 'tableHeight' ) ).to.be.instanceOf( TableHeightCommand );
+			} );
+
+			it( 'adds tableBackgroundColor command', () => {
+				expect( editor.commands.get( 'tableBackgroundColor' ) ).to.be.instanceOf( TableBackgroundColorCommand );
+			} );
 		} );
 
 		describe( 'border', () => {
@@ -86,9 +96,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', '#f00' );
-					assertTRBLAttribute( table, 'borderStyle', 'solid' );
-					assertTRBLAttribute( table, 'borderWidth', '1px' );
+					expect( table.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+					expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -96,7 +106,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', '#f00' );
+					expect( table.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -104,7 +114,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderStyle', 'ridge' );
+					expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -112,7 +122,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderWidth', '1px' );
+					expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
@@ -227,17 +237,14 @@ describe( 'table properties', () => {
 
 						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-						assertTRBLAttribute( table, 'borderColor', 'red' );
-						assertTRBLAttribute( table, 'borderStyle', 'solid' );
-						assertTRBLAttribute( table, 'borderWidth', '1px' );
+						expect( table.getAttribute( 'borderColor' ) ).to.equal( 'red' );
+						expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+						expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 
 						// Also check the entire structure of the model.
 						// Previously the test was too loose in that regard.
 						expect( getModelData( editor.model ) ).to.equal(
-							'[<table ' +
-								'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
-								'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
-								'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}">' +
+							'[<table borderColor="red" borderStyle="solid" borderWidth="1px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>' +
@@ -245,11 +252,7 @@ describe( 'table properties', () => {
 										'</paragraph>' +
 									'</tableCell>' +
 									'<tableCell>' +
-										'<table ' +
-											'borderColor="{"top":"green","bottom":"green","right":"green","left":"green"}" ' +
-											'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
-											'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}"' +
-										'>' +
+										'<table borderColor="green" borderStyle="solid" borderWidth="1px">' +
 											'<tableRow>' +
 												'<tableCell>' +
 													'<paragraph>' +
@@ -374,11 +377,7 @@ describe( 'table properties', () => {
 										'<paragraph>parent:00</paragraph>' +
 									'</tableCell>' +
 									'<tableCell>' +
-										'<table ' +
-											'borderColor="{"top":"green","bottom":"green","right":"green","left":"green"}" ' +
-											'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
-											'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}"' +
-										'>' +
+										'<table borderColor="green" borderStyle="solid" borderWidth="1px">' +
 											'<tableRow>' +
 												'<tableCell>' +
 													'<paragraph>child:00</paragraph>' +
@@ -416,15 +415,12 @@ describe( 'table properties', () => {
 
 							const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-							assertTRBLAttribute( table, 'borderColor', 'red' );
-							assertTRBLAttribute( table, 'borderStyle', 'solid' );
-							assertTRBLAttribute( table, 'borderWidth', '1px' );
+							expect( table.getAttribute( 'borderColor' ) ).to.equal( 'red' );
+							expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+							expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 
 							expect( getModelData( editor.model ) ).to.equal(
-								'[<table ' +
-									'borderColor="{"top":"red","bottom":"red","right":"red","left":"red"}" ' +
-									'borderStyle="{"top":"solid","bottom":"solid","right":"solid","left":"solid"}" ' +
-									'borderWidth="{"top":"1px","bottom":"1px","right":"1px","left":"1px"}">' +
+								'[<table borderColor="red" borderStyle="solid" borderWidth="1px">' +
 									'<tableRow>' +
 										'<tableCell>' +
 											'<paragraph>' +
@@ -580,7 +576,7 @@ describe( 'table properties', () => {
 						left: '#f00'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+					assertTableStyle( editor, 'border-color:#f00;' );
 				} );
 
 				it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
@@ -592,10 +588,10 @@ describe( 'table properties', () => {
 					}, table ) );
 
 					assertTableStyle( editor,
-						'border-bottom:deeppink;' +
-						'border-left:rgb(255, 0, 0);' +
-						'border-right:hsla(0, 100%, 50%, 0.5);' +
-						'border-top:#f00;'
+						'border-bottom-color:deeppink;' +
+						'border-left-color:rgb(255, 0, 0);' +
+						'border-right-color:hsla(0, 100%, 50%, 0.5);' +
+						'border-top-color:#f00;'
 					);
 				} );
 
@@ -627,7 +623,7 @@ describe( 'table properties', () => {
 						left: 'solid'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+					assertTableStyle( editor, 'border-style:solid;' );
 				} );
 
 				it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
@@ -638,7 +634,12 @@ describe( 'table properties', () => {
 						left: 'dashed'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:dotted;border-left:dashed;border-right:ridge;border-top:solid;' );
+					assertTableStyle( editor,
+						'border-bottom-style:dotted;' +
+						'border-left-style:dashed;' +
+						'border-right-style:ridge;' +
+						'border-top-style:solid;'
+					);
 				} );
 
 				it( 'should consume converted item borderWidth attribute', () => {
@@ -669,7 +670,10 @@ describe( 'table properties', () => {
 						left: 'thick'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:1337rem;border-left:thick;border-right:.1em;border-top:42px;' );
+					assertTableStyle(
+						editor,
+						'border-bottom-width:1337rem;border-left-width:thick;border-right-width:.1em;border-top-width:42px;'
+					);
 				} );
 
 				it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
@@ -680,7 +684,7 @@ describe( 'table properties', () => {
 						left: '42px'
 					}, table ) );
 
-					assertTableStyle( editor, 'border-bottom:42px;border-left:42px;border-right:42px;border-top:42px;' );
+					assertTableStyle( editor, 'border-width:42px;' );
 				} );
 
 				it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
@@ -707,12 +711,7 @@ describe( 'table properties', () => {
 						}, table );
 					} );
 
-					assertTableStyle( editor,
-						'border-bottom:42px solid #f00;' +
-						'border-left:42px solid #f00;' +
-						'border-right:42px solid #f00;' +
-						'border-top:42px solid #f00;'
-					);
+					assertTableStyle( editor, 'border:42px solid #f00;' );
 				} );
 
 				it(
@@ -784,12 +783,7 @@ describe( 'table properties', () => {
 							left: 'deeppink'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:42px solid deeppink;' +
-							'border-left:42px solid deeppink;' +
-							'border-right:42px solid deeppink;' +
-							'border-top:42px solid deeppink;'
-						);
+						assertTableStyle( editor, 'border:42px solid deeppink;' );
 					} );
 
 					it( 'should downcast borderStyle attribute change', () => {
@@ -800,12 +794,7 @@ describe( 'table properties', () => {
 							left: 'ridge'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:42px ridge #f00;' +
-							'border-left:42px ridge #f00;' +
-							'border-right:42px ridge #f00;' +
-							'border-top:42px ridge #f00;'
-						);
+						assertTableStyle( editor, 'border:42px ridge #f00;' );
 					} );
 
 					it( 'should downcast borderWidth attribute change', () => {
@@ -816,22 +805,15 @@ describe( 'table properties', () => {
 							left: 'thick'
 						}, table ) );
 
-						assertTableStyle( editor,
-							'border-bottom:thick solid #f00;' +
-							'border-left:thick solid #f00;' +
-							'border-right:thick solid #f00;' +
-							'border-top:thick solid #f00;'
-						);
+						assertTableStyle( editor, 'border:thick solid #f00;' );
 					} );
 
 					it( 'should downcast borderColor attribute removal', () => {
 						model.change( writer => writer.removeAttribute( 'borderColor', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:42px solid;' +
-							'border-left:42px solid;' +
-							'border-right:42px solid;' +
-							'border-top:42px solid;'
+							'border-style:solid;' +
+							'border-width:42px;'
 						);
 					} );
 
@@ -839,10 +821,9 @@ describe( 'table properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderStyle', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:42px #f00;' +
-							'border-left:42px #f00;' +
-							'border-right:42px #f00;' +
-							'border-top:42px #f00;'
+							'border-color:#f00;' +
+							'border-width:42px;'
+
 						);
 					} );
 
@@ -850,10 +831,8 @@ describe( 'table properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderWidth', table ) );
 
 						assertTableStyle( editor,
-							'border-bottom:solid #f00;' +
-							'border-left:solid #f00;' +
-							'border-right:solid #f00;' +
-							'border-top:solid #f00;'
+							'border-color:#f00;' +
+							'border-style:solid;'
 						);
 					} );
 
@@ -1122,6 +1101,13 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
 				} );
 
+				it( 'should discard the unknown float value (style="float:foo;")', () => {
+					editor.setData( '<table style="float:foo;"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
+				} );
+
 				it( 'should upcast align=right attribute', () => {
 					editor.setData( '<table align="right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
@@ -1190,10 +1176,10 @@ describe( 'table properties', () => {
 					assertTableStyle( editor, null, 'float:left;' );
 				} );
 
-				it( 'should not downcast "center" alignment', () => {
+				it( 'should downcast "center" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, null, null );
+					assertTableStyle( editor, null, 'float:none;' );
 				} );
 
 				it( 'should downcast changed alignment (left -> right)', () => {
@@ -1234,6 +1220,154 @@ describe( 'table properties', () => {
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 
 					assertTableStyle( editor );
+				} );
+			} );
+		} );
+
+		// When default properties are specified, we do not want to put them into the model values if they are equal to the defaults.
+		describe( 'default table properties', () => {
+			let editor, model;
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left',
+									borderStyle: 'dashed',
+									borderColor: '#ff0',
+									borderWidth: '2px',
+									backgroundColor: '#00f',
+									width: '250px',
+									height: '150px'
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						model = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				editor.destroy();
+			} );
+
+			describe( 'border', () => {
+				it( 'should not upcast the default `border` values', () => {
+					editor.setData( '<table style="border:2px dashed #ff0"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'borderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-color` value', () => {
+					editor.setData( '<table style="border-color:#ff0"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderColor' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-style` value', () => {
+					editor.setData( '<table style="border-style:dashed"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderStyle' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-width` value', () => {
+					editor.setData( '<table style="border-width:2px"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'background color', () => {
+				it( 'should not upcast the default `background-color` value', () => {
+					editor.setData( '<table style="background-color:#00f"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `background` value', () => {
+					editor.setData( '<table style="background:#00f"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'width', () => {
+				it( 'should not upcast the default `width` value from <table>', () => {
+					editor.setData( '<table style="width:250px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'width' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `width` value from <figure>', () => {
+					editor.setData( '<figure style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'width' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'height', () => {
+				it( 'should not upcast the default `height` value from <table>', () => {
+					editor.setData( '<table style="height:150px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'height' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `height` value from <figure>', () => {
+					editor.setData( '<figure style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'height' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'alignment', () => {
+				it( 'should not upcast the default value from the style attribute (float:left)', () => {
+					editor.setData( '<table style="float:left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the align attribute (left)', () => {
+					editor.setData( '<table align="left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should upcast style="float:none" as "center" option', () => {
+					editor.setData( '<table style="float:none;""><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
+				} );
+
+				it( 'should upcast align=center attribute', () => {
+					editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
 				} );
 			} );
 		} );
