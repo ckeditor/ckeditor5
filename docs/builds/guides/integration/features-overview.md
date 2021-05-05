@@ -10,7 +10,7 @@ Below there is a table containing all CKEditor 5 packages, plugins that the pack
 How to read the generated output? There is one simple rule: CSS classes, inline styles, attributes and comments in a given cell in the "HTML output" column **apply only** to HTML elements, that are listed at the top in that cell. The classes, styles or attributes, that are included there do not mean that they will always be used in the HTML element, but rather show **possible** results. Wildcard character `*` is used to mark any value.
 
 <style>
-    table.package-metadata code.nowrap {
+    table.features-overview code.nowrap {
         white-space: nowrap;
     }
 </style>

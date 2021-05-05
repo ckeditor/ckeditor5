@@ -288,7 +288,7 @@ function prepareHtmlOutput( htmlOutput ) {
  */
 function saveGeneratedOutput( output ) {
 	output =
-		'<table class="package-metadata">' +
+		'<table class="features-overview">' +
 			'<thead>' +
 				'<tr>' +
 					'<th>Package</th>' +
