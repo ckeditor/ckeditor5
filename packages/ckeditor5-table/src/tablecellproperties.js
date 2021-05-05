@@ -98,22 +98,22 @@ export default class TableCellProperties extends Plugin {
  *
  * @typedef {Object} module:table/tablecellproperties~TableCellPropertiesOptions
  *
- * @property {String} width The default `width` of the table.
+ * @property {String} width The default `width` of the table cell.
  *
- * @property {String} height The default `height` of the table.
+ * @property {String} height The default `height` of the table cell.
  *
- * @property {String} padding The default `padding` of the table.
+ * @property {String} padding The default `padding` of the table cell.
  *
- * @property {String} backgroundColor The default `background-color` of the table.
+ * @property {String} backgroundColor The default `background-color` of the table cell.
  *
- * @property {String} borderColor The default `border-color` of the table.
+ * @property {String} borderColor The default `border-color` of the table cell.
  *
- * @property {String} borderWidth The default `border-width` of the table.
+ * @property {String} borderWidth The default `border-width` of the table cell.
  *
- * @property {String} [borderStyle='none'] The default `border-style` of the table.
+ * @property {String} [borderStyle='none'] The default `border-style` of the table cell.
  *
- * @property {String} [horizontalAlignment='center'] The default `horizontalAlignment` of the table.
+ * @property {String} [horizontalAlignment='center'] The default `horizontalAlignment` of the table cell.
  *
- * @property {String} [verticalAlignment='middle'] The default `verticalAlignment` of the table.
+ * @property {String} [verticalAlignment='middle'] The default `verticalAlignment` of the table cell.
  */
 
