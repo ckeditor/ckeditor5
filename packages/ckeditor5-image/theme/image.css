@@ -24,6 +24,9 @@
 
 			/* Make sure the image never exceeds the size of the parent container (ckeditor/ckeditor5-ui#67). */
 			max-width: 100%;
+
+			/* Make sure the image is never smaller than the parent container (See: https://github.com/ckeditor/ckeditor5/issues/9300). */
+			min-width: 100%
 		}
 	}
 
