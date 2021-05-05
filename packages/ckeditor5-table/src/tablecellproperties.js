@@ -64,7 +64,7 @@ export default class TableCellProperties extends Plugin {
  *			}
  *		};
  *
- * * The default styles for tables (`tableCellProperties.defaultProperties`):
+ * * The default styles for table cells (`tableCellProperties.defaultProperties`):
  *
  *		const tableConfig = {
  *			tableCellProperties: {
@@ -80,7 +80,8 @@ export default class TableCellProperties extends Plugin {
  *
  * **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
- * allowing users to pick colors in a more convenient way.
+ * allowing users to pick colors in a more convenient way. The `defaultProperties` option does impact the data.
+ * Default values will not be kept in the editor model.
  *
  * The default color palettes for the cell background and the cell border are the same
  * ({@link module:table/utils/ui/table-properties~defaultColors check out their content}).
