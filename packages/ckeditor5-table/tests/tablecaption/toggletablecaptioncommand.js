@@ -279,16 +279,13 @@ describe( 'ToggleTableCaptionCommand', () => {
 			// Show the caption.
 			command.execute();
 
-			setData( model,
-				'<table>' +
-					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph></paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-					'<caption></caption>' +
-				'</table>'
-			);
+			// Remove the caption content.
+			model.change( writer => {
+				const caption = model.document.getRoot().getNodeByPath( [ 0, 1 ] );
+				const range = writer.createRangeIn( caption );
+
+				writer.remove( range );
+			} );
 
 			// Hide and then show the caption.
 			command.execute();
