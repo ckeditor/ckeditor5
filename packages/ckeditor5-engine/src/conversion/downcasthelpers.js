@@ -953,11 +953,13 @@ function handleMarkerBoundary( range, isStart, conversionApi, data, viewMarkerDa
 
 		// If possible, we want to add `data-group-start-before` and `data-group-end-after` attributes.
 		if ( isStart && elementAfter || !isStart && !elementBefore ) {
-			// `data-group-start-before`, `data-group-end-after`.
+			// <elementBefore/>[<elementAfter/> -> data-group-start-before elementAfter
+			// <$text/>]<elementAfter/> -> data-group-end-before elementAfter
 			modelElement = elementAfter;
 			isBefore = true;
 		} else {
-			// `data-group-end-before`, `data-group-start-after`.
+			// <elementBefore>[<$text/> -> data-group-start-after elementBefore
+			// <elementBefore/>]<elementAfter/> -> data-group-end-after elementBefore
 			modelElement = elementBefore;
 			isBefore = false;
 		}
