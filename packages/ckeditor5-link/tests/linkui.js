@@ -1037,6 +1037,33 @@ describe( 'LinkUI', () => {
 				sinon.assert.calledWithExactly( spy );
 			} );
 
+			it( 'should show the UI when the selection spans over a link which only child is a widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isObject: true,
+					isInline: true,
+					allowAttributesOf: '$text'
+				} );
+
+				// The view element has no children.
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'inlineWidget',
+						view: ( modelItem, { writer } ) => toWidget(
+							writer.createContainerElement( 'inlineWidget', {}, {
+								isAllowedInsideAttributeElement: true
+							} ),
+							writer,
+							{ label: 'inline widget' }
+						)
+					} );
+
+				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.calledWithExactly( spy );
+			} );
+
 			it( 'should do nothing when selection is not inside link element', () => {
 				setModelData( editor.model, '[]' );
 
@@ -1079,27 +1106,33 @@ describe( 'LinkUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should do nothing when the selection spans over a link which only child is a widget', () => {
+			// See: #9607.
+			it( 'should show the UI when clicking on the linked inline widget', () => {
 				editor.model.schema.register( 'inlineWidget', {
 					allowWhere: '$text',
+					isInline: true,
 					isObject: true,
-					isInline: true
+					allowAttributesOf: '$text'
 				} );
 
-				editor.conversion.for( 'downcast' )
-					.elementToElement( {
-						model: 'inlineWidget',
-						view: ( modelItem, { writer } ) => toWidget(
-							writer.createContainerElement( 'inlineWidget' ),
-							writer,
-							{ label: 'inline widget' }
-						)
-					} );
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'inlineWidget',
+					view: ( modelItem, { writer } ) => {
+						const spanView = writer.createContainerElement( 'span', {}, {
+							isAllowedInsideAttributeElement: true
+						} );
 
-				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
+						const innerText = writer.createText( '{' + modelItem.name + '}' );
+						writer.insert( writer.createPositionAt( spanView, 0 ), innerText );
 
-				observer.fire( 'click', { target: {} } );
-				sinon.assert.notCalled( spy );
+						return toWidget( spanView, writer );
+					}
+				} );
+
+				setModelData( editor.model, '<paragraph>Foo [<inlineWidget linkHref="foo"></inlineWidget>] Foo.</paragraph>' );
+
+				observer.fire( 'click', { target: document.body } );
+				sinon.assert.calledWithExactly( spy );
 			} );
 		} );
 	} );

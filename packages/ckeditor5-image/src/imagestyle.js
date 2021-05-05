@@ -14,10 +14,14 @@ import ImageStyleUI from './imagestyle/imagestyleui';
 /**
  * The image style plugin.
  *
- * For a detailed overview, check the {@glink features/image#image-styles image styles} documentation.
+ * For a detailed overview of the image styles feature, check the {@glink features/image#image-styles documentation}.
  *
- * This is a "glue" plugin which loads the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing}
- * and {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugins.
+ * This is a "glue" plugin which loads the following plugins:
+ * * {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing},
+ * * {@link module:image/imagestyle/imagestyleui~ImageStyleUI}
+ *
+ * It provides a default configuration, which can be extended or overwritten.
+ * Read more about the {@link module:image/image~ImageConfig#styles image styles configuration}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -54,115 +58,83 @@ export default class ImageStyle extends Plugin {
  */
 
 /**
- * A list of the image style groups.
+ * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the
+ * {@link module:image/imagestyle~ImageStyleConfig#options image style options} to work properly.
+ * The default configuration is provided (listed below) and can be customized while creating the editor instance.
  *
- * @member {Array.<module:image/imagestyle~ImageStyleGroupDefinition>} module:image/imagestyle~ImageStyleConfig#groups
- */
-
-/**
- * The {@link module:image/imagestyle `ImageStyle`} plugin requires a list of the image style
- * {@link module:image/imagestyle~ImageStyleConfig#options} and {@link module:image/imagestyle~ImageStyleConfig#groups}
- * to work properly. It provides the default configuration (listed below), which can be customized while creating the editor instance.
+ * # **Command**
  *
- * The feature creates the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `imageStyle`}
- * command based on defined {@link module:image/imagestyle~ImageStyleConfig#options}, so you can change the style of a
- * selected image by executing the following command:
+ * The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `imageStyleCommand`}
+ * is configured based on the defined options,
+ * so you can change the style of the selected image by executing the following command:
  *
  *		editor.execute( 'imageStyle' { value: 'alignLeft' } );
  *
- * The feature also registers in the {@link module:ui/componentfactory~ComponentFactory UI components factory} buttons
- * that execute the command with different values. Assuming that you use the
- * default image style configuration, you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
- * (or any other toolbar) to contain any of the registered buttons:
+ * # **Buttons**
  *
- *		ClassicEditor
- *			.create( editorElement, {
- *				image: {
- *					toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
- *				}
- *			} );
- *
- * **Note**: The buttons created by the `ImageStyle` plugin must be prefixed with "imageStyle:" in the toolbar configuration.
- *
- * The feature also creates drop-downs that contains a set of buttons defined in the
- * {@link module:image/imagestyle~ImageStyleGroupDefinition#items `items`} property.
- * The drop-downs can be added to a toolbar the same way as the buttons.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				image: {
- *					toolbar: [ 'imageStyle:wrapText', 'imageStyle:breakText' ]
- *				}
- *			} );
- *
- * Each of the drop-downs added to the toolbar will be displayed as the split button. The style applied on click will correspond to
- * the one specified in the {@link module:image/imagestyle~ImageStyleGroupDefinition#defaultItem `defaultItem`} property.
+ * The buttons that execute the command with different values are registered
+ * in the {@link module:ui/componentfactory~ComponentFactory UI components factory} with the "imageStyle:" prefixes and can be used
+ * in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.
  *
  * Read more about styling images in the {@glink features/image#image-styles Image styles guide}.
  *
- * # **Default configuration**
+ * # **Default options and buttons**
  *
  * If the custom configuration is not provided, the default configuration will be used depending on the loaded
  * image editing plugins.
  *
  * * If both {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} and
  * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugins are loaded
- * (which is usually the default editor configuration), the following buttons (options) and groups will be available for the toolbar
- * configuration:
+ * (which is usually the default editor configuration), the following options will be available for the toolbar
+ * configuration. These options will be registered as the buttons with the "imageStyle:" prefixes.
  *
  *		const imageDefaultConfig = {
  *			styles: {
  *				options: [
  *					'inline', 'alignLeft', 'alignRight',
- *					'alignCenter', 'alignBlockLeft', 'alignBlockRight'
- *				],
- *				groups: [ 'wrapText', 'breakText' ]
+ *					'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+ *					'full', 'side'
+ *				]
  *			}
  *		};
  *
  * * If only the {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin is loaded,
- * the following buttons (options) and groups will be available for the toolbar configuration:
+ * the following buttons (options) and groups will be available for the toolbar configuration.
+ * These options will be registered as the buttons with the "imageStyle:" prefixes.
  *
  *		const imageDefaultConfig = {
  *			styles: {
- *				options: [ 'full', 'side' ],
- *				groups: []
+ *				options: [ 'full', 'side' ]
  *			}
  *		};
  *
  * * If only the {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin is loaded,
- * the following buttons (options) and groups will available for the toolbar configuration:
+ * the following buttons (options) and groups will available for the toolbar configuration.
+ * These options will be registered as the buttons with the "imageStyle:" prefixes.
  *
  *		const imageDefaultConfig = {
  *			styles: {
- *				options: [ 'inline', 'alignLeft', 'alignRight' ],
- *				groups: []
+ *				options: [ 'inline', 'alignLeft', 'alignRight' ]
  *			}
  *		};
+ *
+ * Read more about the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options}.
  *
  * # **Custom configuration**
  *
  * The image styles configuration can be customized in several ways:
  *
- * * Any of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} or
- * {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} can be loaded by the reference to its name
- * as follows:
+ * * Any of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options}
+ * can be loaded by the reference to its name as follows:
  *
  *		ClassicEditor
  *			.create( editorElement, {
  *				image: {
  *					styles: {
  *						options: [ 'alignLeft', 'alignRight' ]
- *						groups: [ 'wrapText' ]
  *					}
  *				}
  *			} );
- *
- * **Note**: Custom options will override the options array only, the groups will stay as in the default configuration.
- * The same goes for applying the custom groups.
- *
- * **Note**: Every {@link module:image/imagestyle~ImageStyleGroupDefinition#items item} in the referenced groups
- * must be listed in the provided options.
  *
  * * Each of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options} can be customized,
  * e.g. to change the `icon`, `title` or CSS `className` of the style. The feature also provides several
@@ -193,42 +165,10 @@ export default class ImageStyle extends Plugin {
  *			}
  *		} );
  *
- * * Each of the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} can be customized,
- * e.g. to change the `defaultItem`, `title` or the `items` list.
+ * * If none of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options}
+ * works for the integration, it is possible to define independent custom styles, too.
  *
- *		ClassicEditor.create( editorElement, { image:
- *			styles: {
- *				// The 'full' and 'side' styles are used in the 'breakText' group,
- *				// so they must be defined as the options.
- *				options: [ 'full', 'side' ],
- *				groups: {
- *					// This will only customize the default item.
- *					// Note: 'alignRight' is one of items defined in the default group.
- *					{
- *						name: 'wrapText',
- *						defaultItem: 'alignRight'
- *					},
- *
- *					// This will customize the title
- *					// and the items list of the default group.
- *					{
- *						name: 'breakText',
- *						title: 'My break text title',
- *						items: [ 'full', 'side' ]
- *					}
- *				}
- *			}
- *		} );
- *
- * * If none of the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} or
- * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default image style options} works for the integration,
- * it is possible to define independent custom styles, too.
- *
- * See the documentation about the image style
- *
- * * {@link module:image/imagestyle~ImageStyleOptionDefinition options}
- * * {@link module:image/imagestyle~ImageStyleGroupDefinition groups}
- *
+ * See the documentation about the image style {@link module:image/imagestyle~ImageStyleOptionDefinition options}
  * to define the custom image style configuration properly.
  *
  *		import redIcon from 'red-icon.svg';
@@ -258,15 +198,6 @@ export default class ImageStyle extends Plugin {
  *						title: 'Red image',
  *						icon: redIcon,
  *						className: 'image-red'
- *					}
- *				],
- *				// A list of completely custom groups.
- *				groups: [
- *					{
- *						name: 'Colorful',
- *						title: 'Colorful images',
- *						defaultItem: 'blue',
- *						items: [ 'blue', 'red' ]
  *					}
  *				]
  *			}
@@ -303,7 +234,7 @@ export default class ImageStyle extends Plugin {
  * * refer to one of the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} or define the custom style,
  * * store the chosen style in the model by setting the `imageStyle` attribute of the model image element,
  * * as a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
- * * when registering a button for the style (`'imageStyle:{name}'`).
+ * * when registering a button for the style in the following manner: (`'imageStyle:{name}'`).
  *
  * @property {Boolean} [isDefault] When set, the style will be used as the default one for the model elements
  * listed in the `modelElements` property. A default style does not apply any CSS class to the view element.
@@ -349,53 +280,4 @@ export default class ImageStyle extends Plugin {
  * from the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default styling options} addressed in the name property.
  *
  * @typedef {Object} module:image/imagestyle~ImageStyleOptionDefinition
- */
-
-/**
- * The image group definition descriptor.
- *
- * This definition should be implemented in the `Image` plugin {@link module:image/image~ImageConfig#styles configuration} for:
- * * customizing one of the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} by providing the proper name
- * of the default group and the properties to be overridden,
- * * or defining a completely custom group by providing a custom name and implementing all of the following properties.
- *
- *		const imageStyleGroupDefinition = {
- *			name: 'wrapText',
- *			title: 'Wrap text',
- *			items: [ 'alignLeft', 'alignRight' ],
- *			defaultItem: 'alignLeft'
- *		}
- *
- * The group will be registered
- * as the {@link module:ui/dropdown/dropdownview~DropdownView dropdown}
- * with the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView split button} under the name `'imageStyle:{name}'` in the
- * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
- * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin).
- *
- * @property {String} name The unique name of the group. It can refer to one of the
- * {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups} or be completely custom to define a new group.
- * It will be used for registering the drop-down  under the name `'imageStyle:{name}'`.
- *
- * @property {String} [title] The group's title. Setting `title` to one of
- * {@link module:image/imagestyle/imagestyleui~ImageStyleUI#localizedDefaultStylesTitles}
- * will automatically translate it to the language of the editor.
- *
- * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default group} addressed in the name property.
- *
- * @property {Array.<String>} [items] The list of the names of the buttons that will be placed in the dropdown toolbar.
- * Each of the buttons has to be defined
- * as the {@link module:image/imagestyle~ImageStyleOptionDefinition image styling option} to be registered in the
- * {@link module:ui/componentfactory~ComponentFactory UI components factory}.
- *
- * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default group} addressed in the name property.
- *
- * @property {String} [defaultItem] The name of one of the styling options from the items list,
- * which will be used as a default button for the drop-down's split button.
- *
- * If this property is not defined, its value is inherited
- * from the {@link module:image/imagestyle/utils~DEFAULT_GROUPS default group} addressed in the name property.
- *
- * @typedef {Object} module:image/imagestyle~ImageStyleGroupDefinition
  */
