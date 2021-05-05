@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
@@ -642,7 +643,16 @@ describe( 'ImageInlineEditing', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ ImageInlineEditing, ImageBlockEditing, ImageCaption, ImageResizeEditing, Clipboard, LinkImage, Paragraph ]
+				plugins: [
+					ImageInlineEditing,
+					ImageBlockEditing,
+					ImageCaption,
+					ImageResizeEditing,
+					Clipboard,
+					LinkImage,
+					Paragraph,
+					ListEditing
+				]
 			} );
 
 			model = editor.model;
@@ -668,6 +678,23 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+			);
+		} );
+
+		it( 'should paste or drop a block image as inline in the empty list item', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<listItem listType="bulleted" listIndent="0"></listItem>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">' +
+					'<imageInline src="/assets/sample.png"></imageInline>[]' +
+				'</listItem>'
 			);
 		} );
 

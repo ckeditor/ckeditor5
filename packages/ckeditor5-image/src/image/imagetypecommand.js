@@ -68,11 +68,35 @@ export default class ImageTypeCommand extends Command {
 			return null;
 		}
 
-		const newElement = imageUtils.insertImage( attributes, model.createSelection( oldElement, 'on' ), this._modelElementName );
+		return model.change( writer => {
+			// Get all markers that contain the old image element.
+			const markers = Array.from( model.markers )
+				.filter( marker => marker.getRange().containsItem( oldElement ) );
 
-		return {
-			oldElement,
-			newElement
-		};
+			const newElement = imageUtils.insertImage( attributes, model.createSelection( oldElement, 'on' ), this._modelElementName );
+
+			if ( !newElement ) {
+				return null;
+			}
+
+			const newElementRange = writer.createRangeOn( newElement );
+
+			// Expand the previously intersecting markers' ranges to include the new image element.
+			for ( const marker of markers ) {
+				const markerRange = marker.getRange();
+
+				// Join the survived part of the old marker range with the new element range
+				// (loosely because there could be some new paragraph or the existing one might got split).
+				const range = markerRange.root.rootName != '$graveyard' ?
+					markerRange.getJoined( newElementRange, true ) : newElementRange;
+
+				writer.updateMarker( marker, { range } );
+			}
+
+			return {
+				oldElement,
+				newElement
+			};
+		} );
 	}
 }
