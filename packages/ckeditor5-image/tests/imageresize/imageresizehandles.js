@@ -719,7 +719,7 @@ describe( 'ImageResizeHandles', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '88px' } );
+			expect( parseFloat( spy.args[ 0 ][ 0 ].width ) ).to.not.be.NaN;
 
 			await editor.destroy();
 		} );
