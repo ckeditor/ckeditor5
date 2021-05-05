@@ -136,6 +136,55 @@ describe( 'LinkImageUI', () => {
 			expect( imageWidget.getChild( 0 ).name ).to.equal( 'img' );
 			expect( data.preventDefault.called ).to.be.true;
 		} );
+
+		// See: #9607.
+		describe( 'blocking the LinkUI plugin', () => {
+			let linkUI;
+
+			beforeEach( () => {
+				linkUI = editor.plugins.get( 'LinkUI' );
+			} );
+
+			it( 'should not show the LinkUI when clicked the linked image', () => {
+				const spy = sinon.stub( linkUI, '_showUI' ).returns( {} );
+
+				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'in' );
+				} );
+
+				const imageWidget = viewDocument.selection.getSelectedElement();
+				const data = fakeEventData();
+				const eventInfo = new EventInfo( imageWidget, 'click' );
+				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+				viewDocument.fire( 'click', domEventDataMock );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).is( 'element', 'image' ) ).to.be.true;
+				expect( spy.notCalled ).to.be.true;
+			} );
+
+			it( 'should not show the LinkUI when clicked the linked inline image', () => {
+				const spy = sinon.stub( linkUI, '_showUI' ).returns( {} );
+
+				editor.setData( '<p><a href="https://example.com"><img src="" /></a></p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'in' );
+				} );
+
+				const imageWidget = viewDocument.selection.getSelectedElement();
+				const data = fakeEventData();
+				const eventInfo = new EventInfo( imageWidget, 'click' );
+				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+				viewDocument.fire( 'click', domEventDataMock );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).is( 'element', 'imageInline' ) ).to.be.true;
+				expect( spy.notCalled ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'event handling', () => {

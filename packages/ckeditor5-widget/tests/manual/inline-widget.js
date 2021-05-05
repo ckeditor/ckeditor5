@@ -22,6 +22,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -119,8 +120,8 @@ class InlineWidget extends Plugin {
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget, Table ],
-		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget, Table, Link ],
+		toolbar: [ 'heading', '|', 'bold', 'link', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

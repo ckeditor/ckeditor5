@@ -28,10 +28,7 @@ describe( 'ImageStyleCommand', () => {
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ ArticlePluginSet ],
 			image: {
-				styles: {
-					options: [ 'full', 'inline', 'alignLeft', 'alignCenter' ],
-					groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
-				},
+				styles: { options: [ 'full', 'inline', 'alignLeft', 'alignCenter' ] },
 				toolbar: [ 'imageStyle:full' ]
 			}
 		} );
@@ -87,10 +84,7 @@ describe( 'ImageStyleCommand', () => {
 			const customEditor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ ArticlePluginSet ],
 				image: {
-					styles: {
-						options: [ 'full', 'alignLeft', 'alignCenter' ],
-						groups: [ { name: 'default', items: [ 'full' ], defaultItem: 'full' } ]
-					},
+					styles: { options: [ 'full', 'alignLeft', 'alignCenter' ] },
 					toolbar: [ 'imageStyle:full' ]
 				}
 			} );
@@ -157,10 +151,7 @@ describe( 'ImageStyleCommand', () => {
 				const customEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet ],
 					image: {
-						styles: {
-							options: [ 'full', 'alignLeft', 'alignCenter' ],
-							groups: []
-						},
+						styles: { options: [ 'full', 'alignLeft', 'alignCenter' ] },
 						toolbar: [ 'imageStyle:full' ]
 					}
 				} );
@@ -196,10 +187,7 @@ describe( 'ImageStyleCommand', () => {
 				const customEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet ],
 					image: {
-						styles: {
-							options: [ 'full', 'alignLeft', 'alignCenter' ],
-							groups: []
-						},
+						styles: { options: [ 'full', 'alignLeft', 'alignCenter' ] },
 						toolbar: [ 'imageStyle:full' ]
 					}
 				} );

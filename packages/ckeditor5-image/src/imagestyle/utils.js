@@ -113,36 +113,6 @@ const DEFAULT_OPTIONS = {
 };
 
 /**
- * Default image style groups provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
- * configuration. The groups are containers for {@link module:image/imagestyle~ImageStyleConfig#options style options} and
- * correspond to available drop-down button created by the {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin.
- *
- * There are 2 groups available:
- *
- * * **`'wrapText'`**, which contains the `alignLeft` and `alignRight` options, that is, those that wraps the text around the image,
- * * **`'breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
- * those that breaks the text around the image.
- *
- * @readonly
- * @type {Object.<String,module:image/imagestyle~ImageStyleGroupDefinition>}
- */
-const DEFAULT_GROUPS = {
-	wrapText: {
-		name: 'wrapText',
-		title: 'Wrap text',
-		defaultItem: 'alignLeft',
-		items: [ 'alignLeft', 'alignRight' ]
-	},
-
-	breakText: {
-		name: 'breakText',
-		title: 'Break text',
-		defaultItem: 'full',
-		items: [ 'alignBlockLeft', 'full', 'alignBlockRight' ]
-	}
-};
-
-/**
  * Default image style icons provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#styles}
  * configuration.
  *
@@ -164,7 +134,33 @@ const DEFAULT_ICONS = {
 };
 
 /**
- * Returns lists of the normalized and validated image style options and groups.
+ * Default drop-downs provided by the plugin that can be referred in the {@link module:image/image~ImageConfig#toolbar}
+ * configuration. The drop-downs are containers for the {@link module:image/imagestyle~ImageStyleConfig#options image style options}.
+ *
+ * If both of the `ImageEditing` plugins are loaded, there are 2 predefined drop-downs available:
+ *
+ * * **`'imageStyle:wrapText'`**, which contains the `alignLeft` and `alignRight` options, that is,
+ * those that wraps the text around the image,
+ * * **`'imageStyle:breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
+ * those that breaks the text around the image.
+ *
+ * @readonly
+ * @type {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
+ */
+const DEFAULT_DROPDOWN_DEFINITIONS = [ {
+	name: 'imageStyle:wrapText',
+	title: 'Wrap text',
+	defaultItem: 'imageStyle:alignLeft',
+	items: [ 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
+}, {
+	name: 'imageStyle:breakText',
+	title: 'Break text',
+	defaultItem: 'imageStyle:full',
+	items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
+} ];
+
+/**
+ * Returns a list of the normalized and validated image style options.
  *
  * @protected
  * @param {Object} config
@@ -178,22 +174,15 @@ const DEFAULT_ICONS = {
  * @returns {module:image/imagestyle~ImageStyleConfig}
  * * Each of options contains a complete icon markup.
  * * The image style options not supported by any of the loaded plugins are filtered out.
- * * The groups with no {@link module:image/imagestyle~ImageStyleGroupDefinition#items items} are filtered out.
- * * All of the group items not defined in the options are filtered out.
  */
 function normalizeStyles( config ) {
-	const configuredOptions = config.configuredStyles.options || [];
-	const configuredGroups = config.configuredStyles.groups || [];
+	const configuredStyles = config.configuredStyles.options || [];
 
-	const options = configuredOptions
-		.map( option => normalizeDefinition( DEFAULT_OPTIONS, option, 'option' ) )
-		.filter( option => isValidOption( option, config ) );
+	const styles = configuredStyles
+		.map( arrangement => normalizeDefinition( arrangement ) )
+		.filter( arrangement => isValidOption( arrangement, config ) );
 
-	const groups = configuredGroups
-		.map( group => normalizeDefinition( DEFAULT_GROUPS, group, 'group' ) )
-		.filter( group => group.items && group.items.length );
-
-	return { options, groups };
+	return styles;
 }
 
 /**
@@ -208,8 +197,7 @@ function normalizeStyles( config ) {
  *
  * @returns {Object<String,Array>}
  * It returns an object with the lists of the image style options and groups defined as strings related to the
- * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options} and the
- * {@link module:image/imagestyle/utils~DEFAULT_GROUPS default groups}.
+ * {@link module:image/imagestyle/utils~DEFAULT_OPTIONS default options}
  */
 function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoaded ) {
 	if ( isBlockPluginLoaded && isInlinePluginLoaded ) {
@@ -218,8 +206,7 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 				'inline', 'alignLeft', 'alignRight',
 				'alignCenter', 'alignBlockLeft', 'alignBlockRight',
 				'full', 'side'
-			],
-			groups: [ 'wrapText', 'breakText' ]
+			]
 		};
 	} else if ( isBlockPluginLoaded ) {
 		return {
@@ -234,37 +221,49 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 	return {};
 }
 
+/**
+ * Returns a list of the available predefined drop-downs' definitions depending on the loaded image editing plugins.
+ * @protected
+ *
+ * @param {module:core/plugincollection~PluginCollection} pluginCollection
+ * @returns {Array.<module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>}
+ */
+function getDefaultDropdownDefinitions( pluginCollection ) {
+	if ( pluginCollection.has( 'ImageBlockEditing' ) && pluginCollection.has( 'ImageInlineEditing' ) ) {
+		return [ ...DEFAULT_DROPDOWN_DEFINITIONS ];
+	} else {
+		return [];
+	}
+}
+
 // Normalizes an image style option or group provided in the {@link module:image/image~ImageConfig#styles}
 // and returns it in a {@link module:image/imagestyle~ImageStyleOptionDefinition}/
-// {@link module:image/imagestyle~ImageStyleGroupDefinition}.
 //
-// @param {DEFAULT_OPTIONS|DEFAULT_GROUPS} defaults
 // @param {Object|String} definition
-// @param {'option'|'group'} definitionType
 //
-// @returns {module:image/imagestyle~ImageOptionDefinition}|{module:image/imagestyle~ImageStyleGroupDefinition}
-function normalizeDefinition( defaults, definition, definitionType ) {
+// @returns {module:image/imagestyle~ImageStyleOptionDefinition}}
+function normalizeDefinition( definition ) {
 	if ( typeof definition === 'string' ) {
 		// Just the name of the style has been passed, but none of the defaults.
-		if ( !defaults[ definition ] ) {
+		if ( !DEFAULT_OPTIONS[ definition ] ) {
 			// Normalize the style anyway to prevent errors.
 			definition = { name: definition };
 		}
 		// Just the name of the style has been passed and it's one of the defaults, just use it.
 		// Clone the style to avoid overriding defaults.
 		else {
-			definition = { ...defaults[ definition ] };
+			definition = { ...DEFAULT_OPTIONS[ definition ] };
 		}
 	} else {
 		// If an object style has been passed and if the name matches one of the defaults,
 		// extend it with defaults – the user wants to customize a default style.
 		// Note: Don't override the user–defined style object, clone it instead.
-		definition = extendStyle( defaults[ definition.name ], definition );
+		definition = extendStyle( DEFAULT_OPTIONS[ definition.name ], definition );
 	}
 
 	// If an icon is defined as a string and correspond with a name
 	// in default icons, use the default icon provided by the plugin.
-	if ( definitionType === 'option' && typeof definition.icon === 'string' ) {
+	if ( typeof definition.icon === 'string' ) {
 		definition.icon = DEFAULT_ICONS[ definition.icon ] || definition.icon;
 	}
 
@@ -322,10 +321,10 @@ function isValidOption( option, { isBlockPluginLoaded, isInlinePluginLoaded } ) 
 // Extends the default style with a style provided by the developer.
 // Note: Don't override the custom–defined style object, clone it instead.
 //
-// @param {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleOptionDefinition} source
+// @param {module:image/imagestyle~ImageStyleOptionDefinition} source
 // @param {Object} style
 //
-// @returns {module:image/imagestyle~ImageStyleGroupDefinition|module:image/imagestyle~ImageStyleOptionDefinition}
+// @returns {module:image/imagestyle~ImageStyleOptionDefinition}
 function extendStyle( source, style ) {
 	const extendedStyle = { ...style };
 
@@ -347,10 +346,10 @@ function warnInvalidStyle( info ) {
 	 * Please make sure the definition implements properly one of the following:
 	 *
 	 * * {@link module:image/imagestyle~ImageStyleOptionDefinition image style option definition},
-	 * * {@link module:image/imagestyle~ImageStyleGroupDefinition image style group definition}
+	 * * {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition image style dropdown definition}
 	 *
 	 * @error image-style-configuration-definition-invalid
-	 * @param {String} [group] The name of the invalid group
+	 * @param {String} [dropdown] The name of the invalid drop-down
 	 * @param {String} [style] The name of the invalid image style option
 	 */
 	logWarning( 'image-style-configuration-definition-invalid', info );
@@ -359,8 +358,9 @@ function warnInvalidStyle( info ) {
 export default {
 	normalizeStyles,
 	getDefaultStylesConfiguration,
+	getDefaultDropdownDefinitions,
 	warnInvalidStyle,
 	DEFAULT_OPTIONS,
-	DEFAULT_GROUPS,
-	DEFAULT_ICONS
+	DEFAULT_ICONS,
+	DEFAULT_DROPDOWN_DEFINITIONS
 };
