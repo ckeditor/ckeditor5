@@ -113,7 +113,7 @@ export default class TableCaptionEditing extends Plugin {
 
 	/**
 	 * Returns the saved {@link module:engine/model/element~Element#toJSON JSONified} caption
-	 * of an table model element.
+	 * of a table model element.
 	 *
 	 * See {@link #_saveCaption}.
 	 *
@@ -130,9 +130,9 @@ export default class TableCaptionEditing extends Plugin {
 
 	/**
 	 * Saves a {@link module:engine/model/element~Element#toJSON JSONified} caption for
-	 * an table element to allow restoring it in the future.
+	 * a table element to allow restoring it in the future.
 	 *
-	 * A caption is saved every time it gets hidden and/or the type of an table changes. The
+	 * A caption is saved every time it gets hidden. The
 	 * user should be able to restore it on demand.
 	 *
 	 * **Note**: The caption cannot be stored in the table model element attribute because,
@@ -151,4 +151,3 @@ export default class TableCaptionEditing extends Plugin {
 		this._savedCaptionsMap.set( tableModelElement, caption.toJSON() );
 	}
 }
-
