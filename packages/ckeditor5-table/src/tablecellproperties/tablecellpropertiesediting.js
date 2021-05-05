@@ -188,12 +188,12 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 		// Support for the `text-align:*;` CSS definition for the table cell alignment.
 		.attributeToAttribute( {
 			view: {
+				name: /^(td|th)$/,
 				styles: {
 					'text-align': ALIGN_VALUES_REG_EXP
 				}
 			},
 			model: {
-				name: 'tableCell',
 				key: 'horizontalAlignment',
 				value: viewElement => {
 					const align = viewElement.getStyle( 'text-align' );
@@ -205,12 +205,12 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
 		.attributeToAttribute( {
 			view: {
+				name: /^(td|th)$/,
 				attributes: {
 					align: ALIGN_VALUES_REG_EXP
 				}
 			},
 			model: {
-				name: 'tableCell',
 				key: 'horizontalAlignment',
 				value: viewElement => {
 					const align = viewElement.getAttribute( 'align' );
@@ -249,12 +249,12 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 		// Support for the `vertical-align:*;` CSS definition for the table cell alignment.
 		.attributeToAttribute( {
 			view: {
+				name: /^(td|th)$/,
 				styles: {
 					'vertical-align': VALIGN_VALUES_REG_EXP
 				}
 			},
 			model: {
-				name: 'tableCell',
 				key: 'verticalAlignment',
 				value: viewElement => {
 					const align = viewElement.getStyle( 'vertical-align' );
@@ -266,12 +266,12 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
 		.attributeToAttribute( {
 			view: {
+				name: /^(td|th)$/,
 				attributes: {
 					valign: VALIGN_VALUES_REG_EXP
 				}
 			},
 			model: {
-				name: 'tableCell',
 				key: 'verticalAlignment',
 				value: viewElement => {
 					const valign = viewElement.getAttribute( 'valign' );

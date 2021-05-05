@@ -165,12 +165,12 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 		// Support for the `float:*;` CSS definition for the table alignment.
 		.attributeToAttribute( {
 			view: {
+				name: /^(table|figure)$/,
 				styles: {
 					float: FLOAT_VALUES_REG_EXP
 				}
 			},
 			model: {
-				name: 'table',
 				key: 'alignment',
 				value: viewElement => {
 					let align = viewElement.getStyle( 'float' );
