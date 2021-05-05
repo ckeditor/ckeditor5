@@ -8,7 +8,6 @@
 */
 
 import { Command } from 'ckeditor5/src/core';
-import { Element } from 'ckeditor5/src/engine';
 
 import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './utils';
 
@@ -74,7 +73,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	/**
 	 * Shows the table caption. Also:
 	 *
-	 * * it attempts to restore the caption content from the `caption` attribute,
+	 * * it attempts to restore the caption content from the `TableCaptionEditing` caption registry,
 	 * * it moves the selection to the caption right away, it the `focusCaptionOnShow` option was set.
 	 *
 	 * @private
@@ -84,18 +83,11 @@ export default class ToggleTableCaptionCommand extends Command {
 	_showTableCaption( writer, focusCaptionOnShow ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
+		const tableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
+		const savedCaptionElement = tableCaptionEditing._getSavedCaption( tableElement );
 
-		let newCaptionElement;
-
-		// Try restoring the caption from the attribute.
-		if ( tableElement.hasAttribute( 'caption' ) ) {
-			newCaptionElement = Element.fromJSON( tableElement.getAttribute( 'caption' ) );
-
-			// The model attribute is no longer needed if the caption was created out of it.
-			writer.removeAttribute( 'caption', tableElement );
-		} else {
-			newCaptionElement = writer.createElement( 'caption' );
-		}
+		// Try restoring the caption from the TableCaptionEditing plugin storage.
+		const newCaptionElement = savedCaptionElement || writer.createElement( 'caption' );
 
 		writer.append( newCaptionElement, tableElement );
 
@@ -107,8 +99,8 @@ export default class ToggleTableCaptionCommand extends Command {
 	/**
 	 * Hides the caption of a selected table (or an table caption the selection is anchored to).
 	 *
-	 * The content of the caption is stored in the `caption` model attribute of the table
-	 * to make this a reversible action.
+	 * The content of the caption is stored in the `TableCaptionEditing` caption registry to make this
+	 * a reversible action.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
@@ -116,12 +108,11 @@ export default class ToggleTableCaptionCommand extends Command {
 	_hideTableCaption( writer ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
+		const tableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
 		const captionElement = getCaptionFromTableModelElement( tableElement );
 
 		// Store the caption content so it can be restored quickly if the user changes their mind.
-		if ( captionElement.childCount ) {
-			writer.setAttribute( 'caption', captionElement.toJSON(), tableElement );
-		}
+		tableCaptionEditing._saveCaption( tableElement, captionElement );
 
 		writer.setSelection( writer.createRangeIn( tableElement.getChild( 0 ).getChild( 0 ) ) );
 		writer.remove( captionElement );
