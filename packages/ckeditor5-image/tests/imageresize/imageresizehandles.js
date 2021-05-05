@@ -702,7 +702,7 @@ describe( 'ImageResizeHandles', () => {
 
 		it( 'should be able to get the proper resizeHost size when the image it is wrapped with an inline element', async () => {
 			// https://github.com/ckeditor/ckeditor5/issues/9568
-			editor = await createEditor( {
+			const editor = await createEditor( {
 				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, Paragraph ],
 				image: { resizeUnit: 'px' }
 			} );
@@ -712,14 +712,14 @@ describe( 'ImageResizeHandles', () => {
 					`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
 				'</paragraph>' );
 
-			widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+			widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 			const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 			const finalPointerPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' ).moveBy( 10, -10 );
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-			expect( parseFloat( spy.args[ 0 ][ 0 ].width ) ).to.not.be.NaN;
+			sinon.assert.calledWithExactly( spy.firstCall, { width: '80px' } );
 
 			await editor.destroy();
 		} );
