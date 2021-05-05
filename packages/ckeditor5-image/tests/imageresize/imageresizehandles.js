@@ -13,6 +13,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import {
@@ -699,6 +700,30 @@ describe( 'ImageResizeHandles', () => {
 			expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
 		} );
 
+		it( 'should be able to get the proper resizeHost size when the image it is wrapped with an inline element', async () => {
+			// https://github.com/ckeditor/ckeditor5/issues/9568
+			const editor = await createEditor( {
+				plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, Paragraph ],
+				image: { resizeUnit: 'px' }
+			} );
+
+			await setModelAndWaitForImages( editor,
+				'<paragraph>' +
+					`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+				'</paragraph>' );
+
+			widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
+			const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
+			const finalPointerPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' ).moveBy( 10, -10 );
+
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+
+			sinon.assert.calledWithExactly( spy.firstCall, { width: '80px' } );
+
+			await editor.destroy();
+		} );
+
 		describe( 'srcset integration', () => {
 			// The image is 96x96 pixels.
 			const imageBaseUrl = '/assets/sample.png';
@@ -855,24 +880,60 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		describe( 'Link image integration', () => {
-			it( 'should attach the resizer to the image inside the link', async () => {
+			beforeEach( async () => {
 				editor = await createEditor( {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, Paragraph ]
 				} );
+			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should attach the resizer to the image inside the link', async () => {
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-				setData( editor.model,
+				await setModelAndWaitForImages( editor,
 					'<paragraph>' +
-							`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
-						'</paragraph>'
+						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+					'</paragraph>'
 				);
-
-				await waitForAllImagesLoaded( editor );
 
 				expect( attachToSpy ).calledOnce;
 
 				attachToSpy.restore();
+			} );
+
+			it( 'should set the paragraph as the resize host for an image wrapped with a link', async () => {
+				await setModelAndWaitForImages( editor,
+					'<paragraph>' +
+						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+					'</paragraph>'
+				);
+
+				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
+
+				expect( resizer._getResizeHost().nodeName ).to.equal( 'P' );
+			} );
+		} );
+
+		describe( 'to-do list integration', () => {
+			it( 'should set the list item as the resize host if an image is inside a to-do list', async () => {
+				editor = await createEditor( {
+					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, TodoList, Paragraph ]
+				} );
+
+				await setModelAndWaitForImages( editor,
+					'<listItem listType="todo" listIndent="0">' +
+						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+					'</listItem>'
+				);
+
+				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
+
+				expect( resizer._getResizeHost().nodeName ).to.equal( 'LI' );
+
+				await editor.destroy();
 			} );
 		} );
 	} );

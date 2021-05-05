@@ -68,7 +68,8 @@ export default class ImageResizeHandles extends Plugin {
 				return;
 			}
 
-			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
+			const domConverter = editor.editing.view.domConverter;
+			const imageView = domConverter.domToView( domEvent.target );
 			const widgetView = imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } );
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 
@@ -95,8 +96,9 @@ export default class ImageResizeHandles extends Plugin {
 					getHandleHost( domWidgetElement ) {
 						return domWidgetElement.querySelector( 'img' );
 					},
-					getResizeHost( domWidgetElement ) {
-						return domWidgetElement;
+					getResizeHost() {
+						// Return the model image element parent to avoid setting an inline element (<a>/<span>) as a resize host.
+						return domConverter.viewToDom( mapper.toViewElement( imageModel.parent ) );
 					},
 					// TODO consider other positions.
 					isCentered() {
