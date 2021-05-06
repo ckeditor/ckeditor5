@@ -66,8 +66,8 @@ export default class DataSchema {
 
 		this.registerBlockElement( {
 			model: '$htmlBlock',
-			allowChildren: '$block',
 			modelSchema: {
+				allowChildren: '$block',
 				allowIn: [ '$root', '$htmlBlock' ],
 				isBlock: true
 			}
@@ -101,8 +101,8 @@ export default class DataSchema {
 
 		this.registerBlockElement( {
 			model: '$htmlDatalist',
-			allowChildren: '$block',
 			modelSchema: {
+				allowChildren: '$block',
 				allowIn: 'htmlDl',
 				isBlock: true
 			}
@@ -136,8 +136,8 @@ export default class DataSchema {
 		this.registerBlockElement( {
 			view: 'summary',
 			model: 'htmlSummary',
-			allowChildren: '$text',
 			modelSchema: {
+				allowChildren: '$text',
 				allowIn: 'htmlDetails'
 			}
 		} );
@@ -322,6 +322,11 @@ export default class DataSchema {
 		this._definitions.set( definition.model, { ...definition, isInline: true } );
 	}
 
+	/**
+	 * Add new data schema definition describing inline element.
+	 *
+	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
+	 */
 	registerObjectElement( definition ) {
 		this._definitions.set( definition.model, { ...definition, isObject: true } );
 	}
@@ -421,9 +426,19 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
  * @property {String} [view] Name of the view element.
  * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
- * @property {String|Array.<String>} [allowChildren] Extends the given children list to allow definition model.
  * @property {Boolean} isBlock Indicates that the definition describes block element.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
+ * @extends module:content-compatibility/dataschema~DataSchemaDefinition
+ */
+
+/**
+ * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema} for object elements.
+ *
+ * @typedef {Object} module:content-compatibility/dataschema~DataSchemaObjectElementDefinition
+ * @property {String} view Name of the view element.
+ * @property {module:engine/model/schema~SchemaItemDefinition} modelSchema The model schema item definition describing registered model.
+ * @property {Boolean} isObject Indicates that the definition describes object element.
+ * Set by {@link module:content-compatibility/dataschema~DataSchema#registerObjectElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
 
