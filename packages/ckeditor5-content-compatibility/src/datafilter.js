@@ -314,6 +314,10 @@ export default class DataFilter {
 			dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
 				const viewAttributes = data.attributeNewValue;
 
+				if ( !viewAttributes ) {
+					return;
+				}
+
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
