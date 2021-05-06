@@ -47,12 +47,12 @@ export function upcastStyleToAttribute( conversion, options ) {
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} viewElementName
- * @param {Object} [defaultBorder={}] The default border values.
+ * @param {Object} defaultBorder The default border values.
  * @param {String} defaultBorder.color The default `borderColor` value.
  * @param {String} defaultBorder.style The default `borderStyle` value.
  * @param {String} defaultBorder.width The default `borderWidth` value.
  */
-export function upcastBorderStyles( conversion, viewElementName, defaultBorder = {} ) {
+export function upcastBorderStyles( conversion, viewElementName, defaultBorder ) {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
 		// If the element was not converted by element-to-element converter,
 		// we should not try to convert the style. See #8393.
