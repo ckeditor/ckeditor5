@@ -381,6 +381,54 @@ How to read the generated output? There is one simple rule: CSS classes, inline 
 			</td>
 		</tr>
 		<tr>
+			<td rowspan="3">
+				<code class="nowrap">ckeditor5-comments</code>
+			</td>
+			<td rowspan="3">
+				<p>
+					<a href="../../../features/collaboration/comments/comments.html" data-skip-validation>
+						Comments
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_comments_comments-Comments.html" data-skip-validation>
+						<code class="nowrap">Comments</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					<code>&lt;<strong>comment</strong>&gt;</code>
+				</p>
+				<p>
+					<code>&lt;… <strong>id</strong>="*" <strong>type</strong>="*"&gt;</code>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<code>&lt;<strong>comment-end</strong>&gt;</code>, <code>&lt;<strong>comment-start</strong>&gt;</code>
+				</p>
+				<p>
+					<code>&lt;… <strong>name</strong>="*"&gt;</code>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<code>&lt;<strong>*</strong>&gt;</code>
+				</p>
+				<p>
+					<code>&lt;… <strong>data-comment-end-after</strong>="*" <strong>data-comment-start-before</strong>="*"&gt;</code>
+				</p>
+				<p>
+					The plugin adds <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which comments starts or ends.
+				</p>
+			</td>
+		</tr>
+		<tr>
 			<td>
 				<code class="nowrap">ckeditor5-easy-image</code>
 			</td>
@@ -419,6 +467,50 @@ How to read the generated output? There is one simple rule: CSS classes, inline 
 			<td>
 				<p>
 					<code>&lt;<strong>br</strong>&gt;</code>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<code class="nowrap">ckeditor5-export-pdf</code>
+			</td>
+			<td>
+				<p>
+					<a href="../../../features/export-pdf.html" data-skip-validation>
+						Export to PDF
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_export-pdf_exportpdf-ExportPdf.html" data-skip-validation>
+						<code class="nowrap">ExportPdf</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<code class="nowrap">ckeditor5-export-word</code>
+			</td>
+			<td>
+				<p>
+					<a href="../../../features/export-word.html" data-skip-validation>
+						Export to Word
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_export-word_exportword-ExportWord.html" data-skip-validation>
+						<code class="nowrap">ExportWord</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
 				</p>
 			</td>
 		</tr>
@@ -1407,6 +1499,34 @@ How to read the generated output? There is one simple rule: CSS classes, inline 
 		</tr>
 		<tr>
 			<td>
+				<code class="nowrap">ckeditor5-pagination</code>
+			</td>
+			<td>
+				<p>
+					<a href="../../../features/pagination.html" data-skip-validation>
+						Pagination
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_pagination_pagination-Pagination.html" data-skip-validation>
+						<code class="nowrap">Pagination</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					<code>&lt;<strong>*</strong>&gt;</code>
+				</p>
+				<p>
+					<code>&lt;… <strong>style</strong>="page-break-before:*"&gt;</code>
+				</p>
+				<p>
+					<code>&lt;… <strong>data-pagination-page</strong>="*"&gt;</code>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				<code class="nowrap">ckeditor5-paragraph</code>
 			</td>
 			<td>
@@ -1441,6 +1561,85 @@ How to read the generated output? There is one simple rule: CSS classes, inline 
 				<p>
 					<a href="../../../api/module_paste-from-office_pastefromoffice-PasteFromOffice.html" data-skip-validation>
 						<code class="nowrap">PasteFromOffice</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td rowspan="4">
+				<code class="nowrap">ckeditor5-real-time-collaboration</code>
+			</td>
+			<td>
+				<p>
+					<a href="../../../features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html#users-presence-list" data-skip-validation>
+						Presence list
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_real-time-collaboration_presencelist-PresenceList.html" data-skip-validation>
+						<code class="nowrap">PresenceList</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<a href="../../../features/collaboration/comments/comments.html" data-skip-validation>
+						Real-time collaborative comments
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_real-time-collaboration_realtimecollaborativecomments-RealTimeCollaborativeComments.html" data-skip-validation>
+						<code class="nowrap">RealTimeCollaborativeComments</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<a href="../../../features/collaboration/real-time-collaboration/real-time-collaboration.html" data-skip-validation>
+						Real-time collaborative editing
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_real-time-collaboration_realtimecollaborativeediting-RealTimeCollaborativeEditing.html" data-skip-validation>
+						<code class="nowrap">RealTimeCollaborativeEditing</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<a href="../../../features/collaboration/track-changes/track-changes.html" data-skip-validation>
+						Real-time collaborative track changes
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_real-time-collaboration_realtimecollaborativetrackchanges-RealTimeCollaborativeTrackChanges.html" data-skip-validation>
+						<code class="nowrap">RealTimeCollaborativeTrackChanges</code>
 					</a>
 				</p>
 			</td>
@@ -1761,6 +1960,28 @@ How to read the generated output? There is one simple rule: CSS classes, inline 
 				<p>
 					<a href="../../../api/module_table_tabletoolbar-TableToolbar.html" data-skip-validation>
 						<code class="nowrap">TableToolbar</code>
+					</a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<code class="nowrap">ckeditor5-track-changes</code>
+			</td>
+			<td>
+				<p>
+					<a href="../../../features/collaboration/track-changes/track-changes.html" data-skip-validation>
+						Track changes
+					</a>
+				</p>
+				<p>
+					<a href="../../../api/module_track-changes_trackchanges-TrackChanges.html" data-skip-validation>
+						<code class="nowrap">TrackChanges</code>
 					</a>
 				</p>
 			</td>
