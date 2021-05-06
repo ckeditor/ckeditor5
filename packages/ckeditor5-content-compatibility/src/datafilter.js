@@ -189,6 +189,14 @@ export default class DataFilter {
 		}
 	}
 
+	/**
+	 * Registers object element and attribute converters for the given data schema definition.
+	 *
+	 * If the element model schema is already registered, this method will do nothing.
+	 *
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
+	 */
 	_registerObjectElement( definition ) {
 		const schema = this.editor.model.schema;
 
@@ -199,6 +207,9 @@ export default class DataFilter {
 		this._addAllowedAttributeConversion( definition );
 	}
 
+	/**
+	 * TODO
+	*/
 	_createObjectElementView( modelName, writer ) {
 		if ( this.editor.model.schema.isInline( modelName ) ) {
 			return writer.createContainerElement( 'span', {
@@ -592,10 +603,12 @@ function mergeViewElementAttributes( oldValue, newValue ) {
 	return result;
 }
 
+// TODO
 function createHtmlObjectTitle( viewName ) {
 	return 'HTML ' + capitalize( viewName );
 }
 
+// TODO
 function createObjectElementWidgetUILabel( title, writer ) {
 	return writer.createUIElement( 'div', {
 		class: 'ck ck-reset_all ck-widget__compatibility-type'
