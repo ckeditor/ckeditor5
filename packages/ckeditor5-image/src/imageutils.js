@@ -150,7 +150,6 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Returns a image model element if one is selected or is among the selection's ancestors.
 	 *
-	 * @protected
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 	 * @returns {module:engine/model/element~Element|null}
 	 */

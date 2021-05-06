@@ -100,13 +100,11 @@ export default class ImageStyleCommand extends Command {
 
 		model.change( writer => {
 			const requestedStyle = options.value;
-			const supportedTypes = this._styles.get( requestedStyle ).modelElements;
 
 			let imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			// Change the image type if a style requires it.
-			if ( !supportedTypes.includes( imageElement.name ) ) {
-				this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
+			if ( this.shouldConvertImageType( requestedStyle, imageElement ) ) {
+				this.editor.execute( imageUtils.isBlockImage( imageElement ) ? 'imageTypeInline' : 'imageTypeBlock' );
 
 				// Update the imageElement to the newly created image.
 				imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
@@ -120,5 +118,19 @@ export default class ImageStyleCommand extends Command {
 				writer.setAttribute( 'imageStyle', requestedStyle, imageElement );
 			}
 		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {module:image/imagestyle~ImageStyleOptionDefinition#name} requestedStyle The name of the style (as configured in
+	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
+	 * @param {module:engine/model/element~Element} imageElement The image model element.
+	 * @returns {Boolean}
+	 */
+	shouldConvertImageType( requestedStyle, imageElement ) {
+		const supportedTypes = this._styles.get( requestedStyle ).modelElements;
+
+		return !supportedTypes.includes( imageElement.name );
 	}
 }
