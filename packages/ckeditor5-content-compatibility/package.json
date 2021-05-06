@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-content-compatibility",
-  "version": "27.0.0",
+  "version": "27.1.0",
   "description": "Content compatibility feature",
   "private": true,
   "keywords": [
@@ -15,21 +15,21 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^27.0.0",
+    "ckeditor5": "^27.1.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^27.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^27.0.0",
-    "@ckeditor/ckeditor5-core": "^27.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^27.0.0",
-    "@ckeditor/ckeditor5-engine": "^27.0.0",
-    "@ckeditor/ckeditor5-essentials": "^27.0.0",
-    "@ckeditor/ckeditor5-font": "^27.0.0",
-    "@ckeditor/ckeditor5-link": "^27.0.0",
-    "@ckeditor/ckeditor5-list": "^27.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^27.0.0",
-    "@ckeditor/ckeditor5-utils": "^27.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^27.1.0",
+    "@ckeditor/ckeditor5-block-quote": "^27.1.0",
+    "@ckeditor/ckeditor5-core": "^27.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^27.1.0",
+    "@ckeditor/ckeditor5-engine": "^27.1.0",
+    "@ckeditor/ckeditor5-essentials": "^27.1.0",
+    "@ckeditor/ckeditor5-font": "^27.1.0",
+    "@ckeditor/ckeditor5-link": "^27.1.0",
+    "@ckeditor/ckeditor5-list": "^27.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^27.1.0",
+    "@ckeditor/ckeditor5-utils": "^27.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
