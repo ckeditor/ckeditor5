@@ -6,6 +6,7 @@
 	&.ck-widget__compatibility {
 		padding: 20px 0 15px 0;
 		min-height: 20px;
+		border: 1px dotted hsl(15, 100%, 43%);
 
 		& .ck-widget__compatibility-type {
 			opacity: 0;
