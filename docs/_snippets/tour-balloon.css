@@ -33,4 +33,5 @@
 
 .tippy-content .ck.ck-button.tippy-content__close-button:hover {
 	background: none;
+	cursor: pointer;
 }
