@@ -33,7 +33,7 @@ The {@link module:core/editor/editor~Editor `Editor`} class is a base to impleme
 
 Plugins are a way to introduce editor features. In CKEditor 5 even {@link module:typing/typing~Typing typing} is a plugin. What is more, the {@link module:typing/typing~Typing} plugin depends on the {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling the methods of inserting text and deleting content, respectively. At the same time, some plugins need to customize <kbd>Backspace</kbd> behavior in certain cases and handle it by themselves. This leaves the base plugins free of any non-generic knowledge.
 
-Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces the schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold/boldui~BoldUI} plugin adds the UI of the feature (i.e. the button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. Finally, there's the {@link module:basic-styles/bold~Bold} plugin that brings both plugins for a full experience.
+Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces the schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold/boldui~BoldUI} plugin adds the UI of the feature (i.e. the button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. Finally, there is the {@link module:basic-styles/bold~Bold} plugin that brings both plugins for a full experience.
 
 The tl;dr of this is that:
 
@@ -200,7 +200,7 @@ mix( Command, ObservableMixin );
 ```
 
 <info-box>
-	Check out the {@link framework/guides/deep-dive/observables deep dive into observables} guide to learn more about the advanced usage of observables with some additional examples.
+	Check out the {@link framework/guides/deep-dive/event-system event system deep dive guide} and the {@link framework/guides/deep-dive/observables observables deep dive guide} to learn more about the advanced usage of events and observables with some additional examples.
 </info-box>
 
 Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:

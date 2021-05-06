@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,12 +10,8 @@
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-import {
-	isArrowKeyCode,
-	getLocalizedArrowKeyCodeDirection
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { Plugin } from 'ckeditor5/src/core';
+import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
 import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
 
 /**
@@ -51,10 +47,7 @@ export default class TableKeyboard extends Plugin {
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
-		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
-		// the fake selection retention on the fully selected widget.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
 	}
 
 	/**
@@ -171,13 +164,9 @@ export default class TableKeyboard extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onKeydown( eventInfo, domEventData ) {
+	_onArrowKey( eventInfo, domEventData ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
-
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
 
 		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
 		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
@@ -223,6 +212,7 @@ export default class TableKeyboard extends Plugin {
 		// Abort if we're not in a table cell.
 		const tableCell = selection.focus.findAncestor( 'tableCell' );
 
+		/* istanbul ignore if: paranoid check */
 		if ( !tableCell ) {
 			return false;
 		}

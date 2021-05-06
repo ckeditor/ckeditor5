@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,22 +7,16 @@
  * @module alignment/alignmentui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
-import { isSupported } from './utils';
+import { isSupported, normalizeAlignmentOptions } from './utils';
 
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
-import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
-import alignJustifyIcon from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
-
-const icons = new Map( [
-	[ 'left', alignLeftIcon ],
-	[ 'right', alignRightIcon ],
-	[ 'center', alignCenterIcon ],
-	[ 'justify', alignJustifyIcon ]
+const iconsMap = new Map( [
+	[ 'left', icons.alignLeft ],
+	[ 'right', icons.alignRight ],
+	[ 'center', icons.alignCenter ],
+	[ 'justify', icons.alignJustify ]
 ] );
 
 /**
@@ -73,9 +67,10 @@ export default class AlignmentUI extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		const options = editor.config.get( 'alignment.options' );
+		const options = normalizeAlignmentOptions( editor.config.get( 'alignment.options' ) );
 
 		options
+			.map( option => option.name )
 			.filter( isSupported )
 			.forEach( option => this._addButton( option ) );
 
@@ -83,7 +78,7 @@ export default class AlignmentUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 
 			// Add existing alignment buttons to dropdown's toolbar.
-			const buttons = options.map( option => componentFactory.create( `alignment:${ option }` ) );
+			const buttons = options.map( option => componentFactory.create( `alignment:${ option.name }` ) );
 			addToolbarToDropdown( dropdownView, buttons );
 
 			// Configure dropdown properties an behavior.
@@ -102,7 +97,7 @@ export default class AlignmentUI extends Plugin {
 			} );
 
 			// The default icon depends on the direction of the content.
-			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? alignRightIcon : alignLeftIcon;
+			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? iconsMap.get( 'right' ) : iconsMap.get( 'left' );
 
 			// Change icon to reflect current selection's alignment.
 			dropdownView.buttonView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {
@@ -140,7 +135,7 @@ export default class AlignmentUI extends Plugin {
 
 			buttonView.set( {
 				label: this.localizedOptionTitles[ option ],
-				icon: icons.get( option ),
+				icon: iconsMap.get( option ),
 				tooltip: true,
 				isToggleable: true
 			} );

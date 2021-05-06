@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -360,18 +360,19 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).markerToHighlight( {
 	 *			model: 'comment',
-	 *			view: { classes: 'new-comment' },
+	 *			view: { classes: 'comment' },
 	 *			converterPriority: 'high'
 	 *		} );
 	 *
 	 *		editor.conversion.for( 'downcast' ).markerToHighlight( {
 	 *			model: 'comment',
-	 *			view: ( data, converstionApi ) => {
-	 *				// Assuming that the marker name is in a form of comment:commentType.
-	 *				const commentType = data.markerName.split( ':' )[ 1 ];
+	 *			view: ( data, conversionApi ) => {
+	 *				// Assuming that the marker name is in a form of comment:commentType:commentId.
+	 *				const [ , commentType, commentId ] = data.markerName.split( ':' );
 	 *
 	 *				return {
-	 *					classes: [ 'comment', 'comment-' + commentType ]
+	 *					classes: [ 'comment', 'comment-' + commentType ],
+	 *					attributes: { 'data-comment-id': commentId }
 	 *				};
 	 *			}
 	 *		} );

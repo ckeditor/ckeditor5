@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 
 import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -51,7 +51,7 @@ describe( 'ImageUploadProgress', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock, Clipboard ]
+				plugins: [ ImageEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -71,7 +71,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
@@ -83,7 +83,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should convert image\'s "uploading" uploadStatus attribute', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			try {
@@ -133,7 +133,7 @@ describe( 'ImageUploadProgress', () => {
 
 		setModelData( model, '<outerBlock><innerBlock><paragraph>[]</paragraph></innerBlock></outerBlock>' );
 
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			try {
@@ -222,7 +222,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should update progressbar width on progress', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			adapterMock.mockProgress( 40, 100 );
@@ -248,7 +248,7 @@ describe( 'ImageUploadProgress', () => {
 		const clock = testUtils.sinon.useFakeTimers();
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
@@ -285,7 +285,7 @@ describe( 'ImageUploadProgress', () => {
 		uploadProgress.placeholder = base64Sample;
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
@@ -301,7 +301,7 @@ describe( 'ImageUploadProgress', () => {
 		}, { priority: 'highest' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false"><img></img></figure>]<p>foo</p>'

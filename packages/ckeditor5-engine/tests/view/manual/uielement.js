@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -71,6 +71,12 @@ ClassicEditor
 			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
 			writer.insert( new Position( viewText2, 0 ), createMiddleUIElement( writer ) );
 			writer.insert( new Position( viewText2, 6 ), createMiddleUIElement( writer ) );
+		} );
+
+		document.querySelector( '#insert-ui-element' ).addEventListener( 'click', () => {
+			view.change( writer => {
+				writer.insert( view.document.selection.getFirstPosition(), createMiddleUIElement( writer ) );
+			} );
 		} );
 	} )
 	.catch( err => {

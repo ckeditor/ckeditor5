@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,4 +24,13 @@
 		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
 		min-width: 50px;
 	}
+}
+
+/*
+ * Since the caption placeholder for images disappears when focused, it does not require special treatment
+ * and can go with a position that follows text alignment of an .image out-of-the-box (center by default).
+ * See https://github.com/ckeditor/ckeditor5/issues/8689.
+ */
+.ck.ck-editor__editable .image > figcaption.ck-placeholder::before {
+	position: static;
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -784,7 +784,9 @@ export default class Writer {
 		do {
 			const version = splitElement.root.document ? splitElement.root.document.version : null;
 			const howMany = splitElement.maxOffset - position.offset;
-			const split = new SplitOperation( position, howMany, null, version );
+
+			const insertionPosition = SplitOperation.getInsertionPosition( position );
+			const split = new SplitOperation( position, howMany, insertionPosition, null, version );
 
 			this.batch.addOperation( split );
 			this.model.applyOperation( split );

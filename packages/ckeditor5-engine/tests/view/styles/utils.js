@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -181,6 +181,11 @@ describe( 'Styles utils', () => {
 				isLength
 			);
 		} );
+
+		// s/ckeditor5/3
+		it( 'should handle invalid values with repeated characters', () => {
+			expect( isLength( '9'.repeat( 1000000 ) ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'isPercentage()', () => {
@@ -190,6 +195,11 @@ describe( 'Styles utils', () => {
 
 		it( 'returns false for not a percentage values', () => {
 			testValues( [ '0', '1px', '1000px', '1.1px', '345.457px', '.457px' ], value => !isPercentage( value ) );
+		} );
+
+		// s/ckeditor5/3
+		it( 'should handle invalid values with repeated characters', () => {
+			expect( isPercentage( '9'.repeat( 1000000 ) ) ).to.be.false;
 		} );
 	} );
 

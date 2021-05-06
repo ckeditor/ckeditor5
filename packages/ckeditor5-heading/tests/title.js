@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,7 +28,7 @@ describe( 'Title', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ]
+			plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ]
 		} ).then( _editor => {
 			editor = _editor;
 			model = editor.model;
@@ -40,7 +40,7 @@ describe( 'Title', () => {
 	} );
 
 	it( 'should requires Paragraph plugin', () => {
-		expect( Title.requires ).to.have.members( [ Paragraph ] );
+		expect( Title.requires ).to.have.members( [ 'Paragraph' ] );
 	} );
 
 	it( 'should have plugin name property', () => {
@@ -713,7 +713,7 @@ describe( 'Title', () => {
 				document.body.appendChild( element );
 
 				return ClassicTestEditor.create( element, {
-					plugins: [ Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
+					plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
 					title: {
 						placeholder: 'foo'
 					},
@@ -756,7 +756,7 @@ describe( 'Title', () => {
 				document.body.appendChild( element );
 
 				return ClassicTestEditor.create( element, {
-					plugins: [ Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
+					plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
 					title: {
 						placeholder: 'foo'
 					}

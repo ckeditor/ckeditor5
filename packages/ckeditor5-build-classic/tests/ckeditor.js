@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -198,6 +198,21 @@ describe( 'ClassicEditor build', () => {
 
 					expect( editor.ui.view.toolbar.items.length ).to.equal( 17 );
 					expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 42 );
+				} );
+		} );
+
+		it( 'allows removing built-in toolbar items', () => {
+			return ClassicEditor
+				.create( editorElement, {
+					toolbar: {
+						removeItems: [ 'italic' ]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					expect( editor.ui.view.toolbar.items.length ).to.equal( 16 );
+					expect( editor.ui.view.toolbar.items.find( item => item.label === 'Italic' ) ).to.be.undefined;
 				} );
 		} );
 	} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -82,7 +82,7 @@ export default class Editor {
 		/**
 		 * The plugins loaded and in use by this editor instance.
 		 *
-		 *		editor.plugins.get( 'Clipboard' ); // -> An instance of the clipboard plugin.
+		 *		editor.plugins.get( 'ClipboardPipeline' ); // -> An instance of the clipboard pipeline plugin.
 		 *
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
@@ -237,8 +237,9 @@ export default class Editor {
 		const plugins = config.get( 'plugins' );
 		const removePlugins = config.get( 'removePlugins' ) || [];
 		const extraPlugins = config.get( 'extraPlugins' ) || [];
+		const substitutePlugins = config.get( 'substitutePlugins' ) || [];
 
-		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
+		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins );
 	}
 
 	/**
@@ -299,11 +300,11 @@ export default class Editor {
 	/**
 	 * Focuses the editor.
 	 *
-	 * **Note** To explicitly focus the editing area of the editor, use
+	 * **Note** To explicitly focus the editing area of the editor, use the
 	 * {@link module:engine/view/view~View#focus `editor.editing.view.focus()`} method of the editing view.
 	 *
-	 * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking#focus-in-the-editor-ui "Focus in the editor ui"} section
-	 * of the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking" guide} to learn more.
+	 * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking#focus-in-the-editor-ui Focus in the editor UI} section
+	 * of the {@glink framework/guides/deep-dive/ui/focus-tracking Deep dive into focus tracking} guide to learn more.
 	 */
 	focus() {
 		this.editing.view.focus();

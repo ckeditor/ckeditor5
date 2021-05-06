@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,8 @@
  */
 
 /* global fetch, File */
+
+import { global } from 'ckeditor5/src/utils';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -48,7 +50,14 @@ export function fetchLocalImage( image ) {
 
 				resolve( file );
 			} )
-			.catch( reject );
+			.catch( err => {
+				// Fetch fails only, if it can't make a request due to a network failure or if anything prevented the request
+				// from completing, i.e. the Content Security Policy rules. It is not possible to detect the exact cause of failure,
+				// so we are just trying the fallback solution, if general TypeError is thrown.
+				return err && err.name === 'TypeError' ?
+					convertLocalImageOnCanvas( imageSrc ).then( resolve ).catch( reject ) :
+					reject( err );
+			} );
 	} );
 }
 
@@ -81,4 +90,47 @@ function getImageMimeType( blob, src ) {
 		// Fallback to 'jpeg' as common extension.
 		return 'image/jpeg';
 	}
+}
+
+// Creates a promise that converts the image local source (Base64 or blob) to a blob using canvas and resolves
+// with a `File` object.
+//
+// @param {String} imageSrc Image `src` attribute value.
+// @returns {Promise.<File>} A promise which resolves when an image source is converted to a `File` instance.
+// It resolves with a `File` object. If there were any errors during file processing, the promise will be rejected.
+function convertLocalImageOnCanvas( imageSrc ) {
+	return getBlobFromCanvas( imageSrc ).then( blob => {
+		const mimeType = getImageMimeType( blob, imageSrc );
+		const ext = mimeType.replace( 'image/', '' );
+		const filename = `image.${ ext }`;
+
+		return new File( [ blob ], filename, { type: mimeType } );
+	} );
+}
+
+// Creates a promise that resolves with a `Blob` object converted from the image source (Base64 or blob).
+//
+// @param {String} imageSrc Image `src` attribute value.
+// @returns {Promise.<Blob>}
+function getBlobFromCanvas( imageSrc ) {
+	return new Promise( ( resolve, reject ) => {
+		const image = global.document.createElement( 'img' );
+
+		image.addEventListener( 'load', () => {
+			const canvas = global.document.createElement( 'canvas' );
+
+			canvas.width = image.width;
+			canvas.height = image.height;
+
+			const ctx = canvas.getContext( '2d' );
+
+			ctx.drawImage( image, 0, 0 );
+
+			canvas.toBlob( blob => blob ? resolve( blob ) : reject() );
+		} );
+
+		image.addEventListener( 'error', () => reject() );
+
+		image.src = imageSrc;
+	} );
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -157,6 +157,40 @@ describe( 'downcast converters', () => {
 							'</tbody>' +
 						'</table>' +
 					'</figure>'
+				);
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/8941
+			// https://github.com/ckeditor/ckeditor5/issues/8979
+			it( 'should create table with an empty cell', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+				editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+
+				editor.setData(
+					'<block>' +
+						'<table>' +
+							'<tr>' +
+								'<td>&nbsp;</td>' +
+							'</tr>' +
+						'</table>' +
+					'</block>'
+				);
+
+				assertEqualMarkup( editor.getData(),
+					'<block>' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>&nbsp;</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</block>'
 				);
 			} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
@@ -23,14 +23,19 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing, TableEditing ]
+				plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing,
+					TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -49,6 +54,9 @@ describe( 'ListEditing', () => {
 					isBlock: true,
 					isObject: true
 				} );
+
+				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
+				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
 			} );
 	} );
 
@@ -107,7 +115,7 @@ describe( 'ListEditing', () => {
 		it( 'should add indent list command to indent command', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ListEditing, IndentEditing ]
+					plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -128,7 +136,7 @@ describe( 'ListEditing', () => {
 		it( 'should add outdent list command to outdent command', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ListEditing, IndentEditing ]
+					plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -164,13 +172,15 @@ describe( 'ListEditing', () => {
 		it( 'should not execute outdentList command on enter key in non-empty list', () => {
 			const domEvtDataStub = { preventDefault() {} };
 
-			sinon.spy( editor, 'execute' );
+			const enterCommandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
+			const outdentCommandExecuteSpy = sinon.stub( editor.commands.get( 'outdentList' ), 'execute' );
 
 			setModelData( model, '<listItem listType="bulleted" listIndent="0">foo[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( enterCommandExecuteSpy );
+			sinon.assert.notCalled( outdentCommandExecuteSpy );
 		} );
 	} );
 
@@ -208,7 +218,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'deleteForward' );
 		} );
 
 		it( 'should not execute outdentList command when selection is not collapsed', () => {
@@ -220,7 +231,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should not execute outdentList command if not in list item', () => {
@@ -232,7 +244,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should not execute outdentList command if not in first list item', () => {
@@ -247,7 +260,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should not execute outdentList command when selection is not on first position', () => {
@@ -259,7 +273,8 @@ describe( 'ListEditing', () => {
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 
 		it( 'should outdent list when previous element is nested in block quote', () => {
@@ -290,6 +305,41 @@ describe( 'ListEditing', () => {
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should outdent empty list when list is nested in block quote', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData(
+				model,
+				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]</listItem></blockQuote>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should not outdent list when the selection is in an element nested inside a list item', () => {
+			model.schema.register( 'listItemSub', { allowIn: 'listItem', isInline: true } );
+			model.schema.extend( '$text', { allowIn: 'listItemSub' } );
+			editor.conversion.elementToElement( { model: 'listItemSub', view: 'listItemSub' } );
+
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<listItem listType="bulleted" listIndent="0"><listItemSub>[]foo</listItemSub></listItem>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWith( editor.execute, 'delete' );
 		} );
 	} );
 
@@ -3998,7 +4048,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -4019,7 +4069,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
@@ -4042,7 +4092,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
@@ -4066,7 +4116,7 @@ describe( 'ListEditing', () => {
 					'<listItem listType="bulleted" listIndent="2">C</listItem>'
 				);
 
-				const clipboard = editor.plugins.get( 'Clipboard' );
+				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -4088,7 +4138,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="1">B</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -4107,7 +4157,7 @@ describe( 'ListEditing', () => {
 				'<paragraph>B</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -4142,7 +4192,7 @@ describe( 'ListEditing', () => {
 					'<paragraph>Bar</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'Clipboard' );
+				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<li>X</li>' )
@@ -4170,7 +4220,7 @@ describe( 'ListEditing', () => {
 					'<paragraph>Bar</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'Clipboard' );
+				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
@@ -4194,7 +4244,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
@@ -4217,7 +4267,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
@@ -4240,7 +4290,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
@@ -4278,7 +4328,7 @@ describe( 'ListEditing', () => {
 				data.modelCursor = conversionApi.writer.createPositionAfter( splitBlock );
 			} ) );
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )

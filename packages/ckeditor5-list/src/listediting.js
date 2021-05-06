@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,8 +10,9 @@
 import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Plugin } from 'ckeditor5/src/core';
+import { Enter } from 'ckeditor5/src/enter';
+import { Delete } from 'ckeditor5/src/typing';
 
 import {
 	cleanList,
@@ -49,7 +50,7 @@ export default class ListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Paragraph ];
+		return [ Enter, Delete ];
 	}
 
 	/**
@@ -130,7 +131,7 @@ export default class ListEditing extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { context: 'li' } );
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
@@ -168,7 +169,7 @@ export default class ListEditing extends Plugin {
 
 			data.preventDefault();
 			evt.stop();
-		}, { priority: 'high' } );
+		}, { context: 'li' } );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -227,7 +227,7 @@ export default class Conversion {
 	 *		editor.conversion.elementToElement( {
 	 *			model: 'heading',
 	 *			view: 'h2',
-	 *			// Convert "headling-like" paragraphs to headings.
+	 *			// Convert "heading-like" paragraphs to headings.
 	 *			upcastAlso: viewElement => {
 	 *				const fontSize = viewElement.getStyle( 'font-size' );
 	 *

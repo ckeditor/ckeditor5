@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -288,8 +288,6 @@ describe( 'Widget - integration', () => {
 		} );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>Foo{<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>}Bar</p>'

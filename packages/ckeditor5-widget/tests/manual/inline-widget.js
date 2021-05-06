@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,6 +31,7 @@ class InlineWidget extends Plugin {
 			allowWhere: '$text',
 			isObject: true,
 			isInline: true,
+			allowAttributesOf: '$text',
 			allowAttributes: [ 'type' ]
 		} );
 
@@ -73,7 +74,7 @@ class InlineWidget extends Plugin {
 		this._createToolbarButton();
 
 		function createPlaceholderView( modelItem, { writer } ) {
-			const widgetElement = writer.createContainerElement( 'placeholder' );
+			const widgetElement = writer.createContainerElement( 'placeholder', null, { isAllowedInsideAttributeElement: true } );
 			const viewText = writer.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
 
 			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
@@ -99,7 +100,11 @@ class InlineWidget extends Plugin {
 				const model = editor.model;
 
 				model.change( writer => {
-					const placeholder = writer.createElement( 'placeholder', { type: 'placeholder' } );
+					const attributes = model.document.selection.getAttributes();
+					const placeholder = writer.createElement( 'placeholder', {
+						...Object.fromEntries( attributes ),
+						type: 'placeholder'
+					} );
 
 					model.insertContent( placeholder );
 

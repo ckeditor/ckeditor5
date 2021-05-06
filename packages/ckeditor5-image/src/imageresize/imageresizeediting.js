@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module image/imageresize/imageresizeediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageResizeCommand from './imageresizecommand';
+import { Plugin } from 'ckeditor5/src/core';
+import ResizeImageCommand from './resizeimagecommand';
 
 /**
  * The image resize editing feature.
@@ -35,22 +35,22 @@ export default class ImageResizeEditing extends Plugin {
 		editor.config.define( 'image', {
 			resizeUnit: '%',
 			resizeOptions: [ {
-				name: 'imageResize:original',
+				name: 'resizeImage:original',
 				value: null,
 				icon: 'original'
 			},
 			{
-				name: 'imageResize:25',
+				name: 'resizeImage:25',
 				value: '25',
 				icon: 'small'
 			},
 			{
-				name: 'imageResize:50',
+				name: 'resizeImage:50',
 				value: '50',
 				icon: 'medium'
 			},
 			{
-				name: 'imageResize:75',
+				name: 'resizeImage:75',
 				value: '75',
 				icon: 'large'
 			} ]
@@ -62,12 +62,14 @@ export default class ImageResizeEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const command = new ImageResizeCommand( editor );
+		const resizeImageCommand = new ResizeImageCommand( editor );
 
 		this._registerSchema();
 		this._registerConverters();
 
-		editor.commands.add( 'imageResize', command );
+		// Register `resizeImage` command and add `imageResize` command as an alias for backward compatibility.
+		editor.commands.add( 'resizeImage', resizeImageCommand );
+		editor.commands.add( 'imageResize', resizeImageCommand );
 	}
 
 	/**

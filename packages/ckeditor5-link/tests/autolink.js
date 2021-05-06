@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -130,13 +130,25 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'adds linkHref attribute on enter when the link (that contains www) is partially selected (end)', () => {
+		it( 'adds linkHref attribute on enter when the link (containing www) is partially selected (end)' +
+			'and the remaining fragment is a proper URL', () => {
+			setData( model, '<paragraph>https://www.foo.ba[r.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.foo.ba">https://www.foo.ba</$text></paragraph><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'does not add a linkHref attribute for links with www subdomain only, pressing enter with part of its end selected', () => {
+			// https://github.com/ckeditor/ckeditor5/issues/8050.
 			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph><$text linkHref="https://www.ckso">https://www.ckso</$text></paragraph><paragraph>[]</paragraph>'
+				'<paragraph>https://www.ckso</paragraph><paragraph>[]</paragraph>'
 			);
 		} );
 
@@ -265,13 +277,19 @@ describe( 'AutoLink', () => {
 				'http://🥳.cksource.com/',
 				'http://code.cksource.com/woot/#&product=browser',
 				'http://j.mp',
+				'http://ww.mp',
+				'http://wwww.mp',
 				'ftp://cksource.com/baz',
 				'http://cksource.com/?q=Test%20URL-encoded%20stuff',
 				'http://مثال.إختبار',
 				'http://例子.测试',
 				'http://उदाहरण.परीक्षा',
 				'http://1337.net',
-				'http://a.b-c.de'
+				'http://a.b-c.de',
+				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
+				'http://192.168.43.58/ckeditor5/latest/features/link.html',
+				'http://83.127.13.40',
+				'http://userid@83.127.13.40'
 			];
 
 			for ( const supportedURL of supportedURLs ) {
@@ -310,8 +328,10 @@ describe( 'AutoLink', () => {
 				'http://-error-.invalid/',
 				'http://localhost',
 				'http:/cksource.com',
+				'http://www.cksource', // https://github.com/ckeditor/ckeditor5/issues/8050.
 				'cksource.com',
-				'ww.cksource.com'
+				'ww.cksource.com',
+				'www.cksource'
 			];
 
 			for ( const unsupportedURL of unsupportedOrInvalid ) {

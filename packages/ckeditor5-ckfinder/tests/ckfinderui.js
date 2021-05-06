@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,9 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import Link from '@ckeditor/ckeditor5-link/src/link';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
@@ -25,7 +28,7 @@ describe( 'CKFinderUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ CKFinder ]
+				plugins: [ CKFinderUploadAdapter, Image, Link, CKFinder ]
 
 			} )
 			.then( newEditor => {

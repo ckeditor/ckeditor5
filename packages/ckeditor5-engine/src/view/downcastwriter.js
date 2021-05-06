@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -143,6 +143,17 @@ export default class DowncastWriter {
 	}
 
 	/**
+	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
+	 *
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into the created document fragment.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
+	 */
+	createDocumentFragment( children ) {
+		return new DocumentFragment( this.document, children );
+	}
+
+	/**
 	 * Creates a new {@link module:engine/view/text~Text text node}.
 	 *
 	 *		writer.createText( 'foo' );
@@ -165,6 +176,10 @@ export default class DowncastWriter {
 	 *
 	 *		// Set `id` of a marker element so it is not joined or merged with "normal" elements.
 	 *		writer.createAttributeElement( 'span', { class: 'my-marker' }, { id: 'marker:my' } );
+	 *
+	 * **Note:** By default an `AttributeElement` is split by a
+	 * {@link module:engine/view/containerelement~ContainerElement `ContainerElement`} but this behavior can be modified
+	 * with `isAllowedInsideAttributeElement` option set while {@link #createContainerElement creating the element}.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Element's attributes.
@@ -203,10 +218,20 @@ export default class DowncastWriter {
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
+	 * @param {Object} [options] Element's options.
+	 * @param {Boolean} [options.isAllowedInsideAttributeElement=false] Whether an element is
+	 * {@link module:engine/view/element~Element#isAllowedInsideAttributeElement allowed inside an AttributeElement} and can be wrapped
+	 * with {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
-	createContainerElement( name, attributes ) {
-		return new ContainerElement( this.document, name, attributes );
+	createContainerElement( name, attributes, options = {} ) {
+		const containerElement = new ContainerElement( this.document, name, attributes );
+
+		if ( options.isAllowedInsideAttributeElement !== undefined ) {
+			containerElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
+		}
+
+		return containerElement;
 	}
 
 	/**
@@ -237,10 +262,20 @@ export default class DowncastWriter {
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
+	 * @param {Object} [options] Element's options.
+	 * @param {Boolean} [options.isAllowedInsideAttributeElement=true] Whether an element is
+	 * {@link module:engine/view/element~Element#isAllowedInsideAttributeElement allowed inside an AttributeElement} and can be wrapped
+	 * with {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 * @returns {module:engine/view/emptyelement~EmptyElement} Created element.
 	 */
-	createEmptyElement( name, attributes ) {
-		return new EmptyElement( this.document, name, attributes );
+	createEmptyElement( name, attributes, options = {} ) {
+		const emptyElement = new EmptyElement( this.document, name, attributes );
+
+		if ( options.isAllowedInsideAttributeElement !== undefined ) {
+			emptyElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
+		}
+
+		return emptyElement;
 	}
 
 	/**
@@ -266,13 +301,21 @@ export default class DowncastWriter {
 	 * @param {String} name The name of the element.
 	 * @param {Object} [attributes] Element attributes.
 	 * @param {Function} [renderFunction] A custom render function.
+	 * @param {Object} [options] Element's options.
+	 * @param {Boolean} [options.isAllowedInsideAttributeElement=true] Whether an element is
+	 * {@link module:engine/view/element~Element#isAllowedInsideAttributeElement allowed inside an AttributeElement} and can be wrapped
+	 * with {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 * @returns {module:engine/view/uielement~UIElement} The created element.
 	 */
-	createUIElement( name, attributes, renderFunction ) {
+	createUIElement( name, attributes, renderFunction, options = {} ) {
 		const uiElement = new UIElement( this.document, name, attributes );
 
 		if ( renderFunction ) {
 			uiElement.render = renderFunction;
+		}
+
+		if ( options.isAllowedInsideAttributeElement !== undefined ) {
+			uiElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
 		}
 
 		return uiElement;
@@ -300,12 +343,20 @@ export default class DowncastWriter {
 	 * @param {String} name The name of the element.
 	 * @param {Object} [attributes] Element attributes.
 	 * @param {Function} [renderFunction] A custom render function.
+	 * @param {Object} [options] Element's options.
+	 * @param {Boolean} [options.isAllowedInsideAttributeElement=true] Whether an element is
+	 * {@link module:engine/view/element~Element#isAllowedInsideAttributeElement allowed inside an AttributeElement} and can be wrapped
+	 * with {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 * @returns {module:engine/view/rawelement~RawElement} The created element.
 	 */
-	createRawElement( name, attributes, renderFunction ) {
+	createRawElement( name, attributes, renderFunction, options = {} ) {
 		const rawElement = new RawElement( this.document, name, attributes );
 
 		rawElement.render = renderFunction || ( () => {} );
+
+		if ( options.isAllowedInsideAttributeElement !== undefined ) {
+			rawElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
+		}
 
 		return rawElement;
 	}
@@ -674,43 +725,46 @@ export default class DowncastWriter {
 		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
-		const container = getParentContainer( position );
+		// Group nodes in batches of nodes that require or do not require breaking an AttributeElements.
+		const nodeGroups = nodes.reduce( ( groups, node ) => {
+			const lastGroup = groups[ groups.length - 1 ];
 
-		if ( !container ) {
-			/**
-			 * Position's parent container cannot be found.
-			 *
-			 * @error view-writer-invalid-position-container
-			 */
-			throw new CKEditorError(
-				'view-writer-invalid-position-container',
-				this.document
-			);
-		}
+			// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
+			// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
+			const breakAttributes = !( node.is( 'uiElement' ) && node.isAllowedInsideAttributeElement );
 
-		const insertionPosition = this._breakAttributes( position, true );
-		const length = container._insertChild( insertionPosition.offset, nodes );
-
-		for ( const node of nodes ) {
-			this._addToClonedElementsGroup( node );
-		}
-
-		const endPosition = insertionPosition.getShiftedBy( length );
-		const start = this.mergeAttributes( insertionPosition );
-
-		// When no nodes were inserted - return collapsed range.
-		if ( length === 0 ) {
-			return new Range( start, start );
-		} else {
-			// If start position was merged - move end position.
-			if ( !start.isEqual( insertionPosition ) ) {
-				endPosition.offset--;
+			if ( !lastGroup || lastGroup.breakAttributes != breakAttributes ) {
+				groups.push( {
+					breakAttributes,
+					nodes: [ node ]
+				} );
+			} else {
+				lastGroup.nodes.push( node );
 			}
 
-			const end = this.mergeAttributes( endPosition );
+			return groups;
+		}, [] );
 
-			return new Range( start, end );
+		// Insert nodes in batches.
+		let start = null;
+		let end = position;
+
+		for ( const { nodes, breakAttributes } of nodeGroups ) {
+			const range = this._insertNodes( end, nodes, breakAttributes );
+
+			if ( !start ) {
+				start = range.start;
+			}
+
+			end = range.end;
 		}
+
+		// When no nodes were inserted - return collapsed range.
+		if ( !start ) {
+			return new Range( position );
+		}
+
+		return new Range( start, end );
 	}
 
 	/**
@@ -866,6 +920,16 @@ export default class DowncastWriter {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
 	 * is collapsed and different than view selection.
 	 *
+	 * **Note:** Attribute elements by default can wrap {@link module:engine/view/text~Text},
+	 * {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement},
+	 * {@link module:engine/view/rawelement~RawElement} and other attribute elements with higher priority. Other elements while placed
+	 * inside an attribute element will split it (or nest it in case of an `AttributeElement`). This behavior can be modified by changing
+	 * the `isAllowedInsideAttributeElement` option while using
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement},
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement},
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement} or
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement}.
+	 *
 	 * @param {module:engine/view/range~Range} range Range to wrap.
 	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
 	 * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
@@ -965,6 +1029,7 @@ export default class DowncastWriter {
 	 *
 	 * @param {String} newName New name for element.
 	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
+	 * @returns {module:engine/view/containerelement~ContainerElement} Element created due to rename.
 	 */
 	rename( newName, viewElement ) {
 		const newElement = new ContainerElement( this.document, newName, viewElement.getAttributes() );
@@ -1134,6 +1199,72 @@ export default class DowncastWriter {
 	}
 
 	/**
+	 * Inserts a node or nodes at the specified position. Takes care of breaking attributes before insertion
+	 * and merging them afterwards if requested by the breakAttributes param.
+	 *
+	 * @private
+	 * @param {module:engine/view/position~Position} position Insertion position.
+	 * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
+	 * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
+	 * module:engine/view/rawelement~RawElement|module:engine/view/uielement~UIElement|
+	 * Iterable.<module:engine/view/text~Text|
+	 * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
+	 * module:engine/view/emptyelement~EmptyElement|module:engine/view/rawelement~RawElement|
+	 * module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
+	 * @param {Boolean} breakAttributes Whether attributes should be broken.
+	 * @returns {module:engine/view/range~Range} Range around inserted nodes.
+	 */
+	_insertNodes( position, nodes, breakAttributes ) {
+		let parentElement;
+
+		// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
+		// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
+		if ( breakAttributes ) {
+			parentElement = getParentContainer( position );
+		} else {
+			parentElement = position.parent.is( '$text' ) ? position.parent.parent : position.parent;
+		}
+
+		if ( !parentElement ) {
+			/**
+			 * Position's parent container cannot be found.
+			 *
+			 * @error view-writer-invalid-position-container
+			 */
+			throw new CKEditorError(
+				'view-writer-invalid-position-container',
+				this.document
+			);
+		}
+
+		let insertionPosition;
+
+		if ( breakAttributes ) {
+			insertionPosition = this._breakAttributes( position, true );
+		} else {
+			insertionPosition = position.parent.is( '$text' ) ? breakTextNode( position ) : position;
+		}
+
+		const length = parentElement._insertChild( insertionPosition.offset, nodes );
+
+		for ( const node of nodes ) {
+			this._addToClonedElementsGroup( node );
+		}
+
+		const endPosition = insertionPosition.getShiftedBy( length );
+		const start = this.mergeAttributes( insertionPosition );
+
+		// If start position was merged - move end position.
+		if ( !start.isEqual( insertionPosition ) ) {
+			endPosition.offset--;
+		}
+
+		const end = this.mergeAttributes( endPosition );
+
+		return new Range( start, end );
+	}
+
+	/**
 	 * Wraps children with provided `wrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 *
@@ -1151,9 +1282,7 @@ export default class DowncastWriter {
 			const child = parent.getChild( i );
 			const isText = child.is( '$text' );
 			const isAttribute = child.is( 'attributeElement' );
-			const isEmpty = child.is( 'emptyElement' );
-			const isUI = child.is( 'uiElement' );
-			const isRaw = child.is( 'rawElement' );
+			const isAllowedInsideAttributeElement = child.isAllowedInsideAttributeElement;
 
 			//
 			// (In all examples, assume that `wrapElement` is `<span class="foo">` element.)
@@ -1172,7 +1301,7 @@ export default class DowncastWriter {
 			//
 			// <p>abc</p>                   -->  <p><span class="foo">abc</span></p>
 			// <p><strong>abc</strong></p>  -->  <p><span class="foo"><strong>abc</strong></span></p>
-			else if ( isText || isEmpty || isUI || isRaw || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
+			else if ( isText || isAllowedInsideAttributeElement || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
 				// Clone attribute.
 				const newAttribute = wrapElement._clone();
 
@@ -1816,7 +1945,7 @@ function getParentContainer( position ) {
 }
 
 // Checks if first {@link module:engine/view/attributeelement~AttributeElement AttributeElement} provided to the function
-// can be wrapped otuside second element. It is done by comparing elements'
+// can be wrapped outside second element. It is done by comparing elements'
 // {@link module:engine/view/attributeelement~AttributeElement#priority priorities}, if both have same priority
 // {@link module:engine/view/element~Element#getIdentity identities} are compared.
 //

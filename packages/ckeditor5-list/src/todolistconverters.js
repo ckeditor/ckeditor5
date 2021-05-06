@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,8 +9,9 @@
 
 /* global document */
 
+import { createElement } from 'ckeditor5/src/utils';
+
 import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from './utils';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.

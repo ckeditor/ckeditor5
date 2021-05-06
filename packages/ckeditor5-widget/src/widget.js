@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,15 +10,12 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import {
-	isArrowKeyCode,
-	isForwardArrowKeyCode
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { isForwardArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import verticalNavigationHandler from './verticalnavigation';
 
 /**
@@ -48,7 +45,7 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetTypeAround ];
+		return [ WidgetTypeAround, Delete ];
 	}
 
 	/**
@@ -112,15 +109,15 @@ export default class Widget extends Plugin {
 		// * The second (late) listener makes sure the default browser action on arrow key press is
 		// prevented when a widget is selected. This prevents the selection from being moved
 		// from a fake selection container.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );
-		}, { priority: 'high' } );
+		}, { context: [ isWidget, '$text' ] } );
 
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => {
 			this._preventDefaultOnArrowKeyPress( ...args );
-		}, { priority: priorities.get( 'high' ) - 20 } );
+		}, { context: '$root' } );
 
-		this.listenTo( viewDocument, 'keydown', verticalNavigationHandler( this.editor.editing ) );
+		this.listenTo( viewDocument, 'arrowKey', verticalNavigationHandler( this.editor.editing ), { context: '$text' } );
 
 		// Handle custom delete behaviour.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
@@ -128,7 +125,7 @@ export default class Widget extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: 'high' } );
+		}, { context: '$root' } );
 	}
 
 	/**
@@ -174,7 +171,11 @@ export default class Widget extends Plugin {
 			}
 		}
 
-		domEventData.preventDefault();
+		// On Android selection would jump to the first table cell, on other devices
+		// we can't block it (and don't need to) because of drag and drop support.
+		if ( env.isAndroid ) {
+			domEventData.preventDefault();
+		}
 
 		// Focus editor if is not focused already.
 		if ( !viewDocument.isFocused ) {
@@ -202,12 +203,6 @@ export default class Widget extends Plugin {
 	 */
 	_handleSelectionChangeOnArrowKeyPress( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
-
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
 
 		const model = this.editor.model;
 		const schema = model.schema;
@@ -260,14 +255,6 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_preventDefaultOnArrowKeyPress( eventInfo, domEventData ) {
-		const keyCode = domEventData.keyCode;
-
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
 		const model = this.editor.model;
 		const schema = model.schema;
 		const objectElement = model.document.selection.getSelectedElement();

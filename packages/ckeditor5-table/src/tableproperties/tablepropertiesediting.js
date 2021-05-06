@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,8 @@
  * @module table/tableproperties/tablepropertiesediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
-import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
+import { Plugin } from 'ckeditor5/src/core';
+import { addBackgroundRules, addBorderRules } from 'ckeditor5/src/engine';
 
 import TableEditing from '../tableediting';
 import {

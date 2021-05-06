@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/utils/ui/widget
  */
 
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget } from 'ckeditor5/src/widget';
 
 /**
  * Returns a table widget editing view element if one is selected.

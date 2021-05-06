@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,6 +15,11 @@ describe( 'unsafe keystroke handling utils', () => {
 		it( 'should return "true" for any keystroke with the Ctrl key', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, ctrlKey: true } ), 'Ctrl+a' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], ctrlKey: true } ), 'Ctrl+0' ).to.be.true;
+		} );
+
+		it( 'should return "true" for any keystroke with the Cmd key', () => {
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, metaKey: true } ), '⌘a' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], metaKey: true } ), '⌘0' ).to.be.true;
 		} );
 
 		it( 'should return "true" for all arrow keys', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -137,7 +137,7 @@ export function assertCKEditorError( err, message, editorThatShouldBeFindableFro
 		expect( err.context ).to.equal( null, 'Error context was expected to be `null`' );
 	} else if ( editorThatShouldBeFindableFromContext !== undefined ) {
 		expect( areConnectedThroughProperties( editorThatShouldBeFindableFromContext, err.context ) )
-			.to.equal( true, 'Editor cannot be find from the error context' );
+			.to.equal( true, 'Editor cannot be found from the error context' );
 	}
 
 	if ( data ) {

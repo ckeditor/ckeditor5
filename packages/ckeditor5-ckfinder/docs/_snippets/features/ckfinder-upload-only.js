@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-ckfinder-upload-only' ), {
 		toolbar: {
 			items: [
-				'imageUpload', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
+				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|', 'uploadImage'
 			],
 			viewportTopOffset: 100
 		},
@@ -20,6 +20,13 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert image' ),
+			text: 'Click to insert an image.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,10 @@
  * @module editor-classic/classiceditorui
  */
 
-import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+import { EditorUI } from 'ckeditor5/src/core';
+import { enableToolbarKeyboardFocus, normalizeToolbarConfig } from 'ckeditor5/src/ui';
+import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { ElementReplacer } from 'ckeditor5/src/utils';
 
 /**
  * The classic editor UI class.
@@ -148,7 +147,7 @@ export default class ClassicEditorUI extends EditorUI {
 			view.stickyPanel.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 
-		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		view.toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editingView,
@@ -177,7 +176,8 @@ export default class ClassicEditorUI extends EditorUI {
 				view: editingView,
 				element: editingRoot,
 				text: placeholderText,
-				isDirectHost: false
+				isDirectHost: false,
+				keepOnFocus: true
 			} );
 		}
 	}

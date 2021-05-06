@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -497,9 +497,16 @@ class ContextFactory {
 					case MoveOperation: {
 						if ( opA.splitPosition.isEqual( opB.sourcePosition ) || opA.splitPosition.isBefore( opB.sourcePosition ) ) {
 							this._setRelation( opA, opB, 'splitBefore' );
-						}
+						} else {
+							const range = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
 
-						break;
+							if ( opA.splitPosition.hasSameParentAs( opB.sourcePosition ) && range.containsPosition( opA.splitPosition ) ) {
+								const howMany = range.end.offset - opA.splitPosition.offset;
+								const offset = opA.splitPosition.offset - range.start.offset;
+
+								this._setRelation( opA, opB, { howMany, offset } );
+							}
+						}
 					}
 				}
 
@@ -1981,7 +1988,7 @@ setTransformation( SplitOperation, InsertOperation, ( a, b ) => {
 	}
 
 	a.splitPosition = a.splitPosition._getTransformedByInsertOperation( b );
-	a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
+	a.insertionPosition = a.insertionPosition._getTransformedByInsertOperation( b );
 
 	return [ a ];
 } );
@@ -2046,8 +2053,7 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 		const splitPosition = new Position( b.graveyardPosition.root, splitPath );
 		const insertionPosition = SplitOperation.getInsertionPosition( new Position( b.graveyardPosition.root, splitPath ) );
 
-		const additionalSplit = new SplitOperation( splitPosition, 0, null, 0 );
-		additionalSplit.insertionPosition = insertionPosition;
+		const additionalSplit = new SplitOperation( splitPosition, 0, insertionPosition, null, 0 );
 
 		a.splitPosition = a.splitPosition._getTransformedByMergeOperation( b );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
@@ -2107,6 +2113,32 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 
 	// Case 2:
 	//
+	// Split is at a position where nodes were moved.
+	//
+	// This is a scenario described in `MoveOperation` x `SplitOperation` transformation but from the
+	// "split operation point of view".
+	//
+	const splitAtTarget = a.splitPosition.isEqual( b.targetPosition );
+
+	if ( splitAtTarget && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
+		a.howMany += b.howMany;
+		a.splitPosition = a.splitPosition._getTransformedByDeletion( b.sourcePosition, b.howMany );
+		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
+
+		return [ a ];
+	}
+
+	if ( splitAtTarget && context.abRelation && context.abRelation.howMany ) {
+		const { howMany, offset } = context.abRelation;
+
+		a.howMany += howMany;
+		a.splitPosition = a.splitPosition.getShiftedBy( offset );
+
+		return [ a ];
+	}
+
+	// Case 3:
+	//
 	// If the split position is inside the moved range, we need to shift the split position to a proper place.
 	// The position cannot be moved together with moved range because that would result in splitting of an incorrect element.
 	//
@@ -2131,23 +2163,6 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		}
 
 		a.splitPosition = b.sourcePosition.clone();
-		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
-
-		return [ a ];
-	}
-
-	// Case 3:
-	//
-	// Split is at a position where nodes were moved.
-	//
-	// This is a scenario described in `MoveOperation` x `SplitOperation` transformation but from the
-	// "split operation point of view".
-	//
-	const splitAtTarget = a.splitPosition.isEqual( b.targetPosition );
-
-	if ( splitAtTarget && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
-		a.howMany += b.howMany;
-		a.splitPosition = a.splitPosition._getTransformedByDeletion( b.sourcePosition, b.howMany );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 
 		return [ a ];

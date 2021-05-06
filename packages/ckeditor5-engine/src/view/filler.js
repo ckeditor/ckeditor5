@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -63,19 +63,11 @@ export const BR_FILLER = domDocument => {
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
- * Inline filler which is a sequence of the zero width spaces.
+ * Inline filler which is a sequence of the word joiners.
  *
  * @type {String}
  */
-export const INLINE_FILLER = ( () => {
-	let inlineFiller = '';
-
-	for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
-		inlineFiller += '\u200b';
-	}
-
-	return inlineFiller;
-} )(); // Usu IIF so the INLINE_FILLER appears as a constant in the docs.
+export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
@@ -130,7 +122,7 @@ export function getDataWithoutFiller( domText ) {
  * @param {module:engine/view/view~View} view View controller instance we should inject quirks handling on.
  */
 export function injectQuirksHandling( view ) {
-	view.document.on( 'keydown', jumpOverInlineFiller );
+	view.document.on( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
 }
 
 // Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.

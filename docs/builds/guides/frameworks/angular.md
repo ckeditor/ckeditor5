@@ -4,9 +4,15 @@ category: builds-integration-frameworks
 order: 20
 ---
 
+{@snippet builds/frameworks/framework-integration}
+
 # Rich text editor component for Angular
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular)
+<p>
+	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
+		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg" alt="npm version" loading="lazy">
+	</a>
+</p>
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
@@ -20,8 +26,8 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 
 Because of the breaking changes in the Angular library output format, the `ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
 
-* Versions `1.x.x` &ndash; For **Angular 5-8** applications. Support for this version will end when the official support for Angular 8 is dropped (planned date: November 2020),
-* Versions `2.x.x` &ndash; For **Angular 9.1+** applications. This version is currently actively supported.
+* Versions `1.x.x` &ndash; For **Angular 5-8** applications. We no longer provide support for these as the official support for these Angular versions was dropped.
+* Versions `2.x.x` &ndash; For **Angular 9.1+** applications. These versions are currently actively supported.
 
 All available versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module image/imageinsert
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageUpload from './imageupload';
 import ImageInsertUI from './imageinsert/imageinsertui';
 
@@ -55,7 +55,7 @@ export default class ImageInsert extends Plugin {
  *			.create( editorElement, {
  * 				image: {
  * 					insert: {
- *						... // settings for "imageInsert" view goes here
+ *						... // settings for "insertImage" view goes here
  * 					}
  * 				}
  *			} )

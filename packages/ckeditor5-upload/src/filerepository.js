@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -152,7 +152,7 @@ export default class FileRepository extends Plugin {
 			 * You need to enable an upload adapter in order to be able to upload files.
 			 *
 			 * This warning shows up when {@link module:upload/filerepository~FileRepository} is being used
-			 * without {@link #createUploadAdapter definining an upload adapter}.
+			 * without {@link #createUploadAdapter defining an upload adapter}.
 			 *
 			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
