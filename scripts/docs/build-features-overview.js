@@ -417,7 +417,7 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 }
 
 /**
- * @typedef {Object.<String, String|Array.<String>>} HtmlOutput
+ * @typedef {Object} HtmlOutput
  * @property {String|Array.<String>} elements HTML elements, that are created or altered by the plugin.
  * @property {String|Array.<String>} classes CSS class names, that may be applied to the HTML elements.
  * @property {String|Array.<String>} styles Inline CSS styles, that may be applied to the HTML elements.
@@ -427,7 +427,7 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  */
 
 /**
- * @typedef {Object.<String, String|HtmlOutput>} Plugin
+ * @typedef {Object} Plugin
  * @property {String} name Plugin name.
  * @property {String} className Plugin class name.
  * @property {String} docs An absolute or relative URL to the plugin's documentation.
@@ -436,7 +436,7 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  */
 
 /**
- * @typedef {Object.<String, String>} ParsedPlugin
+ * @typedef {Object} ParsedPlugin
  * @property {String} name Plugin name.
  * @property {Array.<String>} htmlOutput Each item in this array contains a separate output definition. This output definition is a string
  * with all elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links, visual
@@ -444,13 +444,13 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  */
 
 /**
- * @typedef {Object.<String, String} File
+ * @typedef {Object} File
  * @property {String} path An absolute file path.
  * @property {String} content File content.
  */
 
 /**
- * @typedef {Object.<String, String|Array.<ParsedPlugin>>} ParsedFile
+ * @typedef {Object} ParsedFile
  * @property {String} packageName Package name.
  * @property {Array.<ParsedPlugin>} plugins An array of all parsed plugins.
  */
