@@ -195,7 +195,9 @@ function prepareFeatureLink( plugin ) {
 		plugin.docs :
 		`../../../${ plugin.docs }`;
 
-	return `<a href="${ link }">${ plugin.name }</a>`;
+	const skipLinkValidation = shouldSkipLinkValidation();
+
+	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
 }
 
 /**
@@ -207,10 +209,26 @@ function prepareFeatureLink( plugin ) {
  */
 function prepareApiLink( packageName, plugin ) {
 	const shortPackageName = packageName.replace( /^ckeditor5-/g, '' );
-	const packagePath = plugin.path.replace( /(^src\/)|(\.js$)/g, '' ).replace( /\//g, '_' );
+
+	const packagePath = plugin.path
+		.replace( /(^src\/)|(\.js$)/g, '' )
+		.replace( /\//g, '_' );
+
 	const link = `../../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;
 
-	return `<a href="${ link }"><code class="nowrap">${ plugin.className }</code></a>`;
+	const skipLinkValidation = shouldSkipLinkValidation();
+
+	return `<a href="${ link }" ${ skipLinkValidation }><code class="nowrap">${ plugin.className }</code></a>`;
+}
+
+/**
+ * Currently, the CI does not contain all packages, so built docs on CI also do not have all features. This causes that link validation,
+ * that point to such packages is failing. The workaround is to skip link validation on CI.
+ *
+ * @returns {Boolean}
+ */
+function shouldSkipLinkValidation() {
+	return process.env.TRAVIS ? 'data-skip-validation' : '';
 }
 
 /**
@@ -301,10 +319,93 @@ function saveGeneratedOutput( output ) {
 			'</tbody>' +
 		'</table>';
 
-	output = fs.readFileSync( DESTINATION_DOCS_PATH, 'utf-8' )
-		.replace( /(<!-- features-overview-output-marker -->)[\s\S]*/, `$1\n${ output }\n` );
+	output = beautify( output );
+
+	output = fs
+		.readFileSync( DESTINATION_DOCS_PATH, 'utf-8' )
+		.replace( /(<!-- features-overview-output-marker -->)[\s\S]*/, `$1${ output }` );
 
 	fs.writeFileSync( DESTINATION_DOCS_PATH, output );
+}
+
+/**
+ * Beautifies the input HTML string by adding new lines and then indenting some HTML elements. It does not validate the input HTML string,
+ * so if it is invalid (i.e. has missing closing tags) then probably this function will fail.
+ *
+ * @param {String} input String containing HTML elements to beutify.
+ * @returns {String}
+ */
+function beautify( input ) {
+	const lines = input
+		// Add new line before `<tag>` or `</tag>`, but only if it is not already preceded by a new line (negative lookbehind).
+		.replace( /(?<!\n)<(\/)?(table|thead|tbody|tr|th|td|p|a)(.*?)>/g, '\n<$1$2$3>' )
+		// Add new line after `<tag>` or `</tag>`, but only if it is not already followed by a new line (negative lookahead).
+		.replace( /<(\/)?(table|thead|tbody|tr|th|td|p|a)(.*?)>(?!\n)/g, '<$1$2$3>\n' )
+		// Remove whitespace before `>`, that may appear there after adding an empty attribute.
+		.replace( /\s+>/g, '>' )
+		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
+		.split( '\n' );
+
+	let indentCount = 0;
+
+	return lines
+		.map( ( line, index ) => {
+			if ( isOpeningTag( line ) && hasClosingTagFor( line, lines.slice( index ) ) ) {
+				return indentLine( line, indentCount++ );
+			}
+
+			if ( isClosingTag( line ) ) {
+				return indentLine( line, --indentCount );
+			}
+
+			return indentLine( line, indentCount );
+		} )
+		.join( '\n' );
+}
+
+/**
+ * Checks, if an argument is an opening tag.
+ *
+ * @param {String} line String to check.
+ * @returns {Boolean}
+ */
+function isOpeningTag( line ) {
+	return line.startsWith( '<' ) && !isClosingTag( line );
+}
+
+/**
+ * Checks, if an argument is a closing tag.
+ *
+ * @param {String} line String to check.
+ * @returns {Boolean}
+ */
+function isClosingTag( line ) {
+	return line.startsWith( '</' );
+}
+
+/**
+ * Checks, if there is a closing tag for currently examined opening tag.
+ *
+ * @param {String} tag Currently examined opening tag.
+ * @param {Array.<String>} lines Next lines to search for a closing tag.
+ * @returns {Boolean}
+ */
+function hasClosingTagFor( tag, lines ) {
+	const closingTag = tag.replace( /<([a-z]+).*>/, '</$1>' );
+
+	return lines.some( line => line === closingTag );
+}
+
+/**
+ * Indents a line by a specified number of characters.
+ *
+ * @param {String} line Line to indent.
+ * @param {Number} indentCount Number of characters to use for indentation.
+ * @param {String} [indentChar] Indentation character.
+ * @returns {String}
+ */
+function indentLine( line, indentCount, indentChar = '\t' ) {
+	return `${ indentChar.repeat( indentCount ) }${ line }`;
 }
 
 /**
