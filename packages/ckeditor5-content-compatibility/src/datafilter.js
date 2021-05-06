@@ -208,23 +208,6 @@ export default class DataFilter {
 	}
 
 	/**
-	 * TODO
-	*/
-	_createObjectElementView( modelName, writer ) {
-		if ( this.editor.model.schema.isInline( modelName ) ) {
-			return writer.createContainerElement( 'span', {
-				class: 'ck-widget__compatibility ck-widget__compatibility-inline'
-			}, {
-				isAllowedInsideAttributeElement: true
-			} );
-		}
-
-		return writer.createContainerElement( 'div', {
-			class: 'ck-widget__compatibility ck-widget__compatibility-block'
-		} );
-	}
-
-	/**
 	 * Registers block element and attribute converters for the given data schema definition.
 	 *
 	 * If the element model schema is already registered, this method will do nothing.
@@ -451,6 +434,23 @@ export default class DataFilter {
 					isAllowedInsideAttributeElement: this.editor.model.schema.isInline( modelName )
 				} );
 			}
+		} );
+	}
+
+	/**
+	 * TODO
+	*/
+	_createObjectElementView( modelName, writer ) {
+		if ( this.editor.model.schema.isInline( modelName ) ) {
+			return writer.createContainerElement( 'span', {
+				class: 'ck-widget__compatibility ck-widget__compatibility-inline'
+			}, {
+				isAllowedInsideAttributeElement: true
+			} );
+		}
+
+		return writer.createContainerElement( 'div', {
+			class: 'ck-widget__compatibility ck-widget__compatibility-block'
 		} );
 	}
 
