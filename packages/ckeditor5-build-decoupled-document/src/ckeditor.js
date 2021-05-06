@@ -43,6 +43,79 @@ import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { Plugin } from '@ckeditor/ckeditor5-core/src';
+import { createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+import smartfieldIcon from './smartfieldIcon.svg';
+
+class InsertSmartField extends Plugin {
+	init() {
+		const editor = this.editor;
+		const componentFactory = editor.ui.componentFactory;
+		const t = editor.t;
+
+		const smartFields = [
+			'Bill To Address',
+			'Company Name',
+			'Company Phone',
+			'Company Address',
+			'Company Logo',
+			'Discount',
+			'Line Items',
+			'Ordered By',
+			'Ordered By Email',
+			'Ordered By Phone',
+			'Property Name',
+			'Project Manager',
+			'Project Manager Email',
+			'Quote Creation Date',
+			'Quote Subject',
+			'Tasks',
+			'Task Groups',
+			'Tax',
+			'Terms and Conditions',
+			'Total'
+		];
+
+		componentFactory.add( 'insertSmartField', locale => {
+			const dropdownView = createDropdown( locale );
+
+			dropdownView.buttonView.set( {
+				class: 'smartfield-icon',
+				icon: smartfieldIcon,
+				label: t( 'Insert smart field' ),
+				tooltip: true
+			} );
+
+			// The collection of list items
+			const items = new Collection();
+
+			smartFields.map( option =>
+				items.add( {
+					type: 'button',
+					model: new Model( {
+						label: option,
+						withText: true,
+						tooltip: true
+					} )
+				} )
+			);
+			// Create a dropdown with list of smartfields inside the panel.
+			addListToDropdown( dropdownView, items );
+			dropdownView.on( 'execute', evt => {
+				const formattedText = `[[${ evt.source.label.replace( / /g, '' ) }]]`;
+				editor.model.change( writer => {
+					const smartField = writer.createElement( 'span' );
+					writer.insertText( formattedText, smartField );
+
+					editor.model.insertContent( smartField, editor.model.document.selection );
+				} );
+			} );
+			return dropdownView;
+		} );
+	}
+}
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 
@@ -103,6 +176,7 @@ DecoupledEditor.builtinPlugins = [
 	ImageUpload,
 	Indent,
 	IndentBlock,
+	InsertSmartField,
 	Link,
 	List,
 	ListStyle,
@@ -154,7 +228,8 @@ DecoupledEditor.defaultConfig = {
 			'pageBreak',
 			'previousPage',
 			'nextPage',
-			'pageNavigation', '|'
+			'pageNavigation', '|',
+			'insertSmartField'
 		]
 	},
 	image: {
