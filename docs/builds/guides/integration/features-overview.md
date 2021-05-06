@@ -7,7 +7,7 @@ order: 90
 
 Below there is a table containing all CKEditor 5 packages, plugins that the package delivers and their possible HTML output. There are plugins, that generate different HTML output depending on its configuration, which is described in the "HTML output" column. On the other hand, if given plugin does not generate any output, the one and only row in the "HTML output" column for that plugin contains the word "None".
 
-How to read the generated output? There is one simple rule: CSS classes, inline styles, attributes and comments in a given cell in the "HTML output" column **apply only** to HTML elements, that are listed at the top in that cell. The classes, styles or attributes, that are included there do not mean that they will always be used in the HTML element, but rather show **possible** results. Wildcard character `*` is used to mark any value.
+How to read the generated output? There is a simple rule: CSS classes, inline styles, attributes and comments in a given cell in the "HTML output" column **apply only** to HTML elements, that are listed at the top in that cell. The ellipsis `…` character from `<… class` or `<… style` syntax symbolizes any HTML element, that is listed in that cell. The classes, styles or attributes, that are included there do not mean that they all will always be used in the HTML element, but rather show **possible** results. Wildcard character `*` is used to mark any value.
 
 <style>
     table.features-overview code.nowrap {
