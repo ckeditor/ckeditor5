@@ -32,7 +32,7 @@
 			]
 		},
 		{
-			"name": "Todo list",
+			"name": "To-do list",
 			"className": "TodoList",
 			"description": "Allows for creating a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with bulleted and numbered lists in any combination.",
 			"docs": "features/lists/todo-lists.html",

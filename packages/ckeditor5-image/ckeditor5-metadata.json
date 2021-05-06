@@ -20,7 +20,10 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "TODO"
+					"iconPath": "",
+					"toolbars": [
+						"image.toolbar"
+					]
 				}
 			],
 			"htmlOutput": [
