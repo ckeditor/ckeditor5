@@ -195,9 +195,7 @@ function prepareFeatureLink( plugin ) {
 		plugin.docs :
 		`../../../${ plugin.docs }`;
 
-	const skipLinkValidation = shouldSkipLinkValidation();
-
-	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
+	return `<a href="${ link }" data-skip-validation>${ plugin.name }</a>`;
 }
 
 /**
@@ -216,19 +214,7 @@ function prepareApiLink( packageName, plugin ) {
 
 	const link = `../../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;
 
-	const skipLinkValidation = shouldSkipLinkValidation();
-
-	return `<a href="${ link }" ${ skipLinkValidation }><code class="nowrap">${ plugin.className }</code></a>`;
-}
-
-/**
- * Currently, the CI does not contain all packages, so built docs on CI also do not have all features. This causes that link validation,
- * that point to such packages is failing. The workaround is to skip link validation on CI.
- *
- * @returns {Boolean}
- */
-function shouldSkipLinkValidation() {
-	return process.env.TRAVIS ? 'data-skip-validation' : '';
+	return `<a href="${ link }" data-skip-validation><code class="nowrap">${ plugin.className }</code></a>`;
 }
 
 /**
