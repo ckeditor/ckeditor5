@@ -142,6 +142,129 @@ export default class DataSchema {
 			}
 		} );
 
+		this.registerObjectElement( {
+			view: 'object',
+			model: 'htmlObject',
+			modelSchema: {
+				isObject: true,
+				isInline: true,
+				allowWhere: '$text',
+				allowAttributesOf: '$text'
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'param',
+			model: 'htmlParam',
+			modelSchema: {
+				isObject: true,
+				isInline: true,
+				allowIn: 'htmlObject'
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'embed',
+			model: 'htmlEmbed',
+			modelSchema: {
+				isObject: true,
+				isInline: true,
+				allowIn: 'htmlObject'
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'iframe',
+			model: 'htmlIframe',
+			modelSchema: {
+				isObject: true,
+				isInline: true,
+				allowWhere: '$text',
+				allowAttributesOf: '$text'
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'form',
+			model: 'htmlForm',
+			modelSchema: {
+				inheritAllFrom: '$htmlBlock',
+				allowContentOf: '$root',
+				isObject: true
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'input',
+			model: 'htmlInput',
+			modelSchema: {
+				allowIn: [ '$block', '$form' ],
+				isObject: true,
+				isInline: true
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'textarea',
+			model: 'htmlTextarea',
+			modelSchema: {
+				allowIn: '$block',
+				allowChildren: '$text',
+				isObject: true,
+				isInline: true
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'select',
+			model: 'htmlSelect',
+			modelSchema: {
+				allowIn: '$block',
+				isObject: true,
+				isInline: true
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'option',
+			model: 'htmlOption',
+			modelSchema: {
+				allowIn: 'htmlSelect',
+				isObject: true,
+				isInline: true
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'video',
+			model: 'htmlVideo',
+			modelSchema: {
+				allowIn: '$block',
+				isObject: true,
+				isInline: true
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'audio',
+			model: 'htmlAudio',
+			modelSchema: {
+				allowIn: '$block',
+				isObject: true,
+				isInline: true
+			}
+		} );
+
+		this.registerObjectElement( {
+			view: 'source',
+			model: 'htmlSource',
+			modelSchema: {
+				allowIn: [ 'htmlVideo', 'htmlAudio' ],
+				isObject: true,
+				isInline: true
+			}
+		} );
+
 		// Inline elements.
 		this.registerInlineElement( {
 			view: 'a',
@@ -197,6 +320,10 @@ export default class DataSchema {
 	 */
 	registerInlineElement( definition ) {
 		this._definitions.set( definition.model, { ...definition, isInline: true } );
+	}
+
+	registerObjectElement( definition ) {
+		this._definitions.set( definition.model, { ...definition, isObject: true } );
 	}
 
 	/**
