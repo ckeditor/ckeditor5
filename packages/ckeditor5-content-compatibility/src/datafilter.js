@@ -7,12 +7,13 @@
  * @module content-compatibility/datafilter
  */
 
-import { Matcher } from 'ckeditor5/src/engine';
-import { priorities, toArray, CKEditorError } from 'ckeditor5/src/utils';
+import { Matcher, enablePlaceholder } from 'ckeditor5/src/engine';
+import { priorities, CKEditorError } from 'ckeditor5/src/utils';
+import { toWidget } from 'ckeditor5/src/widget';
+import { Template } from 'ckeditor5/src/ui';
+import { cloneDeep, capitalize } from 'lodash-es';
 
-import { cloneDeep } from 'lodash-es';
-
-const DATA_SCHEMA_ATTRIBUTE_KEY = 'htmlAttributes';
+import '../theme/datafilter.css';
 
 /**
  * Allows to validate elements and element attributes registered by {@link module:content-compatibility/dataschema~DataSchema}.
@@ -172,6 +173,8 @@ export default class DataFilter {
 			this._registerInlineElement( definition );
 		} else if ( definition.isBlock ) {
 			this._registerBlockElement( definition );
+		} else if ( definition.isObject ) {
+			this._registerObjectElement( definition );
 		} else {
 			/**
 			 * Only a definition marked as inline or block can be allowed.
@@ -186,6 +189,30 @@ export default class DataFilter {
 		}
 	}
 
+	_registerObjectElement( definition ) {
+		const schema = this.editor.model.schema;
+
+		schema.register( definition.model, definition.modelSchema );
+
+		this._addObjectElementToElementConversion( definition );
+		this._addDisallowedAttributeConversion( definition );
+		this._addAllowedAttributeConversion( definition );
+	}
+
+	_createObjectElementView( modelName, writer ) {
+		if ( this.editor.model.schema.isInline( modelName ) ) {
+			return writer.createContainerElement( 'span', {
+				class: 'ck-widget__compatibility ck-widget__compatibility-inline'
+			}, {
+				isAllowedInsideAttributeElement: true
+			} );
+		}
+
+		return writer.createContainerElement( 'div', {
+			class: 'ck-widget__compatibility ck-widget__compatibility-block'
+		} );
+	}
+
 	/**
 	 * Registers block element and attribute converters for the given data schema definition.
 	 *
@@ -198,12 +225,12 @@ export default class DataFilter {
 		const schema = this.editor.model.schema;
 
 		if ( !schema.isRegistered( definition.model ) ) {
-			this._registerBlockElementSchema( definition );
+			this.editor.model.schema.register( definition.model, definition.modelSchema );
 			this._addBlockElementToElementConversion( definition );
 		}
 
 		this._addDisallowedAttributeConversion( definition );
-		this._addBlockElementAttributeConversion( definition );
+		this._addAllowedAttributeConversion( definition );
 	}
 
 	/**
@@ -227,28 +254,6 @@ export default class DataFilter {
 
 		this._addDisallowedAttributeConversion( definition );
 		this._addInlineElementConversion( definition );
-	}
-
-	/**
-	 * Registers model schema definition for the given block element definition.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
-	 */
-	_registerBlockElementSchema( definition ) {
-		const schema = this.editor.model.schema;
-
-		schema.register( definition.model, definition.modelSchema );
-
-		const allowedChildren = toArray( definition.allowChildren || [] );
-
-		for ( const child of allowedChildren ) {
-			if ( schema.isRegistered( child ) ) {
-				schema.extend( child, {
-					allowIn: definition.model
-				} );
-			}
-		}
 	}
 
 	/**
@@ -279,12 +284,12 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Adds attribute converters for the given block element definition.
+	 * Adds attribute converters for the given element definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
-	_addBlockElementAttributeConversion( { model: modelName, view: viewName } ) {
+	_addAllowedAttributeConversion( { model: modelName, view: viewName } ) {
 		const conversion = this.editor.conversion;
 
 		if ( !viewName ) {
@@ -300,13 +305,13 @@ export default class DataFilter {
 				const viewAttributes = this._matchAndConsumeAllowedAttributes( data.viewItem, conversionApi );
 
 				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( DATA_SCHEMA_ATTRIBUTE_KEY, viewAttributes, data.modelRange );
+					conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
 				}
 			}, { priority: 'low' } );
 		} );
 
 		conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( `attribute:${ DATA_SCHEMA_ATTRIBUTE_KEY }:${ modelName }`, ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
 				const viewAttributes = data.attributeNewValue;
 
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
@@ -391,6 +396,46 @@ export default class DataFilter {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 				consumeAttributeMatches( data.viewItem, conversionApi, this._disallowedAttributes );
 			}, { priority: 'high' } );
+		} );
+	}
+
+	_addObjectElementToElementConversion( definition ) {
+		const conversion = this.editor.conversion;
+		const { view: viewName, model: modelName } = definition;
+
+		conversion.for( 'upcast' ).elementToElement( {
+			model: modelName,
+			view: viewName
+		} );
+
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: modelName,
+			view: ( modelElement, { writer } ) => {
+				const widgetWrapper = this._createObjectElementView( modelName, writer );
+				const title = createHtmlObjectTitle( viewName );
+
+				enablePlaceholder( {
+					view: this.editor.editing.view,
+					element: widgetWrapper,
+					text: title
+				} );
+
+				const widgetLabel = createObjectElementWidgetUILabel( title, writer );
+
+				writer.insert( writer.createPositionAt( widgetWrapper, 'end' ), widgetLabel );
+
+				return toWidget( widgetWrapper, writer );
+			}
+
+		} );
+
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: modelName,
+			view: ( modelItem, { writer } ) => {
+				return writer.createContainerElement( viewName, null, {
+					isAllowedInsideAttributeElement: this.editor.model.schema.isInline( modelName )
+				} );
+			}
 		} );
 	}
 
@@ -541,4 +586,29 @@ function mergeViewElementAttributes( oldValue, newValue ) {
 	}
 
 	return result;
+}
+
+function createHtmlObjectTitle( viewName ) {
+	return 'HTML ' + capitalize( viewName );
+}
+
+function createObjectElementWidgetUILabel( title, writer ) {
+	return writer.createUIElement( 'div', {
+		class: 'ck ck-reset_all ck-widget__compatibility-type'
+	}, function( domDocument ) {
+		const wrapperDomElement = this.toDomElement( domDocument );
+
+		const labelTemplate = new Template( {
+			attributes: {
+				class: [
+					'ck',
+					'ck-widget__compatibility-type__label'
+				]
+			},
+			text: title
+		} );
+		wrapperDomElement.appendChild( labelTemplate.render() );
+
+		return wrapperDomElement;
+	} );
 }
