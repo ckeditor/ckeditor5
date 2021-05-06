@@ -16,12 +16,12 @@ Since the `InlineImage` is being introduced as a part of the `Image` plugin, it 
 * ...
 
 #### Image caption
-An image caption will not be automatically showing up as the image widget gets selected. Its visibility can be toggled now by a `caption` button introduced by the `ImageCaption` plugin. The default location of this button is in the image toolbar.
+An image caption will not be automatically showing up when selecting the image widget anymore. Its visibility can now be toggled by a `caption` button registered by the `ImageCaption` plugin. The default location of this button in the predefined builds is in the image toolbar.
 
-To provide a valid HTML data output, an image caption is supported by the block images only. Adding a caption to an inline image will result in converting it to the block image.
+To provide a valid HTML data output, an image caption is supported for the block images only. Adding a caption to an inline image will result in converting it to the block image.
 
 #### Image styles
-Since the appearance of the image in the document depends on the image type (block/inline), the `ImageStyle` plugin will be in charge of switching between the image types. Thus, the following changes have been introduced:
+Since the appearance of the image in the document depends on the image type (block/inline), the `ImageStyle` plugin is now in charge of switching between these types. Thus, the following changes have been introduced:
 
 * The format of the `config.image.styles` has changed. The list of the supported styles has to be declared in the `options` field. Read more about the *`image.styles` configuration (link)*.
 
@@ -30,7 +30,7 @@ Editor.create( document.querySelector( '#editor' ), {
 	...
 	image: {
 		styles: {
-			options: [ 'full', 'side' ]
+			options: [ 'inline', 'full', 'side' ]
 		}
 	}
 } );
@@ -47,7 +47,8 @@ Editor.create( document.querySelector( '#editor' ), {
 				name: 'alignLeft',
 				title: 'Left aligned image',
 				icon: objectLeft,
-				modelElements: [ 'image', 'imageInline' ],
+				// Supported image types (names of the model elements)
+				modelElements: [ 'imageBlock', 'imageInline' ],
 				className: 'image-style-align-left'
 			} ]
 		}
@@ -55,55 +56,52 @@ Editor.create( document.querySelector( '#editor' ), {
 } );
 </pre>
 
-* The plugin introduced a new set of buttons for the image toolbar to manage the image type and appearance. There is also a possibility to group these buttons in dropdowns. A few default dropdowns are provided, but a *custom dropdown (link)* can be added at any time.
-
-	TODO: A list of the available buttons and dropdowns.
-
-	Read the *Image toolbar (link)* section for more information.
-
-* TODO: A few words about the 'isDefault' configuration.
+* *A new set of buttons (link)* has been introduced by the plugin to manage the image type and appearance.
+* There is a possibility to group the buttons provided by the `ImageStyle` plugin into the dropdowns. A few *default dropdowns (link)* have been provided and *custom dropdown (link)* can be declared in the editor configuration.
 
 #### Image toolbar
 
-Due to the changes mentioned above, the image toolbar became crucial in terms of providing the user with a proper interaction with images.
+Due to the changes mentioned above, the image toolbar became crucial in terms of providing the user with proper interaction with images.
 
 Thus, we recommend using one of the following configurations as the minimum set-up for the image toolbar:
 
-* For the purposes of the structured content editing (introduced in the classic, balloon, balloon-block, and inline builds). Read more about *editing the structured content*.
+* For the purposes of the structured content editing (the classic, balloon, balloon-block, and inline builds):
 
-<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
-Editor.create( document.querySelector( '#editor' ), {
-	...
-	image: {
-		toolbar: [
-			'imageCaption',
-			'imageStyle:inline',
-			'imageStyle:full',
-			'imageStyle:side'
-		]
-	}
-} );
-</pre>
+	<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
+	Editor.create( document.querySelector( '#editor' ), {
+		...
+		image: {
+			toolbar: [
+				'imageCaption',
+				'imageStyle:inline',
+				'imageStyle:full',
+				'imageStyle:side'
+			]
+		}
+	} );
+	</pre>
 
-* For the purposes of the document-like editing (introduced in the document build). Read more about *editing the document content (link)*.
+	*Read more about *editing the structured content (link)*.
 
-<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
-Editor.create( document.querySelector( '#editor' ), {
-	...
-	image: {
-		toolbar: [
-			'imageCaption',
-			'imageStyle:inline',
-			'imageStyle:wrapText',
-			'imageStyle:breakText'
-		]
-	}
-} );
-</pre>
+* For the purposes of the document-like editing (the decoupled document build).
 
-To see the above configurations in action, see the *editor examples (link)* below.
+	<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
+	Editor.create( document.querySelector( '#editor' ), {
+		...
+		image: {
+			toolbar: [
+				'imageCaption',
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText'
+			]
+		}
+	} );
+	</pre>
 
-To overview all the new image style buttons and dropdowns we offer for the toolbar customization, visit the *image toolbar configuration API documentation (link)*.
+	Read more about *editing the document content (link)*.
+
+To view the above configurations, see the *editor examples (link)* below.
 
 #### `EasyImage` plugin
 
@@ -150,81 +148,42 @@ For the entire list of the changes concerning the `Image` and other related plug
 
 *Note:* Using the new functionalities will not affect or limit the editing, appearance, or behavior of the previously created content.
 
-## Migration from the default builds (If you are using cdn, online builder, npm, or ready-made zip package)
+---
 
-### I want to use the new functions
-<!--
-Ktoś używa online buildera i wyrzucił imageStyle. Zazwyczaj wtedy nie używa już image toolbara. Ale gdyby używał to musi mieć go customowego, więc nie ma o czym gadać.
+## Migration paths
 
-Ktoś w ogóle nie używa plugina imageStyle - i tyle.
--->
+### Introducing the inline images in the editor integration
 
-#### I'm using the default build with no custom configuration
+#### Default build with no custom configuration
 
 Just update or re-download your build. See the [installation instructions](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html).
 
-#### I'm using a custom build or applying a custom editor configuration
+#### Default build with custom editor configuration
 
-* The `ImageStyle`, `ImageToolbar` or `ImageCaption` plugins are crucial for delivering the proper interaction with the image to the user. If you removed them from the editor configuration, consider re-adding them. Read the *Important changes (link)* section to find out why.
+* The `ImageStyle`, `ImageToolbar`, and `ImageCaption` plugins became crucial in terms of providing the user with proper interaction with images. If you removed them from the editor configuration, consider re-adding them. Read the *Important changes (link)* section to find out why.
 
-* If you have made any adjustments in the image toolbar, the new configuration won't be loaded by default. To provide your users proper interaction with the inline images, and an image caption, you should review your custom image toolbar configuration. Check the *recommended configurations (link)*.
+* If you're making any adjustments in the image toolbar, they will override the new default toolbar configuration. To provide the users proper interaction with the inline images, and an image caption, please review your image toolbar configuration. Check the *recommended configurations (link)*.
 
-### I want to keep my previous configuration
+#### Custom integration
 
-#### Removing the `ImageInline` plugin
-* If you are using one of the default editor builds, you need to remove the `ImageInline` plugin from your editor configuration. Read more about [removing editor features](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html#removing-features).
+* The `ImageStyle`, `ImageToolbar`, and `ImageCaption` plugins became crucial in terms of providing the user with proper interaction with images. If they are missing in your editor configuration, consider adding them. Read the *Important changes (link)* section to find out why.
+* To provide the users proper interaction with the inline images, and an image caption, please review your image toolbar configuration. Check the *recommended configurations (link)*.
+* If you are using the `EasyImage` plugin, note that it is no longer being imported as the `Image` or `ImageBlock` plugin dependency. Read more about the *changes in the `EasyImage` (link)* plugin.
+### Keeping the previous configuration
 
-<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
-Editor.create( document.querySelector( '#editor' ), {
-	removePlugins: [ 'ImageInline' ],
-	...
-} );
-</pre>
+#### Default build
 
-* If you are using the online builder, add only the `ImageBlock` instead of the `Image` plugin while creating the build.
+At this moment it is not possible to remove the `ImageInline` while keeping the `ImageBlock` plugin. That is because they are both part of the `Image` plugin and can not be separated in already built editor. If you want to use the `ImageBlock` or `ImageInline` plugin only, consider *building the editor from source (link)*.
 
-#### Overriding the default image toolbar
+#### Build generated with the Online builder
 
-If you're not using the `ImageStyle` or `ImageToolbar` plugins or applied a custom image toolbar configuration you can skip this section.
+* Add only the `ImageBlock` instead of the `Image` plugin while creating the build.
+* Adjust your configuration of the *`ImageStyle` (link)* and *`ImageToolbar` (link)* plugins, especially to support the *caption button (link)*.
 
-If you are using the default image toolbar configuration, you will have to adjust it, so it will not contain the buttons for supporting the inline images. To do this, simply override the default configuration.
+#### Custom integration
 
-* For the classic, balloon, balloon-block and inline editor builds
-
-<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
-Editor.create( document.querySelector( '#editor' ), {
-	...
-	image: {
-		toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
-	}
-} );
-</pre>
-
-* For the document editor build
-
-<pre style="background-color: gray; color: white; padding: 12px; border-radius: 4px;">
-Editor.create( document.querySelector( '#editor' ), {
-	...
-	image: {
-		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]
-	}
-} );
-</pre>
-
-## Migration from a custom build
-
-### I want to use the new functions
-
-If you load the 'Image' plugin, the inline images will work out of the box.
-
-However, to provide your users a proper interaction with various types of images, you should remember that the image toolbar is now crucial in terms of the interaction with the image. It should be used for:
-* adding a caption to the image,
-* switching between the image types (block/inline)
-
-Check the *recommended configurations (link)* to find out how to set the image toolbar properly.
-
-### I want to keep my previous configuration
-
-Since the `ImageInline` is now a part of the `Image` plugin, you have to load the `ImageBlock` plugin instead of the `Image`.
+* Since the `ImageInline` is now a part of the `Image` plugin, you have to load the `ImageBlock` plugin instead of the `Image`.
+* If you are using the `EasyImage` plugin, note that it is no longer being imported as the `Image` or `ImageBlock` plugin dependency. Read more about the *changes in the `EasyImage` (link)* plugin.
+* Adjust your configuration of the *`ImageStyle` (link)* and *`ImageToolbar` (link)* plugins, especially to support the *caption button (link)*.
 
 </div>
