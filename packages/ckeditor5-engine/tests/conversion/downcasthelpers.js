@@ -6,6 +6,7 @@
 /* globals console */
 
 import EditingController from '../../src/controller/editingcontroller';
+import DataController from '../../src/controller/datacontroller';
 
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
@@ -2466,6 +2467,59 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p>Foo</p>' );
+		} );
+
+		it( 'default conversion, document fragment, text', () => {
+			const dataController = new DataController( model, new StylesProcessor() );
+			downcastHelpers = new DowncastHelpers( [ dataController.downcastDispatcher ] );
+
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			let modelDocumentFragment;
+
+			model.change( writer => {
+				modelDocumentFragment = writer.createDocumentFragment();
+
+				writer.insertText( 'foobar', [], modelDocumentFragment, 0 );
+
+				const range = writer.createRange(
+					writer.createPositionFromPath( modelDocumentFragment, [ 2 ] ),
+					writer.createPositionFromPath( modelDocumentFragment, [ 5 ] )
+				);
+
+				modelDocumentFragment.markers.set( 'group:foo:bar', range );
+			} );
+
+			const expectedResult = 'fo<group-start name="foo:bar"></group-start>oba<group-end name="foo:bar"></group-end>r';
+
+			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
+		} );
+
+		it( 'default conversion, document fragment, element', () => {
+			const dataController = new DataController( model, new StylesProcessor() );
+			downcastHelpers = new DowncastHelpers( [ dataController.downcastDispatcher ] );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			let modelDocumentFragment;
+
+			model.change( writer => {
+				modelDocumentFragment = writer.createDocumentFragment();
+
+				writer.insertElement( 'paragraph', [], modelDocumentFragment, 0 );
+
+				const range = writer.createRange(
+					writer.createPositionFromPath( modelDocumentFragment, [ 0 ] ),
+					writer.createPositionFromPath( modelDocumentFragment, [ 1 ] )
+				);
+
+				modelDocumentFragment.markers.set( 'group:foo:bar', range );
+			} );
+
+			const expectedResult = '<p data-group-end-after="foo:bar" data-group-start-before="foo:bar">&nbsp;</p>';
+
+			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
 		} );
 
 		it( 'conversion callback, mixed, multiple markers, name', () => {

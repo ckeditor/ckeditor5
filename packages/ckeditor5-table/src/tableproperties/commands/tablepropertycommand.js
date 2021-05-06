@@ -98,13 +98,13 @@ export default class TablePropertyCommand extends Command {
 			return;
 		}
 
-		const attribute = table.getAttribute( this.attributeName );
+		const value = table.getAttribute( this.attributeName );
 
-		if ( attribute === this._defaultValue ) {
+		if ( value === this._defaultValue ) {
 			return;
 		}
 
-		return attribute;
+		return value;
 	}
 
 	/**
