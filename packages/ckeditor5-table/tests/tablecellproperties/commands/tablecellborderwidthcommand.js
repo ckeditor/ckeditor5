@@ -15,7 +15,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableCellBorderWidthCommand', () => {
+		describe( 'TableCellBorderWidthCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -24,7 +24,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableCellBorderWidthCommand( editor );
+				command = new TableCellBorderWidthCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -333,6 +333,111 @@ describe( 'table cell properties', () => {
 						] ) );
 
 						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableCellBorderWidthCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TableCellPropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableCellBorderWidthCommand( editor, '3px' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default borderWidth property (single string)', () => {
+						setData( model, modelTable( [ [ { borderWidth: '3px', contents: '[]foo' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if selected table cell hast the default borderWidth property object with same values', () => {
+						setTableCellWithObjectAttributes( model, {
+							borderWidth: {
+								top: '3px',
+								right: '3px',
+								bottom: '3px',
+								left: '3px'
+							}
+						}, '[]foo' );
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined is selection contains the default valuel', () => {
+						setData( model, modelTable( [ [ { borderWidth: '3px', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it(
+						'should be undefined if all table cells have the same "borderWidth" property value which is the default value',
+						() => {
+							setData( model, modelTable( [
+								[
+									{ contents: '00', isSelected: true, borderWidth: '3px' },
+									{ contents: '01', isSelected: true, borderWidth: '3px' }
+								],
+								[
+									'10',
+									{ contents: '11', isSelected: true, borderWidth: '3px' }
+								]
+							] ) );
+
+							expect( command.value ).to.be.undefined;
+						}
+					);
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove borderWidth from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { borderWidth: '2em', contents: '[]foo' } ] ] ) );
+
+						command.execute( { value: '3px' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove borderWidth from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute( { value: '3px' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should remove "borderWidth" from selected table cells if the default value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, borderWidth: '1px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, borderWidth: '1px' } ]
+						] ) );
+
+						command.execute( { value: '3px' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[ '00', '01' ],

@@ -23,11 +23,27 @@ export default class TableCellPropertyCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 * @param {String} attributeName Table cell attribute name.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor, attributeName ) {
+	constructor( editor, attributeName, defaultValue ) {
 		super( editor );
 
+		/**
+		 * The attribute that will be set by the command.
+		 *
+		 * @readonly
+		 * @member {String}
+		 */
 		this.attributeName = attributeName;
+
+		/**
+		 * The default value for the attribute.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {String}
+		 */
+		this._defaultValue = defaultValue;
 	}
 
 	/**
@@ -78,7 +94,13 @@ export default class TableCellPropertyCommand extends Command {
 			return;
 		}
 
-		return tableCell.getAttribute( this.attributeName );
+		const value = tableCell.getAttribute( this.attributeName );
+
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 
 	/**
@@ -89,6 +111,10 @@ export default class TableCellPropertyCommand extends Command {
 	 * @returns {*}
 	 */
 	_getValueToSet( value ) {
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
 		return value;
 	}
 
