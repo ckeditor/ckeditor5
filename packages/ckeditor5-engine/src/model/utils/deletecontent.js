@@ -148,7 +148,13 @@ function getLivePositionsForSelectedBlocks( range ) {
 			// This is how modifySelection works and here we are making use of it.
 			model.modifySelection( selection, { direction: 'backward' } );
 
-			endPosition = selection.getLastPosition();
+			const newEndPosition = selection.getLastPosition();
+			const nodeAfter = newEndPosition.nodeAfter;
+
+			// Use the shifted end position only if it did not jump over some object.
+			if ( !nodeAfter || !model.schema.isObject( nodeAfter ) ) {
+				endPosition = newEndPosition;
+			}
 		}
 	}
 
