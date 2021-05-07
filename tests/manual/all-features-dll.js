@@ -55,7 +55,7 @@ const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor
 const { Indent, IndentBlock } = window.CKEditor5.indent;
 const { List, ListStyle, TodoList } = window.CKEditor5.list;
 const { SpecialCharacters, SpecialCharactersEssentials } = window.CKEditor5.specialCharacters;
-const { Table, TableToolbar, TableCellProperties, TableProperties } = window.CKEditor5.table;
+const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption } = window.CKEditor5.table;
 const { Alignment } = window.CKEditor5.alignment;
 const { Autoformat } = window.CKEditor5.autoformat;
 const { BlockQuote } = window.CKEditor5.blockQuote;
@@ -127,7 +127,7 @@ const config = {
 		PasteFromOffice,
 		RemoveFormat,
 		SpecialCharacters, SpecialCharactersEssentials,
-		Table, TableToolbar, TableCellProperties, TableProperties,
+		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption,
 		TextPartLanguage,
 		WordCount
 	],
@@ -156,7 +156,7 @@ const config = {
 	],
 	cloudServices: CS_CONFIG,
 	table: {
-		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption' ]
 	},
 	image: {
 		styles: [

@@ -35,6 +35,7 @@ import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
@@ -50,7 +51,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
-			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties,
+			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties, TableCaption,
 			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
@@ -81,7 +82,9 @@ ClassicEditor
 		],
 		cloudServices: CS_CONFIG,
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+			]
 		},
 		image: {
 			styles: [

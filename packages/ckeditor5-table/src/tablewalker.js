@@ -160,6 +160,14 @@ export default class TableWalker {
 		this._row = 0;
 
 		/**
+		 * The index of the current row element in the table.
+		 *
+		 * @type {Number}
+		 * @protected
+		 */
+		this._rowIndex = 0;
+
+		/**
 		 * The current column index.
 		 *
 		 * @member {Number}
@@ -209,11 +217,18 @@ export default class TableWalker {
 	 * @returns {module:table/tablewalker~TableSlot} The next table walker's value.
 	 */
 	next() {
-		const row = this._table.getChild( this._row );
+		const row = this._table.getChild( this._rowIndex );
 
 		// Iterator is done when there's no row (table ended) or the row is after `endRow` limit.
 		if ( !row || this._isOverEndRow() ) {
 			return { done: true };
+		}
+
+		// We step over current element when it is not a tableRow instance.
+		if ( !row.is( 'element', 'tableRow' ) ) {
+			this._rowIndex++;
+
+			return this.next();
 		}
 
 		if ( this._isOverEndColumn() ) {
@@ -280,6 +295,7 @@ export default class TableWalker {
 	 */
 	_advanceToNextRow() {
 		this._row++;
+		this._rowIndex++;
 		this._column = 0;
 		this._cellIndex = 0;
 		this._nextCellAtColumn = -1;
@@ -466,6 +482,15 @@ class TableSlot {
 		this._cellIndex = tableWalker._cellIndex;
 
 		/**
+		 * The index of the current row element in the table.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 * @private
+		 */
+		this._rowIndex = tableWalker._rowIndex;
+
+		/**
 		 * The table element.
 		 *
 		 * @readonly
@@ -503,6 +528,16 @@ class TableSlot {
 	 */
 	get cellHeight() {
 		return parseInt( this.cell.getAttribute( 'rowspan' ) || 1 );
+	}
+
+	/**
+	 * The index of the current row element in the table.
+	 *
+	 * @readonly
+	 * @returns {Number}
+	 */
+	get rowIndex() {
+		return this._rowIndex;
 	}
 
 	/**
