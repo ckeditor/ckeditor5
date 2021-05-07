@@ -157,7 +157,9 @@ function getLivePositionsForSelectedBlocks( range ) {
 			//     <paragraph>A[</paragraph>]<image></image><paragraph>B</paragraph>
 			//
 			// So we need to check if there is no content in the skipped range (because we want to include the <image>).
-			if ( !model.hasContent( model.createRange( newEndPosition, endPosition ), { ignoreMarkers: true } ) ) {
+			const skippedRange = model.createRange( newEndPosition, endPosition );
+
+			if ( !model.hasContent( skippedRange, { ignoreMarkers: true } ) ) {
 				endPosition = newEndPosition;
 			}
 		}
