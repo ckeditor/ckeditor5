@@ -149,10 +149,15 @@ function getLivePositionsForSelectedBlocks( range ) {
 			model.modifySelection( selection, { direction: 'backward' } );
 
 			const newEndPosition = selection.getLastPosition();
-			const nodeAfter = newEndPosition.nodeAfter;
 
-			// Use the shifted end position only if it did not jump over some object.
-			if ( !nodeAfter || !model.schema.isObject( nodeAfter ) ) {
+			// For such model and selection:
+			//     <paragraph>A[</paragraph><image></image><paragraph>]B</paragraph>
+			//
+			// After modifySelection() we would end up with this:
+			//     <paragraph>A[</paragraph>]<image></image><paragraph>B</paragraph>
+			//
+			// So we need to check if there is no content in the skipped range (because we want to include the <image>).
+			if ( !model.hasContent( model.createRange( newEndPosition, endPosition ), { ignoreMarkers: true } ) ) {
 				endPosition = newEndPosition;
 			}
 		}
