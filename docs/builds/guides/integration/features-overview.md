@@ -346,7 +346,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			<td rowspan="2">
 				<p>
 					<a href="../../../features/code-blocks.html">
-						Code block
+						Code blocks
 					</a>
 				</p>
 				<p>
