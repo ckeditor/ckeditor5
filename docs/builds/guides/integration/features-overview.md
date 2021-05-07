@@ -33,14 +33,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder">
-						CKFinder Upload Adapter
-					</a>
+					<a href="../../../features/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
 				</p>
 				<p>
-					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html">
-						<code>CKFinderUploadAdapter</code>
-					</a>
+					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html"><code>CKFinderUploadAdapter</code></a>
 				</p>
 			</td>
 			<td>
@@ -55,14 +51,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder">
-						Alignment
-					</a>
+					<a href="../../../features/image-upload/image-upload.html#ckfinder">Alignment</a>
 				</p>
 				<p>
-					<a href="../../../api/module_alignment_alignment-Alignment.html">
-						<code>Alignment</code>
-					</a>
+					<a href="../../../api/module_alignment_alignment-Alignment.html"><code>Alignment</code></a>
 				</p>
 			</td>
 			<td>
@@ -96,14 +88,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/autoformat.html">
-						Autoformat
-					</a>
+					<a href="../../../features/autoformat.html">Autoformat</a>
 				</p>
 				<p>
-					<a href="../../../api/module_autoformat_autoformat-Autoformat.html">
-						<code>Autoformat</code>
-					</a>
+					<a href="../../../api/module_autoformat_autoformat-Autoformat.html"><code>Autoformat</code></a>
 				</p>
 			</td>
 			<td>
@@ -118,14 +106,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../builds/guides/integration/saving-data.html#autosave-feature">
-						Autosave
-					</a>
+					<a href="../../../builds/guides/integration/saving-data.html#autosave-feature">Autosave</a>
 				</p>
 				<p>
-					<a href="../../../api/module_autosave_autosave-Autosave.html">
-						<code>Autosave</code>
-					</a>
+					<a href="../../../api/module_autosave_autosave-Autosave.html"><code>Autosave</code></a>
 				</p>
 			</td>
 			<td>
@@ -140,14 +124,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html">
-						Bold
-					</a>
+					<a href="../../../features/basic-styles.html">Bold</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_bold-Bold.html">
-						<code>Bold</code>
-					</a>
+					<a href="../../../api/module_basic-styles_bold-Bold.html"><code>Bold</code></a>
 				</p>
 			</td>
 			<td>
@@ -159,14 +139,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html">
-						Code
-					</a>
+					<a href="../../../features/basic-styles.html">Code</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_code-Code.html">
-						<code>Code</code>
-					</a>
+					<a href="../../../api/module_basic-styles_code-Code.html"><code>Code</code></a>
 				</p>
 			</td>
 			<td>
@@ -181,14 +157,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html">
-						Italic
-					</a>
+					<a href="../../../features/basic-styles.html">Italic</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_italic-Italic.html">
-						<code>Italic</code>
-					</a>
+					<a href="../../../api/module_basic-styles_italic-Italic.html"><code>Italic</code></a>
 				</p>
 			</td>
 			<td>
@@ -200,14 +172,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html">
-						Strikethrough
-					</a>
+					<a href="../../../features/basic-styles.html">Strikethrough</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_strikethrough-Strikethrough.html">
-						<code>Strikethrough</code>
-					</a>
+					<a href="../../../api/module_basic-styles_strikethrough-Strikethrough.html"><code>Strikethrough</code></a>
 				</p>
 			</td>
 			<td>
@@ -219,14 +187,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html">
-						Subscript
-					</a>
+					<a href="../../../features/basic-styles.html">Subscript</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_subscript-Subscript.html">
-						<code>Subscript</code>
-					</a>
+					<a href="../../../api/module_basic-styles_subscript-Subscript.html"><code>Subscript</code></a>
 				</p>
 			</td>
 			<td>
@@ -238,14 +202,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html">
-						Superscript
-					</a>
+					<a href="../../../features/basic-styles.html">Superscript</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_superscript-Superscript.html">
-						<code>Superscript</code>
-					</a>
+					<a href="../../../api/module_basic-styles_superscript-Superscript.html"><code>Superscript</code></a>
 				</p>
 			</td>
 			<td>
@@ -257,14 +217,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html">
-						Underline
-					</a>
+					<a href="../../../features/basic-styles.html">Underline</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_underline-Underline.html">
-						<code>Underline</code>
-					</a>
+					<a href="../../../api/module_basic-styles_underline-Underline.html"><code>Underline</code></a>
 				</p>
 			</td>
 			<td>
@@ -279,14 +235,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/block-quote.html">
-						Block quote
-					</a>
+					<a href="../../../features/block-quote.html">Block quote</a>
 				</p>
 				<p>
-					<a href="../../../api/module_block-quote_blockquote-BlockQuote.html">
-						<code>BlockQuote</code>
-					</a>
+					<a href="../../../api/module_block-quote_blockquote-BlockQuote.html"><code>BlockQuote</code></a>
 				</p>
 			</td>
 			<td>
@@ -301,14 +253,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/ckfinder.html">
-						CKFinder
-					</a>
+					<a href="../../../features/image-upload/ckfinder.html">CKFinder</a>
 				</p>
 				<p>
-					<a href="../../../api/module_ckfinder_ckfinder-CKFinder.html">
-						<code>CKFinder</code>
-					</a>
+					<a href="../../../api/module_ckfinder_ckfinder-CKFinder.html"><code>CKFinder</code></a>
 				</p>
 			</td>
 			<td>
@@ -323,14 +271,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="https://ckeditor.com/ckeditor-cloud-services">
-						Cloud Services
-					</a>
+					<a href="https://ckeditor.com/ckeditor-cloud-services">Cloud Services</a>
 				</p>
 				<p>
-					<a href="../../../api/module_cloud-services_cloudservices-CloudServices.html">
-						<code>CloudServices</code>
-					</a>
+					<a href="../../../api/module_cloud-services_cloudservices-CloudServices.html"><code>CloudServices</code></a>
 				</p>
 			</td>
 			<td>
@@ -345,14 +289,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/code-blocks.html">
-						Code blocks
-					</a>
+					<a href="../../../features/code-blocks.html">Code blocks</a>
 				</p>
 				<p>
-					<a href="../../../api/module_code-block_codeblock-CodeBlock.html">
-						<code>CodeBlock</code>
-					</a>
+					<a href="../../../api/module_code-block_codeblock-CodeBlock.html"><code>CodeBlock</code></a>
 				</p>
 			</td>
 			<td>
@@ -380,14 +320,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="3">
 				<p>
-					<a href="../../../features/collaboration/comments/comments.html" data-skip-validation>
-						Comments
-					</a>
+					<a href="../../../features/collaboration/comments/comments.html" data-skip-validation>Comments</a>
 				</p>
 				<p>
-					<a href="../../../api/module_comments_comments-Comments.html" data-skip-validation>
-						<code>Comments</code>
-					</a>
+					<a href="../../../api/module_comments_comments-Comments.html" data-skip-validation><code>Comments</code></a>
 				</p>
 			</td>
 			<td>
@@ -428,14 +364,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/easy-image.html">
-						Easy Image
-					</a>
+					<a href="../../../features/image-upload/easy-image.html">Easy Image</a>
 				</p>
 				<p>
-					<a href="../../../api/module_easy-image_easyimage-EasyImage.html">
-						<code>EasyImage</code>
-					</a>
+					<a href="../../../api/module_easy-image_easyimage-EasyImage.html"><code>EasyImage</code></a>
 				</p>
 			</td>
 			<td>
@@ -453,9 +385,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 					Essentials
 				</p>
 				<p>
-					<a href="../../../api/module_essentials_essentials-Essentials.html">
-						<code>Essentials</code>
-					</a>
+					<a href="../../../api/module_essentials_essentials-Essentials.html"><code>Essentials</code></a>
 				</p>
 			</td>
 			<td>
@@ -470,14 +400,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/export-pdf.html" data-skip-validation>
-						Export to PDF
-					</a>
+					<a href="../../../features/export-pdf.html" data-skip-validation>Export to PDF</a>
 				</p>
 				<p>
-					<a href="../../../api/module_export-pdf_exportpdf-ExportPdf.html" data-skip-validation>
-						<code>ExportPdf</code>
-					</a>
+					<a href="../../../api/module_export-pdf_exportpdf-ExportPdf.html" data-skip-validation><code>ExportPdf</code></a>
 				</p>
 			</td>
 			<td>
@@ -492,14 +418,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/export-word.html" data-skip-validation>
-						Export to Word
-					</a>
+					<a href="../../../features/export-word.html" data-skip-validation>Export to Word</a>
 				</p>
 				<p>
-					<a href="../../../api/module_export-word_exportword-ExportWord.html" data-skip-validation>
-						<code>ExportWord</code>
-					</a>
+					<a href="../../../api/module_export-word_exportword-ExportWord.html" data-skip-validation><code>ExportWord</code></a>
 				</p>
 			</td>
 			<td>
@@ -514,14 +436,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features">
-						Font background color
-					</a>
+					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features">Font background color</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontbackgroundcolor-FontBackgroundColor.html">
-						<code>FontBackgroundColor</code>
-					</a>
+					<a href="../../../api/module_font_fontbackgroundcolor-FontBackgroundColor.html"><code>FontBackgroundColor</code></a>
 				</p>
 			</td>
 			<td>
@@ -536,14 +454,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features">
-						Font color
-					</a>
+					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features">Font color</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontcolor-FontColor.html">
-						<code>FontColor</code>
-					</a>
+					<a href="../../../api/module_font_fontcolor-FontColor.html"><code>FontColor</code></a>
 				</p>
 			</td>
 			<td>
@@ -558,14 +472,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="3">
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-size-feature">
-						Font size
-					</a>
+					<a href="../../../features/font.html#configuring-the-font-size-feature">Font size</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontsize-FontSize.html">
-						<code>FontSize</code>
-					</a>
+					<a href="../../../api/module_font_fontsize-FontSize.html"><code>FontSize</code></a>
 				</p>
 			</td>
 			<td>
@@ -612,14 +522,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-family-feature">
-						Font family
-					</a>
+					<a href="../../../features/font.html#configuring-the-font-family-feature">Font family</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontfamily-FontFamily.html">
-						<code>FontFamily</code>
-					</a>
+					<a href="../../../api/module_font_fontfamily-FontFamily.html"><code>FontFamily</code></a>
 				</p>
 			</td>
 			<td>
@@ -656,14 +562,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/title.html">
-						Title
-					</a>
+					<a href="../../../features/title.html">Title</a>
 				</p>
 				<p>
-					<a href="../../../api/module_heading_title-Title.html">
-						<code>Title</code>
-					</a>
+					<a href="../../../api/module_heading_title-Title.html"><code>Title</code></a>
 				</p>
 			</td>
 			<td>
@@ -675,14 +577,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/headings.html">
-						Heading
-					</a>
+					<a href="../../../features/headings.html">Heading</a>
 				</p>
 				<p>
-					<a href="../../../api/module_heading_heading-Heading.html">
-						<code>Heading</code>
-					</a>
+					<a href="../../../api/module_heading_heading-Heading.html"><code>Heading</code></a>
 				</p>
 			</td>
 			<td>
@@ -710,14 +608,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/highlight.html">
-						Highlight
-					</a>
+					<a href="../../../features/highlight.html">Highlight</a>
 				</p>
 				<p>
-					<a href="../../../api/module_highlight_highlight-Highlight.html">
-						<code>Highlight</code>
-					</a>
+					<a href="../../../api/module_highlight_highlight-Highlight.html"><code>Highlight</code></a>
 				</p>
 			</td>
 			<td>
@@ -751,14 +645,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/horizontal-line.html">
-						Horizontal line
-					</a>
+					<a href="../../../features/horizontal-line.html">Horizontal line</a>
 				</p>
 				<p>
-					<a href="../../../api/module_horizontal-line_horizontalline-HorizontalLine.html">
-						<code>HorizontalLine</code>
-					</a>
+					<a href="../../../api/module_horizontal-line_horizontalline-HorizontalLine.html"><code>HorizontalLine</code></a>
 				</p>
 			</td>
 			<td>
@@ -773,14 +663,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/html-embed.html">
-						HTML embed
-					</a>
+					<a href="../../../features/html-embed.html">HTML embed</a>
 				</p>
 				<p>
-					<a href="../../../api/module_html-embed_htmlembed-HtmlEmbed.html">
-						<code>HtmlEmbed</code>
-					</a>
+					<a href="../../../api/module_html-embed_htmlembed-HtmlEmbed.html"><code>HtmlEmbed</code></a>
 				</p>
 			</td>
 			<td>
@@ -798,14 +684,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-pasting-url-into-editor">
-						Auto image
-					</a>
+					<a href="../../../features/image.html#inserting-images-via-pasting-url-into-editor">Auto image</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_autoimage-AutoImage.html">
-						<code>AutoImage</code>
-					</a>
+					<a href="../../../api/module_image_autoimage-AutoImage.html"><code>AutoImage</code></a>
 				</p>
 			</td>
 			<td>
@@ -817,14 +699,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/image.html">
-						Image
-					</a>
+					<a href="../../../features/image.html">Image</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_image-Image.html">
-						<code>Image</code>
-					</a>
+					<a href="../../../api/module_image_image-Image.html"><code>Image</code></a>
 				</p>
 			</td>
 			<td>
@@ -849,14 +727,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#image-captions">
-						Image caption
-					</a>
+					<a href="../../../features/image.html#image-captions">Image caption</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imagecaption-ImageCaption.html">
-						<code>ImageCaption</code>
-					</a>
+					<a href="../../../api/module_image_imagecaption-ImageCaption.html"><code>ImageCaption</code></a>
 				</p>
 			</td>
 			<td>
@@ -868,14 +742,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#resizing-images">
-						Image resize
-					</a>
+					<a href="../../../features/image.html#resizing-images">Image resize</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imageresize-ImageResize.html">
-						<code>ImageResize</code>
-					</a>
+					<a href="../../../api/module_image_imageresize-ImageResize.html"><code>ImageResize</code></a>
 				</p>
 			</td>
 			<td>
@@ -893,14 +763,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/image.html#image-styles">
-						Image style
-					</a>
+					<a href="../../../features/image.html#image-styles">Image style</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imagestyle-ImageStyle.html">
-						<code>ImageStyle</code>
-					</a>
+					<a href="../../../api/module_image_imagestyle-ImageStyle.html"><code>ImageStyle</code></a>
 				</p>
 			</td>
 			<td>
@@ -928,14 +794,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#image-contextual-toolbar">
-						Image toolbar
-					</a>
+					<a href="../../../features/image.html#image-contextual-toolbar">Image toolbar</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imagetoolbar-ImageToolbar.html">
-						<code>ImageToolbar</code>
-					</a>
+					<a href="../../../api/module_image_imagetoolbar-ImageToolbar.html"><code>ImageToolbar</code></a>
 				</p>
 			</td>
 			<td>
@@ -947,14 +809,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#image-upload">
-						Image upload
-					</a>
+					<a href="../../../features/image.html#image-upload">Image upload</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imageupload-ImageUpload.html">
-						<code>ImageUpload</code>
-					</a>
+					<a href="../../../api/module_image_imageupload-ImageUpload.html"><code>ImageUpload</code></a>
 				</p>
 			</td>
 			<td>
@@ -966,14 +824,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-source-url">
-						Image insert
-					</a>
+					<a href="../../../features/image.html#inserting-images-via-source-url">Image insert</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imageinsert-ImageInsert.html">
-						<code>ImageInsert</code>
-					</a>
+					<a href="../../../api/module_image_imageinsert-ImageInsert.html"><code>ImageInsert</code></a>
 				</p>
 			</td>
 			<td>
@@ -988,14 +842,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/indent.html">
-						Indent
-					</a>
+					<a href="../../../features/indent.html">Indent</a>
 				</p>
 				<p>
-					<a href="../../../api/module_indent_indent-Indent.html">
-						<code>Indent</code>
-					</a>
+					<a href="../../../api/module_indent_indent-Indent.html"><code>Indent</code></a>
 				</p>
 			</td>
 			<td>
@@ -1007,14 +857,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/indent.html">
-						Indent block
-					</a>
+					<a href="../../../features/indent.html">Indent block</a>
 				</p>
 				<p>
-					<a href="../../../api/module_indent_indentblock-IndentBlock.html">
-						<code>IndentBlock</code>
-					</a>
+					<a href="../../../api/module_indent_indentblock-IndentBlock.html"><code>IndentBlock</code></a>
 				</p>
 			</td>
 			<td>
@@ -1048,14 +894,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/language.html">
-						Text part language
-					</a>
+					<a href="../../../features/language.html">Text part language</a>
 				</p>
 				<p>
-					<a href="../../../api/module_language_textpartlanguage-TextPartLanguage.html">
-						<code>TextPartLanguage</code>
-					</a>
+					<a href="../../../api/module_language_textpartlanguage-TextPartLanguage.html"><code>TextPartLanguage</code></a>
 				</p>
 			</td>
 			<td>
@@ -1073,14 +915,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/link.html#autolink-feature">
-						Autolink
-					</a>
+					<a href="../../../features/link.html#autolink-feature">Autolink</a>
 				</p>
 				<p>
-					<a href="../../../api/module_link_autolink-AutoLink.html">
-						<code>AutoLink</code>
-					</a>
+					<a href="../../../api/module_link_autolink-AutoLink.html"><code>AutoLink</code></a>
 				</p>
 			</td>
 			<td>
@@ -1092,14 +930,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="3">
 				<p>
-					<a href="../../../features/link.html">
-						Link
-					</a>
+					<a href="../../../features/link.html">Link</a>
 				</p>
 				<p>
-					<a href="../../../api/module_link_link-Link.html">
-						<code>Link</code>
-					</a>
+					<a href="../../../api/module_link_link-Link.html"><code>Link</code></a>
 				</p>
 			</td>
 			<td>
@@ -1146,14 +980,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#linking-images">
-						Link image
-					</a>
+					<a href="../../../features/image.html#linking-images">Link image</a>
 				</p>
 				<p>
-					<a href="../../../api/module_link_linkimage-LinkImage.html">
-						<code>LinkImage</code>
-					</a>
+					<a href="../../../api/module_link_linkimage-LinkImage.html"><code>LinkImage</code></a>
 				</p>
 			</td>
 			<td>
@@ -1171,14 +1001,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/lists/lists.html">
-						List
-					</a>
+					<a href="../../../features/lists/lists.html">List</a>
 				</p>
 				<p>
-					<a href="../../../api/module_list_list-List.html">
-						<code>List</code>
-					</a>
+					<a href="../../../api/module_list_list-List.html"><code>List</code></a>
 				</p>
 			</td>
 			<td>
@@ -1200,14 +1026,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="5">
 				<p>
-					<a href="../../../features/lists/todo-lists.html">
-						To-do list
-					</a>
+					<a href="../../../features/lists/todo-lists.html">To-do list</a>
 				</p>
 				<p>
-					<a href="../../../api/module_list_todolist-TodoList.html">
-						<code>TodoList</code>
-					</a>
+					<a href="../../../api/module_list_todolist-TodoList.html"><code>TodoList</code></a>
 				</p>
 			</td>
 			<td>
@@ -1259,14 +1081,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/lists/lists.html#list-styles">
-						List style
-					</a>
+					<a href="../../../features/lists/lists.html#list-styles">List style</a>
 				</p>
 				<p>
-					<a href="../../../api/module_list_liststyle-ListStyle.html">
-						<code>ListStyle</code>
-					</a>
+					<a href="../../../api/module_list_liststyle-ListStyle.html"><code>ListStyle</code></a>
 				</p>
 			</td>
 			<td>
@@ -1284,14 +1102,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/markdown.html">
-						Markdown
-					</a>
+					<a href="../../../features/markdown.html">Markdown</a>
 				</p>
 				<p>
-					<a href="../../../api/module_markdown-gfm_markdown-Markdown.html">
-						<code>Markdown</code>
-					</a>
+					<a href="../../../api/module_markdown-gfm_markdown-Markdown.html"><code>Markdown</code></a>
 				</p>
 			</td>
 			<td>
@@ -1306,14 +1120,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="7">
 				<p>
-					<a href="../../../features/media-embed.html">
-						Media embed
-					</a>
+					<a href="../../../features/media-embed.html">Media embed</a>
 				</p>
 				<p>
-					<a href="../../../api/module_media-embed_mediaembed-MediaEmbed.html">
-						<code>MediaEmbed</code>
-					</a>
+					<a href="../../../api/module_media-embed_mediaembed-MediaEmbed.html"><code>MediaEmbed</code></a>
 				</p>
 			</td>
 			<td>
@@ -1409,14 +1219,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/media-embed.html">
-						Media embed toolbar
-					</a>
+					<a href="../../../features/media-embed.html">Media embed toolbar</a>
 				</p>
 				<p>
-					<a href="../../../api/module_media-embed_mediaembedtoolbar-MediaEmbedToolbar.html">
-						<code>MediaEmbedToolbar</code>
-					</a>
+					<a href="../../../api/module_media-embed_mediaembedtoolbar-MediaEmbedToolbar.html"><code>MediaEmbedToolbar</code></a>
 				</p>
 			</td>
 			<td>
@@ -1431,14 +1237,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/mentions.html">
-						Mention
-					</a>
+					<a href="../../../features/mentions.html">Mention</a>
 				</p>
 				<p>
-					<a href="../../../api/module_mention_mention-Mention.html">
-						<code>Mention</code>
-					</a>
+					<a href="../../../api/module_mention_mention-Mention.html"><code>Mention</code></a>
 				</p>
 			</td>
 			<td>
@@ -1459,14 +1261,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/page-break.html">
-						Page break
-					</a>
+					<a href="../../../features/page-break.html">Page break</a>
 				</p>
 				<p>
-					<a href="../../../api/module_page-break_pagebreak-PageBreak.html">
-						<code>PageBreak</code>
-					</a>
+					<a href="../../../api/module_page-break_pagebreak-PageBreak.html"><code>PageBreak</code></a>
 				</p>
 			</td>
 			<td>
@@ -1497,14 +1295,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/pagination.html" data-skip-validation>
-						Pagination
-					</a>
+					<a href="../../../features/pagination.html" data-skip-validation>Pagination</a>
 				</p>
 				<p>
-					<a href="../../../api/module_pagination_pagination-Pagination.html" data-skip-validation>
-						<code>Pagination</code>
-					</a>
+					<a href="../../../api/module_pagination_pagination-Pagination.html" data-skip-validation><code>Pagination</code></a>
 				</p>
 			</td>
 			<td>
@@ -1528,9 +1322,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 					Paragraph
 				</p>
 				<p>
-					<a href="../../../api/module_paragraph_paragraph-Paragraph.html">
-						<code>Paragraph</code>
-					</a>
+					<a href="../../../api/module_paragraph_paragraph-Paragraph.html"><code>Paragraph</code></a>
 				</p>
 			</td>
 			<td>
@@ -1548,14 +1340,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/pasting/paste-from-word.html">
-						Paste from Office
-					</a>
+					<a href="../../../features/pasting/paste-from-word.html">Paste from Office</a>
 				</p>
 				<p>
-					<a href="../../../api/module_paste-from-office_pastefromoffice-PasteFromOffice.html">
-						<code>PasteFromOffice</code>
-					</a>
+					<a href="../../../api/module_paste-from-office_pastefromoffice-PasteFromOffice.html"><code>PasteFromOffice</code></a>
 				</p>
 			</td>
 			<td>
@@ -1570,14 +1358,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html#users-presence-list" data-skip-validation>
-						Presence list
-					</a>
+					<a href="../../../features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html#users-presence-list" data-skip-validation>Presence list</a>
 				</p>
 				<p>
-					<a href="../../../api/module_real-time-collaboration_presencelist-PresenceList.html" data-skip-validation>
-						<code>PresenceList</code>
-					</a>
+					<a href="../../../api/module_real-time-collaboration_presencelist-PresenceList.html" data-skip-validation><code>PresenceList</code></a>
 				</p>
 			</td>
 			<td>
@@ -1589,14 +1373,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/collaboration/comments/comments.html" data-skip-validation>
-						Real-time collaborative comments
-					</a>
+					<a href="../../../features/collaboration/comments/comments.html" data-skip-validation>Real-time collaborative comments</a>
 				</p>
 				<p>
-					<a href="../../../api/module_real-time-collaboration_realtimecollaborativecomments-RealTimeCollaborativeComments.html" data-skip-validation>
-						<code>RealTimeCollaborativeComments</code>
-					</a>
+					<a href="../../../api/module_real-time-collaboration_realtimecollaborativecomments-RealTimeCollaborativeComments.html" data-skip-validation><code>RealTimeCollaborativeComments</code></a>
 				</p>
 			</td>
 			<td>
@@ -1608,14 +1388,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/collaboration/real-time-collaboration/real-time-collaboration.html" data-skip-validation>
-						Real-time collaborative editing
-					</a>
+					<a href="../../../features/collaboration/real-time-collaboration/real-time-collaboration.html" data-skip-validation>Real-time collaborative editing</a>
 				</p>
 				<p>
-					<a href="../../../api/module_real-time-collaboration_realtimecollaborativeediting-RealTimeCollaborativeEditing.html" data-skip-validation>
-						<code>RealTimeCollaborativeEditing</code>
-					</a>
+					<a href="../../../api/module_real-time-collaboration_realtimecollaborativeediting-RealTimeCollaborativeEditing.html" data-skip-validation><code>RealTimeCollaborativeEditing</code></a>
 				</p>
 			</td>
 			<td>
@@ -1627,14 +1403,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/collaboration/track-changes/track-changes.html" data-skip-validation>
-						Real-time collaborative track changes
-					</a>
+					<a href="../../../features/collaboration/track-changes/track-changes.html" data-skip-validation>Real-time collaborative track changes</a>
 				</p>
 				<p>
-					<a href="../../../api/module_real-time-collaboration_realtimecollaborativetrackchanges-RealTimeCollaborativeTrackChanges.html" data-skip-validation>
-						<code>RealTimeCollaborativeTrackChanges</code>
-					</a>
+					<a href="../../../api/module_real-time-collaboration_realtimecollaborativetrackchanges-RealTimeCollaborativeTrackChanges.html" data-skip-validation><code>RealTimeCollaborativeTrackChanges</code></a>
 				</p>
 			</td>
 			<td>
@@ -1649,14 +1421,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/remove-format.html">
-						Remove format
-					</a>
+					<a href="../../../features/remove-format.html">Remove format</a>
 				</p>
 				<p>
-					<a href="../../../api/module_remove-format_removeformat-RemoveFormat.html">
-						<code>RemoveFormat</code>
-					</a>
+					<a href="../../../api/module_remove-format_removeformat-RemoveFormat.html"><code>RemoveFormat</code></a>
 				</p>
 			</td>
 			<td>
@@ -1671,14 +1439,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/restricted-editing.html">
-						Restricted editing mode
-					</a>
+					<a href="../../../features/restricted-editing.html">Restricted editing mode</a>
 				</p>
 				<p>
-					<a href="../../../api/module_restricted-editing_restrictededitingmode-RestrictedEditingMode.html">
-						<code>RestrictedEditingMode</code>
-					</a>
+					<a href="../../../api/module_restricted-editing_restrictededitingmode-RestrictedEditingMode.html"><code>RestrictedEditingMode</code></a>
 				</p>
 			</td>
 			<td>
@@ -1693,14 +1457,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/restricted-editing.html#running-the-standard-editing-mode">
-						Standard editing mode
-					</a>
+					<a href="../../../features/restricted-editing.html#running-the-standard-editing-mode">Standard editing mode</a>
 				</p>
 				<p>
-					<a href="../../../api/module_restricted-editing_standardeditingmode-StandardEditingMode.html">
-						<code>StandardEditingMode</code>
-					</a>
+					<a href="../../../api/module_restricted-editing_standardeditingmode-StandardEditingMode.html"><code>StandardEditingMode</code></a>
 				</p>
 			</td>
 			<td>
@@ -1718,14 +1478,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html">
-						Special characters
-					</a>
+					<a href="../../../features/special-characters.html">Special characters</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacters-SpecialCharacters.html">
-						<code>SpecialCharacters</code>
-					</a>
+					<a href="../../../api/module_special-characters_specialcharacters-SpecialCharacters.html"><code>SpecialCharacters</code></a>
 				</p>
 			</td>
 			<td>
@@ -1737,14 +1493,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html">
-						Special characters essentials
-					</a>
+					<a href="../../../features/special-characters.html">Special characters essentials</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharactersessentials-SpecialCharactersEssentials.html">
-						<code>SpecialCharactersEssentials</code>
-					</a>
+					<a href="../../../api/module_special-characters_specialcharactersessentials-SpecialCharactersEssentials.html"><code>SpecialCharactersEssentials</code></a>
 				</p>
 			</td>
 			<td>
@@ -1756,14 +1508,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html">
-						Special characters arrows
-					</a>
+					<a href="../../../features/special-characters.html">Special characters arrows</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharactersarrows-SpecialCharactersArrows.html">
-						<code>SpecialCharactersArrows</code>
-					</a>
+					<a href="../../../api/module_special-characters_specialcharactersarrows-SpecialCharactersArrows.html"><code>SpecialCharactersArrows</code></a>
 				</p>
 			</td>
 			<td>
@@ -1775,14 +1523,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html">
-						Special characters currency
-					</a>
+					<a href="../../../features/special-characters.html">Special characters currency</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacterscurrency-SpecialCharactersCurrency.html">
-						<code>SpecialCharactersCurrency</code>
-					</a>
+					<a href="../../../api/module_special-characters_specialcharacterscurrency-SpecialCharactersCurrency.html"><code>SpecialCharactersCurrency</code></a>
 				</p>
 			</td>
 			<td>
@@ -1794,14 +1538,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html">
-						Special characters latin
-					</a>
+					<a href="../../../features/special-characters.html">Special characters latin</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacterslatin-SpecialCharactersLatin.html">
-						<code>SpecialCharactersLatin</code>
-					</a>
+					<a href="../../../api/module_special-characters_specialcharacterslatin-SpecialCharactersLatin.html"><code>SpecialCharactersLatin</code></a>
 				</p>
 			</td>
 			<td>
@@ -1813,14 +1553,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html">
-						Special characters mathematical
-					</a>
+					<a href="../../../features/special-characters.html">Special characters mathematical</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharactersmathematical-SpecialCharactersMathematical.html">
-						<code>SpecialCharactersMathematical</code>
-					</a>
+					<a href="../../../api/module_special-characters_specialcharactersmathematical-SpecialCharactersMathematical.html"><code>SpecialCharactersMathematical</code></a>
 				</p>
 			</td>
 			<td>
@@ -1832,14 +1568,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html">
-						Special characters text
-					</a>
+					<a href="../../../features/special-characters.html">Special characters text</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacterstext-SpecialCharactersText.html">
-						<code>SpecialCharactersText</code>
-					</a>
+					<a href="../../../api/module_special-characters_specialcharacterstext-SpecialCharactersText.html"><code>SpecialCharactersText</code></a>
 				</p>
 			</td>
 			<td>
@@ -1854,14 +1586,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td rowspan="3">
 				<p>
-					<a href="../../../features/table.html">
-						Table
-					</a>
+					<a href="../../../features/table.html">Table</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_table-Table.html">
-						<code>Table</code>
-					</a>
+					<a href="../../../api/module_table_table-Table.html"><code>Table</code></a>
 				</p>
 			</td>
 			<td>
@@ -1893,14 +1621,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/table.html#table-and-cell-styling-tools">
-						Table cell properties
-					</a>
+					<a href="../../../features/table.html#table-and-cell-styling-tools">Table cell properties</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_tablecellproperties-TableCellProperties.html">
-						<code>TableCellProperties</code>
-					</a>
+					<a href="../../../api/module_table_tablecellproperties-TableCellProperties.html"><code>TableCellProperties</code></a>
 				</p>
 			</td>
 			<td>
@@ -1915,14 +1639,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/table.html#table-and-cell-styling-tools">
-						Table properties
-					</a>
+					<a href="../../../features/table.html#table-and-cell-styling-tools">Table properties</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_tableproperties-TableProperties.html">
-						<code>TableProperties</code>
-					</a>
+					<a href="../../../api/module_table_tableproperties-TableProperties.html"><code>TableProperties</code></a>
 				</p>
 			</td>
 			<td>
@@ -1947,14 +1667,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/table.html#toolbars">
-						Table toolbar
-					</a>
+					<a href="../../../features/table.html#toolbars">Table toolbar</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_tabletoolbar-TableToolbar.html">
-						<code>TableToolbar</code>
-					</a>
+					<a href="../../../api/module_table_tabletoolbar-TableToolbar.html"><code>TableToolbar</code></a>
 				</p>
 			</td>
 			<td>
@@ -1969,14 +1685,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/collaboration/track-changes/track-changes.html" data-skip-validation>
-						Track changes
-					</a>
+					<a href="../../../features/collaboration/track-changes/track-changes.html" data-skip-validation>Track changes</a>
 				</p>
 				<p>
-					<a href="../../../api/module_track-changes_trackchanges-TrackChanges.html" data-skip-validation>
-						<code>TrackChanges</code>
-					</a>
+					<a href="../../../api/module_track-changes_trackchanges-TrackChanges.html" data-skip-validation><code>TrackChanges</code></a>
 				</p>
 			</td>
 			<td>
@@ -1991,14 +1703,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/text-transformation.html">
-						Text transformation
-					</a>
+					<a href="../../../features/text-transformation.html">Text transformation</a>
 				</p>
 				<p>
-					<a href="../../../api/module_typing_texttransformation-TextTransformation.html">
-						<code>TextTransformation</code>
-					</a>
+					<a href="../../../api/module_typing_texttransformation-TextTransformation.html"><code>TextTransformation</code></a>
 				</p>
 			</td>
 			<td>
@@ -2013,14 +1721,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/toolbar/blocktoolbar.html">
-						Block toolbar
-					</a>
+					<a href="../../../features/toolbar/blocktoolbar.html">Block toolbar</a>
 				</p>
 				<p>
-					<a href="../../../api/module_ui_toolbar_block_blocktoolbar-BlockToolbar.html">
-						<code>BlockToolbar</code>
-					</a>
+					<a href="../../../api/module_ui_toolbar_block_blocktoolbar-BlockToolbar.html"><code>BlockToolbar</code></a>
 				</p>
 			</td>
 			<td>
@@ -2035,14 +1739,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/base64-upload-adapter.html">
-						Base64 upload adapter
-					</a>
+					<a href="../../../features/image-upload/base64-upload-adapter.html">Base64 upload adapter</a>
 				</p>
 				<p>
-					<a href="../../../api/module_upload_adapters_base64uploadadapter-Base64UploadAdapter.html">
-						<code>Base64UploadAdapter</code>
-					</a>
+					<a href="../../../api/module_upload_adapters_base64uploadadapter-Base64UploadAdapter.html"><code>Base64UploadAdapter</code></a>
 				</p>
 			</td>
 			<td>
@@ -2054,14 +1754,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/simple-upload-adapter.html">
-						Simple upload adapter
-					</a>
+					<a href="../../../features/image-upload/simple-upload-adapter.html">Simple upload adapter</a>
 				</p>
 				<p>
-					<a href="../../../api/module_upload_adapters_simpleuploadadapter-SimpleUploadAdapter.html">
-						<code>SimpleUploadAdapter</code>
-					</a>
+					<a href="../../../api/module_upload_adapters_simpleuploadadapter-SimpleUploadAdapter.html"><code>SimpleUploadAdapter</code></a>
 				</p>
 			</td>
 			<td>
@@ -2076,14 +1772,10 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/watchdog.html">
-						Watchdog
-					</a>
+					<a href="../../../features/watchdog.html">Watchdog</a>
 				</p>
 				<p>
-					<a href="../../../api/module_watchdog_editorwatchdog-EditorWatchdog.html">
-						<code>EditorWatchdog</code>
-					</a>
+					<a href="../../../api/module_watchdog_editorwatchdog-EditorWatchdog.html"><code>EditorWatchdog</code></a>
 				</p>
 			</td>
 			<td>
@@ -2098,14 +1790,52 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/word-count.html">
-						Word count
-					</a>
+					<a href="../../../features/word-count.html">Word count</a>
 				</p>
 				<p>
-					<a href="../../../api/module_word-count_wordcount-WordCount.html">
-						<code>WordCount</code>
-					</a>
+					<a href="../../../api/module_word-count_wordcount-WordCount.html"><code>WordCount</code></a>
+				</p>
+			</td>
+			<td>
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<code>mathtype-ckeditor5</code>
+			</td>
+			<td>
+				<p>
+					<a href="../../../features/math-equations.html">MathType</a>
+				</p>
+				<p>
+					<code>MathType</code>
+				</p>
+			</td>
+			<td>
+				<p>
+					<code>&lt;<strong>*</strong>&gt;</code>
+				</p>
+				<p>
+					<code>&lt;… <strong>*</strong>="*"&gt;</code>
+				</p>
+				<p>
+					For a complete list of available element and attribute names, visit <a href="https://developer.mozilla.org/en-US/docs/Web/MathML" target="_blank" rel="noopener">MDN Web Docs</a>.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<code>wproofreader-ckeditor5</code>
+			</td>
+			<td>
+				<p>
+					<a href="../../../features/spelling-and-grammar-checking.html">WProofreader</a>
+				</p>
+				<p>
+					<code>WProofreader</code>
 				</p>
 			</td>
 			<td>

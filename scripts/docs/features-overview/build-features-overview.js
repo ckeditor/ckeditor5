@@ -11,7 +11,8 @@ const glob = require( 'glob' );
 const chalk = require( 'chalk' );
 
 const DESTINATION_DOCS_PATH = 'docs/builds/guides/integration/features-overview.md';
-const PACKAGE_METADATA_PATH_PATTERN = '{,external/*/}packages/*/ckeditor5-metadata.json';
+const PACKAGE_METADATA_RELATIVE_PATHS = [ 'packages', 'external/*/packages', 'scripts/docs/features-overview/3rd-party-packages' ];
+const PACKAGE_METADATA_GLOB_PATTERN = `{${ PACKAGE_METADATA_RELATIVE_PATHS.join( ',' ) }}/*/ckeditor5-metadata.json`;
 
 try {
 	const numberOfParsedFiles = parseMetadataFiles();
@@ -111,7 +112,7 @@ function parseMetadataFiles() {
  * @returns {Array.<ParsedFile>}
  */
 function parseFiles() {
-	return glob.sync( PACKAGE_METADATA_PATH_PATTERN )
+	return glob.sync( PACKAGE_METADATA_GLOB_PATTERN )
 		.map( readFile )
 		.map( file => {
 			try {
@@ -149,9 +150,17 @@ function parseFile( file ) {
 
 	const packageName = path.basename( path.dirname( file.path ) );
 
-	const isExternal = file.path.startsWith( 'external/' );
+	const isExternalPackage = file.path.startsWith( 'external/' );
 
-	const plugins = preparePlugins( packageName, isExternal, metadata.plugins );
+	const is3rdPartyPackage = file.path.startsWith( 'scripts/docs/features-overview/3rd-party-packages/' );
+
+	const packageData = {
+		name: packageName,
+		isExternal: isExternalPackage,
+		is3rdParty: is3rdPartyPackage
+	};
+
+	const plugins = preparePlugins( packageData, metadata.plugins );
 
 	return {
 		packageName,
@@ -162,20 +171,16 @@ function parseFile( file ) {
 /**
  * Parses all plugins from package metadata file.
  *
- * @param {String} packageName Package name.
- * @param {Boolean} isExternal Determines whether a given package belongs to a CKEditor 5 (isExternal = false), or it comes from external
- * folder from Collaboration Features or Internal repos (isExternal = true).
+ * @param {Package} packageData Package properties.
  * @param {Array.<Plugin>} plugins Plugins to parse.
  * @returns {Array.<ParsedPlugin>}
  */
-function preparePlugins( packageName, isExternal, plugins = [] ) {
+function preparePlugins( packageData, plugins = [] ) {
 	return plugins
 		.map( plugin => {
-			const pluginName = plugin.docs ?
-				prepareFeatureLink( isExternal, plugin ) :
-				plugin.name;
+			const pluginName = prepareFeatureLink( packageData, plugin );
 
-			const pluginClassName = prepareApiLink( packageName, isExternal, plugin );
+			const pluginClassName = prepareApiLink( packageData, plugin );
 
 			const htmlOutput = plugin.htmlOutput ?
 				prepareHtmlOutput( plugin.htmlOutput ) :
@@ -189,34 +194,41 @@ function preparePlugins( packageName, isExternal, plugins = [] ) {
 }
 
 /**
- * Creates link to the plugin's feature documentation.
+ * Creates link to the plugin's feature documentation. If the feature documentation is missing, just the plugin name is returned.
  *
- * @param {Boolean} isExternal Determines whether a given package belongs to a CKEditor 5 (isExternal = false), or it comes from external
- * folder from Collaboration Features or Internal repos (isExternal = true).
+ * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
-function prepareFeatureLink( isExternal, plugin ) {
+function prepareFeatureLink( packageData, plugin ) {
+	if ( !plugin.docs ) {
+		return plugin.name;
+	}
+
 	const link = /http(s)?:/.test( plugin.docs ) ?
 		plugin.docs :
 		`../../../${ plugin.docs }`;
 
-	const skipLinkValidation = isExternal ? 'data-skip-validation' : '';
+	const skipLinkValidation = packageData.isExternal ? 'data-skip-validation' : '';
 
 	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
 }
 
 /**
- * Creates link to the plugin's API documentation.
+ * Creates link to the plugin's API documentation. If given plugin is a 3rd party one, just the plugin class name is returned.
  *
- * @param {String} packageName Package name.
- * @param {Boolean} isExternal Determines whether a given package belongs to a CKEditor 5 (isExternal = false), or it comes from external
- * folder from Collaboration Features or Internal repos (isExternal = true).
+ * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
-function prepareApiLink( packageName, isExternal, plugin ) {
-	const shortPackageName = packageName.replace( /^ckeditor5-/g, '' );
+function prepareApiLink( packageData, plugin ) {
+	const pluginClassName = `<code>${ plugin.className }</code>`;
+
+	if ( packageData.is3rdParty ) {
+		return pluginClassName;
+	}
+
+	const shortPackageName = packageData.name.replace( /^ckeditor5-/g, '' );
 
 	const packagePath = plugin.path
 		.replace( /(^src\/)|(\.js$)/g, '' )
@@ -224,9 +236,9 @@ function prepareApiLink( packageName, isExternal, plugin ) {
 
 	const link = `../../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;
 
-	const skipLinkValidation = isExternal ? 'data-skip-validation' : '';
+	const skipLinkValidation = packageData.isExternal ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }><code>${ plugin.className }</code></a>`;
+	return `<a href="${ link }" ${ skipLinkValidation }>${ pluginClassName }</a>`;
 }
 
 /**
@@ -288,6 +300,7 @@ function prepareHtmlOutput( htmlOutput ) {
 						.replace( '<', '&lt;' )
 						.replace( '>', '&gt;' )
 						.replace( /`(.*?)`/g, '<code>$1</code>' )
+						.replace( /\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>' )
 				}</p>` :
 				'';
 
@@ -336,9 +349,9 @@ function saveGeneratedOutput( output ) {
 function beautify( input ) {
 	const lines = input
 		// Add new line before `<tag>` or `</tag>`, but only if it is not already preceded by a new line (negative lookbehind).
-		.replace( /(?<!\n)<(\/)?(table|thead|tbody|tr|th|td|p|a)(.*?)>/g, '\n<$1$2$3>' )
+		.replace( /(?<!\n)<(\/)?(table|thead|tbody|tr|th|td|p)(.*?)>/g, '\n<$1$2$3>' )
 		// Add new line after `<tag>` or `</tag>`, but only if it is not already followed by a new line (negative lookahead).
-		.replace( /<(\/)?(table|thead|tbody|tr|th|td|p|a)(.*?)>(?!\n)/g, '<$1$2$3>\n' )
+		.replace( /<(\/)?(table|thead|tbody|tr|th|td|p)(.*?)>(?!\n)/g, '<$1$2$3>\n' )
 		// Remove whitespace before `>`, that may appear there after adding an empty attribute.
 		.replace( /\s+>/g, '>' )
 		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
@@ -453,6 +466,16 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  * @property {Array.<String>} htmlOutput Each item in this array contains a separate output definition. This output definition is a string
  * with all elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links, visual
  * emphasis, etc.) and ready to be displayed.
+ */
+
+/**
+ * @typedef {Object} Package
+ * @property {String} name Package name.
+ * @property {String} isExternal Determines, if a given package is considered as external one in the context of the CKEditor 5. If package
+ * is not created by CKSource, then isExternal = false. Otherwise, it informs if it belongs to a CKEditor 5 repo (isExternal = false), or if
+ * it comes from an external folder: from Collaboration Features or Internal (isExternal = true).
+ * @property {String} is3rdParty Determines whether a given package has been created outside CKSource. A 3rd party package is not considered
+ * as external one.
  */
 
 /**
