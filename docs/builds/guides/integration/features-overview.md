@@ -9,12 +9,6 @@ Below there is a table containing all CKEditor 5 packages, plugins that the pack
 
 How to read the generated output? There is a simple rule: CSS classes, inline styles, attributes and comments in a given cell in the "HTML output" column **apply only** to HTML elements, that are listed at the top in that cell. The ellipsis `…` character from `<… class` or `<… style` syntax symbolizes any HTML element, that is listed in that cell. The classes, styles or attributes, that are included there do not mean that they all will always be used in the HTML element, but rather show **possible** results. Wildcard character `*` is used to mark any value.
 
-<style>
-    table.features-overview code.nowrap {
-        white-space: nowrap;
-    }
-</style>
-
 <!-- Do not delete the comment below as it indicates the place, where the features overview output will be stored. -->
 
 <!-- features-overview-output-marker -->
@@ -35,17 +29,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 	<tbody>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-adapter-ckfinder</code>
+				<code>ckeditor5-adapter-ckfinder</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder" data-skip-validation>
+					<a href="../../../features/image-upload/image-upload.html#ckfinder">
 						CKFinder Upload Adapter
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html" data-skip-validation>
-						<code class="nowrap">CKFinderUploadAdapter</code>
+					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html">
+						<code>CKFinderUploadAdapter</code>
 					</a>
 				</p>
 			</td>
@@ -57,17 +51,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="2">
-				<code class="nowrap">ckeditor5-alignment</code>
+				<code>ckeditor5-alignment</code>
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder" data-skip-validation>
+					<a href="../../../features/image-upload/image-upload.html#ckfinder">
 						Alignment
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_alignment_alignment-Alignment.html" data-skip-validation>
-						<code class="nowrap">Alignment</code>
+					<a href="../../../api/module_alignment_alignment-Alignment.html">
+						<code>Alignment</code>
 					</a>
 				</p>
 			</td>
@@ -98,17 +92,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-autoformat</code>
+				<code>ckeditor5-autoformat</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/autoformat.html" data-skip-validation>
+					<a href="../../../features/autoformat.html">
 						Autoformat
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_autoformat_autoformat-Autoformat.html" data-skip-validation>
-						<code class="nowrap">Autoformat</code>
+					<a href="../../../api/module_autoformat_autoformat-Autoformat.html">
+						<code>Autoformat</code>
 					</a>
 				</p>
 			</td>
@@ -120,17 +114,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-autosave</code>
+				<code>ckeditor5-autosave</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../builds/guides/integration/saving-data.html#autosave-feature" data-skip-validation>
+					<a href="../../../builds/guides/integration/saving-data.html#autosave-feature">
 						Autosave
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_autosave_autosave-Autosave.html" data-skip-validation>
-						<code class="nowrap">Autosave</code>
+					<a href="../../../api/module_autosave_autosave-Autosave.html">
+						<code>Autosave</code>
 					</a>
 				</p>
 			</td>
@@ -142,17 +136,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="7">
-				<code class="nowrap">ckeditor5-basic-styles</code>
+				<code>ckeditor5-basic-styles</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html" data-skip-validation>
+					<a href="../../../features/basic-styles.html">
 						Bold
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_bold-Bold.html" data-skip-validation>
-						<code class="nowrap">Bold</code>
+					<a href="../../../api/module_basic-styles_bold-Bold.html">
+						<code>Bold</code>
 					</a>
 				</p>
 			</td>
@@ -165,13 +159,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html" data-skip-validation>
+					<a href="../../../features/basic-styles.html">
 						Code
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_code-Code.html" data-skip-validation>
-						<code class="nowrap">Code</code>
+					<a href="../../../api/module_basic-styles_code-Code.html">
+						<code>Code</code>
 					</a>
 				</p>
 			</td>
@@ -187,13 +181,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html" data-skip-validation>
+					<a href="../../../features/basic-styles.html">
 						Italic
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_italic-Italic.html" data-skip-validation>
-						<code class="nowrap">Italic</code>
+					<a href="../../../api/module_basic-styles_italic-Italic.html">
+						<code>Italic</code>
 					</a>
 				</p>
 			</td>
@@ -206,13 +200,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html" data-skip-validation>
+					<a href="../../../features/basic-styles.html">
 						Strikethrough
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_strikethrough-Strikethrough.html" data-skip-validation>
-						<code class="nowrap">Strikethrough</code>
+					<a href="../../../api/module_basic-styles_strikethrough-Strikethrough.html">
+						<code>Strikethrough</code>
 					</a>
 				</p>
 			</td>
@@ -225,13 +219,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html" data-skip-validation>
+					<a href="../../../features/basic-styles.html">
 						Subscript
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_subscript-Subscript.html" data-skip-validation>
-						<code class="nowrap">Subscript</code>
+					<a href="../../../api/module_basic-styles_subscript-Subscript.html">
+						<code>Subscript</code>
 					</a>
 				</p>
 			</td>
@@ -244,13 +238,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html" data-skip-validation>
+					<a href="../../../features/basic-styles.html">
 						Superscript
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_superscript-Superscript.html" data-skip-validation>
-						<code class="nowrap">Superscript</code>
+					<a href="../../../api/module_basic-styles_superscript-Superscript.html">
+						<code>Superscript</code>
 					</a>
 				</p>
 			</td>
@@ -263,13 +257,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/basic-styles.html" data-skip-validation>
+					<a href="../../../features/basic-styles.html">
 						Underline
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_basic-styles_underline-Underline.html" data-skip-validation>
-						<code class="nowrap">Underline</code>
+					<a href="../../../api/module_basic-styles_underline-Underline.html">
+						<code>Underline</code>
 					</a>
 				</p>
 			</td>
@@ -281,17 +275,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-block-quote</code>
+				<code>ckeditor5-block-quote</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/block-quote.html" data-skip-validation>
+					<a href="../../../features/block-quote.html">
 						Block quote
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_block-quote_blockquote-BlockQuote.html" data-skip-validation>
-						<code class="nowrap">BlockQuote</code>
+					<a href="../../../api/module_block-quote_blockquote-BlockQuote.html">
+						<code>BlockQuote</code>
 					</a>
 				</p>
 			</td>
@@ -303,17 +297,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-ckfinder</code>
+				<code>ckeditor5-ckfinder</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/ckfinder.html" data-skip-validation>
+					<a href="../../../features/image-upload/ckfinder.html">
 						CKFinder
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_ckfinder_ckfinder-CKFinder.html" data-skip-validation>
-						<code class="nowrap">CKFinder</code>
+					<a href="../../../api/module_ckfinder_ckfinder-CKFinder.html">
+						<code>CKFinder</code>
 					</a>
 				</p>
 			</td>
@@ -325,17 +319,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-cloud-services</code>
+				<code>ckeditor5-cloud-services</code>
 			</td>
 			<td>
 				<p>
-					<a href="https://ckeditor.com/ckeditor-cloud-services" data-skip-validation>
+					<a href="https://ckeditor.com/ckeditor-cloud-services">
 						Cloud Services
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_cloud-services_cloudservices-CloudServices.html" data-skip-validation>
-						<code class="nowrap">CloudServices</code>
+					<a href="../../../api/module_cloud-services_cloudservices-CloudServices.html">
+						<code>CloudServices</code>
 					</a>
 				</p>
 			</td>
@@ -347,17 +341,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="2">
-				<code class="nowrap">ckeditor5-code-block</code>
+				<code>ckeditor5-code-block</code>
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/code-blocks.html" data-skip-validation>
+					<a href="../../../features/code-blocks.html">
 						Code block
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_code-block_codeblock-CodeBlock.html" data-skip-validation>
-						<code class="nowrap">CodeBlock</code>
+					<a href="../../../api/module_code-block_codeblock-CodeBlock.html">
+						<code>CodeBlock</code>
 					</a>
 				</p>
 			</td>
@@ -382,7 +376,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="3">
-				<code class="nowrap">ckeditor5-comments</code>
+				<code>ckeditor5-comments</code>
 			</td>
 			<td rowspan="3">
 				<p>
@@ -392,7 +386,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_comments_comments-Comments.html" data-skip-validation>
-						<code class="nowrap">Comments</code>
+						<code>Comments</code>
 					</a>
 				</p>
 			</td>
@@ -430,17 +424,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-easy-image</code>
+				<code>ckeditor5-easy-image</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/easy-image.html" data-skip-validation>
+					<a href="../../../features/image-upload/easy-image.html">
 						Easy Image
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_easy-image_easyimage-EasyImage.html" data-skip-validation>
-						<code class="nowrap">EasyImage</code>
+					<a href="../../../api/module_easy-image_easyimage-EasyImage.html">
+						<code>EasyImage</code>
 					</a>
 				</p>
 			</td>
@@ -452,15 +446,15 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-essentials</code>
+				<code>ckeditor5-essentials</code>
 			</td>
 			<td>
 				<p>
 					Essentials
 				</p>
 				<p>
-					<a href="../../../api/module_essentials_essentials-Essentials.html" data-skip-validation>
-						<code class="nowrap">Essentials</code>
+					<a href="../../../api/module_essentials_essentials-Essentials.html">
+						<code>Essentials</code>
 					</a>
 				</p>
 			</td>
@@ -472,7 +466,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-export-pdf</code>
+				<code>ckeditor5-export-pdf</code>
 			</td>
 			<td>
 				<p>
@@ -482,7 +476,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_export-pdf_exportpdf-ExportPdf.html" data-skip-validation>
-						<code class="nowrap">ExportPdf</code>
+						<code>ExportPdf</code>
 					</a>
 				</p>
 			</td>
@@ -494,7 +488,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-export-word</code>
+				<code>ckeditor5-export-word</code>
 			</td>
 			<td>
 				<p>
@@ -504,7 +498,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_export-word_exportword-ExportWord.html" data-skip-validation>
-						<code class="nowrap">ExportWord</code>
+						<code>ExportWord</code>
 					</a>
 				</p>
 			</td>
@@ -516,17 +510,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="7">
-				<code class="nowrap">ckeditor5-font</code>
+				<code>ckeditor5-font</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features" data-skip-validation>
+					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features">
 						Font background color
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontbackgroundcolor-FontBackgroundColor.html" data-skip-validation>
-						<code class="nowrap">FontBackgroundColor</code>
+					<a href="../../../api/module_font_fontbackgroundcolor-FontBackgroundColor.html">
+						<code>FontBackgroundColor</code>
 					</a>
 				</p>
 			</td>
@@ -542,13 +536,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features" data-skip-validation>
+					<a href="../../../features/font.html#configuring-the-font-color-and-font-background-color-features">
 						Font color
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontcolor-FontColor.html" data-skip-validation>
-						<code class="nowrap">FontColor</code>
+					<a href="../../../api/module_font_fontcolor-FontColor.html">
+						<code>FontColor</code>
 					</a>
 				</p>
 			</td>
@@ -564,13 +558,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="3">
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-size-feature" data-skip-validation>
+					<a href="../../../features/font.html#configuring-the-font-size-feature">
 						Font size
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontsize-FontSize.html" data-skip-validation>
-						<code class="nowrap">FontSize</code>
+					<a href="../../../api/module_font_fontsize-FontSize.html">
+						<code>FontSize</code>
 					</a>
 				</p>
 			</td>
@@ -618,13 +612,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/font.html#configuring-the-font-family-feature" data-skip-validation>
+					<a href="../../../features/font.html#configuring-the-font-family-feature">
 						Font family
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_font_fontfamily-FontFamily.html" data-skip-validation>
-						<code class="nowrap">FontFamily</code>
+					<a href="../../../api/module_font_fontfamily-FontFamily.html">
+						<code>FontFamily</code>
 					</a>
 				</p>
 			</td>
@@ -658,17 +652,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="3">
-				<code class="nowrap">ckeditor5-heading</code>
+				<code>ckeditor5-heading</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/title.html" data-skip-validation>
+					<a href="../../../features/title.html">
 						Title
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_heading_title-Title.html" data-skip-validation>
-						<code class="nowrap">Title</code>
+					<a href="../../../api/module_heading_title-Title.html">
+						<code>Title</code>
 					</a>
 				</p>
 			</td>
@@ -681,13 +675,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/headings.html" data-skip-validation>
+					<a href="../../../features/headings.html">
 						Heading
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_heading_heading-Heading.html" data-skip-validation>
-						<code class="nowrap">Heading</code>
+					<a href="../../../api/module_heading_heading-Heading.html">
+						<code>Heading</code>
 					</a>
 				</p>
 			</td>
@@ -712,17 +706,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="2">
-				<code class="nowrap">ckeditor5-highlight</code>
+				<code>ckeditor5-highlight</code>
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/highlight.html" data-skip-validation>
+					<a href="../../../features/highlight.html">
 						Highlight
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_highlight_highlight-Highlight.html" data-skip-validation>
-						<code class="nowrap">Highlight</code>
+					<a href="../../../api/module_highlight_highlight-Highlight.html">
+						<code>Highlight</code>
 					</a>
 				</p>
 			</td>
@@ -753,17 +747,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-horizontal-line</code>
+				<code>ckeditor5-horizontal-line</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/horizontal-line.html" data-skip-validation>
+					<a href="../../../features/horizontal-line.html">
 						Horizontal line
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_horizontal-line_horizontalline-HorizontalLine.html" data-skip-validation>
-						<code class="nowrap">HorizontalLine</code>
+					<a href="../../../api/module_horizontal-line_horizontalline-HorizontalLine.html">
+						<code>HorizontalLine</code>
 					</a>
 				</p>
 			</td>
@@ -775,17 +769,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-html-embed</code>
+				<code>ckeditor5-html-embed</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/html-embed.html" data-skip-validation>
+					<a href="../../../features/html-embed.html">
 						HTML embed
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_html-embed_htmlembed-HtmlEmbed.html" data-skip-validation>
-						<code class="nowrap">HtmlEmbed</code>
+					<a href="../../../api/module_html-embed_htmlembed-HtmlEmbed.html">
+						<code>HtmlEmbed</code>
 					</a>
 				</p>
 			</td>
@@ -800,17 +794,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="10">
-				<code class="nowrap">ckeditor5-image</code>
+				<code>ckeditor5-image</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-pasting-url-into-editor" data-skip-validation>
+					<a href="../../../features/image.html#inserting-images-via-pasting-url-into-editor">
 						Auto image
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_autoimage-AutoImage.html" data-skip-validation>
-						<code class="nowrap">AutoImage</code>
+					<a href="../../../api/module_image_autoimage-AutoImage.html">
+						<code>AutoImage</code>
 					</a>
 				</p>
 			</td>
@@ -823,13 +817,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/image.html" data-skip-validation>
+					<a href="../../../features/image.html">
 						Image
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_image-Image.html" data-skip-validation>
-						<code class="nowrap">Image</code>
+					<a href="../../../api/module_image_image-Image.html">
+						<code>Image</code>
 					</a>
 				</p>
 			</td>
@@ -855,13 +849,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#image-captions" data-skip-validation>
+					<a href="../../../features/image.html#image-captions">
 						Image caption
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imagecaption-ImageCaption.html" data-skip-validation>
-						<code class="nowrap">ImageCaption</code>
+					<a href="../../../api/module_image_imagecaption-ImageCaption.html">
+						<code>ImageCaption</code>
 					</a>
 				</p>
 			</td>
@@ -874,13 +868,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#resizing-images" data-skip-validation>
+					<a href="../../../features/image.html#resizing-images">
 						Image resize
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imageresize-ImageResize.html" data-skip-validation>
-						<code class="nowrap">ImageResize</code>
+					<a href="../../../api/module_image_imageresize-ImageResize.html">
+						<code>ImageResize</code>
 					</a>
 				</p>
 			</td>
@@ -899,13 +893,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/image.html#image-styles" data-skip-validation>
+					<a href="../../../features/image.html#image-styles">
 						Image style
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imagestyle-ImageStyle.html" data-skip-validation>
-						<code class="nowrap">ImageStyle</code>
+					<a href="../../../api/module_image_imagestyle-ImageStyle.html">
+						<code>ImageStyle</code>
 					</a>
 				</p>
 			</td>
@@ -934,13 +928,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#image-contextual-toolbar" data-skip-validation>
+					<a href="../../../features/image.html#image-contextual-toolbar">
 						Image toolbar
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imagetoolbar-ImageToolbar.html" data-skip-validation>
-						<code class="nowrap">ImageToolbar</code>
+					<a href="../../../api/module_image_imagetoolbar-ImageToolbar.html">
+						<code>ImageToolbar</code>
 					</a>
 				</p>
 			</td>
@@ -953,13 +947,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#image-upload" data-skip-validation>
+					<a href="../../../features/image.html#image-upload">
 						Image upload
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imageupload-ImageUpload.html" data-skip-validation>
-						<code class="nowrap">ImageUpload</code>
+					<a href="../../../api/module_image_imageupload-ImageUpload.html">
+						<code>ImageUpload</code>
 					</a>
 				</p>
 			</td>
@@ -972,13 +966,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-source-url" data-skip-validation>
+					<a href="../../../features/image.html#inserting-images-via-source-url">
 						Image insert
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_imageinsert-ImageInsert.html" data-skip-validation>
-						<code class="nowrap">ImageInsert</code>
+					<a href="../../../api/module_image_imageinsert-ImageInsert.html">
+						<code>ImageInsert</code>
 					</a>
 				</p>
 			</td>
@@ -990,17 +984,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="3">
-				<code class="nowrap">ckeditor5-indent</code>
+				<code>ckeditor5-indent</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/indent.html" data-skip-validation>
+					<a href="../../../features/indent.html">
 						Indent
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_indent_indent-Indent.html" data-skip-validation>
-						<code class="nowrap">Indent</code>
+					<a href="../../../api/module_indent_indent-Indent.html">
+						<code>Indent</code>
 					</a>
 				</p>
 			</td>
@@ -1013,13 +1007,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/indent.html" data-skip-validation>
+					<a href="../../../features/indent.html">
 						Indent block
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_indent_indentblock-IndentBlock.html" data-skip-validation>
-						<code class="nowrap">IndentBlock</code>
+					<a href="../../../api/module_indent_indentblock-IndentBlock.html">
+						<code>IndentBlock</code>
 					</a>
 				</p>
 			</td>
@@ -1050,17 +1044,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-language</code>
+				<code>ckeditor5-language</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/language.html" data-skip-validation>
+					<a href="../../../features/language.html">
 						Text part language
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_language_textpartlanguage-TextPartLanguage.html" data-skip-validation>
-						<code class="nowrap">TextPartLanguage</code>
+					<a href="../../../api/module_language_textpartlanguage-TextPartLanguage.html">
+						<code>TextPartLanguage</code>
 					</a>
 				</p>
 			</td>
@@ -1075,17 +1069,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="5">
-				<code class="nowrap">ckeditor5-link</code>
+				<code>ckeditor5-link</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/link.html#autolink-feature" data-skip-validation>
+					<a href="../../../features/link.html#autolink-feature">
 						Autolink
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_link_autolink-AutoLink.html" data-skip-validation>
-						<code class="nowrap">AutoLink</code>
+					<a href="../../../api/module_link_autolink-AutoLink.html">
+						<code>AutoLink</code>
 					</a>
 				</p>
 			</td>
@@ -1098,13 +1092,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="3">
 				<p>
-					<a href="../../../features/link.html" data-skip-validation>
+					<a href="../../../features/link.html">
 						Link
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_link_link-Link.html" data-skip-validation>
-						<code class="nowrap">Link</code>
+					<a href="../../../api/module_link_link-Link.html">
+						<code>Link</code>
 					</a>
 				</p>
 			</td>
@@ -1152,13 +1146,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image.html#linking-images" data-skip-validation>
+					<a href="../../../features/image.html#linking-images">
 						Link image
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_link_linkimage-LinkImage.html" data-skip-validation>
-						<code class="nowrap">LinkImage</code>
+					<a href="../../../api/module_link_linkimage-LinkImage.html">
+						<code>LinkImage</code>
 					</a>
 				</p>
 			</td>
@@ -1173,17 +1167,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="8">
-				<code class="nowrap">ckeditor5-list</code>
+				<code>ckeditor5-list</code>
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/lists/lists.html" data-skip-validation>
+					<a href="../../../features/lists/lists.html">
 						List
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_list_list-List.html" data-skip-validation>
-						<code class="nowrap">List</code>
+					<a href="../../../api/module_list_list-List.html">
+						<code>List</code>
 					</a>
 				</p>
 			</td>
@@ -1206,13 +1200,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="5">
 				<p>
-					<a href="../../../features/lists/todo-lists.html" data-skip-validation>
-						Todo list
+					<a href="../../../features/lists/todo-lists.html">
+						To-do list
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_list_todolist-TodoList.html" data-skip-validation>
-						<code class="nowrap">TodoList</code>
+					<a href="../../../api/module_list_todolist-TodoList.html">
+						<code>TodoList</code>
 					</a>
 				</p>
 			</td>
@@ -1265,13 +1259,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/lists/lists.html#list-styles" data-skip-validation>
+					<a href="../../../features/lists/lists.html#list-styles">
 						List style
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_list_liststyle-ListStyle.html" data-skip-validation>
-						<code class="nowrap">ListStyle</code>
+					<a href="../../../api/module_list_liststyle-ListStyle.html">
+						<code>ListStyle</code>
 					</a>
 				</p>
 			</td>
@@ -1286,17 +1280,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-markdown-gfm</code>
+				<code>ckeditor5-markdown-gfm</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/markdown.html" data-skip-validation>
+					<a href="../../../features/markdown.html">
 						Markdown
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_markdown-gfm_markdown-Markdown.html" data-skip-validation>
-						<code class="nowrap">Markdown</code>
+					<a href="../../../api/module_markdown-gfm_markdown-Markdown.html">
+						<code>Markdown</code>
 					</a>
 				</p>
 			</td>
@@ -1308,17 +1302,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="8">
-				<code class="nowrap">ckeditor5-media-embed</code>
+				<code>ckeditor5-media-embed</code>
 			</td>
 			<td rowspan="7">
 				<p>
-					<a href="../../../features/media-embed.html" data-skip-validation>
+					<a href="../../../features/media-embed.html">
 						Media embed
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_media-embed_mediaembed-MediaEmbed.html" data-skip-validation>
-						<code class="nowrap">MediaEmbed</code>
+					<a href="../../../api/module_media-embed_mediaembed-MediaEmbed.html">
+						<code>MediaEmbed</code>
 					</a>
 				</p>
 			</td>
@@ -1415,13 +1409,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/media-embed.html" data-skip-validation>
+					<a href="../../../features/media-embed.html">
 						Media embed toolbar
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_media-embed_mediaembedtoolbar-MediaEmbedToolbar.html" data-skip-validation>
-						<code class="nowrap">MediaEmbedToolbar</code>
+					<a href="../../../api/module_media-embed_mediaembedtoolbar-MediaEmbedToolbar.html">
+						<code>MediaEmbedToolbar</code>
 					</a>
 				</p>
 			</td>
@@ -1433,17 +1427,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-mention</code>
+				<code>ckeditor5-mention</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/mentions.html" data-skip-validation>
+					<a href="../../../features/mentions.html">
 						Mention
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_mention_mention-Mention.html" data-skip-validation>
-						<code class="nowrap">Mention</code>
+					<a href="../../../api/module_mention_mention-Mention.html">
+						<code>Mention</code>
 					</a>
 				</p>
 			</td>
@@ -1461,17 +1455,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="2">
-				<code class="nowrap">ckeditor5-page-break</code>
+				<code>ckeditor5-page-break</code>
 			</td>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/page-break.html" data-skip-validation>
+					<a href="../../../features/page-break.html">
 						Page break
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_page-break_pagebreak-PageBreak.html" data-skip-validation>
-						<code class="nowrap">PageBreak</code>
+					<a href="../../../api/module_page-break_pagebreak-PageBreak.html">
+						<code>PageBreak</code>
 					</a>
 				</p>
 			</td>
@@ -1499,7 +1493,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-pagination</code>
+				<code>ckeditor5-pagination</code>
 			</td>
 			<td>
 				<p>
@@ -1509,7 +1503,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_pagination_pagination-Pagination.html" data-skip-validation>
-						<code class="nowrap">Pagination</code>
+						<code>Pagination</code>
 					</a>
 				</p>
 			</td>
@@ -1527,15 +1521,15 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-paragraph</code>
+				<code>ckeditor5-paragraph</code>
 			</td>
 			<td>
 				<p>
 					Paragraph
 				</p>
 				<p>
-					<a href="../../../api/module_paragraph_paragraph-Paragraph.html" data-skip-validation>
-						<code class="nowrap">Paragraph</code>
+					<a href="../../../api/module_paragraph_paragraph-Paragraph.html">
+						<code>Paragraph</code>
 					</a>
 				</p>
 			</td>
@@ -1550,17 +1544,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-paste-from-office</code>
+				<code>ckeditor5-paste-from-office</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/pasting/paste-from-word.html" data-skip-validation>
-						Paste from office
+					<a href="../../../features/pasting/paste-from-word.html">
+						Paste from Office
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_paste-from-office_pastefromoffice-PasteFromOffice.html" data-skip-validation>
-						<code class="nowrap">PasteFromOffice</code>
+					<a href="../../../api/module_paste-from-office_pastefromoffice-PasteFromOffice.html">
+						<code>PasteFromOffice</code>
 					</a>
 				</p>
 			</td>
@@ -1572,7 +1566,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="4">
-				<code class="nowrap">ckeditor5-real-time-collaboration</code>
+				<code>ckeditor5-real-time-collaboration</code>
 			</td>
 			<td>
 				<p>
@@ -1582,7 +1576,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_real-time-collaboration_presencelist-PresenceList.html" data-skip-validation>
-						<code class="nowrap">PresenceList</code>
+						<code>PresenceList</code>
 					</a>
 				</p>
 			</td>
@@ -1601,7 +1595,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_real-time-collaboration_realtimecollaborativecomments-RealTimeCollaborativeComments.html" data-skip-validation>
-						<code class="nowrap">RealTimeCollaborativeComments</code>
+						<code>RealTimeCollaborativeComments</code>
 					</a>
 				</p>
 			</td>
@@ -1620,7 +1614,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_real-time-collaboration_realtimecollaborativeediting-RealTimeCollaborativeEditing.html" data-skip-validation>
-						<code class="nowrap">RealTimeCollaborativeEditing</code>
+						<code>RealTimeCollaborativeEditing</code>
 					</a>
 				</p>
 			</td>
@@ -1639,7 +1633,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_real-time-collaboration_realtimecollaborativetrackchanges-RealTimeCollaborativeTrackChanges.html" data-skip-validation>
-						<code class="nowrap">RealTimeCollaborativeTrackChanges</code>
+						<code>RealTimeCollaborativeTrackChanges</code>
 					</a>
 				</p>
 			</td>
@@ -1651,17 +1645,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-remove-format</code>
+				<code>ckeditor5-remove-format</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/remove-format.html" data-skip-validation>
+					<a href="../../../features/remove-format.html">
 						Remove format
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_remove-format_removeformat-RemoveFormat.html" data-skip-validation>
-						<code class="nowrap">RemoveFormat</code>
+					<a href="../../../api/module_remove-format_removeformat-RemoveFormat.html">
+						<code>RemoveFormat</code>
 					</a>
 				</p>
 			</td>
@@ -1673,17 +1667,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="2">
-				<code class="nowrap">ckeditor5-restricted-editing</code>
+				<code>ckeditor5-restricted-editing</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/restricted-editing.html" data-skip-validation>
+					<a href="../../../features/restricted-editing.html">
 						Restricted editing mode
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_restricted-editing_restrictededitingmode-RestrictedEditingMode.html" data-skip-validation>
-						<code class="nowrap">RestrictedEditingMode</code>
+					<a href="../../../api/module_restricted-editing_restrictededitingmode-RestrictedEditingMode.html">
+						<code>RestrictedEditingMode</code>
 					</a>
 				</p>
 			</td>
@@ -1699,13 +1693,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/restricted-editing.html#running-the-standard-editing-mode" data-skip-validation>
+					<a href="../../../features/restricted-editing.html#running-the-standard-editing-mode">
 						Standard editing mode
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_restricted-editing_standardeditingmode-StandardEditingMode.html" data-skip-validation>
-						<code class="nowrap">StandardEditingMode</code>
+					<a href="../../../api/module_restricted-editing_standardeditingmode-StandardEditingMode.html">
+						<code>StandardEditingMode</code>
 					</a>
 				</p>
 			</td>
@@ -1720,17 +1714,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="7">
-				<code class="nowrap">ckeditor5-special-characters</code>
+				<code>ckeditor5-special-characters</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html" data-skip-validation>
+					<a href="../../../features/special-characters.html">
 						Special characters
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacters-SpecialCharacters.html" data-skip-validation>
-						<code class="nowrap">SpecialCharacters</code>
+					<a href="../../../api/module_special-characters_specialcharacters-SpecialCharacters.html">
+						<code>SpecialCharacters</code>
 					</a>
 				</p>
 			</td>
@@ -1743,13 +1737,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html" data-skip-validation>
+					<a href="../../../features/special-characters.html">
 						Special characters essentials
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharactersessentials-SpecialCharactersEssentials.html" data-skip-validation>
-						<code class="nowrap">SpecialCharactersEssentials</code>
+					<a href="../../../api/module_special-characters_specialcharactersessentials-SpecialCharactersEssentials.html">
+						<code>SpecialCharactersEssentials</code>
 					</a>
 				</p>
 			</td>
@@ -1762,13 +1756,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html" data-skip-validation>
+					<a href="../../../features/special-characters.html">
 						Special characters arrows
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharactersarrows-SpecialCharactersArrows.html" data-skip-validation>
-						<code class="nowrap">SpecialCharactersArrows</code>
+					<a href="../../../api/module_special-characters_specialcharactersarrows-SpecialCharactersArrows.html">
+						<code>SpecialCharactersArrows</code>
 					</a>
 				</p>
 			</td>
@@ -1781,13 +1775,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html" data-skip-validation>
+					<a href="../../../features/special-characters.html">
 						Special characters currency
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacterscurrency-SpecialCharactersCurrency.html" data-skip-validation>
-						<code class="nowrap">SpecialCharactersCurrency</code>
+					<a href="../../../api/module_special-characters_specialcharacterscurrency-SpecialCharactersCurrency.html">
+						<code>SpecialCharactersCurrency</code>
 					</a>
 				</p>
 			</td>
@@ -1800,13 +1794,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html" data-skip-validation>
+					<a href="../../../features/special-characters.html">
 						Special characters latin
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacterslatin-SpecialCharactersLatin.html" data-skip-validation>
-						<code class="nowrap">SpecialCharactersLatin</code>
+					<a href="../../../api/module_special-characters_specialcharacterslatin-SpecialCharactersLatin.html">
+						<code>SpecialCharactersLatin</code>
 					</a>
 				</p>
 			</td>
@@ -1819,13 +1813,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html" data-skip-validation>
+					<a href="../../../features/special-characters.html">
 						Special characters mathematical
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharactersmathematical-SpecialCharactersMathematical.html" data-skip-validation>
-						<code class="nowrap">SpecialCharactersMathematical</code>
+					<a href="../../../api/module_special-characters_specialcharactersmathematical-SpecialCharactersMathematical.html">
+						<code>SpecialCharactersMathematical</code>
 					</a>
 				</p>
 			</td>
@@ -1838,13 +1832,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/special-characters.html" data-skip-validation>
+					<a href="../../../features/special-characters.html">
 						Special characters text
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_special-characters_specialcharacterstext-SpecialCharactersText.html" data-skip-validation>
-						<code class="nowrap">SpecialCharactersText</code>
+					<a href="../../../api/module_special-characters_specialcharacterstext-SpecialCharactersText.html">
+						<code>SpecialCharactersText</code>
 					</a>
 				</p>
 			</td>
@@ -1856,17 +1850,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="7">
-				<code class="nowrap">ckeditor5-table</code>
+				<code>ckeditor5-table</code>
 			</td>
 			<td rowspan="3">
 				<p>
-					<a href="../../../features/table.html" data-skip-validation>
+					<a href="../../../features/table.html">
 						Table
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_table-Table.html" data-skip-validation>
-						<code class="nowrap">Table</code>
+					<a href="../../../api/module_table_table-Table.html">
+						<code>Table</code>
 					</a>
 				</p>
 			</td>
@@ -1899,13 +1893,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/table.html#table-and-cell-styling-tools" data-skip-validation>
+					<a href="../../../features/table.html#table-and-cell-styling-tools">
 						Table cell properties
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_tablecellproperties-TableCellProperties.html" data-skip-validation>
-						<code class="nowrap">TableCellProperties</code>
+					<a href="../../../api/module_table_tablecellproperties-TableCellProperties.html">
+						<code>TableCellProperties</code>
 					</a>
 				</p>
 			</td>
@@ -1921,13 +1915,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td rowspan="2">
 				<p>
-					<a href="../../../features/table.html#table-and-cell-styling-tools" data-skip-validation>
+					<a href="../../../features/table.html#table-and-cell-styling-tools">
 						Table properties
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_tableproperties-TableProperties.html" data-skip-validation>
-						<code class="nowrap">TableProperties</code>
+					<a href="../../../api/module_table_tableproperties-TableProperties.html">
+						<code>TableProperties</code>
 					</a>
 				</p>
 			</td>
@@ -1953,13 +1947,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/table.html#toolbars" data-skip-validation>
+					<a href="../../../features/table.html#toolbars">
 						Table toolbar
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_table_tabletoolbar-TableToolbar.html" data-skip-validation>
-						<code class="nowrap">TableToolbar</code>
+					<a href="../../../api/module_table_tabletoolbar-TableToolbar.html">
+						<code>TableToolbar</code>
 					</a>
 				</p>
 			</td>
@@ -1971,7 +1965,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-track-changes</code>
+				<code>ckeditor5-track-changes</code>
 			</td>
 			<td>
 				<p>
@@ -1981,7 +1975,7 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 				</p>
 				<p>
 					<a href="../../../api/module_track-changes_trackchanges-TrackChanges.html" data-skip-validation>
-						<code class="nowrap">TrackChanges</code>
+						<code>TrackChanges</code>
 					</a>
 				</p>
 			</td>
@@ -1993,17 +1987,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-typing</code>
+				<code>ckeditor5-typing</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/text-transformation.html" data-skip-validation>
+					<a href="../../../features/text-transformation.html">
 						Text transformation
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_typing_texttransformation-TextTransformation.html" data-skip-validation>
-						<code class="nowrap">TextTransformation</code>
+					<a href="../../../api/module_typing_texttransformation-TextTransformation.html">
+						<code>TextTransformation</code>
 					</a>
 				</p>
 			</td>
@@ -2015,17 +2009,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-ui</code>
+				<code>ckeditor5-ui</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/toolbar/blocktoolbar.html" data-skip-validation>
+					<a href="../../../features/toolbar/blocktoolbar.html">
 						Block toolbar
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_ui_toolbar_block_blocktoolbar-BlockToolbar.html" data-skip-validation>
-						<code class="nowrap">BlockToolbar</code>
+					<a href="../../../api/module_ui_toolbar_block_blocktoolbar-BlockToolbar.html">
+						<code>BlockToolbar</code>
 					</a>
 				</p>
 			</td>
@@ -2037,17 +2031,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td rowspan="2">
-				<code class="nowrap">ckeditor5-upload</code>
+				<code>ckeditor5-upload</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/base64-upload-adapter.html" data-skip-validation>
+					<a href="../../../features/image-upload/base64-upload-adapter.html">
 						Base64 upload adapter
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_upload_adapters_base64uploadadapter-Base64UploadAdapter.html" data-skip-validation>
-						<code class="nowrap">Base64UploadAdapter</code>
+					<a href="../../../api/module_upload_adapters_base64uploadadapter-Base64UploadAdapter.html">
+						<code>Base64UploadAdapter</code>
 					</a>
 				</p>
 			</td>
@@ -2060,13 +2054,13 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		<tr>
 			<td>
 				<p>
-					<a href="../../../features/image-upload/simple-upload-adapter.html" data-skip-validation>
+					<a href="../../../features/image-upload/simple-upload-adapter.html">
 						Simple upload adapter
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_upload_adapters_simpleuploadadapter-SimpleUploadAdapter.html" data-skip-validation>
-						<code class="nowrap">SimpleUploadAdapter</code>
+					<a href="../../../api/module_upload_adapters_simpleuploadadapter-SimpleUploadAdapter.html">
+						<code>SimpleUploadAdapter</code>
 					</a>
 				</p>
 			</td>
@@ -2078,17 +2072,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-watchdog</code>
+				<code>ckeditor5-watchdog</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/watchdog.html" data-skip-validation>
+					<a href="../../../features/watchdog.html">
 						Watchdog
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_watchdog_editorwatchdog-EditorWatchdog.html" data-skip-validation>
-						<code class="nowrap">EditorWatchdog</code>
+					<a href="../../../api/module_watchdog_editorwatchdog-EditorWatchdog.html">
+						<code>EditorWatchdog</code>
 					</a>
 				</p>
 			</td>
@@ -2100,17 +2094,17 @@ How to read the generated output? There is a simple rule: CSS classes, inline st
 		</tr>
 		<tr>
 			<td>
-				<code class="nowrap">ckeditor5-word-count</code>
+				<code>ckeditor5-word-count</code>
 			</td>
 			<td>
 				<p>
-					<a href="../../../features/word-count.html" data-skip-validation>
+					<a href="../../../features/word-count.html">
 						Word count
 					</a>
 				</p>
 				<p>
-					<a href="../../../api/module_word-count_wordcount-WordCount.html" data-skip-validation>
-						<code class="nowrap">WordCount</code>
+					<a href="../../../api/module_word-count_wordcount-WordCount.html">
+						<code>WordCount</code>
 					</a>
 				</p>
 			</td>

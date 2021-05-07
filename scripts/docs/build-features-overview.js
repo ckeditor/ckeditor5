@@ -84,7 +84,7 @@ function parseMetadataFiles() {
 					return plugin.htmlOutput
 						.map( ( htmlOutput, htmlOutputIndex ) => {
 							const packageNameCell = pluginIndex === 0 && htmlOutputIndex === 0 ?
-								`<td ${ packageNameRowspan }><code class="nowrap">${ packageMetadata.packageName }</code></td>` :
+								`<td ${ packageNameRowspan }><code>${ packageMetadata.packageName }</code></td>` :
 								'';
 
 							const pluginNameCell = htmlOutputIndex === 0 ?
@@ -128,7 +128,7 @@ function parseFiles() {
 /**
  * Reads the package metadata file.
  *
- * @param {String} path An absolute file path.
+ * @param {String} path File path relative to CWD.
  * @returns {File}
  */
 function readFile( path ) {
@@ -149,7 +149,9 @@ function parseFile( file ) {
 
 	const packageName = path.basename( path.dirname( file.path ) );
 
-	const plugins = preparePlugins( packageName, metadata.plugins );
+	const isExternal = file.path.startsWith( 'external/' );
+
+	const plugins = preparePlugins( packageName, isExternal, metadata.plugins );
 
 	return {
 		packageName,
@@ -161,17 +163,19 @@ function parseFile( file ) {
  * Parses all plugins from package metadata file.
  *
  * @param {String} packageName Package name.
+ * @param {Boolean} isExternal Determines whether a given package belongs to a CKEditor 5 (isExternal = false), or it comes from external
+ * folder from Collaboration Features or Internal repos (isExternal = true).
  * @param {Array.<Plugin>} plugins Plugins to parse.
  * @returns {Array.<ParsedPlugin>}
  */
-function preparePlugins( packageName, plugins = [] ) {
+function preparePlugins( packageName, isExternal, plugins = [] ) {
 	return plugins
 		.map( plugin => {
 			const pluginName = plugin.docs ?
-				prepareFeatureLink( plugin ) :
+				prepareFeatureLink( isExternal, plugin ) :
 				plugin.name;
 
-			const pluginClassName = prepareApiLink( packageName, plugin );
+			const pluginClassName = prepareApiLink( packageName, isExternal, plugin );
 
 			const htmlOutput = plugin.htmlOutput ?
 				prepareHtmlOutput( plugin.htmlOutput ) :
@@ -187,25 +191,31 @@ function preparePlugins( packageName, plugins = [] ) {
 /**
  * Creates link to the plugin's feature documentation.
  *
+ * @param {Boolean} isExternal Determines whether a given package belongs to a CKEditor 5 (isExternal = false), or it comes from external
+ * folder from Collaboration Features or Internal repos (isExternal = true).
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
-function prepareFeatureLink( plugin ) {
+function prepareFeatureLink( isExternal, plugin ) {
 	const link = /http(s)?:/.test( plugin.docs ) ?
 		plugin.docs :
 		`../../../${ plugin.docs }`;
 
-	return `<a href="${ link }" data-skip-validation>${ plugin.name }</a>`;
+	const skipLinkValidation = isExternal ? 'data-skip-validation' : '';
+
+	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
 }
 
 /**
  * Creates link to the plugin's API documentation.
  *
  * @param {String} packageName Package name.
+ * @param {Boolean} isExternal Determines whether a given package belongs to a CKEditor 5 (isExternal = false), or it comes from external
+ * folder from Collaboration Features or Internal repos (isExternal = true).
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
-function prepareApiLink( packageName, plugin ) {
+function prepareApiLink( packageName, isExternal, plugin ) {
 	const shortPackageName = packageName.replace( /^ckeditor5-/g, '' );
 
 	const packagePath = plugin.path
@@ -214,7 +224,9 @@ function prepareApiLink( packageName, plugin ) {
 
 	const link = `../../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;
 
-	return `<a href="${ link }" data-skip-validation><code class="nowrap">${ plugin.className }</code></a>`;
+	const skipLinkValidation = isExternal ? 'data-skip-validation' : '';
+
+	return `<a href="${ link }" ${ skipLinkValidation }><code>${ plugin.className }</code></a>`;
 }
 
 /**
@@ -445,7 +457,7 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 
 /**
  * @typedef {Object} File
- * @property {String} path An absolute file path.
+ * @property {String} path File path relative to CWD.
  * @property {String} content File content.
  */
 
