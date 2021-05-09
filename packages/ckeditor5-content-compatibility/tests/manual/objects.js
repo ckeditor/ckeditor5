@@ -42,13 +42,15 @@ class ExtendHTMLSupport extends Plugin {
 			{ name: 'option', attributes: [ 'value', 'selected' ] },
 			{ name: 'video', attributes: [ 'height', 'width', 'controls' ] },
 			{ name: 'audio', attributes: [ 'controls' ] },
-			{ name: 'source', attributes: [ 'src', 'type' ] }
+			{ name: 'source', attributes: [ 'src', 'type' ] },
+			{ name: 'button' },
+			{ name: 'label' }
 		];
 
 		for ( const definition of definitions ) {
 			dataFilter.allowElement( { name: definition.name } );
 
-			for ( const key of definition.attributes ) {
+			for ( const key of ( definition.attributes || [] ) ) {
 				const attributes = {};
 				attributes[ key ] = /[\s\S]+/;
 
