@@ -52,7 +52,7 @@ class ExtendHTMLSupport extends Plugin {
 
 			for ( const key of ( definition.attributes || [] ) ) {
 				const attributes = {};
-				attributes[ key ] = /[\s\S]+/;
+				attributes[ key ] = true;
 
 				dataFilter.allowAttributes( { name: definition.name, attributes } );
 			}
