@@ -7,11 +7,10 @@
  * @module content-compatibility/datafilter
  */
 
-import { Matcher, enablePlaceholder } from 'ckeditor5/src/engine';
+import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, CKEditorError } from 'ckeditor5/src/utils';
 import { toWidget } from 'ckeditor5/src/widget';
-import { Template } from 'ckeditor5/src/ui';
-import { cloneDeep, capitalize } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 
 import '../theme/datafilter.css';
 
@@ -192,19 +191,27 @@ export default class DataFilter {
 	/**
 	 * Registers object element and attribute converters for the given data schema definition.
 	 *
-	 * If the element model schema is already registered, this method will do nothing.
-	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
 	 */
 	_registerObjectElement( definition ) {
 		const schema = this.editor.model.schema;
 
-		schema.register( definition.model, definition.modelSchema );
+		// All object elements are represented by a single widget.
+		if ( !schema.isRegistered( 'htmlObjectEmbed' ) ) {
+			schema.register( 'htmlObjectEmbed', {
+				isObject: true,
+				isInline: true,
+				allowWhere: '$text',
+				allowAttributesOf: '$text',
+				allowAttributes: [ 'value', 'view', 'htmlAttributes' ]
+			} );
 
-		this._addObjectElementToElementConversion( definition );
+			this._addHtmlObjectEmbedConversion();
+		}
+
 		this._addDisallowedAttributeConversion( definition );
-		this._addAllowedAttributeConversion( definition );
+		this._addObjectElementToElementConversion( definition );
 	}
 
 	/**
@@ -224,7 +231,7 @@ export default class DataFilter {
 		}
 
 		this._addDisallowedAttributeConversion( definition );
-		this._addAllowedAttributeConversion( definition );
+		this._addBlockElementAttributeConversion( definition );
 	}
 
 	/**
@@ -248,6 +255,40 @@ export default class DataFilter {
 
 		this._addDisallowedAttributeConversion( definition );
 		this._addInlineElementConversion( definition );
+	}
+
+	_addHtmlObjectEmbedConversion() {
+		const editor = this.editor;
+		const conversion = editor.conversion;
+		const t = editor.t;
+
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'htmlObjectEmbed',
+			view: createObjectViewElement
+		} );
+
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'htmlObjectEmbed',
+			view: ( modelElement, conversionApi ) => {
+				const { writer } = conversionApi;
+
+				const viewContainer = writer.createContainerElement( 'span', {
+					class: 'html-object-embed',
+					'data-html-object-embed-label': t( 'HTML object' )
+				}, {
+					isAllowedInsideAttributeElement: true
+				} );
+
+				const viewElement = createObjectViewElement( modelElement, conversionApi );
+				writer.addClass( 'html-object-embed__content', viewElement );
+
+				writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
+
+				return toWidget( viewContainer, writer, {
+					widgetLabel: t( 'HTML object' )
+				} );
+			}
+		} );
 	}
 
 	/**
@@ -283,7 +324,7 @@ export default class DataFilter {
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
-	_addAllowedAttributeConversion( { model: modelName, view: viewName } ) {
+	_addBlockElementAttributeConversion( { model: modelName, view: viewName } ) {
 		const conversion = this.editor.conversion;
 
 		if ( !viewName ) {
@@ -307,10 +348,6 @@ export default class DataFilter {
 		conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
 				const viewAttributes = data.attributeNewValue;
-
-				if ( !viewAttributes ) {
-					return;
-				}
 
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -397,60 +434,28 @@ export default class DataFilter {
 		} );
 	}
 
-	_addObjectElementToElementConversion( definition ) {
+	_addObjectElementToElementConversion( { view: viewName } ) {
 		const conversion = this.editor.conversion;
-		const { view: viewName, model: modelName } = definition;
 
+		// Object element content will be hidden under `value` property and restored by
+		// `htmlObjectEmbed` downcast converters.
+		this.editor.data.registerRawContentMatcher( {
+			name: viewName
+		} );
+
+		// We just need to add upcast conversion for specific view. Downcast is handled by
+		// `htmlObjectEmbed` itself.
 		conversion.for( 'upcast' ).elementToElement( {
-			model: modelName,
-			view: viewName
-		} );
+			view: viewName,
+			model: ( viewElement, conversionApi ) => {
+				const htmlAttributes = this._matchAndConsumeAllowedAttributes( viewElement, conversionApi );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: modelName,
-			view: ( modelElement, { writer } ) => {
-				const widgetWrapper = this._createObjectElementView( modelName, writer );
-				const title = createHtmlObjectTitle( viewName );
-
-				enablePlaceholder( {
-					view: this.editor.editing.view,
-					element: widgetWrapper,
-					text: title
-				} );
-
-				const widgetLabel = createObjectElementWidgetUILabel( title, writer );
-
-				writer.insert( writer.createPositionAt( widgetWrapper, 'end' ), widgetLabel );
-
-				return toWidget( widgetWrapper, writer );
-			}
-
-		} );
-
-		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: modelName,
-			view: ( modelItem, { writer } ) => {
-				return writer.createContainerElement( viewName, null, {
-					isAllowedInsideAttributeElement: this.editor.model.schema.isInline( modelName )
+				return conversionApi.writer.createElement( 'htmlObjectEmbed', {
+					value: viewElement.getCustomProperty( '$rawContent' ),
+					view: viewName,
+					...( htmlAttributes && { htmlAttributes } )
 				} );
 			}
-		} );
-	}
-
-	/**
-	 * TODO
-	*/
-	_createObjectElementView( modelName, writer ) {
-		if ( this.editor.model.schema.isInline( modelName ) ) {
-			return writer.createContainerElement( 'span', {
-				class: 'ck-widget__compatibility ck-widget__compatibility-inline'
-			}, {
-				isAllowedInsideAttributeElement: true
-			} );
-		}
-
-		return writer.createContainerElement( 'div', {
-			class: 'ck-widget__compatibility ck-widget__compatibility-block'
 		} );
 	}
 
@@ -537,6 +542,28 @@ function setViewElementAttributes( writer, viewAttributes, viewElement ) {
 	}
 }
 
+// Creates object view element from the given model element.
+//
+// @private
+// @param {module:engine/model/element~Element} modelElement
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @returns {module:engine/view/element~Element} viewElement
+function createObjectViewElement( modelElement, { writer } ) {
+	const viewName = modelElement.getAttribute( 'view' );
+	const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
+	const viewContent = modelElement.getAttribute( 'value' );
+
+	const viewElement = writer.createRawElement( viewName, null, function( domElement ) {
+		domElement.innerHTML = viewContent;
+	} );
+
+	if ( viewAttributes ) {
+		setViewElementAttributes( writer, viewAttributes, viewElement );
+	}
+
+	return viewElement;
+}
+
 // Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
 //
 // @private
@@ -601,31 +628,4 @@ function mergeViewElementAttributes( oldValue, newValue ) {
 	}
 
 	return result;
-}
-
-// TODO
-function createHtmlObjectTitle( viewName ) {
-	return 'HTML ' + capitalize( viewName );
-}
-
-// TODO
-function createObjectElementWidgetUILabel( title, writer ) {
-	return writer.createUIElement( 'div', {
-		class: 'ck ck-reset_all ck-widget__compatibility-type'
-	}, function( domDocument ) {
-		const wrapperDomElement = this.toDomElement( domDocument );
-
-		const labelTemplate = new Template( {
-			attributes: {
-				class: [
-					'ck',
-					'ck-widget__compatibility-type__label'
-				]
-			},
-			text: title
-		} );
-		wrapperDomElement.appendChild( labelTemplate.render() );
-
-		return wrapperDomElement;
-	} );
 }
