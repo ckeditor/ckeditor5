@@ -89,6 +89,14 @@ export default class DataSchema {
 			}
 		} );
 
+		this.registerBlockElement( {
+			view: 'form',
+			model: 'htmlForm',
+			modelSchema: {
+				inheritAllFrom: '$htmlBlock'
+			}
+		} );
+
 		// Add data list elements.
 		this.registerBlockElement( {
 			view: 'dl',
@@ -144,125 +152,42 @@ export default class DataSchema {
 
 		this.registerObjectElement( {
 			view: 'object',
-			model: 'htmlObject',
-			modelSchema: {
-				isObject: true,
-				isInline: true,
-				allowWhere: '$text',
-				allowAttributesOf: '$text'
-			}
-		} );
-
-		this.registerObjectElement( {
-			view: 'param',
-			model: 'htmlParam',
-			modelSchema: {
-				isObject: true,
-				isInline: true,
-				allowIn: 'htmlObject'
-			}
-		} );
-
-		this.registerObjectElement( {
-			view: 'embed',
-			model: 'htmlEmbed',
-			modelSchema: {
-				isObject: true,
-				isInline: true,
-				allowIn: 'htmlObject'
-			}
+			model: 'htmlObject'
 		} );
 
 		this.registerObjectElement( {
 			view: 'iframe',
-			model: 'htmlIframe',
-			modelSchema: {
-				isObject: true,
-				isInline: true,
-				allowWhere: '$text',
-				allowAttributesOf: '$text'
-			}
-		} );
-
-		this.registerObjectElement( {
-			view: 'form',
-			model: 'htmlForm',
-			modelSchema: {
-				inheritAllFrom: '$htmlBlock',
-				allowContentOf: '$root',
-				isObject: true
-			}
+			model: 'htmlIframe'
 		} );
 
 		this.registerObjectElement( {
 			view: 'input',
-			model: 'htmlInput',
-			modelSchema: {
-				allowIn: [ '$block', '$form' ],
-				isObject: true,
-				isInline: true
-			}
+			model: 'htmlInput'
+		} );
+
+		this.registerObjectElement( {
+			view: 'button',
+			model: 'htmlButton'
 		} );
 
 		this.registerObjectElement( {
 			view: 'textarea',
-			model: 'htmlTextarea',
-			modelSchema: {
-				allowIn: '$block',
-				allowChildren: '$text',
-				isObject: true,
-				isInline: true
-			}
+			model: 'htmlTextarea'
 		} );
 
 		this.registerObjectElement( {
 			view: 'select',
-			model: 'htmlSelect',
-			modelSchema: {
-				allowIn: '$block',
-				isObject: true,
-				isInline: true
-			}
-		} );
-
-		this.registerObjectElement( {
-			view: 'option',
-			model: 'htmlOption',
-			modelSchema: {
-				allowIn: 'htmlSelect',
-				isObject: true,
-				isInline: true
-			}
+			model: 'htmlSelect'
 		} );
 
 		this.registerObjectElement( {
 			view: 'video',
-			model: 'htmlVideo',
-			modelSchema: {
-				allowIn: '$block',
-				isObject: true,
-				isInline: true
-			}
+			model: 'htmlVideo'
 		} );
 
 		this.registerObjectElement( {
 			view: 'audio',
-			model: 'htmlAudio',
-			modelSchema: {
-				allowIn: '$block',
-				isObject: true,
-				isInline: true
-			}
-		} );
-
-		this.registerObjectElement( {
-			view: 'source',
-			model: 'htmlSource',
-			modelSchema: {
-				allowIn: [ 'htmlVideo', 'htmlAudio' ],
-				isObject: true,
-				isInline: true
-			}
+			model: 'htmlAudio'
 		} );
 
 		// Inline elements.
@@ -298,6 +223,14 @@ export default class DataSchema {
 		this.registerInlineElement( {
 			view: 'cite',
 			model: 'htmlCite',
+			attributeProperties: {
+				copyOnEnter: true
+			}
+		} );
+
+		this.registerInlineElement( {
+			view: 'label',
+			model: 'htmlLabel',
 			attributeProperties: {
 				copyOnEnter: true
 			}
@@ -436,7 +369,6 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaObjectElementDefinition
  * @property {String} view Name of the view element.
- * @property {module:engine/model/schema~SchemaItemDefinition} modelSchema The model schema item definition describing registered model.
  * @property {Boolean} isObject Indicates that the definition describes object element.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerObjectElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
