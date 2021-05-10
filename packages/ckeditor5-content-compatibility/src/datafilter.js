@@ -200,6 +200,7 @@ export default class DataFilter {
 	 */
 	_registerObjectElement( definition ) {
 		const t = this.editor.t;
+		const label = t( 'HTML object' );
 
 		if ( definition.isBlock ) {
 			this._registerObjectElementWidget( 'htmlObjectEmbedBlock', {
@@ -210,7 +211,7 @@ export default class DataFilter {
 			}, writer => {
 				return writer.createContainerElement( 'div', {
 					class: 'html-object-embed html-object-embed-block',
-					'data-html-object-embed-label': t( 'HTML object' )
+					'data-html-object-embed-label': label
 				} );
 			} );
 
@@ -225,7 +226,7 @@ export default class DataFilter {
 			}, writer => {
 				return writer.createContainerElement( 'span', {
 					class: 'html-object-embed html-object-embed-inline',
-					'data-html-object-embed-label': t( 'HTML object' )
+					'data-html-object-embed-label': label
 				}, {
 					isAllowedInsideAttributeElement: true
 				} );
@@ -233,6 +234,8 @@ export default class DataFilter {
 
 			this._addObjectElementToElementUpcastConversion( definition, 'htmlObjectEmbedInline' );
 		}
+
+		this._addDisallowedAttributeConversion( definition );
 	}
 
 	/**
