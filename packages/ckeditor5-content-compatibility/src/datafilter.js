@@ -211,7 +211,8 @@ export default class DataFilter {
 			}, writer => {
 				return writer.createContainerElement( 'div', {
 					class: 'html-object-embed html-object-embed-block',
-					'data-html-object-embed-label': label
+					'data-html-object-embed-label': label,
+					dir: this.editor.locale.uiLanguageDirection
 				} );
 			} );
 
@@ -226,7 +227,8 @@ export default class DataFilter {
 			}, writer => {
 				return writer.createContainerElement( 'span', {
 					class: 'html-object-embed html-object-embed-inline',
-					'data-html-object-embed-label': label
+					'data-html-object-embed-label': label,
+					dir: this.editor.locale.uiLanguageDirection
 				}, {
 					isAllowedInsideAttributeElement: true
 				} );
