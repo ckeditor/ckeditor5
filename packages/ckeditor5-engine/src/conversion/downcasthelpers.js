@@ -966,12 +966,18 @@ function handleMarkerBoundary( range, isStart, conversionApi, data, viewMarkerDa
 
 		const viewElement = conversionApi.mapper.toViewElement( modelElement );
 
-		insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );
-	} else {
-		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
+		// On rare circumstances, the model element could be not mapped to any view element and that would cause an error.
+		// One of those situations is a soft break inside code block.
+		if ( viewElement ) {
+			insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );
 
-		insertMarkerAsElement( viewPosition, isStart, conversionApi, data, viewMarkerData );
+			return;
+		}
 	}
+
+	const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
+
+	insertMarkerAsElement( viewPosition, isStart, conversionApi, data, viewMarkerData );
 }
 
 // Helper function for `insertMarkerData()` that marks a marker boundary in the view as an attribute on a view element.

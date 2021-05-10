@@ -22,6 +22,13 @@ ClassicEditor
 					width: '500px',
 					height: '250px'
 				}
+			},
+			tableCellProperties: {
+				defaultProperties: {
+					horizontalAlignment: 'center',
+					verticalAlignment: 'bottom',
+					padding: '10px'
+				}
 			}
 		},
 		image: {

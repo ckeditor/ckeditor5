@@ -47,11 +47,17 @@ export default class ImageCaptionEditing extends Plugin {
 		 */
 
 		// Schema configuration.
-		schema.register( 'caption', {
-			allowIn: 'image',
-			allowContentOf: '$block',
-			isLimit: true
-		} );
+		if ( !schema.isRegistered( 'caption' ) ) {
+			schema.register( 'caption', {
+				allowIn: 'image',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+		} else {
+			schema.extend( 'caption', {
+				allowIn: 'image'
+			} );
+		}
 
 		// Add caption element to each image inserted without it.
 		editor.model.document.registerPostFixer( writer => this._insertMissingModelCaptionElement( writer ) );

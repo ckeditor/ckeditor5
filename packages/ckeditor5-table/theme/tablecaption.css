@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-color-table-caption-background: hsl(0, 0%, 97%);
+	--ck-color-table-caption-text: hsl(0, 0%, 20%);
+	--ck-color-table-caption-highlighted-background: hsl(52deg 100% 50%);
+}
+
+/* Content styles */
+.ck-content .table > figcaption {
+	display: table-caption;
+	caption-side: top;
+	word-break: break-word;
+	text-align: center;
+	color: var(--ck-color-table-caption-text);
+	background-color: var(--ck-color-table-caption-background);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+}
+
+/* Editing styles */
+.ck.ck-editor__editable .table > figcaption {
+	&.table__caption_highlighted {
+		animation: ck-table-caption-highlight .6s ease-out;
+	}
+
+	&.ck-placeholder::before {
+		padding-left: inherit;
+		padding-right: inherit;
+
+		/*
+		 * Make sure the table caption placeholder doesn't overflow the placeholder area.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9162.
+		 */
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+@keyframes ck-table-caption-highlight {
+	0% {
+		background-color: var(--ck-color-table-caption-highlighted-background);
+	}
+
+	100% {
+		background-color: var(--ck-color-table-caption-background);
+	}
+}
