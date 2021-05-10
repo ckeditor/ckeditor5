@@ -168,15 +168,15 @@ export default class DataFilter {
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	_registerElement( definition ) {
-		if ( definition.isInline ) {
+		if ( definition.isObject ) {
+			this._registerObjectElement( definition );
+		} else if ( definition.isInline ) {
 			this._registerInlineElement( definition );
 		} else if ( definition.isBlock ) {
 			this._registerBlockElement( definition );
-		} else if ( definition.isObject ) {
-			this._registerObjectElement( definition );
 		} else {
 			/**
-			 * Only a definition marked as inline or block can be allowed.
+			 * Only a definition marked as inline, block or object can be allowed.
 			 *
 			 * @error data-filter-invalid-definition-type
 			 */
@@ -191,27 +191,48 @@ export default class DataFilter {
 	/**
 	 * Registers object element and attribute converters for the given data schema definition.
 	 *
+	 * This method will embed element inside a `htmlObjectEmbedBlock` or `htmlObjectEmbedInline` widget
+	 * depending on {@link module:content-compatibility/dataschema~DataSchemaObjectElementDefinition#isBlock}
+	 * property.
+	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
 	 */
 	_registerObjectElement( definition ) {
-		const schema = this.editor.model.schema;
+		const t = this.editor.t;
 
-		// All object elements are represented by a single widget.
-		if ( !schema.isRegistered( 'htmlObjectEmbed' ) ) {
-			schema.register( 'htmlObjectEmbed', {
+		if ( definition.isBlock ) {
+			this._registerObjectElementWidget( 'htmlObjectEmbedBlock', {
+				isObject: true,
+				isBlock: true,
+				allowWhere: '$block',
+				allowAttributes: [ 'value', 'view', 'htmlAttributes' ]
+			}, writer => {
+				return writer.createContainerElement( 'div', {
+					class: 'html-object-embed html-object-embed-block',
+					'data-html-object-embed-label': t( 'HTML object' )
+				} );
+			} );
+
+			this._addObjectElementToElementUpcastConversion( definition, 'htmlObjectEmbedBlock' );
+		} else {
+			this._registerObjectElementWidget( 'htmlObjectEmbedInline', {
 				isObject: true,
 				isInline: true,
 				allowWhere: '$text',
 				allowAttributesOf: '$text',
 				allowAttributes: [ 'value', 'view', 'htmlAttributes' ]
+			}, writer => {
+				return writer.createContainerElement( 'span', {
+					class: 'html-object-embed html-object-embed-inline',
+					'data-html-object-embed-label': t( 'HTML object' )
+				}, {
+					isAllowedInsideAttributeElement: true
+				} );
 			} );
 
-			this._addHtmlObjectEmbedConversion();
+			this._addObjectElementToElementUpcastConversion( definition, 'htmlObjectEmbedInline' );
 		}
-
-		this._addDisallowedAttributeConversion( definition );
-		this._addObjectElementToElementConversion( definition );
 	}
 
 	/**
@@ -257,27 +278,42 @@ export default class DataFilter {
 		this._addInlineElementConversion( definition );
 	}
 
-	_addHtmlObjectEmbedConversion() {
-		const editor = this.editor;
-		const conversion = editor.conversion;
-		const t = editor.t;
+	/**
+	 * Registers widget used to embed object elements.
+	 *
+	 * You should provide `createViewContainer` function used to create widget wrapper element.
+	 *
+	 *		this._registerObjectElementWidget( 'customWidgetModel', widgetSchema, writer => {
+	 *			return writer.createContainerElement( 'div', { class: 'widget' } );
+	 *		} );
+	 *
+	 * @private
+	 * @param {String} widgetName
+	 * @param {module:engine/model/schema~SchemaItemDefinition} widgetSchema
+	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
+	 */
+	_registerObjectElementWidget( widgetName, widgetSchema, createViewContainer ) {
+		const t = this.editor.t;
+		const schema = this.editor.model.schema;
+		const conversion = this.editor.conversion;
+
+		if ( schema.isRegistered( widgetName ) ) {
+			return;
+		}
+
+		schema.register( widgetName, widgetSchema );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'htmlObjectEmbed',
+			model: widgetName,
 			view: createObjectViewElement
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'htmlObjectEmbed',
+			model: widgetName,
 			view: ( modelElement, conversionApi ) => {
 				const { writer } = conversionApi;
 
-				const viewContainer = writer.createContainerElement( 'span', {
-					class: 'html-object-embed',
-					'data-html-object-embed-label': t( 'HTML object' )
-				}, {
-					isAllowedInsideAttributeElement: true
-				} );
+				const viewContainer = createViewContainer( writer );
 
 				const viewElement = createObjectViewElement( modelElement, conversionApi );
 				writer.addClass( 'html-object-embed__content', viewElement );
@@ -286,6 +322,38 @@ export default class DataFilter {
 
 				return toWidget( viewContainer, writer, {
 					widgetLabel: t( 'HTML object' )
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * Registers object element to element upcast conversion for the given data schema definition.
+	 *
+	 * This function will embed view element inside widget element provided as a second argument.
+	 *
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
+	 * @param {String} widgetName
+	 */
+	_addObjectElementToElementUpcastConversion( { view: viewName }, widgetName ) {
+		const conversion = this.editor.conversion;
+
+		// Object element content will be hidden under `value` property and restored by
+		// `htmlObjectEmbedInline` downcast converters.
+		this.editor.data.registerRawContentMatcher( {
+			name: viewName
+		} );
+
+		conversion.for( 'upcast' ).elementToElement( {
+			view: viewName,
+			model: ( viewElement, conversionApi ) => {
+				const htmlAttributes = this._matchAndConsumeAllowedAttributes( viewElement, conversionApi );
+
+				return conversionApi.writer.createElement( widgetName, {
+					value: viewElement.getCustomProperty( '$rawContent' ),
+					view: viewName,
+					...( htmlAttributes && { htmlAttributes } )
 				} );
 			}
 		} );
@@ -431,31 +499,6 @@ export default class DataFilter {
 			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 				consumeAttributeMatches( data.viewItem, conversionApi, this._disallowedAttributes );
 			}, { priority: 'high' } );
-		} );
-	}
-
-	_addObjectElementToElementConversion( { view: viewName } ) {
-		const conversion = this.editor.conversion;
-
-		// Object element content will be hidden under `value` property and restored by
-		// `htmlObjectEmbed` downcast converters.
-		this.editor.data.registerRawContentMatcher( {
-			name: viewName
-		} );
-
-		// We just need to add upcast conversion for specific view. Downcast is handled by
-		// `htmlObjectEmbed` itself.
-		conversion.for( 'upcast' ).elementToElement( {
-			view: viewName,
-			model: ( viewElement, conversionApi ) => {
-				const htmlAttributes = this._matchAndConsumeAllowedAttributes( viewElement, conversionApi );
-
-				return conversionApi.writer.createElement( 'htmlObjectEmbed', {
-					value: viewElement.getCustomProperty( '$rawContent' ),
-					view: viewName,
-					...( htmlAttributes && { htmlAttributes } )
-				} );
-			}
 		} );
 	}
 
