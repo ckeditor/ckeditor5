@@ -11,8 +11,7 @@ const glob = require( 'glob' );
 const chalk = require( 'chalk' );
 
 const DESTINATION_DOCS_PATH = 'docs/builds/guides/integration/features-overview.md';
-const PACKAGE_METADATA_RELATIVE_PATHS = [ 'packages', 'external/*/packages', 'scripts/docs/features-overview/3rd-party-packages' ];
-const PACKAGE_METADATA_GLOB_PATTERN = `{${ PACKAGE_METADATA_RELATIVE_PATHS.join( ',' ) }}/*/ckeditor5-metadata.json`;
+const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-overview/third-party-packages';
 
 try {
 	const numberOfParsedFiles = parseMetadataFiles();
@@ -107,12 +106,14 @@ function parseMetadataFiles() {
 }
 
 /**
- * Reads and parses all package metadata files, that match the `glob` pattern. The returned array is sorted alphabetically by package name.
+ * Reads and parses all package metadata files, that match the glob pattern. The returned array is sorted alphabetically by package name.
  *
  * @returns {Array.<ParsedFile>}
  */
 function parseFiles() {
-	return glob.sync( PACKAGE_METADATA_GLOB_PATTERN )
+	const globPattern = createGlobPattern();
+
+	return glob.sync( globPattern )
 		.map( readFile )
 		.map( file => {
 			try {
@@ -124,6 +125,28 @@ function parseFiles() {
 			}
 		} )
 		.sort( ( parsedFileA, parsedFileB ) => parsedFileA.packageName.localeCompare( parsedFileB.packageName ) );
+}
+
+/**
+ * Reads config for third-party packages and returns a glob pattern, that includes all paths to package metadata file for all possible
+ * package paths: CKEditor 5, Collaboration Features, Internal and the third-party ones. If third-party package installed locally in
+ * node_modules does not contain the package metadata file, the fallback path to a locally maintained package metadata file is used instead.
+ *
+ * @returns {String}
+ */
+function createGlobPattern() {
+	const thirdPartyPackagesConfig = JSON.parse( fs.readFileSync( `${ THIRD_PARTY_PACKAGES_LOCAL_DIR }/paths.json`, 'utf-8' ) );
+
+	const paths = [
+		'packages/*',
+		'external/*/packages/*',
+		...thirdPartyPackagesConfig.map( packageConfig => fs.existsSync( `${ packageConfig.path }/ckeditor5-metadata.json` ) ?
+			packageConfig.path :
+			packageConfig.fallbackPath
+		)
+	];
+
+	return `{${ paths.join( ',' ) }}/ckeditor5-metadata.json`;
 }
 
 /**
@@ -152,12 +175,12 @@ function parseFile( file ) {
 
 	const isExternalPackage = file.path.startsWith( 'external/' );
 
-	const is3rdPartyPackage = file.path.startsWith( 'scripts/docs/features-overview/3rd-party-packages/' );
+	const isThirdPartyPackage = !file.path.startsWith( 'packages/' ) && !isExternalPackage;
 
 	const packageData = {
 		name: packageName,
 		isExternal: isExternalPackage,
-		is3rdParty: is3rdPartyPackage
+		isThirdParty: isThirdPartyPackage
 	};
 
 	const plugins = preparePlugins( packageData, metadata.plugins );
@@ -215,7 +238,7 @@ function prepareFeatureLink( packageData, plugin ) {
 }
 
 /**
- * Creates link to the plugin's API documentation. If given plugin is a 3rd party one, just the plugin class name is returned.
+ * Creates link to the plugin's API documentation. If given package is a third-party one, just the plugin class name is returned.
  *
  * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
@@ -224,7 +247,7 @@ function prepareFeatureLink( packageData, plugin ) {
 function prepareApiLink( packageData, plugin ) {
 	const pluginClassName = `<code>${ plugin.className }</code>`;
 
-	if ( packageData.is3rdParty ) {
+	if ( packageData.isThirdParty ) {
 		return pluginClassName;
 	}
 
@@ -474,8 +497,8 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  * @property {String} isExternal Determines, if a given package is considered as external one in the context of the CKEditor 5. If package
  * is not created by CKSource, then isExternal = false. Otherwise, it informs if it belongs to a CKEditor 5 repo (isExternal = false), or if
  * it comes from an external folder: from Collaboration Features or Internal (isExternal = true).
- * @property {String} is3rdParty Determines whether a given package has been created outside CKSource. A 3rd party package is not considered
- * as external one.
+ * @property {String} isThirdParty Determines whether a given package has been created outside CKSource. A third-party package is not
+ * considered as external one.
  */
 
 /**
