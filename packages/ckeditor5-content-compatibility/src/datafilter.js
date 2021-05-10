@@ -255,7 +255,7 @@ export default class DataFilter {
 	 * Registers block object element and attribute converters for the given data schema definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
 	*/
 	_registerBlockObjectElement( definition ) {
 		this._registerObjectElementWidget( 'htmlObjectEmbedBlock', {
@@ -278,7 +278,7 @@ export default class DataFilter {
 	 * Registers inline object element and attribute converters for the given data schema definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
 	*/
 	_registerInlineObjectElement( definition ) {
 		this._registerObjectElementWidget( 'htmlObjectEmbedInline', {
@@ -312,13 +312,14 @@ export default class DataFilter {
 	 * @private
 	 * @param {String} widgetName
 	 * @param {module:engine/model/schema~SchemaItemDefinition} widgetSchema
-	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
+	 * @param {Function} createViewContainer
 	 */
 	_registerObjectElementWidget( widgetName, widgetSchema, createViewContainer ) {
 		const t = this.editor.t;
 		const schema = this.editor.model.schema;
 		const conversion = this.editor.conversion;
 
+		// Object element widget should be registered only once, as it's used to embed different views.
 		if ( schema.isRegistered( widgetName ) ) {
 			return;
 		}
