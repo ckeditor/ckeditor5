@@ -256,7 +256,7 @@ export default class DataSchema {
 	}
 
 	/**
-	 * Add new data schema definition describing inline element.
+	 * Add new data schema definition describing object element.
 	 *
 	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
 	 */
@@ -359,7 +359,7 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
  * @property {String} [view] Name of the view element.
  * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
- * @property {Boolean} isBlock Indicates that the definition describes block element.
+ * @property {Boolean} isInline Indicates that the definition descibes inline element.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
@@ -370,6 +370,7 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:content-compatibility/dataschema~DataSchemaObjectElementDefinition
  * @property {String} view Name of the view element.
  * @property {Boolean} isObject Indicates that the definition describes object element.
+ * @property {Boolean} [isBlock] Indicates that the definition describes block element.
  * Set by {@link module:content-compatibility/dataschema~DataSchema#registerObjectElement} method.
  * @extends module:content-compatibility/dataschema~DataSchemaDefinition
  */
