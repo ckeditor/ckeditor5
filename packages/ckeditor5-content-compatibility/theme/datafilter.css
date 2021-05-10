@@ -14,11 +14,6 @@
 		margin: 1em auto;
 	}
 
-	/* Make space for label but it only collides in LTR languages */
-	& .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
-		margin-left: 50px;
-	}
-
 	&.html-object-embed-inline {
 		display: inline-block;
 	}
@@ -39,6 +34,16 @@
 		color: var(--ck-color-base-background);
 		font-size: var(--ck-font-size-tiny);
 		font-family: var(--ck-font-face);
+	}
+
+	&[dir="rtl"]::before {
+		left: auto;
+		right: var(--ck-spacing-standard);
+	}
+
+	/* Make space for label but it only collides in LTR languages */
+	&[dir="ltr"] .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
+		margin-left: 50px;
 	}
 
 	& .html-object-embed__content {
