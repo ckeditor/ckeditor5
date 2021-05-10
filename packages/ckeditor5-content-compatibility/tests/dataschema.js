@@ -26,6 +26,20 @@ describe( 'DataSchema', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'registerObjectElement()', () => {
+		it( 'should register proper definition', () => {
+			dataSchema.registerObjectElement( { model: 'htmlDef', view: 'def' } );
+
+			const result = dataSchema.getDefinitionsForView( 'def' );
+
+			expect( Array.from( result ) ).to.deep.equal( [ {
+				model: 'htmlDef',
+				view: 'def',
+				isObject: true
+			} ] );
+		} );
+	} );
+
 	describe( 'registerInlineElement()', () => {
 		it( 'should register proper definition', () => {
 			dataSchema.registerInlineElement( { model: 'htmlDef', view: 'def' } );
