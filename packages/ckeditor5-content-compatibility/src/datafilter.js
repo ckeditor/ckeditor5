@@ -261,15 +261,10 @@ export default class DataFilter {
 		this._registerObjectElementWidget( 'htmlObjectEmbedBlock', {
 			isObject: true,
 			isBlock: true,
-			allowWhere: '$block',
-			allowAttributes: [ 'value', 'view', 'htmlAttributes' ]
-		}, writer => {
-			return writer.createContainerElement( 'div', {
-				class: 'html-object-embed html-object-embed-block',
-				'data-html-object-embed-label': this.editor.t( 'HTML object' ),
-				dir: this.editor.locale.uiLanguageDirection
-			} );
-		} );
+			allowWhere: '$block'
+		}, writer => writer.createContainerElement( 'div',
+			{ class: 'html-object-embed-block' } )
+		);
 
 		this._addObjectElementToElementUpcastConversion( definition, 'htmlObjectEmbedBlock' );
 	}
@@ -285,17 +280,11 @@ export default class DataFilter {
 			isObject: true,
 			isInline: true,
 			allowWhere: '$text',
-			allowAttributesOf: '$text',
-			allowAttributes: [ 'value', 'view', 'htmlAttributes' ]
-		}, writer => {
-			return writer.createContainerElement( 'span', {
-				class: 'html-object-embed html-object-embed-inline',
-				'data-html-object-embed-label': this.editor.t( 'HTML object' ),
-				dir: this.editor.locale.uiLanguageDirection
-			}, {
-				isAllowedInsideAttributeElement: true
-			} );
-		} );
+			allowAttributesOf: '$text'
+		}, writer => writer.createContainerElement( 'span',
+			{ class: 'html-object-embed-inline' },
+			{ isAllowedInsideAttributeElement: true } )
+		);
 
 		this._addObjectElementToElementUpcastConversion( definition, 'htmlObjectEmbedInline' );
 	}
@@ -315,7 +304,6 @@ export default class DataFilter {
 	 * @param {Function} createViewContainer
 	 */
 	_registerObjectElementWidget( widgetName, widgetSchema, createViewContainer ) {
-		const t = this.editor.t;
 		const schema = this.editor.model.schema;
 		const conversion = this.editor.conversion;
 
@@ -324,7 +312,11 @@ export default class DataFilter {
 			return;
 		}
 
-		schema.register( widgetName, widgetSchema );
+		schema.register( widgetName, {
+			// Extend with attributes required by conversion.
+			allowAttributes: [ 'value', 'view', 'htmlAttributes' ],
+			...widgetSchema
+		} );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: widgetName,
@@ -335,17 +327,24 @@ export default class DataFilter {
 			model: widgetName,
 			view: ( modelElement, conversionApi ) => {
 				const { writer } = conversionApi;
+				const widgetLabel = this.editor.t( 'HTML object' );
 
+				// Widget cannot be a raw element because the widget system would not be able
+				// to add its UI to it. Thus, we need separate view container.
 				const viewContainer = createViewContainer( writer );
+
+				// Add required attributes here, so we don't have to duplicate this logic between
+				// #_registerInlineObjectElement() and #_registerBlockObjectElement() methods.
+				writer.addClass( 'html-object-embed', viewContainer );
+				writer.setAttribute( 'data-html-object-embed-label', widgetLabel, viewContainer );
+				writer.setAttribute( 'dir', this.editor.locale.uiLanguageDirection, viewContainer );
 
 				const viewElement = createObjectViewElement( modelElement, conversionApi );
 				writer.addClass( 'html-object-embed__content', viewElement );
 
 				writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
 
-				return toWidget( viewContainer, writer, {
-					widgetLabel: t( 'HTML object' )
-				} );
+				return toWidget( viewContainer, writer, { widgetLabel } );
 			}
 		} );
 	}
