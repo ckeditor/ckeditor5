@@ -124,6 +124,202 @@ describe( 'DataFilter', () => {
 		}
 	} );
 
+	describe( 'object', () => {
+		it( 'should allow element', () => {
+			dataFilter.allowElement( { name: 'input' } );
+
+			editor.setData( '<p><input></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>' +
+				'<htmlObjectEmbedInline' +
+				' value=""' +
+				' view="input">' +
+				'</htmlObjectEmbedInline>' +
+				'</paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal( '<p><input></p>' );
+		} );
+
+		it( 'should allow element content', () => {
+			dataFilter.allowElement( { name: 'video' } );
+
+			editor.setData( '<p><video>' +
+				'<source src="https://example.com/video.mp4" type="video/mp4">' +
+				' Your browser does not support the video tag.</video>' +
+				'</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>' +
+				'<htmlObjectEmbedInline' +
+				' value="<source src="https://example.com/video.mp4" type="video/mp4"> Your browser does not support the video tag."' +
+				' view="video">' +
+				'</htmlObjectEmbedInline>' +
+				'</paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal( '<p><video>' +
+				'<source src="https://example.com/video.mp4" type="video/mp4">' +
+				' Your browser does not support the video tag.</video>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should recognize block elements', () => {
+			dataSchema.registerObjectElement( {
+				model: 'htmlXyz',
+				view: 'xyz',
+				isBlock: true
+			} );
+
+			dataFilter.allowElement( { name: 'xyz' } );
+
+			editor.setData( '<xyz>foobar</xyz>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<htmlObjectEmbedBlock' +
+				' value="foobar"' +
+				' view="xyz">' +
+				'</htmlObjectEmbedBlock>'
+			);
+
+			expect( editor.getData() ).to.equal( '<xyz>foobar</xyz>' );
+		} );
+
+		it( 'should allow attributes', () => {
+			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowAttributes( { name: 'input', attributes: { type: true } } );
+
+			editor.setData( '<p><input type="text"></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline></paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							type: 'text'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><input type="text"></p>' );
+		} );
+
+		it( 'should allow attributes (styles)', () => {
+			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowAttributes( { name: 'input', styles: { color: 'red' } } );
+
+			editor.setData( '<p><input style="color:red;"></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline></paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							color: 'red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><input style="color:red;"></p>' );
+		} );
+
+		it( 'should allow attributes (classes)', () => {
+			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowAttributes( { name: 'input', classes: [ 'foobar' ] } );
+
+			editor.setData( '<p><input class="foobar"></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foobar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><input class="foobar"></p>' );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowAttributes( { name: 'input', attributes: { type: true } } );
+			dataFilter.disallowAttributes( { name: 'input', attributes: { type: 'hidden' } } );
+
+			editor.setData( '<p><input type="text"><input type="hidden"></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+				'<htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline>' +
+				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
+				'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							type: 'text'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><input type="text"><input></p>' );
+		} );
+
+		it( 'should disallow attributes (styles)', () => {
+			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowAttributes( { name: 'input', styles: { color: /^(red|blue)$/ } } );
+			dataFilter.disallowAttributes( { name: 'input', styles: { color: 'red' } } );
+
+			editor.setData( '<p><input style="color:blue;"><input style="color:red;"</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+				'<htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline>' +
+				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
+				'</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							color: 'blue'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><input style="color:blue;"><input></p>' );
+		} );
+
+		it( 'should disallow attributes (classes)', () => {
+			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowAttributes( { name: 'input', classes: [ 'foo', 'bar' ] } );
+			dataFilter.disallowAttributes( { name: 'input', classes: [ 'bar' ] } );
+
+			editor.setData( '<p><input class="foo bar"><input class="bar"></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
+				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
+				'</paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><input><input></p>' );
+		} );
+
+		it( 'should register embed widget only once', () => {
+			dataFilter.allowElement( { name: 'video' } );
+
+			expect( () => {
+				dataFilter.allowElement( { name: 'audio' } );
+			} ).to.not.throw();
+		} );
+	} );
+
 	describe( 'block', () => {
 		it( 'should allow element', () => {
 			dataFilter.allowElement( { name: 'article' } );
