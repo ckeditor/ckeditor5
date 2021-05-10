@@ -168,7 +168,7 @@ Just update or re-download your build. See the [installation instructions](https
 
 * The `ImageStyle`, `ImageToolbar`, and `ImageCaption` plugins became crucial in terms of providing the user with proper interaction with images. If they are missing in your editor configuration, consider adding them. Read the *Important changes (link)* section to find out why.
 * To provide the users proper interaction with the inline images, and an image caption, please review your image toolbar configuration. Check the *recommended configurations (link)*.
-* If you are using the `EasyImage` plugin, note that it is no longer being imported as the `Image` or `ImageBlock` plugin dependency. Read more about the *changes in the `EasyImage` (link)* plugin.
+* If you are using the `EasyImage` plugin, note that it is no longer importing the `Image` plugin as a dependency. Read more about the *changes in the `EasyImage` plugin (link)*.
 ### Keeping the previous configuration
 
 #### Default build
@@ -182,8 +182,7 @@ At this moment it is not possible to remove the `ImageInline` while keeping the 
 
 #### Custom integration
 
-* Since the `ImageInline` is now a part of the `Image` plugin, you have to load the `ImageBlock` plugin instead of the `Image`.
-* If you are using the `EasyImage` plugin, note that it is no longer being imported as the `Image` or `ImageBlock` plugin dependency. Read more about the *changes in the `EasyImage` (link)* plugin.
+* Since the `ImageInline` is now a part of the `Image` plugin, you have to load the `ImageBlock` plugin instead of the `Image`. If you are loading the `Image` plugin as a `EasyImage` dependency, it is enough to just add the `ImageBlock` plugin to your configuration (*See the changes introduced in the `EasyImage` plugin (link)*).
 * Adjust your configuration of the *`ImageStyle` (link)* and *`ImageToolbar` (link)* plugins, especially to support the *caption button (link)*.
 
 </div>
