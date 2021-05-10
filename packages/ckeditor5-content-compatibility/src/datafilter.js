@@ -405,10 +405,10 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Adds attribute converters for the given element definition.
+	 * Adds attribute converters for the given block element definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_addBlockElementAttributeConversion( { model: modelName, view: viewName } ) {
 		const conversion = this.editor.conversion;
