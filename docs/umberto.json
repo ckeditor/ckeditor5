@@ -37,6 +37,7 @@
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
 		"features/easy-image.html": "features/image-upload/easy-image.html",
 		"features/image-upload.html": "features/image-upload/image-upload.html",
+		"features/image.html": "features/images/overview.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
@@ -251,6 +252,11 @@
 					"name": "Image upload",
 					"id": "features-image-upload",
 					"slug": "image-upload"
+				},
+				{
+					"name": "Images",
+					"id": "features-images",
+					"slug": "images"
 				},
 				{
 					"name": "Lists",
