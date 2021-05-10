@@ -133,7 +133,7 @@ export default class MergeCellCommand extends Command {
 		// First get the cell on proper direction.
 		const cellToMerge = this.isHorizontal ?
 			getHorizontalCell( tableCell, this.direction, tableUtils ) :
-			getVerticalCell( tableCell, this.direction );
+			getVerticalCell( tableCell, this.direction, tableUtils );
 
 		if ( !cellToMerge ) {
 			return;
@@ -155,6 +155,7 @@ export default class MergeCellCommand extends Command {
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} direction
+// @param {module:table/tableutils~TableUtils} tableUtils
 // @returns {module:engine/model/node~Node|null}
 function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const tableRow = tableCell.parent;
@@ -195,15 +196,16 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} direction
+// @param {module:table/tableutils~TableUtils} tableUtils
 // @returns {module:engine/model/node~Node|null}
-function getVerticalCell( tableCell, direction ) {
+function getVerticalCell( tableCell, direction, tableUtils ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 
 	const rowIndex = table.getChildIndex( tableRow );
 
 	// Don't search for mergeable cell if direction points out of the table.
-	if ( ( direction == 'down' && rowIndex === table.childCount - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
+	if ( ( direction == 'down' && rowIndex === tableUtils.getRows( table ) - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
 		return;
 	}
 

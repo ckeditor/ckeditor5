@@ -6,6 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
@@ -18,6 +19,34 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageCaptionEditing', () => {
 	let editor, model, doc, view;
+
+	// FakePlugin helps check if the plugin under test extends existing schema correctly.
+	class FakePlugin extends Plugin {
+		init() {
+			const schema = this.editor.model.schema;
+			const conversion = this.editor.conversion;
+
+			schema.register( 'foo', {
+				isObject: true,
+				isBlock: true,
+				allowWhere: '$block'
+			} );
+			schema.register( 'caption', {
+				allowIn: 'foo',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+
+			conversion.elementToElement( {
+				view: 'foo',
+				model: 'foo'
+			} );
+			conversion.elementToElement( {
+				view: 'caption',
+				model: 'caption'
+			} );
+		}
+	}
 
 	testUtils.createSinonSandbox();
 
@@ -97,6 +126,17 @@ describe( 'ImageCaptionEditing', () => {
 
 			expect( command ).to.be.instanceOf( ToggleImageCaptionCommand );
 		} );
+	} );
+
+	it( 'should extend caption if schema for it is already registered', async () => {
+		const { model } = await VirtualTestEditor
+			.create( {
+				plugins: [ FakePlugin, ImageCaptionEditing, ImageEditing, UndoEditing, Paragraph ]
+			} );
+
+		expect( model.schema.isRegistered( 'caption' ) ).to.be.true;
+		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'image' ], 'caption' ) ).to.be.true;
 	} );
 
 	describe( 'data pipeline', () => {
