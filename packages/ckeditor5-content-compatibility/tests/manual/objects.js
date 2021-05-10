@@ -28,7 +28,9 @@ class ExtendHTMLSupport extends Plugin {
 	}
 
 	init() {
-		const { dataFilter } = this.editor.plugins.get( GeneralHtmlSupport );
+		const { dataFilter, dataSchema } = this.editor.plugins.get( GeneralHtmlSupport );
+
+		dataSchema.registerObjectElement( { model: 'htmlXyz', view: 'xyz', isBlock: true } );
 
 		const definitions = [
 			{ name: 'object', attributes: [ 'classid', 'codebase' ] },
@@ -44,7 +46,8 @@ class ExtendHTMLSupport extends Plugin {
 			{ name: 'audio', attributes: [ 'controls' ] },
 			{ name: 'source', attributes: [ 'src', 'type' ] },
 			{ name: 'button' },
-			{ name: 'label' }
+			{ name: 'label' },
+			{ name: 'xyz', attributes: [ 'data-foo' ] }
 		];
 
 		for ( const definition of definitions ) {
