@@ -72,9 +72,10 @@ export default class ImageStyle extends Plugin {
  *
  * # **Buttons**
  *
- * The buttons that execute the command with different values are registered
+ * All of the image style options provided in the configuration are registered
  * in the {@link module:ui/componentfactory~ComponentFactory UI components factory} with the "imageStyle:" prefixes and can be used
- * in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.
+ * in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}. The buttons available by default depending
+ * on the loaded plugins are listed in the next section.
  *
  * Read more about styling images in the {@glink features/images-styles Image styles guide}.
  *

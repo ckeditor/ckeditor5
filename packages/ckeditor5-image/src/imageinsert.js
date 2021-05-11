@@ -44,7 +44,6 @@ export default class ImageInsert extends Plugin {
 /**
  * The image insert configuration.
  *
- * @protected
  * @member {module:image/imageinsert~ImageInsertConfig} module:image/image~ImageConfig#insert
  */
 
@@ -64,7 +63,6 @@ export default class ImageInsert extends Plugin {
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
- * @protected
  * @interface module:image/imageinsert~ImageInsertConfig
  */
 
@@ -90,6 +88,7 @@ export default class ImageInsert extends Plugin {
  *			}
  *		};
  *
+ * @protected
  * @member {Array.<String>} module:image/imageinsert~ImageInsertConfig#integrations
  * @default [ 'insertImageViaUrl' ]
  */
