@@ -30,8 +30,8 @@ You can see the demo of a WYSIWYG editor with the base image feature enabled bel
 
 The {@link module:imagetextalternative/imagetextalternative~ImageTextAlternative} plugin registers:
 
+* The `'imageTextAlternative'` button (to use in the {@link TODO-overview#image-toolbar image toolbar}).
 * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}.
-* The `'imageTextAlternative'` button.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

@@ -4,7 +4,7 @@ menu-title: Image styles
 order: 30
 ---
 
-## Image styles
+# Image styles
 
 In simple integrations it is enough to let the user insert images, set their text alternative and the editor's job is done. An example of such a simple solution are, for example, [GitHub](https://github.com/) comments. The styling of the images (for example, their maximum width and margins) is controlled by GitHub through stylesheets.
 
@@ -172,7 +172,7 @@ You can find advanced examples in the {@link module:image/image~ImageConfig#styl
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A button for each defined style, for example: `'imageStyle:full'` and `'imageStyle:side'`.
+* A button for each defined style, for example: `'imageStyle:full'` and `'imageStyle:side'` (to use in the {@link TODO-overview#image-toolbar image toolbar}).
 * The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'full'` and `'side'`):
 
 	```js
