@@ -69,4 +69,4 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 
 {@snippet features/placeholder-custom}
 
-**Note**: The `.ck-placeholder` class is also used to display placeholders in other places, for instance, {@link features/image#image-captions image captions}. Make sure your custom styles apply to the right subset of placeholders.
+**Note**: The `.ck-placeholder` class is also used to display placeholders in other places, for instance, {@link features/images-captions image captions}. Make sure your custom styles apply to the right subset of placeholders.
