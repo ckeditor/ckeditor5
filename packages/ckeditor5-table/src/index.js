@@ -17,6 +17,9 @@ import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
 import TableProperties from './tableproperties';
 import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
 import TablePropertiesUI from './tableproperties/tablepropertiesui';
+import TableCaption from './tablecaption';
+import TableCaptionEditing from './tablecaption/tablecaptionediting';
+import TableCaptionUI from './tablecaption/tablecaptionui';
 import TableClipboard from './tableclipboard';
 import TableMouse from './tablemouse';
 import TableKeyboard from './tablekeyboard';
@@ -34,6 +37,9 @@ export default {
 	TableProperties,
 	TablePropertiesEditing,
 	TablePropertiesUI,
+	TableCaption,
+	TableCaptionEditing,
+	TableCaptionUI,
 	TableMouse,
 	TableClipboard,
 	TableKeyboard,

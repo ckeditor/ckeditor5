@@ -52,10 +52,9 @@ export default class InsertColumnCommand extends Command {
 	 */
 	refresh() {
 		const selection = this.editor.model.document.selection;
+		const isAnyCellSelected = !!getSelectionAffectedTableCells( selection ).length;
 
-		const tableParent = selection.getFirstPosition().findAncestor( 'table' );
-
-		this.isEnabled = !!tableParent;
+		this.isEnabled = isAnyCellSelected;
 	}
 
 	/**

@@ -148,7 +148,20 @@ function getLivePositionsForSelectedBlocks( range ) {
 			// This is how modifySelection works and here we are making use of it.
 			model.modifySelection( selection, { direction: 'backward' } );
 
-			endPosition = selection.getLastPosition();
+			const newEndPosition = selection.getLastPosition();
+
+			// For such model and selection:
+			//     <paragraph>A[</paragraph><image></image><paragraph>]B</paragraph>
+			//
+			// After modifySelection() we would end up with this:
+			//     <paragraph>A[</paragraph>]<image></image><paragraph>B</paragraph>
+			//
+			// So we need to check if there is no content in the skipped range (because we want to include the <image>).
+			const skippedRange = model.createRange( newEndPosition, endPosition );
+
+			if ( !model.hasContent( skippedRange, { ignoreMarkers: true } ) ) {
+				endPosition = newEndPosition;
+			}
 		}
 	}
 
