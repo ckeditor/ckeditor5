@@ -131,7 +131,7 @@ describe( 'ImageCaptionEditing', () => {
 	it( 'should extend caption if schema for it is already registered', async () => {
 		const { model } = await VirtualTestEditor
 			.create( {
-				plugins: [ FakePlugin, ImageCaptionEditing, ImageEditing, UndoEditing, Paragraph ]
+				plugins: [ FakePlugin, ImageCaptionEditing, ImageBlockEditing, ImageInlineEditing, UndoEditing, Paragraph ]
 			} );
 
 		expect( model.schema.isRegistered( 'caption' ) ).to.be.true;
