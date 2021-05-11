@@ -11,7 +11,7 @@ This migration guide enumerates the most important changes that require your att
 
 For the entire list of the changes introduced in version 28.0.0 of the CKEditor 5 see the [changelog](TODO:link).
 
-To see the new editor UI for the images visit the {@link features/images/images-overview image feature guide}, especially:
+To see the new editor UI for the images visit the {@link features/images-overview image feature guide}, especially:
 * Images in the structured content, (TODO:link)
 * Images in the document-like content (TODO:link)
 
@@ -142,7 +142,7 @@ Due to the changes mentioned above, the {@link module:image/image~ImageConfig#to
 	} );
 	```
 
-To view the above configurations, see the {@link features/images/images-overview image feature guide}.
+To view the above configurations, see the {@link features/images-overview image feature guide}.
 
 ## Inserting images
 
@@ -223,4 +223,4 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-Check out the comprehensive {@link features/images/images-installation installation guide to images} in CKEditor 5 to learn more.
+Check out the comprehensive {@link features/images-installation installation guide to images} in CKEditor 5 to learn more.
