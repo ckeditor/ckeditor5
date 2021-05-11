@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-engine": "^27.1.0",
     "@ckeditor/ckeditor5-essentials": "^27.1.0",
     "@ckeditor/ckeditor5-font": "^27.1.0",
+    "@ckeditor/ckeditor5-highlight": "^27.1.0",
     "@ckeditor/ckeditor5-link": "^27.1.0",
     "@ckeditor/ckeditor5-list": "^27.1.0",
     "@ckeditor/ckeditor5-paragraph": "^27.1.0",
