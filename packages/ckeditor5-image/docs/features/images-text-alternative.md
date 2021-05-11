@@ -4,7 +4,7 @@ menu-title: Text alternative
 order: 30
 ---
 
-## Image text alternative
+# Image text alternative
 
 The {@link module:image/image~Image} feature adds support for plain images with just the `alt` attribute set. This translates to the following HTML:
 
