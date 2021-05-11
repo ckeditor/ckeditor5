@@ -677,6 +677,12 @@ describe( 'DataController utils', () => {
 					'<paragraph>ba[r</paragraph><blockWidget><nestedEditable>f]oo</nestedEditable></blockWidget>',
 					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>'
 				);
+
+				test(
+					'does not shrink deletion range if selection ends at start position of block following an object',
+					'<paragraph>x</paragraph><paragraph>[foo</paragraph><blockWidget></blockWidget><paragraph>]bar</paragraph>',
+					'<paragraph>x</paragraph><paragraph>[]bar</paragraph>'
+				);
 			} );
 
 			describe( 'with markers', () => {

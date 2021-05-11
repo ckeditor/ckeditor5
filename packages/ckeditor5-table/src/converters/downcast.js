@@ -74,7 +74,8 @@ export function downcastInsertTable( options = {} ) {
 		for ( const tableRow of table.getChildren() ) {
 			const rowIndex = tableRow.index;
 
-			if ( !viewRows.has( rowIndex ) ) {
+			// Make sure that this is a table row and not some other element (i.e., caption).
+			if ( tableRow.is( 'element', 'tableRow' ) && !viewRows.has( rowIndex ) ) {
 				viewRows.set( rowIndex, createTr( tableElement, tableRow, rowIndex, tableAttributes, conversionApi ) );
 			}
 		}
