@@ -41,6 +41,39 @@ ClassicEditor
 	.catch( ... );
 ```
 
+
+<figure class="table">
+	<table>
+		<thead>
+			<tr>
+				<th rowspan="2">Loaded plugin</th>
+				<th colspan="2">Available features</th>
+			</tr>
+			<tr>
+				<th>Block images (with captions)</th>
+				<th>Inline images</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th><code>Image</code></th>
+				<td>✅ yes</td>
+				<td>✅ yes</td>
+			</tr>
+			<tr>
+				<th><code>ImageBlock</code></th>
+				<td>✅ yes</td>
+				<td>❌ no</td>
+			</tr>
+			<tr>
+				<th><code>ImageInline</code></th>
+				<td>❌ no</td>
+				<td>✅ yes</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
