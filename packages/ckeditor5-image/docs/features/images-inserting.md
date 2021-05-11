@@ -56,7 +56,7 @@ The {@link module:image/image~Image} plugin registers:
 
 The {@link module:image/imageupload~ImageUpload} plugin registers:
 
-* The `'uploadImage'` button that opens the native file browser to let you upload a file directly from your disk.
+* The `'uploadImage'` button that opens the native file browser to let you upload a file directly from your disk (to use in the {@link TODO-overview#image-toolbar image toolbar}).
 * The {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `'uploadImage'` command} that accepts the file to upload.
 
 <info-box>

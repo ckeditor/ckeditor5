@@ -4,7 +4,7 @@ menu-title: Linking images
 order: 50
 ---
 
-## Linking images
+# Linking images
 
 The {@link module:link/linkimage~LinkImage} plugin adds support for linking images. Some use cases where this could be useful are:
 
@@ -38,8 +38,8 @@ The image linking feature is not enabled by default in any of the editor builds.
 
 The {@link module:link/linkimage~LinkImage} plugin registers:
 
+* The `'linkImage'` button that opens the link UI when an image is selected by the user (to use in the {@link TODO-overview#image-toolbar image toolbar}).
 * The {@link module:link/linkimage/linkimagecommand~LinkImageCommand `'linkImage'` command}.
-* The `'linkImage'` button that opens the link UI when an image is selected by the user.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

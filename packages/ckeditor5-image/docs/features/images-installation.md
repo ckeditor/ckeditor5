@@ -4,15 +4,17 @@ menu-title: Installation
 order: 100
 ---
 
-## Installation
-
-To add image features to your rich-text editor, install the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
+The vast majority of image-related features is {@link TODO-overview#image-features available} out-of-the-box in all {@link builds/guides/overview ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link builds/guides/development/custom-builds custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
 ```plaintext
-npm install --save @ckeditor/ckeditor5-image @ckeditor/ckeditor5-link
+npm install --save @ckeditor/ckeditor5-image
 ```
 
-Next add the plugins that you need to your plugin list. You also need to set the desired image toolbar items.
+<info-box info>
+	You may want to install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package if you want to use the {@link TODO-images-linking `LinkImage`} plugin in your editor.
+</info-box>
+
+Next add the {@link TODO-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items.
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -43,6 +45,50 @@ ClassicEditor
 
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+## Inline and block images
+
+Inline images can be inserted in the middle of a paragraph or a link just like a regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables or media. Being larger and existing as a standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc..
+
+By default, the {@link TODO `Image`} plugin available in all {@link builds/guides/overview ready-to-use editor builds} provides support for both inline and block images, working as a glue for {@link TODO `ImageInline`} and {@link TODO `ImageBlock`} plugins:
+
+<figure class="table">
+	<table style="text-align: center">
+		<thead>
+			<tr>
+				<th rowspan="2" style="vertical-align: middle">Loaded plugin</th>
+				<th colspan="2">Available features</th>
+			</tr>
+			<tr>
+				<th>Block images (with captions)</th>
+				<th>Inline images</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th><code>Image</code> (default)</th>
+				<td>✅ yes</td>
+				<td>✅ yes</td>
+			</tr>
+			<tr>
+				<th><code>ImageBlock</code></th>
+				<td>✅ yes</td>
+				<td>❌ no</td>
+			</tr>
+			<tr>
+				<th><code>ImageInline</code></th>
+				<td>❌ no</td>
+				<td>✅ yes</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+
+<info-box info>
+	Up to CKEditor 5 v[TODO], only **block** images were supported. The support for **inline** images started in v[TODO] in all editor builds loading the `Image` plugin.
+
+	If your integrations depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link TODO-migration-guide official migration guide} that will help you configure the editor.
 </info-box>
 
 ## Contribute

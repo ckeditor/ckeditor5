@@ -4,11 +4,11 @@ menu-title: Resizing images
 order: 40
 ---
 
-## Resizing images
+# Resizing images
 
 The [image styles](#image-styles) feature is meant to give the user a choice between a set of styling options provided by the system (i.e. by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes into play. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
 
-### Methods to resize images
+## Methods to resize images
 
 The editor offers different ways to resize images either by using "resize handles" or by using dedicated UI components &mdash; either a dropdown or standalone buttons.
 
@@ -16,7 +16,7 @@ The {@link module:image/imageresize~ImageResize} plugin enables the four resize 
 
 The plugin also gives you an ability to change the size of the image through the on-click image toolbar. You can set an optional static configuration with {@link module:image/image~ImageConfig#resizeOptions} and choose whether you want to use a dropdown or a set of standalone buttons.
 
-#### Using resize handles
+### Using resize handles
 
 In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once [image resizing is enabled](#enabling-image-resizing), this option does not require any additional configuration.
 
@@ -57,7 +57,7 @@ ClassicEditor
 
 Both ways enable resize handles by default.
 
-#### Using resize dropdown
+### Using resize dropdown
 
 In this case, the user is able to choose from a set of predefined options. These options can be displayed in form of a dropdown in the image toolbar available after the user clicks the image.
 
@@ -90,7 +90,7 @@ Try out the live demo of the resize dropdown available in the image toolbar belo
 
 {@snippet features/image-resize-buttons-dropdown}
 
-#### Using standalone resize buttons
+### Using standalone resize buttons
 
 In this case, the resize options are displayed in the form of separate buttons. The benefit of this solution is the smoothest UX as the user needs just one click to resize an image.
 
@@ -127,7 +127,7 @@ Try out the live demo of the individual resize buttons available in the image to
 
 {@snippet features/image-resize-buttons}
 
-### Disabling image resize handles
+## Disabling image resize handles
 
 If, for some reason, you want to configure the editor in such a way that images can be resized only by buttons, you can do so by omitting the {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin.
 
@@ -174,11 +174,11 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### Enabling image resizing
+## Enabling image resizing
 
 The image resize feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the [Installation](#installation) section.
 
-### Markup and styling
+## Markup and styling
 
 When you resize an image, the inline `width` style is used and the `<figure>` element is assigned the `image_resized` class:
 
@@ -223,7 +223,7 @@ Another concern when styling resized images is that by default, CKEditor 5 uses 
 }
 ```
 
-### Using pixels instead of percentage width
+## Using pixels instead of percentage width
 
 Using percentage widths ensures that the content stays responsive when displayed in places other than the WYSIWYG editor. When the user made an image take up, for example, 60% of the content's width in the editor, if you ever change the width of the target page (where this content is displayed), the image will still take up 60% of that space. The same is true if the page is responsive and adjusts to the viewport's width.
 
@@ -250,6 +250,7 @@ Check out the difference in the live demo below:
 
 The {@link module:image/imageresize~ImageResize} plugin registers:
 
+* [TODO] Image resize buttons (to use in the {@link TODO-overview#image-toolbar image toolbar}).
 * The {@link module:image/imageresize/resizeimagecommand~ResizeImageCommand `'resizeImage'` command} that accepts the target width.
 
 <info-box>

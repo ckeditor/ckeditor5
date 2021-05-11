@@ -25,7 +25,7 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 The {@link module:image/imagecaption~ImageCaption} plugin registers:
 
-* The `'toggleImageCaption'` button.
+* The `'toggleImageCaption'` button (to use in the {@link TODO-overview#image-toolbar image toolbar}).
 * The {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand `'toggleImageCaption'` command}
 
 <info-box>
