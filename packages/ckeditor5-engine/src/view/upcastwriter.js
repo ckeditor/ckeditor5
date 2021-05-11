@@ -222,7 +222,7 @@ export default class UpcastWriter {
 	/**
 	 * Adds or overwrites element's attribute with a specified key and value.
 	 *
-	 *		writer.setAttribute( linkElement, 'href', 'http://ckeditor.com' );
+	 *		writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
 	 *
 	 * @see module:engine/view/element~Element#_setAttribute
 	 * @param {String} key Attribute key.
@@ -236,7 +236,7 @@ export default class UpcastWriter {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 *		writer.removeAttribute( linkElement, 'href' );
+	 *		writer.removeAttribute( 'href', linkElement );
 	 *
 	 * @see module:engine/view/element~Element#_removeAttribute
 	 * @param {String} key Attribute key.
@@ -249,8 +249,8 @@ export default class UpcastWriter {
 	/**
 	 * Adds specified class to the element.
 	 *
-	 *		writer.addClass( linkElement, 'foo' );
-	 *		writer.addClass( linkElement, [ 'foo', 'bar' ] );
+	 *		writer.addClass( 'foo', linkElement );
+	 *		writer.addClass( [ 'foo', 'bar' ], linkElement );
 	 *
 	 * @see module:engine/view/element~Element#_addClass
 	 * @param {Array.<String>|String} className Single class name or array of class names which will be added.
@@ -263,8 +263,8 @@ export default class UpcastWriter {
 	/**
 	 * Removes specified class from the element.
 	 *
-	 *		writer.removeClass( linkElement, 'foo' );
-	 *		writer.removeClass( linkElement, [ 'foo', 'bar' ] );
+	 *		writer.removeClass( 'foo', linkElement );
+	 *		writer.removeClass( [ 'foo', 'bar' ], linkElement );
 	 *
 	 * @see module:engine/view/element~Element#_removeClass
 	 * @param {Array.<String>|String} className Single class name or array of class names which will be removed.
@@ -277,11 +277,11 @@ export default class UpcastWriter {
 	/**
 	 * Adds style to the element.
 	 *
-	 *		writer.setStyle( element, 'color', 'red' );
-	 *		writer.setStyle( element, {
+	 *		writer.setStyle( 'color', 'red', element );
+	 *		writer.setStyle( {
 	 *			color: 'red',
 	 *			position: 'fixed'
-	 *		} );
+	 *		}, element );
 	 *
 	 * **Note**: This method can work with normalized style names if
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
@@ -302,8 +302,8 @@ export default class UpcastWriter {
 	/**
 	 * Removes specified style from the element.
 	 *
-	 *		writer.removeStyle( element, 'color' );  // Removes 'color' style.
-	 *		writer.removeStyle( element, [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
+	 *		writer.removeStyle( 'color', element );  // Removes 'color' style.
+	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * **Note**: This method can work with normalized style names if
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
@@ -358,6 +358,7 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @returns {module:engine/view/position~Position}
 	 */
 	createPositionAt( itemOrPosition, offset ) {
 		return Position._createAt( itemOrPosition, offset );

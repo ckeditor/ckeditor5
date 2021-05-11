@@ -340,9 +340,10 @@ describe( 'InlineEditor', () => {
 
 					const schema = editor.model.schema;
 
-					schema.register( 'heading' );
-					schema.extend( 'heading', { allowIn: '$root' } );
-					schema.extend( '$text', { allowIn: 'heading' } );
+					schema.register( 'heading', {
+						allowIn: '$root',
+						allowChildren: '$text'
+					} );
 
 					editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading', view: 'heading' } );
 					editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'heading', view: 'heading' } );
