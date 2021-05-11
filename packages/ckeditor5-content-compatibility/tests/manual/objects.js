@@ -11,11 +11,16 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
@@ -66,21 +71,31 @@ class ExtendHTMLSupport extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			Table,
-			Link,
 			BlockQuote,
 			Bold,
+			Code,
 			Essentials,
 			ExtendHTMLSupport,
+			Highlight,
 			Italic,
+			Link,
 			List,
 			Paragraph,
-			Strikethrough
+			Strikethrough,
+			Subscript,
+			Superscript,
+			Table,
+			Underline
 		],
 		toolbar: [
 			'bold',
 			'italic',
 			'strikethrough',
+			'underline',
+			'code',
+			'subscript',
+			'superscript',
+			'highlight',
 			'|',
 			'numberedList',
 			'bulletedList',

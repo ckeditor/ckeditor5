@@ -23,6 +23,8 @@
 	}
 
 	&::before {
+		font-weight: normal;
+		font-style: normal;
 		position: absolute;
 		content: attr(data-html-object-embed-label);
 		top: 0;
