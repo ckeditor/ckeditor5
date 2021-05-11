@@ -12,9 +12,9 @@ To see the all image features in action, check out the [**demo**](#demo) below. 
 
 ## Demo
 
-[TODO] A full-featured demo of images (block + inline + style + link + resize). The tour balloon should point to the image upload button in the toolbar. The upload button should either be the first one (separator follows), or very close to the beginning.
-
 {@snippet features/build-image-source}
+
+{@snippet features/image-full}
 
 ## Image features
 
