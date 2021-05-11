@@ -2611,6 +2611,38 @@ describe( 'DowncastHelpers', () => {
 			expectResult( '<p>Foo</p><p>Bar</p>' );
 		} );
 
+		// Fix for a bug that happens for soft breaks in code blocks.
+		// In that case, soft break model element is not converted to a view element.
+		it( 'default conversion, over model element not mapped to the view', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			model.schema.register( 'customElement', { inheritAllFrom: '$block' } );
+
+			controller.downcastDispatcher.on( 'insert:customElement', ( evt, data, conversionApi ) => {
+				const viewText = conversionApi.writer.createText( 'A' );
+				const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+				conversionApi.writer.insert( viewPosition, viewText );
+			} );
+
+			// <paragraph> added so it can store selection, otherwise it throws.
+			setModelData( model, '<paragraph></paragraph><customElement></customElement>' );
+
+			model.change( writer => {
+				const range = writer.createRangeOn( root.getChild( 1 ) );
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p></p><group-start name="foo:bar:baz"></group-start>A<group-end name="foo:bar:baz"></group-end>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p></p>A' );
+		} );
+
 		it( 'can be overwritten using converterPriority', () => {
 			downcastHelpers.markerToData( {
 				model: 'group'
