@@ -9,6 +9,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const glob = require( 'glob' );
 const chalk = require( 'chalk' );
+const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const DESTINATION_DOCS_PATH = 'docs/builds/guides/integration/features-html-output-overview.md';
 const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-party-packages';
@@ -17,6 +18,12 @@ try {
 	const numberOfPackages = parseMetadataFiles();
 
 	console.log( `✨ ${ chalk.green( `The features HTML output from ${ numberOfPackages } packages has been generated successfully.` ) }` );
+
+	const shouldCommitChanges = process.argv.includes( '--commit' );
+
+	if ( shouldCommitChanges ) {
+		commitChanges();
+	}
 } catch ( error ) {
 	console.log( `❌ ${ chalk.red( 'An error occurred during parsing a package metadata file.' ) }` );
 	console.log( error );
@@ -427,6 +434,21 @@ function beautify( input ) {
 			return indentLine( line, indentCount );
 		} )
 		.join( '\n' );
+}
+
+function commitChanges() {
+	const exec = command => tools.shExec( command, { verbosity: 'error' } );
+
+	const hasChanges = exec( `git diff --name-only ${ DESTINATION_DOCS_PATH }` ).trim().length;
+
+	if ( hasChanges ) {
+		exec( `git add ${ DESTINATION_DOCS_PATH }` );
+		exec( 'git commit -m "Docs (ckeditor5): Updated the features HTML output overview guide."' );
+
+		console.log( 'ℹ️ Successfully commited generated changes.' );
+	} else {
+		console.log( 'ℹ️ Nothing to commit. The features HTML output overview guide is up to date.' );
+	}
 }
 
 /**
