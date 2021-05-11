@@ -67,6 +67,85 @@ describe( 'HtmlDataProcessor', () => {
 		}
 
 		describe( 'https://github.com/ckeditor/ckeditor5-clipboard/issues/2#issuecomment-310417731 + #404', () => {
+			it( 'should retain <script> tags with non-Javascript mimetypes when no <meta> tag is present', () => {
+				const fragment = dataProcessor.toView(
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+
+				expect( stringify( fragment ) ).to.equal(
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+			} );
+
+			it( 'should retain <script> tags with non-Javascript mimetypes when a <meta> tag is present', () => {
+				const fragment = dataProcessor.toView(
+					'<meta charset=\'utf-8\'>' +
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+
+				expect( stringify( fragment ) ).to.equal(
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+			} );
+
+			it( 'should not retain leading <script> tags if any have Javascript mimetypes', () => {
+				const fragment = dataProcessor.toView(
+					'<meta charset=\'utf-8\'>' +
+					'<script type="text/livescript ; foo=bar">Some data</script>' +
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+
+				expect( stringify( fragment ) ).to.equal(
+					'This is the<span>foo</span>'
+				);
+			} );
+
+			it( 'should not retain leading <script> tags if any have type "module"', () => {
+				const fragment = dataProcessor.toView(
+					'<meta charset=\'utf-8\'>' +
+					'<script type="module">Some data</script>' +
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+
+				expect( stringify( fragment ) ).to.equal(
+					'This is the<span>foo</span>'
+				);
+			} );
+
+			it( 'should not retain leading <script> tags if any have no specified type', () => {
+				const fragment = dataProcessor.toView(
+					'<meta charset=\'utf-8\'>' +
+					'<script>Some data</script>' +
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+
+				expect( stringify( fragment ) ).to.equal(
+					'This is the<span>foo</span>'
+				);
+			} );
+
+			it( 'should not retain leading <script> tags if <head> contains tags other than <script> and <meta>', () => {
+				const fragment = dataProcessor.toView(
+					'<meta charset=\'utf-8\'>' +
+					'<style>Some data</style>' +
+					'<script type="foo/bar">Some data</script>' +
+					'This is the<span>foo</span>'
+				);
+
+				expect( stringify( fragment ) ).to.equal(
+					'This is the<span>foo</span>'
+				);
+			} );
+		} );
+
+		describe( 'https://github.com/ckeditor/ckeditor5/issues/9659', () => {
 			it( 'does not lose whitespaces in Chrome\'s paste-like content', () => {
 				const fragment = dataProcessor.toView(
 					'<meta charset=\'utf-8\'>' +

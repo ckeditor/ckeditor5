@@ -34,6 +34,20 @@ export default class HtmlDataProcessor {
 		this._domParser = new DOMParser();
 
 		/**
+		 * A regular expression used to check whether the MIME type of <script> elements matches one of the JavaScript mimetypes.
+		 * See {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#javascript_types} and
+		 * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type}
+		 *
+		 * @private
+		 * @member {RegExp}
+		 */
+		this._jsTypeRegex = new RegExp( [
+			'^((((application\\/(x-)?(ecm|jav)ascript)',
+			'|(text\\/((javascript1\\.[0-5])|((((x-)?(ecm|jav)a)|j|live)script))))\\s*(;.*)?)',
+			'|module)$'
+		].join( '' ) );
+
+		/**
 		 * A DOM converter used to convert DOM elements to view elements.
 		 *
 		 * @private
@@ -48,6 +62,8 @@ export default class HtmlDataProcessor {
 		 * @member {module:engine/dataprocessor/basichtmlwriter~BasicHtmlWriter}
 		 */
 		this._htmlWriter = new BasicHtmlWriter();
+
+		/** */
 	}
 
 	/**
@@ -119,10 +135,49 @@ export default class HtmlDataProcessor {
 	_toDom( data ) {
 		const document = this._domParser.parseFromString( data, 'text/html' );
 		const fragment = document.createDocumentFragment();
-		const nodes = document.body.childNodes;
+		const headNodes = document.head.childNodes;
+		const bodyNodes = document.body.childNodes;
 
-		while ( nodes.length > 0 ) {
-			fragment.appendChild( nodes[ 0 ] );
+		// We need to check if there are <script> elements in the <head> that should be in the <body> (see issue #9659).
+		// We aren't going to reimplement DOMParser, so short of that we use some heuristics to determine whether to add any
+		// <script> elements from the <head> into the final DocumentFragment we return.
+		const firstHeadNode = headNodes[ 0 ];
+
+		// If there is nothing in the <head>, don't bother with further checks
+		if ( firstHeadNode !== undefined ) {
+			// Copy-pasted HTML sometimes comes with a <meta> tag up top. We ignore this for subsequent processing
+			const headNodeStartIdx = ( firstHeadNode.nodeName.toLowerCase() === 'meta' ) ? 1 : 0;
+			let useHeadNodes = true;
+
+			// Check each node in the <head> other than the starting <meta>.
+			// If any of them is either not a <script> tag, or if the mimetype matches one of the JS mimetypes,
+			// then it probably belongs in the <head>, right where the DOMParser put it.
+			// If such an element is present, we trust that DOMParser did the right thing after all,
+			// so we break and don't add any children of <head> to the DocumentFragment
+			for ( let nodeIdx = headNodeStartIdx; nodeIdx < headNodes.length; nodeIdx++ ) {
+				const node = headNodes[ nodeIdx ];
+				if (
+					node.nodeName.toLowerCase() !== 'script' ||
+					!node.type ||
+					this._jsTypeRegex.test( node.type.toLowerCase() )
+				) {
+					useHeadNodes = false;
+					break;
+				}
+			}
+
+			// If we've determined that some of the <script> tags from the <head> belong in the final DocumentFragment,
+			// put them there
+			if ( useHeadNodes ) {
+				while ( headNodes.length > headNodeStartIdx ) {
+					fragment.appendChild( headNodes[ headNodeStartIdx ] );
+				}
+			}
+		}
+
+		// Add nodes from the <body> to the DocumentFragment.
+		while ( bodyNodes.length > 0 ) {
+			fragment.appendChild( bodyNodes[ 0 ] );
 		}
 
 		return fragment;
