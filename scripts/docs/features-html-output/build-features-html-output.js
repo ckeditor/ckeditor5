@@ -436,6 +436,9 @@ function beautify( input ) {
 		.join( '\n' );
 }
 
+/**
+ * Commits generated changes. If output file has not been changed, nothing is commited.
+ */
 function commitChanges() {
 	const exec = command => tools.shExec( command, { verbosity: 'error' } );
 
