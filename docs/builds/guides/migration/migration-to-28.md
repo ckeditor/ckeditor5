@@ -7,36 +7,40 @@ order: 11
 
 # Migration to CKEditor 5 v28.0.0
 
-This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v28.0.0 due to changes introduced in the `Image` plugin and some other image-related features.
+This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v28.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
-For the entire list of the changes introduced in version 28.0.0 of the CKEditor 5 see the *changelog (link)*.
+For the entire list of the changes introduced in version 28.0.0 of the CKEditor 5 see the [changelog](TODO:link).
 
-To see the new editor UI for the images visit the image feature description, especially:
-* Images in the structured content,
-* Images in the document-like content
+To see the new editor UI for the images visit the {@link features/images/images-overview image feature guide}, especially:
+* Images in the structured content, (TODO:link)
+* Images in the document-like content (TODO:link)
 
 ## Inline images
-From the 28.0.0 version, the existing `Image` plugin loads two independent plugins - `ImageInline` and `ImageBlock`, therefore both of them are included in all of the *predefined editor builds (link)* by default.
-* The `ImageInline` is a newly introduced plugin supporting an inline `<img>` tag nested in any *`$block` element (link)* in the editor. In the model, it is represented by an `inlineImage` element.
-* The `ImageBlock` maintains the functionality of the previous `Image` plugin. In the model, the previous `image` element is now called `blockImage`.
+From the 28.0.0 version, the existing {@link module:image/image~Image} plugin loads two independent plugins - {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
+* The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting an inline `<img>` tag nested in any {@link framework/guides/deep-dive/schema#defining-advanced-rules-in-checkchild-callbacks `$block` element} in the editor. In the model, it is represented by an `imageInline` element.
+* The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin. In the model, the previous `image` element is renamed to `imageBlock`.
 
-Note: It is possible to load only one of these plugins, but only when *building the editor from source (link)*.
+<info-box>
+**Note:** It is possible to load only one of these plugins, but only when {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source building the editor from source}.
+</info-box>
 
 ## Image caption
-An image caption is no longer automatically showed up when selecting the image widget. Its visibility can now be toggled by a `toggleImageCaption` button registered by the `ImageCaption` plugin. The button is added to the default image toolbar in all of the *predefined editor builds (link)*.
+An image caption is no longer automatically showed up when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `toggleImageCaption` button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link builds/guides/overview#available-builds predefined editor builds}.
 
+<info-box>
 To provide a valid HTML data output, an image caption is supported for the block images only. Adding a caption to an inline image results in conversion the block image.
+</info-box>
 
 ## Image styles
-Since the appearance of the image in the document depends on the image type (block/inline), the `ImageStyle` plugin is now in charge of switching between these types. Thus, the following changes have been introduced:
+Since the appearance of the image in the document depends on the image type (block/inline), the {@link module:image/imagestyle~ImageStyle} plugin is now in charge of switching between these types. Thus, the following changes have been introduced:
 
-* *A new set of buttons (link)* is available to manage the image type and appearance.
+* {@link module:image/image~ImageConfig#styles A new set of buttons} is available to manage the image type and appearance.
 
-* There is a possibility to group the buttons provided by the `ImageStyle` plugin into the dropdowns.
-	* A few *default dropdowns (link)* are provided.
-	* In the editor configuration *a custom dropdown (link)* can be declared.
+* There is a possibility to group the buttons provided by the {@link module:image/imagestyle~ImageStyle} plugin into the dropdowns.
+	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} are provided.
+	* In the editor configuration {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition a custom drop-down} can be declared.
 
-* The format of the `config.image.styles` has changed. The list of the supported styles must be wrapped with the `options` array. Read more about the *`image.styles` configuration (link)*.
+* The format of the `config.image.styles` has changed. The list of the styles must be wrapped with the `options` array. Read more about the {@link module:image/image~ImageConfig#styles `image.styles` configuration}.
 
 ```js
 // Old code
@@ -58,7 +62,7 @@ Editor.create( document.querySelector( '#editor' ), {
 } );
 ```
 
-* The format of the `imageStyle` has changed. It must now provide an information about the image types supporting a particular style. Read more about the *`imageStyle` format (link)*.
+* The format of the `imageStyle` has changed. It must now provide an information about the image types supporting a particular style. Read more about the {@link module:image/imagestyle~ImageStyleOptionDefinition}.
 
 ```js
 // Old code
@@ -91,16 +95,16 @@ Editor.create( document.querySelector( '#editor' ), {
 	}
 } );
 ```
-* Also, several changes has been made to the `ImageStyle` plugin API:
+* Also, several changes has been made to the {@link module:image/imagestyle~ImageStyle} plugin API:
+	* In the {@link module:image/imagestyle/utils image style utils} module
+		* the `defaultIcons` are renamed to {@link module:image/imagestyle/utils~DEFAULT_ICONS},
+		* the `defaultStyles` are renamed to {@link module:image/imagestyle/utils~DEFAULT_OPTIONS},
+		* the `normalizeImageStyles` function is now protected and is renamed to {@link module:image/imagestyle/utils~normalizeStyles}
 	* The `ImageStyleCommand#defaultStyle` and `ImageStyleCommand#styles` are private properties now.
-	* In the `ImageStyle~utils` module
-		* the `defaultIcons` are renamed to `DEFAULT_ICONS`,
-		* the `defaultStyles` are renamed to `DEFAULT_OPTIONS`,
-		* the `normalizeImageStyles` function is now protected and is renamed to `normalizeStyles`
 
 ## Image toolbar
 
-Due to the changes mentioned above, the image toolbar became crucial in terms of providing the user with proper interaction with images in terms of managing the image type and caption. Thus, it is recommended to use one of the following configurations as the minimum set-up for the image toolbar:
+Due to the changes mentioned above, the {@link module:image/image~ImageConfig#toolbar image toolbar} became crucial in terms of providing the user with proper interaction with images in terms of managing the image type and caption. Thus, it is recommended to use one of the following configurations as the minimum set-up for the image toolbar:
 
 * For the purposes of the structured content editing (implemented by default in the classic, balloon, balloon-block, and inline editor builds):
 
@@ -138,17 +142,17 @@ Due to the changes mentioned above, the image toolbar became crucial in terms of
 	} );
 	```
 
-To view the above configurations, see the *feature description page (link)*.
+To view the above configurations, see the {@link features/images/images-overview image feature guide}.
 
 ## Inserting images
 
-When loaded, the `ImageInline` plugin changes the default behavior of inserting/pasting/dropping images into a non-empty `$block` elements - it is now upcasted to the `inlineImage` model element. The image inserted into an empty paragraph is still upcasted to a `blockImage` model element. This behavior can be overridden in the *`ImageInsert` plugin configuration (link)* to force an insertion block or inline images only.
+When loaded, the {@link module:image/imageinline~ImageInline} plugin changes the default behavior of inserting/pasting/dropping images into a non-empty `$block` elements - it is now upcasted to the `imageInline` model element. The image inserted into an empty paragraph is still upcasted to a `imageBlock` model element. This behavior can be overridden in the {@link module:image/imageinsert~ImageInsertConfig `ImageInsert` plugin configuration} to force an insertion block or inline images only.
 
-Read more about the *logic controlling the image type while inserting/pasting/dropping (link)*.
+Read more about the [logic controlling the image type while inserting/pasting/dropping](TODO: link).
 
 ## Image utils
 
-The image utils are now wrapped with a plugin exported by the *@ckeditor/ckeditor5-image/src/imageutils module (link)*.
+The image utils are now wrapped by a {@link module:image/imageutils~ImageUtils} plugin.
 
 ```js
 // Old code
@@ -166,9 +170,9 @@ function isImageWidget( viewElement ) {
 	return imageUtils.isImageWidget( viewElement );
 }
 ```
-* The `insertImage` function
+* The {@link module:image/imageutils~ImageUtils#insertImage} function
 	* doesn't require a `model` parameter any longer,
-	* as a second parameter also *`Selectable` (link)* can be passed not only *`Position` (link)*,
+	* as a second parameter also {@link module:engine/model/selection~Selectable} can be passed not only {@link module:engine/model~Position},
 	* a new parameter `imageType` is now supported to force a type of the image to be inserted.
 ```js
 // Old code
@@ -185,12 +189,12 @@ insertImage( model, { src }, position );
 const src = 'path/to/image.jpg';
 const selection = this.editor.model.document.selection;
 const imageUtils = this.editor.plugins.get( 'ImageUtils' );
-const imageType = 'blockImage';
+const imageType = 'imageBlock';
 
 imageUtils.insertImage( { src }, selection, imageType );
 ```
-* The `isImage` function returns now a `Element` for both, inline and block images.
-* There are two new helpers: `isBlockImageView` and `isInlineImageView` functions.
+* The {@link module:image/imageutils~ImageUtils#isImage} function returns now an `Element` for both, inline and block images.
+* There are two new helpers: {@link module:image/imageutils~ImageUtils#isBlockImageView} and {@link module:image/imageutils~ImageUtils#isInlineImageView} functions.
 * The `getSelectedImageWidget` function is now protected and is renamed to `getClosestSelectedImageElement`.
 * The `getViewImgFromWidget` function is now protected and is renamed to `getViewImageFromWidget`.
 * The `isImageAllowed` function is now protected.
@@ -199,11 +203,11 @@ imageUtils.insertImage( { src }, selection, imageType );
 
 ## `EasyImage` plugin
 
-Please note that the {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {link module:image/image~ImageBlock} or {link module:image/image~ImageInline} without loading the other.
+Please note that the {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other.
 
 This decoupling does not have an impact on integrations based on on {@link builds/guides/overview#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-However, for integrations that {@link builds/guides/integration/advanced-setup build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or one of {link module:image/image~ImageBlock} or {link module:image/image~ImageInline}) must be imported separately:
+However, for integrations that {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or one of {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline}) must be imported separately:
 
 ```js
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -219,4 +223,4 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-Check out the comprehensive {@link features/image#installation guide to images} in CKEditor 5 to learn more.
+Check out the comprehensive {@link features/images/images-installation installation guide to images} in CKEditor 5 to learn more.
