@@ -10,13 +10,13 @@ const path = require( 'path' );
 const glob = require( 'glob' );
 const chalk = require( 'chalk' );
 
-const DESTINATION_DOCS_PATH = 'docs/builds/guides/integration/features-overview.md';
-const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-overview/third-party-packages';
+const DESTINATION_DOCS_PATH = 'docs/builds/guides/integration/features-html-output-overview.md';
+const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-party-packages';
 
 try {
-	const numberOfParsedFiles = parseMetadataFiles();
+	const numberOfPackages = parseMetadataFiles();
 
-	console.log( `✨ ${ chalk.green( `Content from ${ numberOfParsedFiles } package metadata files has been generated successfully.` ) }` );
+	console.log( `✨ ${ chalk.green( `The features HTML output from ${ numberOfPackages } packages has been generated successfully.` ) }` );
 } catch ( error ) {
 	console.log( `❌ ${ chalk.red( 'An error occurred during parsing a package metadata file.' ) }` );
 	console.log( error );
@@ -25,56 +25,45 @@ try {
 /**
  * Main parser function. Its purpose is to:
  * - read all package metadata files,
- * - parse and prepare the data for generating the features' output,
- * - use the parsed data to create a table containing all packages, plugins and their possible HTML output.
+ * - parse and prepare the data for generating the features HTML output overview,
+ * - use the parsed data to create tables for each package, that contains all plugins and their possible HTML output.
+ *
  * Returns total number of parsed files.
  *
- * The output table contains 3 columns: "Package", "Plugin" and "HTML output". The "Package" column contains all package names, for which
- * the package metadata file was found. Each table cell in the "Plugin" column has a human-readable name of the plugin (which is a link to
- * the feature documentation) and the name of the class used to create the plugin (which is a link to the API documentation). For each row
- * in the "Plugin" column there is at least one row in the "HTML output" column. If given plugin does not generate any output, the one and
- * only row in the "HTML output" column contains the word "None". Each item from the `htmlOutput` property from the package metadata file
- * corresponds to a separate row in the "HTML output" column. It contains one or more paragraphs with text describing the possible output:
- * HTML elements, their CSS classes, inline styles, other attributes and comments.
+ * Each generated table contains 2 columns: "Plugin" and "HTML output". Each table cell in the "Plugin" column has a human-readable name of
+ * the plugin (which is a link to the feature documentation) and the name of the class used to create the plugin (which is a link to the API
+ * documentation). For each row in the "Plugin" column there is at least one row in the "HTML output" column. If given plugin does not
+ * generate any output, the one and only row in the "HTML output" column contains the word "None". Each item from the `htmlOutput` property
+ * from the package metadata file corresponds to a separate row in the "HTML output" column. It contains one or more preformatted paragraphs
+ * describing the possible HTML output: HTML elements, their CSS classes, inline styles, other attributes and comments.
  *
- * ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
- * ┃     Package     ┃    Plugin    ┃           HTML output          ┃
- * ┣━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
- * ┃    package A    │ first plugin │ output #1 for the first plugin ┃
- * ┃                 │              ├────────────────────────────────┨
- * ┃                 │              ┄                                ┄
- * ┃                 │              ├────────────────────────────────┨
- * ┃                 │              │ output #N for the first plugin ┃
- * ┃                 ├──────────────┼────────────────────────────────┨
- * ┃                 ┄              ┄                                ┄
- * ┃                 ├──────────────┼────────────────────────────────┨
- * ┃                 │ last plugin  │ output #1 for the last plugin  ┃
- * ┃                 │              ├────────────────────────────────┨
- * ┃                 │              ┄                                ┄
- * ┃                 │              ├────────────────────────────────┨
- * ┃                 │              │ output #N for the last plugin  ┃
- * ┠─────────────────┼──────────────┼────────────────────────────────┨
- * ┃    package B    │   plugins    │       outputs per plugin       ┃
- * ┄                 ┄              ┄                                ┄
- * ┠─────────────────┼──────────────┼────────────────────────────────┨
- * ┃    package C    │   plugins    │       outputs per plugin       ┃
- * ┄                 ┄              ┄                                ┄
- * ┗━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ * ┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ * ┃    Plugin    ┃           HTML output          ┃
+ * ┣━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+ * ┃ first plugin │ output #1 for the first plugin ┃
+ * ┃              ├────────────────────────────────┨
+ * ┃              ┄                                ┄
+ * ┃              ├────────────────────────────────┨
+ * ┃              │ output #N for the first plugin ┃
+ * ┃──────────────┼────────────────────────────────┨
+ * ┄              ┄                                ┄
+ * ┃──────────────┼────────────────────────────────┨
+ * ┃ last plugin  │ output #1 for the last plugin  ┃
+ * ┃              ├────────────────────────────────┨
+ * ┃              ┄                                ┄
+ * ┃              ├────────────────────────────────┨
+ * ┃              │ output #N for the last plugin  ┃
+ * ┗━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ *
+ * Generated table is preceded by the package name as a heading and the link to a source package metadata file on GitHub.
  *
  * @returns {Number}
  */
 function parseMetadataFiles() {
 	const parsedFiles = parseFiles()
 		.map( packageMetadata => {
-			const numberOfRowsPerPackage = packageMetadata.plugins
-				.reduce( ( result, plugin ) => result + plugin.htmlOutput.length, 0 );
-
-			const packageNameRowspan = numberOfRowsPerPackage > 1 ?
-				`rowspan="${ numberOfRowsPerPackage }"` :
-				'';
-
-			return packageMetadata.plugins
-				.map( ( plugin, pluginIndex ) => {
+			const outputRows = packageMetadata.plugins
+				.map( plugin => {
 					const numberOfRowsPerPlugin = plugin.htmlOutput.length;
 
 					const pluginNameRowspan = numberOfRowsPerPlugin > 1 ?
@@ -83,19 +72,41 @@ function parseMetadataFiles() {
 
 					return plugin.htmlOutput
 						.map( ( htmlOutput, htmlOutputIndex ) => {
-							const packageNameCell = pluginIndex === 0 && htmlOutputIndex === 0 ?
-								`<td ${ packageNameRowspan }><code>${ packageMetadata.packageName }</code></td>` :
-								'';
-
 							const pluginNameCell = htmlOutputIndex === 0 ?
-								`<td ${ pluginNameRowspan }>${ plugin.name }</td>` :
+								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.name }</td>` :
 								'';
 
-							return `<tr>${ packageNameCell }${ pluginNameCell }<td>${ htmlOutput }</td></tr>`;
+							return (
+								'<tr>' +
+									pluginNameCell +
+									`<td class="html-output">${ htmlOutput }</td>` +
+								'</tr>'
+							);
 						} )
 						.join( '' );
 				} )
 				.join( '' );
+
+			const packageName = packageMetadata.packageName;
+
+			const linkToSourceFile = 'https://github.com/ckeditor/ckeditor5/blob/master' +
+				`/packages/${ packageName }/ckeditor5-metadata.json`;
+
+			return (
+				`<h3 id="${ packageName }"><code>${ packageName }</code></h3>` +
+				`<p>Source file: <a href="${ linkToSourceFile }"><code>ckeditor5-metadata.json</code> on GitHub</a></p>` +
+				'<table class="features-html-output">' +
+					'<thead>' +
+						'<tr>' +
+							'<th class="plugin">Plugin</th>' +
+							'<th class="html-output">HTML output</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						outputRows +
+					'</tbody>' +
+				'</table>'
+			);
 		} );
 
 	const generatedOutput = parsedFiles.join( '' );
@@ -128,9 +139,9 @@ function parseFiles() {
 }
 
 /**
- * Reads config for third-party packages and returns a glob pattern, that includes all paths to package metadata file for all possible
- * package paths: CKEditor 5, Collaboration Features, Internal and the third-party ones. If third-party package installed locally in
- * node_modules does not contain the package metadata file, the fallback path to a locally maintained package metadata file is used instead.
+ * Reads config for third-party packages and returns a glob pattern, that includes all paths to the package metadata file for all packages:
+ * CKEditor 5, Collaboration Features, Internal and the third-party ones. If third-party package installed locally in node_modules does not
+ * contain the package metadata file, the fallback path to a locally maintained package metadata file is used instead.
  *
  * @returns {String}
  */
@@ -265,47 +276,82 @@ function prepareApiLink( packageData, plugin ) {
 }
 
 /**
- * Prepares the HTML output to a format, that is ready to be displayed. The generated array of strings contains paragraphs with applied
- * visual formatting (i.e. <strong> or <code> tags).
+ * Prepares the HTML output to a format, that is ready to be displayed. The generated array of strings contains preformatted paragraphs with
+ * applied visual formatting (i.e. <strong> or <code> tags).
  *
  * @param {HtmlOutput} htmlOutput
  * @returns {Array.<String>}
  */
 function prepareHtmlOutput( htmlOutput ) {
+	const appendClasses = ( classes, separators ) => output => {
+		if ( !classes ) {
+			return output;
+		}
+
+		const parsedClasses = toArray( classes ).join( ' ' );
+
+		return (
+			output +
+			separators.prefix +
+			`<strong>class</strong>="${ parsedClasses }"` +
+			separators.suffix
+		);
+	};
+
+	const appendStyles = ( styles, separators ) => output => {
+		if ( !styles ) {
+			return output;
+		}
+
+		const parsedStyles = toArray( styles )
+			.map( wrapBy( { suffix: ':*' } ) )
+			.join( '; ' );
+
+		return (
+			output +
+			separators.prefix +
+			`<strong>style</strong>="${ parsedStyles }"` +
+			separators.suffix
+		);
+	};
+
+	const appendAttributes = ( attributes, separators ) => output => {
+		if ( !attributes ) {
+			return output;
+		}
+
+		const parsedAttributes = toArray( attributes )
+			.map( wrapBy( { prefix: '<strong>', suffix: '</strong>' } ) )
+			.map( wrapBy( { suffix: '="*"' } ) )
+			.map( wrapBy( { prefix: separators.prefix, suffix: separators.suffix } ) )
+			.join( '' );
+
+		return output + parsedAttributes;
+	};
+
 	return htmlOutput
 		.map( entry => {
+			const isMultiAttributeElement = [
+				entry.classes,
+				entry.styles,
+				...toArray( entry.attributes )
+			].filter( i => !!i ).length > 1;
+
+			const separators = {
+				prefix: isMultiAttributeElement ? ' '.repeat( 4 ) : ' ',
+				suffix: isMultiAttributeElement ? '<br>' : ''
+			};
+
 			const elements = entry.elements ?
-				`<p>${
-					toArray( entry.elements )
-						.map( wrapBy( { prefix: '<strong>', suffix: '</strong>' } ) )
-						.map( wrapBy( { prefix: '&lt;', suffix: '&gt;' } ) )
-						.map( wrapBy( { prefix: '<code>', suffix: '</code>' } ) )
-						.join( ', ' )
-				}</p>` :
-				'';
-
-			const classes = entry.classes ?
-				`<p><code>&lt;… <strong>class</strong>="${
-					toArray( entry.classes )
-						.join( ' ' )
-				}"&gt;</code></p>` :
-				'';
-
-			const styles = entry.styles ?
-				`<p><code>&lt;… <strong>style</strong>="${
-					toArray( entry.styles )
-						.map( wrapBy( { suffix: ':*' } ) )
-						.join( '; ' )
-				}"&gt;</code></p>` :
-				'';
-
-			const attributes = entry.attributes ?
-				`<p><code>&lt;… ${
-					toArray( entry.attributes )
-						.map( wrapBy( { prefix: '<strong>', suffix: '</strong>' } ) )
-						.map( wrapBy( { suffix: '="*"' } ) )
-						.join( ' ' )
-				}&gt;</code></p>` :
+				toArray( entry.elements )
+					.map( wrapBy( { prefix: '<strong>', suffix: '</strong>' } ) )
+					.map( wrapBy( { suffix: separators.suffix } ) )
+					.map( appendClasses( entry.classes, separators ) )
+					.map( appendStyles( entry.styles, separators ) )
+					.map( appendAttributes( entry.attributes, separators ) )
+					.map( wrapBy( { prefix: '&lt;', suffix: '&gt;' } ) )
+					.map( wrapBy( { prefix: '<code>', suffix: '</code>' } ) )
+					.join( '' ) :
 				'';
 
 			const others = entry.implements ?
@@ -327,7 +373,7 @@ function prepareHtmlOutput( htmlOutput ) {
 				}</p>` :
 				'';
 
-			return [ elements, classes, styles, attributes, others, comment ]
+			return [ elements, others, comment ]
 				.filter( item => !!item )
 				.join( '' );
 		} );
@@ -339,25 +385,11 @@ function prepareHtmlOutput( htmlOutput ) {
  * @param {String} output Generated output to be saved in the destination file.
  */
 function saveGeneratedOutput( output ) {
-	output =
-		'<table class="features-overview">' +
-			'<thead>' +
-				'<tr>' +
-					'<th>Package</th>' +
-					'<th>Plugin</th>' +
-					'<th>HTML output</th>' +
-				'</tr>' +
-			'</thead>' +
-			'<tbody>' +
-				output +
-			'</tbody>' +
-		'</table>';
-
 	output = beautify( output );
 
 	output = fs
 		.readFileSync( DESTINATION_DOCS_PATH, 'utf-8' )
-		.replace( /(<!-- features-overview-output-marker -->)[\s\S]*/, `$1${ output }` );
+		.replace( /(<!-- features-html-output-marker -->)[\s\S]*/, `$1\n${ output }` );
 
 	fs.writeFileSync( DESTINATION_DOCS_PATH, output );
 }
@@ -372,9 +404,9 @@ function saveGeneratedOutput( output ) {
 function beautify( input ) {
 	const lines = input
 		// Add new line before `<tag>` or `</tag>`, but only if it is not already preceded by a new line (negative lookbehind).
-		.replace( /(?<!\n)<(\/)?(table|thead|tbody|tr|th|td|p)(.*?)>/g, '\n<$1$2$3>' )
+		.replace( /(?<!\n)<(\/)?(table|thead|tbody|tr|th|td|p)( .*?)?>/g, '\n<$1$2$3>' )
 		// Add new line after `<tag>` or `</tag>`, but only if it is not already followed by a new line (negative lookahead).
-		.replace( /<(\/)?(table|thead|tbody|tr|th|td|p)(.*?)>(?!\n)/g, '<$1$2$3>\n' )
+		.replace( /<(\/)?(table|thead|tbody|tr|th|td|p)( .*?)?>(?!\n)/g, '<$1$2$3>\n' )
 		// Remove whitespace before `>`, that may appear there after adding an empty attribute.
 		.replace( /\s+>/g, '>' )
 		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
