@@ -17,7 +17,7 @@ import '../theme/image.css';
 /**
  * The image plugin.
  *
- * For a detailed overview, check the {@glink features/image image feature} documentation.
+ * For a detailed overview, check the {@glink features/images/images-overview image feature} documentation.
  *
  * This is a "glue" plugin which loads the following plugins:
  *

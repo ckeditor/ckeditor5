@@ -16,7 +16,7 @@ import '../theme/imagecaption.css';
 /**
  * The image caption plugin.
  *
- * For a detailed overview, check the {@glink features/images-captions image caption} documentation.
+ * For a detailed overview, check the {@glink features/images/images-captions image caption} documentation.
  *
  * @extends module:core/plugin~Plugin
  */
