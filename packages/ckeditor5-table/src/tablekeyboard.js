@@ -115,15 +115,16 @@ export default class TableKeyboard extends Plugin {
 				return;
 			}
 
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-			const isLastRow = currentRowIndex === table.childCount - 1;
+			const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
 
 			if ( isForward && isLastRow && isLastCellInRow ) {
 				editor.execute( 'insertTableRowBelow' );
 
 				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
 				// or it got overwritten) set the selection over the whole table to mirror the first cell case.
-				if ( currentRowIndex === table.childCount - 1 ) {
+				if ( currentRowIndex === tableUtils.getRows( table ) - 1 ) {
 					editor.model.change( writer => {
 						writer.setSelection( writer.createRangeOn( table ) );
 					} );

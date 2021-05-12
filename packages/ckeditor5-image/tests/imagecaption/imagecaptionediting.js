@@ -9,6 +9,7 @@ import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
 import ImageEditing from '../../src/image/imageediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -17,6 +18,34 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageCaptionEditing', () => {
 	let editor, model, doc, view;
+
+	// FakePlugin helps check if the plugin under test extends existing schema correctly.
+	class FakePlugin extends Plugin {
+		init() {
+			const schema = this.editor.model.schema;
+			const conversion = this.editor.conversion;
+
+			schema.register( 'foo', {
+				isObject: true,
+				isBlock: true,
+				allowWhere: '$block'
+			} );
+			schema.register( 'caption', {
+				allowIn: 'foo',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+
+			conversion.elementToElement( {
+				view: 'foo',
+				model: 'foo'
+			} );
+			conversion.elementToElement( {
+				view: 'caption',
+				model: 'caption'
+			} );
+		}
+	}
 
 	testUtils.createSinonSandbox();
 
@@ -59,6 +88,17 @@ describe( 'ImageCaptionEditing', () => {
 
 		model.schema.extend( '$block', { allowAttributes: 'aligmnent' } );
 		expect( model.schema.checkAttribute( [ '$root', 'image', 'caption' ], 'alignment' ) ).to.be.false;
+	} );
+
+	it( 'should extend caption if schema for it is already registered', async () => {
+		const { model } = await VirtualTestEditor
+			.create( {
+				plugins: [ FakePlugin, ImageCaptionEditing, ImageEditing, UndoEditing, Paragraph ]
+			} );
+
+		expect( model.schema.isRegistered( 'caption' ) ).to.be.true;
+		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'image' ], 'caption' ) ).to.be.true;
 	} );
 
 	describe( 'data pipeline', () => {

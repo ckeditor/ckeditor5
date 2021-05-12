@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow } from './converters/upcasttable';
+import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import {
 	convertParagraphInTableCell,
 	downcastInsertCell,
@@ -82,6 +82,9 @@ export default class TableEditing extends Plugin {
 			isSelectable: true
 		} );
 
+		// Figure conversion.
+		conversion.for( 'upcast' ).add( upcastTableFigure() );
+
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 
@@ -104,7 +107,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'paragraph',
 			view: convertParagraphInTableCell,
 			converterPriority: 'high'

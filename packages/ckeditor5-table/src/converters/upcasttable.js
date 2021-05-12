@@ -8,6 +8,51 @@
  */
 
 import { createEmptyTableCell } from '../utils/common';
+import { first } from 'ckeditor5/src/utils';
+
+/**
+ * Returns a function that converts the table view representation:
+ *
+ *		<figure class="table"><table>...</table></figure>
+ *
+ * to the model representation:
+ *
+ *		<table></table>
+ *
+ * @returns {Function}
+ */
+export function upcastTableFigure() {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Do not convert if this is not a "table figure".
+			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
+				return;
+			}
+
+			// Find an table element inside the figure element.
+			const viewTable = getViewTableFromFigure( data.viewItem );
+
+			// Do not convert if table element is absent or was already converted.
+			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return;
+			}
+
+			// Convert view table to model table.
+			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
+
+			// Get table element from conversion result.
+			const modelTable = first( conversionResult.modelRange.getItems() );
+
+			// When table wasn't successfully converted then finish conversion.
+			if ( !modelTable ) {
+				return;
+			}
+
+			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
+			conversionApi.updateConversionResult( modelTable, data );
+		} );
+	};
+}
 
 /**
  * View table element to model table element conversion helper.
@@ -49,6 +94,9 @@ export default function upcastTable() {
 
 			// Upcast table rows in proper order (heading rows first).
 			rows.forEach( row => conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) ) );
+
+			// Convert everything else.
+			conversionApi.convertChildren( viewTable, conversionApi.writer.createPositionAt( table, 'end' ) );
 
 			// Create one row and one table cell for empty table.
 			if ( table.isEmpty ) {
@@ -109,12 +157,26 @@ export function ensureParagraphInTableCell( elementName ) {
 	};
 }
 
+// Get view `<table>` element from the view widget (`<figure>`).
+//
+// @private
+// @param {module:engine/view/element~Element} figureView
+// @returns {module:engine/view/element~Element}
+function getViewTableFromFigure( figureView ) {
+	for ( const figureChild of figureView.getChildren() ) {
+		if ( figureChild.is( 'element', 'table' ) ) {
+			return figureChild;
+		}
+	}
+}
+
 // Scans table rows and extracts required metadata from the table:
 //
 // headingRows    - The number of rows that go as table headers.
 // headingColumns - The maximum number of row headings.
 // rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
 //
+// @private
 // @param {module:engine/view/element~Element} viewTable
 // @returns {{headingRows, headingColumns, rows}}
 function scanTable( viewTable ) {
@@ -186,6 +248,7 @@ function scanTable( viewTable ) {
 // - For body rows:
 //     - Calculates the number of column headings.
 //
+// @private
 // @param {module:engine/view/element~Element} tr
 // @returns {Number}
 function scanRowForHeadingColumns( tr ) {

@@ -139,6 +139,45 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
+			it( 'should create another row and move to the first cell in a new row - ignore non-row elements', () => {
+				model.schema.register( 'foo', {
+					allowIn: 'table',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+
+				editor.conversion.elementToElement( {
+					view: 'foo',
+					model: 'foo'
+				} );
+
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>[01]</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]</paragraph></tableCell>' +
+							'<tableCell><paragraph></paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should select the whole table if the "insertTableRowBelow" command is disabled', () => {
 				setModelData( model, modelTable( [
 					[ '11', '12[]' ]
