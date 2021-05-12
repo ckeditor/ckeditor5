@@ -10,10 +10,66 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-full' ), {
 		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			viewportTopOffset: window.getViewportTopOffsetConfig(),
+
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'uploadImage',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'undo',
+				'redo'
+			]
 		},
 		image: {
+			toolbar: [
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'imageStyle:inline',
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'resizeImage:100',
+				'resizeImage:200',
+				'resizeImage:original'
+			],
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					value: null,
+					icon: 'original'
+				},
+				{
+					name: 'resizeImage:100',
+					value: '100',
+					icon: 'medium'
+				},
+				{
+					name: 'resizeImage:200',
+					value: '200',
+					icon: 'large'
+				}
+			],
 			resizeUnit: 'px'
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
 		},
 		cloudServices: CS_CONFIG
 	} )
