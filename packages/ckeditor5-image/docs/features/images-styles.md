@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Image styles
-order: 50
+order: 60
 ---
 {@snippet features/build-image-source}
 
@@ -173,7 +173,7 @@ You can find advanced examples in the {@link module:image/image~ImageConfig#styl
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A button for each defined style, for example: `'imageStyle:full'` and `'imageStyle:side'` (to use in the {@link TODO-overview#image-toolbar image toolbar}).
+* A button for each defined style, for example: `'imageStyle:full'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'full'` and `'side'`):
 
 	```js

@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Text alternative
-order: 40
+order: 20
 ---
 {@snippet features/build-image-source}
 
@@ -22,11 +22,6 @@ The {@link module:image/image~Image} feature adds support for plain images with 
 You can see the demo of a WYSIWYG editor with the base image feature enabled below:
 
 {@snippet features/image-text-alternative}
-
-<!-- seem kinda unture, there is an uploader in the snippet -->
-<info-box hint>
-	The base image feature, unlike in CKEditor 4, does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (mentioned above) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
-</info-box>
 
 ## Common API
 

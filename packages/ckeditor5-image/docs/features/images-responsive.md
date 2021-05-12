@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Responsive images
-order: 20
+order: 40
 ---
 {@snippet features/build-image-source}
 

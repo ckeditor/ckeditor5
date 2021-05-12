@@ -257,7 +257,7 @@
 							"name": "Image upload",
 							"id": "features-image-upload",
 							"slug": "image-upload",
-							"order": 15
+							"order": 80
 						}
 					]
 				},
