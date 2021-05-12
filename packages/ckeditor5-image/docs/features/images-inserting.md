@@ -3,6 +3,7 @@ category: features-image-upload
 menu-title: Inserting images via URL
 order: 15
 ---
+{@snippet features/build-image-source}
 
 # Inserting images
 

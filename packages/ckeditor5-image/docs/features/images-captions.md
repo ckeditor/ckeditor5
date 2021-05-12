@@ -3,6 +3,7 @@ category: features-images
 menu-title: Image captions
 order: 30
 ---
+{@snippet features/build-image-source}
 
 # Image captions
 

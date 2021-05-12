@@ -3,6 +3,7 @@ category: features-images
 menu-title: Overview
 order: 10
 ---
+{@snippet features/build-image-source}
 
 # Images in CKEditor 5 (overview)
 
@@ -11,8 +12,6 @@ CKEditor 5 comes with various tools to work with images. The editor allows inser
 To see the all image features in action, check out the [**demo**](#demo) below. To learn more about individual plugins (sub-features) in the image ecosystem, see the [**Image features**](#image-features) section.
 
 ## Demo
-
-{@snippet features/build-image-source}
 
 {@snippet features/image-full}
 

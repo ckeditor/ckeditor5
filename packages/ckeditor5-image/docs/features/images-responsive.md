@@ -3,6 +3,7 @@ category: features-images
 menu-title: Responsive images
 order: 20
 ---
+{@snippet features/build-image-source}
 
 # Responsive images
 

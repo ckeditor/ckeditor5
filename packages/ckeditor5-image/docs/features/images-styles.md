@@ -3,6 +3,7 @@ category: features-images
 menu-title: Image styles
 order: 30
 ---
+{@snippet features/build-image-source}
 
 # Image styles
 

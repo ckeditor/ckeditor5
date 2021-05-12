@@ -3,6 +3,7 @@ category: features-images
 menu-title: Text alternative
 order: 30
 ---
+{@snippet features/build-image-source}
 
 # Image text alternative
 
