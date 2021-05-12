@@ -6,7 +6,7 @@ order: 40
 
 # Resizing images
 
-The [image styles](#image-styles) feature is meant to give the user a choice between a set of styling options provided by the system (i.e. by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes into play. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
+The {@link features/images-styles image styles} feature is meant to give the user a choice between a set of styling options provided by the system (i.e. by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes into play. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
 
 ## Methods to resize images
 
@@ -176,7 +176,7 @@ ClassicEditor
 
 ## Enabling image resizing
 
-The image resize feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the [Installation](#installation) section.
+The image resize feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-installation installation} section.
 
 ## Markup and styling
 
@@ -188,7 +188,7 @@ When you resize an image, the inline `width` style is used and the `<figure>` el
 </figure>
 ```
 
-The `image_resized` class is used to disable `max-width` assigned by the [image styles](#image-styles) if one is applied to this image. For instance, the "side image" style is defined like this:
+The `image_resized` class is used to disable `max-width` assigned by the {@link features/images-styles image styles} if one is applied to this image. For instance, the "side image" style is defined like this:
 
 ```css
 .ck-content .image-style-side {

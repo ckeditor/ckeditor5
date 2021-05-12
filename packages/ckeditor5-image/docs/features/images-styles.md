@@ -12,7 +12,7 @@ In more advanced scenarios, the user may need to be able to decide about the ima
 
 Finally, in certain situations, the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately.
 
-The {@link module:image/imagestyle~ImageStyle} feature solves the last two scenarios. The former is handled by so-called ["semantical styles"](#semantical-styles) and the latter by ["presentational styles"](#presentational-styles) in combination with the [image resize](#resizing-images) feature.
+The {@link module:image/imagestyle~ImageStyle} feature solves the last two scenarios. The former is handled by so-called ["semantical styles"](#semantical-styles) and the latter by ["presentational styles"](#presentational-styles) in combination with the {@link features/images-resizing image resize} feature.
 
 The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `config.image.styles`} option. Respective buttons should also be added to the image toolbar via {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}.
 
@@ -77,7 +77,7 @@ See the result in the WYSIWYG editor below. You can change the style of an image
 </info-box>
 
 <info-box warning>
-	While semantical styles can be combined with manual [image resizing](#resizing-images), these features were not designed to be used together.
+	While semantical styles can be combined with manual {@link features/images-resizing image resizing}, these features were not designed to be used together.
 
 	If you want to enable image resizing, use [presentational image styles](#presentational-styles).
 </info-box>
@@ -89,7 +89,7 @@ Presentational styles do not add any special meaning to the content. They direct
 Currently, the available presentational styles are "align center", "align left" and "align right".
 
 <info-box warning>
-	Presentational image styles should be combined with the optional [image resize feature](#resizing-images) as these features were designed to be used together. The image width is then controlled by the image resize feature.
+	Presentational image styles should be combined with the optional {@link features/images-resizing image resizing feature} as these features were designed to be used together. The image width is then controlled by the image resize feature.
 
 	If you do not enable the image resize feature in your setup using the default presentational styles, your images will always take up 100% of the editor width so the alignment may not be visible.
 
@@ -142,7 +142,7 @@ ClassicEditor
 
 The code sample above uses predefined presentational image styles: `'alignLeft'`, `'alignCenter'` and `'alignRight'`. They apply, respectively, the `.image-style-align-left`, `.image-style-align-center` and  `.image-style-align-right` classes to the `<figure>` element.
 
-In addition to that, the sample is configured to use the [image resize feature](#resizing-images) with three {@link module:image/image~ImageConfig#resizeOptions resize options} available: `'resizeImage:original'`, `'resizeImage:50'` and `'resizeImage:75'`. They allow you to set the image width in the editor to the original image size, 50% and 75%, respectively.
+In addition to that, the sample is configured to use the {@link features/images-resizing image resize feature} with three {@link module:image/image~ImageConfig#resizeOptions resize options} available: `'resizeImage:original'`, `'resizeImage:50'` and `'resizeImage:75'`. They allow you to set the image width in the editor to the original image size, 50% and 75%, respectively.
 
 See the result below:
 
