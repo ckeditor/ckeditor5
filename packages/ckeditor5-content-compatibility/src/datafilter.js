@@ -7,10 +7,12 @@
  * @module content-compatibility/datafilter
  */
 
+import { Plugin } from 'ckeditor5/src/core';
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, CKEditorError } from 'ckeditor5/src/utils';
-import { toWidget } from 'ckeditor5/src/widget';
+import { toWidget, Widget } from 'ckeditor5/src/widget';
 import { cloneDeep } from 'lodash-es';
+import DataSchema from './dataschema';
 
 import '../theme/datafilter.css';
 
@@ -40,10 +42,12 @@ import '../theme/datafilter.css';
  *				color: /[\s\S]+/
  *			}
  *		} );
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class DataFilter {
-	constructor( editor, dataSchema ) {
-		this.editor = editor;
+export default class DataFilter extends Plugin {
+	constructor( editor ) {
+		super( editor );
 
 		/**
 		 * An instance of the {@link module:content-compatibility/dataschema~DataSchema}.
@@ -52,7 +56,7 @@ export default class DataFilter {
 		 * @private
 		 * @member {module:content-compatibility/dataschema~DataSchema} #_dataSchema
 		 */
-		this._dataSchema = dataSchema;
+		this._dataSchema = editor.plugins.get( 'DataSchema' );
 
 		/**
 		 * {@link module:engine/view/matcher~Matcher Matcher} instance describing rules upon which
@@ -92,6 +96,20 @@ export default class DataFilter {
 		this._dataInitialized = false;
 
 		this._registerElementsAfterInit();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'DataFilter';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ DataSchema, Widget ];
 	}
 
 	/**
@@ -195,11 +213,7 @@ export default class DataFilter {
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	_registerObjectElement( definition ) {
-		const schema = this.editor.model.schema;
-
-		if ( !schema.isRegistered( definition.model ) ) {
-			schema.register( definition.model, definition.modelSchema );
-		}
+		this.editor.model.schema.register( definition.model, definition.modelSchema );
 
 		this._addObjectElementConversion( definition );
 		this._addDisallowedAttributeConversion( definition );
