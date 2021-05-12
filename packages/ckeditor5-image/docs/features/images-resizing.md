@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Resizing images
-order: 40
+order: 60
 ---
 {@snippet features/build-image-source}
 

@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Linking images
-order: 50
+order: 70
 ---
 {@snippet features/build-image-source}
 

@@ -1,23 +1,17 @@
 ---
 category: features-image-upload
 menu-title: Inserting images via URL
-order: 15
+order: 60
 ---
 {@snippet features/build-image-source}
 
 # Inserting images
 
-[TODO] overview of possible insertion methods, links to the image upload guides
-
-## Image upload
-
-See the {@link features/image-upload Image upload} guide.
+Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL. It is one of the fastest and most efficient ways to include images in the content is adding images that are already online.
 
 ## Inserting images via source URL
 
-Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL.
-
-In order to enable this option, install the `ImageInsert` plugin and add the `insertImage` button to the toolbar (it replaces the standard `uploadImage` button).
+Using the URL of an image, the user may easily paste it into the editor. In order to enable this option, install the `ImageInsert` plugin and add the `insertImage` button to the toolbar (it replaces the standard `uploadImage` button).
 
 ```js
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
