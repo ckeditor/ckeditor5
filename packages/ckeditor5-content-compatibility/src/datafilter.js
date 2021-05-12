@@ -557,9 +557,10 @@ function setViewElementAttributes( writer, viewAttributes, viewElement ) {
 // Creates object view element from the given model element.
 //
 // @private
+// @param {String} viewName
 // @param {module:engine/model/element~Element} modelElement
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @returns {module:engine/view/element~Element} viewElement
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @returns {module:engine/view/element~Element}
 function createObjectViewElement( viewName, modelElement, writer ) {
 	const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
 	const viewContent = modelElement.getAttribute( 'value' );

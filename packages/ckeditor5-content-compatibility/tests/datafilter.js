@@ -15,6 +15,8 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 
+/* global document */
+
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 
