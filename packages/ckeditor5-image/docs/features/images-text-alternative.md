@@ -7,27 +7,40 @@ order: 20
 
 # Image text alternative
 
-The {@link module:image/image~Image} feature adds support for plain images with just the `alt` attribute set. This translates to the following HTML:
+Image text alternative (`alt` attribute) is essential for both accessibility and [<abbr title="Search Engine Optimization">SEO</abbr>](https://en.wikipedia.org/wiki/Search_engine_optimization). It helps screen reader users navigate and understand the document and provides meaningful image description to search engine crawlers.
+
+CKEditor 5 provides support for alternate image text using the The {@link module:imagetextalternative/imagetextalternative~ImageTextAlternative} plugin. The `alt` attribute is supported by both block and inline images in the editor output data:
 
 ```html
+<!-- Block image markup -->
 <figure class="image">
-	<img src="..." alt="...">
+	<img src="..." alt="Description of an image">
+	<figcaption>...</figcaption>
 </figure>
+
+<!-- Inline image in a paragraph -->
+<p>Some text followed by an image <img src="..." alt="Description of an image">.</p>
 ```
 
 <info-box hint>
 	This feature follows the markup proposed by the [Editor Recommendations](https://ckeditor.github.io/editor-recommendations/features/image.html) project.
 </info-box>
 
+## Demo
+
 You can see the demo of a WYSIWYG editor with the base image feature enabled below:
 
 {@snippet features/image-text-alternative}
+
+## Installation
+
+This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation} guide to learn how to enable this feature.
 
 ## Common API
 
 The {@link module:imagetextalternative/imagetextalternative~ImageTextAlternative} plugin registers:
 
-* The `'imageTextAlternative'` button (to use in the {@link TODO-overview#image-toolbar image toolbar}).
+* The `'imageTextAlternative'` button (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}.
 
 <info-box>
