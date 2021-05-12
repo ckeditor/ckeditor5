@@ -35,7 +35,13 @@ class ExtendHTMLSupport extends Plugin {
 	init() {
 		const { dataFilter, dataSchema } = this.editor.plugins.get( GeneralHtmlSupport );
 
-		dataSchema.registerObjectElement( { model: 'htmlXyz', view: 'xyz', isBlock: true } );
+		dataSchema.registerBlockElement( { model: 'htmlXyz',
+			view: 'xyz',
+			isObject: true,
+			modelSchema: {
+				inheritAllFrom: '$htmlObjectBlock'
+			}
+		} );
 
 		const definitions = [
 			{ name: 'object', attributes: [ 'classid', 'codebase' ] },

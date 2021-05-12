@@ -10,14 +10,6 @@
 	padding-top: calc(var(--ck-font-size-tiny) + var(--ck-spacing-large));
 	min-width: calc(76px + var(--ck-spacing-standard));
 
-	&.html-object-embed-block {
-		margin: 1em auto;
-	}
-
-	&.html-object-embed-inline {
-		display: inline-block;
-	}
-
 	&:not(.ck-widget_selected):not(:hover) {
 		outline: var(--ck-html-object-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border);
 	}
@@ -53,3 +45,12 @@
 		pointer-events: none;
 	}
 }
+
+div.ck-widget.html-object-embed {
+	margin: 1em auto;
+}
+
+span.ck-widget.html-object-embed {
+	display: inline-block;
+}
+
