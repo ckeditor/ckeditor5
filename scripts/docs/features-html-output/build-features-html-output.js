@@ -15,9 +15,13 @@ const DESTINATION_DOCS_PATH = 'docs/builds/guides/integration/features-html-outp
 const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-party-packages';
 
 try {
-	const numberOfPackages = parseMetadataFiles();
+	const { output, numberOfPackages } = createHtmlOutputMarkup();
 
-	console.log( `✨ ${ chalk.green( `The features HTML output from ${ numberOfPackages } packages has been generated successfully.` ) }` );
+	saveGeneratedOutput( output );
+
+	console.log(
+		`✨ ${ chalk.green( `The features HTML output page has been generated successfully for ${ numberOfPackages } packages.` ) }`
+	);
 
 	const shouldCommitChanges = process.argv.includes( '--commit' );
 
@@ -27,6 +31,8 @@ try {
 } catch ( error ) {
 	console.log( `❌ ${ chalk.red( 'An error occurred during parsing a package metadata file.' ) }` );
 	console.log( error );
+
+	process.exit( 1 );
 }
 
 /**
@@ -64,29 +70,31 @@ try {
  *
  * Generated table is preceded by the package name as a heading and the link to a source package metadata file on GitHub.
  *
- * @returns {Number}
+ * @returns {Object} result
+ * @returns {String} result.output Generated HTML markup.
+ * @returns {Number} result.numberOfPackages Total number of package metadata files, that have been parsed.
  */
-function parseMetadataFiles() {
+function createHtmlOutputMarkup() {
 	const parsedFiles = parseFiles()
 		.map( packageMetadata => {
 			const outputRows = packageMetadata.plugins
 				.map( plugin => {
-					const numberOfRowsPerPlugin = plugin.htmlOutput.length;
+					const numberOfRowsPerPlugin = plugin.htmlOutputMarkup.length;
 
 					const pluginNameRowspan = numberOfRowsPerPlugin > 1 ?
 						`rowspan="${ numberOfRowsPerPlugin }"` :
 						'';
 
-					return plugin.htmlOutput
-						.map( ( htmlOutput, htmlOutputIndex ) => {
+					return plugin.htmlOutputMarkup
+						.map( ( htmlOutputMarkup, htmlOutputIndex ) => {
 							const pluginNameCell = htmlOutputIndex === 0 ?
-								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.name }</td>` :
+								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
 
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="html-output">${ htmlOutput }</td>` +
+									`<td class="html-output">${ htmlOutputMarkup }</td>` +
 								'</tr>'
 							);
 						} )
@@ -116,11 +124,10 @@ function parseMetadataFiles() {
 			);
 		} );
 
-	const generatedOutput = parsedFiles.join( '' );
-
-	saveGeneratedOutput( generatedOutput );
-
-	return parsedFiles.length;
+	return {
+		output: parsedFiles.join( '' ),
+		numberOfPackages: parsedFiles.length
+	};
 }
 
 /**
@@ -201,7 +208,7 @@ function parseFile( file ) {
 		isThirdParty: isThirdPartyPackage
 	};
 
-	const plugins = preparePlugins( packageData, metadata.plugins );
+	const plugins = createHtmlOutputMarkupForPackage( packageData, metadata.plugins );
 
 	return {
 		packageName,
@@ -210,26 +217,26 @@ function parseFile( file ) {
 }
 
 /**
- * Parses all plugins from package metadata file.
+ * Parses all plugins from package metadata file and generates the HTML output markup for each plugin.
  *
  * @param {Package} packageData Package properties.
  * @param {Array.<Plugin>} plugins Plugins to parse.
  * @returns {Array.<ParsedPlugin>}
  */
-function preparePlugins( packageData, plugins = [] ) {
+function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 	return plugins
 		.map( plugin => {
-			const pluginName = prepareFeatureLink( packageData, plugin );
+			const pluginNameLink = createFeatureLink( packageData, plugin );
 
-			const pluginClassName = prepareApiLink( packageData, plugin );
+			const pluginClassNameLink = createApiLink( packageData, plugin );
 
-			const htmlOutput = plugin.htmlOutput ?
-				prepareHtmlOutput( plugin.htmlOutput ) :
+			const htmlOutputMarkup = plugin.htmlOutput ?
+				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
 				[ '<p>None.</p>' ];
 
 			return {
-				name: `<p>${ pluginName }</p><p>${ pluginClassName }</p>`,
-				htmlOutput
+				pluginNameMarkup: `<p>${ pluginNameLink }</p><p>${ pluginClassNameLink }</p>`,
+				htmlOutputMarkup
 			};
 		} );
 }
@@ -241,7 +248,7 @@ function preparePlugins( packageData, plugins = [] ) {
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
-function prepareFeatureLink( packageData, plugin ) {
+function createFeatureLink( packageData, plugin ) {
 	if ( !plugin.docs ) {
 		return plugin.name;
 	}
@@ -262,7 +269,7 @@ function prepareFeatureLink( packageData, plugin ) {
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
-function prepareApiLink( packageData, plugin ) {
+function createApiLink( packageData, plugin ) {
 	const pluginClassName = `<code>${ plugin.className }</code>`;
 
 	if ( packageData.isThirdParty ) {
@@ -289,7 +296,7 @@ function prepareApiLink( packageData, plugin ) {
  * @param {HtmlOutput} htmlOutput
  * @returns {Array.<String>}
  */
-function prepareHtmlOutput( htmlOutput ) {
+function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 	const appendClasses = ( classes, separators ) => output => {
 		if ( !classes ) {
 			return output;
@@ -444,14 +451,24 @@ function commitChanges() {
 
 	const hasChanges = exec( `git diff --name-only ${ DESTINATION_DOCS_PATH }` ).trim().length;
 
-	if ( hasChanges ) {
-		exec( `git add ${ DESTINATION_DOCS_PATH }` );
-		exec( 'git commit -m "Docs (ckeditor5): Updated the features HTML output overview guide."' );
-
-		console.log( 'ℹ️ Successfully commited generated changes.' );
-	} else {
+	if ( !hasChanges ) {
 		console.log( 'ℹ️ Nothing to commit. The features HTML output overview guide is up to date.' );
+
+		return;
 	}
+
+	const hasStagedChanges = exec( 'git diff --cached --name-only' ).trim().length;
+
+	if ( hasStagedChanges ) {
+		console.log( 'ℹ️ There are changes, that have been already staged for next commit. Commit or stash them first.' );
+
+		return;
+	}
+
+	exec( `git add ${ DESTINATION_DOCS_PATH }` );
+	exec( 'git commit -m "Docs (ckeditor5): Updated the features HTML output overview guide."' );
+
+	console.log( 'ℹ️ Successfully commited generated changes.' );
 }
 
 /**
@@ -542,20 +559,19 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 
 /**
  * @typedef {Object} ParsedPlugin
- * @property {String} name Plugin name.
- * @property {Array.<String>} htmlOutput Each item in this array contains a separate output definition. This output definition is a string
- * with all elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links, visual
- * emphasis, etc.) and ready to be displayed.
+ * @property {String} pluginNameMarkup HTML markup containing plugin name.
+ * @property {Array.<String>} htmlOutputMarkup Each item in this array contains a separate output definition. This output definition is
+ * a string with all elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links,
+ * visual emphasis, etc.) and ready to be displayed.
  */
 
 /**
  * @typedef {Object} Package
  * @property {String} name Package name.
- * @property {String} isExternal Determines, if a given package is considered as external one in the context of the CKEditor 5. If package
- * is not created by CKSource, then isExternal = false. Otherwise, it informs if it belongs to a CKEditor 5 repo (isExternal = false), or if
- * it comes from an external folder: from Collaboration Features or Internal (isExternal = true).
- * @property {String} isThirdParty Determines whether a given package has been created outside CKSource. A third-party package is not
- * considered as external one.
+ * @property {String} isExternal Determines if a given package comes from a CKEditor 5 external project like Collaboration Features or
+ * CKEditor 5 Internal. It is set to `false` for third-party packages.
+ * @property {String} isThirdParty Determines whether a given package has been created outside the CKEditor 5 ecosystem. A third-party
+ * package is not considered as the external one.
  */
 
 /**
