@@ -249,14 +249,17 @@
 					]
 				},
 				{
-					"name": "Image upload",
-					"id": "features-image-upload",
-					"slug": "image-upload"
-				},
-				{
 					"name": "Images",
 					"id": "features-images",
-					"slug": "images"
+					"slug": "images",
+					"categories": [
+						{
+							"name": "Image upload",
+							"id": "features-image-upload",
+							"slug": "image-upload",
+							"order": 15
+						}
+					]
 				},
 				{
 					"name": "Lists",

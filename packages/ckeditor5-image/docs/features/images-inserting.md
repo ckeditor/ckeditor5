@@ -1,7 +1,7 @@
 ---
-category: features-images
-menu-title: Inserting
-order: 20
+category: features-image-upload
+menu-title: Inserting images via URL
+order: 15
 ---
 
 # Inserting images
