@@ -23,7 +23,7 @@ The image link can be added or edited via the image toolbar. An icon in top righ
 	<figcaption>Image caption</figcaption>
 </figure>
 ```
-Use the link icon in the image toolbar to access the edit options for links on image.
+Use the link icon in the image toolbar to access the edit options for links on image. Notice the top-right icon indicating a linked image.
 
 {@snippet features/image-link}
 
