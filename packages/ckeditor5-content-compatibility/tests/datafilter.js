@@ -131,12 +131,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>' +
-				'<htmlObjectEmbedInline' +
-				' value=""' +
-				' view="input">' +
-				'</htmlObjectEmbedInline>' +
-				'</paragraph>'
+				'<paragraph><htmlInput value=""></htmlInput></paragraph>'
 			);
 
 			expect( editor.getData() ).to.equal( '<p><input></p>' );
@@ -152,10 +147,8 @@ describe( 'DataFilter', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>' +
-				'<htmlObjectEmbedInline' +
-				' value="<source src="https://example.com/video.mp4" type="video/mp4"> Your browser does not support the video tag."' +
-				' view="video">' +
-				'</htmlObjectEmbedInline>' +
+				'<htmlVideo value="<source src="https://example.com/video.mp4" type="video/mp4">' +
+				' Your browser does not support the video tag."></htmlVideo>' +
 				'</paragraph>'
 			);
 
@@ -167,10 +160,13 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should recognize block elements', () => {
-			dataSchema.registerObjectElement( {
+			dataSchema.registerBlockElement( {
 				model: 'htmlXyz',
 				view: 'xyz',
-				isBlock: true
+				isObject: true,
+				modelSchema: {
+					inheritAllFrom: '$htmlObjectBlock'
+				}
 			} );
 
 			dataFilter.allowElement( { name: 'xyz' } );
@@ -178,10 +174,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<xyz>foobar</xyz>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<htmlObjectEmbedBlock' +
-				' value="foobar"' +
-				' view="xyz">' +
-				'</htmlObjectEmbedBlock>'
+				'<htmlXyz value="foobar"></htmlXyz>'
 			);
 
 			expect( editor.getData() ).to.equal( '<xyz>foobar</xyz>' );
@@ -194,7 +187,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input type="text"></p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline></paragraph>',
+				data: '<paragraph><htmlInput htmlAttributes="(1)" value=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
 						attributes: {
@@ -214,7 +207,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input style="color:red;"></p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline></paragraph>',
+				data: '<paragraph><htmlInput htmlAttributes="(1)" value=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
 						styles: {
@@ -234,7 +227,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input class="foobar"></p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline></paragraph>',
+				data: '<paragraph><htmlInput htmlAttributes="(1)" value=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
 						classes: [ 'foobar' ]
@@ -254,8 +247,8 @@ describe( 'DataFilter', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-				'<htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline>' +
-				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
+				'<htmlInput htmlAttributes="(1)" value=""></htmlInput>' +
+				'<htmlInput value=""></htmlInput>' +
 				'</paragraph>',
 				attributes: {
 					1: {
@@ -278,8 +271,8 @@ describe( 'DataFilter', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-				'<htmlObjectEmbedInline htmlAttributes="(1)" value="" view="input"></htmlObjectEmbedInline>' +
-				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
+				'<htmlInput htmlAttributes="(1)" value=""></htmlInput>' +
+				'<htmlInput value=""></htmlInput>' +
 				'</paragraph>',
 				attributes: {
 					1: {
@@ -302,8 +295,8 @@ describe( 'DataFilter', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
-				'<htmlObjectEmbedInline value="" view="input"></htmlObjectEmbedInline>' +
+				'<htmlInput value=""></htmlInput>' +
+				'<htmlInput value=""></htmlInput>' +
 				'</paragraph>',
 				attributes: {}
 			} );

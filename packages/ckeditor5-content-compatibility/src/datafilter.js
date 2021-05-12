@@ -191,20 +191,17 @@ export default class DataFilter {
 	/**
 	 * Registers object element and attribute converters for the given data schema definition.
 	 *
-	 * This method will embed element inside a `htmlObjectEmbedBlock` or `htmlObjectEmbedInline` widget
-	 * depending on {@link module:content-compatibility/dataschema~DataSchemaObjectElementDefinition#isBlock}
-	 * property.
-	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	_registerObjectElement( definition ) {
-		if ( definition.isBlock ) {
-			this._registerBlockObjectElement( definition );
-		} else {
-			this._registerInlineObjectElement( definition );
+		const schema = this.editor.model.schema;
+
+		if ( !schema.isRegistered( definition.model ) ) {
+			schema.register( definition.model, definition.modelSchema );
 		}
 
+		this._addObjectElementConversion( definition );
 		this._addDisallowedAttributeConversion( definition );
 	}
 
@@ -252,113 +249,22 @@ export default class DataFilter {
 	}
 
 	/**
-	 * Registers block object element and attribute converters for the given data schema definition.
+	 * Adds converters for the given data schema definition marked as
+	 * {@link module:content-compatibility/dataschema~DataSchemaDefinition#isObject isObject}.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
-	*/
-	_registerBlockObjectElement( definition ) {
-		this._registerObjectElementWidget( 'htmlObjectEmbedBlock', {
-			isObject: true,
-			isBlock: true,
-			allowWhere: '$block'
-		}, writer => writer.createContainerElement( 'div',
-			{ class: 'html-object-embed-block' } )
-		);
-
-		this._addObjectElementToElementUpcastConversion( definition, 'htmlObjectEmbedBlock' );
-	}
-
-	/**
-	 * Registers inline object element and attribute converters for the given data schema definition.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
-	*/
-	_registerInlineObjectElement( definition ) {
-		this._registerObjectElementWidget( 'htmlObjectEmbedInline', {
-			isObject: true,
-			isInline: true,
-			allowWhere: '$text',
-			allowAttributesOf: '$text'
-		}, writer => writer.createContainerElement( 'span',
-			{ class: 'html-object-embed-inline' },
-			{ isAllowedInsideAttributeElement: true } )
-		);
-
-		this._addObjectElementToElementUpcastConversion( definition, 'htmlObjectEmbedInline' );
-	}
-
-	/**
-	 * Registers widget used to embed object elements.
-	 *
-	 * You should provide `createViewContainer` function used to create widget wrapper element.
-	 *
-	 *		this._registerObjectElementWidget( 'customWidgetModel', widgetSchema, writer => {
-	 *			return writer.createContainerElement( 'div', { class: 'widget' } );
-	 *		} );
-	 *
-	 * @private
-	 * @param {String} widgetName
-	 * @param {module:engine/model/schema~SchemaItemDefinition} widgetSchema
-	 * @param {Function} createViewContainer
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
-	_registerObjectElementWidget( widgetName, widgetSchema, createViewContainer ) {
-		const schema = this.editor.model.schema;
+	_addObjectElementConversion( definition ) {
+		const { view: viewName, model: modelName } = definition;
 		const conversion = this.editor.conversion;
 
-		// Object element widget should be registered only once, as it's used to embed different views.
-		if ( schema.isRegistered( widgetName ) ) {
+		if ( !viewName ) {
 			return;
 		}
 
-		schema.register( widgetName, {
-			// Extend with attributes required by conversion.
-			allowAttributes: [ 'value', 'view', 'htmlAttributes' ],
-			...widgetSchema
-		} );
-
-		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: widgetName,
-			view: createObjectViewElement
-		} );
-
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: widgetName,
-			view: ( modelElement, conversionApi ) => {
-				const { writer } = conversionApi;
-				const widgetLabel = this.editor.t( 'HTML object' );
-
-				// Widget cannot be a raw element because the widget system would not be able
-				// to add its UI to it. Thus, we need separate view container.
-				const viewContainer = createViewContainer( writer );
-
-				// Add required attributes here, so we don't have to duplicate this logic between
-				// #_registerInlineObjectElement() and #_registerBlockObjectElement() methods.
-				writer.addClass( 'html-object-embed', viewContainer );
-				writer.setAttribute( 'data-html-object-embed-label', widgetLabel, viewContainer );
-				writer.setAttribute( 'dir', this.editor.locale.uiLanguageDirection, viewContainer );
-
-				const viewElement = createObjectViewElement( modelElement, conversionApi );
-				writer.addClass( 'html-object-embed__content', viewElement );
-
-				writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
-
-				return toWidget( viewContainer, writer, { widgetLabel } );
-			}
-		} );
-	}
-
-	/**
-	 * Registers object element to element upcast conversion for the given data schema definition.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaObjectElementDefinition} definition
-	 * @param {String} widgetName
-	 */
-	_addObjectElementToElementUpcastConversion( { view: viewName }, widgetName ) {
-		const conversion = this.editor.conversion;
-
+		// Store element content in special `$rawContent` custom property to
+		// avoid editor's data filtering mechanism.
 		this.editor.data.registerRawContentMatcher( {
 			name: viewName
 		} );
@@ -368,11 +274,42 @@ export default class DataFilter {
 			model: ( viewElement, conversionApi ) => {
 				const htmlAttributes = this._matchAndConsumeAllowedAttributes( viewElement, conversionApi );
 
-				return conversionApi.writer.createElement( widgetName, {
+				// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
+				return conversionApi.writer.createElement( modelName, {
 					value: viewElement.getCustomProperty( '$rawContent' ),
-					view: viewName,
 					...( htmlAttributes && { htmlAttributes } )
 				} );
+			}
+		} );
+
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: modelName,
+			view: ( modelElement, { writer } ) => {
+				return createObjectViewElement( viewName, modelElement, writer );
+			}
+		} );
+
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: modelName,
+			view: ( modelElement, { writer } ) => {
+				const widgetLabel = this.editor.t( 'HTML object' );
+
+				// Widget cannot be a raw element because the widget system would not be able
+				// to add its UI to it. Thus, we need separate view container.
+				const viewContainer = writer.createContainerElement( definition.isInline ? 'span' : 'div', {
+					class: 'html-object-embed',
+					'data-html-object-embed-label': widgetLabel,
+					dir: this.editor.locale.uiLanguageDirection
+				}, {
+					isAllowedInsideAttributeElement: definition.isInline
+				} );
+
+				const viewElement = createObjectViewElement( viewName, modelElement, writer );
+				writer.addClass( 'html-object-embed__content', viewElement );
+
+				writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
+
+				return toWidget( viewContainer, writer, { widgetLabel } );
 			}
 		} );
 	}
@@ -609,8 +546,7 @@ function setViewElementAttributes( writer, viewAttributes, viewElement ) {
 // @param {module:engine/model/element~Element} modelElement
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/element~Element} viewElement
-function createObjectViewElement( modelElement, { writer } ) {
-	const viewName = modelElement.getAttribute( 'view' );
+function createObjectViewElement( viewName, modelElement, writer ) {
 	const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
 	const viewContent = modelElement.getAttribute( 'value' );
 
