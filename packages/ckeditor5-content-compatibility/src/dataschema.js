@@ -7,6 +7,7 @@
  * @module content-compatibility/dataschema
  */
 
+import { Plugin } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 
 /**
@@ -36,9 +37,13 @@ import { toArray } from 'ckeditor5/src/utils';
  *				copyOnEnter: true
  *			}
  *		} );
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class DataSchema {
-	constructor() {
+export default class DataSchema extends Plugin {
+	constructor( editor ) {
+		super( editor );
+
 		/**
 		 * A map of registered data schema definitions via {@link #register} method.
 		 *
@@ -48,6 +53,22 @@ export default class DataSchema {
 		 */
 		this._definitions = new Map();
 
+		this._registerDefaultDefinitions();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'DataSchema';
+	}
+
+	/**
+	 * Registers default data schema definitions.
+	 *
+	 * @private
+	*/
+	_registerDefaultDefinitions() {
 		// Block elements.
 		this.registerBlockElement( {
 			model: '$htmlBlock',

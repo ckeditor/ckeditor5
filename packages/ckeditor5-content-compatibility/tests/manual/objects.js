@@ -33,7 +33,8 @@ class ExtendHTMLSupport extends Plugin {
 	}
 
 	init() {
-		const { dataFilter, dataSchema } = this.editor.plugins.get( GeneralHtmlSupport );
+		const dataFilter = this.editor.plugins.get( 'DataFilter' );
+		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 
 		dataSchema.registerBlockElement( { model: 'htmlXyz',
 			view: 'xyz',
