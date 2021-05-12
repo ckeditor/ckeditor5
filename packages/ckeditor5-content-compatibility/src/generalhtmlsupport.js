@@ -8,9 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-
-import DataSchema from './dataschema';
 import DataFilter from './datafilter';
+import DataSchema from './dataschema';
 
 /**
  * The General HTML Support feature.
@@ -22,32 +21,16 @@ import DataFilter from './datafilter';
  */
 export default class GeneralHtmlSupport extends Plugin {
 	/**
-	 * @param {module:core/editor/editor~Editor} editor
-	*/
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * An instance of the {@link module:content-compatibility/dataschema~DataSchema}.
-		 *
-		 * @readonly
-		 * @member {module:content-compatibility/dataschema~DataSchema} #dataSchema
-		 */
-		this.dataSchema = new DataSchema();
-
-		/**
-		 * An instance of the {@link module:content-compatibility/datafilter~DataFilter}.
-		 *
-		 * @readonly
-		 * @member {module:content-compatibility/datafilter~DataFilter} #dataFilter
-		 */
-		this.dataFilter = new DataFilter( editor, this.dataSchema );
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'GeneralHtmlSupport';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'GeneralHtmlSupport';
+	static get requires() {
+		return [ DataFilter, DataSchema ];
 	}
 }

@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
+import DataFilter from '../src/datafilter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -15,36 +16,42 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 
 describe( 'DataFilter', () => {
-	let editor, model, dataFilter, dataSchema;
+	let editor, model, editorElement, dataFilter, dataSchema;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor
+			.create( editorElement, {
 				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 
-				const plugin = editor.plugins.get( GeneralHtmlSupport );
-
-				dataFilter = plugin.dataFilter;
-				dataSchema = plugin.dataSchema;
+				dataFilter = editor.plugins.get( 'DataFilter' );
+				dataSchema = editor.plugins.get( 'DataSchema' );
 			} );
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
 	describe( 'initialization', () => {
-		let initEditor, initModel;
+		let initEditor, initEditorElement, initModel;
 
 		beforeEach( () => {
-			return VirtualTestEditor
-				.create( {
+			initEditorElement = document.createElement( 'div' );
+			document.body.appendChild( initEditorElement );
+
+			return ClassicTestEditor
+				.create( initEditorElement, {
 					// Keep FakeRTCPlugin before FakeExtentedHtmlPlugin, so it's registered first.
 					plugins: [ Paragraph, FakeRTCPlugin, FakeExtentedHtmlPlugin ]
 				} )
@@ -55,6 +62,8 @@ describe( 'DataFilter', () => {
 		} );
 
 		afterEach( () => {
+			initEditorElement.remove();
+
 			return initEditor.destroy();
 		} );
 
@@ -79,7 +88,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow element registered after editor initialization', () => {
-			const { dataFilter } = initEditor.plugins.get( GeneralHtmlSupport );
+			const dataFilter = initEditor.plugins.get( DataFilter );
 
 			dataFilter.allowElement( { name: 'span' } );
 
@@ -113,12 +122,12 @@ describe( 'DataFilter', () => {
 			}
 
 			init() {
-				const { dataFilter } = this.editor.plugins.get( GeneralHtmlSupport );
+				const dataFilter = this.editor.plugins.get( DataFilter );
 				dataFilter.allowElement( { name: 'article' } );
 			}
 
 			afterInit() {
-				const { dataFilter } = this.editor.plugins.get( GeneralHtmlSupport );
+				const dataFilter = this.editor.plugins.get( DataFilter );
 				dataFilter.allowElement( { name: 'section' } );
 			}
 		}
@@ -302,14 +311,6 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p><input><input></p>' );
-		} );
-
-		it( 'should register embed widget only once', () => {
-			dataFilter.allowElement( { name: 'video' } );
-
-			expect( () => {
-				dataFilter.allowElement( { name: 'audio' } );
-			} ).to.not.throw();
 		} );
 	} );
 
