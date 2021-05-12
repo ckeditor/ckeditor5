@@ -13,7 +13,7 @@ In more advanced scenarios, the user may need to be able to decide about the ima
 
 Finally, in certain situations, the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately.
 
-The {@link module:image/imagestyle~ImageStyle} feature solves the last two scenarios. The former is handled by so-called ["semantical styles"](#semantical-styles) and the latter by ["presentational styles"](#presentational-styles) in combination with the {@link features/images-resizing image resize} feature.
+The {@link module:image/imagestyle~ImageStyle} feature solves the last two scenarios. The former is handled by so-called ["semantical styles"](#semantical-styles) and the latter by ["presentational styles"](#presentational-styles) in combination with the {@link features/images-resizing image resize} feature. This is part of the wider approach to controling styles and content, as described in the {@link builds/guides/integration/content-styles content styles} guide.
 
 The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `config.image.styles`} option. Respective buttons should also be added to the image toolbar via {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}.
 
