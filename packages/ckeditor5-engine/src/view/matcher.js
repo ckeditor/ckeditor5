@@ -322,29 +322,27 @@ function matchPatterns( patterns, attributes ) {
 		}
 	}
 
-	patterns = normalizePatterns( patterns );
+	patterns = normalizePatterns( patterns ) || [];
 
-	for ( const pattern in patterns ) {
-		const { key: patternKey, value: patternVal } = patterns[ pattern ];
-
+	patterns.forEach( ( { key: patternKey, value: patternVal } ) => {
 		attributes.forEach( ( [ attributeKey, attributeValue ] ) => {
 			if (
-				( patternKey instanceof RegExp && patternKey.test( attributeKey ) ) ||
-				patternKey === attributeKey
+				patternKey === attributeKey ||
+				( patternKey instanceof RegExp && patternKey.test( attributeKey ) )
 			) {
-				if ( patternVal === true ) {
-					match.push( attributeKey );
-				} else if ( patternVal === attributeValue ) {
-					match.push( attributeKey );
-				} else if ( patternVal instanceof RegExp && patternVal.test( attributeValue ) ) {
+				if (
+					patternVal === true ||
+					patternVal === attributeValue ||
+					( patternVal instanceof RegExp && patternVal.test( attributeValue ) )
+				) {
 					match.push( attributeKey );
 				}
 			}
 		} );
+	} );
 
-		if ( !match.length ) {
-			return null;
-		}
+	if ( !match.length ) {
+		return null;
 	}
 
 	return match;
@@ -364,7 +362,7 @@ function matchPatterns( patterns, attributes ) {
 //		value: /https:.*/
 //	}
 // @param {Object|Array} patterns
-// @returns {Array|null} Returns an array of objects or null if patterns were not in a form of expected input.
+// @returns {Array|null} Returns an array of objects or null if provided patterns were not in an expected form.
 function normalizePatterns( patterns ) {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map(
@@ -382,9 +380,9 @@ function normalizePatterns( patterns ) {
 		return Object.entries( patterns ).map(
 			( [ patternKey, patternValue ] ) => ( { key: patternKey, value: patternValue } )
 		);
-	} else {
-		return null;
 	}
+
+	return null;
 }
 
 // Checks if attributes of provided element can be matched against provided patterns.
@@ -406,10 +404,10 @@ function matchAttributes( patterns, element ) {
 // @param {module:engine/view/element~Element} element Element which classes will be tested.
 // @returns {Array|null} Returns array with matched class names or `null` if no classes were matched.
 function matchClasses( patterns, element ) {
-	const classNames = Array.from( element.getClassNames() );
-	const attributes = classNames.map( className => [ className ] );
+	const classes = Array.from( element.getClassNames() )
+		.map( className => [ className ] );
 
-	return matchPatterns( patterns, attributes );
+	return matchPatterns( patterns, classes );
 }
 
 // Checks if styles of provided element can be matched against provided patterns.
@@ -419,10 +417,10 @@ function matchClasses( patterns, element ) {
 // @param {module:engine/view/element~Element} element Element which styles will be tested.
 // @returns {Array|null} Returns array with matched style names or `null` if no styles were matched.
 function matchStyles( patterns, element ) {
-	const styleNames = element.getStyleNames();
-	const attributes = styleNames.map( style => [ style, element.getStyle( style ) ] );
+	const styles = element.getStyleNames()
+		.map( style => [ style, element.getStyle( style ) ] );
 
-	return matchPatterns( patterns, attributes );
+	return matchPatterns( patterns, styles );
 }
 
 /**
