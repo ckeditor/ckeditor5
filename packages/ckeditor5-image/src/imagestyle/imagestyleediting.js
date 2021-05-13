@@ -124,7 +124,11 @@ export default class ImageStyleEditing extends Plugin {
 
 			for ( const change of document.differ.getChanges() ) {
 				if ( change.type == 'insert' || change.type == 'attribute' && change.attributeKey == 'imageStyle' ) {
-					const element = change.type == 'insert' ? change.position.nodeAfter : change.range.start.nodeAfter;
+					let element = change.type == 'insert' ? change.position.nodeAfter : change.range.start.nodeAfter;
+
+					if ( element.is( 'element', 'paragraph' ) && element.childCount > 0 ) {
+						element = element.getChild( 0 );
+					}
 
 					if ( !imageUtils.isImage( element ) ) {
 						continue;
