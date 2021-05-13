@@ -17,7 +17,7 @@ CKEditor 5 Builds are the fastest and easiest way to use CKEditor 5 in your appl
 
 Learn more about the {@link builds/guides/overview available pre-configured builds} or {@link builds/guides/development/custom-builds creating custom builds} and updating them on the go with the {@link builds/guides/development/dll-builds DLL webpack} solution.
 
-Get to now more about the {@link builds/guides/development/plugins plugins} and the supported {@link builds/guides/frameworks/overview frameworks integrations}.
+Get to know more about the {@link builds/guides/development/plugins plugins development} and the supported {@link builds/guides/frameworks/overview frameworks integrations}.
 
 Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4 migration guide} or other migration guides if you are updating your integration.
 
