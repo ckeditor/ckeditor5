@@ -1275,4 +1275,73 @@ describe( 'DataFilter', () => {
 			dataFilter.allowElement( { name: 'xyz' } );
 		}, /data-filter-invalid-definition/, null, definition );
 	} );
+
+	describe.skip( 'fromConfig', () => {
+		// TODO: Better name
+		it( 'should load config', () => {
+			const config = [
+				{
+					element: 'xyz',
+					attributes: {
+						title: 'foo'
+					}
+				}
+			];
+
+			dataSchema.registerBlockElement( { view: 'xyz', model: 'modelXyz' } );
+			dataFilter.fromConfig( config );
+
+			editor.setData( '<xyz>foo</xyz>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo</paragraph>',
+				attributes: {}
+			} );
+		} );
+	} );
+
+	function getModelDataWithAttributes( model, options ) {
+		// Simplify GHS attributes as they are not very readable at this point due to object structure.
+		let counter = 1;
+		const data = getModelData( model, options ).replace( /(html.*?)="{.*?}"/g, ( fullMatch, attributeName ) => {
+			return `${ attributeName }="(${ counter++ })"`;
+		} );
+
+		const range = model.createRangeIn( model.document.getRoot() );
+
+		let attributes = [];
+		for ( const item of range.getItems() ) {
+			for ( const [ key, value ] of sortAttributes( item.getAttributes() ) ) {
+				if ( key.startsWith( 'html' ) ) {
+					attributes.push( value );
+				}
+			}
+		}
+
+		attributes = attributes.reduce( ( prev, cur, index ) => {
+			prev[ index + 1 ] = cur;
+			return prev;
+		}, {} );
+
+		return { data, attributes };
+	}
+
+	function sortAttributes( attributes ) {
+		attributes = Array.from( attributes );
+
+		return attributes.sort( ( attr1, attr2 ) => {
+			const key1 = attr1[ 0 ];
+			const key2 = attr2[ 0 ];
+
+			if ( key1 > key2 ) {
+				return 1;
+			}
+
+			if ( key1 < key2 ) {
+				return -1;
+			}
+
+			return 0;
+		} );
+	}
 } );

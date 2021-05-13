@@ -11,7 +11,7 @@ import DataSchema from './dataschema';
 
 import { Plugin } from 'ckeditor5/src/core';
 import { Matcher } from 'ckeditor5/src/engine';
-import { priorities, CKEditorError } from 'ckeditor5/src/utils';
+import { priorities, toArray, CKEditorError } from 'ckeditor5/src/utils';
 import { Widget } from 'ckeditor5/src/widget';
 import {
 	disallowedAttributesConverter,
@@ -127,6 +127,26 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
+	 * Load a configuration of one or many elements, where their attributes should be allowed.
+	 *
+	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Configuration of elements
+	 * that should have their attributes accepted in the editor.
+	 */
+	loadAllowedConfig( config ) {
+		this._loadConfig( config );
+	}
+
+	/**
+	 * Load a configuration of one or many elements, where their attributes should be disallowed.
+	 *
+	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Configuration of elements
+	 * that should have their attributes rejected from the editor.
+	 */
+	loadDisallowedConfig( config ) {
+		this._loadConfig( config, true );
+	}
+
+	/**
 	 * Allow the given element in the editor context.
 	 *
 	 * This method will only allow elements described by the {@link module:content-compatibility/dataschema~DataSchema} used
@@ -160,7 +180,7 @@ export default class DataFilter extends Plugin {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be allowed.
 	 */
 	allowAttributes( config ) {
-		this._allowedAttributes.add( config );
+		this._allowedAttributes.add( toArray( config || [] ) );
 	}
 
 	/**
@@ -169,7 +189,26 @@ export default class DataFilter extends Plugin {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be disallowed.
 	 */
 	disallowAttributes( config ) {
-		this._disallowedAttributes.add( config );
+		this._disallowedAttributes.add( toArray( config || [] ) );
+	}
+
+	/**
+	 * Batch load of the filtering configuration.
+	 *
+	 * @private
+	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Filtering configuration.
+	 * @param {Boolean} shouldDisallow Provided rules will reject attributes from matched elements instead of accepting them.
+	 */
+	_loadConfig( config, shouldDisallow = false ) {
+		for ( const { element, ...rules } of config ) {
+			this.allowElement( element );
+
+			if ( shouldDisallow ) {
+				this.disallowAttributes( { element, ...rules } );
+			} else {
+				this.allowAttributes( { element, ...rules } );
+			}
+		}
 	}
 
 	/**
