@@ -324,19 +324,13 @@ function matchPatterns( patterns, attributes ) {
 
 	patterns = normalizePatterns( patterns ) || [];
 
-	patterns.forEach( ( { key: patternKey, value: patternVal } ) => {
+	patterns.forEach( ( { key: patternKey, value: patternValue } ) => {
 		attributes.forEach( ( [ attributeKey, attributeValue ] ) => {
 			if (
-				patternKey === attributeKey ||
-				( patternKey instanceof RegExp && patternKey.test( attributeKey ) )
+				isAttributeKeyMatched( patternKey, attributeKey ) &&
+				isAttributeValueMatched( patternValue, attributeValue )
 			) {
-				if (
-					patternVal === true ||
-					patternVal === attributeValue ||
-					( patternVal instanceof RegExp && patternVal.test( attributeValue ) )
-				) {
-					match.push( attributeKey );
-				}
+				match.push( attributeKey );
 			}
 		} );
 	} );
@@ -346,6 +340,17 @@ function matchPatterns( patterns, attributes ) {
 	}
 
 	return match;
+}
+
+function isAttributeKeyMatched( patternKey, attributeKey ) {
+	return patternKey === attributeKey ||
+		( patternKey instanceof RegExp && patternKey.test( attributeKey ) );
+}
+
+function isAttributeValueMatched( patternValue, attributeValue ) {
+	return patternValue === true ||
+		patternValue === attributeValue ||
+		( patternValue instanceof RegExp && patternValue.test( attributeValue ) );
 }
 
 // Bring all the possible pattern forms to an array of objects with `key` and `value` property.
