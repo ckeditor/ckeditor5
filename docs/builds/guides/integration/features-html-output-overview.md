@@ -1,13 +1,14 @@
 ---
+menu-title: Feature HTML output
 category: builds-integration
 order: 90
 ---
 
-# Features HTML output overview
+# Features' HTML output overview
 
-Below there are CKEditor 5 and third-party packages with plugins, that the package delivers, and their possible HTML output. If a plugin generates different HTML output depending on its configuration, it is described in the "HTML output" column. On the other hand, if given plugin does not generate any output, the one and only row in the "HTML output" column for that plugin contains the word "None". The classes, styles or attributes, that are applied to an HTML element do not mean that they all will always be used, but rather show **possible** results. Wildcard character `*` is used to mark any value.
+Listed below are both official CKEditor 5 and third-party plugin packages and their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column. The classes, styles or attributes applied to an HTML element are all **possible** results. It does not mean they all will always be used. If a given plugin does not generate any output, the "HTML output" is described as "None".  Wildcard character `*` means any value is possible.
 
-The data, from which the following tables were generated, comes from the package metadata. You can read more about it in the {@link framework/guides/contributing/package-metadata package metadata} guide.
+The data used to generate the following tables comes from the package metadata. You can read more about it in the {@link framework/guides/contributing/package-metadata package metadata} guide.
 
 <style>
 	table.features-html-output p {
