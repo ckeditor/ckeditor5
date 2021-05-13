@@ -352,12 +352,92 @@ describe( 'ToolbarView', () => {
 				view.items.add( nonFocusable() );
 				view.items.add( focusable() );
 
-				// Mock the last item is focused.
+				// Mock the first item is focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.items.get( 0 ).element;
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+			} );
+		} );
+
+		describe( 'activates keyboard navigation for the RTL toolbar', () => {
+			beforeEach( () => {
+				view.destroy();
+				locale = new Locale( { uiLanguage: 'ar' } );
+
+				view = new ToolbarView( locale );
+				view.render();
+			} );
+
+			it( 'so "arrowup" focuses previous focusable item', () => {
+				const keyEvtData = getArrowKeyData( 'arrowup' );
+
+				view.items.add( focusable() );
+				view.items.add( nonFocusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				// Mock the first item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+				view.keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+			} );
+
+			it( 'so "arrowleft" focuses next focusable item', () => {
+				const keyEvtData = getArrowKeyData( 'arrowleft' );
+
+				view.items.add( focusable() );
+				view.items.add( nonFocusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				// Mock the first item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+			} );
+
+			it( 'so "arrowdown" focuses next focusable item', () => {
+				const keyEvtData = getArrowKeyData( 'arrowdown' );
+
+				view.items.add( focusable() );
+				view.items.add( nonFocusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				// Mock the last item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+				view.keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( view.items.get( 3 ).focus );
+			} );
+
+			it( 'so "arrowright" focuses previous focusable item', () => {
+				const keyEvtData = getArrowKeyData( 'arrowright' );
+
+				view.items.add( focusable() );
+				view.items.add( nonFocusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				// Mock the last item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( view.items.get( 3 ).focus );
 			} );
 		} );
 

@@ -29,6 +29,12 @@
 6. Enter the group button, navigate across grouped items, go back (<kbd>Esc</kbd>).
 7. There should be no interruptions or glitches in the navigation.
 
+## RTL content with LTR UI support
+
+1. Perform the same scenarios in the editor with LTR (left-to-right) UI.
+2. There should be no visual or behavioral difference between LTR and RTL editors except the toolbar is mirrored.
+3. The button aggregating grouped toolbar items should be displayed on the right-hand side.
+
 ## RTL UI support
 
 1. Perform the same scenarios in the editor with RTL (right–to–left) UI.
