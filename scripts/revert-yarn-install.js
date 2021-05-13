@@ -29,7 +29,7 @@ try {
 	// Check whether packages are installed.
 	require.resolve( '@ckeditor/ckeditor5-dev-utils' );
 } catch ( error ) {
-	console.log( 'Before calling the script, you need to install packages first.' );
+	console.log( 'Required @ckeditor/ckeditor5-dev-utils package cannot be found. Please install node deps before calling this script.' );
 
 	process.exit();
 }
@@ -57,4 +57,3 @@ tools.clean( cwd, './**/node_modules', { verbosity: 'error' } )
 	.then( () => {
 		console.log( 'Done.' );
 	} );
-
