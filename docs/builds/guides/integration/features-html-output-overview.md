@@ -41,7 +41,7 @@ The data used to generate the following tables comes from the package metadata. 
 <!-- features-html-output-marker -->
 <h3 id="ckeditor5-adapter-ckfinder"><code>ckeditor5-adapter-ckfinder</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-adapter-ckfinder/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-adapter-ckfinder/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-adapter-ckfinder/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -74,7 +74,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-alignment"><code>ckeditor5-alignment</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-alignment/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-alignment/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-alignment/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -116,7 +116,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-autoformat"><code>ckeditor5-autoformat</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autoformat/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-autoformat/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -149,7 +149,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-autosave"><code>ckeditor5-autosave</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autosave/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-autosave/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-autosave/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -182,7 +182,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-basic-styles"><code>ckeditor5-basic-styles</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-basic-styles/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-basic-styles/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-basic-styles/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -291,7 +291,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-block-quote"><code>ckeditor5-block-quote</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-block-quote/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-block-quote/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-block-quote/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -322,7 +322,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-ckfinder"><code>ckeditor5-ckfinder</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-ckfinder/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-ckfinder/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-ckfinder/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -355,7 +355,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-cloud-services"><code>ckeditor5-cloud-services</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-cloud-services/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-cloud-services/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-cloud-services/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -388,7 +388,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-code-block"><code>ckeditor5-code-block</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-code-block/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-code-block/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-code-block/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -427,7 +427,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-comments"><code>ckeditor5-comments</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-comments/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <code>@ckeditor/ckeditor5-comments/ckeditor5-metadata.json</code>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -471,7 +471,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-easy-image"><code>ckeditor5-easy-image</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-easy-image/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-easy-image/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-easy-image/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -504,7 +504,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-essentials"><code>ckeditor5-essentials</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-essentials/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-essentials/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-essentials/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -535,7 +535,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-export-pdf"><code>ckeditor5-export-pdf</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-export-pdf/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <code>@ckeditor/ckeditor5-export-pdf/ckeditor5-metadata.json</code>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -568,7 +568,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-export-word"><code>ckeditor5-export-word</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-export-word/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <code>@ckeditor/ckeditor5-export-word/ckeditor5-metadata.json</code>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -601,7 +601,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-font"><code>ckeditor5-font</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-font/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-font/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-font/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -701,7 +701,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-heading"><code>ckeditor5-heading</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-heading/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-heading/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-heading/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -756,7 +756,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-highlight"><code>ckeditor5-highlight</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-highlight/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-highlight/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-highlight/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -798,7 +798,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-horizontal-line"><code>ckeditor5-horizontal-line</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-horizontal-line/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-horizontal-line/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-horizontal-line/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -829,7 +829,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-html-embed"><code>ckeditor5-html-embed</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-html-embed/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-html-embed/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-html-embed/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -860,7 +860,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-image"><code>ckeditor5-image</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-image/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1003,7 +1003,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-indent"><code>ckeditor5-indent</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-indent/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-indent/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-indent/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1060,7 +1060,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-language"><code>ckeditor5-language</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-language/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-language/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-language/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1091,7 +1091,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-link"><code>ckeditor5-link</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-link/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-link/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-link/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1166,7 +1166,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-list"><code>ckeditor5-list</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-list/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-list/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-list/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1251,7 +1251,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-markdown-gfm"><code>ckeditor5-markdown-gfm</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-markdown-gfm/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-markdown-gfm/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-markdown-gfm/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1284,7 +1284,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-media-embed"><code>ckeditor5-media-embed</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-media-embed/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1372,7 +1372,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-mention"><code>ckeditor5-mention</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-mention/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1403,7 +1403,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-page-break"><code>ckeditor5-page-break</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-page-break/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-page-break/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-page-break/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1439,7 +1439,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-pagination"><code>ckeditor5-pagination</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-pagination/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <code>@ckeditor/ckeditor5-pagination/ckeditor5-metadata.json</code>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1470,7 +1470,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-paragraph"><code>ckeditor5-paragraph</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-paragraph/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-paragraph/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-paragraph/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1504,7 +1504,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-paste-from-office"><code>ckeditor5-paste-from-office</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-paste-from-office/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-paste-from-office/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-paste-from-office/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1537,7 +1537,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-real-time-collaboration"><code>ckeditor5-real-time-collaboration</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-real-time-collaboration/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <code>@ckeditor/ckeditor5-real-time-collaboration/ckeditor5-metadata.json</code>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1615,7 +1615,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-remove-format"><code>ckeditor5-remove-format</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-remove-format/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-remove-format/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-remove-format/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1648,7 +1648,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-restricted-editing"><code>ckeditor5-restricted-editing</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-restricted-editing/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-restricted-editing/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-restricted-editing/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1692,7 +1692,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-special-characters"><code>ckeditor5-special-characters</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-special-characters/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-special-characters/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-special-characters/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1815,7 +1815,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-table"><code>ckeditor5-table</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-table/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-table/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-table/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1902,7 +1902,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-track-changes"><code>ckeditor5-track-changes</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-track-changes/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <code>@ckeditor/ckeditor5-track-changes/ckeditor5-metadata.json</code>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1935,7 +1935,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-typing"><code>ckeditor5-typing</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-typing/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-typing/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-typing/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -1968,7 +1968,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-ui"><code>ckeditor5-ui</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-ui/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-ui/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-ui/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -2001,7 +2001,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-upload"><code>ckeditor5-upload</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-upload/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-upload/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-upload/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -2049,7 +2049,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-watchdog"><code>ckeditor5-watchdog</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-watchdog/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-watchdog/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-watchdog/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -2082,7 +2082,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="ckeditor5-word-count"><code>ckeditor5-word-count</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-word-count/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-word-count/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-word-count/ckeditor5-metadata.json</code></a>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -2115,7 +2115,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="mathtype-ckeditor5"><code>mathtype-ckeditor5</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/mathtype-ckeditor5/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <i>not published yet</i>
 </p>
 <table class="features-html-output">
 	<thead>
@@ -2149,7 +2149,7 @@ The data used to generate the following tables comes from the package metadata. 
 </table>
 <h3 id="wproofreader-ckeditor5"><code>wproofreader-ckeditor5</code></h3>
 <p>
-	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/wproofreader-ckeditor5/ckeditor5-metadata.json"><code>ckeditor5-metadata.json</code> on GitHub</a>
+	Source file: <i>not published yet</i>
 </p>
 <table class="features-html-output">
 	<thead>
