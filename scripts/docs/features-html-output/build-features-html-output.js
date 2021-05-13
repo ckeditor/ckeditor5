@@ -102,14 +102,22 @@ function createHtmlOutputMarkup() {
 				} )
 				.join( '' );
 
-			const packageName = packageMetadata.packageName;
+			const {
+				packageName,
+				sourceFileMarkup,
+				isExternalPackage,
+				isThirdPartyPackage
+			} = packageMetadata.package;
 
-			const linkToSourceFile = 'https://github.com/ckeditor/ckeditor5/blob/master' +
-				`/packages/${ packageName }/ckeditor5-metadata.json`;
+			const sourceFileLink = !isExternalPackage && !isThirdPartyPackage ?
+				`<a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/${ packageName }/ckeditor5-metadata.json">` +
+					sourceFileMarkup +
+				'</a>' :
+				sourceFileMarkup;
 
 			return (
 				`<h3 id="${ packageName }"><code>${ packageName }</code></h3>` +
-				`<p>Source file: <a href="${ linkToSourceFile }"><code>ckeditor5-metadata.json</code> on GitHub</a></p>` +
+				`<p>Source file: ${ sourceFileLink }</p>` +
 				'<table class="features-html-output">' +
 					'<thead>' +
 						'<tr>' +
@@ -149,7 +157,7 @@ function parseFiles() {
 				throw error;
 			}
 		} )
-		.sort( ( parsedFileA, parsedFileB ) => parsedFileA.packageName.localeCompare( parsedFileB.packageName ) );
+		.sort( ( fileA, fileB ) => fileA.package.packageName.localeCompare( fileB.package.packageName ) );
 }
 
 /**
@@ -202,18 +210,39 @@ function parseFile( file ) {
 
 	const isThirdPartyPackage = !file.path.startsWith( 'packages/' ) && !isExternalPackage;
 
+	const sourceFileMarkup = isThirdPartyPackage ?
+		createSourceFileMarkupForThirdPartyPackage( file.path ) :
+		`<code>@ckeditor/${ packageName }/ckeditor5-metadata.json</code>`;
+
 	const packageData = {
-		name: packageName,
-		isExternal: isExternalPackage,
-		isThirdParty: isThirdPartyPackage
+		packageName,
+		sourceFileMarkup,
+		isExternalPackage,
+		isThirdPartyPackage
 	};
 
 	const plugins = createHtmlOutputMarkupForPackage( packageData, metadata.plugins );
 
 	return {
-		packageName,
+		package: packageData,
 		plugins
 	};
+}
+
+/**
+ * Creates HTML markup containing the path to the package metadata file for a third-party package. If the path to the package metadata file
+ * does not lead to the node_modules folder (what means that the locally maintained package metadata file is used instead), function returns
+ * an info that the source file has not been published yet.
+ *
+ * @param {String} filePath File path to the package metadata file.
+ * @returns {String}
+ */
+function createSourceFileMarkupForThirdPartyPackage( filePath ) {
+	const match = filePath.match( /node_modules\/(.*)/ );
+
+	return match ?
+		`<code>${ match[ 1 ] }</code>` :
+		'<i>not published yet</i>';
 }
 
 /**
@@ -257,7 +286,7 @@ function createFeatureLink( packageData, plugin ) {
 		plugin.docs :
 		`../../../${ plugin.docs }`;
 
-	const skipLinkValidation = packageData.isExternal ? 'data-skip-validation' : '';
+	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
 	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
 }
@@ -272,11 +301,11 @@ function createFeatureLink( packageData, plugin ) {
 function createApiLink( packageData, plugin ) {
 	const pluginClassName = `<code>${ plugin.className }</code>`;
 
-	if ( packageData.isThirdParty ) {
+	if ( packageData.isThirdPartyPackage ) {
 		return pluginClassName;
 	}
 
-	const shortPackageName = packageData.name.replace( /^ckeditor5-/g, '' );
+	const shortPackageName = packageData.packageName.replace( /^ckeditor5-/g, '' );
 
 	const packagePath = plugin.path
 		.replace( /(^src\/)|(\.js$)/g, '' )
@@ -284,7 +313,7 @@ function createApiLink( packageData, plugin ) {
 
 	const link = `../../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;
 
-	const skipLinkValidation = packageData.isExternal ? 'data-skip-validation' : '';
+	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
 	return `<a href="${ link }" ${ skipLinkValidation }>${ pluginClassName }</a>`;
 }
@@ -567,11 +596,13 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 
 /**
  * @typedef {Object} Package
- * @property {String} name Package name.
- * @property {String} isExternal Determines if a given package comes from a CKEditor 5 external project like Collaboration Features or
- * CKEditor 5 Internal. It is set to `false` for third-party packages.
- * @property {String} isThirdParty Determines whether a given package has been created outside the CKEditor 5 ecosystem. A third-party
- * package is not considered as the external one.
+ * @property {String} packageName Package name.
+ * @property {String} sourceFileMarkup HTML markup containing the path to the package metadata file or info that the source file has not
+ * been published yet.
+ * @property {String} isExternalPackage Determines if a given package comes from a CKEditor 5 external project like Collaboration Features
+ * or CKEditor 5 Internal. It is set to `false` for third-party packages.
+ * @property {String} isThirdPartyPackage Determines whether a given package has been created outside the CKEditor 5 ecosystem.
+ * A third-party package is not considered as the external one.
  */
 
 /**
@@ -582,6 +613,6 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 
 /**
  * @typedef {Object} ParsedFile
- * @property {String} packageName Package name.
+ * @property {Package} package Package data.
  * @property {Array.<ParsedPlugin>} plugins An array of all parsed plugins.
  */
