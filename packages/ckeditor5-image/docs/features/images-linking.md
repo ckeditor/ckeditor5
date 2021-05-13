@@ -23,7 +23,7 @@ The image link can be added or edited via the image toolbar. An icon in top righ
 	<figcaption>Image caption</figcaption>
 </figure>
 ```
-Use the link icon in the image toolbar to access the edit options for links on image. Notice the top-right icon indicating a linked image.
+Click on the image to invoke contextual toolbar. Use the link icon in the image toolbar to access the editing options for links on image. Also notice the icon in the top-right corner, indicating there is a link attached to the image.
 
 {@snippet features/image-link}
 
@@ -39,7 +39,7 @@ The image linking feature is not enabled by default in any of the editor builds.
 
 The {@link module:link/linkimage~LinkImage} plugin registers:
 
-* The `'linkImage'` button that opens the link UI when an image is selected by the user (to use in the {@link TODO-overview#image-toolbar image toolbar}).
+* The `'linkImage'` button that opens the link UI when an image is selected by the user (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:link/linkimage/linkimagecommand~LinkImageCommand `'linkImage'` command}.
 
 <info-box>
