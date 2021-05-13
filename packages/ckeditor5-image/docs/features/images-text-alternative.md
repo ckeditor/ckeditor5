@@ -28,7 +28,7 @@ CKEditor 5 provides support for alternate image text using the The {@link module
 
 ## Demo
 
-You can see the demo of a WYSIWYG editor with the base image feature enabled below:
+You can see the demo of a WYSIWYG editor with the base image feature enabled below. Click on the images to activate the image toolbar and edit the text alternative.
 
 {@snippet features/image-text-alternative}
 

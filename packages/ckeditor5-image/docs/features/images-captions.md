@@ -16,9 +16,11 @@ The {@link module:image/imagecaption~ImageCaption} plugin adds support for image
 </figure>
 ```
 
-By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption field and write one. See the demo below:
+By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption field and write one. See the demo below.
 
 ## Demo
+
+Click on an image and use the contextual image toolbar to toggle captions on and off. Click on a caption to edit it.
 
 {@snippet features/image-caption}
 
