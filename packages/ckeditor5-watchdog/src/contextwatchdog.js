@@ -519,13 +519,7 @@ class ActionQueue {
 /**
  * The watchdog item configuration interface.
  *
- * @typedef {module:watchdog/contextwatchdog~EditorWatchdogConfiguration} module:watchdog/contextwatchdog~WatchdogItemConfiguration
- */
-
-/**
- * The editor watchdog configuration interface specifies how editors should be created and destroyed.
- *
- * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
+ * @typedef {Object} module:watchdog/contextwatchdog~WatchdogItemConfiguration
  *
  * @property {String} id A unique item identificator.
  *
