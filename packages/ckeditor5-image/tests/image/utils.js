@@ -225,7 +225,7 @@ describe( 'image utils', () => {
 
 					it( 'should return a matcherPattern object if the element is an "image"', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						writer.appendChild( element, writer.createElement( 'figure', { class: 'imageBlock' } ) );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true,
@@ -255,7 +255,7 @@ describe( 'image utils', () => {
 
 					it( 'should return null if the element is an "image"', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						writer.appendChild( element, writer.createElement( 'figure', { class: 'imageBlock' } ) );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.be.null;
 					} );

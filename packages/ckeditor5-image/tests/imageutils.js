@@ -302,7 +302,7 @@ describe( 'ImageUtils plugin', () => {
 
 	describe( 'isInlineImageView()', () => {
 		it( 'should return false for the block image element', () => {
-			const element = writer.createContainerElement( 'figure', { class: 'imageBlock' } );
+			const element = writer.createContainerElement( 'figure', { class: 'image' } );
 
 			expect( imageUtils.isInlineImageView( element ) ).to.be.false;
 		} );
@@ -333,7 +333,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true for the block view image element', () => {
-			const element = writer.createContainerElement( 'figure', { class: 'imageBlock' } );
+			const element = writer.createContainerElement( 'figure', { class: 'image' } );
 
 			expect( imageUtils.isBlockImageView( element ) ).to.be.true;
 		} );
@@ -345,7 +345,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return false for the non-figure with a proper class', () => {
-			const element = writer.createContainerElement( 'div', { class: 'imageBlock' } );
+			const element = writer.createContainerElement( 'div', { class: 'image' } );
 
 			expect( imageUtils.isBlockImageView( element ) ).to.be.false;
 		} );

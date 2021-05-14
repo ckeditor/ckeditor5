@@ -281,7 +281,7 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should not convert if figure is already consumed', () => {
 				editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.viewItem, { name: true, class: 'imageBlock' } );
+					conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
 				}, { priority: 'high' } );
 
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );

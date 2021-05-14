@@ -75,7 +75,7 @@ describe( 'image captioning utils', () => {
 
 		it( 'should return object if element is a valid caption', () => {
 			const element = new ViewElement( document, 'figcaption' );
-			new ViewElement( document, 'figure', { class: 'imageBlock' }, element ); // eslint-disable-line no-new
+			new ViewElement( document, 'figure', { class: 'image' }, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaptionViewElement( editor.plugins.get( 'ImageUtils' ), element ) ).to.deep.equal( { name: true } );
 		} );
