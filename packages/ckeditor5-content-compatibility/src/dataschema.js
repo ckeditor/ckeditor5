@@ -80,6 +80,11 @@ export default class DataSchema extends Plugin {
 		} );
 
 		this.registerBlockElement( {
+			model: 'codeBlock',
+			view: 'pre'
+		} );
+
+		this.registerBlockElement( {
 			model: 'paragraph',
 			view: 'p'
 		} );
@@ -183,6 +188,11 @@ export default class DataSchema extends Plugin {
 		} );
 
 		// Inline elements.
+		this.registerInlineElement( {
+			view: 'code',
+			model: 'htmlCode'
+		} );
+
 		this.registerInlineElement( {
 			view: 'a',
 			model: 'htmlA',
