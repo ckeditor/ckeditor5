@@ -71,7 +71,7 @@ describe( 'ImageStyleCommand', () => {
 	describe( 'constructor()', () => {
 		it( 'should set default styles\' names properly if both of them are defined in the config', () => {
 			expect( command._defaultStyles ).to.deep.equal( {
-				image: defaultBlock.name,
+				imageBlock: defaultBlock.name,
 				imageInline: defaultInline.name
 			} );
 		} );
@@ -92,7 +92,7 @@ describe( 'ImageStyleCommand', () => {
 			const customCommand = customEditor.commands.get( 'imageStyle' );
 
 			expect( customCommand._defaultStyles ).to.deep.equal( {
-				image: defaultBlock.name,
+				imageBlock: defaultBlock.name,
 				imageInline: false
 			} );
 

@@ -298,7 +298,7 @@ describe( 'image utils', () => {
 			const element = createImageViewElement( writer, 'imageBlock' );
 
 			expect( element.is( 'element', 'figure' ) ).to.be.true;
-			expect( element.hasClass( 'imageBlock' ) ).to.be.true;
+			expect( element.hasClass( 'image' ) ).to.be.true;
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
 		} );

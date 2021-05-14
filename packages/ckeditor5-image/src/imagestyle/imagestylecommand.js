@@ -39,7 +39,7 @@ export default class ImageStyleCommand extends Command {
 		 * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition#name>}
 		 */
 		this._defaultStyles = {
-			image: false,
+			imageBlock: false,
 			imageInline: false
 		};
 

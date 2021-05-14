@@ -186,7 +186,7 @@ export default class ImageUtils extends Plugin {
 	 * @returns {module:engine/view/element~Element}
 	 */
 	toImageWidget( viewElement, writer, label ) {
-		writer.setCustomProperty( 'imageBlock', true, viewElement );
+		writer.setCustomProperty( 'image', true, viewElement );
 
 		const labelCreator = () => {
 			const imgElement = this.getViewImageFromWidget( viewElement );

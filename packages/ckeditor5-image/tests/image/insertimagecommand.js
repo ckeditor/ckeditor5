@@ -204,8 +204,8 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
 			expect( getModelData( model ) ).to.equal(
-				`<paragraph>foo</paragraph>' +
-				'<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]<paragraph>bar</paragraph>`
+				'<paragraph>foo</paragraph>' +
+				`<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]<paragraph>bar</paragraph>`
 			);
 		} );
 
