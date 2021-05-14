@@ -28,7 +28,11 @@ Click on an image and use the contextual image toolbar to toggle captions on and
 	You can change the placement of the image caption by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .image > figcaption` style. Changing it to `caption-side: top` will display the caption above the image.
 </info-box>
 
-# Common API
+## Installation
+
+This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation} guide to learn how to enable this feature.
+
+## Common API
 
 The {@link module:image/imagecaption~ImageCaption} plugin registers:
 

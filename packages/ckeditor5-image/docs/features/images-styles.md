@@ -169,6 +169,10 @@ You can find advanced examples in the {@link module:image/image~ImageConfig#styl
 
 <!-- TODO (live example)... not today, yet -->
 
+## Installation
+
+This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation} guide to learn how to enable this feature.
+
 ## Common API
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:

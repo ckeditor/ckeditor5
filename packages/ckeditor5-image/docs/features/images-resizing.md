@@ -247,7 +247,7 @@ Check out the difference in the live demo below:
 
 {@snippet features/image-resize-px}
 
-# Common API
+## Common API
 
 The {@link module:image/imageresize~ImageResize} plugin registers:
 
