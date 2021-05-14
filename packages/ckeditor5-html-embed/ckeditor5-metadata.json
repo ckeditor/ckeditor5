@@ -22,7 +22,7 @@
 					"elements": "*",
 					"classes": "*",
 					"styles": "*",
-					"_comment": "The plugin can output any arbitrary HTML provided by the user. That HTML is always wrapped with `<div class=\"raw-html-embed\">` element."
+					"_comment": "The plugin can output any arbitrary HTML provided by the user. That HTML is always wrapped with a `<div class=\"raw-html-embed\">` element."
 				}
 			]
 		}
