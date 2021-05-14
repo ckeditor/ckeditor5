@@ -247,6 +247,10 @@ Check out the difference in the live demo below:
 
 {@snippet features/image-resize-px}
 
+## Installation
+
+The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. Please refer to the {@link features/images-installation installation} guide to learn how to enable it in other editor builds.
+
 ## Common API
 
 The {@link module:image/imageresize~ImageResize} plugin registers:
