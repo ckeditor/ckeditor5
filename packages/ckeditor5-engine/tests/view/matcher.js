@@ -134,6 +134,54 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
+		it( 'should match all element attributes using key->value, where key is a RegExp object and value is a boolean', () => {
+			const pattern = {
+				attributes: [
+					{ key: /data-b.*/, value: true }
+				]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new Element( document, 'p', { title: 'foobar' } );
+			const el3 = new Element( document, 'p' );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 1 );
+			expect( result.match.attributes[ 0 ] ).equal( 'data-bar' );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match all element attributes using key->value, where key is a RegExp object and value is a string', () => {
+			const pattern = {
+				attributes: [
+					{ key: /data-.*/, value: 'bar' }
+				]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new Element( document, 'p', { title: 'foobar' } );
+			const el3 = new Element( document, 'p' );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 1 );
+			expect( result.match.attributes[ 0 ] ).equal( 'data-bar' );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
 		it( 'should match all element attributes using key->value, where both are RegExp objects', () => {
 			const pattern = {
 				attributes: [
@@ -158,31 +206,18 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
-		it( 'should match all element attributes using key->value, where key is a RegExp object', () => {
+		it( 'should match nothing if pattern is incorrect', () => {
 			const pattern = {
-				attributes: [
-					{ key: /data-.*/, value: 'bar' }
-				]
+				// A stub for a non-plain object.
+				attributes: 1
 			};
 			const matcher = new Matcher( pattern );
 			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
-			const el2 = new Element( document, 'p', { title: 'foobar' } );
-			const el3 = new Element( document, 'p' );
 
-			const result = matcher.match( el1 );
-
-			expect( result ).to.be.an( 'object' );
-			expect( result ).to.have.property( 'element' ).and.equal( el1 );
-			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
-			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
-			expect( result.match.attributes.length ).equal( 1 );
-			expect( result.match.attributes[ 0 ] ).equal( 'data-bar' );
-
-			expect( matcher.match( el2 ) ).to.be.null;
-			expect( matcher.match( el3 ) ).to.be.null;
+			expect( matcher.match( el1 ) ).to.be.null;
 		} );
 
-		it( 'should match element attributes', () => {
+		it( 'should match element attributes using String', () => {
 			const pattern = {
 				attributes: {
 					title: 'foobar'

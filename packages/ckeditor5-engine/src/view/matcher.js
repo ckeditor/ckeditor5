@@ -342,17 +342,6 @@ function matchPatterns( patterns, attributes ) {
 	return match;
 }
 
-function isAttributeKeyMatched( patternKey, attributeKey ) {
-	return patternKey === attributeKey ||
-		( patternKey instanceof RegExp && patternKey.test( attributeKey ) );
-}
-
-function isAttributeValueMatched( patternValue, attributeValue ) {
-	return patternValue === true ||
-		patternValue === attributeValue ||
-		( patternValue instanceof RegExp && patternValue.test( attributeValue ) );
-}
-
 // Bring all the possible pattern forms to an array of objects with `key` and `value` property.
 // For example:
 //
@@ -390,6 +379,23 @@ function normalizePatterns( patterns ) {
 	return null;
 }
 
+// @param {String|RegExp} patternKey A pattern representing attribute key we want to match.
+// @param {String} attributeKey An actual attribute key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
+// @returns {Boolean}
+function isAttributeKeyMatched( patternKey, attributeKey ) {
+	return patternKey === attributeKey ||
+		( patternKey instanceof RegExp && patternKey.test( attributeKey ) );
+}
+
+// @param {String|RegExp} patternValue A pattern representing attribute value we want to match.
+// @param {String} attributeValue An actual attribute value (e.g. `'http://example.com/'`, `'red'`) we're testing against pattern.
+// @returns {Boolean}
+function isAttributeValueMatched( patternValue, attributeValue ) {
+	return patternValue === true ||
+		patternValue === attributeValue ||
+		( patternValue instanceof RegExp && patternValue.test( attributeValue ) );
+}
+
 // Checks if attributes of provided element can be matched against provided patterns.
 //
 // @param {Object} patterns Object with information about attributes to match. Each key of the object will be
@@ -409,6 +415,7 @@ function matchAttributes( patterns, element ) {
 // @param {module:engine/view/element~Element} element Element which classes will be tested.
 // @returns {Array|null} Returns array with matched class names or `null` if no classes were matched.
 function matchClasses( patterns, element ) {
+	// TODO: No special case for classes. We assume the config to be reasonable (i.e. just an array of classes, not an object).
 	const classes = Array.from( element.getClassNames() )
 		.map( className => [ className ] );
 
@@ -478,6 +485,13 @@ function matchStyles( patterns, element ) {
  *				color: /^\w*blue$/
  *			}
  *		};
+ *
+ *		// Match view element which has many custom data attributes.
+ *		const pattern = {
+ *			attributes: [
+ *				{ key: /data-.+/, value: true }
+ *			]
+ *		}
  *
  *		// Pattern with multiple properties.
  *		const pattern = {
