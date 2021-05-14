@@ -8,6 +8,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import DataFilter from '../src/datafilter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -28,7 +29,7 @@ describe( 'DataFilter', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ]
+				plugins: [ Paragraph, FontColorEditing, LinkEditing, CodeBlock, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -133,6 +134,188 @@ describe( 'DataFilter', () => {
 				dataFilter.allowElement( { name: 'section' } );
 			}
 		}
+	} );
+
+	describe( 'codeBlock', () => {
+		it( 'should allow attributes', () => {
+			dataFilter.allowElement( { name: /^(pre|code)$/ } );
+			dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+
+			editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<codeBlock htmlAttributes="(1)" language="plaintext"><$text htmlCode="(2)">foobar</$text></codeBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foo'
+						}
+					},
+					2: {
+						attributes: {
+							'data-foo': 'foo'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<pre data-foo="foo">' +
+				'<code class="language-plaintext"><code data-foo="foo">foobar</code></code>' +
+				'</pre>' );
+		} );
+
+		it( 'should allow attributes (classes)', () => {
+			dataFilter.allowElement( { name: /^(pre|code)$/ } );
+			dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
+
+			editor.setData( '<pre class="foo"><code class="foo">foobar</code></pre>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<codeBlock htmlAttributes="(1)" language="plaintext"><$text htmlCode="(2)">foobar</$text></codeBlock>',
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					},
+					2: {
+						classes: [ 'foo' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<pre class="foo">' +
+				'<code class="language-plaintext"><code class="foo">foobar</code></code>' +
+				'</pre>' );
+		} );
+
+		it( 'should allow attributes (styles)', () => {
+			dataFilter.allowElement( { name: /^(pre|code)$/ } );
+			dataFilter.allowAttributes( { name: 'pre', styles: { background: 'blue' } } );
+			dataFilter.allowAttributes( { name: 'code', styles: { color: 'red' } } );
+
+			editor.setData( '<pre style="background:blue;"><code style="color:red;">foobar</code></pre>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<codeBlock htmlAttributes="(1)" language="plaintext"><$text htmlCode="(2)">foobar</$text></codeBlock>',
+				attributes: {
+					1: {
+						styles: {
+							background: 'blue'
+						}
+					},
+					2: {
+						styles: {
+							color: 'red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<pre style="background:blue;">' +
+				'<code class="language-plaintext"><code style="color:red;">foobar</code></code>' +
+				'</pre>' );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.allowElement( { name: /^(pre|code)$/ } );
+			dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+			dataFilter.disallowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+
+			editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<codeBlock language="plaintext"><$text htmlCode="(1)">foobar</$text></codeBlock>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext"><code>foobar</code></code></pre>' );
+		} );
+
+		it( 'should disallow attributes (classes)', () => {
+			dataFilter.allowElement( { name: /^(pre|code)$/ } );
+			dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
+			dataFilter.disallowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
+
+			editor.setData( '<pre class="foo"><code class="foo">foobar</code></pre>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<codeBlock language="plaintext"><$text htmlCode="(1)">foobar</$text></codeBlock>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext"><code>foobar</code></code></pre>' );
+		} );
+
+		it( 'should allow attributes (styles)', () => {
+			dataFilter.allowElement( { name: /^(pre|code)$/ } );
+
+			dataFilter.allowAttributes( { name: 'pre', styles: { background: 'blue' } } );
+			dataFilter.allowAttributes( { name: 'code', styles: { color: 'red' } } );
+
+			dataFilter.disallowAttributes( { name: 'pre', styles: { background: 'blue' } } );
+			dataFilter.disallowAttributes( { name: 'code', styles: { color: 'red' } } );
+
+			editor.setData( '<pre style="background:blue;"><code style="color:red;">foobar</code></pre>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<codeBlock language="plaintext"><$text htmlCode="(1)">foobar</$text></codeBlock>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext"><code>foobar</code></code></pre>' );
+		} );
+
+		it( 'should allow attributes on code element existing alone', () => {
+			dataFilter.allowElement( { name: /^(pre|code)$/ } );
+			dataFilter.allowAttributes( { name: 'code', attributes: { 'data-foo': /[\s\S]+/ } } );
+
+			editor.setData( '<p><code data-foo="foo">foobar</code></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlCode="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foo'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><code data-foo="foo">foobar</code></p>' );
+		} );
+
+		it( 'should not consume attribute already consumed (downcast)', () => {
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				dispatcher.on( 'attribute:htmlAttributes:codeBlock', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, evt.name );
+				}, { priority: 'high' } );
+			} );
+
+			dataFilter.allowElement( { name: 'pre' } );
+			dataFilter.allowAttributes( { name: 'pre', attributes: { 'data-foo': true } } );
+
+			editor.setData( '<pre data-foo><code>foobar</code></section>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<codeBlock htmlAttributes="(1)" language="plaintext">foobar</codeBlock>',
+				// At this point, attribute should still be in the model, as we are testing downcast conversion.
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': ''
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext">foobar</code></pre>' );
+		} );
 	} );
 
 	describe( 'object', () => {
@@ -694,6 +877,27 @@ describe( 'DataFilter', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
 		} );
+
+		it( 'should not register view converters for existing features if a view has not been provided', () => {
+			// Skipping `view` property on purpose.
+			dataSchema.registerBlockElement( {
+				model: 'htmlFoo',
+				modelSchema: { inheritAllFrom: '$block' }
+			} );
+
+			dataSchema.registerBlockElement( {
+				model: 'htmlBar',
+				view: 'bar',
+				modelSchema: { inheritAllFrom: 'htmlFoo' }
+			} );
+
+			editor.model.schema.register( 'htmlFoo', { inheritAllFrom: '$block' } );
+
+			// At this point we will be trying to register converter without valid view name.
+			expect( () => {
+				dataFilter.allowElement( { name: 'bar' } );
+			} ).to.not.throw();
+		} );
 	} );
 
 	describe( 'inline', () => {
@@ -1246,7 +1450,7 @@ describe( 'DataFilter', () => {
 
 		expectToThrowCKEditorError( () => {
 			dataFilter.allowElement( { name: 'xyz' } );
-		}, /data-filter-invalid-definition-type/, null, definition );
+		}, /data-filter-invalid-definition/, null, definition );
 	} );
 
 	function getModelDataWithAttributes( model, options ) {
