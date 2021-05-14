@@ -1965,12 +1965,12 @@ describe( 'Schema', () => {
 				}
 
 				// Allow 'a' on div>image.
-				if ( ctx.endsWith( 'div image' ) && attributeName == 'a' ) {
+				if ( ctx.endsWith( 'div imageBlock' ) && attributeName == 'a' ) {
 					return true;
 				}
 
-				// Allow 'b' on div>paragraph>image.
-				if ( ctx.endsWith( 'div paragraph image' ) && attributeName == 'b' ) {
+				// Allow 'b' on div>paragraph>imageBlock.
+				if ( ctx.endsWith( 'div paragraph imageBlock' ) && attributeName == 'b' ) {
 					return true;
 				}
 
