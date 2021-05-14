@@ -41,12 +41,9 @@ export function consumeViewAttributesConverter( { view: viewName }, matcher ) {
 export function viewToModelCodeBlockAttributeConverter( matcher ) {
 	return dispatcher => {
 		dispatcher.on( 'element:code', ( evt, data, conversionApi ) => {
-			if ( !data.modelRange ) {
-				return;
-			}
-
 			const viewPreElement = data.viewItem.parent;
-			if ( !isPreElement( viewPreElement ) ) {
+
+			if ( !viewPreElement || !viewPreElement.is( 'element', 'pre' ) ) {
 				return;
 			}
 
@@ -73,10 +70,7 @@ export function modelToViewCodeBlockAttributeConverter() {
 			}
 
 			const viewPreElement = conversionApi.mapper.toViewElement( data.item ).parent;
-
-			if ( isPreElement( viewPreElement ) ) {
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewPreElement );
-			}
+			setViewAttributes( conversionApi.writer, data.attributeNewValue, viewPreElement );
 		} );
 	};
 }
@@ -263,12 +257,4 @@ export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 			setViewAttributes( viewWriter, viewAttributes, viewElement );
 		} );
 	};
-}
-
-// Checks if the given view element is `pre`.
-//
-// @param {module:engine/view/element~Element} [element]
-// @returns {Boolean}
-function isPreElement( element ) {
-	return element && element.is( 'element', 'pre' );
 }
