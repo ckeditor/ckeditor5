@@ -190,7 +190,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * Model attribute to view attribute conversion helper.
 	 *
 	 * This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example,
-	 * `<imageBlock src='foo.jpg'></imageBlock>` is converted to `<img src='foo.jpg'></img>`.
+	 * `<imageInline src='foo.jpg'></imageInline>` is converted to `<img src='foo.jpg'></img>`.
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'source',
@@ -205,7 +205,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: {
-	 *				name: 'imageBlock',
+	 *				name: 'imageInline',
 	 *				key: 'source'
 	 *			},
 	 *			view: 'src'
@@ -350,7 +350,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * {@link module:engine/view/containerelement~ContainerElement} may provide a custom way of handling highlight. Most often,
 	 * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `<span>`).
 	 * For example, a model marker set like this:
-	 * `[<imageBlock src="foo.jpg"></imageBlock>]` becomes `<img src="foo.jpg" class="comment"></img>` in the view.
+	 * `[<imageInline src="foo.jpg"></imageInline>]` becomes `<img src="foo.jpg" class="comment"></img>` in the view.
 	 *
 	 * For container elements, the conversion is two-step. While the converter processes the highlight descriptor and passes it
 	 * to a container element, it is the container element instance itself that applies values from the highlight descriptor.

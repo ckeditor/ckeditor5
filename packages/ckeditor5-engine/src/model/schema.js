@@ -1118,7 +1118,7 @@ mix( Schema, ObservableMixin );
  * In other words, all actions that happen inside a limit element are limited to its content.
  * All objects are treated as limit elements, too.
  * * {@link ~SchemaItemDefinition#isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole.
- * Examples of object elements: `image`, `table`, `video`, etc. An object is also a limit, so
+ * Examples of object elements: `imageBlock`, `table`, `video`, etc. An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the meaning of these types in the
@@ -1171,7 +1171,7 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *
- * Make `image` a block object, which is allowed everywhere where `$block` is.
+ * Make `imageBlock` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
  *		schema.register( 'imageBlock', {
@@ -1181,7 +1181,7 @@ mix( Schema, ObservableMixin );
  *			isObject: true
  *		} );
  *
- * Make `caption` allowed in `image` and make it allow all the content of `$block`s (usually, `$text`).
+ * Make `caption` allowed in `imageBlock` and make it allow all the content of `$block`s (usually, `$text`).
  * Also, mark it as a limit element so it cannot be split:
  *
  *		schema.register( 'caption', {
@@ -1253,7 +1253,7 @@ mix( Schema, ObservableMixin );
  *
  * @property {Boolean} isObject
  * Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
- * `image`, `table`, `video`, etc.
+ * `imageBlock`, `table`, `video`, etc.
  *
  * **Note:** An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
@@ -1262,7 +1262,8 @@ mix( Schema, ObservableMixin );
  * {@glink framework/guides/deep-dive/schema#object-elements Object elements section} of the Schema deep dive guide.
  *
  * @property {Boolean} isSelectable
- * `true` when an element should be selectable as a whole by the user. Examples of selectable elements: `image`, `table`, `tableCell`, etc.
+ * `true` when an element should be selectable as a whole by the user. Examples of selectable elements: `imageBlock`, `table`, `tableCell`,
+ * etc.
  *
  * **Note:** An object is also a selectable element, so
  * {@link module:engine/model/schema~Schema#isSelectable `isSelectable()`} returns `true` for object elements automatically.
@@ -1272,7 +1273,7 @@ mix( Schema, ObservableMixin );
  *
  * @property {Boolean} isContent
  * An item is a content when it always finds its way to the editor data output regardless of the number and type of its descendants.
- * Examples of content elements: `$text`, `image`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
+ * Examples of content elements: `$text`, `imageBlock`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
  *
  * **Note:** An object is also a content element, so
  * {@link module:engine/model/schema~Schema#isContent `isContent()`} returns `true` for object elements automatically.
