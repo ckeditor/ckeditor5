@@ -212,6 +212,13 @@ function upcastListItemStyle() {
 	return dispatcher => {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 			const listParent = data.viewItem.parent;
+
+			// It may happen that the native spell checker fixes a word inside a list item.
+			// When the children mutation is fired, the `<li>` does not have the parent element. See: #9325.
+			if ( !listParent ) {
+				return;
+			}
+
 			const listStyle = listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
 			const listItem = data.modelRange.start.nodeAfter || data.modelRange.end.nodeBefore;
 
