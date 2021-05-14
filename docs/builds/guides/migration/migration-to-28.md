@@ -156,18 +156,21 @@ The image utils are now wrapped by a {@link module:image/imageutils~ImageUtils} 
 
 ```js
 // Old code
-import { isImageWidget } from './utils';
+import { isImage } from './utils';
 
-function isImageWidget( viewElement ) {
-	return isImageWidget( viewElement );
+const selectedElement = editor.model.document.selection.getSelectedElement();
+
+if ( isImage( selectedElement ) ) {
+	// ...
 }
 
 // New code
 // ...
 const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+const selectedElement = editor.model.document.selection.getSelectedElement();
 
-function isImageWidget( viewElement ) {
-	return imageUtils.isImageWidget( viewElement );
+if ( imageUtils.isImage( selectedElement ) ) {
+	// ...
 }
 ```
 * The {@link module:image/imageutils~ImageUtils#insertImage} function
