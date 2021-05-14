@@ -69,7 +69,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-See the result in the WYSIWYG editor below. You can change the style of an image through the image's contextual toolbar.
+See the result in the WYSIWYG editor below. The top image is full-width, while the bottom image is a side image. You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
 {@snippet features/image-style}
 
