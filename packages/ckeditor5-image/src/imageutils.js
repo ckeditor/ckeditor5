@@ -55,7 +55,7 @@ export default class ImageUtils extends Plugin {
 	 * @returns {Boolean}
 	 */
 	isBlockImageView( element ) {
-		return !!element && element.is( 'element', 'figure' ) && element.hasClass( 'imageBlock' );
+		return !!element && element.is( 'element', 'figure' ) && element.hasClass( 'image' );
 	}
 
 	/**
@@ -206,7 +206,7 @@ export default class ImageUtils extends Plugin {
 	 * @returns {Boolean}
 	 */
 	isImageWidget( viewElement ) {
-		return !!viewElement.getCustomProperty( 'imageBlock' ) && isWidget( viewElement );
+		return !!viewElement.getCustomProperty( 'image' ) && isWidget( viewElement );
 	}
 
 	/**

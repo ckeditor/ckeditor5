@@ -31,7 +31,7 @@ export function createImageViewElement( writer, imageType ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 
 	const container = imageType === 'imageBlock' ?
-		writer.createContainerElement( 'figure', { class: 'imageBlock' } ) :
+		writer.createContainerElement( 'figure', { class: 'image' } ) :
 		writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
 
 	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
