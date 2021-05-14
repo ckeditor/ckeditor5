@@ -258,7 +258,7 @@ export default class ImageCaptionEditing extends Plugin {
 // Creates a mapper callback that reverses the order of `<img>` and `<figcaption>` in the image.
 // Without it, `<figcaption>` would precede the `<img>` in the conversion.
 //
-// <image>^</image> -> <figure><img>^<caption></caption></figure>
+// <imageBlock>^</imageBlock> -> <figure><img>^<caption></caption></figure>
 //
 // @private
 // @param {module:engine/view/view~View} editingView

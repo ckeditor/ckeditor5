@@ -119,20 +119,21 @@ describe( 'ImageBlockEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img alt="alt text" src="/assets/sample.png"></figure>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
-				setModelData( model, '<image src="/assets/sample.png"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png"></imageBlock>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
 				setModelData( model,
-					'<image src="/assets/sample.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>'
+					'<imageBlock src="/assets/sample.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
+					'</imageBlock>'
 				);
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
@@ -144,11 +145,11 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</image>'
+					'</imageBlock>'
 				);
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
@@ -172,11 +173,11 @@ describe( 'ImageBlockEditing', () => {
 				}, { priority: 'high' } );
 
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</image>'
+					'</imageBlock>'
 				);
 
 				expect( editor.getData() ).to.equal(
@@ -188,11 +189,11 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset=\'{ "foo":"bar" }\'>' +
-					'</image>' );
+					'</imageBlock>' );
 
 				const image = doc.getRoot().getChild( 0 );
 				model.change( writer => {
@@ -212,7 +213,7 @@ describe( 'ImageBlockEditing', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
+					.to.equal( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
 			} );
 
 			it( 'should not convert if there is no image class', () => {
@@ -240,7 +241,7 @@ describe( 'ImageBlockEditing', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image src="/assets/sample.png"></image>' );
+					.to.equal( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 			} );
 
 			it( 'should not convert without src attribute', () => {
@@ -302,7 +303,7 @@ describe( 'ImageBlockEditing', () => {
 				editor.setData( '<img src="/assets/sample.png" alt="alt text" />' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
+					.to.equal( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
 			} );
 
 			it( 'should not convert alt attribute on non-img element', () => {
@@ -327,7 +328,8 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>'
+						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+						'</imageBlock>'
 					);
 			} );
 
@@ -339,11 +341,11 @@ describe( 'ImageBlockEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<image ' +
+					'<imageBlock ' +
 						'alt="alt text" ' +
 						'src="/assets/sample.png" ' +
 						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</image>'
+					'</imageBlock>'
 				);
 			} );
 
@@ -356,7 +358,8 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<image alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>'
+						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+						'</imageBlock>'
 					);
 			} );
 
@@ -372,7 +375,7 @@ describe( 'ImageBlockEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
-						'<image alt="foo" src="foo.jpg"></image>' +
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>bar</div>'
 					);
 				} );
@@ -382,9 +385,9 @@ describe( 'ImageBlockEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
-						'<image alt="foo" src="foo.jpg"></image>' +
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>ba</div>' +
-						'<image alt="foo" src="foo.jpg"></image>' +
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>r</div>'
 					);
 				} );
@@ -393,9 +396,9 @@ describe( 'ImageBlockEditing', () => {
 					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<image alt="foo" src="foo.jpg"></image>' +
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>foobar</div>' +
-						'<image alt="foo" src="foo.jpg"></image>'
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>'
 					);
 				} );
 
@@ -403,8 +406,8 @@ describe( 'ImageBlockEditing', () => {
 					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<image alt="foo" src="foo.jpg"></image>' +
-						'<image alt="foo" src="foo.jpg"></image>'
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>'
 					);
 				} );
 
@@ -420,7 +423,7 @@ describe( 'ImageBlockEditing', () => {
 								'xx' +
 							'</div>' +
 						'</div>' +
-						'<image alt="foo" src="foo.jpg"></image>' +
+						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>bar</div>'
 					);
 				} );
@@ -435,7 +438,7 @@ describe( 'ImageBlockEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
+						'<div>x</div><imageBlock alt="foo" src="foo.jpg"></imageBlock><div>y</div>'
 					);
 				} );
 
@@ -466,7 +469,7 @@ describe( 'ImageBlockEditing', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="/assets/sample.png"></img></figure>'
@@ -474,7 +477,7 @@ describe( 'ImageBlockEditing', () => {
 			} );
 
 			it( 'converted element should be widgetized', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				const figure = viewDocument.getRoot().getChild( 0 );
 
 				expect( figure.name ).to.equal( 'figure' );
@@ -482,7 +485,7 @@ describe( 'ImageBlockEditing', () => {
 			} );
 
 			it( 'should convert attribute change', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
@@ -495,7 +498,7 @@ describe( 'ImageBlockEditing', () => {
 			} );
 
 			it( 'should convert attribute removal (but keeps an empty "alt" to the data)', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
@@ -508,7 +511,7 @@ describe( 'ImageBlockEditing', () => {
 			} );
 
 			it( 'should not convert change if is already consumed', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				const image = doc.getRoot().getChild( 0 );
 
 				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
@@ -526,11 +529,11 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should convert srcset attribute to srcset and sizes', () => {
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
-					'</image>' );
+					'</imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
@@ -541,11 +544,11 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset=\'{ "foo":"bar" }\'>' +
-					'</image>' );
+					'</imageBlock>' );
 
 				const image = doc.getRoot().getChild( 0 );
 				model.change( writer => {
@@ -561,11 +564,11 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should convert srcset attribute to srcset, width and sizes', () => {
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</image>' );
+					'</imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
@@ -581,7 +584,9 @@ describe( 'ImageBlockEditing', () => {
 			} );
 
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( model, '<image src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>' );
+				setModelData( model,
+					'<imageBlock src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></imageBlock>'
+				);
 				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
@@ -597,10 +602,10 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</image>'
+					'</imageBlock>'
 				);
 				const image = doc.getRoot().getChild( 0 );
 
@@ -623,11 +628,11 @@ describe( 'ImageBlockEditing', () => {
 				}, { priority: 'high' } );
 
 				setModelData( model,
-					'<image ' +
+					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</image>'
+					'</imageBlock>'
 				);
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -672,7 +677,7 @@ describe( 'ImageBlockEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
-				'[<image src="/assets/sample.png"></image>]'
+				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
 			);
 		} );
 
@@ -682,12 +687,12 @@ describe( 'ImageBlockEditing', () => {
 				getData: () => '<img src="/assets/sample.png?id=A" />'
 			} );
 
-			setModelData( model, '[<image src="/assets/sample.png?id=B"></image>]' );
+			setModelData( model, '[<imageBlock src="/assets/sample.png?id=B"></imageBlock>]' );
 
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
-				'[<image src="/assets/sample.png?id=A"></image>]'
+				'[<imageBlock src="/assets/sample.png?id=A"></imageBlock>]'
 			);
 		} );
 
@@ -703,7 +708,7 @@ describe( 'ImageBlockEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
-				'<image src="/assets/sample.png?id=A"></image>' +
+				'<imageBlock src="/assets/sample.png?id=A"></imageBlock>' +
 				'<paragraph><imageInline src="/assets/sample.png?id=B"></imageInline>[]oo</paragraph>'
 			);
 		} );
@@ -730,7 +735,7 @@ describe( 'ImageBlockEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>[<image src="/assets/sample.png"></image>]'
+				'<paragraph>foo</paragraph>[<imageBlock src="/assets/sample.png"></imageBlock>]'
 			);
 		} );
 
@@ -760,7 +765,7 @@ describe( 'ImageBlockEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
-				'[<image alt="abc" src="/assets/sample.png"></image>]'
+				'[<imageBlock alt="abc" src="/assets/sample.png"></imageBlock>]'
 			);
 		} );
 	} );

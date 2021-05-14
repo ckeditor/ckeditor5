@@ -55,7 +55,8 @@ describe( 'ImageToolbar integration', () => {
 
 		it( 'should prevent the BalloonToolbar from being displayed when an image is selected', () => {
 			// When image is selected along with text.
-			setModelData( newEditor.model, '<paragraph>fo[o</paragraph><image alt="alt text" src="/assets/sample.png"></image>]' );
+			setModelData( newEditor.model,
+				'<paragraph>fo[o</paragraph><imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
 			balloonToolbar.show();
 
@@ -63,7 +64,8 @@ describe( 'ImageToolbar integration', () => {
 			expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
 
 			// When only image is selected.
-			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<image alt="alt text" src="/assets/sample.png"></image>]' );
+			setModelData( newEditor.model,
+				'<paragraph>foo</paragraph>[<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
 			balloonToolbar.show();
 
@@ -77,7 +79,8 @@ describe( 'ImageToolbar integration', () => {
 			const normalPrioritySpy = sinon.spy();
 
 			// Select an image
-			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<image alt="alt text" src="/assets/sample.png"></image>]' );
+			setModelData( newEditor.model,
+				'<paragraph>foo</paragraph>[<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
 			newEditor.listenTo( balloonToolbar, 'show', highestPrioritySpy, { priority: 'highest' } );
 			newEditor.listenTo( balloonToolbar, 'show', highPrioritySpy, { priority: 'high' } );

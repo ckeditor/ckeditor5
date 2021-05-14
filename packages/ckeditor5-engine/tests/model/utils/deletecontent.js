@@ -109,25 +109,25 @@ describe( 'DataController utils', () => {
 
 			test(
 				'deletes whole text between nodes',
-				'<image></image>[foo]<image></image>',
-				'<image></image>[]<image></image>'
+				'<imageBlock></imageBlock>[foo]<imageBlock></imageBlock>',
+				'<imageBlock></imageBlock>[]<imageBlock></imageBlock>'
 			);
 
 			test(
 				'deletes an element',
-				'x[<image></image>]y',
+				'x[<imageBlock></imageBlock>]y',
 				'x[]y'
 			);
 
 			test(
 				'deletes a bunch of nodes',
-				'w[x<image></image>y]z',
+				'w[x<imageBlock></imageBlock>y]z',
 				'w[]z'
 			);
 
 			test(
 				'does not break things when option.merge passed',
-				'w[x<image></image>y]z',
+				'w[x<imageBlock></imageBlock>y]z',
 				'w[]z'
 			);
 		} );
@@ -835,7 +835,7 @@ describe( 'DataController utils', () => {
 
 				setData(
 					model,
-					'x[<image></image><image></image>]z',
+					'x[<imageBlock></imageBlock><imageBlock></imageBlock>]z',
 					{ rootName: 'paragraphRoot' }
 				);
 
@@ -1208,13 +1208,13 @@ describe( 'DataController utils', () => {
 
 			test(
 				'but not if selection is not containing the whole content',
-				'<image></image><heading1>[xx</heading1><paragraph>yy]</paragraph>',
-				'<image></image><heading1>[]</heading1>'
+				'<imageBlock></imageBlock><heading1>[xx</heading1><paragraph>yy]</paragraph>',
+				'<imageBlock></imageBlock><heading1>[]</heading1>'
 			);
 
 			test(
 				'but not if only single element is selected',
-				'<heading1>[<image></image>xx]</heading1>',
+				'<heading1>[<imageBlock></imageBlock>xx]</heading1>',
 				'<heading1>[]</heading1>'
 			);
 
@@ -1223,7 +1223,7 @@ describe( 'DataController utils', () => {
 
 				setData(
 					model,
-					'x[<image></image><image></image>]z',
+					'x[<imageBlock></imageBlock><imageBlock></imageBlock>]z',
 					{ rootName: 'paragraphRoot' }
 				);
 

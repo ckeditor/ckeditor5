@@ -104,7 +104,7 @@ export default class Element extends Node {
 	 * Assuming that the object being checked is an element, you can also check its
 	 * {@link module:engine/model/element~Element#name name}:
 	 *
-	 *		element.is( 'element', 'image' ); // -> true if this is an <image> element
+	 *		element.is( 'element', 'image' ); // -> true if this is an <imageBlock> element
 	 *		element.is( 'element', 'image' ); // -> same as above
 	 *		text.is( 'element', 'image' ); -> false
 	 *

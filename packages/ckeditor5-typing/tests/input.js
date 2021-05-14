@@ -261,7 +261,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo<image></image>x[]</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<imageBlock></imageBlock>x[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foo<img></img>x{}</p>' );
 		} );
 

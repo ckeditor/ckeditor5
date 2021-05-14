@@ -290,7 +290,7 @@ describe( 'ImageStyleEditing', () => {
 					editor.setData( '<figure class="image image-style-align-center"><img src="/assets/sample.png" /></figure>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<image imageStyle="alignCenter" src="/assets/sample.png"></image>' );
+						.to.equal( '<imageBlock imageStyle="alignCenter" src="/assets/sample.png"></imageBlock>' );
 
 					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget image image-style-align-center" contenteditable="false">' +
@@ -301,7 +301,9 @@ describe( 'ImageStyleEditing', () => {
 				it( 'should not convert from view to model if class refers to not defined style', () => {
 					editor.setData( '<figure class="image foo-bar"><img src="/assets/sample.png" /></figure>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock src="/assets/sample.png"></imageBlock>'
+					);
 					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 					);
@@ -324,7 +326,9 @@ describe( 'ImageStyleEditing', () => {
 
 					editor.setData( '<figure class="image image-style-align-center"><img src="/assets/sample.png" /></figure>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock src="/assets/sample.png"></imageBlock>'
+					);
 					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 					);
@@ -347,7 +351,7 @@ describe( 'ImageStyleEditing', () => {
 					customEditor.setData( '<figure class="image image-style-inline"><img src="/assets/sample.png" /></figure>' );
 
 					expect( getModelData( customEditor.model, { withoutSelection: true } ) ).to.equal(
-						'<image src="/assets/sample.png"></image>'
+						'<imageBlock src="/assets/sample.png"></imageBlock>'
 					);
 					expect( getViewData( customEditor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
@@ -399,7 +403,7 @@ describe( 'ImageStyleEditing', () => {
 		describe( 'model to view', () => {
 			describe( 'of the block image', () => {
 				it( 'should add the class when imageStyle attribute is being added', () => {
-					setModelData( model, '<image src="/assets/sample.png"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png"></imageBlock>' );
 					const image = document.getRoot().getChild( 0 );
 
 					model.change( writer => {
@@ -417,7 +421,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				it( 'should remove the class when imageStyle attribute is being removed', () => {
-					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png" imageStyle="alignLeft"></imageBlock>' );
 					const image = document.getRoot().getChild( 0 );
 
 					model.change( writer => {
@@ -431,7 +435,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				it( 'should change the class when imageStyle attribute is being changed', () => {
-					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png" imageStyle="alignLeft"></imageBlock>' );
 					const image = document.getRoot().getChild( 0 );
 
 					model.change( writer => {
@@ -469,7 +473,7 @@ describe( 'ImageStyleEditing', () => {
 						conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
 					}, { priority: 'high' } );
 
-					setModelData( model, '<image src="/assets/sample.png"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png"></imageBlock>' );
 					const image = document.getRoot().getChild( 0 );
 
 					model.change( writer => {
@@ -486,7 +490,7 @@ describe( 'ImageStyleEditing', () => {
 						conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
 					}, { priority: 'high' } );
 
-					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png" imageStyle="alignLeft"></imageBlock>' );
 
 					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
@@ -494,7 +498,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				it( 'should not convert if current imageStyle is not present and the new imageStyle attribute is not defined', () => {
-					setModelData( model, '<image src="/assets/sample.png"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png"></imageBlock>' );
 					const image = document.getRoot().getChild( 0 );
 
 					model.change( writer => {
@@ -508,7 +512,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				it( 'should not convert if current imageStyle is present and the new imageStyle attribute is not defined', () => {
-					setModelData( model, '<image src="/assets/sample.png" imageStyle="alignLeft"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png" imageStyle="alignLeft"></imageBlock>' );
 					const image = document.getRoot().getChild( 0 );
 
 					model.change( writer => {
@@ -522,7 +526,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				it( 'should not convert if current imageStyle is not defined and the new imageStyle attribute is null', () => {
-					setModelData( model, '<image src="/assets/sample.png" imageStyle="foo"></image>' );
+					setModelData( model, '<imageBlock src="/assets/sample.png" imageStyle="foo"></imageBlock>' );
 					const image = document.getRoot().getChild( 0 );
 
 					model.change( writer => {

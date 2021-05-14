@@ -199,7 +199,7 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><image src="sample.png"></image></tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><imageBlock src="sample.png"></imageBlock></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should insert a paragraph when the cell content is unsupported', () => {

@@ -1354,7 +1354,7 @@ describe( 'LinkEditing', () => {
 
 		it( 'should not preserve anything if selected an element instead of text', () => {
 			setModelData( model,
-				'[<image src="/assets/sample.png"></image>]'
+				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
 			);
 
 			editor.execute( 'input', {

@@ -578,7 +578,7 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel( modelTable( [
-				[ '<image src="sample.png"></image>' ]
+				[ '<imageBlock src="sample.png"></imageBlock>' ]
 			] ) );
 		} );
 	} );

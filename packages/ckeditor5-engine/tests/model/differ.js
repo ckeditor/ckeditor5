@@ -1696,10 +1696,10 @@ describe( 'Differ', () => {
 		// See https://github.com/ckeditor/ckeditor5/issues/733.
 		it( 'proper filtering of changes in removed elements', () => {
 			// Before fix there was a buggy scenario described in ckeditor5#733.
-			// There was this structure: `<paragraph>foo[</paragraph><image /><blockQuote><p>te]xt</p></blockQuote>`
+			// There was this structure: `<paragraph>foo[</paragraph><imageBlock /><blockQuote><p>te]xt</p></blockQuote>`
 			// On delete of above selection `image` and `paragraph` inside `blockQuote` are removed (it gets merged).
 			// However, since `image` was removed first, when checking if `paragraph` is in a removed element,
-			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<image>`.
+			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<imageBlock>`.
 			// In a result, removing `paragraph` was discarded.
 			// The mistake was that the checking for removing was done at incorrect moment.
 			root._removeChildren( 0, root.childCount );

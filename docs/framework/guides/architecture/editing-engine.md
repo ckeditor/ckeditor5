@@ -127,21 +127,21 @@ To avoid such troubles, and to make collaborative editing possible for real, CKE
 ```html
 <paragraph>
 	"Foo "
-	<image></image>
+	<imageBlock></imageBlock>
 	"bar"
 </paragraph>
 ```
 
-The `"Foo "` text node is at index `0` in its parent, `<image></image>` is at index `1` and `"bar"` is at index `2`.
+The `"Foo "` text node is at index `0` in its parent, `<imageBlock></imageBlock>` is at index `1` and `"bar"` is at index `2`.
 
 On the other hand, offset `x` in `<paragraph>` translates to:
 
 | Offset | Position                                         | Node      |
 |--------|--------------------------------------------------|-----------|
-| `0`    | `<paragraph>^Foo <image></image>bar</paragraph>` | `"Foo "`  |
-| `1`    | `<paragraph>F^oo <image></image>bar</paragraph>` | `"Foo "`  |
-| `4`    | `<paragraph>Foo ^<image></image>bar</paragraph>` | `<image>` |
-| `6`    | `<paragraph>Foo <image></image>b^ar</paragraph>` | `"bar"`   |
+| `0`    | `<paragraph>^Foo <imageBlock></imageBlock>bar</paragraph>` | `"Foo "`  |
+| `1`    | `<paragraph>F^oo <imageBlock></imageBlock>bar</paragraph>` | `"Foo "`  |
+| `4`    | `<paragraph>Foo ^<imageBlock></imageBlock>bar</paragraph>` | `<imageBlock>` |
+| `6`    | `<paragraph>Foo <imageBlock></imageBlock>b^ar</paragraph>` | `"bar"`   |
 
 ### Positions, ranges and selections
 

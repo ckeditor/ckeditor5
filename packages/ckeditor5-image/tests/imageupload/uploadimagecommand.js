@@ -84,7 +84,7 @@ describe( 'UploadImageCommand', () => {
 		} );
 
 		it( 'should be true when the selection is on other image', () => {
-			setModelData( model, '[<image></image>]' );
+			setModelData( model, '[<imageBlock></imageBlock>]' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -95,7 +95,7 @@ describe( 'UploadImageCommand', () => {
 				isLimit: true
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
-			setModelData( model, '<image><caption>[]</caption></image>' );
+			setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );

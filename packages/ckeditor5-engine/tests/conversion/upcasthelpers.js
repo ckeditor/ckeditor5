@@ -519,7 +519,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
@@ -532,7 +532,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
@@ -545,7 +545,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
@@ -559,7 +559,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
@@ -578,7 +578,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { 'data-style': 'dark' } ),
-				'<image styled="dark"></image>'
+				'<imageBlock styled="dark"></imageBlock>'
 			);
 		} );
 
@@ -603,12 +603,12 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewContainerElement( viewDocument, 'img', { class: 'styled-dark' } ),
-				'<image styled="dark"></image>'
+				'<imageBlock styled="dark"></imageBlock>'
 			);
 
 			expectResult(
 				new ViewContainerElement( viewDocument, 'img', { class: 'styled-xxx' } ),
-				'<image></image>'
+				'<imageBlock></imageBlock>'
 			);
 
 			expectResult(
@@ -643,7 +643,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { 'class': 'styled-dark' } ),
-				'<image styled="dark"></image>'
+				'<imageBlock styled="dark"></imageBlock>'
 			);
 		} );
 
@@ -652,7 +652,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image></image>'
+				'<imageBlock></imageBlock>'
 			);
 		} );
 
@@ -685,7 +685,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { class: 'styled' } ),
-				'<image styled="true"></image>'
+				'<imageBlock styled="true"></imageBlock>'
 			);
 		} );
 

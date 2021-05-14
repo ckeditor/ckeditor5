@@ -16,10 +16,10 @@ import { first } from 'ckeditor5/src/utils';
  *
  * to the model representation:
  *
- *		<image src="..." alt="..."></image>
+ *		<imageBlock src="..." alt="..."></imageBlock>
  *
  * The entire content of the `<figure>` element except the first `<img>` is being converted as children
- * of the `<image>` model element.
+ * of the `<imageBlock>` model element.
  *
  * @param {module:image/imageutils~ImageUtils} imageUtils
  * @returns {Function}

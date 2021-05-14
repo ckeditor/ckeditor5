@@ -105,7 +105,7 @@ describe( 'Image converters', () => {
 		it( 'should find img element among children and convert it using already defined converters', () => {
 			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
-			expectModel( '<image src="/assets/sample.png"></image>' );
+			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 			expect( imgConverterCalled ).to.be.true;
 		} );
 
@@ -120,7 +120,7 @@ describe( 'Image converters', () => {
 			editor.setData( '<figure class="image">x<img src="/assets/sample.png" />y<foo></foo><bar></bar></figure>' );
 
 			// Element bar not converted because schema does not allow it.
-			expectModel( '<image src="/assets/sample.png">xy<foo></foo></image>' );
+			expectModel( '<imageBlock src="/assets/sample.png">xy<foo></foo></imageBlock>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - in the middle', () => {
@@ -139,7 +139,7 @@ describe( 'Image converters', () => {
 				'</div>'
 			);
 
-			expectModel( '<div>abc</div><image src="foo.jpg"></image><div>def</div>' );
+			expectModel( '<div>abc</div><imageBlock src="foo.jpg"></imageBlock><div>def</div>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - at the end', () => {
@@ -157,7 +157,7 @@ describe( 'Image converters', () => {
 				'</div>'
 			);
 
-			expectModel( '<div>abc</div><image src="foo.jpg"></image>' );
+			expectModel( '<div>abc</div><imageBlock src="foo.jpg"></imageBlock>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - at the beginning', () => {
@@ -175,7 +175,7 @@ describe( 'Image converters', () => {
 				'</div>'
 			);
 
-			expectModel( '<image src="foo.jpg"></image><div>def</div>' );
+			expectModel( '<imageBlock src="foo.jpg"></imageBlock><div>def</div>' );
 		} );
 
 		it( 'should be possible to overwrite', () => {
@@ -204,7 +204,7 @@ describe( 'Image converters', () => {
 			editor.setData( '<figure><img src="/assets/sample.png" />xyz</figure>' );
 
 			// Default image converter will be fired.
-			expectModel( '<image src="/assets/sample.png"></image>' );
+			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 		} );
 
 		it( 'should not convert if there is no img element among children', () => {
@@ -225,7 +225,7 @@ describe( 'Image converters', () => {
 
 	describe( 'modelToViewAttributeConverter', () => {
 		it( 'should convert adding attribute to image', () => {
-			setModelData( model, '<image src=""></image>' );
+			setModelData( model, '<imageBlock src=""></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -238,7 +238,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert an empty "src" attribute from image even if removed', () => {
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -251,7 +251,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert an empty "alt" attribute from image even if removed', () => {
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -264,7 +264,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert change of attribute image', () => {
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -281,7 +281,7 @@ describe( 'Image converters', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:alt' );
 			}, { priority: 'high' } );
 
-			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
@@ -294,7 +294,7 @@ describe( 'Image converters', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'foo', view: 'foo' } );
 
-			setModelData( model, '<image src=""><foo></foo></image>' );
+			setModelData( model, '<imageBlock src=""><foo></foo></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {

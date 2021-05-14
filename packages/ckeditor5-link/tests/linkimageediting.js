@@ -77,7 +77,7 @@ describe( 'LinkImageEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to data', () => {
 			it( 'should convert an image with a link', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" src="/assets/sample.png"></a></figure>'
@@ -85,7 +85,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should convert an image with a link and without alt attribute', () => {
-				setModelData( model, '<image src="/assets/sample.png" linkHref="http://ckeditor.com"></image>' );
+				setModelData( model, '<imageBlock src="/assets/sample.png" linkHref="http://ckeditor.com"></imageBlock>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png"></a></figure>'
@@ -94,10 +94,10 @@ describe( 'LinkImageEditing', () => {
 
 			it( 'should convert srcset attribute to srcset and sizes attribute wrapped into a link', () => {
 				setModelData( model,
-					'<image src="/assets/sample.png" ' +
+					'<imageBlock src="/assets/sample.png" ' +
 						'linkHref="http://ckeditor.com" ' +
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
-					'</image>'
+					'</imageBlock>'
 				);
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
@@ -139,14 +139,14 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<image alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
+						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert an image with a link and without alt attribute', () => {
 					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png" /></a></figure>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<image linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
+						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should not convert without src attribute', () => {
@@ -197,7 +197,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
+						.to.equal( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert a link without an image to a paragraph with the link', () => {
@@ -217,14 +217,14 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<image alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
+						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should convert an image surrounded by a link without alt attribute', () => {
 					editor.setData( '<a href="http://ckeditor.com"><img src="/assets/sample.png" /></a>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<image linkHref="http://ckeditor.com" src="/assets/sample.png"></image>' );
+						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should not convert an image surrounded by a link without src attribute', () => {
@@ -273,7 +273,7 @@ describe( 'LinkImageEditing', () => {
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<image alt="alt text" src="/assets/sample.png"></image>' );
+						.to.equal( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
 				} );
 
 				it( 'should not convert an image surrounded by a link to a linked block image' +
@@ -317,9 +317,9 @@ describe( 'LinkImageEditing', () => {
 							);
 
 							expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
-								'<image alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
+								'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
 									'<caption>Foo Bar.</caption>' +
-								'</image>'
+								'</imageBlock>'
 							);
 
 							return editor.destroy();
@@ -332,7 +332,7 @@ describe( 'LinkImageEditing', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert the image element', () => {
-				setModelData( model, '<image linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
@@ -344,7 +344,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should convert attribute change', () => {
-				setModelData( model, '<image linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				const image = model.document.getRoot().getChild( 0 );
 
 				model.change( writer => {
@@ -361,7 +361,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should convert attribute removal', () => {
-				setModelData( model, '<image linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></image>' );
+				setModelData( model, '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				const image = model.document.getRoot().getChild( 0 );
 
 				model.change( writer => {
@@ -409,9 +409,9 @@ describe( 'LinkImageEditing', () => {
 					} )
 					.then( editor => {
 						setModelData( editor.model,
-							'<image linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text">' +
+							'<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text">' +
 								'<caption>Foo Bar.</caption>' +
-							'</image>'
+							'</imageBlock>'
 						);
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
@@ -498,7 +498,7 @@ describe( 'LinkImageEditing', () => {
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
+							.to.equal( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
 
 						// Downcast check.
 						expect( editor.getData() ).to.equal(
@@ -539,7 +539,7 @@ describe( 'LinkImageEditing', () => {
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
+							.to.equal( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
 
 						// Downcast check.
 						if ( link.external ) {
@@ -647,7 +647,7 @@ describe( 'LinkImageEditing', () => {
 						editor.setData( `<a href="${ link.url }"><img src="/assets/sample.png"></a>` );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
+							.to.equal( `<imageBlock linkHref="${ link.url }" src="/assets/sample.png"></imageBlock>` );
 
 						// Order of attributes is important, that's why this is assert is construct in such way.
 						expect( editor.getData() ).to.equal(
@@ -748,7 +748,7 @@ describe( 'LinkImageEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<image linkHref="url" linkIsDownloadable="true" linkIsExternal="true" src="/assets/sample.png"></image>'
+					'<imageBlock linkHref="url" linkIsDownloadable="true" linkIsExternal="true" src="/assets/sample.png"></imageBlock>'
 				);
 
 				await editor.destroy();
@@ -764,7 +764,7 @@ describe( 'LinkImageEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<image linkHref="url" linkIsExternal="true" src="/assets/sample.png"></image>'
+					'<imageBlock linkHref="url" linkIsExternal="true" src="/assets/sample.png"></imageBlock>'
 				);
 			} );
 
@@ -808,13 +808,13 @@ describe( 'LinkImageEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<image alt="bar" ' +
+					'<imageBlock alt="bar" ' +
 						'linkHref="https://cksource.com" ' +
 						'linkIsDownloadable="true" ' +
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
 						'src="sample.jpg">' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>' +
 						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
 							'https://cksource.com' +
@@ -837,13 +837,13 @@ describe( 'LinkImageEditing', () => {
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<image alt="bar" ' +
+					'<imageBlock alt="bar" ' +
 						'linkHref="https://cksource.com" ' +
 						'linkIsDownloadable="true" ' +
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
 						'src="sample.jpg">' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>' +
 						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
 							'https://cksource.com' +
@@ -899,7 +899,7 @@ describe( 'LinkImageEditing', () => {
 
 			it( 'should downcast the decorators after applying a change', () => {
 				setModelData( model,
-					'[<image alt="bar" src="sample.jpg"></image>]' +
+					'[<imageBlock alt="bar" src="sample.jpg"></imageBlock>]' +
 					'<paragraph>' +
 						'<$text>https://cksource.com</$text>' +
 					'</paragraph>'
@@ -938,7 +938,7 @@ describe( 'LinkImageEditing', () => {
 			// See #8401.
 			it( 'should downcast without error if the image already has no link', () => {
 				setModelData( model,
-					'[<image alt="bar" src="sample.jpg"></image>]'
+					'[<imageBlock alt="bar" src="sample.jpg"></imageBlock>]'
 				);
 
 				editor.execute( 'link', 'https://cksource.com', {
@@ -968,7 +968,7 @@ describe( 'LinkImageEditing', () => {
 			describe( 'order of model updates', () => {
 				it( 'should not affect converters - base link attributes first', () => {
 					setModelData( model,
-						'[<image src="https://cksource.com"></image>]'
+						'[<imageBlock src="https://cksource.com"></imageBlock>]'
 					);
 
 					model.change( writer => {
@@ -982,13 +982,13 @@ describe( 'LinkImageEditing', () => {
 					} );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
+						'<imageBlock linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></imageBlock>'
 					);
 				} );
 
 				it( 'should not affect converters - decorators first', () => {
 					setModelData( model,
-						'[<image src="https://cksource.com"></image>]'
+						'[<imageBlock src="https://cksource.com"></imageBlock>]'
 					);
 
 					model.change( writer => {
@@ -1005,7 +1005,7 @@ describe( 'LinkImageEditing', () => {
 					} );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<image linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></image>'
+						'<imageBlock linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></imageBlock>'
 					);
 				} );
 			} );

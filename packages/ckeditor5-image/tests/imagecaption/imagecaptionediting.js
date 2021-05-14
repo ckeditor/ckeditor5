@@ -145,14 +145,14 @@ describe( 'ImageCaptionEditing', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" /><figcaption>foo bar</figcaption></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image src="/assets/sample.png"><caption>foo bar</caption></image>' );
+					.to.equal( '<imageBlock src="/assets/sample.png"><caption>foo bar</caption></imageBlock>' );
 			} );
 
 			it( 'should not add an empty caption if there is no figcaption', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image src="/assets/sample.png"></image>' );
+					.to.equal( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 			} );
 
 			it( 'should not convert figcaption inside other elements than image', () => {
@@ -165,7 +165,7 @@ describe( 'ImageCaptionEditing', () => {
 
 		describe( 'model to view (downcast)', () => {
 			it( 'should convert caption element to figcaption', () => {
-				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+				setModelData( model, '<imageBlock src="img.png"><caption>Foo bar baz.</caption></imageBlock>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>'
@@ -173,7 +173,7 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			it( 'should not convert caption to figcaption if it\'s empty', () => {
-				setModelData( model, '<image src="img.png"><caption></caption></image>' );
+				setModelData( model, '<imageBlock src="img.png"><caption></caption></imageBlock>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"><figcaption>&nbsp;</figcaption></figure>' );
 			} );
@@ -189,7 +189,7 @@ describe( 'ImageCaptionEditing', () => {
 	describe( 'editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert caption element to figcaption contenteditable', () => {
-				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+				setModelData( model, '<imageBlock src="img.png"><caption>Foo bar baz.</caption></imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
@@ -223,7 +223,7 @@ describe( 'ImageCaptionEditing', () => {
 					{ priority: 'high' }
 				);
 
-				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+				setModelData( model, '<imageBlock src="img.png"><caption>Foo bar baz.</caption></imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img src="img.png"></img><span></span>Foo bar baz.</figure>'
@@ -231,7 +231,7 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			it( 'should show caption when something is inserted inside', () => {
-				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption></caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><imageBlock src="img.png"><caption></caption></imageBlock>' );
 
 				const image = doc.getRoot().getChild( 1 );
 				const caption = image.getChild( 0 );
@@ -253,7 +253,7 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			it( 'should not hide when everything is removed from caption', () => {
-				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption>foo bar baz</caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><imageBlock src="img.png"><caption>foo bar baz</caption></imageBlock>' );
 
 				const image = doc.getRoot().getChild( 1 );
 				const caption = image.getChild( 0 );
@@ -274,7 +274,7 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			it( 'should show when not everything is removed from caption', () => {
-				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption>foo bar baz</caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><imageBlock src="img.png"><caption>foo bar baz</caption></imageBlock>' );
 
 				const image = doc.getRoot().getChild( 1 );
 				const caption = image.getChild( 0 );
@@ -301,7 +301,7 @@ describe( 'ImageCaptionEditing', () => {
 					} )
 				} );
 
-				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+				setModelData( model, '<imageBlock src="img.png"><caption>Foo bar baz.</caption></imageBlock>' );
 
 				const caption = doc.getRoot().getNodeByPath( [ 0, 0 ] );
 
@@ -351,7 +351,7 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'[<image alt="" src=""></image>]<paragraph></paragraph>'
+				'[<imageBlock alt="" src=""></imageBlock>]<paragraph></paragraph>'
 			);
 
 			expect( getViewData( view ) ).to.equal(
@@ -390,8 +390,8 @@ describe( 'ImageCaptionEditing', () => {
 			expect( getModelData( model ) ).to.equal(
 				'[<table>' +
 					'<tableRow>' +
-						'<tableCell><image alt="" src=""></image></tableCell>' +
-						'<tableCell><image alt="" src=""></image></tableCell>' +
+						'<tableCell><imageBlock alt="" src=""></imageBlock></tableCell>' +
+						'<tableCell><imageBlock alt="" src=""></imageBlock></tableCell>' +
 					'</tableRow>' +
 				'</table>]' +
 				'<paragraph></paragraph>'
@@ -427,7 +427,7 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'[<image alt="" src=""><caption>foo bar</caption></image>]<paragraph></paragraph>'
+				'[<imageBlock alt="" src=""><caption>foo bar</caption></imageBlock>]<paragraph></paragraph>'
 			);
 
 			expect( getViewData( view ) ).to.equal(
@@ -456,7 +456,7 @@ describe( 'ImageCaptionEditing', () => {
 
 			// Check whether caption fixer added redundant caption.
 			expect( getModelData( model ) ).to.equal(
-				'[<image alt="" src=""><caption></caption></image>]<paragraph></paragraph>'
+				'[<imageBlock alt="" src=""><caption></caption></imageBlock>]<paragraph></paragraph>'
 			);
 
 			expect( getViewData( view ) ).to.equal(
@@ -470,7 +470,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should do nothing for other changes than insert', () => {
-			setModelData( model, '<image src=""><caption>foo bar</caption></image>' );
+			setModelData( model, '<imageBlock src=""><caption>foo bar</caption></imageBlock>' );
 
 			const image = doc.getRoot().getChild( 0 );
 
@@ -479,12 +479,12 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<image alt="alt text" src=""><caption>foo bar</caption></image>'
+				'<imageBlock alt="alt text" src=""><caption>foo bar</caption></imageBlock>'
 			);
 		} );
 
 		it( 'should do nothing on $text insert', () => {
-			setModelData( model, '<image src=""><caption>foo bar</caption></image><paragraph>[]</paragraph>' );
+			setModelData( model, '<imageBlock src=""><caption>foo bar</caption></imageBlock><paragraph>[]</paragraph>' );
 
 			const paragraph = doc.getRoot().getChild( 1 );
 
@@ -500,14 +500,14 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<image src=""><caption>foo bar</caption></image><paragraph>foo</paragraph>'
+				'<imageBlock src=""><caption>foo bar</caption></imageBlock><paragraph>foo</paragraph>'
 			);
 		} );
 	} );
 
 	describe( 'editing view', () => {
 		it( 'image should have empty figcaption element when is selected', () => {
-			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
+			setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src=""><caption></caption></imageBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo</p>' +
@@ -521,7 +521,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'image should have empty figcaption element when not selected', () => {
-			setModelData( model, '<paragraph>[]foo</paragraph><image src=""><caption></caption></image>' );
+			setModelData( model, '<paragraph>[]foo</paragraph><imageBlock src=""><caption></caption></imageBlock>' );
 
 			expect( getViewData( view ) ).to.equal(
 				'<p>{}foo</p>' +
@@ -535,7 +535,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should keep the placeholder visible when the figcaption is focused', () => {
-			setModelData( model, '<paragraph>foo</paragraph>[<image src=""></image>]' );
+			setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src=""></imageBlock>]' );
 
 			editor.execute( 'toggleImageCaption' );
 
@@ -571,7 +571,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should not add additional figcaption if one is already present', () => {
-			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption>foo bar</caption></image>]' );
+			setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src=""><caption>foo bar</caption></imageBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo</p>' +
@@ -584,7 +584,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should not alter the figcaption when the caption is empty and the image is no longer selected', () => {
-			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
+			setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src=""><caption></caption></imageBlock>]' );
 
 			model.change( writer => {
 				writer.setSelection( null );
@@ -602,7 +602,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should not remove figcaption when selection is inside it even when it is empty', () => {
-			setModelData( model, '<image src=""><caption>[foo bar]</caption></image>' );
+			setModelData( model, '<imageBlock src=""><caption>[foo bar]</caption></imageBlock>' );
 
 			model.change( writer => {
 				writer.remove( doc.selection.getFirstRange() );
@@ -620,7 +620,7 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should not remove figcaption when selection is moved from it to its image', () => {
-			setModelData( model, '<image src=""><caption>[foo bar]</caption></image>' );
+			setModelData( model, '<imageBlock src=""><caption>[foo bar]</caption></imageBlock>' );
 			const image = doc.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -638,7 +638,9 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should not remove figcaption when selection is moved from it to other image', () => {
-			setModelData( model, '<image src=""><caption>[foo bar]</caption></image><image src=""><caption></caption></image>' );
+			setModelData( model, '<imageBlock src="">' +
+				'<caption>[foo bar]</caption></imageBlock><imageBlock src=""><caption></caption>' +
+			'</imageBlock>' );
 			const image = doc.getRoot().getChild( 1 );
 
 			model.change( writer => {
@@ -662,7 +664,7 @@ describe( 'ImageCaptionEditing', () => {
 		it( 'should show empty figcaption when image is selected but editor is in the readOnly mode', () => {
 			editor.isReadOnly = true;
 
-			setModelData( model, '[<image src="img.png"><caption></caption></image>]' );
+			setModelData( model, '[<imageBlock src="img.png"><caption></caption></imageBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
@@ -675,7 +677,7 @@ describe( 'ImageCaptionEditing', () => {
 
 		describe( 'undo/redo integration', () => {
 			it( 'should create view element after redo', () => {
-				setModelData( model, '<paragraph>foo</paragraph><image src=""><caption>[foo bar baz]</caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><imageBlock src=""><caption>[foo bar baz]</caption></imageBlock>' );
 
 				const modelRoot = doc.getRoot();
 				const modelImage = modelRoot.getChild( 1 );
@@ -723,7 +725,7 @@ describe( 'ImageCaptionEditing', () => {
 				} );
 
 				expect( getModelData( model ) ).to.equal(
-					'<image src="/assets/sample.png"></image><paragraph>foo[]</paragraph>'
+					'<imageBlock src="/assets/sample.png"></imageBlock><paragraph>foo[]</paragraph>'
 				);
 
 				editor.execute( 'undo' );

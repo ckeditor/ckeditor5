@@ -799,7 +799,7 @@ describe( 'Widget', () => {
 				'should work if selection is in nested element (left arrow)',
 
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -812,7 +812,7 @@ describe( 'Widget', () => {
 				keyCodes.arrowleft,
 
 				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -827,7 +827,7 @@ describe( 'Widget', () => {
 				'should work if selection is in nested element (up arrow)',
 
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -840,7 +840,7 @@ describe( 'Widget', () => {
 				keyCodes.arrowup,
 
 				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -862,7 +862,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<paragraph>foo</paragraph>',
 
 				keyCodes.arrowright,
@@ -875,7 +875,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<paragraph>foo</paragraph>'
 			);
 
@@ -890,7 +890,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<paragraph>foo</paragraph>',
 
 				keyCodes.arrowdown,
@@ -903,7 +903,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<paragraph>foo</paragraph>'
 			);
 
@@ -1216,27 +1216,27 @@ describe( 'Widget', () => {
 			'should remove the entire empty element if it is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 			'<paragraph>foo</paragraph>',
 
 			'backward',
 
-			'<paragraph>foo</paragraph>[<image></image>]<paragraph>foo</paragraph>'
+			'<paragraph>foo</paragraph>[<imageBlock></imageBlock>]<paragraph>foo</paragraph>'
 		);
 
 		test(
 			'should remove the entire empty element (deeper structure) if it is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
 			'<paragraph>foo</paragraph>',
 
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<paragraph>foo</paragraph>'
 		);
 
@@ -1245,13 +1245,13 @@ describe( 'Widget', () => {
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<paragraph>foo</paragraph>',
 
 			'forward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<paragraph>foo</paragraph>'
 		);
 
@@ -1259,14 +1259,14 @@ describe( 'Widget', () => {
 			'should not remove the entire element which is not empty and the element is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote><paragraph>[]</paragraph><paragraph></paragraph></blockQuote>' +
 			'<paragraph>foo</paragraph>',
 
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<blockQuote><paragraph></paragraph></blockQuote>' +
 			'<paragraph>foo</paragraph>'
 		);
@@ -1276,14 +1276,14 @@ describe( 'Widget', () => {
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><paragraph>Foo</paragraph><paragraph>[]</paragraph></blockQuote>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<paragraph>foo</paragraph>',
 
 			'forward',
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<paragraph>foo</paragraph>'
 		);
 
@@ -1291,7 +1291,7 @@ describe( 'Widget', () => {
 			'should not remove the entire element (deeper structure) which is not empty and the element is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote>' +
 			'<div>' +
 			'<div>' +
@@ -1305,7 +1305,7 @@ describe( 'Widget', () => {
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<blockQuote>' +
 			'<paragraph></paragraph>' +
 			'</blockQuote>' +
@@ -1316,7 +1316,7 @@ describe( 'Widget', () => {
 			'should do nothing if the nested element is not empty and the element is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote>' +
 			'<div>' +
 			'<div>' +
@@ -1329,7 +1329,7 @@ describe( 'Widget', () => {
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote>' +
 			'<div>' +
 			'<div>' +
@@ -1344,7 +1344,7 @@ describe( 'Widget', () => {
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			setModelData( model,
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
@@ -1361,7 +1361,7 @@ describe( 'Widget', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
@@ -1372,7 +1372,7 @@ describe( 'Widget', () => {
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			setModelData( model,
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
@@ -1389,7 +1389,7 @@ describe( 'Widget', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);

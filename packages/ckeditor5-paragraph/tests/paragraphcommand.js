@@ -141,7 +141,7 @@ describe( 'ParagraphCommand', () => {
 			setData(
 				model,
 				'<heading1>a[bc</heading1>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<heading1>de]f</heading1>'
 			);
 
@@ -149,7 +149,7 @@ describe( 'ParagraphCommand', () => {
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>a[bc</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<paragraph>de]f</paragraph>'
 			);
 		} );

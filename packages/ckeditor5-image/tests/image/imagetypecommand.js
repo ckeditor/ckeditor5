@@ -65,7 +65,7 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should be false when the selection is on a block image', () => {
-				setModelData( model, '[<image></image>]' );
+				setModelData( model, '[<imageBlock></imageBlock>]' );
 				expect( blockCommand.isEnabled ).to.be.false;
 			} );
 
@@ -75,7 +75,7 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should be false when the selection is inside other image', () => {
-				setModelData( model, '<image><caption>[]</caption></image>' );
+				setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 				expect( blockCommand.isEnabled ).to.be.false;
 			} );
 
@@ -119,7 +119,7 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should be true when the selection is on a block image', () => {
-				setModelData( model, '[<image></image>]' );
+				setModelData( model, '[<imageBlock></imageBlock>]' );
 				expect( inlineCommand.isEnabled ).to.be.true;
 			} );
 
@@ -137,7 +137,7 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should be true when the selection is in a block image caption', () => {
-				setModelData( model, '<image><caption>[]Foo</caption></image>' );
+				setModelData( model, '<imageBlock><caption>[]Foo</caption></imageBlock>' );
 
 				expect( inlineCommand.isEnabled ).to.be.true;
 			} );
@@ -154,7 +154,7 @@ describe( 'ImageTypeCommand', () => {
 				const oldElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
 				const returned = blockCommand.execute();
 
-				expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
+				expect( getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 
 				const newElement = model.document.getRoot().getChild( 0 );
 
@@ -166,7 +166,7 @@ describe( 'ImageTypeCommand', () => {
 
 				blockCommand.execute();
 
-				expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]` );
+				expect( getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 			} );
 
 			it( 'should convert inline image with alt attribute to block image', () => {
@@ -179,7 +179,7 @@ describe( 'ImageTypeCommand', () => {
 				blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
-					`[<image alt="alt text" src="${ imgSrc }"></image>]`
+					`[<imageBlock alt="alt text" src="${ imgSrc }"></imageBlock>]`
 				);
 			} );
 
@@ -193,7 +193,7 @@ describe( 'ImageTypeCommand', () => {
 				blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
-					`[<image src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>]`
+					`[<imageBlock src="${ imgSrc }" srcset="{"data":"small.png 148w, big.png 1024w"}"></imageBlock>]`
 				);
 			} );
 
@@ -236,7 +236,7 @@ describe( 'ImageTypeCommand', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -262,7 +262,7 @@ describe( 'ImageTypeCommand', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -291,7 +291,7 @@ describe( 'ImageTypeCommand', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -320,7 +320,7 @@ describe( 'ImageTypeCommand', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -350,7 +350,7 @@ describe( 'ImageTypeCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
-					`[<image src="${ imgSrc }"></image>]` +
+					`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 					'<paragraph>bar</paragraph>'
 				);
 
@@ -364,7 +364,7 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should return an object containing the old and new image elements', () => {
 				const imgSrc = 'foo/bar.jpg';
 
-				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+				setModelData( model, `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 
 				const oldElement = model.document.getRoot().getChild( 0 );
 				const returned = inlineCommand.execute();
@@ -379,7 +379,7 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should convert block image to inline image', () => {
-				setModelData( model, `[<image src="${ imgSrc }"></image>]` );
+				setModelData( model, `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 
 				inlineCommand.execute();
 
@@ -390,7 +390,7 @@ describe( 'ImageTypeCommand', () => {
 
 			it( 'should convert block image with alt attribute to inline image', () => {
 				setModelData( model,
-					`[<image src="${ imgSrc }" alt="alt text"></image>]`
+					`[<imageBlock src="${ imgSrc }" alt="alt text"></imageBlock>]`
 				);
 
 				inlineCommand.execute();
@@ -404,7 +404,7 @@ describe( 'ImageTypeCommand', () => {
 
 			it( 'should convert block image with srcset attribute to inline image', () => {
 				setModelData( model,
-					`[<image src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></image>]`
+					`[<imageBlock src="${ imgSrc }" srcset='{ "data": "small.png 148w, big.png 1024w" }'></imageBlock>]`
 				);
 
 				inlineCommand.execute();
@@ -417,7 +417,7 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should convert and set selection on the new image if the selection is in a block image caption', () => {
-				setModelData( model, `<image src="${ imgSrc }"><caption>[]Foo</caption></image>` );
+				setModelData( model, `<imageBlock src="${ imgSrc }"><caption>[]Foo</caption></imageBlock>` );
 
 				inlineCommand.execute();
 
@@ -442,7 +442,7 @@ describe( 'ImageTypeCommand', () => {
 					}
 				} );
 
-				setModelData( model, `<block>[<image src="${ imgSrc }"></image>]</block>` );
+				setModelData( model, `<block>[<imageBlock src="${ imgSrc }"></imageBlock>]</block>` );
 
 				const result = inlineCommand.execute();
 
@@ -454,7 +454,7 @@ describe( 'ImageTypeCommand', () => {
 				it( 'on the image while converting block image to inline image', () => {
 					setModelData( model,
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -481,7 +481,7 @@ describe( 'ImageTypeCommand', () => {
 				it( 'ending on the image while converting block image to inline image', () => {
 					setModelData( model,
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -514,7 +514,7 @@ describe( 'ImageTypeCommand', () => {
 				it( 'starting on the image while converting block image to inline image', () => {
 					setModelData( model,
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -547,7 +547,7 @@ describe( 'ImageTypeCommand', () => {
 				it( 'overlapping the image while converting block image to inline image', () => {
 					setModelData( model,
 						'<paragraph>foo</paragraph>' +
-						`[<image src="${ imgSrc }"></image>]` +
+						`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 						'<paragraph>bar</paragraph>'
 					);
 
@@ -581,7 +581,7 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should not preserve markers inside the image element', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
-					`[<image src="${ imgSrc }"></image>]` +
+					`[<imageBlock src="${ imgSrc }"></imageBlock>]` +
 					'<paragraph>bar</paragraph>'
 				);
 
@@ -611,7 +611,7 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should preserve the caption so it can be restored', () => {
 				const imgSrc = 'foo/bar.jpg';
 
-				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+				setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 
 				inlineCommand.execute();
 
@@ -622,18 +622,18 @@ describe( 'ImageTypeCommand', () => {
 				blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
-					`[<image src="${ imgSrc }"></image>]`
+					`[<imageBlock src="${ imgSrc }"></imageBlock>]`
 				);
 
 				editor.execute( 'toggleImageCaption' );
 
-				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+				setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 			} );
 
 			it( 'should preserve the caption if the selection was in the caption at the moment of type change', () => {
 				const imgSrc = 'foo/bar.jpg';
 
-				setModelData( model, `<image src="${ imgSrc }"><caption>f[o]o</caption></image>` );
+				setModelData( model, `<imageBlock src="${ imgSrc }"><caption>f[o]o</caption></imageBlock>` );
 
 				inlineCommand.execute();
 
@@ -644,12 +644,12 @@ describe( 'ImageTypeCommand', () => {
 				blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
-					`[<image src="${ imgSrc }"></image>]`
+					`[<imageBlock src="${ imgSrc }"></imageBlock>]`
 				);
 
 				editor.execute( 'toggleImageCaption' );
 
-				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+				setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 			} );
 		} );
 	} );

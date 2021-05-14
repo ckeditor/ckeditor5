@@ -562,7 +562,7 @@ describe( 'Model', () => {
 				'</div>' +
 				'<paragraph>foo</paragraph>' +
 				'<div>' +
-					'<image></image>' +
+					'<imageBlock></imageBlock>' +
 				'</div>' +
 				'<listItem></listItem>' +
 				'<listItem></listItem>' +

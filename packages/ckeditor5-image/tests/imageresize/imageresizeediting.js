@@ -97,21 +97,21 @@ describe( 'ImageResizeEditing', () => {
 		} );
 
 		it( 'downcasts 100px width correctly', () => {
-			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="100px"></image>` );
+			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="100px"></imageBlock>` );
 
 			expect( editor.getData() )
 				.to.equal( `<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
 
 		it( 'downcasts 50% width correctly', () => {
-			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
+			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageBlock>` );
 
 			expect( editor.getData() )
 				.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
 
 		it( 'removes style and extra class when no longer resized', () => {
-			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
+			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageBlock>` );
 
 			const imageModel = editor.model.document.getRoot().getChild( 0 );
 
@@ -129,7 +129,7 @@ describe( 'ImageResizeEditing', () => {
 					conversionApi.consumable.consume( data.item, 'attribute:width:image' );
 				}, { priority: 'high' } )
 			);
-			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
+			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageBlock>` );
 
 			expect( editor.getData() )
 				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );

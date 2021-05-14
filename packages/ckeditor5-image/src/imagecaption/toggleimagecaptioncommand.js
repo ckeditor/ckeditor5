@@ -96,9 +96,9 @@ export default class ToggleImageCaptionCommand extends Command {
 	}
 
 	/**
-	 * Shows the caption of the `<image>` or `<imageInline>`. Also:
+	 * Shows the caption of the `<imageBlock>` or `<imageInline>`. Also:
 	 *
-	 * * it converts `<imageInline>` to `<image>` to show the caption,
+	 * * it converts `<imageInline>` to `<imageBlock>` to show the caption,
 	 * * it attempts to restore the caption content from the `ImageCaptionEditing` caption registry,
 	 * * it moves the selection to the caption right away, it the `focusCaptionOnShow` option was set.
 	 *

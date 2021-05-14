@@ -27,7 +27,7 @@ import {
  *
  * It registers:
  *
- * * `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
+ * * `<imageBlock>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
  * * converters for editing and data pipelines.,
  * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeBlock'`} command that converts inline images into
  * block images.

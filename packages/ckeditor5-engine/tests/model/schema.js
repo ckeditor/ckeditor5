@@ -1128,9 +1128,9 @@ describe( 'Schema', () => {
 				'</article>' +
 				'</section>' +
 				'<widget>' +
-				'<image>' +
+				'<imageBlock>' +
 				'<caption>b[a]r</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'</widget>' +
 				'</div>'
 			);
@@ -1158,9 +1158,9 @@ describe( 'Schema', () => {
 		it( 'works fine with multi-range selections if the first range has the root element as a limit element', () => {
 			setData(
 				model,
-				'<image>' +
+				'<imageBlock>' +
 				'<caption>[Foo</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<article>' +
 				'<paragraph>Paragraph in article]</paragraph>' +
 				'</article>' +
@@ -1176,9 +1176,9 @@ describe( 'Schema', () => {
 				model,
 				'<paragraph>Paragraph item 1</paragraph>' +
 				'<paragraph>Paragraph [item 2]</paragraph>' +
-				'<image>' +
+				'<imageBlock>' +
 				'<caption>[Foo</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<article>' +
 				'<paragraph>Paragraph in article]</paragraph>' +
 				'</article>'
@@ -1933,7 +1933,7 @@ describe( 'Schema', () => {
 				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
 
 				expect( getData( model, { withoutSelection: true } ) )
-					.to.equal( '<$text a="1">foo</$text><image b="1"></image>' );
+					.to.equal( '<$text a="1">foo</$text><imageBlock b="1"></imageBlock>' );
 			} );
 		} );
 
@@ -1997,10 +1997,10 @@ describe( 'Schema', () => {
 						'<div>' +
 							'<paragraph a="1">' +
 								'<$text b="1">foo</$text>' +
-								'<image b="1"></image>' +
+								'<imageBlock b="1"></imageBlock>' +
 							'</paragraph>' +
 							'<$text a="1">bar</$text>' +
-							'<image a="1"></image>' +
+							'<imageBlock a="1"></imageBlock>' +
 						'</div>'
 					);
 			} );

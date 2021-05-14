@@ -59,7 +59,7 @@ describe( 'ImageResizeHandles', () => {
 
 			const attachToSpy = sinon.spy( localEditor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-			await setModelAndWaitForImages( localEditor, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( localEditor, `[<imageBlock imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 
 			expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.a.property( 'unit', '%' );
 
@@ -76,7 +76,8 @@ describe( 'ImageResizeHandles', () => {
 			it( 'uses the command on commit', async () => {
 				const spy = sinon.spy( editor.commands.get( 'resizeImage' ), 'execute' );
 
-				await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+				await setModelAndWaitForImages( editor,
+					`<paragraph>foo</paragraph>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 				widget = viewDocument.getRoot().getChild( 1 );
 				const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 
@@ -89,7 +90,8 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'disables the resizer if the command is disabled', async () => {
-				await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+				await setModelAndWaitForImages( editor,
+					`<paragraph>foo</paragraph>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 				// Enforce selection on an image. See: https://github.com/ckeditor/ckeditor5/issues/8617.
 				editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' ) );
 
@@ -117,7 +119,7 @@ describe( 'ImageResizeHandles', () => {
 				}, { priority: 'highest' } );
 				editor.commands.get( 'resizeImage' ).refresh();
 
-				setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+				setData( editor.model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 
 				await waitForAllImagesLoaded( editor );
 
@@ -134,7 +136,7 @@ describe( 'ImageResizeHandles', () => {
 				editor = await createEditor();
 
 				await setModelAndWaitForImages( editor,
-					`<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+					`<paragraph>foo</paragraph>[<imageBlock imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 
 				widget = viewDocument.getRoot().getChild( 1 );
 			} );
@@ -176,7 +178,8 @@ describe( 'ImageResizeHandles', () => {
 			beforeEach( async () => {
 				editor = await createEditor();
 
-				await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+				await setModelAndWaitForImages( editor,
+					`<paragraph>foo</paragraph>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 				// Enforce selection on an image. See: https://github.com/ckeditor/ckeditor5/issues/8617.
 				editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' ) );
 
@@ -214,7 +217,7 @@ describe( 'ImageResizeHandles', () => {
 			it( 'doesn\'t show resizers when undoing to multiple images', async () => {
 				// Based on https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-695949745.
 				await setModelAndWaitForImages( editor,
-					`[<image src="${ IMAGE_SRC_FIXTURE }"></image><image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+					`[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock><imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 
 				const paragraph = editor.model.change( writer => {
 					return writer.createElement( 'paragraph' );
@@ -242,7 +245,7 @@ describe( 'ImageResizeHandles', () => {
 
 				await setModelAndWaitForImages( editor,
 					'<table>' +
-						`<tableRow><tableCell>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]</tableCell></tableRow>` +
+						`<tableRow><tableCell>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]</tableCell></tableRow>` +
 					'</table>'
 				);
 
@@ -265,7 +268,7 @@ describe( 'ImageResizeHandles', () => {
 		it( 'doesn\'t create multiple resizers for a single image widget', async () => {
 			// https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992
 			editor = await createEditor();
-			await setModelAndWaitForImages( editor, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 			widget = viewDocument.getRoot().getChild( 0 );
 
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
@@ -282,7 +285,7 @@ describe( 'ImageResizeHandles', () => {
 		it( 'only creates a resizer after the image is loaded', async () => {
 			// https://github.com/ckeditor/ckeditor5/issues/8088
 			editor = await createEditor();
-			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			setData( editor.model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 			widget = viewDocument.getRoot().getChild( 0 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 
@@ -395,7 +398,8 @@ describe( 'ImageResizeHandles', () => {
 					}
 				} );
 
-				await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+				await setModelAndWaitForImages( editor,
+					`<paragraph>foo</paragraph>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 
 				// Enforce selection on an image. See: https://github.com/ckeditor/ckeditor5/issues/8617.
 				editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 1 ), 'on' ) );
@@ -457,7 +461,8 @@ describe( 'ImageResizeHandles', () => {
 
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-				setData( editor.model, `[<image linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></image>]` );
+				setData( editor.model,
+					`[<imageBlock linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageBlock>]` );
 
 				await waitForAllImagesLoaded( editor );
 

@@ -293,15 +293,15 @@ describe( 'AutoImage - integration', () => {
 
 		// #47
 		it( 'does not transform a valid URL into a image if the element cannot be placed in the current position', () => {
-			setData( editor.model, '<image src="/assets/sample.png"><caption>Foo.[]</caption></image>' );
+			setData( editor.model, '<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<image src="/assets/sample.png"><caption>' +
+				'<imageBlock src="/assets/sample.png"><caption>' +
 				'Foo.http://example.com/image.png[]' +
-				'</caption></image>'
+				'</caption></imageBlock>'
 			);
 		} );
 

@@ -227,13 +227,13 @@ describe( 'ImageUploadEditing', () => {
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
-			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
-			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]`
+			`<imageBlock uploadId="${ id1 }" uploadStatus="reading"></imageBlock>` +
+			`[<imageBlock uploadId="${ id2 }" uploadStatus="reading"></imageBlock>]`
 		);
 	} );
 
 	it( 'should insert image when is pasted on allowed position when UploadImageCommand is disabled', () => {
-		setModelData( model, '<paragraph>foo</paragraph>[<image></image>]' );
+		setModelData( model, '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
 
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
@@ -249,7 +249,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
-			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]foo</paragraph><image></image>`
+			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]foo</paragraph><imageBlock></imageBlock>`
 		);
 	} );
 
@@ -434,7 +434,7 @@ describe( 'ImageUploadEditing', () => {
 			conversionApi.consumable.consume( data.item, evt.name );
 		}, { priority: 'high' } );
 
-		setModelData( model, '<image uploadId="1234"></image>' );
+		setModelData( model, '<imageBlock uploadId="1234"></imageBlock>' );
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
@@ -588,7 +588,7 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should do nothing if image does not have uploadId', () => {
-		setModelData( model, '<image src="image.png"></image>' );
+		setModelData( model, '<imageBlock src="image.png"></imageBlock>' );
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]'

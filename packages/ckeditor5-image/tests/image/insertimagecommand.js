@@ -64,7 +64,7 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should be true when the selection is on another image', () => {
-			setModelData( model, '[<image></image>]' );
+			setModelData( model, '[<imageBlock></imageBlock>]' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -77,7 +77,7 @@ describe( 'InsertImageCommand', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 
-			setModelData( model, '<image><caption>[]</caption></image>' );
+			setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -158,7 +158,7 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
 			expect( getModelData( model ) )
-				.to.equal( `<image src="${ imgSrc1 }"></image>[<image src="${ imgSrc2 }"></image>]` );
+				.to.equal( `<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]` );
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
@@ -188,7 +188,7 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: 'foo/bar.jpg' } );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>[<image src="foo/bar.jpg"></image>]<paragraph>bar</paragraph>'
+				'<paragraph>foo</paragraph>[<imageBlock src="foo/bar.jpg"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
 
@@ -204,7 +204,8 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
 			expect( getModelData( model ) ).to.equal(
-				`<paragraph>foo</paragraph><image src="${ imgSrc1 }"></image>[<image src="${ imgSrc2 }"></image>]<paragraph>bar</paragraph>`
+				`<paragraph>foo</paragraph>' +
+				'<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]<paragraph>bar</paragraph>`
 			);
 		} );
 
@@ -231,12 +232,12 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should replace a selected block image with another block image', () => {
-			setModelData( model, '<paragraph>foo</paragraph>[<image src="foo/bar.jpg"></image>]<paragraph>bar</paragraph>' );
+			setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src="foo/bar.jpg"></imageBlock>]<paragraph>bar</paragraph>' );
 
 			command.execute( { source: 'new/image.jpg' } );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>[<image src="new/image.jpg"></image>]<paragraph>bar</paragraph>'
+				'<paragraph>foo</paragraph>[<imageBlock src="new/image.jpg"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
 

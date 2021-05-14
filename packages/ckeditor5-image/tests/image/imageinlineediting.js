@@ -710,7 +710,7 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
-				'<image src="/assets/sample.png?id=A"></image>' +
+				'<imageBlock src="/assets/sample.png?id=A"></imageBlock>' +
 				'<paragraph><imageInline src="/assets/sample.png?id=B"></imageInline>[]oo</paragraph>'
 			);
 		} );
@@ -753,7 +753,7 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
-				'[<image src="/assets/sample.png"><caption>abc</caption></image>]' +
+				'[<imageBlock src="/assets/sample.png"><caption>abc</caption></imageBlock>]' +
 				'<paragraph>oo</paragraph>'
 			);
 		} );
@@ -769,7 +769,7 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
-				'[<image src="/assets/sample.png"></image>]'
+				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
 			);
 		} );
 
@@ -779,12 +779,12 @@ describe( 'ImageInlineEditing', () => {
 				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure>'
 			} );
 
-			setModelData( model, '[<image src="/assets/sample.png?id=B"></image>]' );
+			setModelData( model, '[<imageBlock src="/assets/sample.png?id=B"></imageBlock>]' );
 
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
-				'[<image src="/assets/sample.png?id=A"></image>]'
+				'[<imageBlock src="/assets/sample.png?id=A"></imageBlock>]'
 			);
 		} );
 

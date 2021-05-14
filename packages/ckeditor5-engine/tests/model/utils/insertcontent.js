@@ -376,18 +376,18 @@ describe( 'DataController utils', () => {
 
 			it( 'inserts an element', () => {
 				setData( model, 'f[]oo' );
-				const affectedRange = insertHelper( '<image></image>' );
+				const affectedRange = insertHelper( '<imageBlock></imageBlock>' );
 
-				expect( getData( model ) ).to.equal( 'f<image></image>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[<image></image>]oo' );
+				expect( getData( model ) ).to.equal( 'f<imageBlock></imageBlock>[]oo' );
+				expect( stringify( root, affectedRange ) ).to.equal( 'f[<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'inserts a text and an element', () => {
 				setData( model, 'f[]oo' );
-				const affectedRange = insertHelper( 'xyz<image></image>' );
+				const affectedRange = insertHelper( 'xyz<imageBlock></imageBlock>' );
 
-				expect( getData( model ) ).to.equal( 'fxyz<image></image>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz<image></image>]oo' );
+				expect( getData( model ) ).to.equal( 'fxyz<imageBlock></imageBlock>[]oo' );
+				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'strips a disallowed element', () => {

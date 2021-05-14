@@ -16,7 +16,7 @@ import LinkEditing from './linkediting';
 /**
  * The link image engine feature.
  *
- * It accepts the `linkHref="url"` attribute in the model for the {@link module:image/image~Image `<image>`} element
+ * It accepts the `linkHref="url"` attribute in the model for the {@link module:image/image~Image `<imageBlock>`} element
  * which allows linking images.
  *
  * @extends module:core/plugin~Plugin
@@ -267,7 +267,7 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 				return;
 			}
 
-			// At this stage we can assume that we have the `<image>` element.
+			// At this stage we can assume that we have the `<imageBlock>` element.
 			// `nodeBefore` comes after conversion: `<a><img></a>`.
 			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
 			// See the body of the `upcastLink()` function.
