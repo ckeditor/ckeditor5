@@ -22,7 +22,7 @@
 				{
 					"elements": "*",
 					"attributes": "*",
-					"_comment": "For a complete list of available element and attribute names, visit [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/MathML)."
+					"_comment": "For a complete list of available MathML element and attribute names, visit [MDN Web Docs for MathML](https://developer.mozilla.org/en-US/docs/Web/MathML)."
 				}
 			]
 		}

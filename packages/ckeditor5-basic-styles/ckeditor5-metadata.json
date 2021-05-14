@@ -34,8 +34,7 @@
 			],
 			"htmlOutput": [
 				{
-					"elements": "code",
-					"classes": "ck-code_selected"
+					"elements": "code"
 				}
 			]
 		},
