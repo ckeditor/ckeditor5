@@ -89,14 +89,14 @@ describe( 'ImageCaptionEditing', () => {
 
 	describe( 'schema', () => {
 		it( 'should set proper schema rules for caption', () => {
-			expect( model.schema.checkChild( [ '$root', 'image' ], 'caption' ) ).to.be.true;
-			expect( model.schema.checkChild( [ '$root', 'image', 'caption' ], '$text' ) ).to.be.true;
+			expect( model.schema.checkChild( [ '$root', 'imageBlock' ], 'caption' ) ).to.be.true;
+			expect( model.schema.checkChild( [ '$root', 'imageBlock', 'caption' ], '$text' ) ).to.be.true;
 			expect( model.schema.isLimit( 'caption' ) ).to.be.true;
 
-			expect( model.schema.checkChild( [ '$root', 'image', 'caption' ], 'caption' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root', 'imageBlock', 'caption' ], 'caption' ) ).to.be.false;
 
 			model.schema.extend( '$block', { allowAttributes: 'aligmnent' } );
-			expect( model.schema.checkAttribute( [ '$root', 'image', 'caption' ], 'alignment' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock', 'caption' ], 'alignment' ) ).to.be.false;
 		} );
 
 		it( 'should not set rules for image when ImageBlockEditing is not loaded', async () => {
@@ -104,7 +104,7 @@ describe( 'ImageCaptionEditing', () => {
 				plugins: [ ImageInlineEditing, ImageCaptionEditing ]
 			} );
 
-			expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'caption' ) ).to.be.false;
+			expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'caption' ) ).to.be.false;
 
 			return editor.destroy();
 		} );
@@ -136,7 +136,7 @@ describe( 'ImageCaptionEditing', () => {
 
 		expect( model.schema.isRegistered( 'caption' ) ).to.be.true;
 		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
-		expect( model.schema.checkChild( [ 'image' ], 'caption' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'imageBlock' ], 'caption' ) ).to.be.true;
 	} );
 
 	describe( 'data pipeline', () => {
@@ -347,7 +347,7 @@ describe( 'ImageCaptionEditing', () => {
 	describe( 'inserting image to the document', () => {
 		it( 'should not add a caption element if image does not have it', () => {
 			model.change( writer => {
-				writer.insertElement( 'image', { src: '', alt: '' }, doc.getRoot() );
+				writer.insertElement( 'imageBlock', { src: '', alt: '' }, doc.getRoot() );
 			} );
 
 			expect( getModelData( model ) ).to.equal(
@@ -376,8 +376,8 @@ describe( 'ImageCaptionEditing', () => {
 				const tableRow = writer.createElement( 'tableRow' );
 				const tableCell1 = writer.createElement( 'tableCell' );
 				const tableCell2 = writer.createElement( 'tableCell' );
-				const image1 = writer.createElement( 'image', { src: '', alt: '' } );
-				const image2 = writer.createElement( 'image', { src: '', alt: '' } );
+				const image1 = writer.createElement( 'imageBlock', { src: '', alt: '' } );
+				const image2 = writer.createElement( 'imageBlock', { src: '', alt: '' } );
 
 				writer.insert( tableRow, table );
 				writer.insert( tableCell1, tableRow );
@@ -419,7 +419,7 @@ describe( 'ImageCaptionEditing', () => {
 		it( 'should not add caption element if image already have it', () => {
 			model.change( writer => {
 				const caption = writer.createElement( 'caption' );
-				const image = writer.createElement( 'image', { src: '', alt: '' } );
+				const image = writer.createElement( 'imageBlock', { src: '', alt: '' } );
 
 				writer.insertText( 'foo bar', caption );
 				writer.insert( caption, image );
@@ -444,7 +444,7 @@ describe( 'ImageCaptionEditing', () => {
 
 		it( 'should not add caption element twice', () => {
 			model.change( writer => {
-				const image = writer.createElement( 'image', { src: '', alt: '' } );
+				const image = writer.createElement( 'imageBlock', { src: '', alt: '' } );
 				const caption = writer.createElement( 'caption' );
 
 				// Since we are adding an empty image, this should trigger caption fixer.
@@ -719,7 +719,7 @@ describe( 'ImageCaptionEditing', () => {
 				setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 				model.change( writer => {
-					const image = writer.createElement( 'image', { src: '/assets/sample.png' } );
+					const image = writer.createElement( 'imageBlock', { src: '/assets/sample.png' } );
 
 					writer.insert( image, doc.getRoot() );
 				} );

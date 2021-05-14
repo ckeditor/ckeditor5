@@ -64,7 +64,7 @@ describe( 'ImageInlineEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
 
 		expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'image' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
 	} );
 

@@ -53,7 +53,7 @@ describe( 'UnlinkCommand', () => {
 
 		describe( 'for block images', () => {
 			beforeEach( () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				model.schema.register( 'imageBlock', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
 			} );
 
 			it( 'should be true when an image is selected', () => {
@@ -218,7 +218,7 @@ describe( 'UnlinkCommand', () => {
 
 			describe( 'for block elements allowing linkHref', () => {
 				beforeEach( () => {
-					model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+					model.schema.register( 'imageBlock', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
 				} );
 
 				it( 'should remove the linkHref attribute when a linked block is selected', () => {

@@ -20,7 +20,7 @@ describe( 'ResizeImageCommand', () => {
 
 		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-		model.schema.register( 'image', {
+		model.schema.register( 'imageBlock', {
 			isObject: true,
 			isBlock: true,
 			allowWhere: '$block',
@@ -29,7 +29,7 @@ describe( 'ResizeImageCommand', () => {
 
 		model.schema.register( 'caption', {
 			allowContentOf: '$block',
-			allowIn: 'image',
+			allowIn: 'imageBlock',
 			isLimit: true
 		} );
 	} );

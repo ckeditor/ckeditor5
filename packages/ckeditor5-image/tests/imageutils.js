@@ -205,7 +205,7 @@ describe( 'ImageUtils plugin', () => {
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			expect( image.is( 'element', 'image' ) ).to.be.true;
+			expect( image.is( 'element', 'imageBlock' ) ).to.be.true;
 		} );
 
 		it( 'should return an image element if the selection range is inside its caption', () => {
@@ -213,7 +213,7 @@ describe( 'ImageUtils plugin', () => {
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			expect( image.is( 'element', 'image' ) ).to.be.true;
+			expect( image.is( 'element', 'imageBlock' ) ).to.be.true;
 		} );
 
 		it( 'should return an image element if the selection position is inside its caption', () => {
@@ -221,13 +221,13 @@ describe( 'ImageUtils plugin', () => {
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			expect( image.is( 'element', 'image' ) ).to.be.true;
+			expect( image.is( 'element', 'imageBlock' ) ).to.be.true;
 		} );
 	} );
 
 	describe( 'isImage()', () => {
 		it( 'should return true for the block image element', () => {
-			const image = new ModelElement( 'image' );
+			const image = new ModelElement( 'imageBlock' );
 
 			expect( imageUtils.isImage( image ) ).to.be.true;
 		} );
@@ -258,7 +258,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return false for the block image element', () => {
-			const image = new ModelElement( 'image' );
+			const image = new ModelElement( 'imageBlock' );
 
 			expect( imageUtils.isInlineImage( image ) ).to.be.false;
 		} );
@@ -283,7 +283,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true for the block image element', () => {
-			const image = new ModelElement( 'image' );
+			const image = new ModelElement( 'imageBlock' );
 
 			expect( imageUtils.isBlockImage( image ) ).to.be.true;
 		} );
@@ -302,7 +302,7 @@ describe( 'ImageUtils plugin', () => {
 
 	describe( 'isInlineImageView()', () => {
 		it( 'should return false for the block image element', () => {
-			const element = writer.createContainerElement( 'figure', { class: 'image' } );
+			const element = writer.createContainerElement( 'figure', { class: 'imageBlock' } );
 
 			expect( imageUtils.isInlineImageView( element ) ).to.be.false;
 		} );
@@ -333,7 +333,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true for the block view image element', () => {
-			const element = writer.createContainerElement( 'figure', { class: 'image' } );
+			const element = writer.createContainerElement( 'figure', { class: 'imageBlock' } );
 
 			expect( imageUtils.isBlockImageView( element ) ).to.be.true;
 		} );
@@ -345,7 +345,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return false for the non-figure with a proper class', () => {
-			const element = writer.createContainerElement( 'div', { class: 'image' } );
+			const element = writer.createContainerElement( 'div', { class: 'imageBlock' } );
 
 			expect( imageUtils.isBlockImageView( element ) ).to.be.false;
 		} );
@@ -376,7 +376,7 @@ describe( 'ImageUtils plugin', () => {
 					imageUtils = editor.plugins.get( 'ImageUtils' );
 
 					const schema = model.schema;
-					schema.extend( 'image', { allowAttributes: 'uploadId' } );
+					schema.extend( 'imageBlock', { allowAttributes: 'uploadId' } );
 				} );
 		} );
 
@@ -415,7 +415,7 @@ describe( 'ImageUtils plugin', () => {
 
 		it( 'should return false when the selection is inside other image', () => {
 			model.schema.register( 'caption', {
-				allowIn: 'image',
+				allowIn: 'imageBlock',
 				allowContentOf: '$block',
 				isLimit: true
 			} );
@@ -451,7 +451,7 @@ describe( 'ImageUtils plugin', () => {
 			model.schema.extend( 'paragraph', { allowIn: 'block' } );
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
 				if ( childDefinition.name === 'imageInline' && context.last.name === 'paragraph' ) {
@@ -481,7 +481,7 @@ describe( 'ImageUtils plugin', () => {
 					imageUtils = editor.plugins.get( 'ImageUtils' );
 
 					const schema = model.schema;
-					schema.extend( 'image', { allowAttributes: 'uploadId' } );
+					schema.extend( 'imageBlock', { allowAttributes: 'uploadId' } );
 				} );
 		} );
 
@@ -637,7 +637,7 @@ describe( 'ImageUtils plugin', () => {
 
 		it( 'should pass the allowed custom attributes to the inserted block image', () => {
 			setModelData( model, '[]' );
-			model.schema.extend( 'image', { allowAttributes: 'customAttribute' } );
+			model.schema.extend( 'imageBlock', { allowAttributes: 'customAttribute' } );
 
 			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
@@ -678,7 +678,7 @@ describe( 'ImageUtils plugin', () => {
 			const imageElement = imageUtils.insertImage( editor );
 
 			expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
-			expect( imageElement.is( 'element', 'image' ) ).to.be.true;
+			expect( imageElement.is( 'element', 'imageBlock' ) ).to.be.true;
 			expect( imageElement ).to.equal( model.document.getRoot().getChild( 0 ) );
 		} );
 

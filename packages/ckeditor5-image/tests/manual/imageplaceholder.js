@@ -17,7 +17,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		window.editor = editor;
 
 		editor.model.change( writer => {
-			writer.appendElement( 'image', {
+			writer.appendElement( 'imageBlock', {
 				uploadId: 'fake',
 				uploadStatus: 'uploading'
 			}, editor.model.document.getRoot() );

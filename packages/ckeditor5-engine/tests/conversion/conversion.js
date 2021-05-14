@@ -531,15 +531,15 @@ describe( 'Conversion', () => {
 
 		describe( 'attributeToAttribute', () => {
 			beforeEach( () => {
-				conversion.elementToElement( { model: 'image', view: 'img' } );
+				conversion.elementToElement( { model: 'imageBlock', view: 'img' } );
 
-				schema.register( 'image', {
+				schema.register( 'imageBlock', {
 					inheritAllFrom: '$block'
 				} );
 			} );
 
 			it( 'config.view and config.model are strings', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'source' ]
 				} );
 
@@ -549,13 +549,13 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view and config.model are objects', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'aside' ]
 				} );
 
 				conversion.attributeToAttribute( {
 					model: {
-						name: 'image',
+						name: 'imageBlock',
 						key: 'aside',
 						values: [ 'aside' ]
 					},
@@ -575,13 +575,13 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view and config.model are objects - convert to style attribute', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'aside' ]
 				} );
 
 				conversion.attributeToAttribute( {
 					model: {
-						name: 'image',
+						name: 'imageBlock',
 						key: 'aside',
 						values: [ 'aside' ]
 					},
@@ -664,13 +664,13 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view and config.model have name and key set', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'source' ]
 				} );
 
 				conversion.attributeToAttribute( {
 					model: {
-						name: 'image',
+						name: 'imageBlock',
 						key: 'source'
 					},
 					view: {
@@ -705,7 +705,7 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.converterPriority is defined (override downcast)', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'foo' ]
 				} );
 

@@ -20,7 +20,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-		model.schema.register( 'image', {
+		model.schema.register( 'imageBlock', {
 			allowWhere: '$block',
 			isObject: true,
 			isBlock: true,
@@ -36,7 +36,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 		model.schema.register( 'caption', {
 			allowContentOf: '$block',
-			allowIn: 'image',
+			allowIn: 'imageBlock',
 			isLimit: true
 		} );
 	} );

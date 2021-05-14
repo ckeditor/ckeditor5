@@ -57,7 +57,7 @@ export default class ImageBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
-		schema.register( 'image', {
+		schema.register( 'imageBlock', {
 			isObject: true,
 			isBlock: true,
 			allowWhere: '$block',
@@ -67,7 +67,7 @@ export default class ImageBlockEditing extends Plugin {
 		this._setupConversion();
 
 		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
-			editor.commands.add( 'imageTypeBlock', new ImageTypeCommand( this.editor, 'image' ) );
+			editor.commands.add( 'imageTypeBlock', new ImageTypeCommand( this.editor, 'imageBlock' ) );
 
 			this._setupClipboardIntegration();
 		}
@@ -87,28 +87,28 @@ export default class ImageBlockEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' )
 			.elementToElement( {
-				model: 'image',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'image' )
+				model: 'imageBlock',
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageBlock' )
 			} );
 
 		conversion.for( 'editingDowncast' )
 			.elementToElement( {
-				model: 'image',
+				model: 'imageBlock',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'image' ), writer, t( 'image widget' )
+					createImageViewElement( writer, 'imageBlock' ), writer, t( 'image widget' )
 				)
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( imageUtils, 'image', 'src' ) )
-			.add( modelToViewAttributeConverter( imageUtils, 'image', 'alt' ) )
-			.add( srcsetAttributeConverter( imageUtils, 'image' ) );
+			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'src' ) )
+			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'alt' ) )
+			.add( srcsetAttributeConverter( imageUtils, 'imageBlock' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( editor, 'image' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
+				view: getImageTypeMatcher( editor, 'imageBlock' ),
+				model: ( viewImage, { writer } ) => writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel( imageUtils ) );
 	}
@@ -160,12 +160,12 @@ export default class ImageBlockEditing extends Plugin {
 
 			// Convert inline images into block images only when the currently selected block is empty
 			// (e.g. an empty paragraph) or some object is selected (to replace it).
-			if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'image' ) {
+			if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'imageBlock' ) {
 				const writer = new UpcastWriter( editingView.document );
 
 				// Wrap <img ... /> -> <figure class="image"><img .../></figure>
 				const blockViewImages = docFragmentChildren.map(
-					inlineViewImage => writer.createElement( 'figure', { class: 'image' }, inlineViewImage )
+					inlineViewImage => writer.createElement( 'figure', { class: 'imageBlock' }, inlineViewImage )
 				);
 
 				data.content = writer.createDocumentFragment( blockViewImages );

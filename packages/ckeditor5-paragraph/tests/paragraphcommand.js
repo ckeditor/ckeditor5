@@ -132,7 +132,7 @@ describe( 'ParagraphCommand', () => {
 		} );
 
 		it( 'should not rename blocks which cannot become paragraphs (block is an object)', () => {
-			model.schema.register( 'image', {
+			model.schema.register( 'imageBlock', {
 				isBlock: true,
 				isObject: true,
 				allowIn: '$root'

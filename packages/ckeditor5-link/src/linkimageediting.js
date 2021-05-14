@@ -41,7 +41,7 @@ export default class LinkImageEditing extends Plugin {
 		const schema = editor.model.schema;
 
 		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
-			schema.extend( 'image', { allowAttributes: [ 'linkHref' ] } );
+			schema.extend( 'imageBlock', { allowAttributes: [ 'linkHref' ] } );
 		}
 
 		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
@@ -85,7 +85,7 @@ export default class LinkImageEditing extends Plugin {
 
 		for ( const decorator of command.manualDecorators ) {
 			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
-				editor.model.schema.extend( 'image', { allowAttributes: decorator.id } );
+				editor.model.schema.extend( 'imageBlock', { allowAttributes: decorator.id } );
 			}
 
 			if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
@@ -150,7 +150,7 @@ function upcastLink( editor ) {
 			// figure > a > img: parent of the view link element is an image element (figure).
 			let modelElement = data.modelCursor.parent;
 
-			if ( !modelElement.is( 'element', 'image' ) ) {
+			if ( !modelElement.is( 'element', 'imageBlock' ) ) {
 				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
 				const conversionResult = conversionApi.convertItem( imageInLink, data.modelCursor );
 
@@ -163,7 +163,7 @@ function upcastLink( editor ) {
 				modelElement = data.modelCursor.nodeBefore;
 			}
 
-			if ( modelElement && modelElement.is( 'element', 'image' ) ) {
+			if ( modelElement && modelElement.is( 'element', 'imageBlock' ) ) {
 				// Set the linkHref attribute from link element on model image element.
 				conversionApi.writer.setAttribute( 'linkHref', linkHref, modelElement );
 			}

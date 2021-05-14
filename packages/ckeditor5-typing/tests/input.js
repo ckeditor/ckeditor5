@@ -53,10 +53,10 @@ describe( 'Input feature', () => {
 		return ClassicTestEditor.create( domElement, options )
 			.then( newEditor => {
 				// Mock image feature.
-				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
+				newEditor.model.schema.register( 'imageBlock', { allowWhere: '$text' } );
 
 				newEditor.conversion.elementToElement( {
-					model: 'image',
+					model: 'imageBlock',
 					view: 'img'
 				} );
 

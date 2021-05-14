@@ -101,7 +101,7 @@ describe( 'EmptyElement', () => {
 			expect( newEmptyElement.getAttribute( 'alt' ) ).to.equal( 'alternative text' );
 			expect( newEmptyElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
 			expect( newEmptyElement.getStyle( 'color' ) ).to.equal( 'white' );
-			expect( newEmptyElement.hasClass( 'image' ) ).to.be.true;
+			expect( newEmptyElement.hasClass( 'imageBlock' ) ).to.be.true;
 			expect( newEmptyElement.hasClass( 'big' ) ).to.be.true;
 			expect( newEmptyElement.isSimilar( emptyElement ) ).to.be.true;
 		} );

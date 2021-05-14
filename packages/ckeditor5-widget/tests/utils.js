@@ -354,10 +354,10 @@ describe( 'widget utils', () => {
 			doc.createRoot();
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			model.schema.register( 'image' );
+			model.schema.register( 'imageBlock' );
 			model.schema.register( 'span' );
 
-			model.schema.extend( 'image', {
+			model.schema.extend( 'imageBlock', {
 				allowIn: '$root',
 				isObject: true,
 				isBlock: true

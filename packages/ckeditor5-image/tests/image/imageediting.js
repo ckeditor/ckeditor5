@@ -48,17 +48,17 @@ describe( 'ImageEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.isRegistered( 'image' ) ).to.be.true;
-		expect( model.schema.isBlock( 'image' ) ).to.be.true;
-		expect( model.schema.isObject( 'image' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'imageBlock' ) ).to.be.true;
+		expect( model.schema.isBlock( 'imageBlock' ) ).to.be.true;
+		expect( model.schema.isObject( 'imageBlock' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root' ], 'image' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'src' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'alt' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'imageBlock' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'src' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'alt' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root', 'image' ], 'image' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', 'image' ], '$text' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'imageBlock' ], 'imageBlock' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'imageBlock' ], '$text' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block' ], 'imageBlock' ) ).to.be.false;
 
 		expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
 		expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
@@ -69,7 +69,7 @@ describe( 'ImageEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
 
 		expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'image' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
 	} );
 
@@ -360,7 +360,7 @@ describe( 'ImageEditing', () => {
 			it( 'should not convert in wrong context', () => {
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
 				model.schema.addChildCheck( ( ctx, childDef ) => {
-					if ( ctx.endsWith( '$root' ) && childDef.name == 'image' ) {
+					if ( ctx.endsWith( '$root' ) && childDef.name == 'imageBlock' ) {
 						return false;
 					}
 				} );
@@ -410,7 +410,7 @@ describe( 'ImageEditing', () => {
 
 			it( 'should not convert if figure is already consumed', () => {
 				editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+					conversionApi.consumable.consume( data.viewItem, { name: true, class: 'imageBlock' } );
 				}, { priority: 'high' } );
 
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );

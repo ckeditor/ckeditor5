@@ -139,7 +139,7 @@ describe( 'HeadingCommand', () => {
 		} );
 
 		it( 'should not rename blocks which cannot become headings (block is an object)', () => {
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				isBlock: true,
 				isObject: true,
 				allowIn: '$root'

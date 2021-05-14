@@ -499,9 +499,9 @@ describe( 'UpcastHelpers', () => {
 
 	describe( 'attributeToAttribute()', () => {
 		beforeEach( () => {
-			upcastHelpers.elementToElement( { view: 'img', model: 'image' } );
+			upcastHelpers.elementToElement( { view: 'img', model: 'imageBlock' } );
 
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				inheritAllFrom: '$block'
 			} );
 		} );
@@ -511,7 +511,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'config.view is a string', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'source' ]
 			} );
 
@@ -524,7 +524,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'config.view has only key set', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'source' ]
 			} );
 
@@ -537,11 +537,11 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'config.view has only key and name set', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'source' ]
 			} );
 
-			upcastHelpers.attributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'image', key: 'source' } } );
+			upcastHelpers.attributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'imageBlock', key: 'source' } } );
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
@@ -550,7 +550,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'src', 'source' ]
 			} );
 
@@ -564,7 +564,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'config.view has value set', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 
@@ -583,7 +583,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'model attribute value is a string', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 
@@ -618,7 +618,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'model attribute value is a function', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 
@@ -657,7 +657,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'should not do anything if returned model attribute is null', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 

@@ -34,7 +34,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { allowWhere: '$text', allowIn: '$root' } );
+				schema.register( 'imageBlock', { allowWhere: '$text', allowIn: '$root' } );
 				schema.extend( '$text', {
 					allowIn: '$root',
 					allowAttributes: [ 'bold', 'italic' ]
@@ -131,7 +131,7 @@ describe( 'DataController utils', () => {
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				schema.register( 'blockImage', { isObject: true } );
 				schema.register( 'caption' );
-				schema.register( 'image', { allowWhere: '$text' } );
+				schema.register( 'imageBlock', { allowWhere: '$text' } );
 
 				schema.extend( 'blockImage', { allowIn: '$root' } );
 				schema.extend( 'caption', { allowIn: 'blockImage' } );

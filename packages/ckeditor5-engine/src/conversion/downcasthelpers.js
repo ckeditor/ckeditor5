@@ -205,7 +205,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: {
-	 *				name: 'image',
+	 *				name: 'imageBlock',
 	 *				key: 'source'
 	 *			},
 	 *			view: 'src'

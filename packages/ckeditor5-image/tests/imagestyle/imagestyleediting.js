@@ -60,11 +60,11 @@ describe( 'ImageStyleEditing', () => {
 			it( 'should not alter the object definitions in the image.styles configuration', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
-					image: { styles: { options: [ { name: 'full', modelElements: [ 'image' ] } ] } }
+					image: { styles: { options: [ { name: 'full', modelElements: [ 'imageBlock' ] } ] } }
 				} );
 
 				expect( editor.config.get( 'image.styles' ) )
-					.to.deep.equal( { options: [ { name: 'full', modelElements: [ 'image' ] } ] } );
+					.to.deep.equal( { options: [ { name: 'full', modelElements: [ 'imageBlock' ] } ] } );
 
 				await editor.destroy();
 			} );
@@ -128,7 +128,7 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageBlockEditing, ImageStyleEditing ]
 				} );
 
-				expect( editor.model.schema.checkAttribute( 'image', 'imageStyle' ) ).to.be.true;
+				expect( editor.model.schema.checkAttribute( 'imageBlock', 'imageStyle' ) ).to.be.true;
 				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.false;
 
 				await editor.destroy();
@@ -140,7 +140,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.true;
-				expect( editor.model.schema.checkAttribute( 'image', 'imageStyle' ) ).to.be.false;
+				expect( editor.model.schema.checkAttribute( 'imageBlock', 'imageStyle' ) ).to.be.false;
 
 				await editor.destroy();
 			} );
@@ -151,7 +151,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.true;
-				expect( editor.model.schema.checkAttribute( 'image', 'imageStyle' ) ).to.be.true;
+				expect( editor.model.schema.checkAttribute( 'imageBlock', 'imageStyle' ) ).to.be.true;
 
 				await editor.destroy();
 			} );
@@ -176,7 +176,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should set the normalizedStyles properly', async () => {
 			const customStyles = [ {
 				name: 'customStyle',
-				modelElements: [ 'image' ]
+				modelElements: [ 'imageBlock' ]
 			} ];
 
 			testUtils.sinon.stub( imageStyleUtils, 'normalizeStyles' ).callsFake( () => customStyles );
@@ -319,7 +319,7 @@ describe( 'ImageStyleEditing', () => {
 
 				it( 'should not convert from view to model if schema prevents it', () => {
 					model.schema.addAttributeCheck( ( ctx, attributeName ) => {
-						if ( ctx.endsWith( 'image' ) && attributeName == 'imageStyle' ) {
+						if ( ctx.endsWith( 'imageBlock' ) && attributeName == 'imageStyle' ) {
 							return false;
 						}
 					} );

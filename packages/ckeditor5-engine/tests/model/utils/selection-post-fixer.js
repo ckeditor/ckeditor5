@@ -47,7 +47,7 @@ describe( 'Selection post-fixer', () => {
 
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
-			model.schema.register( 'image', {
+			model.schema.register( 'imageBlock', {
 				isObject: true,
 				isBlock: true,
 				allowWhere: '$block'
@@ -56,7 +56,7 @@ describe( 'Selection post-fixer', () => {
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
 			model.schema.register( 'caption', {
-				allowIn: 'image',
+				allowIn: 'imageBlock',
 				allowContentOf: '$block',
 				isLimit: true
 			} );

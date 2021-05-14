@@ -208,7 +208,7 @@ describe( 'ImageTypeCommand', () => {
 
 			it( 'should not convert an inline image to a block image if it is not allowed by the schema', () => {
 				model.schema.addChildCheck( ( context, childDefinition ) => {
-					if ( childDefinition.name == 'image' ) {
+					if ( childDefinition.name == 'imageBlock' ) {
 						return false;
 					}
 				} );
@@ -431,7 +431,7 @@ describe( 'ImageTypeCommand', () => {
 			it( 'should not convert a block image to an inline image if it is not allowed by the schema', () => {
 				model.schema.register( 'block', {
 					inheritAllFrom: '$block',
-					allowChildren: 'image'
+					allowChildren: 'imageBlock'
 				} );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );

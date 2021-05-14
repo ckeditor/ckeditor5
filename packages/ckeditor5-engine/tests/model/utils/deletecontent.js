@@ -61,7 +61,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { allowWhere: '$text' } );
+				schema.register( 'imageBlock', { allowWhere: '$text' } );
 				schema.extend( '$text', { allowIn: '$root' } );
 			} );
 
@@ -140,7 +140,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { allowWhere: '$text' } );
+				schema.register( 'imageBlock', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 				schema.extend( '$text', {
@@ -217,7 +217,7 @@ describe( 'DataController utils', () => {
 					allowAttributes: 'align'
 				} );
 				schema.register( 'heading1', { inheritAllFrom: '$block', allowIn: 'pparent' } );
-				schema.register( 'image', { inheritAllFrom: '$text' } );
+				schema.register( 'imageBlock', { inheritAllFrom: '$text' } );
 				schema.register( 'pchild', { allowIn: 'paragraph' } );
 				schema.register( 'pparent', { allowIn: '$root' } );
 				schema.register( 'hchild', { allowIn: 'heading1' } );
@@ -812,7 +812,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { allowWhere: '$text' } );
+				schema.register( 'imageBlock', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				schema.register( 'blockWidget', { isLimit: true } );
@@ -1157,7 +1157,7 @@ describe( 'DataController utils', () => {
 					isLimit: true
 				} );
 
-				schema.register( 'image', {
+				schema.register( 'imageBlock', {
 					allowWhere: '$text',
 					isObject: true
 				} );
@@ -1168,8 +1168,8 @@ describe( 'DataController utils', () => {
 
 				schema.extend( '$text', { allowIn: '$root' } );
 
-				schema.extend( 'image', { allowIn: '$root' } );
-				schema.extend( 'image', { allowIn: 'heading1' } );
+				schema.extend( 'imageBlock', { allowIn: '$root' } );
+				schema.extend( 'imageBlock', { allowIn: 'heading1' } );
 				schema.extend( 'heading1', { allowIn: 'div' } );
 				schema.extend( 'paragraph', { allowIn: 'div' } );
 				schema.extend( 'heading1', { allowIn: 'article' } );

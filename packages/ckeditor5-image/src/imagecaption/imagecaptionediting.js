@@ -68,13 +68,13 @@ export default class ImageCaptionEditing extends Plugin {
 		// Schema configuration.
 		if ( !schema.isRegistered( 'caption' ) ) {
 			schema.register( 'caption', {
-				allowIn: 'image',
+				allowIn: 'imageBlock',
 				allowContentOf: '$block',
 				isLimit: true
 			} );
 		} else {
 			schema.extend( 'caption', {
-				allowIn: 'image'
+				allowIn: 'imageBlock'
 			} );
 		}
 
@@ -268,7 +268,7 @@ function mapModelPositionToView( editingView ) {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
 
-		if ( !parent.is( 'element', 'image' ) ) {
+		if ( !parent.is( 'element', 'imageBlock' ) ) {
 			return;
 		}
 

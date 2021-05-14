@@ -48,7 +48,7 @@ export default class ImageUploadEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( 'image', {
+		editor.config.define( 'imageBlock', {
 			upload: {
 				types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
 			}
@@ -210,7 +210,7 @@ export default class ImageUploadEditing extends Plugin {
 		// Wait for ImageBlockEditing or ImageInlineEditing to register their elements first,
 		// that's why doing this in afterInit() instead of init().
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'uploadId', 'uploadStatus' ]
 			} );
 		}

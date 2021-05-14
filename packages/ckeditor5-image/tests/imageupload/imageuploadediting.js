@@ -85,16 +85,16 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should register proper schema rules when both ImageBlock and ImageInline are enabled', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
 	} );
 
 	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, ImageUploadEditing ] } );
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
 		await newEditor.destroy();
 	} );
 
@@ -113,8 +113,8 @@ describe( 'ImageUploadEditing', () => {
 			]
 		} );
 
-		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
-		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
 
@@ -367,7 +367,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( childDefinition.name.startsWith( 'image' ) && context.last.name === 'other' ) {
+			if ( childDefinition.name.startsWith( 'imageBlock' ) && context.last.name === 'other' ) {
 				return false;
 			}
 		} );
@@ -756,7 +756,7 @@ describe( 'ImageUploadEditing', () => {
 			const file = createNativeFileMock();
 			setModelData( model, '<paragraph>[]foo bar</paragraph>' );
 
-			editor.model.schema.extend( 'image', { allowAttributes: 'data-original' } );
+			editor.model.schema.extend( 'imageBlock', { allowAttributes: 'data-original' } );
 
 			editor.conversion.for( 'downcast' )
 				.add( modelToViewAttributeConverter( editor.plugins.get( 'ImageUtils' ), 'data-original' ) );

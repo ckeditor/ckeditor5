@@ -29,7 +29,7 @@ describe( 'ImageStyle utils', () => {
 
 			it( 'should have a single default style defined for the inline and block images', () => {
 				const blockDefault = allStyles.filter( style =>
-					style.isDefault && style.modelElements.includes( 'image' ) );
+					style.isDefault && style.modelElements.includes( 'imageBlock' ) );
 
 				const inlineDefault = allStyles.filter( style =>
 					style.isDefault && style.modelElements.includes( 'imageInline' ) );
@@ -46,7 +46,7 @@ describe( 'ImageStyle utils', () => {
 					const modelElements = style.modelElements;
 
 					expect( modelElements ).to.be.an( 'array' );
-					expect( modelElements ).to.contain.oneOf( [ 'image', 'imageInline' ] );
+					expect( modelElements ).to.contain.oneOf( [ 'imageBlock', 'imageInline' ] );
 
 					modelElements.forEach( elementName => {
 						expect( elementName ).to.match( /[image,imageInline]/ );
@@ -145,7 +145,7 @@ describe( 'ImageStyle utils', () => {
 
 			describe( 'set as an object in the editor config', () => {
 				it( 'should pass through if #name not found in the default styles', () => {
-					const style = { name: 'foo', modelElements: [ 'image' ] };
+					const style = { name: 'foo', modelElements: [ 'imageBlock' ] };
 
 					expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ style ] );
 
@@ -154,7 +154,7 @@ describe( 'ImageStyle utils', () => {
 
 				it( 'should use one of default icons if #icon matches', () => {
 					for ( const icon in DEFAULT_ICONS ) {
-						const style = { name: 'custom', modelElements: [ 'image' ], icon };
+						const style = { name: 'custom', modelElements: [ 'imageBlock' ], icon };
 
 						expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS[ icon ] } ] );
 					}
@@ -163,7 +163,7 @@ describe( 'ImageStyle utils', () => {
 				} );
 
 				it( 'should pass the icon if is not a string', () => {
-					const style = { name: 'custom', modelElements: [ 'image' ], icon: {} };
+					const style = { name: 'custom', modelElements: [ 'imageBlock' ], icon: {} };
 
 					expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ style ] );
 
@@ -197,7 +197,7 @@ describe( 'ImageStyle utils', () => {
 				} );
 
 				it( 'should warn and filter out the style which is not supported by any of the loaded editing plugins', () => {
-					const style = { name: 'foo', modelElements: [ 'image' ] };
+					const style = { name: 'foo', modelElements: [ 'imageBlock' ] };
 
 					// ImageBlockEditing plugin is not loaded
 					expect( normalizeStyles( [ style ], false, true ) ).to.deep.equal( [] );
@@ -214,7 +214,7 @@ describe( 'ImageStyle utils', () => {
 					const style = {
 						name: 'alignLeft',
 						title: 'customTitle',
-						modelElements: [ 'image' ],
+						modelElements: [ 'imageBlock' ],
 						icon: 'inline',
 						isDefault: true,
 						className: 'custom-class',

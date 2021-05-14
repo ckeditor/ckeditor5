@@ -34,13 +34,13 @@ describe( 'image captioning utils', () => {
 		it( 'should return caption element from image element', () => {
 			const dummy = new ModelElement( 'dummy' );
 			const caption = new ModelElement( 'caption' );
-			const image = new ModelElement( 'image', null, [ dummy, caption ] );
+			const image = new ModelElement( 'imageBlock', null, [ dummy, caption ] );
 
 			expect( getCaptionFromImageModelElement( image ) ).to.equal( caption );
 		} );
 
 		it( 'should return null when caption element is not present', () => {
-			const image = new ModelElement( 'image' );
+			const image = new ModelElement( 'imageBlock' );
 
 			expect( getCaptionFromImageModelElement( image ) ).to.be.null;
 		} );
@@ -75,7 +75,7 @@ describe( 'image captioning utils', () => {
 
 		it( 'should return object if element is a valid caption', () => {
 			const element = new ViewElement( document, 'figcaption' );
-			new ViewElement( document, 'figure', { class: 'image' }, element ); // eslint-disable-line no-new
+			new ViewElement( document, 'figure', { class: 'imageBlock' }, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaptionViewElement( editor.plugins.get( 'ImageUtils' ), element ) ).to.deep.equal( { name: true } );
 		} );

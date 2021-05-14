@@ -127,7 +127,7 @@ describe( 'ImageUploadProgress', () => {
 		model.document.registerPostFixer( () => {
 			for ( const change of doc.differ.getChanges() ) {
 				// The differ.refreshItem() simulates remove and insert of and image parent thus preventing image from proper work.
-				if ( change.type == 'insert' && change.name == 'image' ) {
+				if ( change.type == 'insert' && change.name == 'imageBlock' ) {
 					doc.differ.refreshItem( change.position.parent );
 
 					return false; // Refreshing item should not trigger calling post-fixer again.

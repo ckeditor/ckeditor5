@@ -460,7 +460,7 @@ export default class Conversion {
 	 *		// Attribute values are strictly specified.
 	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
-	 *				name: 'image',
+	 *				name: 'imageBlock',
 	 *				key: 'aside',
 	 *				values: [ 'aside' ]
 	 *			},
@@ -476,7 +476,7 @@ export default class Conversion {
 	 *		// Set the style attribute.
 	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
-	 *				name: 'image',
+	 *				name: 'imageBlock',
 	 *				key: 'aside',
 	 *				values: [ 'aside' ]
 	 *			},

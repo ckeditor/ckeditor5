@@ -61,7 +61,7 @@ describe( 'CKFinderCommand', () => {
 		it( 'should be true where only image is allowed', () => {
 			model.schema.register( 'block', {
 				inheritAllFrom: '$block',
-				allowChildren: [ 'paragraph', 'image' ]
+				allowChildren: [ 'paragraph', 'imageBlock' ]
 			} );
 
 			// Block link attribute.
@@ -82,7 +82,7 @@ describe( 'CKFinderCommand', () => {
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
 			} );
@@ -381,7 +381,7 @@ describe( 'CKFinderCommand', () => {
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
 			} );

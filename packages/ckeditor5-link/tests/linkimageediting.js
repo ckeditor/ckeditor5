@@ -47,7 +47,7 @@ describe( 'LinkImageEditing', () => {
 			plugins: [ ImageBlockEditing, LinkImageEditing ]
 		} );
 
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkHref' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'linkHref' ) ).to.be.true;
 
 		await newEditor.destroy();
 	} );
@@ -159,7 +159,7 @@ describe( 'LinkImageEditing', () => {
 				it( 'should not convert in wrong context', () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 					model.schema.addChildCheck( ( ctx, childDef ) => {
-						if ( ctx.endsWith( '$root' ) && childDef.name == 'image' ) {
+						if ( ctx.endsWith( '$root' ) && childDef.name == 'imageBlock' ) {
 							return false;
 						}
 					} );
@@ -237,7 +237,7 @@ describe( 'LinkImageEditing', () => {
 				it( 'should not convert in wrong context', () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 					model.schema.addChildCheck( ( ctx, childDef ) => {
-						if ( ctx.endsWith( '$root' ) && childDef.name == 'image' ) {
+						if ( ctx.endsWith( '$root' ) && childDef.name == 'imageBlock' ) {
 							return false;
 						}
 					} );
@@ -718,7 +718,7 @@ describe( 'LinkImageEditing', () => {
 					}
 				} );
 
-				expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'linkIsGallery' ) ).to.be.true;
+				expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'linkIsGallery' ) ).to.be.true;
 				await newEditor.destroy();
 			} );
 

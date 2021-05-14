@@ -1199,16 +1199,16 @@ describe( 'DocumentSelection', () => {
 		// #986
 		describe( 'are not inherited from the inside of object elements', () => {
 			beforeEach( () => {
-				model.schema.register( 'image', {
+				model.schema.register( 'imageBlock', {
 					isObject: true
 				} );
-				model.schema.extend( 'image', { allowIn: '$root' } );
-				model.schema.extend( 'image', { allowIn: '$block' } );
+				model.schema.extend( 'imageBlock', { allowIn: '$root' } );
+				model.schema.extend( 'imageBlock', { allowIn: '$block' } );
 
 				model.schema.register( 'caption' );
-				model.schema.extend( 'caption', { allowIn: 'image' } );
+				model.schema.extend( 'caption', { allowIn: 'imageBlock' } );
 				model.schema.extend( '$text', {
-					allowIn: [ 'image', 'caption' ],
+					allowIn: [ 'imageBlock', 'caption' ],
 					allowAttributes: 'bold'
 				} );
 			} );

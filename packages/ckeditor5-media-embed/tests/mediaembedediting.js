@@ -472,7 +472,7 @@ describe( 'MediaEmbedEditing', () => {
 
 					expect( model.schema.checkChild( [ '$root', 'media' ], 'media' ) ).to.be.false;
 					expect( model.schema.checkChild( [ '$root', 'media' ], '$text' ) ).to.be.false;
-					expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
+					expect( model.schema.checkChild( [ '$root', '$block' ], 'imageBlock' ) ).to.be.false;
 				} );
 		} );
 
@@ -587,7 +587,7 @@ describe( 'MediaEmbedEditing', () => {
 
 					it( 'should not convert if the figure is already consumed', () => {
 						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'imageBlock' } );
 						}, { priority: 'high' } );
 
 						editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
@@ -736,7 +736,7 @@ describe( 'MediaEmbedEditing', () => {
 
 					it( 'should not convert if the figure is already consumed', () => {
 						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'imageBlock' } );
 						}, { priority: 'high' } );
 
 						editor.setData( '<figure class="media"><oembed url="https://ckeditor.com"></oembed></figure>' );
@@ -897,7 +897,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						it( 'should not convert if the figure is already consumed', () => {
 							editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-								conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+								conversionApi.consumable.consume( data.viewItem, { name: true, class: 'imageBlock' } );
 							}, { priority: 'high' } );
 
 							editor.setData( '<figure class="media"><div data-oembed-url="https://ckeditor.com"></div></figure>' );

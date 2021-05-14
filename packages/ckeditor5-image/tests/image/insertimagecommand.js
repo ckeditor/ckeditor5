@@ -26,7 +26,7 @@ describe( 'InsertImageCommand', () => {
 				command = new InsertImageCommand( editor );
 
 				const schema = model.schema;
-				schema.extend( 'image', { allowAttributes: 'uploadId' } );
+				schema.extend( 'imageBlock', { allowAttributes: 'uploadId' } );
 			} );
 	} );
 
@@ -71,7 +71,7 @@ describe( 'InsertImageCommand', () => {
 
 		it( 'should be false when the selection is inside another image', () => {
 			model.schema.register( 'caption', {
-				allowIn: 'image',
+				allowIn: 'imageBlock',
 				allowContentOf: '$block',
 				isLimit: true
 			} );

@@ -161,7 +161,7 @@ describe( 'LinkImageUI', () => {
 
 				viewDocument.fire( 'click', domEventDataMock );
 
-				expect( editor.model.document.getRoot().getChild( 0 ).is( 'element', 'image' ) ).to.be.true;
+				expect( editor.model.document.getRoot().getChild( 0 ).is( 'element', 'imageBlock' ) ).to.be.true;
 				expect( spy.notCalled ).to.be.true;
 			} );
 

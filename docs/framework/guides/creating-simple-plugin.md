@@ -172,7 +172,7 @@ class InsertImage extends Plugin {
 				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
-					const imageElement = writer.createElement( 'image', {
+					const imageElement = writer.createElement( 'imageBlock', {
 						src: imageUrl
 					} );
 
@@ -261,7 +261,7 @@ class InsertImage extends Plugin {
 				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
-					const imageElement = writer.createElement( 'image', {
+					const imageElement = writer.createElement( 'imageBlock', {
 						src: imageUrl
 					} );
 

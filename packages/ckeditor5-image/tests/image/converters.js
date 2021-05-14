@@ -32,7 +32,7 @@ describe( 'Image converters', () => {
 			const imageUtils = editor.plugins.get( 'ImageUtils' );
 			const schema = model.schema;
 
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				allowWhere: '$block',
 				allowAttributes: [ 'alt', 'src' ],
 				isObject: true,
@@ -47,13 +47,13 @@ describe( 'Image converters', () => {
 			} );
 
 			const imageEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( createImageViewElement( writer, 'image' ), writer, '' );
+				imageUtils.toImageWidget( createImageViewElement( writer, 'imageBlock' ), writer, '' );
 
 			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
 				imageUtils.toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
 
 			editor.conversion.for( 'editingDowncast' ).elementToElement( {
-				model: 'image',
+				model: 'imageBlock',
 				view: imageEditingElementCreator
 			} );
 
@@ -63,9 +63,9 @@ describe( 'Image converters', () => {
 			} );
 
 			editor.conversion.for( 'downcast' )
-				.add( modelToViewAttributeConverter( imageUtils, 'image', 'src' ) )
+				.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'src' ) )
 				.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
-				.add( modelToViewAttributeConverter( imageUtils, 'image', 'alt' ) )
+				.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'alt' ) )
 				.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) );
 		} );
 	} );
@@ -83,7 +83,7 @@ describe( 'Image converters', () => {
 			editor.editing.destroy();
 
 			schema = model.schema;
-			schema.extend( '$text', { allowIn: 'image' } );
+			schema.extend( '$text', { allowIn: 'imageBlock' } );
 
 			editor.conversion.for( 'upcast' )
 				.add( viewFigureToModel( editor.plugins.get( 'ImageUtils' ) ) )
@@ -97,7 +97,7 @@ describe( 'Image converters', () => {
 					model: ( viewImage, { writer } ) => {
 						imgConverterCalled = true;
 
-						return writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } );
+						return writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } );
 					}
 				} );
 		} );
@@ -113,7 +113,7 @@ describe( 'Image converters', () => {
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'foo', model: 'foo' } );
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'bar', model: 'bar' } );
 
-			schema.register( 'foo', { allowIn: 'image' } );
+			schema.register( 'foo', { allowIn: 'imageBlock' } );
 			// Is allowed in root, but should not try to split image element.
 			schema.register( 'bar', { allowIn: '$root' } );
 
@@ -127,7 +127,7 @@ describe( 'Image converters', () => {
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
-			schema.extend( 'image', { disallowIn: 'div' } );
+			schema.extend( 'imageBlock', { disallowIn: 'div' } );
 
 			editor.setData(
 				'<div>' +
@@ -146,7 +146,7 @@ describe( 'Image converters', () => {
 			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
-			schema.extend( 'image', { disallowIn: 'div' } );
+			schema.extend( 'imageBlock', { disallowIn: 'div' } );
 
 			editor.setData(
 				'<div>' +
@@ -164,7 +164,7 @@ describe( 'Image converters', () => {
 			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
-			schema.extend( 'image', { disallowIn: 'div' } );
+			schema.extend( 'imageBlock', { disallowIn: 'div' } );
 
 			editor.setData(
 				'<div>' +
@@ -290,7 +290,7 @@ describe( 'Image converters', () => {
 
 		it( 'should set attribute on <img> even if other element is present inside figure', () => {
 			editor.model.schema.register( 'foo', {
-				allowIn: 'image'
+				allowIn: 'imageBlock'
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'foo', view: 'foo' } );
 

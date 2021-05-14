@@ -31,7 +31,7 @@ export function viewFigureToModel( imageUtils ) {
 
 	function converter( evt, data, conversionApi ) {
 		// Do not convert if this is not an "image figure".
-		if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ) {
+		if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'imageBlock' } ) ) {
 			return;
 		}
 
@@ -65,7 +65,7 @@ export function viewFigureToModel( imageUtils ) {
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
  * @param {module:image/imageutils~ImageUtils} imageUtils
- * @param {'image'|'imageInline'} imageType The type of the image.
+ * @param {'imageBlock'|'imageInline'} imageType The type of the image.
  * @returns {Function}
  */
 export function srcsetAttributeConverter( imageUtils, imageType ) {
@@ -113,7 +113,7 @@ export function srcsetAttributeConverter( imageUtils, imageType ) {
  * Converter used to convert a given image attribute from the model to the view.
  *
  * @param {module:image/imageutils~ImageUtils} imageUtils
- * @param {'image'|'imageInline'} imageType The type of the image.
+ * @param {'imageBlock'|'imageInline'} imageType The type of the image.
  * @param {String} attributeKey The name of the attribute to convert.
  * @returns {Function}
  */

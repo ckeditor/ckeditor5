@@ -183,7 +183,7 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire event with correct parameters for every item in passed range', () => {
 			root._appendChild( [
 				new ModelText( 'foo', { bold: true } ),
-				new ModelElement( 'image' ),
+				new ModelElement( 'imageBlock' ),
 				new ModelText( 'bar' ),
 				new ModelElement( 'paragraph', { class: 'nice' }, new ModelText( 'xx', { italic: true } ) )
 			] );
@@ -236,7 +236,7 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should not fire events for already consumed parts of model', () => {
 			root._appendChild( [
-				new ModelElement( 'image', { src: 'foo.jpg', title: 'bar', bold: true }, [
+				new ModelElement( 'imageBlock', { src: 'foo.jpg', title: 'bar', bold: true }, [
 					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
 				] )
 			] );
@@ -414,7 +414,7 @@ describe( 'DowncastDispatcher', () => {
 
 			const text = new ModelText( 'abc' );
 			const caption = new ModelElement( 'caption', null, text );
-			const image = new ModelElement( 'image', null, caption );
+			const image = new ModelElement( 'imageBlock', null, caption );
 			root._appendChild( [ image ] );
 
 			// Create view elements that will be "mapped" to model elements.

@@ -92,13 +92,13 @@ describe( 'image utils', () => {
 		it( 'should return "image" when there is no selected block in the selection', () => {
 			setModelData( model, 'f[]oo' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
 		} );
 
 		it( 'should return "image" when the selected block in the selection is empty', () => {
 			setModelData( model, '<block>[]</block>' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
 		} );
 
 		it( 'should return "imageInline" when the selected listItem in the selection is empty', () => {
@@ -110,7 +110,7 @@ describe( 'image utils', () => {
 		it( 'should return "image" when the selected block is an object (a widget)', () => {
 			setModelData( model, '[<blockWidget></blockWidget>]' );
 
-			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'image' );
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
 		} );
 
 		it( 'should return "imageInline" when selected block in the selection has some content', () => {
@@ -152,14 +152,14 @@ describe( 'image utils', () => {
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				expect( getImageTypeMatcher( editor, 'image' ) ).to.eql( returnValue );
+				expect( getImageTypeMatcher( editor, 'imageBlock' ) ).to.eql( returnValue );
 				expect( getImageTypeMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
 			} );
 
 			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				expect( getImageTypeMatcher( editor, 'image', editor ) ).to.eql( returnValue );
+				expect( getImageTypeMatcher( editor, 'imageBlock', editor ) ).to.eql( returnValue );
 				expect( getImageTypeMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
 			} );
 		} );
@@ -188,7 +188,7 @@ describe( 'image utils', () => {
 			describe( 'the returned matcherPattern function', () => {
 				describe( 'for the "image" type requested', () => {
 					beforeEach( () => {
-						matcherPattern = getImageTypeMatcher( editor, 'image' );
+						matcherPattern = getImageTypeMatcher( editor, 'imageBlock' );
 					} );
 
 					it( 'should return a function', () => {
@@ -225,7 +225,7 @@ describe( 'image utils', () => {
 
 					it( 'should return a matcherPattern object if the element is an "image"', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'imageBlock' } ) );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true,
@@ -255,7 +255,7 @@ describe( 'image utils', () => {
 
 					it( 'should return null if the element is an "image"', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
-						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
+						writer.appendChild( element, writer.createElement( 'figure', { class: 'imageBlock' } ) );
 
 						expect( matcherPattern( element ) ).to.be.null;
 					} );
@@ -295,10 +295,10 @@ describe( 'image utils', () => {
 		} );
 
 		it( 'should create a figure element for "image" type', () => {
-			const element = createImageViewElement( writer, 'image' );
+			const element = createImageViewElement( writer, 'imageBlock' );
 
 			expect( element.is( 'element', 'figure' ) ).to.be.true;
-			expect( element.hasClass( 'image' ) ).to.be.true;
+			expect( element.hasClass( 'imageBlock' ) ).to.be.true;
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
 		} );

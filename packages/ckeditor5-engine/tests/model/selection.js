@@ -952,7 +952,7 @@ describe( 'Selection', () => {
 			model.schema.extend( 'blockquote', { allowIn: '$root' } );
 			model.schema.extend( '$block', { allowIn: 'blockquote' } );
 
-			model.schema.register( 'image', {
+			model.schema.register( 'imageBlock', {
 				allowIn: [ '$root', '$block' ],
 				allowChildren: '$text'
 			} );

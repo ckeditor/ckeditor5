@@ -72,7 +72,7 @@ describe( 'Widget', () => {
 				} );
 
 				// Image feature.
-				model.schema.register( 'image', {
+				model.schema.register( 'imageBlock', {
 					allowIn: '$root',
 					isObject: true,
 					isBlock: true
@@ -93,7 +93,7 @@ describe( 'Widget', () => {
 					.elementToElement( { model: 'inline', view: ( modelItem, { writer } ) => {
 						return writer.createContainerElement( 'figure', null, { isAllowedInsideAttributeElement: true } );
 					} } )
-					.elementToElement( { model: 'image', view: 'img' } )
+					.elementToElement( { model: 'imageBlock', view: 'img' } )
 					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
 					.elementToElement( { model: 'div', view: 'div' } )
 					.elementToElement( {

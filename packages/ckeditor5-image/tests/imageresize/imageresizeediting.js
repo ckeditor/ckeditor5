@@ -204,7 +204,7 @@ describe( 'ImageResizeEditing', () => {
 
 		it( 'allows the width attribute when ImageBlock plugin is enabled', async () => {
 			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageBlockEditing, ImageResizeEditing ] } );
-			expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'width' ) ).to.be.true;
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'width' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
 

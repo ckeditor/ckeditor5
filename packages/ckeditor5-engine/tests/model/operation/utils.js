@@ -31,7 +31,7 @@ describe( 'Operation utils', () => {
 		root._appendChild( [
 			new Text( 'foo' ),
 			new Text( 'bar', { bold: true } ),
-			new Element( 'image', { src: 'img.jpg' } ),
+			new Element( 'imageBlock', { src: 'img.jpg' } ),
 			new Text( 'xyz' )
 		] );
 	} );
@@ -171,7 +171,7 @@ describe( 'normalizeNodes', () => {
 
 	it( 'should accept arrays', () => {
 		const text = new Text( 'foo', { bold: true } );
-		const image = new Element( 'image' );
+		const image = new Element( 'imageBlock' );
 		const nodes = [ 'abc', text, image, 1, 'xyz' ];
 
 		const normalized = utils._normalizeNodes( nodes );
@@ -192,7 +192,7 @@ describe( 'normalizeNodes', () => {
 	it( 'should replace document fragment by the list of it\'s children', () => {
 		const nodes = [
 			new Text( 'foo', { bold: true } ),
-			new DocumentFragment( [ new Text( 'bar', { bold: true } ), new Element( 'image' ) ] ),
+			new DocumentFragment( [ new Text( 'bar', { bold: true } ), new Element( 'imageBlock' ) ] ),
 			'xyz'
 		];
 
@@ -201,7 +201,7 @@ describe( 'normalizeNodes', () => {
 		expect( normalized[ 0 ] ).to.be.instanceof( Text );
 		expect( normalized[ 0 ].getAttribute( 'bold' ) ).to.be.true;
 		expect( normalized[ 0 ].data ).to.equal( 'foobar' );
-		expect( normalized[ 1 ].name ).to.equal( 'image' );
+		expect( normalized[ 1 ].name ).to.equal( 'imageBlock' );
 		expect( normalized[ 2 ].data ).to.equal( 'xyz' );
 	} );
 } );

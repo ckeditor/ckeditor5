@@ -19,7 +19,7 @@ export default class ImageTypeCommand extends Command {
 	 * @inheritDoc
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {'image'|'imageInline'} modelElementName Model element name the command converts to.
+	 * @param {'imageBlock'|'imageInline'} modelElementName Model element name the command converts to.
 	 */
 	constructor( editor, modelElementName ) {
 		super( editor );
@@ -29,7 +29,7 @@ export default class ImageTypeCommand extends Command {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {'image'|'imageInline'}
+		 * @member {'imageBlock'|'imageInline'}
 		 */
 		this._modelElementName = modelElementName;
 	}
@@ -42,7 +42,7 @@ export default class ImageTypeCommand extends Command {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
 
-		if ( this._modelElementName === 'image' ) {
+		if ( this._modelElementName === 'imageBlock' ) {
 			this.isEnabled = imageUtils.isInlineImage( element );
 		} else {
 			this.isEnabled = imageUtils.isBlockImage( element );

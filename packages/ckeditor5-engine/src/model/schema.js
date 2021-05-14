@@ -243,7 +243,7 @@ export default class Schema {
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
-	 *		schema.isLimit( 'image' ); // -> true
+	 *		schema.isLimit( 'imageBlock' ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the Schema deep dive
 	 * guide for more details.
@@ -269,9 +269,9 @@ export default class Schema {
 	 * was set to `true`.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
-	 *		schema.isObject( 'image' ); // -> true
+	 *		schema.isObject( 'imageBlock' ); // -> true
 	 *
-	 *		const imageElement = writer.createElement( 'image' );
+	 *		const imageElement = writer.createElement( 'imageBlock' );
 	 *		schema.isObject( imageElement ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive
@@ -318,7 +318,7 @@ export default class Schema {
 	 *
 	 *		schema.isSelectable( 'paragraph' ); // -> false
 	 *		schema.isSelectable( 'heading1' ); // -> false
-	 *		schema.isSelectable( 'image' ); // -> true
+	 *		schema.isSelectable( 'imageBlock' ); // -> true
 	 *		schema.isSelectable( 'tableCell' ); // -> true
 	 *
 	 *		const text = writer.createText( 'foo' );
@@ -345,7 +345,7 @@ export default class Schema {
 	 *
 	 *		schema.isContent( 'paragraph' ); // -> false
 	 *		schema.isContent( 'heading1' ); // -> false
-	 *		schema.isContent( 'image' ); // -> true
+	 *		schema.isContent( 'imageBlock' ); // -> true
 	 *		schema.isContent( 'horizontalLine' ); // -> true
 	 *
 	 *		const text = writer.createText( 'foo' );
@@ -1174,7 +1174,7 @@ mix( Schema, ObservableMixin );
  * Make `image` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
- *		schema.register( 'image', {
+ *		schema.register( 'imageBlock', {
  *			allowWhere: '$block',
  *			allowAttributes: [ 'src', 'alt' ],
  *			isBlock: true,
@@ -1185,7 +1185,7 @@ mix( Schema, ObservableMixin );
  * Also, mark it as a limit element so it cannot be split:
  *
  *		schema.register( 'caption', {
- *			allowIn: 'image',
+ *			allowIn: 'imageBlock',
  *			allowContentOf: '$block',
  *			isLimit: true
  *		} );

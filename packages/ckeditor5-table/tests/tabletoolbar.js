@@ -176,7 +176,7 @@ describe( 'TableToolbar', () => {
 
 				expect( balloon.visibleView ).to.be.null;
 
-				const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
+				const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'imageBlock' ).view;
 
 				model.change( writer => {
 					// Select the <tableCell><paragraph></paragraph>[<imageBlock></imageBlock>]</tableCell>
