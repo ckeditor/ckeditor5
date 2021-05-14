@@ -749,6 +749,23 @@ describe( 'HtmlEmbedEditing', () => {
 
 					expect( placeholder.innerHTML ).to.equal( 'No preview available' );
 				} );
+
+				// #8326.
+				it( 'should execute vulnerable scripts inside the <script> element', () => {
+					const logWarn = sinon.stub( console, 'warn' );
+
+					setModelData( model, '[<rawHtml value=""></rawHtml>]' );
+					editor.execute( 'updateHtmlEmbed', '<script>console.warn( \'Should be called.\' )</script>' );
+
+					logWarn.restore();
+
+					expect( logWarn.callCount ).to.equal( 1 );
+					expect( logWarn.firstCall.args[ 0 ] ).to.equal( 'Should be called.' );
+
+					expect( editor.getData() ).to.equal(
+						'<div class="raw-html-embed"><script>console.warn( \'Should be called.\' )</script></div>'
+					);
+				} );
 			} );
 
 			describe( 'different setting of ui and content language', () => {
