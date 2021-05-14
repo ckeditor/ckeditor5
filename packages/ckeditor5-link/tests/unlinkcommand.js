@@ -90,7 +90,7 @@ describe( 'UnlinkCommand', () => {
 
 			it( 'should be false if an image does not accept the `linkHref` attribute in given context', () => {
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
-					if ( ctx.endsWith( '$root image' ) && attributeName == 'linkHref' ) {
+					if ( ctx.endsWith( '$root imageBlock' ) && attributeName == 'linkHref' ) {
 						return false;
 					}
 				} );

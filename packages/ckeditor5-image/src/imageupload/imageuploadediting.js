@@ -48,7 +48,7 @@ export default class ImageUploadEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( 'imageBlock', {
+		editor.config.define( 'image', {
 			upload: {
 				types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
 			}

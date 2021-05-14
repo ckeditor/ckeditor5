@@ -40,7 +40,7 @@ export default class ImageResizeEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( 'imageBlock', {
+		editor.config.define( 'image', {
 			resizeUnit: '%',
 			resizeOptions: [ {
 				name: 'resizeImage:original',
