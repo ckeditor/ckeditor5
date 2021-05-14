@@ -7,12 +7,28 @@
  * @module content-compatibility/datafilter
  */
 
+import DataSchema from './dataschema';
+
 import { Plugin } from 'ckeditor5/src/core';
 import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, CKEditorError } from 'ckeditor5/src/utils';
-import { toWidget, Widget } from 'ckeditor5/src/widget';
-import { cloneDeep } from 'lodash-es';
-import DataSchema from './dataschema';
+import { Widget } from 'ckeditor5/src/widget';
+import {
+	consumeViewAttributesConverter,
+
+	viewToModelCodeBlockAttributeConverter,
+	modelToViewCodeBlockAttributeConverter,
+
+	viewToModelObjectConverter,
+	toObjectWidgetConverter,
+	createObjectView,
+
+	viewToAttributeInlineConverter,
+	attributeToViewInlineConverter,
+
+	viewToModelBlockAttributeConverter,
+	modelToViewBlockAttributeConverter
+} from './converters';
 
 import '../theme/datafilter.css';
 
@@ -186,24 +202,67 @@ export default class DataFilter extends Plugin {
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
 	_registerElement( definition ) {
-		if ( definition.isObject ) {
-			this._registerObjectElement( definition );
-		} else if ( definition.isInline ) {
-			this._registerInlineElement( definition );
-		} else if ( definition.isBlock ) {
-			this._registerBlockElement( definition );
-		} else {
-			/**
-			 * Only a definition marked as inline, block or object can be allowed.
-			 *
-			 * @error data-filter-invalid-definition-type
-			 */
-			throw new CKEditorError(
-				'data-filter-invalid-definition-type',
-				null,
-				definition
-			);
+		// Note that the order of element handlers is important,
+		// as the handler may interrupt handlers execution in case of returning
+		// anything else than `false` value.
+		const elementHandlers = [
+			this._handleCodeBlockElement,
+			this._handleObjectElement,
+			this._handleInlineElement,
+			this._handleBlockElement
+		];
+
+		for ( const elementHandler of elementHandlers ) {
+			if ( elementHandler.call( this, definition ) !== false ) {
+				return;
+			}
 		}
+
+		/**
+		 * The definition cannot be handled by the data filter.
+		 *
+		 * Make sure that the registered definition is correct.
+		 *
+		 * @error data-filter-invalid-definition
+		 */
+		throw new CKEditorError(
+			'data-filter-invalid-definition',
+			null,
+			definition
+		);
+	}
+
+	/**
+	 * Registers attribute converters for {@link module:code-block/codeblock~CodeBlock Code Block} feature.
+	 *
+	 * @private
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @returns {Boolean}
+	 */
+	_handleCodeBlockElement( definition ) {
+		const editor = this.editor;
+
+		// We should only handle codeBlock model if CodeBlock plugin is available.
+		// Otherwise, let #_handleBlockElement() do the job.
+		if ( !editor.plugins.has( 'CodeBlock' ) || definition.model !== 'codeBlock' ) {
+			return false;
+		}
+
+		const schema = editor.model.schema;
+		const conversion = editor.conversion;
+
+		// CodeBlock plugin is filtering out all attributes on `code` element. Let's add
+		// exception for `htmlCode` required for data filtration mechanism.
+		schema.on( 'checkAttribute', ( evt, [ context, attributeName ] ) => {
+			if ( attributeName === 'htmlCode' && context.endsWith( 'codeBlock $text' ) ) {
+				evt.return = true;
+				evt.stop();
+			}
+		}, { priority: priorities.get( 'high' ) + 1 } );
+
+		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
+		conversion.for( 'upcast' ).add( viewToModelCodeBlockAttributeConverter( this._allowedAttributes ) );
+		conversion.for( 'downcast' ).add( modelToViewCodeBlockAttributeConverter() );
 	}
 
 	/**
@@ -211,12 +270,46 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @returns {Boolean}
 	 */
-	_registerObjectElement( definition ) {
-		this.editor.model.schema.register( definition.model, definition.modelSchema );
+	_handleObjectElement( definition ) {
+		if ( !definition.isObject ) {
+			return false;
+		}
 
-		this._addObjectElementConversion( definition );
-		this._addDisallowedAttributeConversion( definition );
+		const editor = this.editor;
+		const schema = editor.model.schema;
+		const conversion = editor.conversion;
+		const { view: viewName, model: modelName } = definition;
+
+		schema.register( definition.model, definition.modelSchema );
+
+		if ( !viewName ) {
+			return;
+		}
+
+		// Store element content in special `$rawContent` custom property to
+		// avoid editor's data filtering mechanism.
+		editor.data.registerRawContentMatcher( {
+			name: viewName
+		} );
+
+		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
+		conversion.for( 'upcast' ).elementToElement( {
+			view: viewName,
+			model: viewToModelObjectConverter( definition, this._allowedAttributes )
+		} );
+
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: modelName,
+			view: ( modelElement, { writer } ) => {
+				return createObjectView( viewName, modelElement, writer );
+			}
+		} );
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: modelName,
+			view: toObjectWidgetConverter( editor, definition )
+		} );
 	}
 
 	/**
@@ -226,17 +319,46 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 * @returns {Boolean}
 	 */
-	_registerBlockElement( definition ) {
-		const schema = this.editor.model.schema;
-
-		if ( !schema.isRegistered( definition.model ) ) {
-			this.editor.model.schema.register( definition.model, definition.modelSchema );
-			this._addBlockElementToElementConversion( definition );
+	_handleBlockElement( definition ) {
+		if ( !definition.isBlock ) {
+			return false;
 		}
 
-		this._addDisallowedAttributeConversion( definition );
-		this._addBlockElementAttributeConversion( definition );
+		const editor = this.editor;
+		const schema = editor.model.schema;
+		const conversion = editor.conversion;
+		const { view: viewName, model: modelName } = definition;
+
+		if ( !schema.isRegistered( definition.model ) ) {
+			schema.register( definition.model, definition.modelSchema );
+
+			if ( !viewName ) {
+				return;
+			}
+
+			conversion.for( 'upcast' ).elementToElement( {
+				model: modelName,
+				view: viewName,
+				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
+				// this listener is called before it. If not, some elements will be transformed into a paragraph.
+				converterPriority: priorities.get( 'low' ) + 1
+			} );
+
+			conversion.for( 'downcast' ).elementToElement( {
+				model: modelName,
+				view: viewName
+			} );
+		}
+
+		if ( !viewName ) {
+			return;
+		}
+
+		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
+		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this._allowedAttributes ) );
+		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
 
 	/**
@@ -246,398 +368,32 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @returns {Boolean}
 	 */
-	_registerInlineElement( definition ) {
-		const schema = this.editor.model.schema;
+	_handleInlineElement( definition ) {
+		if ( !definition.isInline ) {
+			return false;
+		}
+
+		const editor = this.editor;
+		const schema = editor.model.schema;
+		const conversion = editor.conversion;
+		const attributeKey = definition.model;
 
 		schema.extend( '$text', {
-			allowAttributes: definition.model
+			allowAttributes: attributeKey
 		} );
 
 		if ( definition.attributeProperties ) {
-			schema.setAttributeProperties( definition.model, definition.attributeProperties );
+			schema.setAttributeProperties( attributeKey, definition.attributeProperties );
 		}
 
-		this._addDisallowedAttributeConversion( definition );
-		this._addInlineElementConversion( definition );
-	}
-
-	/**
-	 * Adds converters for the given data schema definition marked as
-	 * {@link module:content-compatibility/dataschema~DataSchemaDefinition#isObject isObject}.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
-	 */
-	_addObjectElementConversion( definition ) {
-		const { view: viewName, model: modelName } = definition;
-		const conversion = this.editor.conversion;
-
-		if ( !viewName ) {
-			return;
-		}
-
-		// Store element content in special `$rawContent` custom property to
-		// avoid editor's data filtering mechanism.
-		this.editor.data.registerRawContentMatcher( {
-			name: viewName
-		} );
-
-		conversion.for( 'upcast' ).elementToElement( {
-			view: viewName,
-			model: ( viewElement, conversionApi ) => {
-				const htmlAttributes = this._matchAndConsumeAllowedAttributes( viewElement, conversionApi );
-
-				// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
-				return conversionApi.writer.createElement( modelName, {
-					value: viewElement.getCustomProperty( '$rawContent' ),
-					...( htmlAttributes && { htmlAttributes } )
-				} );
-			}
-		} );
-
-		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: modelName,
-			view: ( modelElement, { writer } ) => {
-				return createObjectViewElement( viewName, modelElement, writer );
-			}
-		} );
-
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: modelName,
-			view: ( modelElement, { writer } ) => {
-				const widgetLabel = this.editor.t( 'HTML object' );
-
-				// Widget cannot be a raw element because the widget system would not be able
-				// to add its UI to it. Thus, we need separate view container.
-				const viewContainer = writer.createContainerElement( definition.isInline ? 'span' : 'div', {
-					class: 'html-object-embed',
-					'data-html-object-embed-label': widgetLabel,
-					dir: this.editor.locale.uiLanguageDirection
-				}, {
-					isAllowedInsideAttributeElement: definition.isInline
-				} );
-
-				const viewElement = createObjectViewElement( viewName, modelElement, writer );
-				writer.addClass( 'html-object-embed__content', viewElement );
-
-				writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
-
-				return toWidget( viewContainer, writer, { widgetLabel } );
-			}
-		} );
-	}
-
-	/**
-	 * Adds element to element converters for the given block element definition.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
-	 */
-	_addBlockElementToElementConversion( { model: modelName, view: viewName } ) {
-		const conversion = this.editor.conversion;
-
-		if ( !viewName ) {
-			return;
-		}
-
-		conversion.for( 'upcast' ).elementToElement( {
-			model: modelName,
-			view: viewName,
-			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
-			// this listener is called before it. If not, some elements will be transformed into a paragraph.
-			converterPriority: priorities.get( 'low' ) + 1
-		} );
-
-		conversion.for( 'downcast' ).elementToElement( {
-			model: modelName,
-			view: viewName
-		} );
-	}
-
-	/**
-	 * Adds attribute converters for the given block element definition.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
-	 */
-	_addBlockElementAttributeConversion( { model: modelName, view: viewName } ) {
-		const conversion = this.editor.conversion;
-
-		if ( !viewName ) {
-			return;
-		}
-
-		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-				if ( !data.modelRange ) {
-					return;
-				}
-
-				const viewAttributes = this._matchAndConsumeAllowedAttributes( data.viewItem, conversionApi );
-
-				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
-				}
-			}, { priority: 'low' } );
-		} );
-
-		conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
-				const viewAttributes = data.attributeNewValue;
-
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
-				}
-
-				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
-
-				setViewElementAttributes( viewWriter, viewAttributes, viewElement );
-			} );
-		} );
-	}
-
-	/**
-	 * Adds converters for the given inline element definition.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
-	 */
-	_addInlineElementConversion( definition ) {
-		const conversion = this.editor.conversion;
-		const viewName = definition.view;
-		const attributeKey = definition.model;
-
-		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-				const viewAttributes = this._matchAndConsumeAllowedAttributes( data.viewItem, conversionApi );
-
-				// Since we are converting to attribute we need a range on which we will set the attribute.
-				// If the range is not created yet, we will create it.
-				if ( !data.modelRange ) {
-					data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
-				}
-
-				// Set attribute on each item in range according to the schema.
-				for ( const node of data.modelRange.getItems() ) {
-					if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
-						// Node's children are converted recursively, so node can already include model attribute.
-						// We want to extend it, not replace.
-						const nodeAttributes = node.getAttribute( attributeKey );
-						const attributesToAdd = mergeViewElementAttributes( viewAttributes || {}, nodeAttributes || {} );
-
-						conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
-					}
-				}
-			}, { priority: 'low' } );
-		} );
+		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
+		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this._allowedAttributes ) );
 
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: attributeKey,
-			view: ( attributeValue, conversionApi ) => {
-				if ( !attributeValue ) {
-					return;
-				}
-
-				const { writer } = conversionApi;
-				const viewElement = writer.createAttributeElement( viewName, null, { priority: definition.priority } );
-
-				setViewElementAttributes( writer, attributeValue, viewElement );
-
-				return viewElement;
-			}
+			view: attributeToViewInlineConverter( definition )
 		} );
 	}
-
-	/**
-	 * Adds converters responsible for consuming disallowed view attributes.
-	 *
-	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
-	 */
-	_addDisallowedAttributeConversion( { view: viewName } ) {
-		const conversion = this.editor.conversion;
-
-		if ( !viewName ) {
-			return;
-		}
-
-		// Consumes disallowed element attributes to prevent them of being processed by other converters.
-		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-				consumeAttributeMatches( data.viewItem, conversionApi, this._disallowedAttributes );
-			}, { priority: 'high' } );
-		} );
-	}
-
-	/**
-	 * Matches and consumes allowed view attributes.
-	 *
-	 * @private
-	 * @param {module:engine/view/element~Element} viewElement
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-	 * @returns {Object} [result]
-	 * @returns {Object} result.attributes Set with matched attribute names.
-	 * @returns {Object} result.styles Set with matched style names.
-	 * @returns {Array.<String>} result.classes Set with matched class names.
-	 */
-	_matchAndConsumeAllowedAttributes( viewElement, conversionApi ) {
-		const matches = consumeAttributeMatches( viewElement, conversionApi, this._allowedAttributes );
-		const { attributes, styles, classes } = mergeMatchResults( matches );
-		const viewAttributes = {};
-
-		if ( attributes.size ) {
-			viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
-		}
-
-		if ( styles.size ) {
-			viewAttributes.styles = iterableToObject( styles, key => viewElement.getStyle( key ) );
-		}
-
-		if ( classes.size ) {
-			viewAttributes.classes = Array.from( classes );
-		}
-
-		if ( !Object.keys( viewAttributes ).length ) {
-			return null;
-		}
-
-		return viewAttributes;
-	}
-}
-
-// Consumes matched attributes.
-//
-// Returns sucessfully consumed attribute matches.
-//
-// @private
-// @param {module:engine/view/element~Element} viewElement
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @param {module:engine/view/matcher~Matcher Matcher} matcher
-// @returns {Array.<Object>} Array with match information about found attributes.
-function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
-	const matches = matcher.matchAll( viewElement ) || [];
-	const consumedMatches = [];
-
-	for ( const match of matches ) {
-		// We only want to consume attributes, so element can be still processed by other converters.
-		delete match.match.name;
-
-		if ( consumable.consume( viewElement, match.match ) ) {
-			consumedMatches.push( match );
-		}
-	}
-
-	return consumedMatches;
-}
-
-// Helper function for downcast converter. Sets attributes on the given view element.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {Object} viewAttributes
-// @param {module:engine/view/element~Element} viewElement
-function setViewElementAttributes( writer, viewAttributes, viewElement ) {
-	if ( viewAttributes.attributes ) {
-		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
-			writer.setAttribute( key, value, viewElement );
-		}
-	}
-
-	if ( viewAttributes.styles ) {
-		writer.setStyle( viewAttributes.styles, viewElement );
-	}
-
-	if ( viewAttributes.classes ) {
-		writer.addClass( viewAttributes.classes, viewElement );
-	}
-}
-
-// Creates object view element from the given model element.
-//
-// @private
-// @param {String} viewName
-// @param {module:engine/model/element~Element} modelElement
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @returns {module:engine/view/element~Element}
-function createObjectViewElement( viewName, modelElement, writer ) {
-	const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-	const viewContent = modelElement.getAttribute( 'value' );
-
-	const viewElement = writer.createRawElement( viewName, null, function( domElement ) {
-		domElement.innerHTML = viewContent;
-	} );
-
-	if ( viewAttributes ) {
-		setViewElementAttributes( writer, viewAttributes, viewElement );
-	}
-
-	return viewElement;
-}
-
-// Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
-//
-// @private
-// @param {Array.<Object>} matches
-// @returns {Object} result
-// @returns {Set.<Object>} result.attributes Set with matched attribute names.
-// @returns {Set.<Object>} result.styles Set with matched style names.
-// @returns {Set.<String>} result.classes Set with matched class names.
-function mergeMatchResults( matches ) {
-	const matchResult = {
-		attributes: new Set(),
-		classes: new Set(),
-		styles: new Set()
-	};
-
-	for ( const match of matches ) {
-		for ( const key in matchResult ) {
-			const values = match.match[ key ] || [];
-
-			values.forEach( value => matchResult[ key ].add( value ) );
-		}
-	}
-
-	return matchResult;
-}
-
-// Converts the given iterable object into an object.
-//
-// @private
-// @param {Iterable.<String>} iterable
-// @param {Function} getValue Should result with value for the given object key.
-// @returns {Object}
-function iterableToObject( iterable, getValue ) {
-	const attributesObject = {};
-
-	for ( const prop of iterable ) {
-		attributesObject[ prop ] = getValue( prop );
-	}
-
-	return attributesObject;
-}
-
-// Merges view element attribute objects.
-//
-// @private
-// @param {Object} oldValue
-// @param {Object} newValue
-// @returns {Object}
-function mergeViewElementAttributes( oldValue, newValue ) {
-	const result = cloneDeep( oldValue );
-
-	for ( const key in newValue ) {
-		// Merge classes.
-		if ( Array.isArray( newValue[ key ] ) ) {
-			result[ key ] = Array.from( new Set( [ ...oldValue[ key ], ...newValue[ key ] ] ) );
-		}
-
-		// Merge attributes or styles.
-		else {
-			result[ key ] = { ...oldValue[ key ], ...newValue[ key ] };
-		}
-	}
-
-	return result;
 }
