@@ -21,6 +21,10 @@ The plugin also gives you an ability to change the size of the image through the
 
 In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once [image resizing is enabled](#enabling-image-resizing), this option does not require any additional configuration.
 
+Use the corner handles to resize the image and adjust it to the text as needed. Yu can also use the alignment options from the image toolbar to achieve the desired effect.
+
+Images can also be pre-resized using styling, as observed below (the bottom image is hard-set to 60%).
+
 {@snippet features/image-resize}
 
 You can configure resizing images by handles in two different ways in the CKEditor 5 WYSIWYG editor:
