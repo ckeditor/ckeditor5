@@ -430,7 +430,7 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
-		editor.editing.downcastDispatcher.on( 'attribute:uploadId:image', ( evt, data, conversionApi ) => {
+		editor.editing.downcastDispatcher.on( 'attribute:uploadId:imageBlock', ( evt, data, conversionApi ) => {
 			conversionApi.consumable.consume( data.item, evt.name );
 		}, { priority: 'high' } );
 

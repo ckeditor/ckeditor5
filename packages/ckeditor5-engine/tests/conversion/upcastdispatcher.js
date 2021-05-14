@@ -724,7 +724,7 @@ describe( 'UpcastDispatcher', () => {
 					evt.stop();
 				}, { priority: 'high' } );
 
-				dispatcher.on( 'element:image', ( evt, data, conversionApi ) => {
+				dispatcher.on( 'element:imageBlock', ( evt, data, conversionApi ) => {
 					const modelElement = conversionApi.writer.createElement( 'imageBlock' );
 
 					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );

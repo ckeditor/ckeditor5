@@ -225,7 +225,7 @@ describe( 'DowncastDispatcher', () => {
 			expect( loggedEvents ).to.deep.equal( [
 				'insert:$text:foo:0:3',
 				'attribute:bold:true:$text:foo:0:3',
-				'insert:image:3:4',
+				'insert:imageBlock:3:4',
 				'insert:$text:bar:4:7',
 				'insert:paragraph:7:8',
 				'attribute:class:nice:paragraph:7:8',
@@ -243,7 +243,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item.getChild( 0 ), 'insert' );
 				conversionApi.consumable.consume( data.item, 'attribute:bold' );
 			} );
@@ -252,12 +252,12 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.convertInsert( range );
 
-			expect( dispatcher.fire.calledWith( 'insert:image' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'attribute:src:image' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'attribute:title:image' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'attribute:title:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.true;
 
-			expect( dispatcher.fire.calledWith( 'attribute:bold:image' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
 		} );
 	} );

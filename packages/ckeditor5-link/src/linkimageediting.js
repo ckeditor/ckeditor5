@@ -177,7 +177,7 @@ function upcastLink( editor ) {
 //
 // @private
 function downcastImageLink( dispatcher ) {
-	dispatcher.on( 'attribute:linkHref:image', ( evt, data, conversionApi ) => {
+	dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
 		// The image will be already converted - so it will be present in the view.
 		const viewFigure = conversionApi.mapper.toViewElement( data.item );
 		const writer = conversionApi.writer;
@@ -215,7 +215,7 @@ function downcastImageLink( dispatcher ) {
 // @returns {Function}
 function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 	return dispatcher => {
-		dispatcher.on( `attribute:${ decorator.id }:image`, ( evt, data, conversionApi ) => {
+		dispatcher.on( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
 			const attributes = manualDecorators.get( decorator.id ).attributes;
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );

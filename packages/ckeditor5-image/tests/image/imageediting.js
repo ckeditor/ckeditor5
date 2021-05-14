@@ -225,7 +225,7 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.data.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, conversionApi ) => {
+				editor.data.downcastDispatcher.on( 'attribute:srcset:imageBlock', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
 
 					conversionApi.consumable.consume( modelImage, evt.name );
@@ -798,7 +798,7 @@ describe( 'ImageEditing', () => {
 				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				let image = doc.getRoot().getChild( 0 );
 
-				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
+				editor.editing.downcastDispatcher.on( 'attribute:alt:imageBlock', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'attribute:alt' );
 				}, { priority: 'high' } );
 
@@ -1008,7 +1008,7 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.editing.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, conversionApi ) => {
+				editor.editing.downcastDispatcher.on( 'attribute:srcset:imageBlock', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
 
 					conversionApi.consumable.consume( modelImage, evt.name );

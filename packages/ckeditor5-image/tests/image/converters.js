@@ -277,7 +277,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should not set attribute if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
+			editor.editing.downcastDispatcher.on( 'attribute:alt:imageBlock', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'attribute:alt' );
 			}, { priority: 'high' } );
 

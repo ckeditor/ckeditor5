@@ -125,8 +125,8 @@ describe( 'ImageResizeEditing', () => {
 
 		it( 'doesn\'t downcast consumed tokens', () => {
 			editor.conversion.for( 'downcast' ).add( dispatcher =>
-				dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'attribute:width:image' );
+				dispatcher.on( 'attribute:width:imageBlock', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:width:imageBlock' );
 				}, { priority: 'high' } )
 			);
 			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" width="50%"></imageBlock>` );

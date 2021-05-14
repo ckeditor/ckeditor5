@@ -53,7 +53,7 @@ import TextProxy from '../model/textproxy';
  *		//   ├─ <img />
  *		//   └─ <caption>
  *		//       └─ foo
- *		modelConversionDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
+ *		modelConversionDispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
  *			// First, consume the `image` element.
  *			conversionApi.consumable.consume( data.item, 'insert' );
  *

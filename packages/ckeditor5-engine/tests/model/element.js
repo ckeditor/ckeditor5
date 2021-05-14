@@ -59,7 +59,7 @@ describe( 'Element', () => {
 			expect( element.is( 'element', 'imageBlock' ) ).to.be.false;
 			expect( element.is( 'model:element', 'imageBlock' ) ).to.be.false;
 			expect( element.is( 'element', 'imageBlock' ) ).to.be.false;
-			expect( element.is( 'model:image' ) ).to.be.false;
+			expect( element.is( 'model:imageBlock' ) ).to.be.false;
 			expect( element.is( '$text' ) ).to.be.false;
 			expect( element.is( 'model:$text' ) ).to.be.false;
 			expect( element.is( '$textProxy' ) ).to.be.false;
