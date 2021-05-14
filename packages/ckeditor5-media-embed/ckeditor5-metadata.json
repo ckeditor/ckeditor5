@@ -31,7 +31,7 @@
 				{
 					"elements": "*",
 					"attributes": "url",
-					"_comment": "If preview configuration `config.mediaEmbed.previewsInData` is turned off, the plugin can be configured to return any element name specified by `config.mediaEmbed.elementName`."
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the plugin can be configured to return any element name specified by `config.mediaEmbed.elementName`."
 				},
 				{
 					"elements": "div",
@@ -39,7 +39,8 @@
 						"height",
 						"padding-bottom",
 						"position"
-					]
+					],
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
 				},
 				{
 					"elements": "iframe",
@@ -54,7 +55,8 @@
 						"*allow*",
 						"frameborder",
 						"src"
-					]
+					],
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
 				},
 				{
 					"elements": "*",

@@ -17,12 +17,12 @@
 				{
 					"elements": "$block",
 					"styles": "text-align",
-					"_comment": "By default, the alignment is set inline using `text-align` CSS property."
+					"_comment": "By default, the alignment feature uses the `text-align` inline style."
 				},
 				{
 					"elements": "$block",
 					"classes": "*",
-					"_comment": "If class names are defined in `config.alignment.options`, then these classes are used for alignment instead of inline styles."
+					"_comment": "If `config.alignment.options` is set, then these classes are used for alignment instead of inline styles."
 				}
 			]
 		}
