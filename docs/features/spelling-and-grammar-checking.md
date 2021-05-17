@@ -50,7 +50,7 @@ Here you can check the [full list of available languages](https://webspellchecke
 
 Apart from the language dictionaries, WebSpellChecker offers two specialized dictionaries: a medical and a legal one, available for an additional fee.
 
-There are also two types of custom dictionaries available. One is the user-dictionary, that can be expanded and will grow during a regular use of the feature simply by adding new words to the dictionary. This is a perfect solution for editors and writers working on specific content, that may contain slang or professional jargon. The other is the so-called "company-wide dictionary".  These premade dictionaries can be uploaded by the system administrators or CKEditor 5 integrators and can be made available company-wide and accessible for all users. This way all benefits of a user-generated dictionary can be shared among the team, making the proofreading process more structured and controlled.
+There are also two types of custom dictionaries available. One is the user dictionary that can be expanded and will grow during the regular use of the feature simply by adding new words to the dictionary. This is a perfect solution for editors and writers working on specific content that may contain slang or professional jargon. The other is the so-called "company-wide dictionary". These premade dictionaries can be uploaded by the system administrators or CKEditor 5 integrators and can be made available company-wide, accessible for all users. This way all benefits of a user-generated dictionary can be shared among the team, making the proofreading process more structured and controlled.
 
 ## Accessibility
 
