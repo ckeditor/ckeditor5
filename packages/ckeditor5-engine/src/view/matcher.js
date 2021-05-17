@@ -429,10 +429,29 @@ function matchClasses( patterns, element ) {
 // @param {module:engine/view/element~Element} element Element which styles will be tested.
 // @returns {Array|null} Returns array with matched style names or `null` if no styles were matched.
 function matchStyles( patterns, element ) {
+	const mapToDenormalized = ( style => {
+		const styles = element.getNormalizedStyle( style );
+
+		if ( typeof styles == 'object' ) {
+			return Object.entries( styles ).map(
+				( [ st, val ] ) => {
+					return [ `${ style }-${ st }`, val ];
+				}
+			);
+		}
+
+		return [];
+	} );
 	const styles = element.getStyleNames()
 		.map( style => [ style, element.getStyle( style ) ] );
 
-	return matchPatterns( patterns, styles );
+	const denorm = [];
+	styles.forEach( ( [ style ] ) => {
+		const d = mapToDenormalized( style );
+		denorm.push( ...d );
+	} );
+
+	return matchPatterns( patterns, styles.concat( denorm ) );
 }
 
 /**
