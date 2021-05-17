@@ -335,7 +335,8 @@ function matchPatterns( patterns, attributes ) {
 		} );
 	} );
 
-	if ( !match.length ) {
+	// Return null when there was no matches or we didn't match all patterns.
+	if ( !match.length || match.length != patterns.length ) {
 		return null;
 	}
 
