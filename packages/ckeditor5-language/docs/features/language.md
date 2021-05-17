@@ -26,16 +26,16 @@ There are other language-related CKEditor 5 features you may want to check:
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-langauge`](https://www.npmjs.com/package/@ckeditor/ckeditor5-langauge) package:
+To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-language`](https://www.npmjs.com/package/@ckeditor/ckeditor5-language) package:
 
 ```plaintext
-npm install --save @ckeditor/ckeditor5-langauge
+npm install --save @ckeditor/ckeditor5-language
 ```
 
 And add it to your plugin list configuration:
 
 ```js
-import TextPartLanguage from '@ckeditor/ckeditor5-langauge/src/textpartlanguage';
+import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

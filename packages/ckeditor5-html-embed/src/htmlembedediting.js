@@ -267,6 +267,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				},
 				onCancelClick: props.onCancelClick
 			};
+
 			domElement.prepend( createDomButtonsWrapper( { editor, domDocument, state, props: buttonsWrapperProps } ) );
 		}
 
@@ -336,7 +337,12 @@ export default class HtmlEmbedEditing extends Plugin {
 				dir: editor.locale.contentLanguageDirection
 			} );
 
-			domPreviewContent.innerHTML = sanitizedOutput.html;
+			// Creating a contextual document fragment allows executing scripts when inserting into the preview element.
+			// See: #8326.
+			const domRange = domDocument.createRange();
+			const domDocumentFragment = domRange.createContextualFragment( sanitizedOutput.html );
+
+			domPreviewContent.appendChild( domDocumentFragment );
 
 			const domPreviewContainer = createElement( domDocument, 'div', {
 				class: 'raw-html-embed__preview'
