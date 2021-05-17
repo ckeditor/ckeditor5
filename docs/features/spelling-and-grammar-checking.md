@@ -22,7 +22,7 @@ See the spelling and grammar checking feature working in the editor below.
 
 {@snippet features/wproofreader}
 
-The proofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. This hover card allows the user to empoloy the feature on the go. If you want to see an overview of all mistakes, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating panel, easy to navigate and perfect for dedicated proofreading sessions.
+The proofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found. The hovercard allows the user to employ the feature on the go. If you want to see an overview of all mistakes, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating panel, easy to navigate and perfect for dedicated proofreading sessions.
 
 You can access the proofreader settings from the toolbar, too. These can be used to set the language dictionary and some additional proofreading settings.
 
