@@ -1,7 +1,7 @@
 ---
 category: builds-migration
 menu-title: Migration to v27.x
-order: 99
+order: 97
 ---
 
 # Migration to CKEditor 5 v27.x
