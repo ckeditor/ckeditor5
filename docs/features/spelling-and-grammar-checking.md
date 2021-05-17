@@ -32,7 +32,7 @@ You can access the proofreader settings from the toolbar, too. These can be used
 
 ## Multi-language support
 
-The {@link features/language text part language} features lets the user set different languages to different portions of the content. The spell checking and grammar feature offers full support for such a multilingual content. If the proofreader language is set to Auto Detect (or the `auto` language is set in the configuration), the feature will automatically recognize the text language and suggest error corrections and grammar specifically for that language, as shown in the demo above.
+The {@link features/language text part language} feature lets the user set different languages to different portions of the content. The spell checking and grammar feature offers full support for such a multilingual content. If the proofreader language is set to Auto Detect (or the `auto` language is set in the configuration), the feature will automatically recognize the text language and suggest error corrections and grammar specifically for that language, as shown in the demo above.
 
 {@img assets/img/spellcheck-dictionary.png 770 Setting the spell checker dictionary to auto.}
 
