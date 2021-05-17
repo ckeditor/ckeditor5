@@ -54,7 +54,7 @@ There are also two types of custom dictionaries available. One is the user dicti
 
 ## Accessibility
 
-The feature's UI is designed and oriented toward the comfort and ease of use. The proofreading floating dialog can be easily moved around, addressing the needs of left-handed editors and right-to-left language users. The clear, simple design is more readable for users with vision impairments. The dialog can also be navigated and operated with keyboard, eliminating the need to use a mouse or other pointing device.
+The feature's UI is designed and oriented toward the comfort and ease of use. The proofreading floating dialog can be easily moved around, addressing the needs of left-handed editors and right-to-left language users. The clear, simple design is more readable for users with vision impairments. The dialog can also be navigated and operated with keyboard, eliminating the need to use a mouse or another pointing device.
 
 The feature is compliant with WCAG 2.1 and Section 508 accessibility standards.
 
