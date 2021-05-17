@@ -83,6 +83,8 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el2 ) ).to.be.null;
 		} );
 
+		// TODO: Add test for making sure all attributes has to be matched (AND operator instead of OR).
+
 		it( 'should match all element attributes', () => {
 			const pattern = {
 				attributes: true
@@ -313,25 +315,28 @@ describe( 'Matcher', () => {
 		it( 'should match element class names using an array', () => {
 			const pattern = { classes: [ 'foobar', 'foobaz' ] };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foobar'	} );
-			const el2 = new Element( document, 'p', { class: 'foobaz'	} );
-			const el3 = new Element( document, 'p', { class: 'qux'	} );
+			const el1 = new Element( document, 'p', { class: 'foobar foobaz' } );
 
-			let result = matcher.match( el1 );
+			// TODO: Uncomment after deciding whether we want AND or OR operand for array of patterns.
+			// const el2 = new Element( document, 'p', { class: 'foobaz'	} );
+			// const el3 = new Element( document, 'p', { class: 'qux'	} );
+
+			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
 			expect( result.match.classes[ 0 ] ).equal( 'foobar' );
 
-			result = matcher.match( el2 );
-			expect( result ).to.be.an( 'object' );
-			expect( result ).to.have.property( 'element' ).that.equal( el2 );
-			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
-			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
-			expect( result.match.classes[ 0 ] ).equal( 'foobaz' );
+			// TODO: Uncomment after deciding whether we want AND or OR operand for array of patterns.
+			// result = matcher.match( el2 );
+			// expect( result ).to.be.an( 'object' );
+			// expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			// expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			// expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			// expect( result.match.classes[ 0 ] ).equal( 'foobaz' );
 
-			expect( matcher.match( el3 ) ).to.be.null;
+			// expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
 		it( 'should match element class names using RegExp', () => {
