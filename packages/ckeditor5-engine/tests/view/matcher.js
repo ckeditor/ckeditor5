@@ -310,6 +310,30 @@ describe( 'Matcher', () => {
 			expect( new Matcher( { classes: 'baz' } ).match( el1 ) ).to.be.null;
 		} );
 
+		it( 'should match element class names using an array', () => {
+			const pattern = { classes: [ 'foobar', 'foobaz' ] };
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foobar'	} );
+			const el2 = new Element( document, 'p', { class: 'foobaz'	} );
+			const el3 = new Element( document, 'p', { class: 'qux'	} );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes[ 0 ] ).equal( 'foobar' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes[ 0 ] ).equal( 'foobaz' );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
 		it( 'should match element class names using RegExp', () => {
 			const pattern = { classes: /fooba./ };
 			const matcher = new Matcher( pattern );
@@ -353,6 +377,60 @@ describe( 'Matcher', () => {
 			expect( new Matcher( { styles: { color: 'blue' } } ).match( el1 ) ).to.be.null;
 		} );
 
+		it( 'should match element styles using boolean', () => {
+			const pattern = {
+				styles: {
+					color: true
+				}
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color: blue' } );
+			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element styles using an array', () => {
+			const pattern = {
+				styles: [ 'color' ]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color: blue' } );
+			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
 		it( 'should match element styles using RegExp', () => {
 			const pattern = {
 				styles: {
@@ -377,6 +455,28 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
 			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element styles using key->value, where both are RegExp objects', () => {
+			const pattern = {
+				styles: [
+					{ key: /border-.*/, value: /.*/ }
+				]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
+			const el2 = new Element( document, 'p', { style: 'border: 1px solid red' } );
+			const el3 = new Element( document, 'p', { style: 'color: red' } );
+
+			const result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'border-top' );
+
+			expect( matcher.match( el2 ) ).to.be.null;
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
