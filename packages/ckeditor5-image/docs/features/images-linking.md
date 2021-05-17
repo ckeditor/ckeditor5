@@ -15,6 +15,8 @@ The {@link module:link/linkimage~LinkImage} plugin adds support for linking imag
 
 The image link can be added or edited via the image toolbar. An icon in top right corner of the image indicates the presence of a link.
 
+An example source code for block image would look similar to this one:
+
 ```html
 <figure class="image">
 	<a href="...">
@@ -23,6 +25,16 @@ The image link can be added or edited via the image toolbar. An icon in top righ
 	<figcaption>Image caption</figcaption>
 </figure>
 ```
+
+An inline image code would look more like this:
+
+```html
+	<a href="...">
+	Some text <img src="..." alt="..." style="width: 20px">
+	</a>
+```
+## Demo
+
 Click on the image to invoke contextual toolbar. Use the link icon in the image toolbar to access the editing options for links on image. Also notice the icon in the top-right corner, indicating there is a link attached to the image.
 
 {@snippet features/image-link}

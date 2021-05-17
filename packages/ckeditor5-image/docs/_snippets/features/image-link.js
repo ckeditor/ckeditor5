@@ -9,16 +9,17 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-link' ), {
-		removePlugins: [ 'ImageResize', 'AutoImage' ],
+		removePlugins: [ 'AutoImage' ],
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
 			toolbar: [
-				'toggleImageCaption',
-				'imageTextAlternative',
+				'linkImage',
 				'|',
-				'linkImage'
+				'imageStyle:inline',
+				'imageStyle:full',
+				'imageStyle:side'
 			]
 		},
 		cloudServices: CS_CONFIG
