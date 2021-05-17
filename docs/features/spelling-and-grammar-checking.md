@@ -48,7 +48,7 @@ Here you can check the [full list of available languages](https://webspellchecke
 
 ### Custom dictionaries
 
-Apart from the language dictionaries, WebSpellChecker offers two specialized dictionaries: a medical and a legal one, available for an additional fee.
+Apart from the language dictionaries, WebSpellChecker offers two specialized dictionaries: a **medical** and a **legal** one, available for an additional fee.
 
 There are also two types of custom dictionaries available.
 
