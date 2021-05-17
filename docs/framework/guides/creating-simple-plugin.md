@@ -295,4 +295,6 @@ If you would like to read more tutorials, check out the following one:
 * {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget}
 * {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget}
 
-If you are more into reading about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
+If you want to read more about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture} guide.
+
+If you want your plugin to be easily integrated by other developers, learn about the {@link framework/guides/contributing/package-metadata package metadata file} that can be added to your package.
