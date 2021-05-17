@@ -108,6 +108,9 @@ export default class DataFilter extends Plugin {
 		*/
 		this._dataInitialized = false;
 
+		this.loadAllowedConfig( this.editor.config.get( 'contentCompatibility.allowed' ) || [] );
+		this.loadDisallowedConfig( this.editor.config.get( 'contentCompatibility.disallowed' ) || [] );
+
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
 	}
@@ -200,13 +203,17 @@ export default class DataFilter extends Plugin {
 	 * @param {Boolean} shouldDisallow Provided rules will reject attributes from matched elements instead of accepting them.
 	 */
 	_loadConfig( config, shouldDisallow = false ) {
-		for ( const { element, ...rules } of config ) {
-			this.allowElement( element );
+		for ( const { name, ...rules } of config ) {
+			this.allowElement( { name } );
+
+			if ( !rules ) {
+				continue;
+			}
 
 			if ( shouldDisallow ) {
-				this.disallowAttributes( { element, ...rules } );
+				this.disallowAttributes( { name, ...rules } );
 			} else {
-				this.allowAttributes( { element, ...rules } );
+				this.allowAttributes( { name, ...rules } );
 			}
 		}
 	}
