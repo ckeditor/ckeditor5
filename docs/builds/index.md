@@ -19,7 +19,7 @@ Learn more about the {@link builds/guides/overview available pre-configured buil
 
 Get to know more about the {@link builds/guides/development/plugins plugin development} and the supported {@link builds/guides/frameworks/overview integrations with popular JavaScript frameworks}.
 
-Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4 migration guide} or other migration guides if you are updating your integration.
+Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4 migration guide} or other migration guides if you are updating your CKEditor 5 installation.
 
 ## Related links
 
