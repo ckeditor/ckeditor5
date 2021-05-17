@@ -430,29 +430,37 @@ function matchClasses( patterns, element ) {
 // @param {module:engine/view/element~Element} element Element which styles will be tested.
 // @returns {Array|null} Returns array with matched style names or `null` if no styles were matched.
 function matchStyles( patterns, element ) {
-	const mapToDenormalized = ( style => {
-		const styles = element.getNormalizedStyle( style );
+	const styles = [];
 
-		if ( typeof styles == 'object' ) {
-			return Object.entries( styles ).map(
-				( [ st, val ] ) => {
-					return [ `${ style }-${ st }`, val ];
-				}
-			);
-		}
+	element.getStyleNames()
+		.forEach( style => {
+			// Add the direct style (might be a shorthand).
+			styles.push( [ style, element.getStyle( style ) ] );
 
-		return [];
-	} );
-	const styles = element.getStyleNames()
-		.map( style => [ style, element.getStyle( style ) ] );
+			// Try to expand the shorthand if possible.
+			styles.push( ...expandStyle( element, style ) );
+		} );
 
-	const denorm = [];
-	styles.forEach( ( [ style ] ) => {
-		const d = mapToDenormalized( style );
-		denorm.push( ...d );
-	} );
+	return matchPatterns( patterns, styles );
+}
 
-	return matchPatterns( patterns, styles.concat( denorm ) );
+// Expand shorthand CSS properties and return them as an array: `[ property, value ]`.
+//
+// @param {module:engine/view/element~Element} element Element to read styles from.
+// @param {String} style CSS property name.
+// @returns {Array} Pairs of expanded properties and their respective values.
+function expandStyle( element, style ) {
+	const styles = element.getNormalizedStyle( style );
+
+	if ( typeof styles == 'object' ) {
+		return Object.entries( styles ).map(
+			( [ normalizedStyle, value ] ) => {
+				return [ `${ style }-${ normalizedStyle }`, value ];
+			}
+		);
+	}
+
+	return [];
 }
 
 /**

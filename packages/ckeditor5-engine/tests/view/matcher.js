@@ -7,6 +7,7 @@ import Matcher from '../../src/view/matcher';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
+import { addMarginRules } from '../../src/view/styles/margin';
 
 describe( 'Matcher', () => {
 	let document;
@@ -406,6 +407,38 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
 			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		// TODO: Should I `addStyleProcessorRules()` by myself in Matcher?
+		it( 'should match element styles when CSS shorthand is used', () => {
+			const pattern = {
+				styles: {
+					'margin-left': /.*/
+				}
+			};
+			const matcher = new Matcher( pattern );
+
+			addMarginRules( document.stylesProcessor );
+
+			const el1 = new Element( document, 'p', { style: 'margin: 1px' } );
+			const el2 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'margin-left' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'margin-left' );
 
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
