@@ -12,7 +12,7 @@ createEditor( '#editor-ltr', 'en', 'en' );
 createEditor( '#editor-rtl-mixed', 'ar', 'en' );
 createEditor( '#editor-rtl', 'ar', 'ar' );
 
-function createEditor( selector, language, uiDirection ) {
+function createEditor( selector, language, uiLanguageCode ) {
 	ClassicEditor
 		.create( document.querySelector( selector ), {
 			plugins: [ ArticlePluginSet ],
@@ -43,7 +43,7 @@ function createEditor( selector, language, uiDirection ) {
 				]
 			},
 			language: {
-				ui: uiDirection,
+				ui: uiLanguageCode,
 				content: language
 			}
 		} )

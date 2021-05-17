@@ -180,10 +180,10 @@ export default class ToolbarView extends View {
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate toolbar items backwards using the arrow[left,up] keys.
-				focusPrevious: isRtl ? [ 'arrowright', 'arrowdown' ] : [ 'arrowleft', 'arrowup' ],
+				focusPrevious: [ isRtl ? 'arrowright' : 'arrowleft', 'arrowup' ],
 
 				// Navigate toolbar items forwards using the arrow[right,down] keys.
-				focusNext: isRtl ? [ 'arrowleft', 'arrowup' ] : [ 'arrowright', 'arrowdown' ]
+				focusNext: [ isRtl ? 'arrowleft' : 'arrowright', 'arrowdown' ]
 			}
 		} );
 
