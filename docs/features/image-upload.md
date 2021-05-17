@@ -6,7 +6,7 @@ order: 10
 
 # Image upload overview
 
-Inserting images into content created with CKEditor 5 is a very common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:
+Inserting {@link features/images-overview images} into content created with CKEditor 5 is a very common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:
 
 * **Pasting** an image from the clipboard.
 * **Dragging** a file from the file system.
@@ -14,8 +14,8 @@ Inserting images into content created with CKEditor 5 is a very common task. In 
 * Selecting an image from a **media management tool** in your application.
 * **Pasting** and URL to an image, either into the editor dialog or directly into the content.
 
-Excluding the last option, all other ways require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor 5 to display the image in the document.
-
+With the exception of pasting URLs, all other solutions require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor 5 to display the image in the document.
+<!-- This image basically does nothing for the user except some distraction and we could drop it. -->
 {@img assets/img/image-upload-animation.svg 650 The visualization of the image upload process in a WYSIWYG editor.}
 
 The software that makes the image upload possible is called an **upload adapter**. It is a callback that tells the WYSIWYG editor how to send the file to the server. There are two main strategies of getting the image upload to work that you can adopt in your project:

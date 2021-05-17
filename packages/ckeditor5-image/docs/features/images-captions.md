@@ -36,7 +36,7 @@ This feature is available in all {@link builds/guides/overview ready-to-use edit
 
 The {@link module:image/imagecaption~ImageCaption} plugin registers:
 
-* The `'toggleImageCaption'` button (to use in the {@link TODO-overview#image-toolbar image toolbar}).
+* The `'toggleImageCaption'` button (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand `'toggleImageCaption'` command}
 
 <info-box>

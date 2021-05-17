@@ -44,11 +44,11 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<th colspan="5">Ready–to–use editor build</th>
 			</tr>
 			<tr>
-				<th>Classic</th>
-				<th>Inline</th>
-				<th>Balloon</th>
-				<th>Balloon block</th>
-				<th>Document</th>
+				<th>{@link builds/guides/overview#classic-editor Classic}</th>
+				<th>{@link builds/guides/overview#inline-editor Inline}</th>
+				<th>{@link builds/guides/overview#balloon-editor Balloon}</th>
+				<th>{@link builds/guides/overview#balloon-block-editor Balloon block}</th>
+				<th>{@link builds/guides/overview#document-editor Document}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -146,14 +146,14 @@ The availability of these plugins varies in different {@link builds/guides/overv
 </figure>
 
 <info-box>
-	You can add more image features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or {@link TODO-installation manually by customizing your editor build}.
+	You can add more image features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or {@link features/images-installation manually by customizing your editor build}.
 </info-box>
 
 ## Image contextual toolbar
 
-The {@link module:image/imagetoolbar~ImageToolbar} plugin available in all editor builds introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative button, the {@link TODO image caption button}, and {@link TODO image styles buttons}.
+The {@link module:image/imagetoolbar~ImageToolbar} plugin available in all editor builds introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. Shown below is an example contextual toolbar as observed in the demo above with a large set of buttons.
 
-[TODO] do we need a demo here? I don't think so, it's showcased in the previous demo 👆. I think it's only worth mentioning it's there.
+{@img assets/img/toolbar-items.png 749 An extended contextual toolbar.}
 
 The image toolbar is configurable using the {@link module:image/image~ImageConfig#styles `config.image.toolbar`} property. For instance, to display the caption toggle and text alternative buttons, use the following configuration:
 
@@ -165,6 +165,7 @@ ClassicEditor
 		}
 	} )
 ```
+Refer to the {@link features/images-installation image installation guide} for more details on configuring the features available in the toolbar. You can also check the {@link features/toolbar toolbar guide}.
 
 See the common API of image-related features such as {@link TODO-common-api image style}, {@link TODO-common-api image resize}, and {@link TODO-common-api link image} to learn more about available image toolbar buttons.
 

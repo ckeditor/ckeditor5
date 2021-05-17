@@ -4,7 +4,7 @@ menu-title: Installation
 order: 100
 ---
 
-The vast majority of image-related features is {@link TODO-overview#image-features available} out-of-the-box in all {@link builds/guides/overview ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link builds/guides/development/custom-builds custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
+The vast majority of image-related features {@link features/images-overview#image-features isavailable} out-of-the-box in all {@link builds/guides/overview ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link builds/guides/development/custom-builds custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
 ```plaintext
 npm install --save @ckeditor/ckeditor5-image
@@ -14,7 +14,7 @@ npm install --save @ckeditor/ckeditor5-image
 	You may want to install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package if you want to use the {@link TODO-images-linking `LinkImage`} plugin in your editor.
 </info-box>
 
-Next add the {@link TODO-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items.
+Next add the {@link features/images-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -86,9 +86,9 @@ By default, the {@link TODO `Image`} plugin available in all {@link builds/guide
 </figure>
 
 <info-box info>
-	Up to CKEditor 5 v[TODO], only **block** images were supported. The support for **inline** images started in v[TODO] in all editor builds loading the `Image` plugin.
+	Up to CKEditor 5 v[27.1.0], only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
 
-	If your integrations depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link TODO-migration-guide official migration guide} that will help you configure the editor.
+	If your integrations depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link build/guides/migration-to-28 official migration guide} that will help you configure the editor.
 </info-box>
 
 ## Contribute

@@ -259,7 +259,7 @@ The image resize feature is enabled by default in the {@link builds/guides/overv
 
 The {@link module:image/imageresize~ImageResize} plugin registers:
 
-* [TODO] Image resize buttons (to use in the {@link TODO-overview#image-toolbar image toolbar}).
+* Image resize buttons (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:image/imageresize/resizeimagecommand~ResizeImageCommand `'resizeImage'` command} that accepts the target width.
 
 <info-box>
