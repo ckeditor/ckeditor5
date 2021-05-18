@@ -75,7 +75,8 @@ class InsertSmartField extends Plugin {
 			'Task Groups',
 			'Tax',
 			'Terms and Conditions',
-			'Total'
+			'Total',
+			'Totals and Subtotals'
 		];
 
 		componentFactory.add( 'insertSmartField', locale => {
