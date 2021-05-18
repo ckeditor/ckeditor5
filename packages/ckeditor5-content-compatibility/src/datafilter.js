@@ -183,7 +183,7 @@ export default class DataFilter extends Plugin {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be allowed.
 	 */
 	allowAttributes( config ) {
-		this._allowedAttributes.add( toArray( config || [] ) );
+		this._allowedAttributes.add( config );
 	}
 
 	/**
@@ -192,7 +192,7 @@ export default class DataFilter extends Plugin {
 	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all attributes which should be disallowed.
 	 */
 	disallowAttributes( config ) {
-		this._disallowedAttributes.add( toArray( config || [] ) );
+		this._disallowedAttributes.add( config );
 	}
 
 	/**
