@@ -38,56 +38,6 @@ class ExtendHTMLSupport extends Plugin {
 				inheritAllFrom: '$htmlBlock'
 			}
 		} );
-
-		// Allow some elements, at this point model schema will include information about view-model mapping
-		// e.g. article -> ghsArticle
-		dataFilter.allowElement( { name: 'article' } );
-		dataFilter.allowElement( { name: 'section' } );
-		dataFilter.allowElement( { name: /^(details|summary)$/ } );
-		dataFilter.allowElement( { name: /^(dl|dd|dt)$/ } );
-		dataFilter.allowElement( { name: 'xyz' } );
-
-		// Let's extend 'section' with some attributes. Data filter will take care of
-		// creating proper converters and attribute matchers:
-		dataFilter.allowAttributes( { name: 'section', attributes: { id: /[\s\S]+/ } } );
-		dataFilter.allowAttributes( { name: 'section', classes: /[\s\S]+/ } );
-		dataFilter.allowAttributes( { name: 'section', styles: { color: 'red' } } );
-
-		// but disallow setting id attribute if it start with `_` prefix:
-		dataFilter.disallowAttributes( { name: 'section', attributes: { id: /^_.*/ } } );
-
-		// Let's also add some inline elements support:
-		dataFilter.allowElement( { name: /^(span|cite)$/ } );
-		dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
-		dataFilter.allowAttributes( { name: /^(span|cite)$/, styles: { color: /[\s\S]+/ } } );
-		dataFilter.disallowAttributes( { name: /^(span|cite)$/, styles: { color: 'red' } } );
-
-		dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-order-id': /[\s\S]+/ } } );
-		dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-item-id': /[\s\S]+/ } } );
-
-		// Allow existing features.
-		dataFilter.allowElement( { name: 'p' } );
-		dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': /[\s\S]+/ } } );
-		dataFilter.allowAttributes( { name: 'p', styles: { 'background-color': /[\s\S]+/ } } );
-
-		dataFilter.allowElement( { name: 'blockquote' } );
-		dataFilter.allowAttributes( { name: 'blockquote', styles: { 'color': /[\s\S]+/ } } );
-
-		dataFilter.allowElement( { name: 'li' } );
-		dataFilter.allowAttributes( { name: 'li', styles: { 'color': /[\s\S]+/ } } );
-
-		dataFilter.allowElement( { name: 'a' } );
-		dataFilter.allowAttributes( { name: 'a', styles: { 'background-color': /[\s\S]+/ } } );
-
-		dataFilter.allowElement( { name: 'strong' } );
-		dataFilter.allowAttributes( { name: 'strong', styles: { 'font-weight': /[\s\S]+/ } } );
-
-		dataFilter.allowElement( { name: 'i' } );
-		dataFilter.allowAttributes( { name: 'i', styles: { 'color': /[\s\S]+/ } } );
-		dataFilter.allowAttributes( { name: 'i', attributes: { 'data-foo': /[\s\S]+/ } } );
-
-		dataFilter.allowElement( { name: 's' } );
-		dataFilter.allowAttributes( { name: 's', styles: { 'color': /[\s\S]+/ } } );
 	}
 }
 
@@ -113,7 +63,40 @@ ClassicEditor
 			'bulletedList',
 			'|',
 			'blockquote'
-		]
+		],
+		contentCompatibility: {
+			allowed: [
+				{ name: 'article' },
+
+				{ name: 'section', attributes: { id: /[\s\S]+/ } },
+				{ name: 'section', classes: /[\s\S]+/ },
+				{ name: 'section', styles: { color: 'red' } },
+
+				{ name: /^(details|summary)$/ },
+				{ name: /^(dl|dd|dt)$/ },
+				{ name: 'xyz' },
+
+				{ name: /^(span|cite)$/, attributes: { 'data-foo': /[\s\S]+/ } },
+				{ name: /^(span|cite)$/, styles: { color: /[\s\S]+/ } },
+				{ name: /^(span|cite)$/, attributes: { 'data-order-id': /[\s\S]+/ } },
+				{ name: /^(span|cite)$/, attributes: { 'data-item-id': /[\s\S]+/ } },
+
+				{ name: 'p', attributes: { 'data-foo': /[\s\S]+/ } },
+				{ name: 'p', styles: { 'background-color': /[\s\S]+/ } },
+
+				{ name: 'blockquote', styles: { 'color': /[\s\S]+/ } },
+				{ name: 'li', styles: { 'color': /[\s\S]+/ } },
+				{ name: 'a', styles: { 'background-color': /[\s\S]+/ } },
+				{ name: 'strong', styles: { 'font-weight': /[\s\S]+/ } },
+				{ name: 'i', styles: { 'color': /[\s\S]+/ } },
+				{ name: 'i', attributes: { 'data-foo': /[\s\S]+/ } },
+				{ name: 's', styles: { 'color': /[\s\S]+/ } }
+			],
+			disallowed: [
+				{ name: 'section', attributes: { id: /^_.*/ } },
+				{ name: /^(span|cite)$/, styles: { color: 'red' } }
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
