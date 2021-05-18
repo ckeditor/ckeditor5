@@ -7,8 +7,4 @@
  * @module editor-classic
  */
 
-import ClassicEditor from './classiceditor';
-
-export default {
-	ClassicEditor
-};
+export { default as ClassicEditor } from './classiceditor';
