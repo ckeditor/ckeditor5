@@ -107,7 +107,7 @@ export default class ImageStyleEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers a post-fixer that will make sure that the style attribute value is correct for a specific image type (block vs inline).
 	 *
 	 * @private
 	 */

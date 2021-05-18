@@ -417,4 +417,44 @@ describe( 'ImageStyleCommand', () => {
 			} );
 		} );
 	} );
+
+	describe( 'shouldConvertImageType()', () => {
+		const imgSrc = 'assets/sample.png';
+
+		describe( 'for an inline image', () => {
+			it( 'should return true if the requested type is other than imageInline', () => {
+				setData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( onlyBlock.name, image ) ).to.be.true;
+			} );
+
+			it( 'should return false if the requested type equals imageInline', () => {
+				setData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( defaultInline.name, image ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'for a block image', () => {
+			it( 'should return true if the requested type is other than imageBlock', () => {
+				setData( model, `[<image src="${ imgSrc }"></image>]` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( onlyInline.name, image ) ).to.be.true;
+			} );
+
+			it( 'should return false if the requested type equals imageBlock', () => {
+				setData( model, `[<image src="${ imgSrc }"><caption></caption></image>]` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( onlyBlock.name, image ) ).to.be.false;
+			} );
+		} );
+	} );
 } );

@@ -211,7 +211,6 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image`.
 	 *
-	 * @protected
 	 * @param {module:engine/model/element~Element} modelElement
 	 * @returns {Boolean}
 	 */
@@ -222,7 +221,6 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `imageInline`.
 	 *
-	 * @protected
 	 * @param {module:engine/model/element~Element} modelElement
 	 * @returns {Boolean}
 	 */

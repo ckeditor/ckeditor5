@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
 import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
 import imageStyleUtils from '../../src/imagestyle/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ImageEditing from '../../src/image/imageediting';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ImageUtils from '../../src/imageutils';
 
 describe( 'ImageStyleEditing', () => {
 	describe( 'plugin', () => {
@@ -35,6 +35,10 @@ describe( 'ImageStyleEditing', () => {
 
 		it( 'should have pluginName', () => {
 			expect( ImageStyleEditing.pluginName ).to.equal( 'ImageStyleEditing' );
+		} );
+
+		it( 'requires ImageUtils ', () => {
+			expect( ImageStyleEditing.requires ).to.deep.equal( [ ImageUtils ] );
 		} );
 
 		afterEach( () => {
@@ -198,6 +202,93 @@ describe( 'ImageStyleEditing', () => {
 			expect( editor.commands.get( 'imageStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 
 			editor.destroy();
+		} );
+	} );
+
+	describe( 'model post-fixer', () => {
+		let editor, model, document;
+
+		beforeEach( async () => {
+			editor = await ModelTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, Paragraph ],
+				image: {
+					styles: {
+						options: [
+							{ name: 'forBlock', modelElements: [ 'image' ] },
+							{ name: 'forInline', modelElements: [ 'imageInline' ] }
+						]
+					}
+				}
+			} );
+
+			model = editor.model;
+			document = model.document;
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
+		it( 'should remove imageStyle attribute with invalid value', () => {
+			setModelData( model, '<image src="/assets/sample.png" imageStyle="foo"></image>' );
+
+			const image = document.getRoot().getChild( 0 );
+
+			expect( image.hasAttribute( 'imageStyle' ) ).to.be.false;
+		} );
+
+		it( 'should remove imageStyle attribute with invalid value (after changing attribute value)', () => {
+			setModelData( model, '<image src="/assets/sample.png"></image>' );
+
+			const image = document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'foo', image );
+			} );
+
+			expect( image.hasAttribute( 'imageStyle' ) ).to.be.false;
+		} );
+
+		it( 'should remove imageStyle attribute with invalid value (after changing image type)', () => {
+			setModelData( model, '[<image src="/assets/sample.png" imageStyle="full"></image>]' );
+
+			editor.execute( 'imageTypeInline' );
+
+			const image = document.getRoot().getChild( 0 ).getChild( 0 );
+
+			expect( image.hasAttribute( 'imageStyle' ) ).to.be.false;
+		} );
+
+		it( 'should remove imageStyle attribute with value not allowed for a block image', () => {
+			setModelData( model, '[<image src="/assets/sample.png" imageStyle="forInline"></image>]' );
+
+			const image = document.getRoot().getChild( 0 );
+
+			expect( image.hasAttribute( 'imageStyle' ) ).to.be.false;
+		} );
+
+		it( 'should remove imageStyle attribute with value not allowed for an inline image', () => {
+			setModelData( model, '<paragraph>[<imageInline src="/assets/sample.png" imageStyle="forBlock"></imageInline>]</paragraph>' );
+
+			const image = document.getRoot().getChild( 0 ).getChild( 0 );
+
+			expect( image.hasAttribute( 'imageStyle' ) ).to.be.false;
+		} );
+
+		it( 'should not remove imageStyle attribute with value allowed for a block image', () => {
+			setModelData( model, '[<image src="/assets/sample.png" imageStyle="forBlock"></image>]' );
+
+			const image = document.getRoot().getChild( 0 );
+
+			expect( image.getAttribute( 'imageStyle' ) ).to.equal( 'forBlock' );
+		} );
+
+		it( 'should not remove imageStyle attribute with value allowed for an inline image', () => {
+			setModelData( model, '<paragraph>[<imageInline src="/assets/sample.png" imageStyle="forInline"></imageInline>]</paragraph>' );
+
+			const image = document.getRoot().getChild( 0 ).getChild( 0 );
+
+			expect( image.getAttribute( 'imageStyle' ) ).to.equal( 'forInline' );
 		} );
 	} );
 
