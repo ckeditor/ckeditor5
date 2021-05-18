@@ -1,7 +1,7 @@
 ---
 category: features
 menu-title: Spelling and grammar checking
-modified_at: 2020-05-07
+modified_at: 2021-05-07
 ---
 
 # Proofreading, spelling and grammar checking
