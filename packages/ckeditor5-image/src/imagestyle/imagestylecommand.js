@@ -121,7 +121,7 @@ export default class ImageStyleCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if requested style change would trigger the image type change.
 	 *
 	 * @param {module:image/imagestyle~ImageStyleOptionDefinition#name} requestedStyle The name of the style (as configured in
 	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
