@@ -108,9 +108,6 @@ export default class DataFilter extends Plugin {
 		*/
 		this._dataInitialized = false;
 
-		this.loadAllowedConfig( this.editor.config.get( 'contentCompatibility.allowed' ) || [] );
-		this.loadDisallowedConfig( this.editor.config.get( 'contentCompatibility.disallowed' ) || [] );
-
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
 	}
@@ -136,7 +133,7 @@ export default class DataFilter extends Plugin {
 	 * that should have their attributes accepted in the editor.
 	 */
 	loadAllowedConfig( config ) {
-		this._loadConfig( config );
+		this._loadConfig( config, pattern => this.allowAttributes( pattern ) );
 	}
 
 	/**
@@ -146,7 +143,7 @@ export default class DataFilter extends Plugin {
 	 * that should have their attributes rejected from the editor.
 	 */
 	loadDisallowedConfig( config ) {
-		this._loadConfig( config, true );
+		this._loadConfig( config, pattern => this.disallowAttributes( pattern ) );
 	}
 
 	/**
@@ -155,7 +152,7 @@ export default class DataFilter extends Plugin {
 	 * This method will only allow elements described by the {@link module:content-compatibility/dataschema~DataSchema} used
 	 * to create data filter.
 	 *
-	 * @param {module:engine/view/matcher~MatcherPattern} config Pattern matching all view elements which should be allowed.
+	 * @param {String|RegExp} viewName String or regular expression matching view name.
 	 */
 	allowElement( config ) {
 		for ( const definition of this._dataSchema.getDefinitionsForView( config.name, true ) ) {
@@ -173,8 +170,6 @@ export default class DataFilter extends Plugin {
 				this._fireRegisterEvent( definition );
 			}
 		}
-
-		this.allowAttributes( config );
 	}
 
 	/**
@@ -200,9 +195,9 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @private
 	 * @param {Array.<module:engine/view/matcher~MatcherPattern>} config Filtering configuration.
-	 * @param {Boolean} shouldDisallow Provided rules will reject attributes from matched elements instead of accepting them.
+	 * @param {Function} handleAttributes Callback handling the way the attributes should be processed.
 	 */
-	_loadConfig( config, shouldDisallow = false ) {
+	_loadConfig( config, handleAttributes ) {
 		for ( const { name, ...rules } of config ) {
 			this.allowElement( { name } );
 
@@ -210,11 +205,7 @@ export default class DataFilter extends Plugin {
 				continue;
 			}
 
-			if ( shouldDisallow ) {
-				this.disallowAttributes( { name, ...rules } );
-			} else {
-				this.allowAttributes( { name, ...rules } );
-			}
+			handleAttributes( { name, ...rules } );
 		}
 	}
 
