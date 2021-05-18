@@ -123,7 +123,7 @@ export default class ImageStyleCommand extends Command {
 	/**
 	 * Returns `true` if requested style change would trigger the image type change.
 	 *
-	 * @param {module:image/imagestyle~ImageStyleOptionDefinition#name} requestedStyle The name of the style (as configured in
+	 * @param {module:image/imagestyle~ImageStyleOptionDefinition} requestedStyle The name of the style (as configured in
 	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
 	 * @param {module:engine/model/element~Element} imageElement The image model element.
 	 * @returns {Boolean}
