@@ -16,6 +16,7 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
@@ -46,6 +47,7 @@ ClassicEditor.builtinPlugins = [
 	EasyImage,
 	Heading,
 	Image,
+	ImageResize,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
@@ -85,12 +87,32 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	image: {
+		resizeOptions: [
+            {
+                name: 'resizeImage:original',
+                value: null,
+                icon: 'original'
+            },
+            {
+                name: 'resizeImage:50',
+                value: '50',
+                icon: 'medium'
+            },
+            {
+                name: 'resizeImage:75',
+                value: '75',
+                icon: 'large'
+            }
+		],
 		toolbar: [
 			'imageStyle:full',
 			'imageStyle:side',
 			'|',
-			'imageTextAlternative'
-		]
+			'imageTextAlternative',
+			'resizeImage:50',
+            'resizeImage:75',
+            'resizeImage:original'
+		],		
 	},
 	table: {
 		contentToolbar: [
@@ -100,5 +122,5 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+	language: 'cn'
 };
