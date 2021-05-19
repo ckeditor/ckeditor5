@@ -67,10 +67,6 @@ export default class WidgetResize extends Plugin {
 
 		const domDocument = global.window.document;
 
-		this.editor.model.schema.setAttributeProperties( 'width', {
-			isFormatting: true
-		} );
-
 		this.editor.editing.view.addObserver( MouseObserver );
 
 		this._observer = Object.create( DomEmitterMixin );

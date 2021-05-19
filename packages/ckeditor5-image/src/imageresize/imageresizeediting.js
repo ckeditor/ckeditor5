@@ -77,9 +77,6 @@ export default class ImageResizeEditing extends Plugin {
 	 */
 	_registerSchema() {
 		this.editor.model.schema.extend( 'image', { allowAttributes: 'width' } );
-		this.editor.model.schema.setAttributeProperties( 'width', {
-			isFormatting: true
-		} );
 	}
 
 	/**

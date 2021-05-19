@@ -9,6 +9,7 @@ import RemoveFormat from '../src/removeformat';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -29,7 +30,7 @@ describe( 'RemoveFormat', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Paragraph, Heading, Image, Bold, Underline, RemoveFormat, Image, ImageCaption, Link ]
+				plugins: [ Paragraph, Heading, Image, Bold, Underline, RemoveFormat, Image, ImageCaption, ImageResizeEditing, Link ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -63,6 +64,19 @@ describe( 'RemoveFormat', () => {
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>[<$text linkHref="url">foo</$text></paragraph>' +
 					'<image src="assets/sample.png"><caption>caption</caption></image><paragraph>bar]</paragraph>' );
+		} );
+
+		it( 'does not remove image width attribute', () => {
+			setModelData( model, '<paragraph>foo[<$text bold="true">foo</$text></paragraph>' +
+				'<image src="assets/sample.png" width="50%"><caption>caption</caption></image>' +
+				'<paragraph>bar]</paragraph>' );
+
+			editor.execute( 'removeFormat' );
+
+			expect( getModelData( model ) )
+				.to.equal( '<paragraph>foo[foo</paragraph>' +
+					'<image src="assets/sample.png" width="50%"><caption>caption</caption></image>' +
+					'<paragraph>bar]</paragraph>' );
 		} );
 
 		it( 'removes the content from within widget editable', () => {
