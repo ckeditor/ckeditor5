@@ -74,11 +74,6 @@ export default class Matcher {
 				item = { name: item };
 			}
 
-			// Single class name/RegExp can be provided.
-			if ( item.classes && ( typeof item.classes == 'string' || item.classes instanceof RegExp ) ) {
-				item.classes = [ item.classes ];
-			}
-
 			this._patterns.push( item );
 		}
 	}
@@ -290,7 +285,7 @@ function matchName( pattern, name ) {
 //		}
 //
 // @param {Object} patterns Object with information about attributes to match.
-// @param {Array} attributes An array of key/value pairs, e.g.:
+// @param {Array} items An array of key/value pairs, e.g.:
 //
 //	[
 //		[ 'src', 'https://example.com' ],
@@ -298,25 +293,13 @@ function matchName( pattern, name ) {
 //	]
 //
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
-function matchPatterns( patterns, attributes ) {
-	const attributeKeys = attributes.map( ( [ key ] ) => key );
+function matchPatterns( patterns, items ) {
+	const itemKeys = items.map( ( [ key ] ) => key );
 	const match = [];
 
 	if ( patterns === true ) {
-		if ( attributeKeys.length ) {
-			return attributeKeys;
-		} else {
-			return null;
-		}
-	} else if ( patterns instanceof RegExp ) {
-		attributeKeys.forEach( attribute => {
-			if ( patterns.test( attribute ) ) {
-				match.push( attribute );
-			}
-		} );
-
-		if ( match.length ) {
-			return match;
+		if ( itemKeys.length ) {
+			return itemKeys;
 		} else {
 			return null;
 		}
@@ -325,18 +308,19 @@ function matchPatterns( patterns, attributes ) {
 	patterns = normalizePatterns( patterns ) || [];
 
 	patterns.forEach( ( { key: patternKey, value: patternValue } ) => {
-		attributes.forEach( ( [ attributeKey, attributeValue ] ) => {
+		items.forEach( ( [ itemKey, itemValue ] ) => {
 			if (
-				isAttributeKeyMatched( patternKey, attributeKey ) &&
-				isAttributeValueMatched( patternValue, attributeValue )
+				isKeyMatched( patternKey, itemKey ) &&
+				isValueMatched( patternValue, itemValue )
 			) {
-				match.push( attributeKey );
+				match.push( itemKey );
 			}
 		} );
 	} );
 
-	// Return null when there was no matches or we didn't match all patterns.
-	if ( !match.length || match.length != patterns.length ) {
+	// Return matches only if there are at least as many of them as there are patterns.
+	// The RegExp pattern can match more than one item.
+	if ( !match.length || match.length < patterns.length ) {
 		return null;
 	}
 
@@ -359,7 +343,11 @@ function matchPatterns( patterns, attributes ) {
 // @param {Object|Array} patterns
 // @returns {Array|null} Returns an array of objects or null if provided patterns were not in an expected form.
 function normalizePatterns( patterns ) {
-	if ( Array.isArray( patterns ) ) {
+	if ( typeof patterns == 'string' ) {
+		return [ { key: patterns, value: true } ];
+	} else if ( patterns instanceof RegExp ) {
+		return [ { key: patterns, value: true } ];
+	} else if ( Array.isArray( patterns ) ) {
 		return patterns.map(
 			pattern => {
 				// eslint-disable-next-line dot-notation
@@ -380,21 +368,21 @@ function normalizePatterns( patterns ) {
 	return null;
 }
 
-// @param {String|RegExp} patternKey A pattern representing attribute key we want to match.
-// @param {String} attributeKey An actual attribute key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
+// @param {String|RegExp} patternKey A pattern representing a key we want to match.
+// @param {String} itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
 // @returns {Boolean}
-function isAttributeKeyMatched( patternKey, attributeKey ) {
-	return patternKey === attributeKey ||
-		( patternKey instanceof RegExp && patternKey.test( attributeKey ) );
+function isKeyMatched( patternKey, itemKey ) {
+	return patternKey === itemKey ||
+		( patternKey instanceof RegExp && patternKey.test( itemKey ) );
 }
 
-// @param {String|RegExp} patternValue A pattern representing attribute value we want to match.
-// @param {String} attributeValue An actual attribute value (e.g. `'http://example.com/'`, `'red'`) we're testing against pattern.
+// @param {String|RegExp} patternValue A pattern representing a value we want to match.
+// @param {String} itemValue An actual item value (e.g. `'http://example.com/'`, `'red'`) we're testing against pattern.
 // @returns {Boolean}
-function isAttributeValueMatched( patternValue, attributeValue ) {
+function isValueMatched( patternValue, itemValue ) {
 	return patternValue === true ||
-		patternValue === attributeValue ||
-		( patternValue instanceof RegExp && patternValue.test( attributeValue ) );
+		patternValue === itemValue ||
+		( patternValue instanceof RegExp && patternValue.test( itemValue ) );
 }
 
 // Checks if attributes of provided element can be matched against provided patterns.
