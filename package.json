@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": ">=24.0.0",
-    "@ckeditor/ckeditor5-dev-docs": "^25.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^25.1.0",
     "@ckeditor/ckeditor5-dev-env": "^25.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^25.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^25.0.0",
