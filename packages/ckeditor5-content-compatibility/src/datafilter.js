@@ -198,15 +198,37 @@ export default class DataFilter extends Plugin {
 	 * @param {Function} handleAttributes Callback handling the way the attributes should be processed.
 	 */
 	_loadConfig( config, handleAttributes ) {
-		for ( const { name, ...rules } of config ) {
-			this.allowElement( { name } );
+		for ( const pattern of config ) {
+			this.allowElement( { name: pattern.name } );
 
-			if ( !rules ) {
-				continue;
-			}
-
-			handleAttributes( { name, ...rules } );
+			this._splitRules( pattern )
+				.forEach( rule => handleAttributes( rule ) );
 		}
+	}
+
+	/**
+	 * Rules are matched in conjunction (AND operation), but we want to have a match if any of the rules is matched (OR operation).
+	 * By splitting the rules we force the latter effect.
+	 *
+	 * @private
+	 * @param {module:engine/view/matcher~MatcherPattern} rules
+	 * @returns {Array.<module:engine/view/matcher~MatcherPattern>}
+	 */
+	_splitRules( rules ) {
+		const { name, attributes, classes, styles } = rules;
+		const splitRules = [];
+
+		if ( attributes ) {
+			splitRules.push( { name, attributes } );
+		}
+		if ( classes ) {
+			splitRules.push( { name, classes } );
+		}
+		if ( styles ) {
+			splitRules.push( { name, styles } );
+		}
+
+		return splitRules;
 	}
 
 	/**

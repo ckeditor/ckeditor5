@@ -51,8 +51,8 @@ export default class GeneralHtmlSupport extends Plugin {
 		this.dataFilter = new DataFilter( editor, this.dataSchema );
 
 		// Load the filtering configuration.
-		this.dataFilter.loadAllowedConfig( this.editor.config.get( 'contentCompatibility.allowed' ) || [] );
-		this.dataFilter.loadDisallowedConfig( this.editor.config.get( 'contentCompatibility.disallowed' ) || [] );
+		this.dataFilter.loadAllowedConfig( this.editor.config.get( 'generalHtmlSupport.allowed' ) || [] );
+		this.dataFilter.loadDisallowedConfig( this.editor.config.get( 'generalHtmlSupport.disallowed' ) || [] );
 	}
 
 	/**

@@ -64,33 +64,40 @@ ClassicEditor
 			'|',
 			'blockquote'
 		],
-		contentCompatibility: {
+		generalHtmlSupport: {
 			allowed: [
 				{ name: 'article' },
-
-				{ name: 'section', attributes: { id: /[\s\S]+/ } },
-				{ name: 'section', classes: /[\s\S]+/ },
-				{ name: 'section', styles: { color: 'red' } },
-
+				{ name: 'xyz' },
 				{ name: /^(details|summary)$/ },
 				{ name: /^(dl|dd|dt)$/ },
-				{ name: 'xyz' },
 
-				{ name: /^(span|cite)$/, attributes: { 'data-foo': /[\s\S]+/ } },
-				{ name: /^(span|cite)$/, styles: { color: /[\s\S]+/ } },
-				{ name: /^(span|cite)$/, attributes: { 'data-order-id': /[\s\S]+/ } },
-				{ name: /^(span|cite)$/, attributes: { 'data-item-id': /[\s\S]+/ } },
+				{ name: 'a', styles: { 'background-color': true } },
+				{ name: 'blockquote', styles: { 'color': true } },
+				{ name: 'li', styles: { 'color': true } },
+				{ name: 's', styles: { 'color': true } },
+				{ name: 'strong', styles: { 'font-weight': true } },
 
-				{ name: 'p', attributes: { 'data-foo': /[\s\S]+/ } },
-				{ name: 'p', styles: { 'background-color': /[\s\S]+/ } },
-
-				{ name: 'blockquote', styles: { 'color': /[\s\S]+/ } },
-				{ name: 'li', styles: { 'color': /[\s\S]+/ } },
-				{ name: 'a', styles: { 'background-color': /[\s\S]+/ } },
-				{ name: 'strong', styles: { 'font-weight': /[\s\S]+/ } },
-				{ name: 'i', styles: { 'color': /[\s\S]+/ } },
-				{ name: 'i', attributes: { 'data-foo': /[\s\S]+/ } },
-				{ name: 's', styles: { 'color': /[\s\S]+/ } }
+				{
+					name: 'i',
+					styles: { 'color': true },
+					attributes: { 'data-foo': true }
+				},
+				{
+					name: 'section',
+					attributes: { id: true },
+					classes: true,
+					styles: { color: 'red' }
+				},
+				{
+					name: /^(span|cite)$/,
+					styles: { color: true },
+					attributes: [ 'data-foo', 'data-order-id', 'data-item-id' ]
+				},
+				{
+					name: 'p',
+					attributes: { 'data-foo': true },
+					styles: { 'background-color': true }
+				}
 			],
 			disallowed: [
 				{ name: 'section', attributes: { id: /^_.*/ } },
