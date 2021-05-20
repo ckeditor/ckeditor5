@@ -50,7 +50,7 @@ export function viewToModelStyleAttribute( styles ) {
 	// Convert only non–default styles.
 	const nonDefaultStyles = {
 		imageInline: styles.filter( style => !style.isDefault && style.modelElements.includes( 'imageInline' ) ),
-		image: styles.filter( style => !style.isDefault && style.modelElements.includes( 'image' ) )
+		imageBlock: styles.filter( style => !style.isDefault && style.modelElements.includes( 'imageBlock' ) )
 	};
 
 	return ( evt, data, conversionApi ) => {

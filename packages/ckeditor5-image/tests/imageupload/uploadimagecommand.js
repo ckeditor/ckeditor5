@@ -42,7 +42,7 @@ describe( 'UploadImageCommand', () => {
 				command = new UploadImageCommand( editor );
 
 				const schema = model.schema;
-				schema.extend( 'image', { allowAttributes: 'uploadId' } );
+				schema.extend( 'imageBlock', { allowAttributes: 'uploadId' } );
 				schema.extend( 'imageInline', { allowAttributes: 'uploadId' } );
 			} );
 	} );
@@ -84,18 +84,18 @@ describe( 'UploadImageCommand', () => {
 		} );
 
 		it( 'should be true when the selection is on other image', () => {
-			setModelData( model, '[<image></image>]' );
+			setModelData( model, '[<imageBlock></imageBlock>]' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
 			model.schema.register( 'caption', {
-				allowIn: 'image',
+				allowIn: 'imageBlock',
 				allowContentOf: '$block',
 				isLimit: true
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
-			setModelData( model, '<image><caption>[]</caption></image>' );
+			setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -125,7 +125,7 @@ describe( 'UploadImageCommand', () => {
 			model.schema.extend( 'paragraph', { allowIn: 'block' } );
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
 				if ( childDefinition.name === 'imageInline' && context.last.name === 'paragraph' ) {

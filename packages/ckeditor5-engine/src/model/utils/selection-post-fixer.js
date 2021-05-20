@@ -24,7 +24,7 @@ import Position from '../position';
  * boundary (a range must be rooted within one limit element).
  * * Only {@link module:engine/model/schema~Schema#isSelectable selectable elements} can be selected from the outside
  * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
- * selection is correct: `<paragraph>f[oo</paragraph><image></image>]`.
+ * selection is correct: `<paragraph>f[oo</paragraph><imageBlock></imageBlock>]`.
  *
  * If the position is not correct, the post-fixer will automatically correct it.
  *

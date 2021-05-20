@@ -39,7 +39,7 @@ export default class ImageStyleCommand extends Command {
 		 * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition#name>}
 		 */
 		this._defaultStyles = {
-			image: false,
+			imageBlock: false,
 			imageInline: false
 		};
 
@@ -106,7 +106,7 @@ export default class ImageStyleCommand extends Command {
 
 			// Change the image type if a style requires it.
 			if ( !supportedTypes.includes( imageElement.name ) ) {
-				this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
+				this.editor.execute( !supportedTypes.includes( 'imageBlock' ) ? 'imageTypeInline' : 'imageTypeBlock' );
 
 				// Update the imageElement to the newly created image.
 				imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );

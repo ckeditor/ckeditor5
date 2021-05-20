@@ -354,10 +354,10 @@ describe( 'widget utils', () => {
 			doc.createRoot();
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			model.schema.register( 'image' );
+			model.schema.register( 'imageBlock' );
 			model.schema.register( 'span' );
 
-			model.schema.extend( 'image', {
+			model.schema.extend( 'imageBlock', {
 				allowIn: '$root',
 				isObject: true,
 				isBlock: true
@@ -373,7 +373,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'returns a collapsed range after selected element', () => {
-			setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+			setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -464,7 +464,7 @@ describe( 'widget utils', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/7438
 		describe( 'integration with the WidgetTypeAround feature ("widget-type-around" model selection attribute)', () => {
 			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" before a widget)', () => {
-				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+				setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'widget-type-around', 'before' );
@@ -477,7 +477,7 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" after a widget)', () => {
-				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+				setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'widget-type-around', 'after' );
@@ -490,7 +490,7 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should return a range on a selected widget (block and an object) ("fake caret" not displayed)', () => {
-				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+				setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 				const range = findOptimalInsertionRange( doc.selection, model );
 

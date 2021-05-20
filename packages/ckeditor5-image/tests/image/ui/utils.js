@@ -63,7 +63,7 @@ describe( 'Utils', () => {
 				}
 			} );
 
-			setData( editor.model, '[<image src=""></image>]' );
+			setData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
@@ -85,7 +85,7 @@ describe( 'Utils', () => {
 				}
 			} );
 
-			setData( editor.model, '<image src=""><caption>[Foo]</caption></image>' );
+			setData( editor.model, '<imageBlock src=""><caption>[Foo]</caption></imageBlock>' );
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
@@ -106,7 +106,7 @@ describe( 'Utils', () => {
 
 	describe( 'getBalloonPositionData', () => {
 		it( 'returns the position data if selection is on an image', () => {
-			setData( editor.model, '[<image src=""></image>]' );
+			setData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {
@@ -116,7 +116,7 @@ describe( 'Utils', () => {
 		} );
 
 		it( 'returns the position data if selection is in a block image caption', () => {
-			setData( editor.model, '<image src=""><caption>Foo[]</caption></image>' );
+			setData( editor.model, '<imageBlock src=""><caption>Foo[]</caption></imageBlock>' );
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {

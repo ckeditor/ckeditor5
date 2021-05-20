@@ -58,7 +58,7 @@ export default class AutoImage extends Plugin {
 		this._timeoutId = null;
 
 		/**
-		 * The position where the `<image>` element will be inserted after the timeout,
+		 * The position where the `<imageBlock>` element will be inserted after the timeout,
 		 * determined each time a new content is pasted into the document.
 		 *
 		 * @private

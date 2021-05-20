@@ -96,9 +96,9 @@ describe( 'MediaEmbedCommand', () => {
 		} );
 
 		it( 'should be true if a non-media object is selected', () => {
-			model.schema.register( 'image', { isObject: true, isBlock: true, allowWhere: '$block' } );
+			model.schema.register( 'imageBlock', { isObject: true, isBlock: true, allowWhere: '$block' } );
 
-			setData( model, '[<image src="http://ckeditor.com"></image>]' );
+			setData( model, '[<imageBlock src="http://ckeditor.com"></imageBlock>]' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 	} );

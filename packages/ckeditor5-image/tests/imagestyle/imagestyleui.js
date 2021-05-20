@@ -210,7 +210,7 @@ describe( 'ImageStyleUI', () => {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
 				image: {
 					styles: {
-						options: [ { name: 'foo', modelElements: [ 'image' ], title: 'Custom title' } ]
+						options: [ { name: 'foo', modelElements: [ 'imageBlock' ], title: 'Custom title' } ]
 					}
 				}
 			} );

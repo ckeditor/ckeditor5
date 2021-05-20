@@ -73,7 +73,7 @@ export default class ImageResizeEditing extends Plugin {
 		const resizeImageCommand = new ResizeImageCommand( editor );
 
 		this._registerSchema();
-		this._registerConverters( 'image' );
+		this._registerConverters( 'imageBlock' );
 		this._registerConverters( 'imageInline' );
 
 		// Register `resizeImage` command and add `imageResize` command as an alias for backward compatibility.
@@ -86,7 +86,7 @@ export default class ImageResizeEditing extends Plugin {
 	 */
 	_registerSchema() {
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'image', { allowAttributes: 'width' } );
+			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: 'width' } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
@@ -102,7 +102,7 @@ export default class ImageResizeEditing extends Plugin {
 	 * Registers image resize converters.
 	 *
 	 * @private
-	 * @param {'image'|'imageInline'} imageType The type of the image.
+	 * @param {'imageBlock'|'imageInline'} imageType The type of the image.
 	 */
 	_registerConverters( imageType ) {
 		const editor = this.editor;
@@ -130,7 +130,7 @@ export default class ImageResizeEditing extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
-					name: imageType === 'image' ? 'figure' : 'img',
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
 					styles: {
 						width: /.+/
 					}

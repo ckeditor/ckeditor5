@@ -43,7 +43,7 @@ describe( 'ImageStyleCommand', () => {
 	} );
 
 	it( 'should use parent batch', () => {
-		setData( model, '[<image></image>]' );
+		setData( model, '[<imageBlock></imageBlock>]' );
 
 		model.change( writer => {
 			expect( writer.batch.operations ).to.length( 0 );
@@ -55,7 +55,7 @@ describe( 'ImageStyleCommand', () => {
 	} );
 
 	it( 'should undo the whole command action if the image type has changed', () => {
-		const initialData = '[<image src="assets/sample.png"></image>]';
+		const initialData = '[<imageBlock src="assets/sample.png"></imageBlock>]';
 
 		setData( model, initialData );
 
@@ -71,7 +71,7 @@ describe( 'ImageStyleCommand', () => {
 	describe( 'constructor()', () => {
 		it( 'should set default styles\' names properly if both of them are defined in the config', () => {
 			expect( command._defaultStyles ).to.deep.equal( {
-				image: defaultBlock.name,
+				imageBlock: defaultBlock.name,
 				imageInline: defaultInline.name
 			} );
 		} );
@@ -92,7 +92,7 @@ describe( 'ImageStyleCommand', () => {
 			const customCommand = customEditor.commands.get( 'imageStyle' );
 
 			expect( customCommand._defaultStyles ).to.deep.equal( {
-				image: defaultBlock.name,
+				imageBlock: defaultBlock.name,
 				imageInline: false
 			} );
 
@@ -113,7 +113,7 @@ describe( 'ImageStyleCommand', () => {
 
 	describe( 'value', () => {
 		it( 'should be false if no element is selected', () => {
-			setData( model, '<paragraph>[]</paragraph><image></image>' );
+			setData( model, '<paragraph>[]</paragraph><imageBlock></imageBlock>' );
 
 			expect( command.value ).to.be.false;
 		} );
@@ -125,7 +125,7 @@ describe( 'ImageStyleCommand', () => {
 		} );
 
 		it( 'should match the imageStyle attribute if a block image is selected', () => {
-			setData( model, `[<image imageStyle="${ anyImage.name }"></image>]` );
+			setData( model, `[<imageBlock imageStyle="${ anyImage.name }"></imageBlock>]` );
 
 			expect( command.value ).to.equal( anyImage.name );
 		} );
@@ -168,13 +168,13 @@ describe( 'ImageStyleCommand', () => {
 
 		describe( 'when a block image is selected', () => {
 			it( 'should match the imageStyle attribute if it is present', () => {
-				setData( model, `[<image imageStyle="${ anyImage.name }"></image>]` );
+				setData( model, `[<imageBlock imageStyle="${ anyImage.name }"></imageBlock>]` );
 
 				expect( command.value ).to.equal( anyImage.name );
 			} );
 
 			it( 'should match the proper default style if the imageStyle attribute is not present', () => {
-				setData( model, '[<image></image>]' );
+				setData( model, '[<imageBlock></imageBlock>]' );
 
 				expect( command.value ).to.equal( defaultBlock.name );
 			} );
@@ -194,7 +194,7 @@ describe( 'ImageStyleCommand', () => {
 
 				const currentCommand = customEditor.commands.get( 'imageStyle' );
 
-				setData( model, '[<image></image>]' );
+				setData( model, '[<imageBlock></imageBlock>]' );
 				expect( currentCommand.value ).to.equal( false );
 
 				customElement.remove();
@@ -211,7 +211,7 @@ describe( 'ImageStyleCommand', () => {
 		} );
 
 		it( 'should be enabled if a block image is selected', () => {
-			setData( model, '[<image></image>]' );
+			setData( model, '[<imageBlock></imageBlock>]' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -223,7 +223,7 @@ describe( 'ImageStyleCommand', () => {
 		} );
 
 		it( 'should be disabled if selection is not directly on the block image', () => {
-			setData( model, '[<paragraph></paragraph><image></image>]' );
+			setData( model, '[<paragraph></paragraph><imageBlock></imageBlock>]' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -235,7 +235,7 @@ describe( 'ImageStyleCommand', () => {
 		} );
 
 		it( 'should be true when the selection is in a block image caption', () => {
-			setData( model, '<image><caption>[]Foo</caption></image>' );
+			setData( model, '<imageBlock><caption>[]Foo</caption></imageBlock>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -251,7 +251,7 @@ describe( 'ImageStyleCommand', () => {
 					command.execute( { value: onlyBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="alignCenter" src="${ imgSrc }"></image>]` );
+						.to.equal( `[<imageBlock imageStyle="alignCenter" src="${ imgSrc }"></imageBlock>]` );
 				} );
 
 				it( 'should not change the image type if the requested type equals imageInline', () => {
@@ -274,7 +274,7 @@ describe( 'ImageStyleCommand', () => {
 
 			describe( 'when a block image is selected', () => {
 				it( 'should change the image type if the requested type is other than imageBlock', () => {
-					setData( model, `[<image src="${ imgSrc }"></image>]` );
+					setData( model, `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 					command.execute( { value: onlyInline.name } );
 
 					expect( getData( model ) )
@@ -282,24 +282,24 @@ describe( 'ImageStyleCommand', () => {
 				} );
 
 				it( 'should not change the image type if the requested type equals imageBlock', () => {
-					setData( model, `[<image src="${ imgSrc }"><caption></caption></image>]` );
+					setData( model, `[<imageBlock src="${ imgSrc }"><caption></caption></imageBlock>]` );
 					command.execute( { value: onlyBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ onlyBlock.name }" src="${ imgSrc }"><caption></caption></image>]` );
+						.to.equal( `[<imageBlock imageStyle="${ onlyBlock.name }" src="${ imgSrc }"><caption></caption></imageBlock>]` );
 				} );
 
 				it( 'should not change the image type if the requested type is not specified', () => {
-					setData( model, `[<image src="${ imgSrc }"><caption></caption></image>]` );
+					setData( model, `[<imageBlock src="${ imgSrc }"><caption></caption></imageBlock>]` );
 					command.execute( { value: anyImage.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ anyImage.name }" src="${ imgSrc }"><caption></caption></image>]` );
+						.to.equal( `[<imageBlock imageStyle="${ anyImage.name }" src="${ imgSrc }"><caption></caption></imageBlock>]` );
 				} );
 			} );
 
 			it( 'should change the image type if the selection is inside a caption', () => {
-				setData( model, `<image src="${ imgSrc }"><caption>[]Foo</caption></image>` );
+				setData( model, `<imageBlock src="${ imgSrc }"><caption>[]Foo</caption></imageBlock>` );
 				command.execute( { value: onlyInline.name } );
 
 				expect( getData( model ) ).to.equal(
@@ -361,59 +361,59 @@ describe( 'ImageStyleCommand', () => {
 
 			describe( 'when a block image is selected', () => {
 				it( 'should remove the imageStyle attribute if the requested style is set as default', () => {
-					setData( model, `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+					setData( model, `[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]` );
 					command.execute( { value: defaultBlock.name } );
 
 					expect( getData( model ) )
-						.to.equal( '[<image><caption></caption></image>]' );
+						.to.equal( '[<imageBlock><caption></caption></imageBlock>]' );
 				} );
 
 				it( 'should set properly the imageStyle attribute if it is present', () => {
-					setData( model, `[<image imageStyle="${ onlyBlock.name }"><caption></caption></image>]` );
+					setData( model, `[<imageBlock imageStyle="${ onlyBlock.name }"><caption></caption></imageBlock>]` );
 					command.execute( { value: anyImage.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+						.to.equal( `[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]` );
 				} );
 
 				it( 'should set properly the imageStyle attribute if it is not present', () => {
-					setData( model, '[<image><caption></caption></image>]' );
+					setData( model, '[<imageBlock><caption></caption></imageBlock>]' );
 					command.execute( { value: anyImage.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+						.to.equal( `[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]` );
 				} );
 
 				it( 'should do nothing if requested attribute is already present', () => {
-					setData( model, `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+					setData( model, `[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]` );
 					command.execute( { value: anyImage.name } );
 
 					expect( getData( model ) )
-						.to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+						.to.equal( `[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]` );
 				} );
 
 				it( 'should set default style if executing it after another style', () => {
-					setData( model, '[<image><caption></caption></image>]' );
+					setData( model, '[<imageBlock><caption></caption></imageBlock>]' );
 
 					expect( command.value ).to.equal( defaultBlock.name );
 
 					command.execute( { value: anyImage.name } );
 
-					expect( getData( model ) ).to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
+					expect( getData( model ) ).to.equal( `[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]` );
 
 					command.execute( { value: defaultBlock.name } );
 
-					expect( getData( model ) ).to.equal( '[<image><caption></caption></image>]' );
+					expect( getData( model ) ).to.equal( '[<imageBlock><caption></caption></imageBlock>]' );
 					expect( command.value ).to.equal( defaultBlock.name );
 				} );
 			} );
 
 			it( 'should set the style if the selection is inside a caption', () => {
-				setData( model, `<image imageStyle="${ onlyBlock.name }"><caption>Fo[o]</caption></image>` );
+				setData( model, `<imageBlock imageStyle="${ onlyBlock.name }"><caption>Fo[o]</caption></imageBlock>` );
 				command.execute( { value: anyImage.name } );
 
 				expect( getData( model ) )
-					.to.equal( `<image imageStyle="${ anyImage.name }"><caption>Fo[o]</caption></image>` );
+					.to.equal( `<imageBlock imageStyle="${ anyImage.name }"><caption>Fo[o]</caption></imageBlock>` );
 			} );
 		} );
 	} );

@@ -43,18 +43,18 @@ describe( 'Alignment integration', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does not work inside image caption', () => {
-			setModelData( model, '<image src="/assets/sample.png"><caption>Foo[]</caption></image>' );
+			setModelData( model, '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( getModelData( model ) ).to.equal( '<image src="/assets/sample.png"><caption>Foo[]</caption></image>' );
+			expect( getModelData( model ) ).to.equal( '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
 		} );
 
 		it( 'does not work inside image caption when selection overlaps image', () => {
 			setModelData(
 				model,
 				'<paragraph>foo[foo</paragraph>' +
-				'<image src="/assets/sample.png"><caption>bar</caption></image>' +
+				'<imageBlock src="/assets/sample.png"><caption>bar</caption></imageBlock>' +
 				'<paragraph>baz]baz</paragraph>'
 			);
 
@@ -62,7 +62,7 @@ describe( 'Alignment integration', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph alignment="center">foo[foo</paragraph>' +
-				'<image src="/assets/sample.png"><caption>bar</caption></image>' +
+				'<imageBlock src="/assets/sample.png"><caption>bar</caption></imageBlock>' +
 				'<paragraph alignment="center">baz]baz</paragraph>'
 			);
 		} );

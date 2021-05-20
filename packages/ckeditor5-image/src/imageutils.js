@@ -73,7 +73,7 @@ export default class ImageUtils extends Plugin {
 	 * **Note**: If `selectable` is passed, this helper will not be able to set selection attributes (such as `linkHref`)
 	 * and apply them to the new image. In this case, make sure all selection attributes are passed in `attributes`.
 	 *
-	 * @param {'image'|'imageInline'} [imageType] Image type of inserted image. If not specified,
+	 * @param {'imageBlock'|'imageInline'} [imageType] Image type of inserted image. If not specified,
 	 * it will be determined automatically depending of editor config or place of the insertion.
 	 * @return {module:engine/view/element~Element|null} The inserted model image element.
 	 */
@@ -157,7 +157,7 @@ export default class ImageUtils extends Plugin {
 	getClosestSelectedImageElement( selection ) {
 		const selectedElement = selection.getSelectedElement();
 
-		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'image' );
+		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition().findAncestor( 'imageBlock' );
 	}
 
 	/**
@@ -217,7 +217,7 @@ export default class ImageUtils extends Plugin {
 	 * @returns {Boolean}
 	 */
 	isBlockImage( modelElement ) {
-		return !!modelElement && modelElement.is( 'element', 'image' );
+		return !!modelElement && modelElement.is( 'element', 'imageBlock' );
 	}
 
 	/**
@@ -271,10 +271,10 @@ export default class ImageUtils extends Plugin {
 function isImageAllowedInParent( editor, selection ) {
 	const imageType = determineImageTypeForInsertion( editor, selection );
 
-	if ( imageType == 'image' ) {
+	if ( imageType == 'imageBlock' ) {
 		const parent = getInsertImageParent( selection, editor.model );
 
-		if ( editor.model.schema.checkChild( parent, 'image' ) ) {
+		if ( editor.model.schema.checkChild( parent, 'imageBlock' ) ) {
 			return true;
 		}
 	} else if ( editor.model.schema.checkChild( selection.focus, 'imageInline' ) ) {
@@ -290,7 +290,7 @@ function isImageAllowedInParent( editor, selection ) {
 // @param {module:engine/model/selection~Selectable} selection
 // @returns {Boolean}
 function isNotInsideImage( selection ) {
-	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'image' ) );
+	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'imageBlock' ) );
 }
 
 // Returns a node that will be used to insert image with `model.insertContent`.
@@ -315,9 +315,9 @@ function getInsertImageParent( selection, model ) {
 // @private
 // @param {module:core/editor/editor~Editor} editor
 // @param {module:engine/model/selection~Selectable} selectable
-// @param {'image'|'imageInline'} [imageType] Image element type name. Used to force return of provided element name,
+// @param {'imageBlock'|'imageInline'} [imageType] Image element type name. Used to force return of provided element name,
 // but only if there is proper plugin enabled.
-// @returns {'image'|'imageInline'} imageType
+// @returns {'imageBlock'|'imageInline'} imageType
 function determineImageTypeForInsertion( editor, selectable, imageType ) {
 	const schema = editor.model.schema;
 	const configImageInsertType = editor.config.get( 'image.insert.type' );
@@ -327,7 +327,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 	}
 
 	if ( !editor.plugins.has( 'ImageInlineEditing' ) ) {
-		return 'image';
+		return 'imageBlock';
 	}
 
 	if ( imageType ) {
@@ -339,7 +339,7 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 	}
 
 	if ( configImageInsertType === 'block' ) {
-		return 'image';
+		return 'imageBlock';
 	}
 
 	// Try to replace the selected widget (e.g. another image).
@@ -347,5 +347,5 @@ function determineImageTypeForInsertion( editor, selectable, imageType ) {
 		return determineImageTypeForInsertionAtSelection( schema, selectable );
 	}
 
-	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'image';
+	return schema.checkChild( selectable, 'imageInline' ) ? 'imageInline' : 'imageBlock';
 }

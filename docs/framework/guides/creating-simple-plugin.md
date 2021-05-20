@@ -172,7 +172,7 @@ class InsertImage extends Plugin {
 				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
-					const imageElement = writer.createElement( 'image', {
+					const imageElement = writer.createElement( 'imageBlock', {
 						src: imageUrl
 					} );
 
@@ -194,9 +194,9 @@ If you refresh the page, you should now be able to insert new images into the co
 The image is fully functional. You can undo inserting by pressing <kbd>Ctrl</kbd>+<kbd>Z</kbd> and the image is always inserted as a block element (the paragraph that contains the selection is automatically split). This is all handled by the CKEditor 5 engine.
 
 <info-box>
-	As you can see, by clicking the button you are inserting an `<image src="...">` element into the model. The image feature is represented in the model as `<image>`, while in the view (i.e. the virtual DOM) and in the real DOM it is rendered as `<figure class="image"><img src="..."></figure>`.
+	As you can see, by clicking the button you are inserting an `<imageBlock src="...">` element into the model. The image feature is represented in the model as `<imageBlock>`, while in the view (i.e. the virtual DOM) and in the real DOM it is rendered as `<figure class="image"><img src="..."></figure>`.
 
-	The `<image>` to `<figure><img></figure>` transformation is called "conversion" and it requires a separate guide. However, as you can see in this example, it is a powerful mechanism because it allows non-1:1 mappings.
+	The `<imageBlock>` to `<figure><img></figure>` transformation is called "conversion" and it requires a separate guide. However, as you can see in this example, it is a powerful mechanism because it allows non-1:1 mappings.
 </info-box>
 
 Congratulations! You have just created your first CKEditor 5 plugin!
@@ -261,7 +261,7 @@ class InsertImage extends Plugin {
 				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
-					const imageElement = writer.createElement( 'image', {
+					const imageElement = writer.createElement( 'imageBlock', {
 						src: imageUrl
 					} );
 
