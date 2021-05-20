@@ -84,7 +84,10 @@ ClassicEditor
 				},
 				{
 					name: 'section',
-					attributes: { id: true },
+					attributes: {
+						id: true,
+						'data-section-id': /^\d+$/
+					},
 					classes: true,
 					styles: { color: 'red' }
 				},
@@ -95,7 +98,12 @@ ClassicEditor
 				},
 				{
 					name: 'p',
-					attributes: { 'data-foo': true },
+					attributes: [
+						{
+							key: /^data-/,
+							value: true
+						}
+					],
 					styles: { 'background-color': true }
 				}
 			],
