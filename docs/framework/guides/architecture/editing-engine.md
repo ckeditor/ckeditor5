@@ -136,12 +136,12 @@ The `"Foo "` text node is at index `0` in its parent, `<imageInline></imageInlin
 
 On the other hand, offset `x` in `<paragraph>` translates to:
 
-| Offset | Position                                         | Node      |
-|--------|--------------------------------------------------|-----------|
-| `0`    | `<paragraph>^Foo <imageInline></imageInline>bar</paragraph>` | `"Foo "`  |
-| `1`    | `<paragraph>F^oo <imageInline></imageInline>bar</paragraph>` | `"Foo "`  |
+| Offset | Position                                                     | Node            |
+|--------|--------------------------------------------------------------|-----------------|
+| `0`    | `<paragraph>^Foo <imageInline></imageInline>bar</paragraph>` | `"Foo "`        |
+| `1`    | `<paragraph>F^oo <imageInline></imageInline>bar</paragraph>` | `"Foo "`        |
 | `4`    | `<paragraph>Foo ^<imageInline></imageInline>bar</paragraph>` | `<imageInline>` |
-| `6`    | `<paragraph>Foo <imageInline></imageInline>b^ar</paragraph>` | `"bar"`   |
+| `6`    | `<paragraph>Foo <imageInline></imageInline>b^ar</paragraph>` | `"bar"`         |
 
 ### Positions, ranges and selections
 
