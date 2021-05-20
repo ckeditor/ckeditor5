@@ -23,9 +23,13 @@ import {
 	viewToAttributeInlineConverter,
 	attributeToViewInlineConverter,
 
+<<<<<<< HEAD
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter
 } from './converters';
+=======
+import { cloneDeep, isPlainObject } from 'lodash-es';
+>>>>>>> b60cdaaadc (Match any pattern inside a rule.)
 
 import '../theme/datafilter.css';
 
@@ -219,13 +223,13 @@ export default class DataFilter extends Plugin {
 		const splitRules = [];
 
 		if ( attributes ) {
-			splitRules.push( { name, attributes } );
+			splitRules.push( ...this._splitPattern( { name, attributes }, 'attributes' ) );
 		}
 		if ( classes ) {
-			splitRules.push( { name, classes } );
+			splitRules.push( ...this._splitPattern( { name, classes }, 'classes' ) );
 		}
 		if ( styles ) {
-			splitRules.push( { name, styles } );
+			splitRules.push( ...this._splitPattern( { name, styles }, 'styles' ) );
 		}
 
 		return splitRules;
@@ -259,6 +263,37 @@ export default class DataFilter extends Plugin {
 	 */
 	_consumeDisallowedAttributes( viewElement, conversionApi ) {
 		return consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
+	}
+
+	/**
+	 * TODO: JSdoc, refactoring.
+	 * Separate multiple patterns into separate rules to make them disjunctive.
+	 *
+	 * @param {*} pattern
+	 * @param {*} attributeName
+	 * @returns
+	 */
+	_splitPattern( pattern, attributeName ) {
+		const { name } = pattern;
+
+		if ( isPlainObject( pattern[ attributeName ] ) ) {
+			return Object.entries( pattern[ attributeName ] ).map(
+				( [ key, value ] ) => ( {
+					name,
+					[ attributeName ]: {
+						[ key ]: value
+					}
+				} ) );
+		} else if ( Array.isArray( pattern[ attributeName ] ) ) {
+			return pattern[ attributeName ].map(
+				value => ( {
+					name,
+					[ attributeName ]: [ value ]
+				} )
+			);
+		}
+
+		return pattern;
 	}
 
 	/**

@@ -1276,27 +1276,57 @@ describe( 'DataFilter', () => {
 		}, /data-filter-invalid-definition/, null, definition );
 	} );
 
-	describe.skip( 'fromConfig', () => {
-		// TODO: Better name
-		it( 'should load config', () => {
+	describe( 'loadAllowedConfig', () => {
+		it( 'should load config with simple allowed rule', () => {
 			const config = [
 				{
-					element: 'xyz',
-					attributes: {
-						title: 'foo'
-					}
+					name: 'span',
+					styles: { color: true },
+					classes: [ 'foo' ]
 				}
 			];
 
-			dataSchema.registerBlockElement( { view: 'xyz', model: 'modelXyz' } );
-			dataFilter.fromConfig( config );
+			dataFilter.loadAllowedConfig( config );
 
-			editor.setData( '<xyz>foo</xyz>' );
+			editor.setData( '<p><span class="foo">foobar</span></p>' );
 
+			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph>foo</paragraph>',
-				attributes: {}
+				data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					}
+				}
 			} );
+
+			expect( editor.getData() ).to.equal( '<p><span class="foo">foobar</span></p>' );
+		} );
+
+		it( 'should load config and match whenever a single match has been found', () => {
+			const config = [
+				{
+					name: 'span',
+					styles: { color: true },
+					classes: [ 'foo', 'bar', 'test' ]
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData( '<p><span style="color:blue; font-weight:400" class="foo bar">foobar</span></p>' );
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo', 'bar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span class="foo bar">foobar</span></span></p>' );
 		} );
 	} );
 
