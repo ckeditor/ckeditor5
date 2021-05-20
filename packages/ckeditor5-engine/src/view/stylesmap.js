@@ -352,11 +352,16 @@ export default class StylesMap {
 	/**
 	 * Returns style property names as they would appear when using {@link #toString `#toString()`}.
 	 *
+	 * TODO param
 	 * @returns {Array.<String>}
 	 */
-	getStyleNames() {
+	getStyleNames( deep = false ) {
 		if ( this.isEmpty ) {
 			return [];
+		}
+
+		if ( deep ) {
+			return this._styleProcessor.getStyleNames( this._styles );
 		}
 
 		const entries = this._getStylesEntries();
@@ -559,6 +564,34 @@ export class StylesProcessor {
 		}
 
 		return [ [ name, normalizedValue ] ];
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {Object} styles Object holding normalized styles.
+	 * @returns {Array.<String>}
+	 */
+	getStyleNames( styles ) {
+		// Find all extractable styles that have a value.
+		const deepStyleNames = Array.from( this._consumables.keys() ).filter( name => {
+			const style = this.getNormalized( name, styles );
+
+			if ( style && typeof style == 'object' ) {
+				return Object.keys( style ).length;
+			}
+
+			return style;
+		} );
+
+		// For simple styles (for example `color`) we don't have a map of those styles
+		// but they are 1 to 1 with normalized object keys.
+		const styleNamesKeysSet = new Set( [
+			...deepStyleNames,
+			...Object.keys( styles )
+		] );
+
+		return Array.from( styleNamesKeysSet.values() );
 	}
 
 	/**

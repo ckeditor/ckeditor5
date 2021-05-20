@@ -8,12 +8,18 @@ import Element from '../../src/view/element';
 import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
 import { addMarginRules } from '../../src/view/styles/margin';
+import { addBorderRules } from '../../src/view/styles/border';
+import { addBackgroundRules } from '../../src/view/styles/background';
 
 describe( 'Matcher', () => {
 	let document;
 
 	beforeEach( () => {
 		document = new Document( new StylesProcessor() );
+
+		addMarginRules( document.stylesProcessor );
+		addBorderRules( document.stylesProcessor );
+		addBackgroundRules( document.stylesProcessor );
 	} );
 
 	describe( 'add', () => {
@@ -412,10 +418,8 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 
-			addMarginRules( document.stylesProcessor );
-
 			const el1 = new Element( document, 'p', { style: 'margin: 1px' } );
-			const el2 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+			const el2 = new Element( document, 'p', { style: 'margin-left: 10px' } );
 			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
 
 			let result = matcher.match( el1 );
@@ -431,6 +435,64 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
 			expect( result.match.styles[ 0 ] ).to.equal( 'margin-left' );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element deep styles', () => {
+			const pattern = {
+				styles: {
+					'border-left-style': /.*/
+				}
+			};
+			const matcher = new Matcher( pattern );
+
+			const el1 = new Element( document, 'p', { style: 'border: 1px solid' } );
+			const el2 = new Element( document, 'p', { style: 'border-style: solid' } );
+			const el3 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'border-left-style' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'border-left-style' );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element deep styles when CSS shorthand is used', () => {
+			const pattern = {
+				styles: {
+					'border-left': /.*/
+				}
+			};
+			const matcher = new Matcher( pattern );
+
+			const el1 = new Element( document, 'p', { style: 'border: 1px solid' } );
+			const el2 = new Element( document, 'p', { style: 'border-style: solid' } );
+			const el3 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'border-left' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles[ 0 ] ).to.equal( 'border-left' );
 
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
@@ -496,17 +558,35 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
-			const el2 = new Element( document, 'p', { style: 'border: 1px solid red' } );
+			const el2 = new Element( document, 'p', { style: 'border-top-width: 3px' } );
 			const el3 = new Element( document, 'p', { style: 'color: red' } );
 
-			const result = matcher.match( el1 );
+			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
-			expect( result.match.styles[ 0 ] ).to.equal( 'border-top' );
+			expect( result.match.styles ).to.deep.equal( [
+				'border-color',
+				'border-style',
+				'border-width',
+				'border-top',
+				'border-top-color',
+				'border-top-style',
+				'border-top-width'
+			] );
 
-			expect( matcher.match( el2 ) ).to.be.null;
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [
+				'border-width',
+				'border-top',
+				'border-top-width'
+			] );
+
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 

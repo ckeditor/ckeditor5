@@ -468,10 +468,11 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all style names.
 	 *
+	 * TODO param
 	 * @returns {Iterable.<String>}
 	 */
-	getStyleNames() {
-		return this._styles.getStyleNames();
+	getStyleNames( deep = false ) {
+		return this._styles.getStyleNames( deep );
 	}
 
 	/**

@@ -293,25 +293,16 @@ function matchName( pattern, name ) {
 //	]
 //
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
-function matchPatterns( patterns, items ) {
-	const itemKeys = items.map( ( [ key ] ) => key );
+function matchPatterns( patterns, items, getter ) {
+	const normalizedPatterns = normalizePatterns( patterns );
+	const normalizedItems = Array.from( items );
 	const match = [];
 
-	if ( patterns === true ) {
-		if ( itemKeys.length ) {
-			return itemKeys;
-		} else {
-			return null;
-		}
-	}
-
-	patterns = normalizePatterns( patterns ) || [];
-
-	patterns.forEach( ( { key: patternKey, value: patternValue } ) => {
-		items.forEach( ( [ itemKey, itemValue ] ) => {
+	normalizedPatterns.forEach( ( [ patternKey, patternValue ] ) => {
+		normalizedItems.forEach( itemKey => {
 			if (
 				isKeyMatched( patternKey, itemKey ) &&
-				isValueMatched( patternValue, itemValue )
+				isValueMatched( patternValue, itemKey, getter )
 			) {
 				match.push( itemKey );
 			}
@@ -320,7 +311,7 @@ function matchPatterns( patterns, items ) {
 
 	// Return matches only if there are at least as many of them as there are patterns.
 	// The RegExp pattern can match more than one item.
-	if ( !match.length || match.length < patterns.length ) {
+	if ( !normalizedPatterns.length || match.length < normalizedPatterns.length ) {
 		return null;
 	}
 
@@ -343,46 +334,44 @@ function matchPatterns( patterns, items ) {
 // @param {Object|Array} patterns
 // @returns {Array|null} Returns an array of objects or null if provided patterns were not in an expected form.
 function normalizePatterns( patterns ) {
-	if ( typeof patterns == 'string' ) {
-		return [ { key: patterns, value: true } ];
-	} else if ( patterns instanceof RegExp ) {
-		return [ { key: patterns, value: true } ];
-	} else if ( Array.isArray( patterns ) ) {
-		return patterns.map(
-			pattern => {
-				// eslint-disable-next-line dot-notation
-				if ( isPlainObject( pattern ) && pattern[ 'key' ] && pattern[ 'value' ] ) {
-					return pattern;
-				}
-
-				// Assume the pattern is either String or RegExp.
-				return { key: pattern, value: true };
+	if ( Array.isArray( patterns ) ) {
+		return patterns.map( pattern => {
+			if ( isPlainObject( pattern ) && pattern.key && pattern.value ) {
+				return [ pattern.key, pattern.value ];
 			}
-		);
+
+			// Assume the pattern is either String or RegExp.
+			return [ pattern, true ];
+		} );
 	} else if ( isPlainObject( patterns ) ) {
-		return Object.entries( patterns ).map(
-			( [ patternKey, patternValue ] ) => ( { key: patternKey, value: patternValue } )
-		);
+		return Object.entries( patterns );
 	}
 
-	return null;
+	// Other cases (true, string or regexp).
+	return [ [ patterns, true ] ];
 }
 
 // @param {String|RegExp} patternKey A pattern representing a key we want to match.
 // @param {String} itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
 // @returns {Boolean}
 function isKeyMatched( patternKey, itemKey ) {
-	return patternKey === itemKey ||
-		( patternKey instanceof RegExp && patternKey.test( itemKey ) );
+	return patternKey === true ||
+		patternKey === itemKey ||
+		patternKey instanceof RegExp && patternKey.test( itemKey );
 }
 
 // @param {String|RegExp} patternValue A pattern representing a value we want to match.
+// TODO param
 // @param {String} itemValue An actual item value (e.g. `'http://example.com/'`, `'red'`) we're testing against pattern.
 // @returns {Boolean}
-function isValueMatched( patternValue, itemValue ) {
-	return patternValue === true ||
-		patternValue === itemValue ||
-		( patternValue instanceof RegExp && patternValue.test( itemValue ) );
+function isValueMatched( patternValue, itemKey, getter ) {
+	if ( patternValue === true ) {
+		return true;
+	}
+
+	const itemValue = getter( itemKey );
+
+	return patternValue === itemValue || patternValue instanceof RegExp && patternValue.test( itemValue );
 }
 
 // Checks if attributes of provided element can be matched against provided patterns.
@@ -392,10 +381,7 @@ function isValueMatched( patternValue, itemValue ) {
 // @param {module:engine/view/element~Element} element Element which attributes will be tested.
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
 function matchAttributes( patterns, element ) {
-	// TODO: The `getAttributes()` returns `class` and `style` attribute if present. Should we exclude them when querying attributes?
-	const attributes = Array.from( element.getAttributes() );
-
-	return matchPatterns( patterns, attributes );
+	return matchPatterns( patterns, element.getAttributeKeys(), key => element.getAttribute( key ) );
 }
 
 // Checks if classes of provided element can be matched against provided patterns.
@@ -404,11 +390,8 @@ function matchAttributes( patterns, element ) {
 // @param {module:engine/view/element~Element} element Element which classes will be tested.
 // @returns {Array|null} Returns array with matched class names or `null` if no classes were matched.
 function matchClasses( patterns, element ) {
-	// TODO: No special case for classes. We assume the config to be reasonable (i.e. just an array of classes, not an object).
-	const classes = Array.from( element.getClassNames() )
-		.map( className => [ className ] );
-
-	return matchPatterns( patterns, classes );
+	// We don't need `getter` here because patterns for classes are always normalized to `[ className, true ]`.
+	return matchPatterns( patterns, element.getClassNames() );
 }
 
 // Checks if styles of provided element can be matched against provided patterns.
@@ -418,37 +401,7 @@ function matchClasses( patterns, element ) {
 // @param {module:engine/view/element~Element} element Element which styles will be tested.
 // @returns {Array|null} Returns array with matched style names or `null` if no styles were matched.
 function matchStyles( patterns, element ) {
-	const styles = [];
-
-	element.getStyleNames()
-		.forEach( style => {
-			// Add the direct style (might be a shorthand).
-			styles.push( [ style, element.getStyle( style ) ] );
-
-			// Try to expand the shorthand if possible.
-			styles.push( ...expandStyle( element, style ) );
-		} );
-
-	return matchPatterns( patterns, styles );
-}
-
-// Expand shorthand CSS properties and return them as an array: `[ property, value ]`.
-//
-// @param {module:engine/view/element~Element} element Element to read styles from.
-// @param {String} style CSS property name.
-// @returns {Array} Pairs of expanded properties and their respective values.
-function expandStyle( element, style ) {
-	const styles = element.getNormalizedStyle( style );
-
-	if ( typeof styles == 'object' ) {
-		return Object.entries( styles ).map(
-			( [ normalizedStyle, value ] ) => {
-				return [ `${ style }-${ normalizedStyle }`, value ];
-			}
-		);
-	}
-
-	return [];
+	return matchPatterns( patterns, element.getStyleNames( true ), key => element.getStyle( key ) );
 }
 
 /**

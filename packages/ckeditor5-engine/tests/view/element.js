@@ -892,6 +892,7 @@ describe( 'Element', () => {
 			} );
 		} );
 
+		// TODO add tests for getStyleNames( true )
 		describe( 'getStyleNames', () => {
 			it( 'should return iterator with all style names', () => {
 				const names = [ 'color', 'position' ];

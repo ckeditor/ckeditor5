@@ -254,6 +254,7 @@ describe( 'StylesMap', () => {
 		} );
 	} );
 
+	// TODO tests for getStyleNames( true )
 	describe( 'getStyleNames()', () => {
 		it( 'should output empty array for empty styles', () => {
 			expect( stylesMap.getStyleNames() ).to.deep.equal( [] );
