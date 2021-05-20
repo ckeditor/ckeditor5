@@ -1,0 +1,17 @@
+{
+	"plugins": [
+		{
+			"name": "Source editing",
+			"className": "SourceEditing",
+			"description": "Allows for viewing and editing the source of the document.",
+			"path": "src/sourceediting.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "sourceEditing",
+					"iconPath": "theme/icons/sourceediting.svg"
+				}
+			]
+		}
+	]
+}

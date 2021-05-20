@@ -49,6 +49,10 @@
 	&.ck-blurred ::selection {
 		background: var(--ck-color-editable-blur-selection);
 	}
+
+	&.ck-hidden {
+		display: none;
+	}
 }
 
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
