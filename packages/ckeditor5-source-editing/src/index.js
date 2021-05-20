@@ -8,4 +8,3 @@
  */
 
 export { default as SourceEditing } from './sourceediting';
-export { default as SourceEditingUI } from './sourceeditingui';
