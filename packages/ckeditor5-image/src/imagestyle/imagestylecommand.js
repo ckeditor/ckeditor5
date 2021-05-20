@@ -93,7 +93,7 @@ export default class ImageStyleCommand extends Command {
 	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
 	 * @fires execute
 	 */
-	execute( options ) {
+	execute( options = {} ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
@@ -103,7 +103,7 @@ export default class ImageStyleCommand extends Command {
 
 			let imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			if ( this.shouldConvertImageType( requestedStyle, imageElement ) ) {
+			if ( requestedStyle && this.shouldConvertImageType( requestedStyle, imageElement ) ) {
 				this.editor.execute( imageUtils.isBlockImage( imageElement ) ? 'imageTypeInline' : 'imageTypeBlock' );
 
 				// Update the imageElement to the newly created image.
@@ -112,7 +112,7 @@ export default class ImageStyleCommand extends Command {
 
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
-			if ( this._styles.get( requestedStyle ).isDefault ) {
+			if ( !requestedStyle || this._styles.get( requestedStyle ).isDefault ) {
 				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
 				writer.setAttribute( 'imageStyle', requestedStyle, imageElement );

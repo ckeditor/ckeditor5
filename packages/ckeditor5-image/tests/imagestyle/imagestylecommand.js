@@ -357,6 +357,15 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 					expect( command.value ).to.equal( defaultInline.name );
 				} );
+
+				it( 'should set default style if no style specified', () => {
+					setData( model, '<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>' );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+					expect( command.value ).to.equal( defaultInline.name );
+				} );
 			} );
 
 			describe( 'when a block image is selected', () => {
@@ -402,6 +411,15 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( `[<image imageStyle="${ anyImage.name }"><caption></caption></image>]` );
 
 					command.execute( { value: defaultBlock.name } );
+
+					expect( getData( model ) ).to.equal( '[<image><caption></caption></image>]' );
+					expect( command.value ).to.equal( defaultBlock.name );
+				} );
+
+				it( 'should set default style if no style specified', () => {
+					setData( model, '[<image imageStyle="${ anyImage.name }"><caption></caption></image>]' );
+
+					command.execute();
 
 					expect( getData( model ) ).to.equal( '[<image><caption></caption></image>]' );
 					expect( command.value ).to.equal( defaultBlock.name );
