@@ -293,7 +293,7 @@ export default class DataFilter extends Plugin {
 			);
 		}
 
-		return pattern;
+		return [ pattern ];
 	}
 
 	/**
