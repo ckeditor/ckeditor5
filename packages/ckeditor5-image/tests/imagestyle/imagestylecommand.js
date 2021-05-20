@@ -417,11 +417,11 @@ describe( 'ImageStyleCommand', () => {
 				} );
 
 				it( 'should set default style if no style specified', () => {
-					setData( model, '[<image imageStyle="${ anyImage.name }"><caption></caption></image>]' );
+					setData( model, '[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '[<image><caption></caption></image>]' );
+					expect( getData( model ) ).to.equal( '[<imageBlock><caption></caption></imageBlock>]' );
 					expect( command.value ).to.equal( defaultBlock.name );
 				} );
 			} );
@@ -459,7 +459,7 @@ describe( 'ImageStyleCommand', () => {
 
 		describe( 'for a block image', () => {
 			it( 'should return true if the requested type is other than imageBlock', () => {
-				setData( model, `[<image src="${ imgSrc }"></image>]` );
+				setData( model, `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 
 				const image = model.document.selection.getSelectedElement();
 
@@ -467,7 +467,7 @@ describe( 'ImageStyleCommand', () => {
 			} );
 
 			it( 'should return false if the requested type equals imageBlock', () => {
-				setData( model, `[<image src="${ imgSrc }"><caption></caption></image>]` );
+				setData( model, `[<imageBlock src="${ imgSrc }"><caption></caption></imageBlock>]` );
 
 				const image = model.document.selection.getSelectedElement();
 

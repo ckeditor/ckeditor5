@@ -214,7 +214,7 @@ describe( 'ImageStyleEditing', () => {
 				image: {
 					styles: {
 						options: [
-							{ name: 'forBlock', modelElements: [ 'image' ] },
+							{ name: 'forBlock', modelElements: [ 'imageBlock' ] },
 							{ name: 'forInline', modelElements: [ 'imageInline' ] }
 						]
 					}
@@ -230,7 +230,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should remove imageStyle attribute with invalid value', () => {
-			setModelData( model, '<image src="/assets/sample.png" imageStyle="foo"></image>' );
+			setModelData( model, '<imageBlock src="/assets/sample.png" imageStyle="foo"></imageBlock>' );
 
 			const image = document.getRoot().getChild( 0 );
 
@@ -238,7 +238,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should remove imageStyle attribute with invalid value (after changing attribute value)', () => {
-			setModelData( model, '<image src="/assets/sample.png"></image>' );
+			setModelData( model, '<imageBlock src="/assets/sample.png"></imageBlock>' );
 
 			const image = document.getRoot().getChild( 0 );
 
@@ -250,7 +250,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should remove imageStyle attribute with invalid value (after changing image type)', () => {
-			setModelData( model, '[<image src="/assets/sample.png" imageStyle="full"></image>]' );
+			setModelData( model, '[<imageBlock src="/assets/sample.png" imageStyle="full"></imageBlock>]' );
 
 			editor.execute( 'imageTypeInline' );
 
@@ -260,7 +260,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should remove imageStyle attribute with value not allowed for a block image', () => {
-			setModelData( model, '[<image src="/assets/sample.png" imageStyle="forInline"></image>]' );
+			setModelData( model, '[<imageBlock src="/assets/sample.png" imageStyle="forInline"></imageBlock>]' );
 
 			const image = document.getRoot().getChild( 0 );
 
@@ -276,7 +276,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should not remove imageStyle attribute with value allowed for a block image', () => {
-			setModelData( model, '[<image src="/assets/sample.png" imageStyle="forBlock"></image>]' );
+			setModelData( model, '[<imageBlock src="/assets/sample.png" imageStyle="forBlock"></imageBlock>]' );
 
 			const image = document.getRoot().getChild( 0 );
 
