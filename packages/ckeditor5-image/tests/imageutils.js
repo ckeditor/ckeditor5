@@ -201,33 +201,33 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return an image element if it is selected', () => {
-			setModelData( model, '[<image></image>]' );
+			setModelData( model, '[<imageBlock></imageBlock>]' );
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			expect( image.is( 'element', 'image' ) ).to.be.true;
+			expect( image.is( 'element', 'imageBlock' ) ).to.be.true;
 		} );
 
 		it( 'should return an image element if the selection range is inside its caption', () => {
-			setModelData( model, '<image><caption>F[oo]</caption></image>' );
+			setModelData( model, '<imageBlock><caption>F[oo]</caption></imageBlock>' );
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			expect( image.is( 'element', 'image' ) ).to.be.true;
+			expect( image.is( 'element', 'imageBlock' ) ).to.be.true;
 		} );
 
 		it( 'should return an image element if the selection position is inside its caption', () => {
-			setModelData( model, '<image><caption>Foo[]</caption></image>' );
+			setModelData( model, '<imageBlock><caption>Foo[]</caption></imageBlock>' );
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-			expect( image.is( 'element', 'image' ) ).to.be.true;
+			expect( image.is( 'element', 'imageBlock' ) ).to.be.true;
 		} );
 	} );
 
 	describe( 'isImage()', () => {
 		it( 'should return true for the block image element', () => {
-			const image = new ModelElement( 'image' );
+			const image = new ModelElement( 'imageBlock' );
 
 			expect( imageUtils.isImage( image ) ).to.be.true;
 		} );
@@ -258,7 +258,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return false for the block image element', () => {
-			const image = new ModelElement( 'image' );
+			const image = new ModelElement( 'imageBlock' );
 
 			expect( imageUtils.isInlineImage( image ) ).to.be.false;
 		} );
@@ -283,7 +283,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true for the block image element', () => {
-			const image = new ModelElement( 'image' );
+			const image = new ModelElement( 'imageBlock' );
 
 			expect( imageUtils.isBlockImage( image ) ).to.be.true;
 		} );
@@ -376,7 +376,7 @@ describe( 'ImageUtils plugin', () => {
 					imageUtils = editor.plugins.get( 'ImageUtils' );
 
 					const schema = model.schema;
-					schema.extend( 'image', { allowAttributes: 'uploadId' } );
+					schema.extend( 'imageBlock', { allowAttributes: 'uploadId' } );
 				} );
 		} );
 
@@ -409,18 +409,18 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true when the selection is on other image', () => {
-			setModelData( model, '[<image></image>]' );
+			setModelData( model, '[<imageBlock></imageBlock>]' );
 			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return false when the selection is inside other image', () => {
 			model.schema.register( 'caption', {
-				allowIn: 'image',
+				allowIn: 'imageBlock',
 				allowContentOf: '$block',
 				isLimit: true
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
-			setModelData( model, '<image><caption>[]</caption></image>' );
+			setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 			expect( imageUtils.isImageAllowed() ).to.be.false;
 		} );
 
@@ -451,7 +451,7 @@ describe( 'ImageUtils plugin', () => {
 			model.schema.extend( 'paragraph', { allowIn: 'block' } );
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
 				if ( childDefinition.name === 'imageInline' && context.last.name === 'paragraph' ) {
@@ -481,7 +481,7 @@ describe( 'ImageUtils plugin', () => {
 					imageUtils = editor.plugins.get( 'ImageUtils' );
 
 					const schema = model.schema;
-					schema.extend( 'image', { allowAttributes: 'uploadId' } );
+					schema.extend( 'imageBlock', { allowAttributes: 'uploadId' } );
 				} );
 		} );
 
@@ -502,7 +502,7 @@ describe( 'ImageUtils plugin', () => {
 
 			imageUtils.insertImage( editor );
 
-			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+			expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 		} );
 
 		it( 'should insert a block image in the document root', () => {
@@ -510,7 +510,7 @@ describe( 'ImageUtils plugin', () => {
 
 			imageUtils.insertImage( editor );
 
-			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+			expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 		} );
 
 		it( 'should insert image with given attributes', () => {
@@ -547,7 +547,7 @@ describe( 'ImageUtils plugin', () => {
 
 			newEditor.plugins.get( 'ImageUtils' ).insertImage( newEditor );
 
-			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
+			expect( getModelData( newEditor.model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
 			await newEditor.destroy();
 		} );
@@ -590,7 +590,7 @@ describe( 'ImageUtils plugin', () => {
 
 			newEditor.plugins.get( 'ImageUtils' ).insertImage();
 
-			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
+			expect( getModelData( newEditor.model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
 			await newEditor.destroy();
 		} );
@@ -609,7 +609,7 @@ describe( 'ImageUtils plugin', () => {
 
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
 			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'image-inline-plugin-required' );
-			expect( getModelData( newEditor.model ) ).to.equal( '[<image></image>]<paragraph>foo</paragraph>' );
+			expect( getModelData( newEditor.model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
 			await newEditor.destroy();
 			console.warn.restore();
@@ -637,12 +637,12 @@ describe( 'ImageUtils plugin', () => {
 
 		it( 'should pass the allowed custom attributes to the inserted block image', () => {
 			setModelData( model, '[]' );
-			model.schema.extend( 'image', { allowAttributes: 'customAttribute' } );
+			model.schema.extend( 'imageBlock', { allowAttributes: 'customAttribute' } );
 
 			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
 			expect( getModelData( model ) )
-				.to.equal( '[<image customAttribute="value" src="foo"></image>]' );
+				.to.equal( '[<imageBlock customAttribute="value" src="foo"></imageBlock>]' );
 		} );
 
 		it( 'should omit the disallowed attributes while inserting a block image', () => {
@@ -651,7 +651,7 @@ describe( 'ImageUtils plugin', () => {
 			imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
 			expect( getModelData( model ) )
-				.to.equal( '[<image src="foo"></image>]' );
+				.to.equal( '[<imageBlock src="foo"></imageBlock>]' );
 		} );
 
 		it( 'should pass the allowed custom attributes to the inserted inline image', () => {
@@ -677,8 +677,8 @@ describe( 'ImageUtils plugin', () => {
 
 			const imageElement = imageUtils.insertImage( editor );
 
-			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
-			expect( imageElement.is( 'element', 'image' ) ).to.be.true;
+			expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+			expect( imageElement.is( 'element', 'imageBlock' ) ).to.be.true;
 			expect( imageElement ).to.equal( model.document.getRoot().getChild( 0 ) );
 		} );
 

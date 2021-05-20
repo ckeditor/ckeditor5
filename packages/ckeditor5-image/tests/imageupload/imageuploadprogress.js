@@ -127,7 +127,7 @@ describe( 'ImageUploadProgress', () => {
 		model.document.registerPostFixer( () => {
 			for ( const change of doc.differ.getChanges() ) {
 				// The differ.refreshItem() simulates remove and insert of and image parent thus preventing image from proper work.
-				if ( change.type == 'insert' && change.name == 'image' ) {
+				if ( change.type == 'insert' && change.name == 'imageBlock' ) {
 					doc.differ.refreshItem( change.position.parent );
 
 					return false; // Refreshing item should not trigger calling post-fixer again.
@@ -166,7 +166,7 @@ describe( 'ImageUploadProgress', () => {
 		const file = createNativeFileMock();
 		const loader = fileRepository.createLoader( file );
 
-		setModelData( model, '<image></image>' );
+		setModelData( model, '<imageBlock></imageBlock>' );
 		const image = doc.getRoot().getChild( 0 );
 
 		// Set attributes directly on image to simulate instant "uploading" status.
@@ -185,7 +185,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should work correctly when there is no "reading" status and go straight to "uploading" - external changes', () => {
-		setModelData( model, '<image></image>' );
+		setModelData( model, '<imageBlock></imageBlock>' );
 		const image = doc.getRoot().getChild( 0 );
 
 		// Set attributes directly on image to simulate instant "uploading" status.
@@ -203,7 +203,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should "clear" image when uploadId changes to null', () => {
-		setModelData( model, '<image></image>' );
+		setModelData( model, '<imageBlock></imageBlock>' );
 		const image = doc.getRoot().getChild( 0 );
 
 		// Set attributes directly on image to simulate instant "uploading" status.
@@ -313,7 +313,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should not show progress bar and complete icon if there is no loader with given uploadId', () => {
-		setModelData( model, '<image uploadId="123" uploadStatus="reading"></image>' );
+		setModelData( model, '<imageBlock uploadId="123" uploadStatus="reading"></imageBlock>' );
 
 		const image = doc.getRoot().getChild( 0 );
 

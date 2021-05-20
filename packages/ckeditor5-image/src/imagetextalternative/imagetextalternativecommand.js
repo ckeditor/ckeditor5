@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 
 /**
- * The image text alternative command. It is used to change the `alt` attribute of `<image>` and `<imageInline>` model elements.
+ * The image text alternative command. It is used to change the `alt` attribute of `<imageBlock>` and `<imageInline>` model elements.
  *
  * @extends module:core/command~Command
  */

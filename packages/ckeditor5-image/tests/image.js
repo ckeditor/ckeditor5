@@ -59,7 +59,7 @@ describe( 'Image', () => {
 
 	describe( 'selection', () => {
 		it( 'should create fake selection', () => {
-			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
+			setModelData( model, '[<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="' +
@@ -76,7 +76,7 @@ describe( 'Image', () => {
 		} );
 
 		it( 'should create proper fake selection label when alt attribute is empty', () => {
-			setModelData( model, '[<image src="/assets/sample.png" alt=""></image>]' );
+			setModelData( model, '[<imageBlock src="/assets/sample.png" alt=""></imageBlock>]' );
 
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="' +
@@ -94,8 +94,8 @@ describe( 'Image', () => {
 
 		it( 'should remove selected class from previously selected element', () => {
 			setModelData( model,
-				'[<image src="/assets/sample.png" alt="alt text"></image>]' +
-				'<image src="/assets/sample.png" alt="alt text"></image>'
+				'[<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>]' +
+				'<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>'
 			);
 
 			expect( getViewData( view ) ).to.equal(

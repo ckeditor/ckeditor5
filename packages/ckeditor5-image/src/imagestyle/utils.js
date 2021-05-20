@@ -53,7 +53,7 @@ const DEFAULT_OPTIONS = {
 		name: 'alignLeft',
 		title: 'Left aligned image',
 		icon: objectLeft,
-		modelElements: [ 'image', 'imageInline' ],
+		modelElements: [ 'imageBlock', 'imageInline' ],
 		className: 'image-style-align-left'
 	},
 
@@ -62,7 +62,7 @@ const DEFAULT_OPTIONS = {
 		name: 'alignBlockLeft',
 		title: 'Left aligned image',
 		icon: objectBlockLeft,
-		modelElements: [ 'image' ],
+		modelElements: [ 'imageBlock' ],
 		className: 'image-style-block-align-left'
 	},
 
@@ -71,7 +71,7 @@ const DEFAULT_OPTIONS = {
 		name: 'alignCenter',
 		title: 'Centered image',
 		icon: objectCenter,
-		modelElements: [ 'image' ],
+		modelElements: [ 'imageBlock' ],
 		className: 'image-style-align-center'
 	},
 
@@ -80,7 +80,7 @@ const DEFAULT_OPTIONS = {
 		name: 'alignRight',
 		title: 'Right aligned image',
 		icon: objectRight,
-		modelElements: [ 'image', 'imageInline' ],
+		modelElements: [ 'imageBlock', 'imageInline' ],
 		className: 'image-style-align-right'
 	},
 
@@ -89,7 +89,7 @@ const DEFAULT_OPTIONS = {
 		name: 'alignBlockRight',
 		title: 'Right aligned image',
 		icon: objectBlockRight,
-		modelElements: [ 'image' ],
+		modelElements: [ 'imageBlock' ],
 		className: 'image-style-block-align-right'
 	},
 
@@ -98,7 +98,7 @@ const DEFAULT_OPTIONS = {
 		name: 'full',
 		title: 'Full size image',
 		icon: objectCenter,
-		modelElements: [ 'image' ],
+		modelElements: [ 'imageBlock' ],
 		isDefault: true
 	},
 
@@ -107,7 +107,7 @@ const DEFAULT_OPTIONS = {
 		name: 'side',
 		title: 'Side image',
 		icon: objectRight,
-		modelElements: [ 'image' ],
+		modelElements: [ 'imageBlock' ],
 		className: 'image-style-side'
 	}
 };
@@ -287,7 +287,7 @@ function isValidOption( option, { isBlockPluginLoaded, isInlinePluginLoaded } ) 
 
 		return false;
 	} else {
-		const supportedElements = [ isBlockPluginLoaded ? 'image' : null, isInlinePluginLoaded ? 'imageInline' : null ];
+		const supportedElements = [ isBlockPluginLoaded ? 'imageBlock' : null, isInlinePluginLoaded ? 'imageInline' : null ];
 
 		// Check if the option is supported by any of the loaded plugins.
 		if ( !modelElements.some( elementName => supportedElements.includes( elementName ) ) ) {
@@ -308,7 +308,7 @@ function isValidOption( option, { isBlockPluginLoaded, isInlinePluginLoaded } ) 
 			 */
 			logWarning( 'image-style-missing-dependency', {
 				style: option,
-				missingPlugins: modelElements.map( name => name === 'image' ? 'ImageBlockEditing' : 'ImageInlineEditing' )
+				missingPlugins: modelElements.map( name => name === 'imageBlock' ? 'ImageBlockEditing' : 'ImageInlineEditing' )
 			} );
 
 			return false;

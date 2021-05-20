@@ -238,7 +238,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'returns false when schema does not allow linking images (block image)', () => {
-			const element = new ModelElement( 'image' );
+			const element = new ModelElement( 'imageBlock' );
 			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
 		} );
 
@@ -248,10 +248,10 @@ describe( 'utils', () => {
 		} );
 
 		it( 'returns true when passed a block image element and it can be linked', () => {
-			const element = new ModelElement( 'image' );
+			const element = new ModelElement( 'imageBlock' );
 			const schema = new Schema();
 
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				allowIn: '$root',
 				allowAttributes: [ 'linkHref' ]
 			} );

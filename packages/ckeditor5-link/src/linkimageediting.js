@@ -16,7 +16,7 @@ import LinkEditing from './linkediting';
 /**
  * The link image engine feature.
  *
- * It accepts the `linkHref="url"` attribute in the model for the {@link module:image/image~Image `<image>`} element
+ * It accepts the `linkHref="url"` attribute in the model for the {@link module:image/image~Image `<imageBlock>`} element
  * which allows linking images.
  *
  * @extends module:core/plugin~Plugin
@@ -41,7 +41,7 @@ export default class LinkImageEditing extends Plugin {
 		const schema = editor.model.schema;
 
 		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
-			schema.extend( 'image', { allowAttributes: [ 'linkHref' ] } );
+			schema.extend( 'imageBlock', { allowAttributes: [ 'linkHref' ] } );
 		}
 
 		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
@@ -85,7 +85,7 @@ export default class LinkImageEditing extends Plugin {
 
 		for ( const decorator of command.manualDecorators ) {
 			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
-				editor.model.schema.extend( 'image', { allowAttributes: decorator.id } );
+				editor.model.schema.extend( 'imageBlock', { allowAttributes: decorator.id } );
 			}
 
 			if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
@@ -150,7 +150,7 @@ function upcastLink( editor ) {
 			// figure > a > img: parent of the view link element is an image element (figure).
 			let modelElement = data.modelCursor.parent;
 
-			if ( !modelElement.is( 'element', 'image' ) ) {
+			if ( !modelElement.is( 'element', 'imageBlock' ) ) {
 				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
 				const conversionResult = conversionApi.convertItem( imageInLink, data.modelCursor );
 
@@ -163,7 +163,7 @@ function upcastLink( editor ) {
 				modelElement = data.modelCursor.nodeBefore;
 			}
 
-			if ( modelElement && modelElement.is( 'element', 'image' ) ) {
+			if ( modelElement && modelElement.is( 'element', 'imageBlock' ) ) {
 				// Set the linkHref attribute from link element on model image element.
 				conversionApi.writer.setAttribute( 'linkHref', linkHref, modelElement );
 			}
@@ -177,7 +177,7 @@ function upcastLink( editor ) {
 //
 // @private
 function downcastImageLink( dispatcher ) {
-	dispatcher.on( 'attribute:linkHref:image', ( evt, data, conversionApi ) => {
+	dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
 		// The image will be already converted - so it will be present in the view.
 		const viewFigure = conversionApi.mapper.toViewElement( data.item );
 		const writer = conversionApi.writer;
@@ -215,7 +215,7 @@ function downcastImageLink( dispatcher ) {
 // @returns {Function}
 function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 	return dispatcher => {
-		dispatcher.on( `attribute:${ decorator.id }:image`, ( evt, data, conversionApi ) => {
+		dispatcher.on( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
 			const attributes = manualDecorators.get( decorator.id ).attributes;
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
@@ -267,7 +267,7 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 				return;
 			}
 
-			// At this stage we can assume that we have the `<image>` element.
+			// At this stage we can assume that we have the `<imageBlock>` element.
 			// `nodeBefore` comes after conversion: `<a><img></a>`.
 			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
 			// See the body of the `upcastLink()` function.

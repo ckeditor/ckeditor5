@@ -85,16 +85,16 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should register proper schema rules when both ImageBlock and ImageInline are enabled', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
 	} );
 
 	it( 'should register proper schema rules for image style when ImageBlock plugin is enabled', async () => {
 		const newEditor = await VirtualTestEditor.create( { plugins: [ ImageBlockEditing, ImageUploadEditing ] } );
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
-		expect( newEditor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
+		expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
 		await newEditor.destroy();
 	} );
 
@@ -113,8 +113,8 @@ describe( 'ImageUploadEditing', () => {
 			]
 		} );
 
-		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
-		expect( editor.model.schema.checkAttribute( [ '$root', 'image' ], 'uploadStatus' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadId' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'uploadStatus' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadId' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'uploadStatus' ) ).to.be.true;
 
@@ -227,13 +227,13 @@ describe( 'ImageUploadEditing', () => {
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
-			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
-			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]`
+			`<imageBlock uploadId="${ id1 }" uploadStatus="reading"></imageBlock>` +
+			`[<imageBlock uploadId="${ id2 }" uploadStatus="reading"></imageBlock>]`
 		);
 	} );
 
 	it( 'should insert image when is pasted on allowed position when UploadImageCommand is disabled', () => {
-		setModelData( model, '<paragraph>foo</paragraph>[<image></image>]' );
+		setModelData( model, '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
 
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
@@ -249,7 +249,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
-			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]foo</paragraph><image></image>`
+			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]foo</paragraph><imageBlock></imageBlock>`
 		);
 	} );
 
@@ -367,7 +367,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( childDefinition.name.startsWith( 'image' ) && context.last.name === 'other' ) {
+			if ( childDefinition.name.startsWith( 'imageBlock' ) && context.last.name === 'other' ) {
 				return false;
 			}
 		} );
@@ -430,11 +430,11 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
-		editor.editing.downcastDispatcher.on( 'attribute:uploadId:image', ( evt, data, conversionApi ) => {
+		editor.editing.downcastDispatcher.on( 'attribute:uploadId:imageBlock', ( evt, data, conversionApi ) => {
 			conversionApi.consumable.consume( data.item, evt.name );
 		}, { priority: 'high' } );
 
-		setModelData( model, '<image uploadId="1234"></image>' );
+		setModelData( model, '<imageBlock uploadId="1234"></imageBlock>' );
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
@@ -588,7 +588,7 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should do nothing if image does not have uploadId', () => {
-		setModelData( model, '<image src="image.png"></image>' );
+		setModelData( model, '<imageBlock src="image.png"></imageBlock>' );
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]'
@@ -756,7 +756,7 @@ describe( 'ImageUploadEditing', () => {
 			const file = createNativeFileMock();
 			setModelData( model, '<paragraph>[]foo bar</paragraph>' );
 
-			editor.model.schema.extend( 'image', { allowAttributes: 'data-original' } );
+			editor.model.schema.extend( 'imageBlock', { allowAttributes: 'data-original' } );
 
 			editor.conversion.for( 'downcast' )
 				.add( modelToViewAttributeConverter( editor.plugins.get( 'ImageUtils' ), 'data-original' ) );

@@ -208,10 +208,10 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should save the reference to the original object', () => {
-			const content = new Element( 'image' );
+			const content = new Element( 'imageBlock' );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			model.schema.register( 'image', {
+			model.schema.register( 'imageBlock', {
 				allowWhere: '$text',
 				isObject: true
 			} );
@@ -298,14 +298,14 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', {
+				schema.register( 'imageBlock', {
 					allowWhere: '$text',
 					isObject: true
 				} );
 				schema.register( 'disallowedElement' );
 
 				schema.extend( '$text', { allowIn: '$root' } );
-				schema.extend( 'image', { allowIn: '$root' } );
+				schema.extend( 'imageBlock', { allowIn: '$root' } );
 				// Otherwise it won't be passed to the temporary model fragment used inside insert().
 				schema.extend( 'disallowedElement', { allowIn: '$clipboardHolder' } );
 				schema.extend( '$text', {
@@ -376,18 +376,18 @@ describe( 'DataController utils', () => {
 
 			it( 'inserts an element', () => {
 				setData( model, 'f[]oo' );
-				const affectedRange = insertHelper( '<image></image>' );
+				const affectedRange = insertHelper( '<imageBlock></imageBlock>' );
 
-				expect( getData( model ) ).to.equal( 'f<image></image>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[<image></image>]oo' );
+				expect( getData( model ) ).to.equal( 'f<imageBlock></imageBlock>[]oo' );
+				expect( stringify( root, affectedRange ) ).to.equal( 'f[<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'inserts a text and an element', () => {
 				setData( model, 'f[]oo' );
-				const affectedRange = insertHelper( 'xyz<image></image>' );
+				const affectedRange = insertHelper( 'xyz<imageBlock></imageBlock>' );
 
-				expect( getData( model ) ).to.equal( 'fxyz<image></image>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz<image></image>]oo' );
+				expect( getData( model ) ).to.equal( 'fxyz<imageBlock></imageBlock>[]oo' );
+				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'strips a disallowed element', () => {

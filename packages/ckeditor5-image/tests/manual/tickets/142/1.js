@@ -29,7 +29,7 @@ ClassicEditor
 			let image;
 
 			editor.model.change( writer => {
-				image = writer.createElement( 'image', { src: 'sample-small.jpg' } );
+				image = writer.createElement( 'imageBlock', { src: 'sample-small.jpg' } );
 				writer.insert( image, doc.getRoot().getChild( 0 ), 'after' );
 			} );
 

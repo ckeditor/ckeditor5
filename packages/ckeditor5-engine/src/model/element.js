@@ -104,9 +104,9 @@ export default class Element extends Node {
 	 * Assuming that the object being checked is an element, you can also check its
 	 * {@link module:engine/model/element~Element#name name}:
 	 *
-	 *		element.is( 'element', 'image' ); // -> true if this is an <image> element
-	 *		element.is( 'element', 'image' ); // -> same as above
-	 *		text.is( 'element', 'image' ); -> false
+	 *		element.is( 'element', 'imageBlock' ); // -> true if this is an <imageBlock> element
+	 *		element.is( 'element', 'imageBlock' ); // -> same as above
+	 *		text.is( 'element', 'imageBlock' ); -> false
 	 *
 	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *

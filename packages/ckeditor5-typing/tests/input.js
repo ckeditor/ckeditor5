@@ -53,10 +53,10 @@ describe( 'Input feature', () => {
 		return ClassicTestEditor.create( domElement, options )
 			.then( newEditor => {
 				// Mock image feature.
-				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
+				newEditor.model.schema.register( 'imageBlock', { allowWhere: '$text' } );
 
 				newEditor.conversion.elementToElement( {
-					model: 'image',
+					model: 'imageBlock',
 					view: 'img'
 				} );
 
@@ -261,7 +261,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo<image></image>x[]</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<imageBlock></imageBlock>x[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foo<img></img>x{}</p>' );
 		} );
 

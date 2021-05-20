@@ -92,7 +92,7 @@ export default class ImageStyleEditing extends Plugin {
 		// Allow imageStyle attribute in image and imageInline.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
 		if ( isBlockPluginLoaded ) {
-			schema.extend( 'image', { allowAttributes: 'imageStyle' } );
+			schema.extend( 'imageBlock', { allowAttributes: 'imageStyle' } );
 
 			// Converter for figure element from view to model.
 			editor.data.upcastDispatcher.on( 'element:figure', viewToModelConverter, { priority: 'low' } );

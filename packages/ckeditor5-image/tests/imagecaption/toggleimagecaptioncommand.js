@@ -89,7 +89,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		it( 'should be true when image is selected', () => {
-			setModelData( model, '[<image src="test.png"></image>]' );
+			setModelData( model, '[<imageBlock src="test.png"></imageBlock>]' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -101,7 +101,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		it( 'should be true when the selection is in the caption of an image', () => {
-			setModelData( model, '<image src="test.png"><caption>[]</caption></image>' );
+			setModelData( model, '<imageBlock src="test.png"><caption>[]</caption></imageBlock>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -113,7 +113,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		it( 'should be false when there is more than an image or imageInline selected', () => {
-			setModelData( model, '<paragraph>f[oo</paragraph><image src="test.png"></image><paragraph>b]ar</paragraph>' );
+			setModelData( model, '<paragraph>f[oo</paragraph><imageBlock src="test.png"></imageBlock><paragraph>b]ar</paragraph>' );
 
 			expect( command.isEnabled ).to.be.false;
 
@@ -151,7 +151,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		it( 'should be false when image without caption is selected', () => {
-			setModelData( model, '[<image src="test.png"></image>]' );
+			setModelData( model, '[<imageBlock src="test.png"></imageBlock>]' );
 
 			expect( command.value ).to.be.false;
 		} );
@@ -163,13 +163,13 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		it( 'should be true when image with an empty caption is selected', () => {
-			setModelData( model, '[<image src="test.png"><caption></caption></image>]' );
+			setModelData( model, '[<imageBlock src="test.png"><caption></caption></imageBlock>]' );
 
 			expect( command.value ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is in the caption of an image', () => {
-			setModelData( model, '<image src="test.png"><caption>[]</caption></image>' );
+			setModelData( model, '<imageBlock src="test.png"><caption>[]</caption></imageBlock>' );
 
 			expect( command.value ).to.be.true;
 		} );
@@ -181,7 +181,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 		} );
 
 		it( 'should be true when image with a non-empty caption is selected', () => {
-			setModelData( model, '[<image src="test.png"><caption>foo</caption></image>]' );
+			setModelData( model, '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 
 			expect( command.value ).to.be.true;
 		} );
@@ -190,69 +190,69 @@ describe( 'ToggleImageCaptionCommand', () => {
 	describe( 'execute()', () => {
 		describe( 'for a block image without a caption being selected', () => {
 			it( 'should add an empty caption element to the image', () => {
-				setModelData( model, '[<image src="test.png"></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption></caption></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"><caption></caption></imageBlock>]' );
 			} );
 
 			it( 'should add the caption element to the image and attempt to restore its content', () => {
-				setModelData( model, '[<image src="test.png"><caption>foo</caption></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption>foo</caption></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 			} );
 		} );
 
 		describe( 'for a block image with a caption being selected', () => {
 			it( 'should remove the caption from the image and save it so it can be restored', () => {
-				setModelData( model, '[<image src="test.png"><caption>foo</caption></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption>foo</caption></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 			} );
 
 			it( 'should remove the caption from the image and select the image if the selection was in the caption element', () => {
-				setModelData( model, '<image src="test.png"><caption>fo[]o</caption></image>' );
+				setModelData( model, '<imageBlock src="test.png"><caption>fo[]o</caption></imageBlock>' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption>foo</caption></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 			} );
 
 			it( 'should save complex caption content and allow to restore it', () => {
-				setModelData( model, '[<image src="test.png"><caption>foo<$text bold="true">bar</$text></caption></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"><caption>foo<$text bold="true">bar</$text></caption></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<image src="test.png"><caption>foo<$text bold="true">bar</$text></caption></image>]'
+					'[<imageBlock src="test.png"><caption>foo<$text bold="true">bar</$text></caption></imageBlock>]'
 				);
 			} );
 
 			it( 'should save the empty caption content', () => {
 				const imgSrc = 'foo/bar.jpg';
 
-				setModelData( model, `[<image src="${ imgSrc }"><caption>foo</caption></image>]` );
+				setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 
 				editor.execute( 'toggleImageCaption' );
 				editor.execute( 'toggleImageCaption' );
@@ -266,7 +266,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 				editor.execute( 'toggleImageCaption' );
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"><caption></caption></image>]` );
+				expect( getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"><caption></caption></imageBlock>]` );
 			} );
 		} );
 
@@ -288,11 +288,11 @@ describe( 'ToggleImageCaptionCommand', () => {
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption></caption></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"><caption></caption></imageBlock>]' );
 			} );
 
 			it( 'should add the caption element to the image and attempt to restore its content', () => {
-				setModelData( model, '[<image src="test.png"><caption>foo</caption></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 
 				editor.execute( 'imageTypeInline' );
 
@@ -300,45 +300,45 @@ describe( 'ToggleImageCaptionCommand', () => {
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"><caption>foo</caption></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 			} );
 		} );
 
 		describe( 'the focusCaptionOnShow option', () => {
 			it( 'should move the selection to the caption when adding a caption (new empty caption)', () => {
-				setModelData( model, '[<image src="test.png"></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
-				expect( getModelData( model ) ).to.equal( '<image src="test.png"><caption>[]</caption></image>' );
+				expect( getModelData( model ) ).to.equal( '<imageBlock src="test.png"><caption>[]</caption></imageBlock>' );
 			} );
 
 			it( 'should move the selection to the caption when restoring a caption', () => {
-				setModelData( model, '[<image src="test.png"><caption>foo</caption></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption' );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
-				expect( getModelData( model ) ).to.equal( '<image src="test.png"><caption>[foo]</caption></image>' );
+				expect( getModelData( model ) ).to.equal( '<imageBlock src="test.png"><caption>[foo]</caption></imageBlock>' );
 			} );
 
 			it( 'should not affect removal of the caption (selection in the caption)', () => {
-				setModelData( model, '<image src="test.png"><caption>foo[]</caption></image>' );
+				setModelData( model, '<imageBlock src="test.png"><caption>foo[]</caption></imageBlock>' );
 
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"></imageBlock>]' );
 			} );
 
 			it( 'should not affect removal of the caption (selection on the image)', () => {
-				setModelData( model, '[<image src="test.png"><caption>foo</caption></image>]' );
+				setModelData( model, '[<imageBlock src="test.png"><caption>foo</caption></imageBlock>]' );
 
 				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
 
-				expect( getModelData( model ) ).to.equal( '[<image src="test.png"></image>]' );
+				expect( getModelData( model ) ).to.equal( '[<imageBlock src="test.png"></imageBlock>]' );
 			} );
 		} );
 	} );
