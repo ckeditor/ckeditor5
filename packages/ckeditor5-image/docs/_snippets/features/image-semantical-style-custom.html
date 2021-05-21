@@ -1,114 +1,54 @@
-<!-- <style>
-	.ck figure.content-image-banner {
-		width: calc(100% + 30px);
-		margin: 0 -15px;
-	}
-	.ck figure.content-image-banner img {
-		box-shadow: inset 0 0 10px #000000;
-		object-fit: cover;
-		height: 150px;
-		filter: grayscale(100%);
-	}
-	.ck figure.content-image-banner::after {
-		content: '';
-		position: absolute;
-		top: -1px;
-		left: 30%;
-		width: 50px;
-		height: 152px;
-		background-color: white;
-		clip-path: polygon(50% 0, 100% 0, 50% 100%, 0% 100%);
-		opacity: 0.4;
-	}
-.ck figure.content-image-banner::before {
-		content: '';
-		position: absolute;
-		top: -1px;
-		left: 10%;
-		width: 150px;
-		height: 152px;
-		background-color: white;
-		clip-path: polygon(20% 0, 100% 0, 80% 100%, 0% 100%);
-		opacity: 0.2;
-	}
-	.ck .image-inline.fancy-right {
-		float: right;
-		margin-top: -30px;
-		margin-left: 30px;
-		margin-bottom: 30px;
-	}
-	.ck .image-inline.fancy-right img {
-		width: 200px;
-		height: 320px;
-		object-fit: cover;
-		filter: grayscale(100%);
-		clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
-	}
-	.ck figure.fancy-portrait {
-		float: left;
-		clear: none;
-		margin-top: 30px;
-		margin-left: 30px;
-		margin-bottom: 30px;
-	}
-	.ck figure.fancy-portrait img {
-		width: 200px;
-		height: 320px;
-		object-fit: cover;
-		filter: grayscale(100%);
-		clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
-	}
-	.ck figure.fancy-portrait:hover img {
-		filter: none;
-	}
-	.ck figure.fancy-portrait figcaption {
-		position: absolute;
-		left: 70px;
-		right: 0;
-		bottom: 40px;
-		padding: 10px;
-		border: 5px solid pink;
-		background-color: transparent;
-		color: pink;
-		font-weight: 800;
-		font-size: 20px;
-		text-transform: uppercase;
-		text-align: left;
-		box-shadow: -14px 17px 20px 0px #0000002b;
-	}
-	.image-inline.icon-1 {
-		border-radius: 50%;
-	}
-	.image-inline.icon-2 {
-		border-radius: 50%;
-	}
-</style> -->
-
 <style>
 	:root {
 		--icon-size: 30px;
 	}
+	.ck-content .image > figcaption {
+		z-index: 1;
+		position: absolute;
+		bottom: 20px;
+		left: -20px;
+		font-style: italic;
+		border-radius: 41px;
+		background-color: #ffffffe8;
+		color: #1138b0;
+		padding: 5px 12px;
+		font-size: 13px;
+		box-shadow: 0 0 18px #1a1a1a26
+	}
 	.ck-content .image {
 		margin-top: 50px;
 		margin-bottom: 50px;
+		clip-path: url('../../assets/img/icons/map.svg');
+	}
+	.ck-content .image::before {
+		content: '';
+		width: 100%;
+		height: 100%;
+		background-color: #1138b0;
+		top: 5%;
+		left: 5%;
+		position: absolute;
+		border-radius: 50%;
+	}
+	.ck-content .image::after {
+		content: '';
+		width: 200%;
+		height: 200%;
+		background-image: url(../../assets/img/image-context.svg);
+		background-size: contain;
+		background-repeat: no-repeat;
+		position: absolute;
+		top: -60%;
+		pointer-events: none;
+		left: -60%;
 	}
 	.ck-content .image img {
 		border-radius: 50%;
 		width: 180px;
 		height: 180px;
 		object-fit: cover;
-		filter: grayscale(100%);
-	}
-
-	.ck-content .image.side {
-		float: right;
-		margin-right: -200px;
-		margin-left: 50px;
-		margin-top: -50px;
-	}
-	.ck-content .image.side img {
-		width: 360px;
-		height: 360px;
+		filter: grayscale(100%) brightness(70%);
+		box-shadow: 10px 10px 30px #00000078;
 	}
 
 	.ck-content .image-inline {
@@ -124,13 +64,15 @@
 	.ck-content .image-inline.margin-left {
 		position: absolute;
 		margin: 0;
-		left: calc( 8.5% - var(--icon-size) / 2 );
+		top: auto;
+		left: calc( -12.5% - var(--icon-size) / 2 );
 	}
 
 	.ck-content .image-inline.margin-right {
 		position: absolute;
 		margin: 0;
-		right: calc( 8.5% - var(--icon-size) / 2 );
+		top: auto;
+		right: calc( -12.5% - var(--icon-size) / 2 );
 	}
 </style>
 
@@ -139,6 +81,7 @@
 		padding: 12% 17%;
 		font-family: 'Helvetica';
 		overflow-x: hidden;
+		max-height: 500px;
 	}
 
 	.ck-content h2 {
@@ -148,6 +91,7 @@
 		text-transform: uppercase;
 		border: none;
 		margin-bottom: 120px;
+		position: relative;
 	}
 	.ck-content h2::after {
 		content: '';
@@ -155,9 +99,11 @@
 		margin-top: 20px;
 		width: 80px;
 		height: 4px;
-		left: 0;
-		bottom: -24px;
+		border-radius: 2px;
+		left: calc(50% - 40px);
+		position: relative;
 		background-color: #1138b0;
+		text-align: center;
 	}
 	.ck-content h2::before {
 		content: '';
@@ -166,12 +112,11 @@
 		border-radius: 50%;
 		width: 50px;
 		height: 50px;
-		left: calc( 8.5% - 25px );
-		background-color: #1a1a1a;
+		left: calc( -12.5% - 25px );
+		top: auto;
+		background-color: #1138b0;
 	}
-	.ck-content h2 + figure.image {
-		margin-top: -150px !important;
-	}
+
 	.ck-content h3 {
 		font-size: 1.3em;
 		font-weight: 800;
@@ -189,6 +134,7 @@
 		font-size: 0.95em;
 		color: #888888;
 		text-align: justify;
+		position: relative
 	}
 
 	.ck-content .ck-horizontal-line {
@@ -219,12 +165,39 @@
 			display: none;
 		}
 	}
+	@media (min-width: 750px) {
+		.ck-content .image.side {
+			float: right;
+			margin-right: -200px;
+			margin-left: 50px;
+			margin-top: -50px;
+		}
+		.ck-content .image.side img {
+			width: 360px;
+			height: 360px;
+		}
+		.ck-content .image.side > figcaption {
+			top: 50px;
+			left: 0;
+			bottom: auto;
+		}
+		.ck-content h2 + figure.image.side {
+			margin-top: -150px;
+		}
+		.ck-content h2 {
+			text-align: left;
+		}
+		.ck-content h2::after {
+			left: 0;
+		}
+	}
 </style>
 
 <div id="snippet-image-semantical-style-custom">
 	<h1>He endures pains<br/>to avoid worse pains</h1>
 	<figure class="image side">
 		<img src="%BASE_PATH%/assets/img/autumn_street.jpg" alt="Autumn street">
+		<figcaption>Jane Doe</figcaption>
 	</figure>
 	<p>
 		On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot <a href="link"><img class="margin-left" src="%BASE_PATH%/assets/img/icons/map.svg">foresee the pain</a> and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like.
@@ -235,6 +208,7 @@
 	</p>
 	<figure class="image">
 		<img src="%BASE_PATH%/assets/img/fields.jpg" srcset="%BASE_PATH%/assets/img/fields.jpg, %BASE_PATH%/assets/img/fields_2x.jpg 2x" alt="Autumn fields">
+		<figcaption>John Doe</figcaption>
 	</figure>
 	<p>
 		But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other <a href="link"><img class="margin-right" src="%BASE_PATH%/assets/img/icons/plus.svg">greater pleasures</a>, or else he endures pains to avoid worse pains. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects.

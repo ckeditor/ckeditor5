@@ -6,6 +6,8 @@
 /* globals ClassicEditor, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import plusIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/plus.svg';
+import earthIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/map.svg';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-semantical-style-custom' ), {
@@ -24,13 +26,13 @@ ClassicEditor
 					modelElements: [ 'image' ]
 				}, {
 					name: 'margin-left',
-					icon: 'inlineLeft',
+					icon: plusIcon,
 					title: 'margin-left',
 					className: 'margin-left',
 					modelElements: [ 'imageInline' ]
 				}, {
 					name: 'margin-right',
-					icon: 'inlineRight',
+					icon: earthIcon,
 					title: 'margin-right',
 					className: 'margin-right',
 					modelElements: [ 'imageInline' ]
@@ -39,7 +41,14 @@ ClassicEditor
 				'full'
 				]
 			},
-			toolbar: [ 'imageStyle:inline', 'imageStyle:side', 'imageStyle:margin-left', 'imageStyle:margin-right', 'imageStyle:full', 'toggleImageCaption' ]
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:side',
+				'imageStyle:margin-left',
+				'imageStyle:margin-right',
+				'imageStyle:full',
+				'toggleImageCaption'
+			]
 		}
 	} )
 	.then( editor => {
