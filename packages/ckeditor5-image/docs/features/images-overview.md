@@ -21,17 +21,15 @@ The base image feature does not support any user interface for inserting or mana
 
 ## Image features
 
-The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link builds/guides/overview ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other plugins that extend the editor capabilities:
+The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link builds/guides/overview ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor capabilities:
 
-* {@link module:image/imagetoolbar~ImageToolbar} adds the image feature's [contextual toolbar](#image-contextual-toolbar).
-* {@link module:image/imagecaption~ImageCaption} adds support for {@link features/images-captions image captions}.
-* {@link module:image/imagestyle~ImageStyle} adds support for {@link features/images-styles image styles}.
-* {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
-* {@link module:image/imageresize~ImageResize} adds support for {@link features/images-resizing resizing images}.
-* {@link module:link/linkimage~LinkImage} adds support for {@link features/images-linking linking images} (provided by the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package).
-* {@link module:image/imageupload~ImageUpload} adds support for {@link features/image-upload uploading dropped or pasted images}.
-* {@link module:image/imageinsert~ImageInsert} adds support for {@link features/images-inserting#inserting-images-via-source-url inserting image via pasting URL into the editor} and other custom integrations.
-* {@link module:image/autoimage~AutoImage} adds support for {@link features/images-inserting#inserting-images-via-pasting-url-into-editor inserting image via URL}.
+* The [contextual toolbar](#image-contextual-toolbar) available on mouse click gives access to image features.
+* {@link features/images-captions Image captions} allow adding descriptive text under the image.
+* The {@link features/images-styles image styles} help control the placement, size and other characteristics with predefined styles.
+* The {@link features/images-text-alternative text alternative} tag aids accessability and SEO, provides additional image description and supports better navigation.
+* {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
+* {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
+* A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-url-into-editor inserting an image via URL} and even {@link features/images-inserting#inserting-images-via-source-url via pasting a URL into the editor} along with custom integrations.
 <!-- * [TODO] let's check if the list is complete -->
 
 The availability of these plugins varies in different {@link builds/guides/overview ready-to-use editor builds} but the most important ones are present in all builds as presented in the table below:
