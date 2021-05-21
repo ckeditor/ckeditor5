@@ -9,7 +9,7 @@ order: 20
 
 Image text alternative (`alt` attribute) is essential for both accessibility and [<abbr title="Search Engine Optimization">SEO</abbr>](https://en.wikipedia.org/wiki/Search_engine_optimization). It helps screen reader users navigate and understand the document and provides meaningful image description to search engine crawlers.
 
-CKEditor 5 provides support for alternate image text using the The {@link module:imagetextalternative/imagetextalternative~ImageTextAlternative} plugin. The `alt` attribute is supported by both block and inline images in the editor output data:
+CKEditor 5 provides support for alternate image text using the The {@link module:image/imagetextalternative~ImageTextAlternative} plugin. The `alt` attribute is supported by both block and inline images in the editor output data:
 
 ```html
 <!-- Block image markup -->
@@ -38,7 +38,7 @@ This feature is available in all {@link builds/guides/overview ready-to-use edit
 
 ## Common API
 
-The {@link module:imagetextalternative/imagetextalternative~ImageTextAlternative} plugin registers:
+The {@link module:image/imagetextalternative~ImageTextAlternative} plugin registers:
 
 * The `'imageTextAlternative'` button (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
 * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}.

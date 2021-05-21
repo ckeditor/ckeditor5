@@ -32,7 +32,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imageupload~ImageUpload} adds support for {@link features/image-upload uploading dropped or pasted images}.
 * {@link module:image/imageinsert~ImageInsert} adds support for {@link features/images-inserting#inserting-images-via-source-url inserting image via pasting URL into the editor} and other custom integrations.
 * {@link module:image/autoimage~AutoImage} adds support for {@link features/images-inserting#inserting-images-via-pasting-url-into-editor inserting image via URL}.
-* [TODO] let's check if the list is complete
+<!-- * [TODO] let's check if the list is complete -->
 
 The availability of these plugins varies in different {@link builds/guides/overview ready-to-use editor builds} but the most important ones are present in all builds as presented in the table below:
 
@@ -53,8 +53,8 @@ The availability of these plugins varies in different {@link builds/guides/overv
 		</thead>
 		<tbody>
 			<tr>
-				<th rowspan="2" style="vertical-align: middle"><code>Image</code></th>
-				<th><code>ImageBlock</code></th>
+				<th rowspan="2" style="vertical-align: middle">{@link module:image/image~Image}</th>
+				<th>{@link module:image/imageblock~ImageBlock}</th>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
@@ -62,7 +62,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th><code>ImageInline</code></th>
+				<th>{@link module:image/imageinline~ImageInline}</th>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
@@ -70,7 +70,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>ImageToolbar</code></th>
+				<th colspan="2">{@link module:image/imagetoolbar~ImageToolbar}</th>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
@@ -78,7 +78,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>ImageCaption</code></th>
+				<th colspan="2">{@link module:image/imagecaption~ImageCaption}</th>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
@@ -86,7 +86,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>ImageStyle</code></th>
+				<th colspan="2">{@link module:image/imagestyle~ImageStyle}</th>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
@@ -94,7 +94,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>ImageTextAlternative</code></th>
+				<th colspan="2">{@link module:image/imagetextalternative~ImageTextAlternative}</th>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
@@ -102,7 +102,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>ImageUpload</code></th>
+				<th colspan="2">{@link module:image/imageupload~ImageUpload}</th>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
 				<td>✅ yes</td>
@@ -110,7 +110,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>ImageResize</code></th>
+				<th colspan="2">{@link module:image/imageresize~ImageResize}</th>
 				<td>❌ no</td>
 				<td>❌ no</td>
 				<td>❌ no</td>
@@ -118,7 +118,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>✅ yes</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>ImageInsert</code></th>
+				<th colspan="2">{@link module:link/linkimage~LinkImage}</th>
 				<td>❌ no</td>
 				<td>❌ no</td>
 				<td>❌ no</td>
@@ -126,7 +126,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>❌ no</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>AutoImage</code></th>
+				<th colspan="2">{@link module:image/imageinsert~ImageInsert}</th>
 				<td>❌ no</td>
 				<td>❌ no</td>
 				<td>❌ no</td>
@@ -134,7 +134,7 @@ The availability of these plugins varies in different {@link builds/guides/overv
 				<td>❌ no</td>
 			</tr>
 			<tr>
-				<th colspan="2"><code>LinkImage</code></th>
+				<th colspan="2">{@link module:image/autoimage~AutoImage}</th>
 				<td>❌ no</td>
 				<td>❌ no</td>
 				<td>❌ no</td>
@@ -167,7 +167,7 @@ ClassicEditor
 ```
 Refer to the {@link features/images-installation image installation guide} for more details on configuring the features available in the toolbar. You can also check the {@link features/toolbar toolbar guide}.
 
-See the common API of image-related features such as {@link TODO-common-api image style}, {@link TODO-common-api image resize}, and {@link TODO-common-api link image} to learn more about available image toolbar buttons.
+See the common API of image-related features such as {@link module:image/imagestyle~ImageStyle}, {@link module:image/imageresize~ImageResize}, and {@link module:link/linkimage~LinkImage} to learn more about available image toolbar buttons.
 
 ## Responsive images
 

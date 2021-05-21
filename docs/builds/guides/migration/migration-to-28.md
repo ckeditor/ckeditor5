@@ -175,7 +175,7 @@ if ( imageUtils.isImage( selectedElement ) ) {
 ```
 * The {@link module:image/imageutils~ImageUtils#insertImage} function
 	* doesn't require a `model` parameter any longer,
-	* as a second parameter also {@link module:engine/model/selection~Selectable} can be passed not only {@link module:engine/model~Position},
+	* as a second parameter also {@link module:engine/model/selection~Selectable} can be passed not only {@link module:engine/model/position~Position},
 	* a new parameter `imageType` is now supported to force a type of the image to be inserted.
 ```js
 // Old code

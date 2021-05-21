@@ -12,7 +12,7 @@ npm install --save @ckeditor/ckeditor5-image
 ```
 
 <info-box info>
-	You may want to install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package if you want to use the {@link TODO-images-linking `LinkImage`} plugin in your editor.
+	You may want to install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package if you want to use the {@link features/images-linking `LinkImage`} plugin in your editor.
 </info-box>
 
 Next add the {@link features/images-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
@@ -52,7 +52,7 @@ ClassicEditor
 
 Inline images can be inserted in the middle of a paragraph or a link just like a regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables or media. Being larger and existing as a standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc..
 
-By default, the {@link TODO `Image`} plugin available in all {@link builds/guides/overview ready-to-use editor builds} provides support for both inline and block images, working as a glue for {@link TODO `ImageInline`} and {@link TODO `ImageBlock`} plugins:
+By default, the {@link module:image/image~Image} plugin available in all {@link builds/guides/overview ready-to-use editor builds} provides support for both inline and block images, working as a glue for {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock} plugins:
 
 <figure class="table">
 	<table style="text-align: center">
