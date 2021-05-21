@@ -7,9 +7,4 @@
  * @module essentials
  */
 
-import Essentials from './essentials';
-
-export default {
-	Essentials
-};
-
+export { default as Essentials } from './essentials';

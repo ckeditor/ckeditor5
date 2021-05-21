@@ -1093,8 +1093,13 @@ describe( 'LinkEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bar[]</$text></paragraph>' );
 		} );
 
-		it( 'should remove manual decorators', () => {
-			setModelData( model, '<paragraph><$text linkIsFoo="true" linkIsBar="true" linkHref="url">Bar[]</$text></paragraph>' );
+		it( 'should remove all `link*` attributes', () => {
+			allowLinkTarget( editor );
+
+			setModelData(
+				model,
+				'<paragraph><$text linkIsFoo="true" linkTarget="_blank" linkHref="https://ckeditor.com">Bar[]</$text></paragraph>'
+			);
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
@@ -1102,15 +1107,29 @@ describe( 'LinkEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph><$text linkHref="url" linkIsBar="true" linkIsFoo="true">Bar</$text>[]</paragraph>'
+				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>[]</paragraph>'
 			);
 
 			editor.execute( 'input', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph><$text linkHref="url" linkIsBar="true" linkIsFoo="true">Bar</$text>Foo[]</paragraph>'
+				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>Foo[]</paragraph>'
 			);
 		} );
+
+		// Based on `packages/ckeditor5-engine/docs/_snippets/framework/extending-content-allow-link-target.js`.
+		// And covers #8462.
+		function allowLinkTarget( editor ) {
+			editor.model.schema.extend( '$text', { allowAttributes: 'linkTarget' } );
+
+			editor.conversion.for( 'downcast' ).attributeToElement( {
+				model: 'linkTarget',
+				view: ( attributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
+				},
+				converterPriority: 'low'
+			} );
+		}
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/4762
