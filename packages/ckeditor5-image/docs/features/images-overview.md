@@ -53,91 +53,91 @@ The availability of these plugins varies in different {@link builds/guides/overv
 			<tr>
 				<th rowspan="2" style="vertical-align: middle">{@link module:image/image~Image}</th>
 				<th>{@link module:image/imageblock~ImageBlock}</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th>{@link module:image/imageinline~ImageInline}</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagetoolbar~ImageToolbar}</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagecaption~ImageCaption}</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagestyle~ImageStyle}</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imagetextalternative~ImageTextAlternative}</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imageupload~ImageUpload}</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imageresize~ImageResize}</th>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>✅ yes</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:link/linkimage~LinkImage}</th>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/imageinsert~ImageInsert}</th>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
 			</tr>
 			<tr>
 				<th colspan="2">{@link module:image/autoimage~AutoImage}</th>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
-				<td>❌ no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
+				<td>❌&nbsp; no</td>
 			</tr>
 		</tbody>
 	</table>

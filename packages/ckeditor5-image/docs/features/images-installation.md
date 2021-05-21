@@ -69,18 +69,18 @@ By default, the {@link module:image/image~Image} plugin available in all {@link 
 		<tbody>
 			<tr>
 				<th><code>Image</code> (default)</th>
-				<td>✅ yes</td>
-				<td>✅ yes</td>
+				<td>✅&nbsp; yes</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 			<tr>
 				<th><code>ImageBlock</code></th>
-				<td>✅ yes</td>
-				<td>❌ no</td>
+				<td>✅&nbsp; yes</td>
+				<td>❌&nbsp; no</td>
 			</tr>
 			<tr>
 				<th><code>ImageInline</code></th>
-				<td>❌ no</td>
-				<td>✅ yes</td>
+				<td>❌&nbsp; no</td>
+				<td>✅&nbsp; yes</td>
 			</tr>
 		</tbody>
 	</table>

@@ -28,9 +28,11 @@
 	margin-top: 0;
 }
 
+/*
 .ck.ck-content > :not(.ck-fake-selection-container):last-of-type {
 	margin-bottom: 0;
 }
+*/
 
 /* Override default Umberto's styles because they apply margins to media embed widgets with iframe
 previews breaking their structure. */
