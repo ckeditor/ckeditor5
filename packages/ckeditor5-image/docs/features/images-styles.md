@@ -129,7 +129,7 @@ A semantical style lets the user choose from predefined appearances of the image
 
 As the most of the default editor builds support editing a structured content, which requires passing the control over the possible image appearances to the developer, they introduces a UI containing a set of buttons applying a semantical styles. The example below presents an editor with this basic configuration. The top image is full-width, while the bottom image is a side image. You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
-{@snippet features/image-semantical-style-default}
+<!-- {@snippet features/image-semantical-style-default} -->
 
 The editor above doesn't require any configuration using one of the following builds: classic, inline, balloon or balloon-block, for example:
 ```js
