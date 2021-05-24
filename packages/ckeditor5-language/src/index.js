@@ -7,12 +7,6 @@
  * @module language
  */
 
-import TextPartLanguage from './textpartlanguage';
-import TextPartLanguageEditing from './textpartlanguageediting';
-import TextPartLanguageUI from './textpartlanguageui';
-
-export default {
-	TextPartLanguage,
-	TextPartLanguageEditing,
-	TextPartLanguageUI
-};
+export { default as TextPartLanguage } from './textpartlanguage';
+export { default as TextPartLanguageEditing } from './textpartlanguageediting';
+export { default as TextPartLanguageUI } from './textpartlanguageui';

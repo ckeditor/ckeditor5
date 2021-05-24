@@ -1,0 +1,172 @@
+{
+	"plugins": [
+		{
+			"name": "Auto image",
+			"className": "AutoImage",
+			"description": "Allows for inserting images simply by pasting a URL to the image into the content. Turns the pasted URL into an image on the go.",
+			"docs": "features/image.html#inserting-images-via-pasting-url-into-editor",
+			"path": "src/autoimage.js",
+			"requires": [
+				"Image"
+			]
+		},
+		{
+			"name": "Image",
+			"className": "Image",
+			"description": "Enables support for image handling. Note: The image feature is introduced in a granular form, implemented by separate plugins responsible for such aspects as image caption, toolbar, resize, upload or styles.",
+			"docs": "features/image.html",
+			"path": "src/image.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "imageTextAlternative",
+					"iconPath": "",
+					"toolbars": [
+						"image.toolbar"
+					]
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "image"
+				},
+				{
+					"elements": "img",
+					"attributes": [
+						"alt",
+						"sizes",
+						"src",
+						"srcset",
+						"width"
+					]
+				}
+			]
+		},
+		{
+			"name": "Image caption",
+			"className": "ImageCaption",
+			"description": "Allows for adding captions to images to give additional context.",
+			"docs": "features/image.html#image-captions",
+			"path": "src/imagecaption.js",
+			"requires": [
+				"Image"
+			],
+			"htmlOutput": [
+				{
+					"elements": "figcaption"
+				}
+			]
+		},
+		{
+			"name": "Image resize",
+			"className": "ImageResize",
+			"description": "Allows for resizing images using handles.",
+			"docs": "features/image.html#resizing-images",
+			"path": "src/imageresize.js",
+			"requires": [
+				"Image"
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "image_resized",
+					"styles": [
+						"width"
+					]
+				}
+			]
+		},
+		{
+			"name": "Image style",
+			"className": "ImageStyle",
+			"description": "Allows for using predefined, configurable styles to display the images, for example, as a full width image or side image.",
+			"docs": "features/image.html#image-styles",
+			"path": "src/imagestyle.js",
+			"requires": [
+				"Image"
+			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "imageStyle:full",
+					"toolbars": [
+						"image.toolbar"
+					],
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg"
+				},
+				{
+					"type": "Button",
+					"name": "imageStyle:side",
+					"toolbars": [
+						"image.toolbar"
+					],
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-right.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": [
+						"image-style-side",
+						"image-style-align-left",
+						"image-style-align-center",
+						"image-style-align-right"
+					]
+				},
+				{
+					"elements": "figure",
+					"classes": "*",
+					"_comment": "The plugin can be configured to set any class names on the `<figure>` element."
+				}
+			]
+		},
+		{
+			"name": "Image toolbar",
+			"className": "ImageToolbar",
+			"description": "Introduces a contextual toolbar for images. It appears when an image is selected and can be configured to contain buttons for features such as the text alternative or image styles.",
+			"docs": "features/image.html#image-contextual-toolbar",
+			"path": "src/imagetoolbar.js",
+			"requires": [
+				"Image"
+			],
+			"registeredToolbars": [
+				"image.toolbar"
+			]
+		},
+		{
+			"name": "Image upload",
+			"className": "ImageUpload",
+			"description": "Allows for pasting images from clipboard, dragging and dropping images, selecting them through a file system dialog or from a media management tool. You need to set this plugin up with an official or custom upload adapter.",
+			"docs": "features/image.html#image-upload",
+			"path": "src/imageupload.js",
+			"requires": [
+				"Image"
+			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "imageUpload",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+				}
+			]
+		},
+		{
+			"name": "Image insert",
+			"className": "ImageInsert",
+			"description": "Allows for inserting images via source URL",
+			"docs": "features/image.html#inserting-images-via-source-url",
+			"path": "src/imageinsert.js",
+			"requires": [
+				"ImageUpload"
+			],
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "imageInsert",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+				}
+			]
+		}
+	]
+}

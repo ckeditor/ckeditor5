@@ -5,7 +5,7 @@
 # * List and clarify the things that need attention when migrating.
 
 category: builds-migration
-order: 10
+order: 100
 ---
 
 # Migration from CKEditor 4
