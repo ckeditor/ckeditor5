@@ -9,6 +9,8 @@ import Element from '../../src/view/element';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 import Document from '../../src/view/document';
+import { addBorderRules } from '../../src/view/styles/border';
+import { addMarginRules } from '../../src/view/styles/margin';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Element', () => {
@@ -892,7 +894,6 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		// TODO add tests for getStyleNames( true )
 		describe( 'getStyleNames', () => {
 			it( 'should return iterator with all style names', () => {
 				const names = [ 'color', 'position' ];
@@ -908,6 +909,48 @@ describe( 'Element', () => {
 				for ( const name of iterator ) {
 					expect( name ).to.equal( names[ i++ ] );
 				}
+			} );
+		} );
+
+		describe( 'getStyleNames - deep = true', () => {
+			it( 'should return all styles in an expanded form', () => {
+				addBorderRules( el.document.stylesProcessor );
+				addMarginRules( el.document.stylesProcessor );
+
+				el._setStyle( {
+					margin: '1 em',
+					border: '2px dotted silver'
+				} );
+
+				const styles = Array.from( el.getStyleNames( true ) );
+
+				expect( styles ).to.deep.equal( [
+					'border',
+					'border-color',
+					'border-style',
+					'border-width',
+					'border-top',
+					'border-right',
+					'border-bottom',
+					'border-left',
+					'border-top-color',
+					'border-right-color',
+					'border-bottom-color',
+					'border-left-color',
+					'border-top-style',
+					'border-right-style',
+					'border-bottom-style',
+					'border-left-style',
+					'border-top-width',
+					'border-right-width',
+					'border-bottom-width',
+					'border-left-width',
+					'margin',
+					'margin-top',
+					'margin-right',
+					'margin-bottom',
+					'margin-left'
+				] );
 			} );
 		} );
 
