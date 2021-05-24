@@ -357,6 +357,15 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 					expect( command.value ).to.equal( defaultInline.name );
 				} );
+
+				it( 'should set default style if no style specified', () => {
+					setData( model, '<paragraph>[<imageInline imageStyle="${ anyImage.name }"></imageInline>]</paragraph>' );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+					expect( command.value ).to.equal( defaultInline.name );
+				} );
 			} );
 
 			describe( 'when a block image is selected', () => {
@@ -406,6 +415,15 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '[<imageBlock><caption></caption></imageBlock>]' );
 					expect( command.value ).to.equal( defaultBlock.name );
 				} );
+
+				it( 'should set default style if no style specified', () => {
+					setData( model, '[<imageBlock imageStyle="${ anyImage.name }"><caption></caption></imageBlock>]' );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal( '[<imageBlock><caption></caption></imageBlock>]' );
+					expect( command.value ).to.equal( defaultBlock.name );
+				} );
 			} );
 
 			it( 'should set the style if the selection is inside a caption', () => {
@@ -414,6 +432,46 @@ describe( 'ImageStyleCommand', () => {
 
 				expect( getData( model ) )
 					.to.equal( `<imageBlock imageStyle="${ anyImage.name }"><caption>Fo[o]</caption></imageBlock>` );
+			} );
+		} );
+	} );
+
+	describe( 'shouldConvertImageType()', () => {
+		const imgSrc = 'assets/sample.png';
+
+		describe( 'for an inline image', () => {
+			it( 'should return true if the requested type is other than imageInline', () => {
+				setData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( onlyBlock.name, image ) ).to.be.true;
+			} );
+
+			it( 'should return false if the requested type equals imageInline', () => {
+				setData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( defaultInline.name, image ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'for a block image', () => {
+			it( 'should return true if the requested type is other than imageBlock', () => {
+				setData( model, `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( onlyInline.name, image ) ).to.be.true;
+			} );
+
+			it( 'should return false if the requested type equals imageBlock', () => {
+				setData( model, `[<imageBlock src="${ imgSrc }"><caption></caption></imageBlock>]` );
+
+				const image = model.document.selection.getSelectedElement();
+
+				expect( command.shouldConvertImageType( onlyBlock.name, image ) ).to.be.false;
 			} );
 		} );
 	} );
