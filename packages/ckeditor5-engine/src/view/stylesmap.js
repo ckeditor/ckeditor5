@@ -25,7 +25,7 @@ export default class StylesMap {
 		 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 		 * value access model using lodash's get, set, unset, etc methods.
 		 *
-		 * When no style processor rules are defined the it acts as simple key-value storage.
+		 * When no style processor rules are defined it acts as simple key-value storage.
 		 *
 		 * @private
 		 * @type {Object}
@@ -350,9 +350,20 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns style property names as they would appear when using {@link #toString `#toString()`}.
+	 * Returns all style properties names as they would appear when using {@link #toString `#toString()`}.
 	 *
-	 * TODO param
+	 * When `deep` is set to true and there's a shorthand style property set, it will also return all equivalent styles:
+	 *
+	 * 		// margin: 1em
+	 *
+	 * will be expanded to:
+	 *
+	 * 		// margin-left: 1em
+	 * 		// margin-right: 1em
+	 * 		// margin-top: 1em
+	 * 		// margin-bottom: 1em
+	 *
+	 * @param {Boolean} [deep=false] Expand shorthand style properties and all return equivalent style representations.
 	 * @returns {Array.<String>}
 	 */
 	getStyleNames( deep = false ) {
@@ -567,7 +578,7 @@ export class StylesProcessor {
 	}
 
 	/**
-	 * TODO
+	 * Return all style properties. Expand shorthand properties (e.g. `margin`, `background`).
 	 *
 	 * @param {Object} styles Object holding normalized styles.
 	 * @returns {Array.<String>}
