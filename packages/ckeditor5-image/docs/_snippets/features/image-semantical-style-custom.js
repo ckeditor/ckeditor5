@@ -52,7 +52,8 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editorStyle = editor;
+		window.semanticalStyleCustomEditor = editor;
+		editor.sourceElement.nextSibling.classList.add( 'semantical-custom' );
 	} )
 	.catch( err => {
 		console.error( err );
