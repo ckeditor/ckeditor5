@@ -23,9 +23,9 @@ import { getViewImgFromWidget } from '../image/utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
- * and `imageUpload` command as an aliased name.
+ * and the `imageUpload` command as an aliased name.
  *
- * When an image is uploaded it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete` event}
+ * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete` event}
  * that allows adding custom attributes to the {@link module:engine/model/element~Element image element}.
  *
  * @extends module:core/plugin~Plugin
@@ -278,9 +278,9 @@ export default class ImageUploadEditing extends Plugin {
 					/**
 					 * An event fired when an image is uploaded. You can hook into this event to provide
 					 * custom attributes to the {@link module:engine/model/element~Element image element} based on the data from
-					 * the back-end.
+					 * the server.
 					 *
-					 * 		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing );
+					 * 		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
 					 *
 					 * 		imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
 					 * 			editor.model.change( writer => {

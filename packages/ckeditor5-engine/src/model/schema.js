@@ -324,7 +324,7 @@ export default class Schema {
 	 *		const text = writer.createText( 'foo' );
 	 *		schema.isSelectable( text ); // -> false
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements} section of the Schema deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements section} of the Schema deep dive
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -351,7 +351,7 @@ export default class Schema {
 	 *		const text = writer.createText( 'foo' );
 	 *		schema.isContent( text ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#content-elements Content elements} section of the Schema deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#content-elements Content elements section} of the Schema deep dive
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -884,6 +884,10 @@ export default class Schema {
 		}
 
 		for ( const itemName of itemNames ) {
+			compileAllowChildren( compiledDefinitions, itemName );
+		}
+
+		for ( const itemName of itemNames ) {
 			compileAllowContentOf( compiledDefinitions, itemName );
 		}
 
@@ -898,6 +902,7 @@ export default class Schema {
 
 		for ( const itemName of itemNames ) {
 			cleanUpAllowIn( compiledDefinitions, itemName );
+			setupAllowChildren( compiledDefinitions, itemName );
 			cleanUpAllowAttributes( compiledDefinitions, itemName );
 		}
 
@@ -1090,6 +1095,7 @@ mix( Schema, ObservableMixin );
  * You can define the following rules:
  *
  * * {@link ~SchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
+ * * {@link ~SchemaItemDefinition#allowChildren `allowChildren`} &ndash; Defines which other items are allowed inside this item.
  * * {@link ~SchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
  * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Inherits "allowed children" from other items.
  * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Inherits "allowed in" from other items.
@@ -1157,6 +1163,14 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *
+ * Allow `paragraph` inside a `$root` and allow `$text` as a `paragraph` child:
+ *
+ *		schema.register( 'paragraph', {
+ *			allowIn: '$root',
+ *			allowChildren: '$text',
+ *			isBlock: true
+ *		} );
+ *
  * Make `image` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
@@ -1205,6 +1219,7 @@ mix( Schema, ObservableMixin );
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
  *
  * @property {String|Array.<String>} allowIn Defines in which other items this item will be allowed.
+ * @property {String|Array.<String>} allowChildren Defines which other items are allowed inside this item.
  * @property {String|Array.<String>} allowAttributes Defines allowed attributes of the given item.
  * @property {String|Array.<String>} allowContentOf Inherits "allowed children" from other items.
  * @property {String|Array.<String>} allowWhere Inherits "allowed in" from other items.
@@ -1219,14 +1234,14 @@ mix( Schema, ObservableMixin );
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
  *
  * Read more about the block elements in the
- * {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of the Schema deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#block-elements Block elements section} of the Schema deep dive guide.
  *
  * @property {Boolean} isInline
  * Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
  * `$text`, `softBreak` (`<br>`), etc.
  *
  * Read more about the inline elements in the
- * {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the Schema deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#inline-elements Inline elements section} of the Schema deep dive guide.
  *
  * @property {Boolean} isLimit
  * It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
@@ -1234,7 +1249,7 @@ mix( Schema, ObservableMixin );
  * a limit element are limited to its content.
  *
  * Read more about the limit elements in the
- * {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the Schema deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#limit-elements Limit elements section} of the Schema deep dive guide.
  *
  * @property {Boolean} isObject
  * Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
@@ -1244,7 +1259,7 @@ mix( Schema, ObservableMixin );
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the object elements in the
- * {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#object-elements Object elements section} of the Schema deep dive guide.
  *
  * @property {Boolean} isSelectable
  * `true` when an element should be selectable as a whole by the user. Examples of selectable elements: `image`, `table`, `tableCell`, etc.
@@ -1253,7 +1268,7 @@ mix( Schema, ObservableMixin );
  * {@link module:engine/model/schema~Schema#isSelectable `isSelectable()`} returns `true` for object elements automatically.
  *
  * Read more about selectable elements in the
- * {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements} section of the Schema deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements section} of the Schema deep dive guide.
  *
  * @property {Boolean} isContent
  * An item is a content when it always finds its way to the editor data output regardless of the number and type of its descendants.
@@ -1263,7 +1278,7 @@ mix( Schema, ObservableMixin );
  * {@link module:engine/model/schema~Schema#isContent `isContent()`} returns `true` for object elements automatically.
  *
  * Read more about content elements in the
- * {@glink framework/guides/deep-dive/schema#content-elements Content elements} section of the Schema deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#content-elements Content elements section} of the Schema deep dive guide.
  */
 
 /**
@@ -1280,6 +1295,7 @@ mix( Schema, ObservableMixin );
  * * The `name` property,
  * * The `is*` properties,
  * * The `allowIn` array,
+ * * The `allowChildren` array,
  * * The `allowAttributes` array.
  *
  * @typedef {Object} module:engine/model/schema~SchemaCompiledItemDefinition
@@ -1326,10 +1342,6 @@ export class SchemaContext {
 			// `context` is item or position.
 			// Position#getAncestors() doesn't accept any parameters but it works just fine here.
 			context = context.getAncestors( { includeSelf: true } );
-		}
-
-		if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
-			context.shift();
 		}
 
 		this._items = context.map( mapContextItem );
@@ -1566,6 +1578,8 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 		allowAttributes: [],
 		allowAttributesOf: [],
 
+		allowChildren: [],
+
 		inheritTypesFrom: []
 	};
 
@@ -1578,11 +1592,32 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 	copyProperty( sourceItemRules, itemRule, 'allowAttributes' );
 	copyProperty( sourceItemRules, itemRule, 'allowAttributesOf' );
 
+	copyProperty( sourceItemRules, itemRule, 'allowChildren' );
+
 	copyProperty( sourceItemRules, itemRule, 'inheritTypesFrom' );
 
 	makeInheritAllWork( sourceItemRules, itemRule );
 
 	return itemRule;
+}
+
+function compileAllowChildren( compiledDefinitions, itemName ) {
+	const item = compiledDefinitions[ itemName ];
+
+	for ( const allowChildrenItem of item.allowChildren ) {
+		const allowedChildren = compiledDefinitions[ allowChildrenItem ];
+
+		// The allowChildren property may point to an unregistered element.
+		if ( !allowedChildren ) {
+			continue;
+		}
+
+		allowedChildren.allowIn.push( itemName );
+	}
+
+	// The allowIn property already includes correct items, reset the allowChildren property
+	// to avoid duplicates later when setting up compilation results.
+	item.allowChildren.length = 0;
 }
 
 function compileAllowContentOf( compiledDefinitions, itemName ) {
@@ -1658,6 +1693,17 @@ function cleanUpAllowIn( compiledDefinitions, itemName ) {
 	itemRule.allowIn = Array.from( new Set( existingItems ) );
 }
 
+// Setup allowChildren items based on allowIn.
+function setupAllowChildren( compiledDefinitions, itemName ) {
+	const itemRule = compiledDefinitions[ itemName ];
+
+	for ( const allowedParentItemName of itemRule.allowIn ) {
+		const allowedParentItem = compiledDefinitions[ allowedParentItemName ];
+
+		allowedParentItem.allowChildren.push( itemName );
+	}
+}
+
 function cleanUpAllowAttributes( compiledDefinitions, itemName ) {
 	const itemRule = compiledDefinitions[ itemName ];
 
@@ -1708,9 +1754,9 @@ function getValues( obj ) {
 }
 
 function mapContextItem( ctxItem ) {
-	if ( typeof ctxItem == 'string' ) {
+	if ( typeof ctxItem == 'string' || ctxItem.is( 'documentFragment' ) ) {
 		return {
-			name: ctxItem,
+			name: typeof ctxItem == 'string' ? ctxItem : '$documentFragment',
 
 			* getAttributeKeys() {},
 

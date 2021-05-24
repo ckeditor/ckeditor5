@@ -44,7 +44,7 @@ export default class StylesMap {
 	/**
 	 * Returns true if style map has no styles set.
 	 *
-	 * @returns {Boolean}
+	 * @type {Boolean}
 	 */
 	get isEmpty() {
 		const entries = Object.entries( this._styles );
@@ -540,7 +540,6 @@ export class StylesProcessor {
 	 *
 	 * **Note**: To define reducer callbacks use {@link #setReducer}.
 	 *
-	 * @param {String} name
 	 * @param {String} name Name of style property.
 	 * @param {Object} styles Object holding normalized styles.
 	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}

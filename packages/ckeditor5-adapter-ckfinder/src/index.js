@@ -7,8 +7,4 @@
  * @module adapter-ckfinder
  */
 
-import UploadAdapter from './uploadadapter';
-
-export default {
-	UploadAdapter
-};
+export { default as UploadAdapter } from './uploadadapter';

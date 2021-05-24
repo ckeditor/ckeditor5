@@ -1,7 +1,7 @@
 ---
 category: builds-migration
-menu-title: Migration to v26.0.0
-order: 10
+menu-title: Migration to v26.x
+order: 98
 ---
 
 # Migration to CKEditor 5 v26.0.0

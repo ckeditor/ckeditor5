@@ -9,6 +9,12 @@
 
 'use strict';
 
+/**
+ * This script should be used on Travis CI. It executes tests and prepares the code coverage report
+ * for each package found in the `packages/` directory. Then, all reports are merged into a single
+ * file that will be sent to Coveralls.
+ */
+
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
 const fs = require( 'fs' );
@@ -64,7 +70,7 @@ childProcess.execSync( 'mkdir .nyc_output' );
 childProcess.execSync( 'rm -r -f .out' );
 childProcess.execSync( 'mkdir .out' );
 
-const packages = childProcess.execSync( 'ls packages -1', {
+const packages = childProcess.execSync( 'ls -1 packages', {
 	encoding: 'utf8'
 } ).toString().trim().split( '\n' );
 
@@ -115,12 +121,12 @@ if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	process.exit( 1 ); // Exit code 1 will break the CI build.
 }
 
-/*
- * @param {String} binaryName - Name of a CLI binary to be called.
- * @param {String[]} cliArguments - An array of arguments to be passed to the `binaryName`.
- * @param {String} packageName - Checked package name.
- * @param {String} checkName - A key associated with the problem in the `failedChecks` dictionary.
- * @param {String} failMessage - Message to be shown if check failed.
+/**
+ * @param {String} binaryName Name of a CLI binary to be called.
+ * @param {Array.<String>} cliArguments An array of arguments to be passed to the `binaryName`.
+ * @param {String} packageName Checked package name.
+ * @param {String} checkName A key associated with the problem in the `failedChecks` dictionary.
+ * @param {String} failMessage Message to be shown if check failed.
  */
 function runSubprocess( binaryName, cliArguments, packageName, checkName, failMessage ) {
 	const subprocess = childProcess.spawnSync( binaryName, cliArguments, {
@@ -155,10 +161,9 @@ function appendCoverageReport() {
 
 	matches.forEach( filePath => {
 		const buffer = fs.readFileSync( filePath );
+		const reportPath = [ '.out', 'combined_lcov.info' ].join( path.sep );
 
-		fs.writeFileSync( [ '.out', 'combined_lcov.info' ].join( path.sep ), buffer, {
-			flag: 'as'
-		} );
+		fs.writeFileSync( reportPath, buffer, { flag: 'as' } );
 	} );
 }
 

@@ -1,5 +1,13 @@
 <head>
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; media-src http://techslides.com/; connect-src 'self' https://cksource.com http://*.cke-cs.com; script-src 'self' https://cksource.com; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *">
+	<meta http-equiv="Content-Security-Policy" content="
+		default-src 'none';
+		media-src 'self';
+		connect-src 'self' https://cksource.com http://*.cke-cs.com;
+		script-src 'self' 'unsafe-inline' https://cksource.com;
+		img-src * data:;
+		style-src 'self' 'unsafe-inline';
+		frame-src *
+	">
 </head>
 
 <p>
@@ -20,8 +28,7 @@
 	<h3><code>&lt;video&gt;</code> tag as HTML snippet</h3>
 		<div class="raw-html-embed">
 			<video width="320" height="240" controls>
-				<source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
-				<source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg">
+				<source src="sample.mp4" type="video/mp4">
 				Your browser does not support the video tag.
 			</video>
 		</div>
@@ -30,8 +37,7 @@
 	<h3><code>&lt;audio&gt;</code> tag as HTML snippet</h3>
 		<div class="raw-html-embed">
 			<audio controls>
-				<source src="http://techslides.com/demos/samples/sample.ogg" type="audio/ogg">
-				<source src="http://techslides.com/demos/samples/sample.mp3" type="audio/mpeg">
+				<source src="sample.mp3" type="audio/mpeg">
 				Your browser does not support the audio tag.
 			</audio>
 		</div>
@@ -40,15 +46,15 @@
 	<h3><code>&lt;picture&gt;</code> tag as HTML snippet</h3>
 		<div class="raw-html-embed">
 			<picture>
-				<source media="(min-width: 1200px)" srcset="http://techslides.com/demos/samples/sample.jpg">
-				<source media="(min-width: 650px)" srcset="http://techslides.com/demos/samples/sample.png">
-				<img src="http://techslides.com/demos/samples/sample.gif">
+				<source media="(min-width: 1200px)" srcset="sample.jpg">
+				<source media="(min-width: 650px)" srcset="sample.png">
+				<img src="sample.gif">
 			</picture>
 		</div>
 
 	<h3><code>&lt;iframe&gt;</code> tag as HTML snippet</h3>
 		<div class="raw-html-embed">
-			<iframe src="http://techslides.com/demos/samples/sample.txt"></iframe>
+			<iframe src="sample.txt"></iframe>
 		</div>
 
 

@@ -8,10 +8,11 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-createEditor( '#editor-ltr', 'en' );
-createEditor( '#editor-rtl', 'ar' );
+createEditor( '#editor-ltr', 'en', 'en' );
+createEditor( '#editor-rtl-mixed', 'ar', 'en' );
+createEditor( '#editor-rtl', 'ar', 'ar' );
 
-function createEditor( selector, language ) {
+function createEditor( selector, language, uiLanguageCode ) {
 	ClassicEditor
 		.create( document.querySelector( selector ), {
 			plugins: [ ArticlePluginSet ],
@@ -41,7 +42,10 @@ function createEditor( selector, language ) {
 					'mergeTableCells'
 				]
 			},
-			language
+			language: {
+				ui: uiLanguageCode,
+				content: language
+			}
 		} )
 		.then( editor => {
 			window.editor = editor;

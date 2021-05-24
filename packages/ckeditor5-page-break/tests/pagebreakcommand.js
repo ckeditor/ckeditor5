@@ -60,8 +60,7 @@ describe( 'PageBreakCommand', () => {
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( '$text', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
@@ -94,8 +93,7 @@ describe( 'PageBreakCommand', () => {
 		} );
 
 		it( 'should be false when schema disallows page break', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: 'paragraph' } );
 			// Block page break in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
 				if ( childDefinition.name === 'pageBreak' && context.last.name === 'block' ) {

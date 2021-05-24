@@ -68,6 +68,7 @@ export function isMediaWidget( viewElement ) {
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
+ * @param {String} [options.elementName]
  * @param {String} [options.useSemanticWrapper]
  * @param {String} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
