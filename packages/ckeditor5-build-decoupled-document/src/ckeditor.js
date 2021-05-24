@@ -48,7 +48,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import { Plugin } from '@ckeditor/ckeditor5-core/src';
 import { createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 import smartfieldIcon from './smartfieldIcon.svg';
-
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 class InsertSmartField extends Plugin {
 	init() {
 		const editor = this.editor;
@@ -190,7 +190,8 @@ DecoupledEditor.builtinPlugins = [
 	TableCellProperties,
 	TableProperties,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	Widget
 ];
 
 // Editor configuration.
