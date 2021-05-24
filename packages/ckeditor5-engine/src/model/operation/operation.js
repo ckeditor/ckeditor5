@@ -26,7 +26,7 @@ export default class Operation {
 		 * {@link module:engine/model/document~Document#version document version} the
 		 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
-		 * @member {Number}
+		 * @member {Number|null}
 		 */
 		this.baseVersion = baseVersion;
 
