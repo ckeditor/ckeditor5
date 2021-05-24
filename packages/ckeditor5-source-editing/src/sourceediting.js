@@ -1,4 +1,4 @@
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 
@@ -14,6 +14,10 @@ export default class SourceEditing extends Plugin {
 		return 'SourceEditing';
 	}
 
+	static get requires() {
+		return [ PendingActions ];
+	}
+
 	constructor( editor ) {
 		super( editor );
 
@@ -22,6 +26,8 @@ export default class SourceEditing extends Plugin {
 		this._elementReplacer = new ElementReplacer();
 
 		this._replacedRoots = new Map();
+
+		this._pendingActions = editor.plugins.get( PendingActions );
 	}
 
 	init() {
@@ -40,6 +46,7 @@ export default class SourceEditing extends Plugin {
 			} );
 
 			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
+			buttonView.bind( 'isEnabled' ).to( this._pendingActions, 'hasAny', hasAny => !hasAny );
 
 			this.listenTo( buttonView, 'execute', () => {
 				this.isSourceEditingMode = !this.isSourceEditingMode;
@@ -70,6 +77,8 @@ export default class SourceEditing extends Plugin {
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
 			const data = editor.data.get( { rootName } );
 
+			editor.data.set( { [ rootName ]: '' } );
+
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
 
 			const domSourceEditingElementWrapper = createElement( domRootElement.ownerDocument, 'div', {
@@ -83,15 +92,15 @@ export default class SourceEditing extends Plugin {
 				domSourceEditingElementWrapper.dataset.value = domSourceEditingElementTextarea.value;
 			} );
 
-			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
-
-			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
-
 			editingView.change( writer => {
 				const viewRoot = editingView.document.getRoot( rootName );
 
 				writer.addClass( 'ck-hidden', viewRoot );
 			} );
+
+			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
+
+			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
 		}
 	}
 
@@ -112,6 +121,8 @@ export default class SourceEditing extends Plugin {
 		this._elementReplacer.restore();
 
 		this._replacedRoots.clear();
+
+		editor.focus();
 	}
 
 	_disableCommands() {
