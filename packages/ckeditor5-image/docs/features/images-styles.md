@@ -9,7 +9,7 @@ order: 60
 
 ## Overview
 This package allows adjusting the image appearance by:
-* **[Managing the CSS classes](#image-classes)** by adding a particular predefined (link?) or custom (link?) CSS class or removing any style-related CSS class,
+* **[Applying CSS classes](#image-classes)** - adding a particular predefined (link?) or custom (link?) CSS class or removing any style-related CSS class,
 * **[Managing the HTML representation](#inline-and-block-images)** by changing the image type form inline to block and vice versa. The type conversion occurs if the newly applied style doesn't support the current image type.
 
 <info-box>
@@ -21,12 +21,12 @@ This package allows adjusting the image appearance by:
 </info-box>
 
 ## Image classes
-The style applied to the image can either add or remove the style-related class from it. This behavior depends on the particular configuration of the `styleOptionDefinition`. Only the definition with the `isDefault` flag set to true will remove any applied image style-related class.
+The style applied to the image can either add or remove the style-related class from it. This behavior depends on the particular configuration of the {@link module:image/imagestyle~ImageStyleOptionDefinition}. Only the definition with the {@link module:image/imagestyle~ImageStyleOptionDefinition#isDefault} flag set to true will remove any applied image style-related class.
 
 <info-box warning>
-	The `ImageStyle` plugin doesn't provide a mechanism to apply a default image class. The initial image appearance should be handled by the developer by defining the proper content styles (link). If desired, the default image appearance customization can be done by overriding the following CSS rules:
-	  * `rule` for the inline images,
-	  * `rule` for the block images.
+	The `ImageStyle` plugin doesn't provide a mechanism to apply a default CSS class to newly inserted images. The initial image appearance should be handled by the integrator by defining the proper custom {@link builds/guides/integration/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
+	  * `.ck-content .image-inline` for the inline images,
+	  * `.ck-content .image` for the block images.
 </info-box>
 
 ## Inline and block images
@@ -34,23 +34,18 @@ Images in the editor can be displayed as one of two types: inline or block.
 
 The inline images are represented as inline HTML elements and can be inserted in the middle of a paragraph or a link just like a regular text. The HTML representation of the inline image looks like this:
 * `<span class=”image-style-class”><img></img></span>` in the editable,
-* `<img class=”image-style-class”></img>` in the HTML content retrieved by the `editor#getData` method.
+* `<img class=”image-style-class”></img>` in the HTML content retrieved by the {@link module:core/editor/utils/dataapimixin~DataApi#getData} method.
 
 Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables or media. The HTML representation of the block image looks like this:
-* `<figure class=”image-style-class”><img></img></figure>`.
+* `<figure class=”image image-style-class”><img></img></figure>`.
 
-Managing these types can be executed while applying/removing a style-related class from the image: Each of the defined style options provides a list of the image types which can coexist with it. The inline <-> block conversion occurs if the newly applied style doesn’t support the current image type. Since removing a class is also executed by applying a style, the same mechanism works here.
+Switching between these two types can be executed by applying/removing a style from the image: Each of the defined style options provides a list of the image types which can coexist with it. The inline <-> block conversion occurs if the newly applied style doesn’t support the current image type.
 
-It is also executed while inserting a new image: By default, the editor will choose the optimal image type based on the context of the insertion (e.g. the current selection/position and availability of plugins (link)). The default type of the newly inserted images can be controlled using the {@link module:image/imageinsert~ImageInsertConfig#type `image.insert.type` configuration}.
+In case of inserting a new image, by default, the editor will choose the optimal image type based on the context of the insertion (e.g. the current selection/position and {@link features/images-installation#inline-and-block-images availability of plugins}). The default type of the newly inserted image can be controlled using the {@link module:image/imageinsert~ImageInsertConfig#type `image.insert.type` configuration}.
 
-## Approaches to styling images
-There are two approaches to styling the images:
-* The particular style can define the image “type”, so it can be styled for example as an avatar, or a banner. It will be called a [“semantical style”](#semantical-styles), since it refers to the purpose of the particular image.
-* On the other hand, sometimes the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately and completely arbitrary. The style which defines the image alignment will be called a [“presentational”](#presentational-styles), since it refers to the appearance of the image only.
+## Default styles
 
-### Default styles
-
-The `ImageStyle` plugin provides a set of the [default styles](link) depending on the [loaded plugins](link). The table below presents the availability of these styles and the image behavior caused by an application of a particular style. Apart from the predefined styles, the developer can define the [custom styles](#defining-custom-styles).
+The `ImageStyle` plugin provides a set of the default styles depending on the loaded plugins. The table below presents the availability of these styles and the image behavior caused by an application of a particular style. Apart from the predefined styles, the developer can define the [custom styles](#defining-custom-styles).
 
 <figure class="table" id="styles-table">
 	<table style="text-align: left">
@@ -124,14 +119,29 @@ The `ImageStyle` plugin provides a set of the [default styles](link) depending o
 	</table>
 </figure>
 
+## Approaches to styling images
+CKEditor5 offers two basic approaches to styling the images:
+* The particular style can define the image “type”, so it can be styled for example as an avatar, a banner or an emoticon. It will be called a [“semantical style”](#semantical-styles), since it refers to the purpose of the particular image.
+* On the other hand, sometimes the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately and completely arbitrary. The style which defines the image alignment will be called a [“presentational”](#presentational-styles), since it refers to the appearance of the image only.
+
 ### Semantical styles
-A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.Check the list of the available semantical styles in the [table](#styles-table) above.
+A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, he can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [table](#styles-table) above.
 
-As the most of the default editor builds support editing a structured content, which requires passing the control over the possible image appearances to the developer, they introduces a UI containing a set of buttons applying a semantical styles. The example below presents an editor with this basic configuration. The top image is full-width, while the bottom image is a side image. You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
+<info-box warning>
+	While semantical styles can be combined with manual {@link features/images-resizing image resizing}, these features were not designed to be used together, as semantical styles usually affects the image size.
 
-<!-- {@snippet features/image-semantical-style-default} -->
+	If you want to enable image resizing, use [presentational image styles](#presentational-styles) or define custom semantical styles to make sure that there are no conflicts with the image resizing feature.
+</info-box>
+
+#### Default styles
+As the most of the default editor builds support editing a structured content, which requires passing the control over the possible image appearances to the developer, they introduces a UI containing a set of buttons applying a semantical styles (taken from the [default styles](#styles-table) listed above).
+
+The example below presents an editor with this basic configuration. The top image is full-width, while the bottom image is a side image. You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
+
+{@snippet features/image-semantical-style-default}
 
 The editor above doesn't require any configuration using one of the following builds: classic, inline, balloon or balloon-block, for example:
+
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ) )
@@ -139,72 +149,35 @@ ClassicEditor
 	.catch( ... );
 ```
 
-{@snippet features/image-semantical-style-custom}
+#### Custom styles
 
-<!-- <info-box hint>
-	Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
-</info-box>
-
-<info-box warning>
-	While semantical styles can be combined with manual {@link features/images-resizing image resizing}, these features were not designed to be used together.
-
-	If you want to enable image resizing, use [presentational image styles](#presentational-styles).
-</info-box> -->
-
-### Presentational styles
-Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational classes defines the image alignment behavior. Check the list of the available semantical styles in the [table](#styles-table) above.
+Semantical styles gives the integrator an ability to put at the user's disposal a wide range of predefined image appearances. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
 
 <info-box hint>
-	Presentational image styles should be combined with the optional {@link features/images-resizing image resizing feature} as these features were designed to be used together. The image width is then controlled by the image resize feature.
+	Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. The "side image" in the example below is displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
+</info-box>
+
+{@snippet features/image-semantical-style-custom}
+
+```
+TODO: editor configuration (CSS???)
+```
+
+TODO: editor configuration description
+Read more about defining the [custom styles](#defining-custom-styles).
+
+### Presentational styles
+Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determines the image alignment behavior. Check the list of the available semantical styles in the [table](#styles-table) above.
+
+<info-box hint>
+	Presentational image styles should be combined with the optional {@link features/images-resizing image resizing feature} as these features were designed to be used together. The image width is then controlled by the image resize feature, while the alignment is controller by the image style feature.
 
 	If you do not enable the image resize feature in your setup using the default presentational styles, your images will always have their original sizes (up to 100% of the editor width) so the alignment may not be visible.
 
-	If you do not want to enable image resizing, use [semantical image classes](#semantical-classes).
+	If you do not want to enable image resizing, you can use [semantical image styles](#semantical-styles) to set the image dimensions.
 </info-box>
 
-<!-- ```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		image: {
-			// Configure the available styles.
-			styles: [
-				'alignLeft', 'alignCenter', 'alignRight'
-			],
-
-			// Configure the available image resize options.
-			resizeOptions: [
-				{
-					name: 'resizeImage:original',
-					label: 'Original',
-					value: null
-				},
-				{
-					name: 'resizeImage:50',
-					label: '50%',
-					value: '50'
-				},
-				{
-					name: 'resizeImage:75',
-					label: '75%',
-					value: '75'
-				}
-			],
-
-			// You need to configure the image toolbar, too, so it shows the new style
-			// buttons as well as the resize buttons.
-			toolbar: [
-				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
-				'|',
-				'resizeImage',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
-			]
-		}
-	} )
-	.then( ... )
-	.catch( ... );
-```
+<!--
 
 The code sample above uses predefined presentational image styles: `'alignLeft'`, `'alignCenter'` and `'alignRight'`. They apply, respectively, the `.image-style-align-left`, `.image-style-align-center` and  `.image-style-align-right` classes to the `<figure>` element.
 
@@ -212,14 +185,16 @@ In addition to that, the sample is configured to use the {@link features/images-
 
 See the result below:
 
-{@snippet features/image-style-presentational} -->
+{@snippet features/image-style-presentational}
+
+-->
 
 ## UI
 Application of a style can be executed by using one of the buttons created by the `ImageStyle` plugin for each of the default and custom defined styles. Each of the styles will be registered under the name `imageStyle: image-style-name` in the componentsFactory (link) and can be added to the image or main toolbar while creating a editor instance.
 
 It is also possible to group the image styles into the custom drop-downs (TODO: more!).
 
-The default image toolbar has its default configuration already set in the default builds. The default UI of the classic, inline, balloon and balloon block builds consists a set of the buttons applying only the [semantical classes](#semantical-classes) to support creating a structured content. The document editor build UI uses a few buttons applying a [presentational classes](#presentational-classes) and also uses the [semantical classes](#semantical-classes) to reset the image appearance to the default one. All of the builds supports both, block and inline images.
+The default image toolbar has its default configuration already set in the default builds. The default UI of the classic, inline, balloon and balloon block builds consists a set of the buttons applying only the [semantical styles](#semantical-styles) to support creating a structured content. The document editor build UI uses a few buttons applying a [presentational styles](#presentational-styles) and also uses the [semantical styles](#semantical-styles) to reset the image appearance to the default one. All of the builds supports both, block and inline images.
 ## Defining custom styles
 
 Besides using the {@link module:image/imagestyle/utils~DEFAULT_OPTIONS predefined styles}, you can also define your own styles or modify the existing ones.
