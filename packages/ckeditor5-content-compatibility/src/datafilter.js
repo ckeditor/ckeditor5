@@ -293,6 +293,10 @@ export default class DataFilter extends Plugin {
 			return;
 		}
 
+		schema.extend( definition.model, {
+			allowAttributes: [ 'htmlAttributes', 'htmlContent' ]
+		} );
+
 		// Store element content in special `$rawContent` custom property to
 		// avoid editor's data filtering mechanism.
 		editor.data.registerRawContentMatcher( {
@@ -363,6 +367,10 @@ export default class DataFilter extends Plugin {
 		if ( !viewName ) {
 			return;
 		}
+
+		schema.extend( definition.model, {
+			allowAttributes: 'htmlAttributes'
+		} );
 
 		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this._allowedAttributes ) );
