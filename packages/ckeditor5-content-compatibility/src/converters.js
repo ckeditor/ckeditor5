@@ -82,17 +82,13 @@ export function modelToViewCodeBlockAttributeConverter() {
  * by the given matcher will be preserved on `htmlAttributes` attribute.
  *
  * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
- * @param {module:engine/view/matcher~Matcher} matcher
  * @returns {Function} Returns a conversion callback.
 */
-export function viewToModelObjectConverter( { model: modelName }, matcher ) {
+export function viewToModelObjectConverter( { model: modelName } ) {
 	return ( viewElement, conversionApi ) => {
-		const htmlAttributes = consumeViewAttributes( viewElement, conversionApi, matcher );
-
 		// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
 		return conversionApi.writer.createElement( modelName, {
-			htmlContent: viewElement.getCustomProperty( '$rawContent' ),
-			...( htmlAttributes && { htmlAttributes } )
+			htmlContent: viewElement.getCustomProperty( '$rawContent' )
 		} );
 	};
 }
@@ -139,18 +135,9 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 * @returns {module:engine/view/element~Element}
 */
 export function createObjectView( viewName, modelElement, writer ) {
-	const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-	const viewContent = modelElement.getAttribute( 'htmlContent' );
-
-	const viewElement = writer.createRawElement( viewName, null, function( domElement ) {
-		domElement.innerHTML = viewContent;
+	return writer.createRawElement( viewName, null, function( domElement ) {
+		domElement.innerHTML = modelElement.getAttribute( 'htmlContent' );
 	} );
-
-	if ( viewAttributes ) {
-		setViewAttributes( writer, viewAttributes, viewElement );
-	}
-
-	return viewElement;
 }
 
 /**

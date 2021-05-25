@@ -306,11 +306,12 @@ export default class DataFilter extends Plugin {
 		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
-			model: viewToModelObjectConverter( definition, this._allowedAttributes ),
+			model: viewToModelObjectConverter( definition ),
 			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 			// this listener is called before it. If not, some elements will be transformed into a paragraph.
 			converterPriority: priorities.get( 'low' ) + 1
 		} );
+		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this._allowedAttributes ) );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: modelName,
@@ -322,6 +323,7 @@ export default class DataFilter extends Plugin {
 			model: modelName,
 			view: toObjectWidgetConverter( editor, definition )
 		} );
+		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
 
 	/**
