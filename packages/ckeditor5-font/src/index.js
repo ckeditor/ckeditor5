@@ -7,32 +7,16 @@
  * @module font
  */
 
-import Font from './font';
-import FontBackgroundColor from './fontbackgroundcolor';
-import FontColor from './fontcolor';
-import FontFamily from './fontfamily';
-import FontSize from './fontsize';
-import FontBackgroundColorEditing from './fontbackgroundcolor/fontbackgroundcolorediting';
-import FontBackgroundColorUI from './fontbackgroundcolor/fontbackgroundcolorui';
-import FontColorEditing from './fontcolor/fontcolorediting';
-import FontColorUI from './fontcolor/fontcolorui';
-import FontFamilyEditing from './fontfamily/fontfamilyediting';
-import FontFamilyUI from './fontfamily/fontfamilyui';
-import FontSizeEditing from './fontsize/fontsizeediting';
-import FontSizeUI from './fontsize/fontsizeui';
-
-export default {
-	Font,
-	FontBackgroundColor,
-	FontColor,
-	FontFamily,
-	FontSize,
-	FontBackgroundColorEditing,
-	FontBackgroundColorUI,
-	FontColorEditing,
-	FontColorUI,
-	FontFamilyEditing,
-	FontFamilyUI,
-	FontSizeEditing,
-	FontSizeUI
-};
+export { default as Font } from './font';
+export { default as FontBackgroundColor } from './fontbackgroundcolor';
+export { default as FontColor } from './fontcolor';
+export { default as FontFamily } from './fontfamily';
+export { default as FontSize } from './fontsize';
+export { default as FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting';
+export { default as FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui';
+export { default as FontColorEditing } from './fontcolor/fontcolorediting';
+export { default as FontColorUI } from './fontcolor/fontcolorui';
+export { default as FontFamilyEditing } from './fontfamily/fontfamilyediting';
+export { default as FontFamilyUI } from './fontfamily/fontfamilyui';
+export { default as FontSizeEditing } from './fontsize/fontsizeediting';
+export { default as FontSizeUI } from './fontsize/fontsizeui';
