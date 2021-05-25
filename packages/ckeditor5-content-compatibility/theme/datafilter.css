@@ -30,13 +30,8 @@
 		font-family: var(--ck-font-face);
 	}
 
-	&[dir="rtl"]::before {
-		left: auto;
-		right: var(--ck-spacing-standard);
-	}
-
-	/* Make space for label but it only collides in LTR languages */
-	&[dir="ltr"] .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
+	/* Make space for label. */
+	& .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
 		margin-left: 50px;
 	}
 
