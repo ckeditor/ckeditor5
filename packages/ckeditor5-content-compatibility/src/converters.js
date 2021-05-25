@@ -105,8 +105,10 @@ export function viewToModelObjectConverter( { model: modelName }, matcher ) {
  * @returns {Function} Returns a conversion callback.
 */
 export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
+	const t = editor.t;
+
 	return ( modelElement, { writer } ) => {
-		const widgetLabel = editor.t( 'HTML object' );
+		const widgetLabel = t( 'HTML object' );
 
 		// Widget cannot be a raw element because the widget system would not be able
 		// to add its UI to it. Thus, we need separate view container.
