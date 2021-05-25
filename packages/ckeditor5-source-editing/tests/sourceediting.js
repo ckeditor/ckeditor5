@@ -131,25 +131,25 @@ describe( 'SourceEditing', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should disable all commands after switching to the source editing mode', () => {
+		it( 'should add id to disable stack for all commands after switching to the source editing mode', () => {
 			button.fire( 'execute' );
 
-			const areCommandsDisabled = [ ...editor.commands ]
+			const hasIdInDisableStackForAllCommands = [ ...editor.commands ]
 				.map( ( [ , command ] ) => command )
 				.every( command => command.isEnabled === false && command._disableStack.has( 'SourceEditingMode' ) );
 
-			expect( areCommandsDisabled ).to.be.true;
+			expect( hasIdInDisableStackForAllCommands ).to.be.true;
 		} );
 
-		it( 'should enable all commands after switching back from the source editing mode', () => {
+		it( 'should remove id from disable stack for all commands after switching back from the source editing mode', () => {
 			button.fire( 'execute' );
 			button.fire( 'execute' );
 
-			const areCommandsEnabled = [ ...editor.commands ]
+			const hasIdInDisableStackForAnyCommand = [ ...editor.commands ]
 				.map( ( [ , command ] ) => command )
-				.every( command => command.isEnabled === true );
+				.some( command => command._disableStack.has( 'SourceEditingMode' ) );
 
-			expect( areCommandsEnabled ).to.be.true;
+			expect( hasIdInDisableStackForAnyCommand ).to.be.false;
 		} );
 
 		it( 'should remove the data from the editor after switching to the source editing mode', () => {
@@ -224,15 +224,6 @@ describe( 'SourceEditing', () => {
 
 			expect( domRoot.classList.contains( 'ck-hidden' ) ).to.be.false;
 			expect( wrapper ).to.be.null;
-		} );
-
-		it( 'should focus the editing view after switching back from the source editing mode', () => {
-			const spy = sinon.spy( editor.editing.view, 'focus' );
-
-			button.fire( 'execute' );
-			button.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 } );
