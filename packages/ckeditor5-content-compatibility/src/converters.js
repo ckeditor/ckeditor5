@@ -78,7 +78,7 @@ export function modelToViewCodeBlockAttributeConverter() {
 /**
  * View-to-model conversion helper for object elements.
  *
- * Preserves object element content in `value` attribute. Also, all matching attributes
+ * Preserves object element content in `htmlContent` attribute. Also, all matching attributes
  * by the given matcher will be preserved on `htmlAttributes` attribute.
  *
  * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
@@ -91,7 +91,7 @@ export function viewToModelObjectConverter( { model: modelName }, matcher ) {
 
 		// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
 		return conversionApi.writer.createElement( modelName, {
-			value: viewElement.getCustomProperty( '$rawContent' ),
+			htmlContent: viewElement.getCustomProperty( '$rawContent' ),
 			...( htmlAttributes && { htmlAttributes } )
 		} );
 	};
@@ -139,7 +139,7 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 */
 export function createObjectView( viewName, modelElement, writer ) {
 	const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-	const viewContent = modelElement.getAttribute( 'value' );
+	const viewContent = modelElement.getAttribute( 'htmlContent' );
 
 	const viewElement = writer.createRawElement( viewName, null, function( domElement ) {
 		domElement.innerHTML = viewContent;
