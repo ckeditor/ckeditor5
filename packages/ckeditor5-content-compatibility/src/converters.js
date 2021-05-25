@@ -114,8 +114,7 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 		// to add its UI to it. Thus, we need separate view container.
 		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div', {
 			class: 'html-object-embed',
-			'data-html-object-embed-label': widgetLabel,
-			dir: editor.locale.uiLanguageDirection
+			'data-html-object-embed-label': widgetLabel
 		}, {
 			isAllowedInsideAttributeElement: isInline
 		} );
