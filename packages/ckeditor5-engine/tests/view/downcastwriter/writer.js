@@ -123,15 +123,9 @@ describe( 'DowncastWriter', () => {
 			assertElementAttributes( element, attributes );
 		} );
 
-		it( 'should not treat priority 0 as no priority set', () => {
-			const element = writer.createAttributeElement( 'foo', attributes, { priority: 0, id: 'bar' } );
-
-			expect( element.is( 'attributeElement' ) ).to.be.true;
-			expect( element.name ).to.equal( 'foo' );
-			expect( element.isAllowedInsideAttributeElement ).to.be.false;
+		it( 'should pass priority 0', () => {
+			const element = writer.createAttributeElement( 'foo', attributes, { priority: 0 } );
 			expect( element.priority ).to.equal( 0 );
-			expect( element.id ).to.equal( 'bar' );
-			assertElementAttributes( element, attributes );
 		} );
 	} );
 
