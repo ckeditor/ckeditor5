@@ -302,7 +302,10 @@ export default class DataFilter extends Plugin {
 		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
-			model: viewToModelObjectConverter( definition, this._allowedAttributes )
+			model: viewToModelObjectConverter( definition, this._allowedAttributes ),
+			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
+			// this listener is called before it. If not, some elements will be transformed into a paragraph.
+			converterPriority: priorities.get( 'low' ) + 1
 		} );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
