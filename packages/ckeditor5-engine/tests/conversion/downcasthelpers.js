@@ -3519,6 +3519,7 @@ describe( 'downcast converters', () => {
 				priority: 0
 			};
 			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+
 			expect( element.priority ).to.equal( 0 );
 		} );
 	} );

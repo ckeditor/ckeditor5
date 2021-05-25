@@ -125,6 +125,7 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should pass priority 0', () => {
 			const element = writer.createAttributeElement( 'foo', attributes, { priority: 0 } );
+
 			expect( element.priority ).to.equal( 0 );
 		} );
 	} );
