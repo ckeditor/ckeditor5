@@ -64,6 +64,47 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
+	 * Add new data schema definition describing block element.
+	 *
+	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 */
+	registerBlockElement( definition ) {
+		this._definitions.set( definition.model, { ...definition, isBlock: true } );
+	}
+
+	/**
+	 * Add new data schema definition describing inline element.
+	 *
+	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 */
+	registerInlineElement( definition ) {
+		this._definitions.set( definition.model, { ...definition, isInline: true } );
+	}
+
+	/**
+	 * Returns all definitions matching the given view name.
+	 *
+	 * @param {String|RegExp} viewName
+	 * @param {Boolean} [includeReferences] Indicates if this method should also include definitions of referenced models.
+	 * @returns {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>}
+	 */
+	getDefinitionsForView( viewName, includeReferences ) {
+		const definitions = new Set();
+
+		for ( const definition of this._getMatchingViewDefinitions( viewName ) ) {
+			if ( includeReferences ) {
+				for ( const reference of this._getReferences( definition.model ) ) {
+					definitions.add( reference );
+				}
+			}
+
+			definitions.add( definition );
+		}
+
+		return definitions;
+	}
+
+	/**
 	 * Registers default data schema definitions.
 	 *
 	 * @private
@@ -321,47 +362,6 @@ export default class DataSchema extends Plugin {
 				inheritAllFrom: '$htmlObjectInline'
 			}
 		} );
-	}
-
-	/**
-	 * Add new data schema definition describing block element.
-	 *
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
-	 */
-	registerBlockElement( definition ) {
-		this._definitions.set( definition.model, { ...definition, isBlock: true } );
-	}
-
-	/**
-	 * Add new data schema definition describing inline element.
-	 *
-	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
-	 */
-	registerInlineElement( definition ) {
-		this._definitions.set( definition.model, { ...definition, isInline: true } );
-	}
-
-	/**
-	 * Returns all definitions matching the given view name.
-	 *
-	 * @param {String|RegExp} viewName
-	 * @param {Boolean} [includeReferences] Indicates if this method should also include definitions of referenced models.
-	 * @returns {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>}
-	 */
-	getDefinitionsForView( viewName, includeReferences ) {
-		const definitions = new Set();
-
-		for ( const definition of this._getMatchingViewDefinitions( viewName ) ) {
-			if ( includeReferences ) {
-				for ( const reference of this._getReferences( definition.model ) ) {
-					definitions.add( reference );
-				}
-			}
-
-			definitions.add( definition );
-		}
-
-		return definitions;
 	}
 
 	/**
