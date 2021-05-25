@@ -325,7 +325,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph><htmlInput value=""></htmlInput></paragraph>'
+				'<paragraph><htmlInput htmlContent=""></htmlInput></paragraph>'
 			);
 
 			expect( editor.getData() ).to.equal( '<p><input></p>' );
@@ -341,7 +341,7 @@ describe( 'DataFilter', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>' +
-				'<htmlVideo value="<source src="https://example.com/video.mp4" type="video/mp4">' +
+				'<htmlVideo htmlContent="<source src="https://example.com/video.mp4" type="video/mp4">' +
 				' Your browser does not support the video tag."></htmlVideo>' +
 				'</paragraph>'
 			);
@@ -368,7 +368,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<xyz>foobar</xyz>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<htmlXyz value="foobar"></htmlXyz>'
+				'<htmlXyz htmlContent="foobar"></htmlXyz>'
 			);
 
 			expect( editor.getData() ).to.equal( '<xyz>foobar</xyz>' );
@@ -381,7 +381,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input type="text"></p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><htmlInput htmlAttributes="(1)" value=""></htmlInput></paragraph>',
+				data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
 						attributes: {
@@ -401,7 +401,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input style="color:red;"></p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><htmlInput htmlAttributes="(1)" value=""></htmlInput></paragraph>',
+				data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
 						styles: {
@@ -421,7 +421,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><input class="foobar"></p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><htmlInput htmlAttributes="(1)" value=""></htmlInput></paragraph>',
+				data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
 						classes: [ 'foobar' ]
@@ -441,8 +441,8 @@ describe( 'DataFilter', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-				'<htmlInput htmlAttributes="(1)" value=""></htmlInput>' +
-				'<htmlInput value=""></htmlInput>' +
+				'<htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput>' +
+				'<htmlInput htmlContent=""></htmlInput>' +
 				'</paragraph>',
 				attributes: {
 					1: {
@@ -465,8 +465,8 @@ describe( 'DataFilter', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-				'<htmlInput htmlAttributes="(1)" value=""></htmlInput>' +
-				'<htmlInput value=""></htmlInput>' +
+				'<htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput>' +
+				'<htmlInput htmlContent=""></htmlInput>' +
 				'</paragraph>',
 				attributes: {
 					1: {
@@ -489,8 +489,8 @@ describe( 'DataFilter', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-				'<htmlInput value=""></htmlInput>' +
-				'<htmlInput value=""></htmlInput>' +
+				'<htmlInput htmlContent=""></htmlInput>' +
+				'<htmlInput htmlContent=""></htmlInput>' +
 				'</paragraph>',
 				attributes: {}
 			} );
@@ -1465,7 +1465,7 @@ describe( 'DataFilter', () => {
 		let attributes = [];
 		for ( const item of range.getItems() ) {
 			for ( const [ key, value ] of sortAttributes( item.getAttributes() ) ) {
-				if ( key.startsWith( 'html' ) ) {
+				if ( key.startsWith( 'html' ) && key !== 'htmlContent' ) {
 					attributes.push( value );
 				}
 			}
