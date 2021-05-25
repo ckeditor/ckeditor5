@@ -273,16 +273,21 @@ export default class DataFilter extends Plugin {
 	 * @returns {Boolean}
 	 */
 	_handleObjectElement( definition ) {
-		if ( !definition.isObject ) {
-			return false;
-		}
-
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const { view: viewName, model: modelName } = definition;
 
-		schema.register( definition.model, definition.modelSchema );
+		if ( !definition.isObject ) {
+			return false;
+		}
+
+		// If feature is already registered, #_handleBlockElement should take care of it.
+		if ( schema.isRegistered( modelName ) ) {
+			return false;
+		}
+
+		schema.register( modelName, definition.modelSchema );
 
 		if ( !viewName ) {
 			return;
