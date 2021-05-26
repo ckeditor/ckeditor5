@@ -47,6 +47,7 @@ export default class CodeBlockHtmlSupport extends Plugin {
 //
 // Attributes are preserved as a value of `htmlAttributes` model attribute.
 //
+// @private
 // @param {module:content-compatibility/datafilter~DataFilter} dataFilter
 // @returns {Function} Returns a conversion callback.
 function viewToModelCodeBlockAttributeConverter( dataFilter ) {
@@ -76,6 +77,7 @@ function viewToModelCodeBlockAttributeConverter( dataFilter ) {
 // Model-to-view conversion helper applying attributes from {@link module:code-block/codeblock~CodeBlock Code Block}
 // feature model element.
 //
+// @private
 // @returns {Function} Returns a conversion callback.
 function modelToViewCodeBlockAttributeConverter() {
 	return dispatcher => {
