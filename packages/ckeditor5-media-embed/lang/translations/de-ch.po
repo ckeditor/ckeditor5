@@ -12,8 +12,8 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: German (https://www.transifex.com/ckeditor/teams/11143/de/)\n"
-"Language: de\n"
+"Language-Team: German (Switzerland) (https://www.transifex.com/ckeditor/teams/11143/de_CH/)\n"
+"Language: de_CH\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the media widget."
