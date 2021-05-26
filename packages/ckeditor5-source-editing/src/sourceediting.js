@@ -94,9 +94,13 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
 
-			// Disable button if there is a pending action. Pending action may change the model, so viewing and/or editing the document
-			// source should be prevented until the model is set.
-			buttonView.bind( 'isEnabled' ).to( editor.plugins.get( PendingActions ), 'hasAny', hasAny => !hasAny );
+			// Disable button if there is a pending action or editor is in a read-only mode. Pending action may change the model, so viewing
+			// and/or editing the document source should be prevented until the model is finally set.
+			buttonView.bind( 'isEnabled' ).to(
+				editor.plugins.get( PendingActions ), 'hasAny',
+				editor, 'isReadOnly',
+				( hasAnyPendingActions, isReadOnly ) => !hasAnyPendingActions && !isReadOnly
+			);
 
 			this.listenTo( buttonView, 'execute', () => {
 				this.isSourceEditingMode = !this.isSourceEditingMode;
@@ -126,6 +130,8 @@ export default class SourceEditing extends Plugin {
 					this._enableCommands();
 				}
 			} );
+
+			this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => this._handleReadOnlyMode( isReadOnly ) );
 		}
 	}
 
@@ -152,7 +158,7 @@ export default class SourceEditing extends Plugin {
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
 			const data = editor.data.get( { rootName } );
 
-			// Remove the current data from the editing root, as the data will be set anyway upon exit from the source editing mode.
+			// Remove the current data from the editing root, as the data will be overwritten anyway upon exit from the source editing mode.
 			editor.data.set( { [ rootName ]: '' } );
 
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
@@ -229,6 +235,21 @@ export default class SourceEditing extends Plugin {
 
 		for ( const [ , command ] of editor.commands ) {
 			command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
+		}
+	}
+
+	/**
+	 * Adds or removes the `readonly` attribute from <textarea> from all roots, if document source mode is active.
+	 *
+	 * @param {Boolean} isReadOnly Defines whether document is in read-only mode.
+	 */
+	_handleReadOnlyMode( isReadOnly ) {
+		if ( !this.isSourceEditingMode ) {
+			return;
+		}
+
+		for ( const [ , domSourceEditingElementWrapper ] of this._replacedRoots ) {
+			domSourceEditingElementWrapper.querySelector( 'textarea' ).readOnly = isReadOnly;
 		}
 	}
 

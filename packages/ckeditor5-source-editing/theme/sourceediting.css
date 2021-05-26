@@ -41,7 +41,7 @@
 		border-top-right-radius: 0;
 	}
 
-	&:focus {
+	&:not([readonly]):focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-inner-shadow);
 	}

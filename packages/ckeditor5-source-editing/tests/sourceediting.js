@@ -63,6 +63,16 @@ describe( 'SourceEditing', () => {
 			expect( button.isEnabled ).to.be.true;
 		} );
 
+		it( 'should disable button if editor is in read-only mode', () => {
+			editor.isReadOnly = true;
+
+			expect( button.isEnabled ).to.be.false;
+
+			editor.isReadOnly = false;
+
+			expect( button.isEnabled ).to.be.true;
+		} );
+
 		it( 'should bind button to the plugin property', () => {
 			plugin.isSourceEditingMode = false;
 
@@ -196,6 +206,21 @@ describe( 'SourceEditing', () => {
 			textarea.dispatchEvent( new Event( 'input' ) );
 
 			expect( wrapper.dataset.value ).to.equal( textarea.value );
+		} );
+
+		it( 'should disable textarea if editor is in read-only mode', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			editor.isReadOnly = true;
+
+			expect( textarea.readOnly ).to.be.true;
+
+			editor.isReadOnly = false;
+
+			expect( textarea.readOnly ).to.be.false;
 		} );
 
 		it( 'should remember replaced roots', () => {

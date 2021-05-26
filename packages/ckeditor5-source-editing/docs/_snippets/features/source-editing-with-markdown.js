@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ClassicEditor */
+/* globals console, window, document, ClassicEditor, Markdown */
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor-markdown' ), {
+		extraPlugins: [ Markdown ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
@@ -20,7 +21,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editorMarkdown = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
