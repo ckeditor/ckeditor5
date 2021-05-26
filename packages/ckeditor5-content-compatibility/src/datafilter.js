@@ -14,10 +14,7 @@ import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, CKEditorError } from 'ckeditor5/src/utils';
 import { Widget } from 'ckeditor5/src/widget';
 import {
-	consumeViewAttributesConverter,
-
-	viewToModelCodeBlockAttributeConverter,
-	modelToViewCodeBlockAttributeConverter,
+	disallowedAttributesConverter,
 
 	viewToModelObjectConverter,
 	toObjectWidgetConverter,
@@ -112,6 +109,7 @@ export default class DataFilter extends Plugin {
 		this._dataInitialized = false;
 
 		this._registerElementsAfterInit();
+		this._registerElementHandlers();
 	}
 
 	/**
@@ -149,7 +147,7 @@ export default class DataFilter extends Plugin {
 			// If the data has not been initialized yet, _registerElementsAfterInit() method will take care of
 			// registering elements.
 			if ( this._dataInitialized ) {
-				this._registerElement( definition );
+				this._fireRegisterEvent( definition );
 			}
 		}
 
@@ -175,6 +173,34 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
+	 * Matches and consumes allowed view attributes.
+	 *
+	 * @param {module:engine/view/element~Element} viewElement
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+	 * @returns {Object} [result]
+	 * @returns {Object} result.attributes Set with matched attribute names.
+	 * @returns {Object} result.styles Set with matched style names.
+	 * @returns {Array.<String>} result.classes Set with matched class names.
+	 */
+	consumeAllowedAttributes( viewElement, conversionApi ) {
+		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
+	}
+
+	/**
+	 * Matches and consumes disallowed view attributes.
+	 *
+	 * @param {module:engine/view/element~Element} viewElement
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+	 * @returns {Object} [result]
+	 * @returns {Object} result.attributes Set with matched attribute names.
+	 * @returns {Object} result.styles Set with matched style names.
+	 * @returns {Array.<String>} result.classes Set with matched class names.
+	 */
+	consumeDisallowedAttributes( viewElement, conversionApi ) {
+		return consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
+	}
+
+	/**
 	 * Registers elements allowed by {@link module:content-compatibility/datafilter~DataFilter#allowElement} method
 	 * once {@link module:core/editor~Editor#data editor's data controller} is initialized.
 	 *
@@ -185,7 +211,7 @@ export default class DataFilter extends Plugin {
 			this._dataInitialized = true;
 
 			for ( const definition of this._allowedElements ) {
-				this._registerElement( definition );
+				this._fireRegisterEvent( definition );
 			}
 		}, {
 			// With high priority listener we are able to register elements right before
@@ -196,73 +222,48 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Registers element and attribute converters for the given data schema definition.
+	 * Registers default element handlers.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 */
-	_registerElement( definition ) {
-		// Note that the order of element handlers is important,
-		// as the handler may interrupt handlers execution in case of returning
-		// anything else than `false` value.
-		const elementHandlers = [
-			this._handleCodeBlockElement,
-			this._handleObjectElement,
-			this._handleInlineElement,
-			this._handleBlockElement
-		];
+	_registerElementHandlers() {
+		this.on( 'register', ( evt, definition ) => {
+			const schema = this.editor.model.schema;
 
-		for ( const elementHandler of elementHandlers ) {
-			if ( elementHandler.call( this, definition ) !== false ) {
-				return;
+			// Object element should be only registered for new features.
+			if ( definition.isObject && !schema.isRegistered( definition.model ) ) {
+				this._registerObjectElement( definition );
+			} else if ( definition.isBlock ) {
+				this._registerBlockElement( definition );
+			} else if ( definition.isInline ) {
+				this._registerInlineElement( definition );
+			} else {
+				/**
+				 * The definition cannot be handled by the data filter.
+				 *
+				 * Make sure that the registered definition is correct.
+				 *
+				 * @error data-filter-invalid-definition
+				 */
+				throw new CKEditorError(
+					'data-filter-invalid-definition',
+					null,
+					definition
+				);
 			}
-		}
 
-		/**
-		 * The definition cannot be handled by the data filter.
-		 *
-		 * Make sure that the registered definition is correct.
-		 *
-		 * @error data-filter-invalid-definition
-		 */
-		throw new CKEditorError(
-			'data-filter-invalid-definition',
-			null,
-			definition
-		);
+			evt.stop();
+		}, { priority: 'lowest' } );
 	}
 
 	/**
-	 * Registers attribute converters for {@link module:code-block/codeblock~CodeBlock Code Block} feature.
+	 * Fires `register` event for the given element definition.
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
-	 * @returns {Boolean}
 	 */
-	_handleCodeBlockElement( definition ) {
-		const editor = this.editor;
-
-		// We should only handle codeBlock model if CodeBlock plugin is available.
-		// Otherwise, let #_handleBlockElement() do the job.
-		if ( !editor.plugins.has( 'CodeBlock' ) || definition.model !== 'codeBlock' ) {
-			return false;
-		}
-
-		const schema = editor.model.schema;
-		const conversion = editor.conversion;
-
-		// CodeBlock plugin is filtering out all attributes on `code` element. Let's add
-		// exception for `htmlCode` required for data filtration mechanism.
-		schema.on( 'checkAttribute', ( evt, [ context, attributeName ] ) => {
-			if ( attributeName === 'htmlCode' && context.endsWith( 'codeBlock $text' ) ) {
-				evt.return = true;
-				evt.stop();
-			}
-		}, { priority: priorities.get( 'high' ) + 1 } );
-
-		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
-		conversion.for( 'upcast' ).add( viewToModelCodeBlockAttributeConverter( this._allowedAttributes ) );
-		conversion.for( 'downcast' ).add( modelToViewCodeBlockAttributeConverter() );
+	_fireRegisterEvent( definition ) {
+		this.fire( definition.view ? `register:${ definition.view }` : 'register', definition );
 	}
 
 	/**
@@ -272,20 +273,11 @@ export default class DataFilter extends Plugin {
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
 	 * @returns {Boolean}
 	 */
-	_handleObjectElement( definition ) {
+	_registerObjectElement( definition ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const { view: viewName, model: modelName } = definition;
-
-		if ( !definition.isObject ) {
-			return false;
-		}
-
-		// If feature is already registered, #_handleBlockElement should take care of it.
-		if ( schema.isRegistered( modelName ) ) {
-			return false;
-		}
 
 		schema.register( modelName, definition.modelSchema );
 
@@ -303,7 +295,7 @@ export default class DataFilter extends Plugin {
 			name: viewName
 		} );
 
-		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
+		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
 			model: viewToModelObjectConverter( definition ),
@@ -311,7 +303,7 @@ export default class DataFilter extends Plugin {
 			// this listener is called before it. If not, some elements will be transformed into a paragraph.
 			converterPriority: priorities.get( 'low' ) + 1
 		} );
-		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this._allowedAttributes ) );
+		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: modelName,
@@ -329,17 +321,11 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Registers block element and attribute converters for the given data schema definition.
 	 *
-	 * If the element model schema is already registered, this method will do nothing.
-	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
 	 * @returns {Boolean}
 	 */
-	_handleBlockElement( definition ) {
-		if ( !definition.isBlock ) {
-			return false;
-		}
-
+	_registerBlockElement( definition ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
@@ -374,8 +360,8 @@ export default class DataFilter extends Plugin {
 			allowAttributes: 'htmlAttributes'
 		} );
 
-		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
-		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this._allowedAttributes ) );
+		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
+		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
 
@@ -388,11 +374,7 @@ export default class DataFilter extends Plugin {
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
 	 * @returns {Boolean}
 	 */
-	_handleInlineElement( definition ) {
-		if ( !definition.isInline ) {
-			return false;
-		}
-
+	_registerInlineElement( definition ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
@@ -406,12 +388,138 @@ export default class DataFilter extends Plugin {
 			schema.setAttributeProperties( attributeKey, definition.attributeProperties );
 		}
 
-		conversion.for( 'upcast' ).add( consumeViewAttributesConverter( definition, this._disallowedAttributes ) );
-		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this._allowedAttributes ) );
+		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
+		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
 
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: attributeKey,
 			view: attributeToViewInlineConverter( definition )
 		} );
 	}
+
+	/**
+	 * Fired when {@link module:content-compatibility/datafilter~DataFilter} is registering element and attribute
+	 * converters for the {@link module:content-compatibility/dataschema~DataSchemaDefinition element definition}.
+	 *
+	 * The event also accepts {@link module:content-compatibility/dataschema~DataSchemaDefinition#view} value
+	 * as an event namespace, e.g. `register:span`.
+	 *
+	 * 		dataFilter.on( 'register', ( evt, definition ) => {
+	 * 			editor.schema.register( definition.model, definition.modelSchema );
+	 * 			editor.conversion.elementToElement( { model: definition.model, view: definition.view } );
+	 *
+	 * 			evt.stop();
+	 * 		} );
+	 *
+	 * 		dataFilter.on( 'register:span', ( evt, definition ) => {
+	 * 			editor.schema.extend( '$text', { allowAttributes: 'htmlSpan' } );
+	 *
+	 * 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'span', model: 'htmlSpan' } );
+	 * 			editor.conversion.for( 'downcast' ).attributeToElement( { view: 'span', model: 'htmlSpan' } );
+	 *
+	 * 			evt.stop();
+	 * 		}, { priority: 'high' } )
+	 *
+	 * @event register
+	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 */
+}
+
+// Matches and consumes the given view attributes.
+//
+// @private
+// @param {module:engine/view/element~Element} viewElement
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {module:engine/view/matcher~Matcher Matcher} matcher
+// @returns {Object} [result]
+// @returns {Object} result.attributes Set with matched attribute names.
+// @returns {Object} result.styles Set with matched style names.
+// @returns {Array.<String>} result.classes Set with matched class names.
+function consumeAttributes( viewElement, conversionApi, matcher ) {
+	const matches = consumeAttributeMatches( viewElement, conversionApi, matcher );
+	const { attributes, styles, classes } = mergeMatchResults( matches );
+	const viewAttributes = {};
+
+	if ( attributes.size ) {
+		viewAttributes.attributes = iterableToObject( attributes, key => viewElement.getAttribute( key ) );
+	}
+
+	if ( styles.size ) {
+		viewAttributes.styles = iterableToObject( styles, key => viewElement.getStyle( key ) );
+	}
+
+	if ( classes.size ) {
+		viewAttributes.classes = Array.from( classes );
+	}
+
+	if ( !Object.keys( viewAttributes ).length ) {
+		return null;
+	}
+
+	return viewAttributes;
+}
+
+// Consumes matched attributes.
+//
+// @private
+// @param {module:engine/view/element~Element} viewElement
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {module:engine/view/matcher~Matcher Matcher} matcher
+// @returns {Array.<Object>} Array with match information about found attributes.
+function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
+	const matches = matcher.matchAll( viewElement ) || [];
+	const consumedMatches = [];
+
+	for ( const match of matches ) {
+		// We only want to consume attributes, so element can be still processed by other converters.
+		delete match.match.name;
+
+		if ( consumable.consume( viewElement, match.match ) ) {
+			consumedMatches.push( match );
+		}
+	}
+
+	return consumedMatches;
+}
+
+// Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
+//
+// @private
+// @param {Array.<Object>} matches
+// @returns {Object} result
+// @returns {Set.<Object>} result.attributes Set with matched attribute names.
+// @returns {Set.<Object>} result.styles Set with matched style names.
+// @returns {Set.<String>} result.classes Set with matched class names.
+function mergeMatchResults( matches ) {
+	const matchResult = {
+		attributes: new Set(),
+		classes: new Set(),
+		styles: new Set()
+	};
+
+	for ( const match of matches ) {
+		for ( const key in matchResult ) {
+			const values = match.match[ key ] || [];
+
+			values.forEach( value => matchResult[ key ].add( value ) );
+		}
+	}
+
+	return matchResult;
+}
+
+// Converts the given iterable object into an object.
+//
+// @private
+// @param {Iterable.<String>} iterable
+// @param {Function} getValue Should result with value for the given object key.
+// @returns {Object}
+function iterableToObject( iterable, getValue ) {
+	const attributesObject = {};
+
+	for ( const prop of iterable ) {
+		attributesObject[ prop ] = getValue( prop );
+	}
+
+	return attributesObject;
 }
