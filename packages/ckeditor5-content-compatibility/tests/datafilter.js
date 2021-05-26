@@ -8,11 +8,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import DataFilter from '../src/datafilter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getModelDataWithAttributes } from './_utils/utils';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 
@@ -29,7 +29,7 @@ describe( 'DataFilter', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FontColorEditing, LinkEditing, CodeBlock, GeneralHtmlSupport ]
+				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -136,188 +136,6 @@ describe( 'DataFilter', () => {
 		}
 	} );
 
-	describe( 'codeBlock', () => {
-		it( 'should allow attributes', () => {
-			dataFilter.allowElement( { name: /^(pre|code)$/ } );
-			dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
-
-			editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<codeBlock htmlAttributes="(1)" language="plaintext"><$text htmlCode="(2)">foobar</$text></codeBlock>',
-				attributes: {
-					1: {
-						attributes: {
-							'data-foo': 'foo'
-						}
-					},
-					2: {
-						attributes: {
-							'data-foo': 'foo'
-						}
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<pre data-foo="foo">' +
-				'<code class="language-plaintext"><code data-foo="foo">foobar</code></code>' +
-				'</pre>' );
-		} );
-
-		it( 'should allow attributes (classes)', () => {
-			dataFilter.allowElement( { name: /^(pre|code)$/ } );
-			dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
-
-			editor.setData( '<pre class="foo"><code class="foo">foobar</code></pre>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<codeBlock htmlAttributes="(1)" language="plaintext"><$text htmlCode="(2)">foobar</$text></codeBlock>',
-				attributes: {
-					1: {
-						classes: [ 'foo' ]
-					},
-					2: {
-						classes: [ 'foo' ]
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<pre class="foo">' +
-				'<code class="language-plaintext"><code class="foo">foobar</code></code>' +
-				'</pre>' );
-		} );
-
-		it( 'should allow attributes (styles)', () => {
-			dataFilter.allowElement( { name: /^(pre|code)$/ } );
-			dataFilter.allowAttributes( { name: 'pre', styles: { background: 'blue' } } );
-			dataFilter.allowAttributes( { name: 'code', styles: { color: 'red' } } );
-
-			editor.setData( '<pre style="background:blue;"><code style="color:red;">foobar</code></pre>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<codeBlock htmlAttributes="(1)" language="plaintext"><$text htmlCode="(2)">foobar</$text></codeBlock>',
-				attributes: {
-					1: {
-						styles: {
-							background: 'blue'
-						}
-					},
-					2: {
-						styles: {
-							color: 'red'
-						}
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<pre style="background:blue;">' +
-				'<code class="language-plaintext"><code style="color:red;">foobar</code></code>' +
-				'</pre>' );
-		} );
-
-		it( 'should disallow attributes', () => {
-			dataFilter.allowElement( { name: /^(pre|code)$/ } );
-			dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
-			dataFilter.disallowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
-
-			editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<codeBlock language="plaintext"><$text htmlCode="(1)">foobar</$text></codeBlock>',
-				attributes: {
-					1: {}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext"><code>foobar</code></code></pre>' );
-		} );
-
-		it( 'should disallow attributes (classes)', () => {
-			dataFilter.allowElement( { name: /^(pre|code)$/ } );
-			dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
-			dataFilter.disallowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
-
-			editor.setData( '<pre class="foo"><code class="foo">foobar</code></pre>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<codeBlock language="plaintext"><$text htmlCode="(1)">foobar</$text></codeBlock>',
-				attributes: {
-					1: {}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext"><code>foobar</code></code></pre>' );
-		} );
-
-		it( 'should allow attributes (styles)', () => {
-			dataFilter.allowElement( { name: /^(pre|code)$/ } );
-
-			dataFilter.allowAttributes( { name: 'pre', styles: { background: 'blue' } } );
-			dataFilter.allowAttributes( { name: 'code', styles: { color: 'red' } } );
-
-			dataFilter.disallowAttributes( { name: 'pre', styles: { background: 'blue' } } );
-			dataFilter.disallowAttributes( { name: 'code', styles: { color: 'red' } } );
-
-			editor.setData( '<pre style="background:blue;"><code style="color:red;">foobar</code></pre>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<codeBlock language="plaintext"><$text htmlCode="(1)">foobar</$text></codeBlock>',
-				attributes: {
-					1: {}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext"><code>foobar</code></code></pre>' );
-		} );
-
-		it( 'should allow attributes on code element existing alone', () => {
-			dataFilter.allowElement( { name: /^(pre|code)$/ } );
-			dataFilter.allowAttributes( { name: 'code', attributes: { 'data-foo': /[\s\S]+/ } } );
-
-			editor.setData( '<p><code data-foo="foo">foobar</code></p>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><$text htmlCode="(1)">foobar</$text></paragraph>',
-				attributes: {
-					1: {
-						attributes: {
-							'data-foo': 'foo'
-						}
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<p><code data-foo="foo">foobar</code></p>' );
-		} );
-
-		it( 'should not consume attribute already consumed (downcast)', () => {
-			editor.conversion.for( 'downcast' ).add( dispatcher => {
-				dispatcher.on( 'attribute:htmlAttributes:codeBlock', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, evt.name );
-				}, { priority: 'high' } );
-			} );
-
-			dataFilter.allowElement( { name: 'pre' } );
-			dataFilter.allowAttributes( { name: 'pre', attributes: { 'data-foo': true } } );
-
-			editor.setData( '<pre data-foo><code>foobar</code></section>' );
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<codeBlock htmlAttributes="(1)" language="plaintext">foobar</codeBlock>',
-				// At this point, attribute should still be in the model, as we are testing downcast conversion.
-				attributes: {
-					1: {
-						attributes: {
-							'data-foo': ''
-						}
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext">foobar</code></pre>' );
-		} );
-	} );
-
 	describe( 'object', () => {
 		it( 'should allow element', () => {
 			dataFilter.allowElement( { name: 'input' } );
@@ -380,7 +198,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="text"></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
@@ -400,7 +218,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input style="color:red;"></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
@@ -420,7 +238,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input class="foobar"></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph><htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput></paragraph>',
 				attributes: {
 					1: {
@@ -439,7 +257,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="text"><input type="hidden"></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
 				'<htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
@@ -463,7 +281,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input style="color:blue;"><input style="color:red;"</p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
 				'<htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
@@ -487,7 +305,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input class="foo bar"><input class="bar"></p>' );
 
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
@@ -497,6 +315,11 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal( '<p><input><input></p>' );
 		} );
+
+		function getObjectModelDataWithAttributes( model, options ) {
+			options.excludeAttributes = [ 'htmlContent' ];
+			return getModelDataWithAttributes( model, options );
+		}
 	} );
 
 	describe( 'block', () => {
@@ -1452,49 +1275,4 @@ describe( 'DataFilter', () => {
 			dataFilter.allowElement( { name: 'xyz' } );
 		}, /data-filter-invalid-definition/, null, definition );
 	} );
-
-	function getModelDataWithAttributes( model, options ) {
-		// Simplify GHS attributes as they are not very readable at this point due to object structure.
-		let counter = 1;
-		const data = getModelData( model, options ).replace( /(html.*?)="{.*?}"/g, ( fullMatch, attributeName ) => {
-			return `${ attributeName }="(${ counter++ })"`;
-		} );
-
-		const range = model.createRangeIn( model.document.getRoot() );
-
-		let attributes = [];
-		for ( const item of range.getItems() ) {
-			for ( const [ key, value ] of sortAttributes( item.getAttributes() ) ) {
-				if ( key.startsWith( 'html' ) && key !== 'htmlContent' ) {
-					attributes.push( value );
-				}
-			}
-		}
-
-		attributes = attributes.reduce( ( prev, cur, index ) => {
-			prev[ index + 1 ] = cur;
-			return prev;
-		}, {} );
-
-		return { data, attributes };
-	}
-
-	function sortAttributes( attributes ) {
-		attributes = Array.from( attributes );
-
-		return attributes.sort( ( attr1, attr2 ) => {
-			const key1 = attr1[ 0 ];
-			const key2 = attr2[ 0 ];
-
-			if ( key1 > key2 ) {
-				return 1;
-			}
-
-			if ( key1 < key2 ) {
-				return -1;
-			}
-
-			return 0;
-		} );
-	}
 } );
