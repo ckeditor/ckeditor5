@@ -8,78 +8,31 @@
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
-import { consumeViewAttributes, setViewAttributes, mergeViewElementAttributes } from './conversionutils';
+import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
 
 /**
- * Conversion helper consuming all attributes from the definition view element
- * matched by the given matcher.
+ * Conversion helper consuming all disallowed attributes from the definition view element.
  *
  * This converter listenes on `high` priority to ensure that all attributes are consumed
  * before standard priority converters.
  *
  * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
- * @param {module:engine/view/matcher~Matcher} matcher
+ * @param {module:content-compatibility/datafilter~DataFilter} dataFilter
  * @returns {Function} Returns a conversion callback.
 */
-export function consumeViewAttributesConverter( { view: viewName }, matcher ) {
+export function disallowedAttributesConverter( { view: viewName }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			consumeViewAttributes( data.viewItem, conversionApi, matcher );
+			dataFilter.consumeDisallowedAttributes( data.viewItem, conversionApi );
 		}, { priority: 'high' } );
-	};
-}
-
-/**
- * View-to-model conversion helper preserving attributes on {@link module:code-block/codeblock~CodeBlock Code Block}
- * feature model element matched by the given matcher.
- *
- * Attributes are preserved as a value of `htmlAttributes` model attribute.
- *
- * @param {module:engine/view/matcher~Matcher} matcher
- * @returns {Function} Returns a conversion callback.
-*/
-export function viewToModelCodeBlockAttributeConverter( matcher ) {
-	return dispatcher => {
-		dispatcher.on( 'element:code', ( evt, data, conversionApi ) => {
-			const viewPreElement = data.viewItem.parent;
-
-			if ( !viewPreElement || !viewPreElement.is( 'element', 'pre' ) ) {
-				return;
-			}
-
-			const viewAttributes = consumeViewAttributes( viewPreElement, conversionApi, matcher );
-
-			if ( viewAttributes ) {
-				conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
-			}
-		}, { conversionPriority: 'low' } );
-	};
-}
-
-/**
- * Model-to-view conversion helper applying attributes from {@link module:code-block/codeblock~CodeBlock Code Block}
- * feature model element.
- *
- * @returns {Function} Returns a conversion callback.
-*/
-export function modelToViewCodeBlockAttributeConverter() {
-	return dispatcher => {
-		dispatcher.on( 'attribute:htmlAttributes:codeBlock', ( evt, data, conversionApi ) => {
-			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-				return;
-			}
-
-			const viewPreElement = conversionApi.mapper.toViewElement( data.item ).parent;
-			setViewAttributes( conversionApi.writer, data.attributeNewValue, viewPreElement );
-		} );
 	};
 }
 
 /**
  * View-to-model conversion helper for object elements.
  *
- * Preserves object element content in `htmlContent` attribute. Also, all matching attributes
- * by the given matcher will be preserved on `htmlAttributes` attribute.
+ * Preserves object element content in `htmlContent` attribute. Also, all allowed attributes
+ * will be preserved on `htmlAttributes` attribute.
  *
  * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
  * @returns {Function} Returns a conversion callback.
@@ -143,18 +96,18 @@ export function createObjectView( viewName, modelElement, writer ) {
 /**
  * View-to-attribute conversion helper preserving inline element attributes on `$text`.
  *
- * All element attributes matched by the given matcher will be preserved as a value of
+ * All allowed element attributes will be preserved as a value of
  * {@link module:content-compatibility/dataschema~DataSchemaInlineElementDefinition~model definition model}
  * attribute.
  *
  * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
- * @param {module:engine/view/matcher~Matcher} matcher
+ * @param {module:content-compatibility/datafilter~DataFilter} dataFilter
  * @returns {Function} Returns a conversion callback.
 */
-export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, matcher ) {
+export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = consumeViewAttributes( data.viewItem, conversionApi, matcher );
+			const viewAttributes = dataFilter.consumeAllowedAttributes( data.viewItem, conversionApi );
 
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.
@@ -199,22 +152,22 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
 }
 
 /**
- * View-to-model conversion helper preserving attributes on block element matched by the given matcher.
+ * View-to-model conversion helper preserving allowed attributes on block element.
  *
  * All matched attributes will be preserved on `htmlAttributes` attribute.
  *
  * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
- * @param {module:engine/view/matcher~Matcher} matcher
+ * @param {module:content-compatibility/datafilter~DataFilter} dataFilter
  * @returns {Function} Returns a conversion callback.
 */
-export function viewToModelBlockAttributeConverter( { view: viewName }, matcher ) {
+export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			if ( !data.modelRange ) {
 				return;
 			}
 
-			const viewAttributes = consumeViewAttributes( data.viewItem, conversionApi, matcher );
+			const viewAttributes = dataFilter.consumeAllowedAttributes( data.viewItem, conversionApi );
 
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );

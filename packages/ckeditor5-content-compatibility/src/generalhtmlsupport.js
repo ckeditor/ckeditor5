@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import DataFilter from './datafilter';
 import DataSchema from './dataschema';
+import CodeBlockHtmlSupport from './integrations/codeblock';
 
 /**
  * The General HTML Support feature.
@@ -31,6 +32,10 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ DataFilter, DataSchema ];
+		return [
+			DataFilter,
+			DataSchema,
+			CodeBlockHtmlSupport
+		];
 	}
 }
