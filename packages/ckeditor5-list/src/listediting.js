@@ -92,9 +92,9 @@ export default class ListEditing extends Plugin {
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
 
 		function modelToViewPosition( evt, data ) {
-			// if ( data.isPhantom ) {
-			// 	return;
-			// }
+			if ( data.isPhantom ) {
+				return;
+			}
 
 			const modelItem = data.modelPosition.nodeAfter;
 
@@ -118,90 +118,152 @@ export default class ListEditing extends Plugin {
 			data.viewPosition = editing.mapper.findPositionIn( listView, data.modelPosition.offset - firstModelItem.startOffset );
 		}
 
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'insert', ( evt, data, { consumable, writer, mapper } ) => {
-				if (
-					!consumable.test( data.item, 'attribute:listItem' ) ||
-					!consumable.test( data.item, 'attribute:listType' ) ||
-					!consumable.test( data.item, 'attribute:listIndent' )
-				) {
+		editor.conversion.for( 'downcast' ).magic( {
+			triggerBy: diffItem => {
+				let element = null;
+
+				switch ( diffItem.type ) {
+					case 'attribute':
+						if ( ![ 'listIndent', 'listType', 'listItem' ].includes( diffItem.attributeKey ) ) {
+							return;
+						}
+
+						element = diffItem.range.start.nodeAfter;
+
+						break;
+
+					case 'insert':
+						element = diffItem.position.nodeAfter;
+
+						if ( !element.hasAttribute( 'listItem' ) ) {
+							return;
+						}
+
+						break;
+
+					// TODO remove
+				}
+
+				if ( !element ) {
 					return;
 				}
 
-				const modelItem = data.item;
-				const previousItem = modelItem.previousSibling;
+				let startElement = element;
+				let endElement = element;
 
-				// Don't insert ol/ul or li if this is a continuation of some other list item.
-				const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
+				let node;
 
-				console.log( 'converting', modelItem ); // eslint-disable-line
-
-				consumable.consume( modelItem, 'attribute:listItem' );
-				consumable.consume( modelItem, 'attribute:listType' );
-				consumable.consume( modelItem, 'attribute:listIndent' );
-
-				let contentViewPosition;
-
-				// Get the previously converted list item content element.
-				const viewChildContent = mapper.toViewElement( modelItem );
-
-				if ( isFirstInListItem ) {
-					console.log( 'create list item' ); // eslint-disable-line
-					let viewList;
-
-					const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-					const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
-
-					// First element of the top level list.
-					if (
-						!previousIsListItem ||
-						modelItem.getAttribute( 'listIndent' ) == 0 &&
-						previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
-					) {
-						viewList = writer.createContainerElement( listType );
-						writer.insert( mapper.toViewPosition( data.range.start ), viewList );
-					}
-
-					// Deeper nested list.
-					else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
-						const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
-
-						viewList = writer.createContainerElement( listType );
-						writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
-					}
-
-					// Same or shallower level.
-					else {
-						viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
-
-						for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
-							viewList = viewList.findAncestor( isList );
-						}
-					}
-
-					// Inserting the li.
-					const viewItem = createViewListItemElement( writer );
-
-					writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-					mapper.bindElements( modelItem, viewList );
-					mapper.bindElements( modelItem, viewItem );
-
-					contentViewPosition = writer.createPositionAt( viewItem, 0 );
-				} else {
-					contentViewPosition = mapper.toViewPosition( data.range.start );
+				while (
+					( node = startElement.previousSibling ) &&
+					node.is( 'element' ) && node.hasAttribute( 'listItem' )
+				) {
+					startElement = node;
 				}
 
-				// The content of this list item was already converted before so just insert it into the new list item.
-				if ( viewChildContent ) {
-					writer.insert( contentViewPosition, viewChildContent );
-					mapper.bindElements( modelItem, viewChildContent );
-
-					evt.stop();
+				while (
+					( node = endElement.nextSibling ) &&
+					node.is( 'element' ) && node.hasAttribute( 'listItem' )
+				) {
+					endElement = node;
 				}
 
-				// Let the list item content get converted.
-			}, { priority: 'high' } );
+				return editor.model.createRange(
+					editor.model.createPositionBefore( startElement ),
+					editor.model.createPositionAfter( endElement )
+				);
+			},
+			model: data => {
+				return {};
+			},
+			view: ( data, { writer, slotFor } ) => {
+				data;
+			}
 		} );
+
+		// editor.conversion.for( 'downcast' ).add( dispatcher => {
+		// 	dispatcher.on( 'insert', ( evt, data, { consumable, writer, mapper } ) => {
+		// 		if (
+		// 			!consumable.test( data.item, 'attribute:listItem' ) ||
+		// 			!consumable.test( data.item, 'attribute:listType' ) ||
+		// 			!consumable.test( data.item, 'attribute:listIndent' )
+		// 		) {
+		// 			return;
+		// 		}
+		//
+		// 		const modelItem = data.item;
+		// 		const previousItem = modelItem.previousSibling;
+		//
+		// 		// Don't insert ol/ul or li if this is a continuation of some other list item.
+		// 		const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
+		//
+		// 		console.log( 'converting', modelItem ); // eslint-disable-line
+		//
+		// 		consumable.consume( modelItem, 'attribute:listItem' );
+		// 		consumable.consume( modelItem, 'attribute:listType' );
+		// 		consumable.consume( modelItem, 'attribute:listIndent' );
+		//
+		// 		let contentViewPosition;
+		//
+		// 		// Get the previously converted list item content element.
+		// 		const viewChildContent = mapper.toViewElement( modelItem );
+		//
+		// 		if ( isFirstInListItem ) {
+		// 			console.log( 'create list item' ); // eslint-disable-line
+		// 			let viewList;
+		//
+		// 			const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+		// 			const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
+		//
+		// 			// First element of the top level list.
+		// 			if (
+		// 				!previousIsListItem ||
+		// 				modelItem.getAttribute( 'listIndent' ) == 0 &&
+		// 				previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
+		// 			) {
+		// 				viewList = writer.createContainerElement( listType );
+		// 				writer.insert( mapper.toViewPosition( data.range.start ), viewList );
+		// 			}
+		//
+		// 			// Deeper nested list.
+		// 			else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
+		// 				const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
+		//
+		// 				viewList = writer.createContainerElement( listType );
+		// 				writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
+		// 			}
+		//
+		// 			// Same or shallower level.
+		// 			else {
+		// 				viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
+		//
+		// 				for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
+		// 					viewList = viewList.findAncestor( isList );
+		// 				}
+		// 			}
+		//
+		// 			// Inserting the li.
+		// 			const viewItem = createViewListItemElement( writer );
+		//
+		// 			writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+		// 			mapper.bindElements( modelItem, viewList );
+		// 			mapper.bindElements( modelItem, viewItem );
+		//
+		// 			contentViewPosition = writer.createPositionAt( viewItem, 0 );
+		// 		} else {
+		// 			contentViewPosition = mapper.toViewPosition( data.range.start );
+		// 		}
+		//
+		// 		// The content of this list item was already converted before so just insert it into the new list item.
+		// 		if ( viewChildContent ) {
+		// 			writer.insert( contentViewPosition, viewChildContent );
+		// 			mapper.bindElements( modelItem, viewChildContent );
+		//
+		// 			evt.stop();
+		// 		}
+		//
+		// 		// Let the list item content get converted.
+		// 	}, { priority: 'high' } );
+		// } );
 
 		// editor.conversion.for( 'editingDowncast' )
 		// 	.add( dispatcher => {

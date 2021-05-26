@@ -131,6 +131,12 @@ export default class DowncastDispatcher {
 		 * @private
 		 */
 		this._reconversionEventsMapping = new Map();
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._magicTriggerCallbacks = new Set();
 	}
 
 	/**
@@ -155,7 +161,7 @@ export default class DowncastDispatcher {
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type === 'reconvert' ) {
-				this.reconvertElement( entry.range, writer, entry );
+				this.reconvertElement( entry.range, writer );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -181,7 +187,6 @@ export default class DowncastDispatcher {
 	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
 	 * {@link #event:attribute `attribute` event is fired}.
 	 *
-	 * @fires insert
 	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
@@ -269,7 +274,7 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/element~Element} element The element to be reconverted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	reconvertElement( range, writer, data ) {
+	reconvertElement( range, writer ) {
 		const mapper = this.conversionApi.mapper;
 
 		console.log( 'reconverting range:', range.start.path + ' - ' + range.end.path ); // eslint-disable-line
@@ -279,13 +284,13 @@ export default class DowncastDispatcher {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		const elements = Array.from( range.getWalker( { shallow: true } ) ).map( ( { item } ) => item );
+		const elements = Array.from( range.getItems( { shallow: true } ) );
 		const currentViewElements = new Set();
 
 		for ( const element of elements ) {
 			let currentView = mapper.toViewElement( element );
 
-			do {
+			while ( mapper.toModelElement( currentView ) === element ) {
 				const parentView = currentView.parent;
 
 				currentViewElements.add( currentView );
@@ -295,16 +300,27 @@ export default class DowncastDispatcher {
 
 				// But also go up the view tree and remove all elements that are mapped to the same model element.
 				currentView = parentView;
-			} while ( mapper.toModelElement( currentView ) === element );
+			}
 		}
+
+		// Trigger single insert for magic conversion.
+		this.fire( 'insert', { range }, this.conversionApi );
 
 		// Convert the element - without converting children.
 		for ( const element of elements ) {
-			this._convertInsertWithAttributes( {
-				...data, // Custom data from reconversion trigger.
-				item: element,
-				range: Range._createOn( element )
-			} );
+			// TODO this is extracted from _convertInsertWithAttributes
+			// Fire a separate addAttribute event for each attribute that was set on inserted items.
+			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
+			// If we would not add this part, attributes on inserted nodes would not be converted.
+			for ( const key of element.getAttributeKeys() ) {
+				this._testAndFire( `attribute:${ key }`, {
+					item: element,
+					range: Range._createOn( element ),
+					attributeKey: key,
+					attributeOldValue: null,
+					attributeNewValue: element.getAttribute( key )
+				} );
+			}
 		}
 
 		for ( const element of elements ) {
@@ -506,6 +522,14 @@ export default class DowncastDispatcher {
 	}
 
 	/**
+	 * TODO
+	 * @protected
+	 */
+	_addMagicTriggerCallback( callback ) {
+		this._magicTriggerCallbacks.add( callback );
+	}
+
+	/**
 	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from a given range,
 	 * assuming that the range has just been inserted to the model.
 	 *
@@ -652,9 +676,7 @@ export default class DowncastDispatcher {
 	 * @private
 	 */
 	_mapChangesWithAutomaticReconversion( differ ) {
-		const mapper = this.conversionApi.mapper;
-
-		const itemsToReconvert = new Set();
+		const rangesToReconvert = [];
 		const updated = [];
 
 		for ( const entry of differ.getChanges() ) {
@@ -680,28 +702,19 @@ export default class DowncastDispatcher {
 				continue;
 			}
 
-			let removedElement = null;
+			const reconvertRange = this._isReconvertTrigger( entry, element );
 
-			if ( entry.type === 'remove' ) {
-				// Try to find a model element by mapping to view and back.
-				// TODO maybe .getTrimmed() to skip UI and AttributeElement?
-				removedElement = mapper.toModelElement( mapper.toViewPosition( position, { isPhantom: true } ).nodeAfter );
-			}
-
-			const reconvertData = this._isReconvertTrigger( entry, element, removedElement );
-
-			if ( reconvertData ) {
-				// TODO Check if ranges not intersect and join overlapping ones
-				if ( itemsToReconvert.has( element ) ) {
-					// Element is already reconverted, so skip this change.
+			if ( reconvertRange ) {
+				if ( rangesToReconvert.some( range => range.isEqual( reconvertRange ) ) ) {
+					// Range is already marked for reconversion, so skip this change.
 					continue;
 				}
 
-				itemsToReconvert.add( element );
+				rangesToReconvert.push( reconvertRange );
 
 				// TODO element is not needed here
 				// Add special "reconvert" change.
-				updated.push( { type: 'reconvert', element, ...reconvertData } );
+				updated.push( { type: 'reconvert', element, range: reconvertRange } );
 			} else {
 				updated.push( entry );
 			}
@@ -722,65 +735,81 @@ export default class DowncastDispatcher {
 	 * @returns {Boolean}
 	 */
 	// TODO rename - it returns reconversion data
-	_isReconvertTrigger( diffItem, element, removedElement ) {
+	_isReconvertTrigger( diffItem, element ) {
 		let eventName;
 
-		if ( diffItem.type === 'attribute' ) {
+		if ( diffItem.type == 'attribute' ) {
 			eventName = `attribute:${ diffItem.attributeKey }:${ element.name }`;
 		} else {
 			eventName = `${ diffItem.type }:${ diffItem.name }`;
 		}
 
 		if ( this._reconversionEventsMapping.get( eventName ) === element.name ) {
-			return { range: Range._createOn( element ), element };
+			return Range._createOn( element );
 		}
 
 		// TODO all below should be registered from list editing plugin.
 		// TODO mark for reconversion - API dla list editing
-
-		const listItemAttributes = [ 'listIndent', 'listType', 'listItem' ];
-
-		const isChangedListItem = diffItem.type === 'attribute' && listItemAttributes.includes( diffItem.attributeKey );
-		const isRemovedListItem = !!removedElement && removedElement.hasAttribute( 'listItem' );
-
-		// Find sibling list item for removed list item.
-		if ( isRemovedListItem ) {
-			const nodeBefore = diffItem.position.nodeBefore;
-			const nodeAfter = diffItem.position.nodeAfter;
-
-			if ( nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
-				element = nodeBefore;
-			} else if ( nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
-				element = nodeAfter;
-			}
-		}
-
-		if ( isChangedListItem || isRemovedListItem ) {
-			let startElement = element;
-			let endElement = element;
-
-			let node;
-
-			while (
-				( node = startElement.previousSibling ) &&
-				node.is( 'element' ) && node.hasAttribute( 'listItem' )
-			) {
-				startElement = node;
-			}
-
-			while (
-				( node = endElement.nextSibling ) &&
-				node.is( 'element' ) && node.hasAttribute( 'listItem' )
-			) {
-				endElement = node;
-			}
-
-			const range = new Range( Position._createBefore( startElement ), Position._createAfter( endElement ) );
-
-			return { range, element };
-		}
-
 		// TODO insert anything without list attributes between the list items
+
+		for ( const callback of this._magicTriggerCallbacks ) {
+			const range = callback( diffItem, element );
+
+			if ( range ) {
+				return range;
+			}
+		}
+
+		// const mapper = this.conversionApi.mapper;
+		//
+		// // This is a newly inserted element, this is not reconversion.
+		// if ( diffItem.type == 'insert' && !mapper.toViewElement( diffItem.position.nodeAfter ) ) {
+		// 	return null;
+		// }
+		//
+		// let removedElement = null;
+		//
+		// // Find sibling list item for removed list item.
+		// // if ( diffItem.type == 'remove' ) {
+		// // 	const nodeBefore = diffItem.position.nodeBefore;
+		// // 	const nodeAfter = diffItem.position.nodeAfter;
+		// //
+		// // 	if ( nodeBefore && nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
+		// // 		removedElement = nodeBefore;
+		// // 	} else if ( nodeAfter && nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
+		// // 		removedElement = nodeAfter;
+		// // 	}
+		// // }
+		//
+		// const listItemAttributes = [ 'listIndent', 'listType', 'listItem' ];
+		// const isChangedListItem = diffItem.type === 'attribute' && listItemAttributes.includes( diffItem.attributeKey );
+		//
+		// if ( isChangedListItem || removedElement ) {
+		// 	element = removedElement || element;
+		//
+		// 	let startElement = element;
+		// 	let endElement = element;
+		//
+		// 	let node;
+		//
+		// 	while (
+		// 		( node = startElement.previousSibling ) &&
+		// 		node.is( 'element' ) && node.hasAttribute( 'listItem' )
+		// 	) {
+		// 		startElement = node;
+		// 	}
+		//
+		// 	while (
+		// 		( node = endElement.nextSibling ) &&
+		// 		node.is( 'element' ) && node.hasAttribute( 'listItem' )
+		// 	) {
+		// 		endElement = node;
+		// 	}
+		//
+		// 	const range = new Range( Position._createBefore( startElement ), Position._createAfter( endElement ) );
+		//
+		// 	return { range, element };
+		// }
 
 		return null;
 	}

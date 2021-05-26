@@ -270,6 +270,13 @@ export default class DowncastHelpers extends ConversionHelpers {
 	}
 
 	/**
+	 * TODO
+	 */
+	magic( config ) {
+		return this.add( magicDowncast( config ) );
+	}
+
+	/**
 	 * Model marker to view element conversion helper.
 	 *
 	 * **Note**: This method should be used only for editing downcast. For data downcast, use
@@ -1468,6 +1475,54 @@ function downcastAttributeToAttribute( config ) {
 
 	return dispatcher => {
 		dispatcher.on( eventName, changeAttribute( elementCreator ), { priority: config.converterPriority || 'normal' } );
+	};
+}
+
+// trigger by for nested inside blockquote
+
+// TODO
+function magicDowncast( config ) {
+	config = cloneDeep( config );
+
+	return dispatcher => {
+		dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+			// data.item, data.range
+
+			// Model check.
+			const modelResult = config.model( data );
+
+			if ( !modelResult ) {
+				return;
+			}
+
+			const { consumables } = modelResult;
+
+			// View creation.
+			const fragment = config.view( data, {
+				...conversionApi,
+				slotFor( element, children = true ) {}
+			} );
+
+			// Make sure that slots are created for the elements themself or direct descendants and not other elements.
+
+			// Consuming content of `consumable` (processing from DX form to event names).
+			consumables;
+
+			// View insertion, filling slots, binding (based on slot element and same for not bound parents).
+			// ...
+
+		}, { priority: config.converterPriority || 'normal' } );
+
+		if ( config.triggerBy ) {
+			// Register it in dispatcher so it could later
+			// call this callback to get list of diffItems that should be replaced with a reconversion.
+
+			dispatcher._addMagicTriggerCallback( config.triggerBy );
+
+			// The result would be range to convert as a block.
+
+			// Make sure that reconversion will be triggered once
+		}
 	};
 }
 
