@@ -11,30 +11,29 @@
 	display: inline-grid;
 	width: 100%;
 	font-family: monospace;
+}
 
-	/* SourceEditing plugin is direction–agnostic. */
-	text-align: left;
-	direction: ltr;
+.source-editing::after,
+.source-editing textarea {
+	grid-area: 1/1;
+	padding: var(--ck-spacing-large);
+	margin: 0;
+	border: 1px solid transparent;
+	line-height: var(--ck-line-height-base);
+	font-size: var(--ck-font-size-normal);
+	white-space: pre-wrap;
 }
 
 .source-editing::after {
-	grid-area: 1/1;
 	content: attr(data-value) " ";
 	visibility: hidden;
-	white-space: pre-wrap;
-	padding: var(--ck-spacing-large);
-	margin: 0;
 }
 
 .source-editing textarea {
-	grid-area: 1/1;
 	resize: none;
 	outline: none;
 	overflow: hidden;
-	padding: var(--ck-spacing-large);
-	margin: 0;
 
-	border: 1px solid transparent;
 	border-color: var(--ck-color-base-border);
 
 	@mixin ck-rounded-corners {

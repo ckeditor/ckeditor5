@@ -4,7 +4,7 @@
  */
 
 /**
- * @module source-editing/sourcediting
+ * @module source-editing/sourceediting
  */
 
 import { Plugin, PendingActions } from 'ckeditor5/src/core';
