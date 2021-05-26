@@ -1,6 +1,7 @@
 ---
 title: Tables
 category: features
+modified_at: 2021-05-25
 ---
 
 {@snippet features/build-table-source}
@@ -37,7 +38,9 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 ### Table caption
 
-The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions.
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These works very much like image captions or like table headers. A caption informs the reader about the content of the table. Using these is also beneficial from the accessability point of view as they would be read by screen readers.
+
+Click on table caption in the demo to edit it or use the table toolbar to toggle the caption on and off.
 
 {@snippet features/table-caption}
 
@@ -327,7 +330,7 @@ const tableConfig = {
 };
 ```
 
-The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`. 
+The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`.
 
 The content should be away about `10px` from the cell's edges (`padding`), vertically aligned to `bottom` and horizontally to `center`.
 
@@ -684,10 +687,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 
 ## Known issues
 
-While the table nesting functionality is fully functional, it is not yet supported with some output features. Feel free to upvote 👍&nbsp; these issues on GitHub if they are important for you:
-
-* [#9474](https://github.com/ckeditor/ckeditor5/issues/9474) &ndash; The `.docx` file generated with the [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) feature will not open properly if it contains nested tables. Due to this, an alert will be shown if you attempt to export a file containing a nested table to Word.
-* [#9475](https://github.com/ckeditor/ckeditor5/issues/9475) &ndash; The Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables.
+While the table nesting functionality is fully functional, it is not yet supported with some output features, the Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables [#9475](https://github.com/ckeditor/ckeditor5/issues/9475). Feel free to upvote 👍&nbsp; this issue on GitHub if they are important for you.
 
 ## Contribute
 
