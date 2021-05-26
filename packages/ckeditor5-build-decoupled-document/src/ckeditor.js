@@ -69,6 +69,7 @@ class InsertSmartField extends Plugin {
 			'Property Name',
 			'Project Manager',
 			'Project Manager Email',
+			'Quote Number',
 			'Quote Creation Date',
 			'Quote Subject',
 			'Tasks',
