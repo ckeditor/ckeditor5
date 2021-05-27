@@ -9,7 +9,7 @@
 
 import Consumable from './modelconsumable';
 import Range from '../model/range';
-import Position, { getNodeAfterPosition, getTextNodeAtPosition } from '../model/position';
+import Position from '../model/position';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -123,20 +123,6 @@ export default class DowncastDispatcher {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
 		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
-
-		/**
-		 * Maps conversion event names that will trigger element reconversion for a given element name.
-		 *
-		 * @type {Map<String, String>}
-		 * @private
-		 */
-		this._reconversionEventsMapping = new Map();
-
-		/**
-		 * TODO
-		 * @private
-		 */
-		this._magicTriggerCallbacks = new Set();
 	}
 
 	/**
@@ -161,7 +147,7 @@ export default class DowncastDispatcher {
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type === 'reconvert' ) {
-				this.reconvertElement( entry.range, writer );
+				this.reconvertMagic( entry.range, entry.magicUid, writer );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -274,7 +260,7 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/element~Element} element The element to be reconverted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	reconvertElement( range, writer ) {
+	reconvertMagic( range, magicUid, writer ) {
 		const mapper = this.conversionApi.mapper;
 
 		console.log( 'reconverting range:', range.start.path + ' - ' + range.end.path ); // eslint-disable-line
@@ -303,11 +289,21 @@ export default class DowncastDispatcher {
 			}
 		}
 
-		// Trigger single insert for magic conversion.
-		this.fire( 'insert', { range }, this.conversionApi );
+		if ( magicUid ) {
+			// Trigger single insert for magic conversion.
+			this.fire( 'magic:' + magicUid, { range }, this.conversionApi );
+		}
 
 		// Convert the element - without converting children.
 		for ( const element of elements ) {
+			// TODO temporary for elementToElement with triggerBy
+			if ( !magicUid ) {
+				this._testAndFire( 'insert', {
+					item: range.start.nodeAfter,
+					range
+				} );
+			}
+
 			// TODO this is extracted from _convertInsertWithAttributes
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
@@ -503,33 +499,6 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Maps the model element "insert" reconversion for given event names. The event names must be fully specified:
-	 *
-	 * * For "attribute" change event, it should include the main element name, i.e: `'attribute:attributeName:elementName'`.
-	 * * For child node change events, these should use the child event name as well, i.e:
-	 *     * For adding a node: `'insert:childElementName'`.
-	 *     * For removing a node: `'remove:childElementName'`.
-	 *
-	 * **Note**: This method should not be used directly. The reconversion is defined by the `triggerBy()` configuration of the
-	 * `elementToElement()` conversion helper.
-	 *
-	 * @protected
-	 * @param {String} modelName The name of the main model element for which the events will trigger the reconversion.
-	 * @param {String} eventName The name of an event that would trigger conversion for a given model element.
-	 */
-	_mapReconversionTriggerEvent( modelName, eventName ) {
-		this._reconversionEventsMapping.set( eventName, modelName );
-	}
-
-	/**
-	 * TODO
-	 * @protected
-	 */
-	_addMagicTriggerCallback( callback ) {
-		this._magicTriggerCallbacks.add( callback );
-	}
-
-	/**
 	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from a given range,
 	 * assuming that the range has just been inserted to the model.
 	 *
@@ -647,7 +616,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Returns differ changes together with added "reconvert" type changes for {@link #reconvertElement}. These are defined by
+	 * Returns differ changes together with added "reconvert" type changes for {@link #reconvertMagic}. These are defined by
 	 * a the `triggerBy()` configuration for the
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
@@ -680,138 +649,25 @@ export default class DowncastDispatcher {
 		const updated = [];
 
 		for ( const entry of differ.getChanges() ) {
-			const position = entry.position || entry.range.start;
-			// Cached parent - just in case. See https://github.com/ckeditor/ckeditor5/issues/6579.
-			const positionParent = position.parent;
-			const textNode = getTextNodeAtPosition( position, positionParent );
+			const data = this.fire( 'magicTrigger', entry ); // { range, magicUid }
 
-			// Reconversion is done only on elements so skip text changes.
-			if ( textNode ) {
-				updated.push( entry );
-
-				continue;
-			}
-
-			const element = entry.type === 'attribute' ? getNodeAfterPosition( position, positionParent, null ) : positionParent;
-
-			// Case of text node set directly in root. For now used only in tests but can be possible when enabled in paragraph-like roots.
-			// See: https://github.com/ckeditor/ckeditor5/issues/762.
-			if ( element.is( '$text' ) ) {
-				updated.push( entry );
-
-				continue;
-			}
-
-			const reconvertRange = this._isReconvertTrigger( entry, element );
-
-			if ( reconvertRange ) {
-				if ( rangesToReconvert.some( range => range.isEqual( reconvertRange ) ) ) {
+			if ( data ) {
+				// TODO make sure those are not intersecting.
+				if ( rangesToReconvert.some( entry => entry.range.isEqual( data.range ) && entry.magicUid == data.magicUid ) ) {
 					// Range is already marked for reconversion, so skip this change.
 					continue;
 				}
 
-				rangesToReconvert.push( reconvertRange );
+				rangesToReconvert.push( data );
 
-				// TODO element is not needed here
 				// Add special "reconvert" change.
-				updated.push( { type: 'reconvert', element, range: reconvertRange } );
+				updated.push( { type: 'reconvert', ...data } );
 			} else {
 				updated.push( entry );
 			}
 		}
 
 		return updated;
-	}
-
-	/**
-	 * Checks if the resulting change should trigger element reconversion.
-	 *
-	 * These are defined by a `triggerBy()` configuration for the
-	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
-	 *
-	 * @private
-	 * @param {module:engine/model/differ~DiffItem} diffItem The differ item.
-	 * @param {module:engine/model/element~Element} element The element to check.
-	 * @returns {Boolean}
-	 */
-	// TODO rename - it returns reconversion data
-	_isReconvertTrigger( diffItem, element ) {
-		let eventName;
-
-		if ( diffItem.type == 'attribute' ) {
-			eventName = `attribute:${ diffItem.attributeKey }:${ element.name }`;
-		} else {
-			eventName = `${ diffItem.type }:${ diffItem.name }`;
-		}
-
-		if ( this._reconversionEventsMapping.get( eventName ) === element.name ) {
-			return Range._createOn( element );
-		}
-
-		// TODO all below should be registered from list editing plugin.
-		// TODO mark for reconversion - API dla list editing
-		// TODO insert anything without list attributes between the list items
-
-		for ( const callback of this._magicTriggerCallbacks ) {
-			const range = callback( diffItem, element );
-
-			if ( range ) {
-				return range;
-			}
-		}
-
-		// const mapper = this.conversionApi.mapper;
-		//
-		// // This is a newly inserted element, this is not reconversion.
-		// if ( diffItem.type == 'insert' && !mapper.toViewElement( diffItem.position.nodeAfter ) ) {
-		// 	return null;
-		// }
-		//
-		// let removedElement = null;
-		//
-		// // Find sibling list item for removed list item.
-		// // if ( diffItem.type == 'remove' ) {
-		// // 	const nodeBefore = diffItem.position.nodeBefore;
-		// // 	const nodeAfter = diffItem.position.nodeAfter;
-		// //
-		// // 	if ( nodeBefore && nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
-		// // 		removedElement = nodeBefore;
-		// // 	} else if ( nodeAfter && nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
-		// // 		removedElement = nodeAfter;
-		// // 	}
-		// // }
-		//
-		// const listItemAttributes = [ 'listIndent', 'listType', 'listItem' ];
-		// const isChangedListItem = diffItem.type === 'attribute' && listItemAttributes.includes( diffItem.attributeKey );
-		//
-		// if ( isChangedListItem || removedElement ) {
-		// 	element = removedElement || element;
-		//
-		// 	let startElement = element;
-		// 	let endElement = element;
-		//
-		// 	let node;
-		//
-		// 	while (
-		// 		( node = startElement.previousSibling ) &&
-		// 		node.is( 'element' ) && node.hasAttribute( 'listItem' )
-		// 	) {
-		// 		startElement = node;
-		// 	}
-		//
-		// 	while (
-		// 		( node = endElement.nextSibling ) &&
-		// 		node.is( 'element' ) && node.hasAttribute( 'listItem' )
-		// 	) {
-		// 		endElement = node;
-		// 	}
-		//
-		// 	const range = new Range( Position._createBefore( startElement ), Position._createAfter( endElement ) );
-		//
-		// 	return { range, element };
-		// }
-
-		return null;
 	}
 
 	/**

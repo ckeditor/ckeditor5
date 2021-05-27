@@ -142,6 +142,17 @@ export default class ListEditing extends Plugin {
 						break;
 
 					// TODO remove
+					// Find sibling list item for removed list item.
+					// // if ( diffItem.type == 'remove' ) {
+					// // 	const nodeBefore = diffItem.position.nodeBefore;
+					// // 	const nodeAfter = diffItem.position.nodeAfter;
+					// //
+					// // 	if ( nodeBefore && nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
+					// // 		removedElement = nodeBefore;
+					// // 	} else if ( nodeAfter && nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
+					// // 		removedElement = nodeAfter;
+					// // 	}
+					// // }
 				}
 
 				if ( !element ) {

@@ -496,6 +496,85 @@ describe( 'DowncastHelpers', () => {
 					expect( paraAfter, 'para' ).to.equal( paraBefore );
 					expect( textAfter, 'text' ).to.equal( textBefore );
 				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/9641
+				it( 'should convert on multiple similar child hooks', () => {
+					model.schema.register( 'simpleBlock2', {
+						allowIn: '$root',
+						allowChildren: 'paragraph'
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'simpleBlock2',
+						view: { name: 'div', classes: 'second' },
+						triggerBy: {
+							children: [ 'paragraph' ]
+						}
+					} );
+
+					setModelData( model,
+						'<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' +
+						'<simpleBlock2 toStyle="display:block"><paragraph>bar</paragraph></simpleBlock2>'
+					);
+
+					const [ viewBefore0, paraBefore0, textBefore0 ] = getNodes( 0 );
+					const [ viewBefore1, paraBefore1, textBefore1 ] = getNodes( 1 );
+
+					model.change( writer => {
+						const paragraph = writer.createElement( 'paragraph' );
+						const text = writer.createText( 'abc' );
+
+						writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+						writer.insert( text, paragraph, 0 );
+					} );
+
+					const [ viewAfter0, paraAfter0, textAfter0 ] = getNodes( 0 );
+					const [ viewAfter1, paraAfter1, textAfter1 ] = getNodes( 1 );
+
+					expectResult(
+						'<div><p>foo</p><p>abc</p></div>' +
+						'<div class="second"><p>bar</p></div>'
+					);
+
+					expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+					expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
+					expect( textAfter0, 'text' ).to.equal( textBefore0 );
+
+					expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
+					expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
+					expect( textAfter1, 'text' ).to.equal( textBefore1 );
+
+					model.change( writer => {
+						const paragraph = writer.createElement( 'paragraph' );
+						const text = writer.createText( '123' );
+
+						writer.insert( paragraph, modelRoot.getChild( 1 ), 1 );
+						writer.insert( text, paragraph, 0 );
+					} );
+
+					const [ viewAfterAfter0, paraAfterAfter0, textAfterAfter0 ] = getNodes( 0 );
+					const [ viewAfterAfter1, paraAfterAfter1, textAfterAfter1 ] = getNodes( 1 );
+
+					expectResult(
+						'<div><p>foo</p><p>abc</p></div>' +
+						'<div class="second"><p>bar</p><p>123</p></div>'
+					);
+
+					expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+					expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
+					expect( textAfter0, 'text' ).to.equal( textBefore0 );
+
+					expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
+					expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
+					expect( textAfter1, 'text' ).to.equal( textBefore1 );
+
+					expect( viewAfterAfter0, 'simpleBlock' ).to.equal( viewAfter0 );
+					expect( paraAfterAfter0, 'para' ).to.equal( paraAfter0 );
+					expect( textAfterAfter0, 'text' ).to.equal( textAfter0 );
+
+					expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
+					expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
+					expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
+				} );
 			} );
 
 			describe( 'with complex view structure - no children allowed', () => {
@@ -1290,8 +1369,8 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
 			}
 
-			function* getNodes() {
-				const main = viewRoot.getChild( 0 );
+			function* getNodes( childIndex = 0 ) {
+				const main = viewRoot.getChild( childIndex );
 				yield main;
 
 				for ( const { item } of controller.view.createRangeIn( main ) ) {

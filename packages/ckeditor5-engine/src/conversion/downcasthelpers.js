@@ -20,6 +20,7 @@ import ConversionHelpers from './conversionhelpers';
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * Downcast conversion helper functions.
@@ -1385,18 +1386,8 @@ function downcastElementToElement( config ) {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 
 		if ( config.triggerBy ) {
-			if ( config.triggerBy.attributes ) {
-				for ( const attributeKey of config.triggerBy.attributes ) {
-					dispatcher._mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
-				}
-			}
-
-			if ( config.triggerBy.children ) {
-				for ( const childName of config.triggerBy.children ) {
-					dispatcher._mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
-					dispatcher._mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
-				}
-			}
+			// TODO this is translated from the previous triggerBy implementation (should be unified with magic).
+			dispatcher.on( 'magicTrigger', createMagicHandler( config ) );
 		}
 	};
 }
@@ -1484,29 +1475,46 @@ function downcastAttributeToAttribute( config ) {
 function magicDowncast( config ) {
 	config = cloneDeep( config );
 
+	// TODO make sure that insert event matches the triggerBy so there is no need to verify range inside the model callback
+	// An abstract name of the model structure conversion.
+	const magicUid = uid();
+
 	return dispatcher => {
-		dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+		dispatcher.on( 'magic:' + magicUid, ( evt, data, conversionApi ) => {
 			// data.item, data.range
 
+			console.log( '--', data );
+
 			// Model check.
-			const modelResult = config.model( data );
+			// TODO maybe call it for every element in the range.
+			// const modelResult = config.model( data );
+			//
+			// if ( !modelResult ) {
+			// 	return;
+			// }
 
-			if ( !modelResult ) {
-				return;
-			}
+			// const { consumables } = modelResult;
 
-			const { consumables } = modelResult;
+			const slots = new Map();
 
 			// View creation.
-			const fragment = config.view( data, {
+			const element = config.view( data.range, {
 				...conversionApi,
-				slotFor( element, children = true ) {}
+				slotFor( element, children = true ) {
+					const slot = conversionApi.writer.createEmptyElement( '$slot' );
+
+					slots.set( slot, { element, children } );
+
+					return slot;
+				}
 			} );
+
+			console.log( 'slots', slots.entries() );
 
 			// Make sure that slots are created for the elements themself or direct descendants and not other elements.
 
 			// Consuming content of `consumable` (processing from DX form to event names).
-			consumables;
+			// consumables;
 
 			// View insertion, filling slots, binding (based on slot element and same for not bound parents).
 			// ...
@@ -1514,14 +1522,7 @@ function magicDowncast( config ) {
 		}, { priority: config.converterPriority || 'normal' } );
 
 		if ( config.triggerBy ) {
-			// Register it in dispatcher so it could later
-			// call this callback to get list of diffItems that should be replaced with a reconversion.
-
-			dispatcher._addMagicTriggerCallback( config.triggerBy );
-
-			// The result would be range to convert as a block.
-
-			// Make sure that reconversion will be triggered once
+			dispatcher.on( 'magicTrigger', createMagicHandler( config, { magicUid } ) );
 		}
 	};
 }
@@ -1720,6 +1721,45 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 	}
 
 	return descriptor;
+}
+
+// TODO
+function createMagicHandler( config, auxData = null ) {
+	if ( typeof config.triggerBy == 'function' ) {
+		return ( evt, diffItem ) => {
+			const range = config.triggerBy( diffItem );
+
+			if ( !range ) {
+				return;
+			}
+
+			evt.return = { ...auxData, range };
+			evt.stop();
+		};
+	}
+
+	return ( evt, diffItem ) => {
+		// For attribute use node affected by the change.
+		// For insert or remove use parent element because we need to check if it's added/removed child.
+		const element = diffItem.position ? diffItem.position.parent : diffItem.range.start.nodeAfter;
+
+		if ( element.name != config.model ) {
+			return;
+		}
+
+		if ( diffItem.type == 'attribute' ) {
+			if ( !config.triggerBy.attributes || !config.triggerBy.attributes.includes( diffItem.attributeKey ) ) {
+				return;
+			}
+		} else {
+			if ( !config.triggerBy.children || !config.triggerBy.children.includes( diffItem.name ) ) {
+				return;
+			}
+		}
+
+		evt.return = { ...auxData, range: ModelRange._createOn( element ) };
+		evt.stop();
+	};
 }
 
 /**

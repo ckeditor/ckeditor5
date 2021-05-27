@@ -153,6 +153,52 @@ function downcastBox( modelElement, conversionApi ) {
 	return viewBox;
 }
 
+function downcastMagicBox( modelRangeOrElement, conversionApi ) {
+	const { writer, slotFor } = conversionApi;
+
+	const modelElement = modelRangeOrElement.is( 'element' ) ? modelRangeOrElement : modelRangeOrElement.getContainedElement();
+
+	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
+	conversionApi.mapper.bindElements( modelElement, viewBox );
+
+	const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
+	writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
+
+	for ( const [ meta, metaValue ] of Object.entries( modelElement.getAttribute( 'meta' ) ) ) {
+		if ( meta === 'header' ) {
+			const header = writer.createRawElement( 'div', {
+				class: 'box-meta box-meta-header'
+			}, domElement => {
+				domElement.innerHTML = `<div class="box-meta-header-title"><h2>${ metaValue.title }</h2></div>`;
+			} );
+
+			writer.insert( writer.createPositionBefore( contentWrap ), header );
+		}
+
+		if ( meta === 'author' ) {
+			const author = writer.createRawElement( 'div', {
+				class: 'box-meta box-meta-author'
+			}, domElement => {
+				domElement.innerHTML = `<a href="${ metaValue.website }">${ metaValue.name }</a>`;
+			} );
+
+			writer.insert( writer.createPositionAfter( contentWrap ), author );
+		}
+	}
+
+	writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( modelElement, 'children' ) );
+
+	// for ( const field of modelElement.getChildren() ) {
+	// 	const viewField = writer.createContainerElement( 'div', { class: 'box-content-field' } );
+	//
+	// 	writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
+	// 	conversionApi.mapper.bindElements( field, viewField );
+	// 	conversionApi.consumable.consume( field, 'insert' );
+	// }
+
+	return viewBox;
+}
+
 function addButton( editor, uiName, label, callback ) {
 	editor.ui.componentFactory.add( uiName, locale => {
 		const view = new ButtonView( locale );
@@ -202,6 +248,15 @@ function Box( editor ) {
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'box',
 		view: downcastBox,
+		// triggerBy: {
+		// 	attributes: [ 'meta' ],
+		// 	children: [ 'boxField' ]
+		// }
+	} );
+
+	editor.conversion.for( 'downcast' ).magic( {
+		model: 'box',
+		view: downcastMagicBox,
 		triggerBy: {
 			attributes: [ 'meta' ],
 			children: [ 'boxField' ]
