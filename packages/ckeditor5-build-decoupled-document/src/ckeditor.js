@@ -66,6 +66,7 @@ class InsertSmartField extends Plugin {
 			'Ordered By',
 			'Ordered By Email',
 			'Ordered By Phone',
+			'Property Address',
 			'Property Name',
 			'Project Manager',
 			'Project Manager Email',
