@@ -1,26 +1,28 @@
 ---
 category: features
 menu-title: Source editing
-modified_at: 2021-05-26
+modified_at: 2021-05-28
 ---
 
 # Source editing
 
-The {@link module:source-editing/sourceediting~SourceEditing} feature provides the ability for viewing and editing the source of the document. The changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only, if the editor has loaded a plugin, that understands the given syntax. For example, if editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are the high-level one.
+The {@link module:source-editing/sourceediting~SourceEditing} feature provides the ability for viewing and editing the source of the document. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are the high-level ones.
+
+The changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only, if the editor understands (via loaded plugins) the given syntax. You will loose all changes done in the source editing mode unless they are compatible with what the initialized features understand. For example, if editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
 
 <info-box>
-	Currently, plugin handles the source editing mode only for the {@link examples/builds/classic-editor classic editor}.
+	Currently, the source editing mode is supported only for the {@link examples/builds/classic-editor classic editor}.
 </info-box>
 
 ## Demo
 
-Use the editor below to see the source editing plugin in action. Toggle the source editing mode, make some changes in the HTML code, and go back to see that they are present in the document content.
+Use the editor below to see the source editing plugin in action. Toggle the source editing mode, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
 
 {@snippet features/source-editing-imports}
 
 {@snippet features/source-editing}
 
-The source editing plugin also works with {@link features/markdown Markdown} output.
+The source editing plugin also works well with the {@link features/markdown Markdown} output. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 {@snippet features/source-editing-with-markdown}
 

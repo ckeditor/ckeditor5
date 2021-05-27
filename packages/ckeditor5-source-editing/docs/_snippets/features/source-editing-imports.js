@@ -22,8 +22,6 @@ ClassicEditor.defaultConfig = {
 			'bold',
 			'italic',
 			'link',
-			'blockQuote',
-			'|',
 			'bulletedList',
 			'numberedList',
 			'|',
@@ -31,7 +29,9 @@ ClassicEditor.defaultConfig = {
 			'indent',
 			'|',
 			'uploadImage',
+			'blockQuote',
 			'insertTable',
+			'mediaEmbed',
 			'|',
 			'sourceEditing',
 			'|',
@@ -39,8 +39,7 @@ ClassicEditor.defaultConfig = {
 			'redo'
 		],
 		viewportTopOffset: window.getViewportTopOffsetConfig()
-	},
-	indentBlock: { offset: 30, unit: 'px' }
+	}
 };
 
 window.ClassicEditor = ClassicEditor;
