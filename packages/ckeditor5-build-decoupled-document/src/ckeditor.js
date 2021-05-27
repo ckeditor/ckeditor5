@@ -61,6 +61,7 @@ class InsertSmartField extends Plugin {
 			'Company Phone',
 			'Company Address',
 			'Company Logo',
+			'Customer Name',
 			'Discount',
 			'Line Items',
 			'Ordered By',
