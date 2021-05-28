@@ -42,7 +42,13 @@ export default class BaseCommand extends Command {
 		// Refresh state, so the command is inactive right after initialization.
 		this.refresh();
 
-		this.listenTo( editor.data, 'set', () => this.clearStack() );
+		this.listenTo( editor.data, 'set', ( evt, data ) => {
+			const options = data[ 1 ];
+
+			if ( !options.allowUndo ) {
+				this.clearStack();
+			}
+		} );
 	}
 
 	/**

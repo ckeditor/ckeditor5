@@ -211,7 +211,7 @@ export default class SourceEditing extends Plugin {
 		const editingView = editor.editing.view;
 
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
-			editor.data.set( { [ rootName ]: domSourceEditingElementWrapper.dataset.value } );
+			editor.data.set( { [ rootName ]: domSourceEditingElementWrapper.dataset.value }, { allowUndo: true } );
 
 			editingView.change( writer => {
 				const viewRoot = editingView.document.getRoot( rootName );

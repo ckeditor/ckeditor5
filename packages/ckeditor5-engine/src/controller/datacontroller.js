@@ -350,8 +350,10 @@ export default class DataController {
 	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.allowUndo=false]
 	 */
-	set( data ) {
+	set( data, options = {} ) {
 		let newData = {};
 
 		if ( typeof data === 'string' ) {
@@ -375,7 +377,7 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-set-non-existent-root', this );
 		}
 
-		this.model.enqueueChange( 'transparent', writer => {
+		const setNewContent = writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
@@ -386,7 +388,16 @@ export default class DataController {
 				writer.remove( writer.createRangeIn( modelRoot ) );
 				writer.insert( this.parse( newData[ rootName ], modelRoot ), modelRoot, 0 );
 			}
-		} );
+		};
+
+		const batchType = options.allowUndo ? 'default' : 'transparent';
+
+		// if ( options.allowUndo ) {
+		// 	console.log( options.allowUndo );
+		// 	this.model.change( setNewContent );
+		// } else {
+		this.model.enqueueChange( batchType, setNewContent );
+		// }
 	}
 
 	/**
