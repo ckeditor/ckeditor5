@@ -14,6 +14,8 @@
     "ckeditor5": "^27.1.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-dev-utils": "^25.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^27.1.0",
     "@ckeditor/ckeditor5-widget": "^27.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
