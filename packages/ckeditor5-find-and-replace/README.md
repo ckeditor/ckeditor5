@@ -1,4 +1,4 @@
-CKEditor 5 Find and Replace feature
+CKEditor 5 find and replace feature
 ===========================
 
 This is an initial package for development purposes. It does not contain code yet.
