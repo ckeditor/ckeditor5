@@ -189,11 +189,37 @@ describe( 'Table feature – integration', () => {
 		it( 'should not make the Model#hasContent() method return "true" when an empty table cell is selected', () => {
 			setModelData( editor.model, '<table>' +
 				'<tableRow>' +
-					'[<tableCell><paragraph></paragraph></tableCell>]' +
+				'[<tableCell><paragraph></paragraph></tableCell>]' +
 				'</tableRow>' +
-			'</table>' );
+				'</table>' );
 
 			expect( editor.model.hasContent( editor.model.document.selection.getFirstRange() ) ).to.be.false;
 		} );
+	} );
+} );
+
+describe( 'Table feature – integration #2', () => {
+	let editor;
+
+	afterEach( () => {
+		editor.destroy();
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/pull/9780
+	it( 'should work with the upcast marker to data conversion with table containing an empty cell', async () => {
+		function CustomPlugin( editor ) {
+			// Define the conversion in a plugin as this needs to be loaded before the Table plugin.
+			editor.conversion.for( 'upcast' ).dataToMarker( {
+				view: 'foo'
+			} );
+		}
+
+		editor = await ClassicTestEditor
+			.create( '', { plugins: [ CustomPlugin, Paragraph, TableEditing ] } );
+
+		editor.setData( '<table><tbody><tr><td></td></tr></tbody></table>' );
+
+		expect( getModelData( editor.model, { withoutSelection: true } ) )
+			.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 	} );
 } );
