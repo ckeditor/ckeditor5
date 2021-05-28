@@ -908,10 +908,10 @@ describe( 'UpcastHelpers', () => {
 			expectResult(
 				viewParse(
 					'<p>' +
-					'Foo' +
-					'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
-					'<group-start name="foo"></group-start><group-end name="foo"></group-end>' +
-					'bar' +
+						'Foo' +
+						'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
+						'<group-start name="foo"></group-start><group-end name="foo"></group-end>' +
+						'bar' +
 					'</p>'
 				),
 				'<paragraph>Foobar</paragraph>',

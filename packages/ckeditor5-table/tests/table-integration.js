@@ -187,11 +187,13 @@ describe( 'Table feature – integration', () => {
 		} );
 
 		it( 'should not make the Model#hasContent() method return "true" when an empty table cell is selected', () => {
-			setModelData( editor.model, '<table>' +
-				'<tableRow>' +
-				'[<tableCell><paragraph></paragraph></tableCell>]' +
-				'</tableRow>' +
-				'</table>' );
+			setModelData( editor.model, (
+				'<table>' +
+					'<tableRow>' +
+						'[<tableCell><paragraph></paragraph></tableCell>]' +
+					'</tableRow>' +
+				'</table>'
+			) );
 
 			expect( editor.model.hasContent( editor.model.document.selection.getFirstRange() ) ).to.be.false;
 		} );
