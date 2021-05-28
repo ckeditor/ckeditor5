@@ -94,12 +94,18 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
 
-			// Disable button if there is a pending action or editor is in a read-only mode. Pending action may change the model, so viewing
-			// and/or editing the document source should be prevented until the model is finally set.
+			// Disable button if:
+			// - plugin is disabled, or
+			// - editor is in a read-only mode, or
+			// - there is a pending action.
+			//
+			// Pending action may change the model, so viewing and/or editing the document source should be prevented until the model is
+			// finally set.
 			buttonView.bind( 'isEnabled' ).to(
-				editor.plugins.get( PendingActions ), 'hasAny',
+				this, 'isEnabled',
 				editor, 'isReadOnly',
-				( hasAnyPendingActions, isReadOnly ) => !hasAnyPendingActions && !isReadOnly
+				editor.plugins.get( PendingActions ), 'hasAny',
+				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => isEnabled && !isEditorReadOnly && !hasAnyPendingActions
 			);
 
 			this.listenTo( buttonView, 'execute', () => {
@@ -131,6 +137,8 @@ export default class SourceEditing extends Plugin {
 				}
 			} );
 
+			this.on( 'change:isEnabled', ( evt, name, isEnabled ) => this._handleReadOnlyMode( !isEnabled ) );
+
 			this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => this._handleReadOnlyMode( isReadOnly ) );
 		}
 	}
@@ -138,14 +146,14 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * Creates source editing wrappers, that replace each editing root. Each wrapper contains the document source from corresponding root.
 	 *
-	 * The wrapper element contains a <textarea> and it solves the problem, that the <textarea> element cannot auto expand its height based
-	 * on the content it contains. The solution is to make the <textarea> more like a plain <div> to expand in height as much as it needs
-	 * to, in order to display the whole document source without scrolling. The wrapper element is a parent for the <textarea> and for the
-	 * pseudo-element `::after`, that replicates the look, content, and position of the <textarea>. The pseudo-element replica is hidden,
-	 * but it is styled to be an identical visual copy of the <textarea> with the same content. Then, the wrapper is a grid container and
-	 * both of its children (the <textarea> and the `::after` pseudo-element) are positioned within a CSS grid to occupy the same grid cell.
-	 * The content in the pseudo-element `::after` is set in CSS and it stretches the grid to the appropriate size based on the <textarea>
-	 * value. Since both children occupy the same grid cell, both have always the same height.
+	 * The wrapper element contains a textarea and it solves the problem, that the textarea element cannot auto expand its height based on
+	 * the content it contains. The solution is to make the textarea more like a plain div element, which expands in height as much as it
+	 * needs to, in order to display the whole document source without scrolling. The wrapper element is a parent for the textarea and for
+	 * the pseudo-element `::after`, that replicates the look, content, and position of the textarea. The pseudo-element replica is hidden,
+	 * but it is styled to be an identical visual copy of the textarea with the same content. Then, the wrapper is a grid container and both
+	 * of its children (the textarea and the `::after` pseudo-element) are positioned within a CSS grid to occupy the same grid cell. The
+	 * content in the pseudo-element `::after` is set in CSS and it stretches the grid to the appropriate size based on the textarea value.
+	 * Since both children occupy the same grid cell, both have always the same height.
 	 *
 	 * @private
 	 */
@@ -170,7 +178,7 @@ export default class SourceEditing extends Plugin {
 
 			domSourceEditingElementTextarea.value = data;
 
-			// Bind the <textarea>'s value to the wrapper's `data-value` property. Each change of the <textarea>'s value updates the
+			// Bind the textarea's value to the wrapper's `data-value` property. Each change of the textarea's value updates the
 			// wrapper's `data-value` property.
 			domSourceEditingElementTextarea.addEventListener( 'input', () => {
 				domSourceEditingElementWrapper.dataset.value = domSourceEditingElementTextarea.value;
@@ -220,7 +228,7 @@ export default class SourceEditing extends Plugin {
 	_disableCommands() {
 		const editor = this.editor;
 
-		for ( const [ , command ] of editor.commands ) {
+		for ( const command of editor.commands.commands() ) {
 			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
@@ -233,15 +241,15 @@ export default class SourceEditing extends Plugin {
 	_enableCommands() {
 		const editor = this.editor;
 
-		for ( const [ , command ] of editor.commands ) {
+		for ( const command of editor.commands.commands() ) {
 			command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
 
 	/**
-	 * Adds or removes the `readonly` attribute from <textarea> from all roots, if document source mode is active.
+	 * Adds or removes the `readonly` attribute from textarea from all roots, if document source mode is active.
 	 *
-	 * @param {Boolean} isReadOnly Defines whether document is in read-only mode.
+	 * @param {Boolean} isReadOnly Indicates whether all textarea elements should be read-only.
 	 */
 	_handleReadOnlyMode( isReadOnly ) {
 		if ( !this.isSourceEditingMode ) {

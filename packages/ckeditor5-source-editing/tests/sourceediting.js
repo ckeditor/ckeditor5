@@ -51,14 +51,12 @@ describe( 'SourceEditing', () => {
 			expect( button.label ).to.equal( 'Edit source' );
 		} );
 
-		it( 'should disable button if there is a pending action', () => {
-			const pendingActionsPlugin = editor.plugins.get( PendingActions );
-
-			const action = pendingActionsPlugin.add( 'Action' );
+		it( 'should disable button if plugin is disabled', () => {
+			plugin.forceDisabled( 'disablePlugin' );
 
 			expect( button.isEnabled ).to.be.false;
 
-			pendingActionsPlugin.remove( action );
+			plugin.clearForceDisabled( 'disablePlugin' );
 
 			expect( button.isEnabled ).to.be.true;
 		} );
@@ -69,6 +67,18 @@ describe( 'SourceEditing', () => {
 			expect( button.isEnabled ).to.be.false;
 
 			editor.isReadOnly = false;
+
+			expect( button.isEnabled ).to.be.true;
+		} );
+
+		it( 'should disable button if there is a pending action', () => {
+			const pendingActionsPlugin = editor.plugins.get( PendingActions );
+
+			const action = pendingActionsPlugin.add( 'Action' );
+
+			expect( button.isEnabled ).to.be.false;
+
+			pendingActionsPlugin.remove( action );
 
 			expect( button.isEnabled ).to.be.true;
 		} );
@@ -219,6 +229,21 @@ describe( 'SourceEditing', () => {
 			expect( textarea.readOnly ).to.be.true;
 
 			editor.isReadOnly = false;
+
+			expect( textarea.readOnly ).to.be.false;
+		} );
+
+		it( 'should disable textarea if plugin is disabled', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			plugin.forceDisabled( 'disablePlugin' );
+
+			expect( textarea.readOnly ).to.be.true;
+
+			plugin.clearForceDisabled( 'disablePlugin' );
 
 			expect( textarea.readOnly ).to.be.false;
 		} );
