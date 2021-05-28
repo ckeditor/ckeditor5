@@ -38,19 +38,18 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 ### Table caption
 
-The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These works very much like image captions or like table headers. A caption informs the reader about the content of the table. Using these is also beneficial from the accessability point of view as they would be read by screen readers.
+The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These work very much like image captions &mdash; the caption informs the reader about the content of the table. Using captions is also beneficial from the accessability point of view as they would be read by screen readers.
 
 Click on table caption in the demo to edit it or use the table toolbar to toggle the caption on and off.
 
 {@snippet features/table-caption}
 
 <info-box>
-	By default, table caption feature is not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
+	By default, the table caption feature is not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-caption-2) section to learn how to enable it in your editor.
 </info-box>
 
-<info-box hint>
-	By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
-</info-box>
+
+By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.
 
 ### Nesting tables
 
@@ -156,7 +155,7 @@ ClassicEditor
 
 ### Table caption
 
-To enable table caption feature in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+To enable the table caption feature in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
 
 ```
 npm install --save @ckeditor/ckeditor5-table
@@ -275,7 +274,7 @@ ClassicEditor
 
 The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link builds/guides/integration/content-styles editor content styles}.
 
-The **“Table properties”**, and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
+The **“Table properties”** and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
 
 The stylesheet for the editor displayed below looks as follows:
 
@@ -301,14 +300,15 @@ The stylesheet for the editor displayed below looks as follows:
 
 The same values must be passed to the editor configuration as:
 
-* the {@link module:table/tableproperties~TablePropertiesOptions `table.tableProperties.defaultProperties`} object for the table properties,
-* the {@link module:table/tablecellproperties~TableCellPropertiesOptions `table.tableCellProperties.defaultProperties`} object for the table cell properties.
+* The {@link module:table/tableproperties~TablePropertiesOptions `table.tableProperties.defaultProperties`} object for the table properties.
+* The {@link module:table/tablecellproperties~TableCellPropertiesOptions `table.tableCellProperties.defaultProperties`} object for the table cell properties.
 
 ```js
 const tableConfig = {
     table: {
         tableProperties: {
-            // The default styles for tables in the editor. They should be synchronized with the content styles.
+            // The default styles for tables in the editor.
+			// They should be synchronized with the content styles.
             defaultProperties: {
 	            borderStyle: 'dashed',
 	            borderColor: 'hsl(90, 75%, 60%)',
@@ -317,7 +317,8 @@ const tableConfig = {
 	            width: '500px',
 	            height: '250px'
             },
-            // The default styles for table cells in the editor. They should be synchronized with the content styles.
+            // The default styles for table cells in the editor.
+			// They should be synchronized with the content styles.
 	        tableCellProperties: {
 		        defaultProperties: {
 			        horizontalAlignment: 'center',
@@ -330,18 +331,18 @@ const tableConfig = {
 };
 ```
 
-The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`.
+The table element should be aligned to the `right` side by default. Its size should be `500x250px`. The border style should be `dashed`, `3px` of its width, and the color specified as `Light green`.
 
 The content should be away about `10px` from the cell's edges (`padding`), vertically aligned to `bottom` and horizontally to `center`.
 
-The same will be applied for new tables and cells if they will be inserted into the editor.
+The same will be applied for new tables and cells if they are inserted into the editor.
 
 {@snippet features/table-default-properties}
 
-Read more about all supported properties for the {@link module:table/tableproperties~TablePropertiesOptions table}, and {@link module:table/tablecellproperties~TableCellPropertiesOptions table cells} features.
+Read more about all supported properties for the {@link module:table/tableproperties~TablePropertiesOptions table} and {@link module:table/tablecellproperties~TableCellPropertiesOptions table cells} features.
 
 <info-box>
-	The default table, and table cell styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
+	The default table and table cell styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
 
 ## Block vs inline content in table cells
@@ -687,7 +688,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 
 ## Known issues
 
-While the table nesting functionality is fully functional, it is not yet supported with some output features, the Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables [#9475](https://github.com/ckeditor/ckeditor5/issues/9475). Feel free to upvote 👍&nbsp; this issue on GitHub if they are important for you.
+While the table nesting functionality is fully functional, the Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables ([#9475](https://github.com/ckeditor/ckeditor5/issues/9475)). Feel free to upvote 👍&nbsp; this issue on GitHub if it is important for you.
 
 ## Contribute
 
