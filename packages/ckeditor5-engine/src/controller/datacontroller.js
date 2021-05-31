@@ -380,7 +380,9 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-set-non-existent-root', this );
 		}
 
-		const setNewContent = writer => {
+		const batchType = options.batchType || 'default';
+
+		this.model.enqueueChange( batchType, writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
@@ -391,11 +393,7 @@ export default class DataController {
 				writer.remove( writer.createRangeIn( modelRoot ) );
 				writer.insert( this.parse( newData[ rootName ], modelRoot ), modelRoot, 0 );
 			}
-		};
-
-		const batchType = options.batchType || 'default';
-
-		this.model.enqueueChange( batchType, setNewContent );
+		} );
 	}
 
 	/**
