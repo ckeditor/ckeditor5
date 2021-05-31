@@ -45,7 +45,11 @@ export default class BaseCommand extends Command {
 		// Set the transparent batch for the `editor.data.set()` call if the
 		// batch type is not set and the `options.clearUndoStack` is falsy.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
-			const options = data[ 1 ] || {};
+			if ( !data[ 1 ] ) {
+				data[ 1 ] = {};
+			}
+
+			const options = data[ 1 ];
 
 			if ( options.batchType ) {
 				return;

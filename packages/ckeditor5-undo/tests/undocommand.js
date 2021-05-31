@@ -349,12 +349,34 @@ describe( 'UndoCommand', () => {
 			expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).to.be.true;
 		} );
 
-		it( 'should clear stack on DataController set()', () => {
-			const spy = sinon.stub( undo, 'clearStack' );
+		it( 'should clear stack on DataController#set() by default', () => {
+			const spy = sinon.spy( undo, 'clearStack' );
 
-			editor.setData( 'foo' );
+			editor.data.set( 'foo' );
 
 			sinon.assert.called( spy );
+		} );
+
+		it( 'should not clear stack on DataController#set() when supportUndo option is set to true', () => {
+			const spy = sinon.spy( undo, 'clearStack' );
+
+			editor.data.set( 'foo', { supportUndo: true } );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should override the batch type when the batch type is not set', () => {
+			const dataSetSpy = sinon.spy();
+
+			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
+
+			editor.data.set( 'foo' );
+
+			const firstCall = dataSetSpy.firstCall;
+			const data = firstCall.args[ 1 ];
+
+			expect( data[ 1 ] ).to.be.an( 'object' );
+			expect( data[ 1 ] ).to.have.property( 'batchType', 'transparent' );
 		} );
 	} );
 } );

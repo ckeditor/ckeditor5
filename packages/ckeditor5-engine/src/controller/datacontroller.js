@@ -350,7 +350,7 @@ export default class DataController {
 	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
-	 * @param {Object} [options]
+	 * @param {Object} [options={}] Options for setting data.
 	 * @param {Boolean} [options.supportUndo=false] When set to `true`, then the undo and redo stacks will be preserved and the current data
 	 * change will be added to the undo stack.
 	 * @param {String} [options.batchType='default'] An internal flag for setting the batch type that will be used to create the batch
