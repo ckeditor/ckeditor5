@@ -321,8 +321,8 @@ describe( 'SourceEditing', () => {
 			button.fire( 'execute' );
 
 			expect( setData.calledOnce ).to.be.true;
-			expect( setData.args[ 0 ][ 0 ] ).to.deep.equal( { main: '<p>Foo</p><p>bar</p>' } );
-			expect( setData.args[ 0 ][ 1 ] ).to.deep.equal( { supportUndo: true } );
+			expect( setData.args[ 0 ] ).to.deep.equal( [ { main: '<p>Foo</p><p>bar</p>' }, { supportUndo: true } ] );
+			expect( editor.data.get() ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
 
 		it( 'should not overwrite the editor data after switching back from the source editing mode if value has not been changed', () => {
