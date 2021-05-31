@@ -382,7 +382,13 @@ function isValueMatched( patternValue, itemKey, getter ) {
 // @param {module:engine/view/element~Element} element Element which attributes will be tested.
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
 function matchAttributes( patterns, element ) {
-	return matchPatterns( patterns, element.getAttributeKeys(), key => element.getAttribute( key ) );
+	// Both `class` and `style` attributes are handled in `matchClasses()` and `matchStyles()` respectively.
+	const attributesToExclude = new Set( [ 'class', 'style' ] );
+	const attributeKeys = [ ...element.getAttributeKeys() ].filter(
+		key => !attributesToExclude.has( key )
+	);
+
+	return matchPatterns( patterns, attributeKeys, key => element.getAttribute( key ) );
 }
 
 // Checks if classes of provided element can be matched against provided patterns.
