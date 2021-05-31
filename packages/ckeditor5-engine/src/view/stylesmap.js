@@ -354,14 +354,11 @@ export default class StylesMap {
 	 *
 	 * When `deep` is set to true and there's a shorthand style property set, it will also return all equivalent styles:
 	 *
-	 * 		// margin: 1em
+	 * 		stylesMap.setTo( 'margin: 1em' )
 	 *
 	 * will be expanded to:
 	 *
-	 * 		// margin-left: 1em
-	 * 		// margin-right: 1em
-	 * 		// margin-top: 1em
-	 * 		// margin-bottom: 1em
+	 * 		[ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ]
 	 *
 	 * @param {Boolean} [deep=false] Expand shorthand style properties and all return equivalent style representations.
 	 * @returns {Array.<String>}
@@ -578,7 +575,7 @@ export class StylesProcessor {
 	}
 
 	/**
-	 * Return all style properties. Expand shorthand properties (e.g. `margin`, `background`).
+	 * Return all style properties. Also expand shorthand properties (e.g. `margin`, `background`) if
 	 *
 	 * @param {Object} styles Object holding normalized styles.
 	 * @returns {Array.<String>}

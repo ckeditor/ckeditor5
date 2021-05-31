@@ -90,8 +90,6 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el2 ) ).to.be.null;
 		} );
 
-		// TODO: Add test for making sure all attributes has to be matched (AND operator instead of OR).
-
 		it( 'should match all element attributes', () => {
 			const pattern = {
 				attributes: true
@@ -409,7 +407,6 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
-		// TODO: Should I `addStyleProcessorRules()` by myself in Matcher?
 		it( 'should match element styles when CSS shorthand is used', () => {
 			const pattern = {
 				styles: {

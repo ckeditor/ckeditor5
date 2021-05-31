@@ -254,7 +254,6 @@ describe( 'StylesMap', () => {
 		} );
 	} );
 
-	// TODO tests for getStyleNames( true )
 	describe( 'getStyleNames()', () => {
 		it( 'should output empty array for empty styles', () => {
 			expect( stylesMap.getStyleNames() ).to.deep.equal( [] );
@@ -270,6 +269,18 @@ describe( 'StylesMap', () => {
 			stylesMap.setTo( 'foo: 1px;foo-top: 2em;' );
 
 			expect( stylesMap.getStyleNames() ).to.deep.equal( [ 'foo' ] );
+		} );
+
+		it( 'should output full names for known style names - deep = true', () => {
+			stylesMap.setTo( 'margin: 1px' );
+
+			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [
+				'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'
+			] );
+
+			stylesMap.setTo( 'margin-top: 1px' );
+
+			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [ 'margin', 'margin-top' ] );
 		} );
 	} );
 } );
