@@ -67,7 +67,6 @@ ClassicEditor
 		generalHtmlSupport: {
 			allowed: [
 				{ name: 'article' },
-				{ name: 'xyz' },
 				{ name: /^(details|summary)$/ },
 				{ name: /^(dl|dd|dt)$/ },
 
