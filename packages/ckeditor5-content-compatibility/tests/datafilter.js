@@ -1277,56 +1277,442 @@ describe( 'DataFilter', () => {
 	} );
 
 	describe( 'loadAllowedConfig', () => {
-		it( 'should load config with simple allowed rule', () => {
-			const config = [
-				{
-					name: 'span',
-					styles: { color: true },
-					classes: [ 'foo' ]
-				}
-			];
-
-			dataFilter.loadAllowedConfig( config );
-
-			editor.setData( '<p><span class="foo">foobar</span></p>' );
-
-			// Font feature should take over color CSS property.
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
-				attributes: {
-					1: {
-						classes: [ 'foo' ]
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal( '<p><span class="foo">foobar</span></p>' );
-		} );
-
 		it( 'should load config and match whenever a single match has been found', () => {
 			const config = [
 				{
 					name: 'span',
 					styles: { color: true },
+					classes: [ 'foo', 'bar', 'test' ],
+					attributes: [ { key: /data-foo.*/, value: true } ]
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
+						'<$text htmlSpan="(2)">foo data</$text>' +
+						'<$text htmlSpan="(3)">bar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo', 'bar' ]
+					},
+					2: {
+						attributes: {
+							'data-foo': 'foo data'
+						}
+					},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:blue;">' +
+						'<span class="foo bar">foobar</span>' +
+					'</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span>bar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match all values', () => {
+			// Sanity check test for splitting patterns that are not objects nor arrays.
+
+			const config = [
+				{
+					name: 'span',
+					styles: true,
+					classes: true,
+					attributes: true
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
+						'<$text htmlSpan="(2)">foo data</$text>' +
+						'<$text htmlSpan="(3)">bar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo', 'bar' ]
+					},
+					2: {
+						attributes: {
+							'data-foo': 'foo data'
+						}
+					},
+					3: {
+						attributes: {
+							'data-bar': 'bar data'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:blue;">' +
+						'<span class="foo bar">foobar</span>' +
+					'</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match attributes', () => {
+			const config = [
+				{
+					name: 'span',
+					attributes: [ { key: /data-foo.*/, value: true } ]
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
+						'<$text htmlSpan="(2)">foo data</$text>' +
+						'<$text htmlSpan="(3)">bar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {
+						attributes: {
+							'data-foo': 'foo data'
+						}
+					},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:blue;">' +
+						'<span>foobar</span>' +
+					'</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span>bar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match classes', () => {
+			const config = [
+				{
+					name: 'span',
 					classes: [ 'foo', 'bar', 'test' ]
 				}
 			];
 
 			dataFilter.loadAllowedConfig( config );
 
-			editor.setData( '<p><span style="color:blue; font-weight:400" class="foo bar">foobar</span></p>' );
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
+				data: '<paragraph>' +
+						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
+						'<$text htmlSpan="(2)">foo databar data</$text>' +
+					'</paragraph>',
 				attributes: {
 					1: {
 						classes: [ 'foo', 'bar' ]
-					}
+					},
+					2: {},
+					3: {}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span class="foo bar">foobar</span></span></p>' );
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:blue;">' +
+						'<span class="foo bar">foobar</span>' +
+					'</span>' +
+					'<span>foo databar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match styles', () => {
+			const config = [
+				{
+					name: 'span',
+					styles: { color: true }
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
+						'<$text htmlSpan="(2)">foo databar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:blue;">' +
+						'<span>foobar</span>' +
+					'</span>' +
+					'<span>foo databar data</span>' +
+				'</p>'
+			);
+		} );
+	} );
+
+	describe( 'loadDisallowedConfig', () => {
+		it( 'should load config and match whenever a single match has been found', () => {
+			const config = [
+				{
+					name: 'span',
+					styles: { color: true },
+					classes: [ 'foo', 'bar', 'test' ],
+					attributes: [ { key: /data-foo.*/, value: true } ]
+				}
+			];
+
+			dataFilter.loadDisallowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foobarfoo databar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span>foobarfoo databar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match all values', () => {
+			// Sanity check test for splitting patterns that are not objects nor arrays.
+
+			const config = [
+				{
+					name: 'span',
+					styles: true,
+					classes: true,
+					attributes: true
+				}
+			];
+
+			dataFilter.loadDisallowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foobarfoo databar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span>foobarfoo databar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match attributes', () => {
+			const config = [
+				{
+					name: 'span',
+					attributes: [ { key: /data-foo.*/, value: true } ]
+				}
+			];
+
+			dataFilter.loadDisallowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
+						'<$text htmlSpan="(2)">foo databar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:blue;">' +
+						'<span>foobar</span>' +
+					'</span>' +
+					'<span>foo databar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match classes', () => {
+			const config = [
+				{
+					name: 'span',
+					classes: [ 'foo', 'bar', 'test' ]
+				}
+			];
+
+			dataFilter.loadDisallowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
+					'<span data-foo="foo data">foo data</span>' +
+					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
+						'<$text htmlSpan="(2)">foo databar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:blue;">' +
+						'<span>foobar</span>' +
+					'</span>' +
+					'<span>foo databar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match styles', () => {
+			const config = [
+				{
+					name: 'span',
+					styles: { color: true }
+				}
+			];
+
+			dataFilter.loadDisallowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="color:blue;">' +
+					'<span>foobar</span>' +
+					'<span>foo databar data</span>' +
+				'</p>'
+			);
+
+			// Font feature should take over color CSS property.
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foobarfoo databar data</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span>foobarfoo databar data</span>' +
+				'</p>'
+			);
 		} );
 	} );
 
