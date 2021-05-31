@@ -133,7 +133,12 @@ export default class MediaEmbedEditing extends Plugin {
 				},
 				{
 					name: 'googleMaps',
-					url: /^google\.com\/maps/
+					url: [
+						/^google\.com\/maps/,
+						/^goo\.gl\/maps/,
+						/^maps\.google\.com/,
+						/^maps\.app\.goo\.gl/
+					]
 				},
 				{
 					name: 'flickr',
