@@ -242,47 +242,48 @@ function matchName( pattern, name ) {
 // Checks if an array of key/value pairs can be matched against provided patterns.
 //
 // Patterns can be provided in a following ways:
-// 	- a boolean value matches any attribute with any value (or no value),
-//	- a RegExp expression or object matches any attribute name,
-//	- an object matches any attribute that has the same name as the object item's key, where object item's value is:
-//		- equal to `true`, which matches any attribute value,
-//		- a string that is equal to attribute value,
-//		- a regular expression that matches attribute value,
-//	- an array with items, where the item is:
-//		- a string that is equal to attribute value,
-//		- an object with `key` and `value` property, where `key` is a regular expression matching attribute name and
-//		  `value` is either regular expression matching attribute value or a string equal to attribute value.
+// 	- a boolean value matches any attribute with any value (or no value):
 //
-//			pattern: true,
+//			pattern: true
 //
-//			// or
+//	- a RegExp expression or object matches any attribute name:
 //
 //			pattern: /h[1-6]/
 //
-//			// or
+//	- an object matches any attribute that has the same name as the object item's key, where object item's value is:
+//		- equal to `true`, which matches any attribute value:
 //
 //			pattern: {
-//				required: true,
-//				src: /https.*/,
+//				required: true
+//			}
+//
+//		- a string that is equal to attribute value:
+//
+//			pattern: {
 //				rel: 'nofollow'
 //			}
 //
-//			// or
+//		- a regular expression that matches attribute value,
+//
+//			pattern: {
+//				src: /https.*/
+//			}
+//
+//	- an array with items, where the item is:
+//		- a string that is equal to attribute value:
 //
 //			pattern: [ 'data-property-1', 'data-property-2' ],
 //
-//			// or
-//
-//			pattern: [ 'data-test', 'data-foo' ],
-//
-//			// or
+//		- an object with `key` and `value` property, where `key` is a regular expression matching attribute name and
+//		  `value` is either regular expression matching attribute value or a string equal to attribute value:
 //
 //			pattern: [
+//				{ key: /data-property-.*/, value: true },
+//				// or:
 //				{ key: /data-property-.*/, value: 'foobar' },
-//				// or
+//				// or:
 //				{ key: /data-property-.*/, value: /foo.*/ }
 //			]
-//		}
 //
 // @param {Object} patterns Object with information about attributes to match.
 // @param {Array} items An array of key/value pairs, e.g.:
