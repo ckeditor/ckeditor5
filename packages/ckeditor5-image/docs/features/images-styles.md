@@ -2,6 +2,7 @@
 category: features-images
 menu-title: Image styles
 order: 60
+modified_at: 2021-05-30
 ---
 {@snippet features/build-image-source}
 

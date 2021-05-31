@@ -2,10 +2,10 @@
 ---
 category: builds-migration
 menu-title: Migration to v28.x
-order: 11
+order: 95
 ---
 
-# Migration to CKEditor 5 v28.0.0
+# Migration to CKEditor 5 v29.0.0
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v28.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
