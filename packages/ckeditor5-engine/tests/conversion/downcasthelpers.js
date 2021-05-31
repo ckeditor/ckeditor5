@@ -3513,6 +3513,15 @@ describe( 'downcast converters', () => {
 			expect( element.priority ).to.equal( 7 );
 			expect( element.hasClass( 'foo-class' ) ).to.be.true;
 		} );
+
+		it( 'should pass priority 0', () => {
+			const descriptor = {
+				priority: 0
+			};
+			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+
+			expect( element.priority ).to.equal( 0 );
+		} );
 	} );
 } );
 

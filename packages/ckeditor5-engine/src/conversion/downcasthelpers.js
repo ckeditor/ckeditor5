@@ -583,7 +583,7 @@ export function createViewElementFromHighlightDescriptor( writer, descriptor ) {
 		viewElement._addClass( descriptor.classes );
 	}
 
-	if ( descriptor.priority ) {
+	if ( typeof descriptor.priority === 'number' ) {
 		viewElement._priority = descriptor.priority;
 	}
 

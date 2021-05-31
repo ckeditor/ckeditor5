@@ -114,7 +114,7 @@ The {@link module:image/autoimage~AutoImage} plugin recognizes image links in th
 	The image URL must be the only content pasted to be properly embedded. Multiple links (`"http://image.url http://another.image.url"`) as well as bigger chunks of content (`"This link http://image.url will not be auto–embedded when pasted."`) are ignored.
 </info-box>
 
-If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> keystrokes).
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> keystrokes).
 
 You can paste the image URL directly into the editor content, and it will be automatically embedded.
 
