@@ -23,13 +23,10 @@ import {
 	viewToAttributeInlineConverter,
 	attributeToViewInlineConverter,
 
-<<<<<<< HEAD
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter
 } from './converters';
-=======
-import { cloneDeep, isPlainObject } from 'lodash-es';
->>>>>>> b60cdaaadc (Match any pattern inside a rule.)
+import { isPlainObject } from 'lodash-es';
 
 import '../theme/datafilter.css';
 
@@ -266,12 +263,13 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * TODO: JSdoc, refactoring.
-	 * Separate multiple patterns into separate rules to make them disjunctive.
+	 * Matcher by default has to match **all** patterns to count it as an actual match. By splitting the pattern
+	 * into separate patterns means that any matched pattern will be count as a match.
 	 *
-	 * @param {*} pattern
-	 * @param {*} attributeName
-	 * @returns
+	 * @private
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern to split.
+	 * @param {String} attributeName Name of the attribute to split (e.g. 'attributes', 'classes', 'styles').
+	 * @returns {Array.<module:engine/view/matcher~MatcherPattern>}
 	 */
 	_splitPattern( pattern, attributeName ) {
 		const { name } = pattern;
