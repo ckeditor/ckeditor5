@@ -42,10 +42,23 @@ export default class BaseCommand extends Command {
 		// Refresh state, so the command is inactive right after initialization.
 		this.refresh();
 
+		// Set the transparent batch for the `editor.data.set()` call if the
+		// batch type is not set and the `options.clearUndoStack` is falsy.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
-			const options = data[ 1 ];
+			const options = data[ 1 ] || {};
 
-			if ( !options.allowUndo ) {
+			if ( options.batchType ) {
+				return;
+			}
+
+			options.batchType = options.supportUndo ? 'default' : 'transparent';
+		}, { priority: 'high' } );
+
+		// Clear the stack when the undo should not be supported.
+		this.listenTo( editor.data, 'set', ( evt, data ) => {
+			const options = data[ 1 ] || {};
+
+			if ( !options.supportUndo ) {
 				this.clearStack();
 			}
 		} );
