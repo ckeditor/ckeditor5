@@ -7,11 +7,13 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import SourceEditing from '../src/sourceediting';
 
@@ -24,7 +26,7 @@ describe( 'SourceEditing', () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ SourceEditing, Paragraph ],
+			plugins: [ SourceEditing, Paragraph, BoldEditing ],
 			initialData: '<p>Foo</p>'
 		} );
 
@@ -172,10 +174,12 @@ describe( 'SourceEditing', () => {
 			expect( hasIdInDisableStackForAnyCommand ).to.be.false;
 		} );
 
-		it( 'should remove the data from the editor after switching to the source editing mode', () => {
+		it( 'should not remove the data from the editor after switching to the source editing mode', () => {
+			const data = editor.data.get();
+
 			button.fire( 'execute' );
 
-			expect( editor.data.get() ).to.equal( '' );
+			expect( editor.data.get() ).to.equal( data );
 		} );
 
 		it( 'should create a wrapper with a class and a data property', () => {
@@ -274,6 +278,32 @@ describe( 'SourceEditing', () => {
 
 			expect( domRoot.classList.contains( 'ck-hidden' ) ).to.be.false;
 			expect( wrapper ).to.be.null;
+		} );
+
+		it( 'should collapse selection and remove selection attributes after switching to the source editing mode', () => {
+			setData( editor.model, '<paragraph><$text bold="true">[foobar]</$text></paragraph>' );
+
+			button.fire( 'execute' );
+
+			expect( getData( editor.model ) ).to.equal( '<paragraph>[]<$text bold="true">foobar</$text></paragraph>' );
+		} );
+
+		it( 'should focus the textarea after switching to the source editing mode', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			expect( document.activeElement ).to.equal( textarea );
+		} );
+
+		it( 'should focus the editing view after switching back from the source editing mode', () => {
+			const spy = sinon.spy( editor.editing.view, 'focus' );
+
+			button.fire( 'execute' );
+			button.fire( 'execute' );
+
+			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 } );

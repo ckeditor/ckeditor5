@@ -160,14 +160,17 @@ export default class SourceEditing extends Plugin {
 	_showSourceEditing() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
+		const model = editor.model;
+
+		model.change( writer => {
+			writer.setSelection( null );
+			writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
+		} );
 
 		// It is not needed to iterate through all editing roots, as currently the plugin supports only the Classic Editor with single
 		// main root, but this code may help understand and use this feature in external integrations.
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
 			const data = editor.data.get( { rootName } );
-
-			// Remove the current data from the editing root, as the data will be overwritten anyway upon exit from the source editing mode.
-			editor.data.set( { [ rootName ]: '' } );
 
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
 
@@ -194,6 +197,8 @@ export default class SourceEditing extends Plugin {
 
 			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
 		}
+
+		this._focusSourceEditing();
 	}
 
 	/**
@@ -218,6 +223,19 @@ export default class SourceEditing extends Plugin {
 		this._elementReplacer.restore();
 
 		this._replacedRoots.clear();
+
+		editor.editing.view.focus();
+	}
+
+	/**
+	 * Focuses the textarea containing document source from the first editing root.
+	 *
+	 * @private
+	 */
+	_focusSourceEditing() {
+		const [ domSourceEditingElementWrapper ] = this._replacedRoots.values();
+
+		domSourceEditingElementWrapper.querySelector( 'textarea' ).focus();
 	}
 
 	/**
