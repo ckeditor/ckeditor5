@@ -8,11 +8,13 @@ order: 96
 
 For the entire list of changes introduced in version 28.0.0, see the [changelog for CKEditor 5 v28.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2800-2021-05-31).
 
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v28.0.0.
+
 ### Imports from index files of non-DLL core packages
 
 Starting from v26.0.0, you could use the `src/index.js` files present in all packages to simplify the import rules.
 
-However, prior to v28.0.0, in some packages, the `src/index.js` file was exporting one object instead of multiple tokens, so the import rule looked like this:
+However, prior to v28.0.0, in some packages, the `src/index.js` file was exporting one object instead of multiple tokens, so the import rule looked as shown:
 
 ```js
 // Importing the default export.
