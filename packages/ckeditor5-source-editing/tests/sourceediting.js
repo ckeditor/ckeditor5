@@ -219,7 +219,7 @@ describe( 'SourceEditing', () => {
 
 			textarea.dispatchEvent( new Event( 'input' ) );
 
-			expect( wrapper.dataset.value ).to.equal( textarea.value );
+			expect( wrapper.dataset.value ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
 
 		it( 'should disable textarea if editor is in read-only mode', () => {
@@ -304,6 +304,44 @@ describe( 'SourceEditing', () => {
 			button.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should update the editor data after switching back from the source editing mode if value has been changed', () => {
+			const setData = sinon.stub( editor.data, 'set' ).callThrough();
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			textarea.value = '<p>Foo</p><p>bar</p>';
+
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			button.fire( 'execute' );
+
+			expect( setData.calledOnce ).to.be.true;
+			expect( setData.args[ 0 ][ 0 ] ).to.deep.equal( { main: '<p>Foo</p><p>bar</p>' } );
+			expect( setData.args[ 0 ][ 1 ] ).to.deep.equal( { supportUndo: true } );
+		} );
+
+		it( 'should not overwrite the editor data after switching back from the source editing mode if value has not been changed', () => {
+			const setData = sinon.stub( editor.data, 'set' ).callThrough();
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			// The same value as the initial one.
+			textarea.value = '<p>Foo</p>';
+
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			button.fire( 'execute' );
+
+			expect( setData.callCount ).to.equal( 0 );
+			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
 		} );
 	} );
 } );

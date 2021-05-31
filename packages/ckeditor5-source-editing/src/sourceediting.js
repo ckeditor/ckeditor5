@@ -210,6 +210,8 @@ export default class SourceEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
+		const data = {};
+
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
 			const oldData = editor.data.get( { rootName } );
 			const newData = domSourceEditingElementWrapper.dataset.value;
@@ -217,7 +219,7 @@ export default class SourceEditing extends Plugin {
 			// Do not set the data unless some changes has been made in the meantime.
 			// This prevents empty undo steps after switching to the normal editor.
 			if ( oldData !== newData ) {
-				editor.data.set( { [ rootName ]: newData }, { supportUndo: true } );
+				data[ rootName ] = newData;
 			}
 
 			editingView.change( writer => {
@@ -230,6 +232,10 @@ export default class SourceEditing extends Plugin {
 		this._elementReplacer.restore();
 
 		this._replacedRoots.clear();
+
+		if ( Object.keys( data ).length ) {
+			editor.data.set( data, { supportUndo: true } );
+		}
 
 		editor.editing.view.focus();
 	}
