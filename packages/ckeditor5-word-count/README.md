@@ -1,4 +1,4 @@
-CKEditor 5 word count and character count feature
+CKEditor 5 word and character count feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-word-count.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count)

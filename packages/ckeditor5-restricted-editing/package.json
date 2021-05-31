@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-restricted-editing",
   "version": "27.1.0",
-  "description": "A restricted editing feature for CKEditor 5 editors.",
+  "description": "Restricted editing feature for CKEditor 5 editors.",
   "keywords": [
     "ckeditor",
     "ckeditor5",

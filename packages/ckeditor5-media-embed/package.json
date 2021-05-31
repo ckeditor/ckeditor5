@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-media-embed",
   "version": "27.1.0",
-  "description": "Media Embed feature for CKEditor 5.",
+  "description": "Media embed feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",

@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKFinder adapter for CKEditor 5** – https://github.com/ckeditor/ckeditor5-adapter-ckfinder <br>
+**CKEditor 5 CKFinder adapter** – https://github.com/ckeditor/ckeditor5-adapter-ckfinder <br>
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).

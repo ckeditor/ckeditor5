@@ -1,4 +1,4 @@
-CKFinder adapter for CKEditor 5
+CKEditor 5 CKFinder adapter
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-adapter-ckfinder.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder)

@@ -1,4 +1,4 @@
-CKEditor 5 file upload utilities
+CKEditor 5 file upload feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-upload.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)

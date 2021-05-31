@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-upload",
   "version": "27.1.0",
-  "description": "Upload Feature for CKEditor 5.",
+  "description": "Upload feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",

@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Remove Format Feature** – https://github.com/ckeditor/ckeditor5-remove-format <br>
+**CKEditor 5 remove format feature** – https://github.com/ckeditor/ckeditor5-remove-format <br>
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).

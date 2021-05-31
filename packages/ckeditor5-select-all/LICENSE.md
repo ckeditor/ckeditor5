@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Select All Feature** – https://github.com/ckeditor/ckeditor5-select-all <br>
+**CKEditor 5 select all feature** – https://github.com/ckeditor/ckeditor5-select-all <br>
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).

@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-remove-format",
   "version": "27.1.0",
-  "description": "Remove Format feature for CKEditor 5.",
+  "description": "Remove format feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",

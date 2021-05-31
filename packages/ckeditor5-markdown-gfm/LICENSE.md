@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**GitHub Flavored Markdown support for CKEditor 5** – https://github.com/ckeditor/ckeditor5-markdown-gfm <br>
+**CKEditor 5 GitHub Flavored Markdown support** – https://github.com/ckeditor/ckeditor5-markdown-gfm <br>
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).

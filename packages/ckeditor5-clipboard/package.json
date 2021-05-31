@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-clipboard",
   "version": "27.1.0",
-  "description": "Clipboard integration for CKEditor 5.",
+  "description": "Clipboard integration feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",

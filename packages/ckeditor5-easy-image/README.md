@@ -1,4 +1,4 @@
-CKEditor 5 Easy Image with Cloud Services
+CKEditor 5 easy image feature with Cloud Services
 =========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-easy-image.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image)
