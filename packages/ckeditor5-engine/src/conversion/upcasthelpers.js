@@ -682,7 +682,7 @@ function upcastAttributeToMarker( config ) {
 	return ( evt, data, conversionApi ) => {
 		const attrName = `data-${ config.view }`;
 
-		// Check if any attribute for the given view item can be consumed before changing the data
+		// Check if any attribute for the given view item can be consumed before changing the conversion data
 		// and consuming view items with these attributes.
 		if (
 			!conversionApi.consumable.test( data.viewItem, { attributes: attrName + '-end-after' } ) &&

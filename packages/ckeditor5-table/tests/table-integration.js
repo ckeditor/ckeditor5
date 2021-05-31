@@ -200,7 +200,7 @@ describe( 'Table feature – integration', () => {
 	} );
 } );
 
-describe( 'Table feature – integration #2', () => {
+describe( 'Table feature – integration with markers', () => {
 	let editor;
 
 	afterEach( () => {
