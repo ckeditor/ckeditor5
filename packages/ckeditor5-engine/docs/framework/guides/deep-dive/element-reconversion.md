@@ -30,7 +30,7 @@ In order to convert a model element to its view representation, you often write 
 * An `elementToElement()` converter. This converter reacts to the insertion of a model element specified in the `model` field.
 * If the model element has attributes and these attributes may change with time, you need to add the `attributeToAttribute()` converters for each attribute. These converters react to changes in the model element attributes and update the view accordingly.
 
-This granular approach to conversion is used by many editor features as it ensures extensibility of the base features and provides a separation of concerns. For example, the {@link features/images-overview base image feature} provides conversion for a simple `<image src="...">` model element, while the {@link features/images-resizing image resize feature} adds support for the `width` and `height` attributes, the {@link features/images-captions image caption feature} for the `<figcaption>` HTML element, and so on.
+This granular approach to conversion is used by many editor features as it ensures extensibility of the base features and provides a separation of concerns. For example, the {@link features/images-overview base image feature} provides conversion for a simple `<imageBlock src="...">` model element, while the {@link features/images-resizing image resize feature} adds support for the `width` and `height` attributes, the {@link features/images-captions image caption feature} for the `<figcaption>` HTML element, and so on.
 
 Apart from the extensibility aspect, the above approach ensures that a change of a model attribute or structure requires minimal changes in the view.
 

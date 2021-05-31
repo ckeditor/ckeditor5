@@ -96,7 +96,7 @@ describe( 'ImageToolbar', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<image src=""></image>]' );
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
 				return view === toolbar && balloonClassName === 'ck-toolbar-container';
@@ -116,7 +116,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should show the toolbar when the editor gains focus and the image is selected', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<image src=""></image>]' );
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			editor.ui.focusTracker.isFocused = false;
 			expect( balloon.visibleView ).to.be.null;
@@ -128,7 +128,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should hide the toolbar when the editor loses focus and the image is selected', () => {
 			editor.ui.focusTracker.isFocused = false;
 
-			setData( model, '[<image src=""></image>]' );
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			editor.ui.focusTracker.isFocused = true;
 			expect( balloon.visibleView ).to.equal( toolbar );
@@ -140,7 +140,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should show the toolbar when the editor gains focus and the selection is in a caption', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '<image src=""><caption>[foo]</caption></image>' );
+			setData( model, '<imageBlock src=""><caption>[foo]</caption></imageBlock>' );
 
 			editor.ui.focusTracker.isFocused = false;
 			expect( balloon.visibleView ).to.be.null;
@@ -152,7 +152,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should hide the toolbar when the editor loses focus and the selection is in a caption', () => {
 			editor.ui.focusTracker.isFocused = false;
 
-			setData( model, '<image src=""><caption>[]foo</caption></image>' );
+			setData( model, '<imageBlock src=""><caption>[]foo</caption></imageBlock>' );
 
 			editor.ui.focusTracker.isFocused = true;
 			expect( balloon.visibleView ).to.equal( toolbar );
@@ -168,7 +168,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the image is selected', () => {
-			setData( model, '<paragraph>[foo]</paragraph><image src=""></image>' );
+			setData( model, '<paragraph>[foo]</paragraph><imageBlock src=""></imageBlock>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -177,7 +177,7 @@ describe( 'ImageToolbar', () => {
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
-				// Select the [<image></image>]
+				// Select the [<imageBlock></imageBlock>]
 				writer.setSelection(
 					writer.createRangeOn( doc.getRoot().getChild( 1 ) )
 				);
@@ -240,7 +240,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the selection is in a caption', () => {
-			setData( model, '<paragraph>[foo]</paragraph><image src=""><caption>bar</caption></image>' );
+			setData( model, '<paragraph>[foo]</paragraph><imageBlock src=""><caption>bar</caption></imageBlock>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -249,7 +249,7 @@ describe( 'ImageToolbar', () => {
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
-				// Select the <image><caption>[bar]</caption></image>
+				// Select the <imageBlock><caption>[bar]</caption></imageBlock>
 				writer.setSelection(
 					writer.createRangeIn( doc.getRoot().getChild( 1 ).getChild( 0 ) )
 				);
@@ -264,7 +264,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
-			setData( model, '[<image src=""></image>]' );
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -286,7 +286,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should hide the toolbar on ui#update if the image is de–selected', () => {
-			setData( model, '<paragraph>foo</paragraph>[<image src=""></image>]' );
+			setData( model, '<paragraph>foo</paragraph>[<imageBlock src=""></imageBlock>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -306,7 +306,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should hide the toolbar on ui#update if the selection is being moved outside of a caption', () => {
-			setData( model, '<paragraph>foo</paragraph><image src=""><caption>[]</caption></image>' );
+			setData( model, '<paragraph>foo</paragraph><imageBlock src=""><caption>[]</caption></imageBlock>' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -326,12 +326,12 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should not hide the toolbar on ui#update if the selection is being moved from an image to a caption', () => {
-			setData( model, '[<image src=""><caption>bar</caption></image>]' );
+			setData( model, '[<imageBlock src=""><caption>bar</caption></imageBlock>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			model.change( writer => {
-				// Select the <image><caption>[bar]</caption></image>
+				// Select the <imageBlock><caption>[bar]</caption></imageBlock>
 				writer.setSelection(
 					writer.createRangeIn( doc.getRoot().getChild( 0 ).getChild( 0 ) )
 				);
@@ -346,12 +346,12 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should not hide the toolbar on ui#update if the selection is being moved from a caption to an image', () => {
-			setData( model, '<image src=""><caption>[b]ar</caption></image>' );
+			setData( model, '<imageBlock src=""><caption>[b]ar</caption></imageBlock>' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			model.change( writer => {
-				// Select the <image><caption>[bar]</caption></image>
+				// Select the <imageBlock><caption>[bar]</caption></imageBlock>
 				writer.setSelection(
 					writer.createRangeIn( doc.getRoot().getChild( 0 ) )
 				);

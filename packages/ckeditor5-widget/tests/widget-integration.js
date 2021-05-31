@@ -65,7 +65,7 @@ describe( 'Widget - integration', () => {
 
 				editor.conversion.for( 'downcast' )
 					.elementToElement( { model: 'inline', view: 'figure' } )
-					.elementToElement( { model: 'image', view: 'img' } )
+					.elementToElement( { model: 'imageBlock', view: 'img' } )
 					.elementToElement( {
 						model: 'widget',
 						view: ( modelItem, { writer } ) => {

@@ -39,7 +39,7 @@ export default class ImageStyleCommand extends Command {
 		 * @type {Object.<String,module:image/imagestyle~ImageStyleOptionDefinition#name>}
 		 */
 		this._defaultStyles = {
-			image: false,
+			imageBlock: false,
 			imageInline: false
 		};
 
@@ -93,20 +93,19 @@ export default class ImageStyleCommand extends Command {
 	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
 	 * @fires execute
 	 */
-	execute( options ) {
+	execute( options = {} ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.change( writer => {
 			const requestedStyle = options.value;
-			const supportedTypes = this._styles.get( requestedStyle ).modelElements;
 
 			let imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
 			// Change the image type if a style requires it.
-			if ( !supportedTypes.includes( imageElement.name ) ) {
-				this.editor.execute( !supportedTypes.includes( 'image' ) ? 'imageTypeInline' : 'imageTypeBlock' );
+			if ( requestedStyle && this.shouldConvertImageType( requestedStyle, imageElement ) ) {
+				this.editor.execute( imageUtils.isBlockImage( imageElement ) ? 'imageTypeInline' : 'imageTypeBlock' );
 
 				// Update the imageElement to the newly created image.
 				imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection );
@@ -114,11 +113,25 @@ export default class ImageStyleCommand extends Command {
 
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
-			if ( this._styles.get( requestedStyle ).isDefault ) {
+			if ( !requestedStyle || this._styles.get( requestedStyle ).isDefault ) {
 				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
 				writer.setAttribute( 'imageStyle', requestedStyle, imageElement );
 			}
 		} );
+	}
+
+	/**
+	 * Returns `true` if requested style change would trigger the image type change.
+	 *
+	 * @param {module:image/imagestyle~ImageStyleOptionDefinition} requestedStyle The name of the style (as configured in
+	 * {@link module:image/imagestyle~ImageStyleConfig#options}).
+	 * @param {module:engine/model/element~Element} imageElement The image model element.
+	 * @returns {Boolean}
+	 */
+	shouldConvertImageType( requestedStyle, imageElement ) {
+		const supportedTypes = this._styles.get( requestedStyle ).modelElements;
+
+		return !supportedTypes.includes( imageElement.name );
 	}
 }

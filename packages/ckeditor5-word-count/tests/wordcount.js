@@ -183,9 +183,9 @@ describe( 'WordCount', () => {
 
 			it( 'should count words in the image caption', () => {
 				setModelData( model,
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>Foo Bar</caption>' +
-					'</image>'
+					'</imageBlock>'
 				);
 
 				wordCountPlugin._refreshStats();

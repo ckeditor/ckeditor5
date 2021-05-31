@@ -7,16 +7,8 @@
  * @module heading
  */
 
-import Heading from './heading';
-import HeadingEditing from './headingediting';
-import HeadingUI from './headingui';
-import HeadingButtonsUI from './headingbuttonsui';
-import Title from './title';
-
-export default {
-	Heading,
-	HeadingEditing,
-	HeadingUI,
-	HeadingButtonsUI,
-	Title
-};
+export { default as Heading } from './heading';
+export { default as HeadingEditing } from './headingediting';
+export { default as HeadingUI } from './headingui';
+export { default as HeadingButtonsUI } from './headingbuttonsui';
+export { default as Title } from './title';

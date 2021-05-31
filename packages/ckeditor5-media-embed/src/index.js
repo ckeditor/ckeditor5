@@ -7,16 +7,8 @@
  * @module media-embed
  */
 
-import MediaEmbed from './mediaembed';
-import MediaEmbedEditing from './mediaembedediting';
-import MediaEmbedUI from './mediaembedui';
-import AutoMediaEmbed from './automediaembed';
-import MediaEmbedToolbar from './mediaembedtoolbar';
-
-export default {
-	MediaEmbed,
-	MediaEmbedEditing,
-	MediaEmbedUI,
-	MediaEmbedToolbar,
-	AutoMediaEmbed
-};
+export { default as MediaEmbed } from './mediaembed';
+export { default as MediaEmbedEditing } from './mediaembedediting';
+export { default as MediaEmbedUI } from './mediaembedui';
+export { default as AutoMediaEmbed } from './automediaembed';
+export { default as MediaEmbedToolbar } from './mediaembedtoolbar';

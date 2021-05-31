@@ -183,7 +183,7 @@ export default class ImageStyle extends Plugin {
  *				options: [
  *					{
  *						name: 'regular',
- *						modelElements: [ 'image', 'imageInline' ],
+ *						modelElements: [ 'imageBlock', 'imageInline' ],
  *						title: 'Regular image',
  *						icon: 'full',
  *						isDefault: true
@@ -195,7 +195,7 @@ export default class ImageStyle extends Plugin {
  *						className: 'image-blue'
  *					}, {
  *						name: 'red',
- *						modelElements: [ 'image' ],
+ *						modelElements: [ 'imageBlock' ],
  *						title: 'Red image',
  *						icon: redIcon,
  *						className: 'image-red'
@@ -223,7 +223,7 @@ export default class ImageStyle extends Plugin {
  *			icon: fullSizeIcon,
  *			title: 'Full size image',
  *			className: 'image-full-size',
- *			modelElements: [ 'image', 'imageInline' ]
+ *			modelElements: [ 'imageBlock', 'imageInline' ]
  *		}
  *
  * The styling option will be registered as the button under the name `'imageStyle:{name}'` in the
@@ -266,11 +266,11 @@ export default class ImageStyle extends Plugin {
  *
  * @property {Array.<String>} modelElements The list of the names of the model elements that are supported by the style.
  * The possible values are:
- * * `[ 'image' ]` if the style can be applied to the image type introduced by the
+ * * `[ 'imageBlock' ]` if the style can be applied to the image type introduced by the
  * {@link module:image/image/imageblockediting~ImageBlockEditing `ImageBlockEditing`} plugin,
  * * `[ 'imageInline' ]` if the style can be applied to the image type introduced by the
  * {@link module:image/image/imageinlineediting~ImageInlineEditing `ImageInlineEditing`} plugin,
- * * `[ 'imageInline', 'image' ]` if the style can be applied to both image types introduced by the plugins mentioned above.
+ * * `[ 'imageInline', 'imageBlock' ]` if the style can be applied to both image types introduced by the plugins mentioned above.
  *
  * This property determines which model element names work with the style. If the model element name of the currently selected
  * image is different, upon executing the

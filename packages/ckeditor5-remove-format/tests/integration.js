@@ -55,25 +55,27 @@ describe( 'RemoveFormat', () => {
 		} );
 
 		it( 'does not touch non-formatting markup', () => {
-			setModelData( model, '<paragraph>[<$text linkHref="url">foo</$text></paragraph><image src="assets/sample.png">' +
-				'<caption>caption</caption></image><paragraph>bar]</paragraph>' );
+			setModelData( model, '<paragraph>[<$text linkHref="url">foo</$text></paragraph><imageBlock src="assets/sample.png">' +
+				'<caption>caption</caption></imageBlock><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>[<$text linkHref="url">foo</$text></paragraph>' +
-					'<image src="assets/sample.png"><caption>caption</caption></image><paragraph>bar]</paragraph>' );
+					'<imageBlock src="assets/sample.png"><caption>caption</caption></imageBlock><paragraph>bar]</paragraph>' );
 		} );
 
 		it( 'removes the content from within widget editable', () => {
 			setModelData( model, '<paragraph>[</paragraph>' +
-				'<image src="assets/sample.png"><caption><$text bold="true">foo</$text></caption></image><paragraph>bar]</paragraph>' );
+				'<imageBlock src="assets/sample.png"><caption><$text bold="true">foo</$text></caption></imageBlock>' +
+				'<paragraph>bar]</paragraph>'
+			);
 
 			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>' +
-					'[</paragraph><image src="assets/sample.png"><caption>foo</caption></image><paragraph>bar]</paragraph>' );
+					'[</paragraph><imageBlock src="assets/sample.png"><caption>foo</caption></imageBlock><paragraph>bar]</paragraph>' );
 		} );
 	} );
 

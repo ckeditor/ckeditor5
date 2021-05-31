@@ -53,29 +53,29 @@ describe( 'UnlinkCommand', () => {
 
 		describe( 'for block images', () => {
 			beforeEach( () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				model.schema.register( 'imageBlock', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
 			} );
 
 			it( 'should be true when an image is selected', () => {
-				setData( model, '[<image linkHref="foo"></image>]' );
+				setData( model, '[<imageBlock linkHref="foo"></imageBlock>]' );
 
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true when an image and a text are selected', () => {
-				setData( model, '[<image linkHref="foo"></image>Foo]' );
+				setData( model, '[<imageBlock linkHref="foo"></imageBlock>Foo]' );
 
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true when a text and an image are selected', () => {
-				setData( model, '[Foo<image linkHref="foo"></image>]' );
+				setData( model, '[Foo<imageBlock linkHref="foo"></imageBlock>]' );
 
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true when two images are selected', () => {
-				setData( model, '[<image linkHref="foo"></image><image linkHref="foo"></image>]' );
+				setData( model, '[<imageBlock linkHref="foo"></imageBlock><imageBlock linkHref="foo"></imageBlock>]' );
 
 				expect( command.isEnabled ).to.be.true;
 			} );
@@ -90,12 +90,12 @@ describe( 'UnlinkCommand', () => {
 
 			it( 'should be false if an image does not accept the `linkHref` attribute in given context', () => {
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
-					if ( ctx.endsWith( '$root image' ) && attributeName == 'linkHref' ) {
+					if ( ctx.endsWith( '$root imageBlock' ) && attributeName == 'linkHref' ) {
 						return false;
 					}
 				} );
 
-				setData( model, '[<image></image>]' );
+				setData( model, '[<imageBlock></imageBlock>]' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -218,39 +218,39 @@ describe( 'UnlinkCommand', () => {
 
 			describe( 'for block elements allowing linkHref', () => {
 				beforeEach( () => {
-					model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+					model.schema.register( 'imageBlock', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
 				} );
 
 				it( 'should remove the linkHref attribute when a linked block is selected', () => {
-					setData( model, '[<image linkHref="foo"></image>]' );
+					setData( model, '[<imageBlock linkHref="foo"></imageBlock>]' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '[<image></image>]' );
+					expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 				} );
 
 				it( 'should remove the linkHref attribute when a linked block and text are selected', () => {
-					setData( model, '[<image linkHref="foo"></image><paragraph>Foo]</paragraph>' );
+					setData( model, '[<imageBlock linkHref="foo"></imageBlock><paragraph>Foo]</paragraph>' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '[<image></image><paragraph>Foo]</paragraph>' );
+					expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock><paragraph>Foo]</paragraph>' );
 				} );
 
 				it( 'should remove the linkHref attribute when a text and a linked block are selected', () => {
-					setData( model, '<paragraph>[Foo</paragraph><image linkHref="foo"></image>]' );
+					setData( model, '<paragraph>[Foo</paragraph><imageBlock linkHref="foo"></imageBlock>]' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '<paragraph>[Foo</paragraph><image></image>]' );
+					expect( getData( model ) ).to.equal( '<paragraph>[Foo</paragraph><imageBlock></imageBlock>]' );
 				} );
 
 				it( 'should remove the linkHref attribute when two linked blocks are selected', () => {
-					setData( model, '[<image linkHref="foo"></image><image linkHref="bar"></image>]' );
+					setData( model, '[<imageBlock linkHref="foo"></imageBlock><imageBlock linkHref="bar"></imageBlock>]' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '[<image></image><image></image>]' );
+					expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock><imageBlock></imageBlock>]' );
 				} );
 			} );
 

@@ -11,7 +11,7 @@ After you enable the optional [autolink](#autolink-feature) plugin, typed or pas
 
 ## Demo
 
-You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> to create a new link.
+You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link.
 
 {@snippet features/link}
 
@@ -247,7 +247,7 @@ You can enable automatic linking of URLs typed or pasted into the editor. The {@
 To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
-	Autolink action can always be reverted by the undo feature (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
+	Autolink action can always be reverted by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>).
 </info-box>
 
 {@snippet features/autolink}

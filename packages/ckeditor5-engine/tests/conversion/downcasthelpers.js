@@ -1611,7 +1611,7 @@ describe( 'DowncastHelpers', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
-			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
+			downcastHelpers.elementToElement( { model: 'imageBlock', view: 'img' } );
 			downcastHelpers.elementToElement( {
 				model: 'paragraph',
 				view: ( modelItem, { writer } ) => writer.createContainerElement( 'p' )
@@ -1631,7 +1631,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src' } );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1648,7 +1648,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src', converterPriority: 'high' } );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1659,14 +1659,14 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToAttribute( {
 				model: {
-					name: 'image',
+					name: 'imageBlock',
 					key: 'source'
 				},
 				view: 'src'
 			} );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1805,7 +1805,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { styled: 'pull-out' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { styled: 'pull-out' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img class="styled-pull-out"></img>' );
@@ -3512,6 +3512,15 @@ describe( 'downcast converters', () => {
 			expect( element.name ).to.equal( 'span' );
 			expect( element.priority ).to.equal( 7 );
 			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+		} );
+
+		it( 'should pass priority 0', () => {
+			const descriptor = {
+				priority: 0
+			};
+			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+
+			expect( element.priority ).to.equal( 0 );
 		} );
 	} );
 } );
