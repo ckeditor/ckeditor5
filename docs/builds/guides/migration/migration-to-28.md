@@ -8,25 +8,27 @@ order: 96
 
 For the entire list of changes introduced in version 28.0.0, see the [changelog for CKEditor 5 v28.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2800-2021-05-31).
 
-### Imports non-DLL core packages
+### Imports from index files of non-DLL core packages
 
-Previously, imports in your modules could look like the following:
+Starting from v26.0.0, you could use the `src/index.js` files present in all packages to simplify the import rules.
+
+However, prior to v28.0.0, in some packages, the `src/index.js` file was exporting one object instead of multiple tokens, so the import rule looked like this:
 
 ```js
-// Importing the default module.
+// Importing the default export.
 import BasicStyles from '@ckeditor/ckeditor5-basic-styles/src/index';
 
 // And destructuring plugins from the module.
 const { Bold, Italic } = BasicStyles;
 ```
 
-Starting from `v28.0.0`, all packages export a module instead of the default object. So, the import statement should look like the following:
+Starting from v28.0.0, all the packages use multiple exports so you can import the plugins directly:
 
 ```js
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles/src/index';
 ```
 
-If you imported anything from the `src/index.js` file from one of the following packages:
+The list of affected packages:
 
 * [@ckeditor/ckeditor5-adapter-ckfinder](https://npmjs.org/package/@ckeditor/ckeditor5-adapter-ckfinder)
 * [@ckeditor/ckeditor5-alignment](https://npmjs.org/package/@ckeditor/ckeditor5-alignment)
@@ -64,5 +66,3 @@ If you imported anything from the `src/index.js` file from one of the following 
 * [@ckeditor/ckeditor5-table](https://npmjs.org/package/@ckeditor/ckeditor5-table)
 * [@ckeditor/ckeditor5-watchdog](https://npmjs.org/package/@ckeditor/ckeditor5-watchdog)
 * [@ckeditor/ckeditor5-word-count](https://npmjs.org/package/@ckeditor/ckeditor5-word-count)
-
-You need to update your code.
