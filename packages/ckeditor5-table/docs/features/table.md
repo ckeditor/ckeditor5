@@ -16,7 +16,7 @@ CKEditor 5 offers all necessary functionality to produce advanced, visually appe
 
 ### Basic table features
 
-The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, add caption, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
+The editor bellow shows the basic set of table features focusing on the **structure and semantics**. Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to insert new tables into the content, add or remove columns and rows, define headers, add caption, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
 
 {@snippet features/table}
 
@@ -24,7 +24,7 @@ Use the **"Insert table"** button in the toolbar to create new tables. Focus any
 
 ### Table and cell styling tools
 
-In addition to the default table features described in the [previous section](#basic-table-features), the editor below comes with some additional tools that will help you modify **the look of tables and table cells**, for instance, their border color and style, background color, padding, or text alignment.
+In addition to the default table features described in the [previous section](#basic-table-features), the editor below comes with some additional tools that will help you modify **the look of tables and table cells**, for instance, their border color and style, background color, padding, or text alignment. The table and cell properties are available from the table toolbar on click, just like basic table features.
 
 {@snippet features/table-styling}
 
