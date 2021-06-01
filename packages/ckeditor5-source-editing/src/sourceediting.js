@@ -246,7 +246,7 @@ export default class SourceEditing extends Plugin {
 		this._replacedRoots.clear();
 
 		if ( Object.keys( data ).length ) {
-			editor.data.set( data, { supportUndo: true } );
+			editor.data.set( data, { batchType: 'default' } );
 		}
 
 		editor.editing.view.focus();

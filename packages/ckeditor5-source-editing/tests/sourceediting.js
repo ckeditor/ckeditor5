@@ -325,7 +325,7 @@ describe( 'SourceEditing', () => {
 			expect( setDataSpy.calledOnce ).to.be.true;
 			expect( setDataSpy.args[ 0 ][ 1 ] ).to.deep.equal( [
 				{ main: '<p>Foo</p><p>bar</p>' },
-				{ supportUndo: true, batchType: 'default' }
+				{ batchType: 'default' }
 			] );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
