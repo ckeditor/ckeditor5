@@ -1,11 +1,8 @@
 import { scrollViewportToShowTarget } from "@ckeditor/ckeditor5-utils/src/dom/scroll";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-// import { rangeToText } from "./findandreplaceformediting";
-// import FindResults from "./findresults";
-import { Button } from "@namespace/namespace-react--button";
-import { TextInput } from "@namespace/namespace-react--text-input";
-import i18n from "@namespace/i18n";
+import { rangeToText } from "./findandreplace";
+import FindResults from "./findresults";
 
 /**
  * Highlight search result with given id.
@@ -53,20 +50,20 @@ const highlightResult = (searchResultId, editor) => {
  * @param treeWalkerValue
  * @returns {Object}
  */
-// function toCompareObject({ item }) {
-//   if (item.is("text") || item.is("textProxy")) {
-//     return {
-//       text: item.data,
-//       attributes: Object.fromEntries(item.getAttributes()),
-//     };
-//   }
-//
-//   return {
-//     text: false,
-//     name: item.name,
-//     attributes: Object.fromEntries(item.getAttributes()),
-//   };
-// }
+function toCompareObject({ item }) {
+  if (item.is("text") || item.is("textProxy")) {
+    return {
+      text: item.data,
+      attributes: Object.fromEntries(item.getAttributes()),
+    };
+  }
+
+  return {
+    text: false,
+    name: item.name,
+    attributes: Object.fromEntries(item.getAttributes()),
+  };
+}
 
 /**
  * Returns true if text nodes have the same text and attributes.
@@ -77,21 +74,21 @@ const highlightResult = (searchResultId, editor) => {
  * @param {Object} compared
  * @returns {Boolean}
  */
-// function areTextNodesEqual(reference, compared) {
-//   if (reference.text !== compared.text) {
-//     return false;
-//   }
-//   const referenceKeys = Object.keys(reference.attributes || {});
-//   const comparedKeys = Object.keys(compared.attributes || {});
-//
-//   if (referenceKeys.length !== comparedKeys.length) {
-//     return false;
-//   }
-//
-//   return referenceKeys.every((attribute) => {
-//     return reference.attributes[attribute] === compared.attributes[attribute];
-//   });f
-// }
+function areTextNodesEqual(reference, compared) {
+  if (reference.text !== compared.text) {
+    return false;
+  }
+  const referenceKeys = Object.keys(reference.attributes || {});
+  const comparedKeys = Object.keys(compared.attributes || {});
+
+  if (referenceKeys.length !== comparedKeys.length) {
+    return false;
+  }
+
+  return referenceKeys.every((attribute) => {
+    return reference.attributes[attribute] === compared.attributes[attribute];
+  });
+}
 
 /**
  * Provides exact matching of "compare objects".
@@ -114,7 +111,6 @@ const highlightResult = (searchResultId, editor) => {
  * @param {Array.<Object>} compare
  * @returns {Boolean}
  */
-/*
 function areTextAndAttributesMatching(reference, compare) {
   if (reference.length !== compare.length) {
     return false;
@@ -129,7 +125,6 @@ function areTextAndAttributesMatching(reference, compare) {
   return true;
 }
 
-
 function getShiftedStart(position, shiftBy) {
   const offset = position.offset > shiftBy ? shiftBy : shiftBy - position.offset;
 
@@ -142,7 +137,7 @@ function getShiftedEnd(position, shiftBy) {
 
   return position.getShiftedBy(offset);
 }
-*/
+
 function regexpMatchToFindResult(matchResult, isExact) {
   const matchStart = matchResult.index;
 
@@ -196,33 +191,34 @@ function createFindByTextCallback(searchTerm, isExact) {
  * @param editor
  * @returns {Function}
  */
-// function createFindByHTMLCallback(editor) {
-//   const { model } = editor;
-//
-//   // Hardcoded search input.
-//   // a. Nodes
-//   const referenceTextNodes = [
-//     { text: "ca", attributes: { bold: true } },
-//     { text: "n" },
-//     { text: "dy", attributes: { italic: true } },
-//   ];
-//   // b. text representation for broad search.
-//   const searchTerm = referenceTextNodes.reduce((term, { text }) => term + text, "");
-//
-//   // Step 1: Broad search.
-//   const broadSearchCallback = createFindByTextCallback(searchTerm);
-//
-//   function searchCallback({ item, text }) {
-//     // Step 2: Narrow search results by comparing text nodes attributes.
-//     return broadSearchCallback({ item, text }).filter(({ start, end }) => {
-//       const matchedRange = model.createRange(model.createPositionAt(item, start), model.createPositionAt(item, end));
-//
-//       return areTextAndAttributesMatching(referenceTextNodes, [...matchedRange].map(toCompareObject));
-//     });
-//   }
-//
-//   return searchCallback;
-// }
+// eslint-disable-next-line no-unused-vars
+function createFindByHTMLCallback(editor) {
+  const { model } = editor;
+
+  // Hardcoded search input.
+  // a. Nodes
+  const referenceTextNodes = [
+    { text: "ca", attributes: { bold: true } },
+    { text: "n" },
+    { text: "dy", attributes: { italic: true } },
+  ];
+  // b. text representation for broad search.
+  const searchTerm = referenceTextNodes.reduce((term, { text }) => term + text, "");
+
+  // Step 1: Broad search.
+  const broadSearchCallback = createFindByTextCallback(searchTerm);
+
+  function searchCallback({ item, text }) {
+    // Step 2: Narrow search results by comparing text nodes attributes.
+    return broadSearchCallback({ item, text }).filter(({ start, end }) => {
+      const matchedRange = model.createRange(model.createPositionAt(item, start), model.createPositionAt(item, end));
+
+      return areTextAndAttributesMatching(referenceTextNodes, [...matchedRange].map(toCompareObject));
+    });
+  }
+
+  return searchCallback;
+}
 
 function getNextSearchResultId(activeSearch, currentResultId) {
   const currentIndex = activeSearch.getIndex(currentResultId);
@@ -234,20 +230,20 @@ function getNextSearchResultId(activeSearch, currentResultId) {
 }
 
 const FindAndReplaceForm = ({ editor }) => {
-  // const { model } = editor;
-  const FindAndReplaceFormApi = editor.plugins.get("FindAndReplaceForm");
+  const { model } = editor;
+  const findAndReplaceApi = editor.plugins.get("FindAndReplace");
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("cupcake");
   const [replaceWith, setReplaceWith] = useState("");
-  const [isExact] = useState(false);
+  const [isExact, setIsExact] = useState(false);
   const [currentResultId, setCurrentResultId] = useState(null);
   const [activeSearch, setActiveSearch] = useState(null);
 
   const findByCallback = (callback) => {
     if (activeSearch) {
-      FindAndReplaceFormApi.stop();
+      findAndReplaceApi.stop();
     }
-    const findResults = FindAndReplaceFormApi.find(callback);
+    const findResults = findAndReplaceApi.find(callback);
 
     if (findResults.length) {
       setCurrentResultId(findResults.get(0).id);
@@ -257,8 +253,9 @@ const FindAndReplaceForm = ({ editor }) => {
   };
 
   const onFindByText = () => {
-    if (searchTerm.length < 1) {
-      console.warn("Search term should be at least 1 character long.");
+    if (searchTerm.length < 3) {
+      console.warn("Search term should be at least 3 characters long.");
+
       return;
     }
 
@@ -273,96 +270,102 @@ const FindAndReplaceForm = ({ editor }) => {
     findByCallback(createFindByTextCallback(searchTerm, isExact));
   };
 
-  /*
   const onFindByHTML = () => findByCallback(createFindByHTMLCallback(editor));
 
   const onReplaceAll = () => {
-    FindAndReplaceFormApi.replaceAll(replaceWith); // text or callback support...
+    findAndReplaceApi.replaceAll(replaceWith); // text or callback support...
   };
 
   const onReplaceAllBolded = () => {
-    FindAndReplaceFormApi.replaceAll((writer) => {
+    findAndReplaceApi.replaceAll((writer) => {
       return writer.createText(replaceWith, { bold: true });
     });
   };
 
   const onReplaceClick = (result) => {
-    FindAndReplaceFormApi.replace(result, (writer) => {
+    findAndReplaceApi.replace(result, (writer) => {
       return writer.createText(replaceWith);
     });
   };
-  const handleExactMatchChange = (event) => setIsExact(!!event.target.checked);
 
-  const markerToText = (marker) => {
-      const markerRange = marker.getRange();
-
-      const start = getShiftedStart(markerRange.start, 10);
-      const end = getShiftedEnd(markerRange.end, 10);
-
-      const expandedRange = model.createRange(start, end);
-
-      return rangeToText(expandedRange);
-    };
-  */
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
     setCurrentResultId(null);
   };
+  const handleExactMatchChange = (event) => setIsExact(!!event.target.checked);
   const handleReplaceWithChange = (event) => setReplaceWith(event.target.value);
 
+  const markerToText = (marker) => {
+    const markerRange = marker.getRange();
+
+    const start = getShiftedStart(markerRange.start, 10);
+    const end = getShiftedEnd(markerRange.end, 10);
+
+    const expandedRange = model.createRange(start, end);
+
+    return rangeToText(expandedRange);
+  };
+
   return (
-    <>
-      <div className="sidebar-panel-body">
-        <TextInput
-          label={i18n.t("sidebar.findAndReplace.findWhat")}
-          onChange={handleSearchChange}
-          value={searchTerm}
-          data-cke-ignore-events
-        />
-        <TextInput
-          label={i18n.t("sidebar.findAndReplace.replaceWith")}
-          onChange={handleReplaceWithChange}
-          value={replaceWith}
-          data-cke-ignore-events
-        />
-      </div>
-      <div className="sidebar-panel-footer">
-        <div className="o-namespace-flex-layout o-namespace-flex-layout--gutters-1o2">
-          <div className="o-namespace-flex-layout__item">
-            <Button
-              htmlType={Button.HtmlTypes.BUTTON}
-              className="c-namespace-button--x-small"
-              onClick={handleReplaceWithChange}
-            >
-              {i18n.t("sidebar.findAndReplace.replaceAll")}
-            </Button>
-          </div>
-          <div className="o-namespace-flex-layout__item ">
-            <Button
-              htmlType={Button.HtmlTypes.BUTTON}
-              className="c-namespace-button--x-small"
-              onClick={handleReplaceWithChange}
-            >
-              {i18n.t("sidebar.findAndReplace.replace")}
-            </Button>
-          </div>
-          <div className="o-namespace-flex-layout__item o-namespace-flex-layout__item--grow">
-            <Button
-              htmlType={Button.HtmlTypes.BUTTON}
-              type={Button.Types.SECONDARY}
-              className="c-namespace-button--x-small"
-              onClick={onFindByText}
-            >
-              {i18n.t("sidebar.findAndReplace.find")}
-            </Button>
+    <div className="find-and-replace">
+      <h3 className="find-title">Find and Replace</h3>
+      <div className="find-form">
+        <div className="find-form_section">
+          <input type="text" onChange={handleSearchChange} value={searchTerm} />
+          <button type="button" onClick={onFindByText}>
+            Find
+          </button>
+        </div>
+
+        <div className="find-form_section">
+          <label>
+            <input type="checkbox" onChange={handleExactMatchChange} />
+            Exact match
+          </label>
+
+          <div className="find-form-info">
+            <p>Supported wildcards:</p>
+            <ul>
+              <li>&quot;*&quot; - many characters.</li>
+              <li>&quot;?&quot; one character.</li>
+            </ul>
           </div>
         </div>
+
+        <div className="find-form_section">
+          <input type="text" onChange={handleReplaceWithChange} />
+          <br />
+          <button type="button" onClick={onReplaceAll}>
+            Replace All
+          </button>
+          <button type="button" onClick={onReplaceAllBolded}>
+            Replace All (bolded)
+          </button>
+        </div>
+
+        <div className="find-form_section">
+          <button type="button" onClick={onFindByHTML}>
+            Find &quot;<strong>ca</strong>n<i>dy</i>&quot; by HTML
+          </button>
+        </div>
       </div>
-    </>
+      <FindResults
+        searchTerm={searchTerm}
+        activeSearch={activeSearch}
+        scrollTo={(id) => {
+          setCurrentResultId(id);
+          highlightResult(id, editor);
+        }}
+        replaceWith={onReplaceClick}
+        markerToText={markerToText}
+        currentResultId={currentResultId}
+      />
+    </div>
   );
 };
 
 FindAndReplaceForm.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   editor: PropTypes.shape({
     plugins: PropTypes.shape({
       get: PropTypes.func,
@@ -370,7 +373,7 @@ FindAndReplaceForm.propTypes = {
     model: PropTypes.shape({
       createRange: PropTypes.func,
     }),
-  }).isRequired,
+  }),
 };
 
 export default FindAndReplaceForm;

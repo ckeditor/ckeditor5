@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import FindResult from "./findresult";
 
-const FindResults = ({ activeSearch, searchTerm, scrollTo, replaceWith, markerToText, currentResultId }) => {
+const FindResults = ({activeSearch, searchTerm, scrollTo, replaceWith, markerToText, currentResultId}) => {
   const [, setResults] = useState([]);
 
   useEffect(() => {
@@ -48,15 +48,8 @@ const FindResults = ({ activeSearch, searchTerm, scrollTo, replaceWith, markerTo
   );
 };
 
-FindResults.defaultProps = {
-  activeSearch: PropTypes.shape({
-    on: () => {},
-    off: () => {},
-  }),
-  currentResultId: "",
-};
-
 FindResults.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   activeSearch: PropTypes.shape({
     on: PropTypes.func,
     off: PropTypes.func,
@@ -65,7 +58,8 @@ FindResults.propTypes = {
   scrollTo: PropTypes.func.isRequired,
   replaceWith: PropTypes.func.isRequired,
   markerToText: PropTypes.func.isRequired,
-  currentResultId: PropTypes.string,
+  // eslint-disable-next-line react/require-default-props
+  currentResultId: PropTypes.string
 };
 
 export default FindResults;

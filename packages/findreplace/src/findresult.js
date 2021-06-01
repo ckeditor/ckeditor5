@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const FindResult = ({ result, onClickFn, onReplace, markerToText, isActive }) => {
-  const { marker } = result;
+const FindResult = ({result, onClickFn, onReplace, markerToText, isActive}) => {
+  const {marker} = result;
 
   // Unfortunately, this fails when re-rendering on destroyed marker:
   // const markerRange = marker.getRange();
@@ -10,7 +10,7 @@ const FindResult = ({ result, onClickFn, onReplace, markerToText, isActive }) =>
   return (
     <li className={isActive ? "active" : ""}>
       {markerToText(marker)}
-      <br />
+      <br/>
       <span className="keyword-location">
         {/* Location: {markerRange.start.parent.name} -{" "} */}
         {/* {String(markerRange.start.path)} - {String(markerRange.end.path)} */}
@@ -34,7 +34,7 @@ FindResult.propTypes = {
   onClickFn: PropTypes.func.isRequired,
   onReplace: PropTypes.func.isRequired,
   markerToText: PropTypes.func.isRequired,
-  isActive: PropTypes.bool.isRequired,
+  isActive: PropTypes.bool.isRequired
 };
 
 export default FindResult;
