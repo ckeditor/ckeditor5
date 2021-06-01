@@ -14,11 +14,11 @@
     "ckeditor5": "^27.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^27.1.0",
     "@ckeditor/ckeditor5-core": "^27.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^25.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^27.1.0",
     "@ckeditor/ckeditor5-engine": "^27.1.0",
+    "@ckeditor/ckeditor5-essentials": "^27.1.0",
     "@ckeditor/ckeditor5-paragraph": "^27.1.0",
     "@ckeditor/ckeditor5-table": "^27.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^27.1.0",

@@ -7,7 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
@@ -26,7 +26,7 @@ describe( 'SourceEditing', () => {
 		editorElement = document.body.appendChild( document.createElement( 'div' ) );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ SourceEditing, Paragraph, BoldEditing ],
+			plugins: [ SourceEditing, Paragraph, Essentials ],
 			initialData: '<p>Foo</p>'
 		} );
 
@@ -307,7 +307,9 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should update the editor data after switching back from the source editing mode if value has been changed', () => {
-			const setData = sinon.stub( editor.data, 'set' ).callThrough();
+			const setDataSpy = sinon.spy();
+
+			editor.data.on( 'set', setDataSpy );
 
 			button.fire( 'execute' );
 
@@ -320,8 +322,11 @@ describe( 'SourceEditing', () => {
 
 			button.fire( 'execute' );
 
-			expect( setData.calledOnce ).to.be.true;
-			expect( setData.args[ 0 ] ).to.deep.equal( [ { main: '<p>Foo</p><p>bar</p>' }, { supportUndo: true } ] );
+			expect( setDataSpy.calledOnce ).to.be.true;
+			expect( setDataSpy.args[ 0 ][ 1 ] ).to.deep.equal( [
+				{ main: '<p>Foo</p><p>bar</p>' },
+				{ supportUndo: true, batchType: 'default' }
+			] );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
 
@@ -342,6 +347,52 @@ describe( 'SourceEditing', () => {
 
 			expect( setData.callCount ).to.equal( 0 );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
+		} );
+	} );
+
+	describe( 'integration with undo', () => {
+		it( 'should preserve the undo/redo stacks when no changes has been in the source editing mode', () => {
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createText( 'x' ) );
+			} );
+
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createText( 'y' ) );
+			} );
+
+			expect( editor.model.document.history.getOperations().length ).to.equal( 3 );
+
+			button.fire( 'execute' );
+			button.fire( 'execute' );
+
+			expect( editor.model.document.history.getOperations().length ).to.equal( 3 );
+		} );
+
+		it( 'should add an operation to the history when a change has been made in the source mode', () => {
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createText( 'x' ) );
+			} );
+
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createText( 'y' ) );
+			} );
+
+			expect( editor.model.document.history.getOperations().length ).to.equal( 3 );
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const wrapper = domRoot.nextSibling;
+			const textarea = wrapper.children[ 0 ];
+
+			textarea.value = '<p>Foo</p><p>bar</p>';
+
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			button.fire( 'execute' );
+
+			// Adds 2 new operations MoveOperation (delete content) + InsertOperation.
+			expect( editor.model.document.history.getOperations().length ).to.equal( 5 );
 		} );
 	} );
 } );
