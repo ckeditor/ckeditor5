@@ -50,7 +50,7 @@ describe( 'SourceEditing', () => {
 			expect( button.isEnabled ).to.be.true;
 			expect( button.isOn ).to.be.false;
 			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Edit source' );
+			expect( button.label ).to.equal( 'Source' );
 			expect( button.class ).to.equal( 'ck-source-editing' );
 		} );
 

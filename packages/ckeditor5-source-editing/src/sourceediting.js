@@ -13,8 +13,7 @@ import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 
 import '../theme/sourceediting.css';
 
-// TODO: create icon
-// import sourceEditingIcon from '../theme/icons/source-editing.svg';
+import sourceEditingIcon from '../theme/icons/source-editing.svg';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
@@ -85,9 +84,8 @@ export default class SourceEditing extends Plugin {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: t( 'Edit source' ),
-				// TODO: use icon
-				// icon: sourceEditingIcon,
+				label: t( 'Source' ),
+				icon: sourceEditingIcon,
 				tooltip: true,
 				withText: true,
 				class: 'ck-source-editing'
