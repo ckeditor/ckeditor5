@@ -43,7 +43,7 @@ export default class BaseCommand extends Command {
 		this.refresh();
 
 		// Set the transparent batch for the `editor.data.set()` call if the
-		// batch type is not set and the `options.clearUndoStack` is falsy.
+		// batch type is not set and the `options.supportUndo` is falsy.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
 			// Create a shallow copy of the options to not change the original args.
 			// And make sure that an object is assigned to data[ 1 ].
