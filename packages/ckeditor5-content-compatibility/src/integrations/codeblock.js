@@ -31,7 +31,13 @@ export default class CodeBlockHtmlSupport extends Plugin {
 			}
 
 			const editor = this.editor;
+			const schema = editor.model.schema;
 			const conversion = editor.conversion;
+
+			// Extend codeBlock to allow attributes required by attribute filtration.
+			schema.extend( 'codeBlock', {
+				allowAttributes: [ 'htmlAttributes', 'htmlContentAttributes' ]
+			} );
 
 			conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
 			conversion.for( 'upcast' ).add( viewToModelCodeBlockAttributeConverter( dataFilter ) );
