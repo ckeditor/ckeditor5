@@ -28,6 +28,7 @@
     "@ckeditor/ckeditor5-remove-format": "^27.1.0",
     "@ckeditor/ckeditor5-restricted-editing": "^27.1.0",
     "@ckeditor/ckeditor5-select-all": "^27.1.0",
+    "@ckeditor/ckeditor5-source-editing": "^27.1.0",
     "@ckeditor/ckeditor5-special-characters": "^27.1.0",
     "@ckeditor/ckeditor5-ui": "^27.1.0",
     "@ckeditor/ckeditor5-undo": "^27.1.0",
