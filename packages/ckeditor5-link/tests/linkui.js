@@ -6,6 +6,7 @@
 /* globals document, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
@@ -13,18 +14,18 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import { toWidget } from '@ckeditor/ckeditor5-widget';
+
 import LinkEditing from '../src/linkediting';
 import LinkUI from '../src/linkui';
 import LinkFormView from '../src/ui/linkformview';
 import LinkActionsView from '../src/ui/linkactionsview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 describe( 'LinkUI', () => {
 	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
@@ -179,12 +180,12 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: actionsView,
-				position: {
-					target: linkElement
-				}
-			} );
+
+			const addSpyCallArgs = balloonAddSpy.firstCall.args[ 0 ];
+
+			expect( addSpyCallArgs.view ).to.equal( actionsView );
+			expect( addSpyCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
 		// #https://github.com/ckeditor/ckeditor5-link/issues/181
@@ -195,22 +196,20 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: actionsView,
-				position: {
-					target: linkElement
-				}
-			} );
+
+			const addSpyFirstCallArgs = balloonAddSpy.firstCall.args[ 0 ];
+
+			expect( addSpyFirstCallArgs.view ).to.equal( actionsView );
+			expect( addSpyFirstCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyFirstCallArgs.position.target() ).to.equal( linkElement );
 
 			linkUIFeature._showUI();
 
-			expect( balloon.visibleView ).to.equal( formView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: formView,
-				position: {
-					target: linkElement
-				}
-			} );
+			const addSpyCallSecondCallArgs = balloonAddSpy.secondCall.args[ 0 ];
+
+			expect( addSpyCallSecondCallArgs.view ).to.equal( formView );
+			expect( addSpyCallSecondCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyCallSecondCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
 		it( 'should disable #formView and #actionsView elements when link and unlink commands are disabled', () => {
@@ -283,7 +282,7 @@ describe( 'LinkUI', () => {
 			const linkDomElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( linkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( linkDomElement );
 
 			balloon.add( {
 				stackId: 'custom',
@@ -301,12 +300,12 @@ describe( 'LinkUI', () => {
 
 			expect( balloon.visibleView ).to.equal( actionsView );
 			expect( balloon.hasView( customView ) ).to.equal( true );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( linkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.not.equal( linkDomElement );
 
 			const newLinkViewElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 1 );
 			const newLinkDomElement = editor.editing.view.domConverter.mapViewToDom( newLinkViewElement );
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newLinkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( newLinkDomElement );
 		} );
 
 		describe( 'response to ui#update', () => {
@@ -352,9 +351,8 @@ describe( 'LinkUI', () => {
 				} );
 
 				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, {
-					target: view.domConverter.mapViewToDom( linkElement )
-				} );
+
+				expect( spy.firstCall.args[ 0 ].target() ).to.equal( view.domConverter.mapViewToDom( linkElement ) );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -1039,6 +1037,33 @@ describe( 'LinkUI', () => {
 				sinon.assert.calledWithExactly( spy );
 			} );
 
+			it( 'should show the UI when the selection spans over a link which only child is a widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isObject: true,
+					isInline: true,
+					allowAttributesOf: '$text'
+				} );
+
+				// The view element has no children.
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'inlineWidget',
+						view: ( modelItem, { writer } ) => toWidget(
+							writer.createContainerElement( 'inlineWidget', {}, {
+								isAllowedInsideAttributeElement: true
+							} ),
+							writer,
+							{ label: 'inline widget' }
+						)
+					} );
+
+				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.calledWithExactly( spy );
+			} );
+
 			it( 'should do nothing when selection is not inside link element', () => {
 				setModelData( editor.model, '[]' );
 
@@ -1079,6 +1104,35 @@ describe( 'LinkUI', () => {
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
+			} );
+
+			// See: #9607.
+			it( 'should show the UI when clicking on the linked inline widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isInline: true,
+					isObject: true,
+					allowAttributesOf: '$text'
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'inlineWidget',
+					view: ( modelItem, { writer } ) => {
+						const spanView = writer.createContainerElement( 'span', {}, {
+							isAllowedInsideAttributeElement: true
+						} );
+
+						const innerText = writer.createText( '{' + modelItem.name + '}' );
+						writer.insert( writer.createPositionAt( spanView, 0 ), innerText );
+
+						return toWidget( spanView, writer );
+					}
+				} );
+
+				setModelData( editor.model, '<paragraph>Foo [<inlineWidget linkHref="foo"></inlineWidget>] Foo.</paragraph>' );
+
+				observer.fire( 'click', { target: document.body } );
+				sinon.assert.calledWithExactly( spy );
 			} );
 		} );
 	} );

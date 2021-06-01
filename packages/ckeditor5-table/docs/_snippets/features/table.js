@@ -12,9 +12,11 @@ ClassicEditor
 		},
 		image: {
 			toolbar: [
+				'imageStyle:inline',
 				'imageStyle:full',
 				'imageStyle:side',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		}

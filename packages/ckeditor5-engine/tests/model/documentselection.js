@@ -1199,52 +1199,52 @@ describe( 'DocumentSelection', () => {
 		// #986
 		describe( 'are not inherited from the inside of object elements', () => {
 			beforeEach( () => {
-				model.schema.register( 'image', {
+				model.schema.register( 'imageBlock', {
 					isObject: true
 				} );
-				model.schema.extend( 'image', { allowIn: '$root' } );
-				model.schema.extend( 'image', { allowIn: '$block' } );
+				model.schema.extend( 'imageBlock', { allowIn: '$root' } );
+				model.schema.extend( 'imageBlock', { allowIn: '$block' } );
 
 				model.schema.register( 'caption' );
-				model.schema.extend( 'caption', { allowIn: 'image' } );
+				model.schema.extend( 'caption', { allowIn: 'imageBlock' } );
 				model.schema.extend( '$text', {
-					allowIn: [ 'image', 'caption' ],
+					allowIn: [ 'imageBlock', 'caption' ],
 					allowAttributes: 'bold'
 				} );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object', () => {
-				setData( model, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
+				setData( model, '<p>[<imageBlock><$text bold="true">Caption for the image.</$text></imageBlock>]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
-				setData( model, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
+				setData( model, '<p>[<imageBlock><caption><$text bold="true">Caption for the image.</$text></caption></imageBlock>]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
-				setData( model, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
+				setData( model, '<p>foo</p>[<imageBlock><$text bold="true">Caption for the image.</$text></imageBlock>]<p>foo</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'reads attributes from text even if the selection contains an object', () => {
-				setData( model, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
+				setData( model, '<p>x<$text bold="true">[bar</$text><imageBlock></imageBlock>foo]</p>' );
 
 				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'reads attributes when the entire selection inside an object', () => {
-				setData( model, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
+				setData( model, '<p><imageBlock><caption><$text bold="true">[bar]</$text></caption></imageBlock></p>' );
 
 				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'stops reading attributes if selection starts with an object', () => {
-				setData( model, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
+				setData( model, '<p>[<imageBlock></imageBlock><$text bold="true">bar]</$text></p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );

@@ -38,12 +38,12 @@ import TextProxy from '../model/textproxy';
  *
  * Consuming multiple values in a single callback:
  *
- *		// Converter for custom `image` element that might have a `caption` element inside which changes
+ *		// Converter for custom `imageBlock` element that might have a `caption` element inside which changes
  *		// how the image is displayed in the view:
  *		//
  *		// Model:
  *		//
- *		// [image]
+ *		// [imageBlock]
  *		//   └─ [caption]
  *		//       └─ foo
  *		//
@@ -53,8 +53,8 @@ import TextProxy from '../model/textproxy';
  *		//   ├─ <img />
  *		//   └─ <caption>
  *		//       └─ foo
- *		modelConversionDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
- *			// First, consume the `image` element.
+ *		modelConversionDispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+ *			// First, consume the `imageBlock` element.
  *			conversionApi.consumable.consume( data.item, 'insert' );
  *
  *			// Just create normal image element for the view.
@@ -63,7 +63,7 @@ import TextProxy from '../model/textproxy';
  *			const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *			const viewWriter = conversionApi.writer;
  *
- *			// Check if the `image` element has children.
+ *			// Check if the `imageBlock` element has children.
  *			if ( data.item.childCount > 0 ) {
  *				const modelCaption = data.item.getChild( 0 );
  *

@@ -15,7 +15,7 @@ describe( 'NodeList', () => {
 	beforeEach( () => {
 		p = new Element( 'p' );
 		foo = new Text( 'foo' );
-		img = new Element( 'image' );
+		img = new Element( 'imageBlock' );
 		nodes = new NodeList( [ p, foo, img ] );
 	} );
 
@@ -123,7 +123,7 @@ describe( 'NodeList', () => {
 
 	describe( '_insertNodes', () => {
 		it( 'should insert nodes at given index', () => {
-			const newImg = new Element( 'image' );
+			const newImg = new Element( 'imageBlock' );
 			nodes._insertNodes( 1, [ newImg ] );
 
 			const bar = new Text( 'bar', { bold: true } );
@@ -202,7 +202,7 @@ describe( 'NodeList', () => {
 			expect( nodes.toJSON() ).to.deep.equal( [
 				{ name: 'p' },
 				{ data: 'foo' },
-				{ name: 'image' }
+				{ name: 'imageBlock' }
 			] );
 		} );
 	} );

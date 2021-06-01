@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { ClickObserver } from 'ckeditor5/src/engine';
 import { ButtonView, ContextualBalloon, clickOutsideHandler } from 'ckeditor5/src/ui';
-
+import { isWidget } from 'ckeditor5/src/widget';
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';
 import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
@@ -593,14 +593,19 @@ export default class LinkUI extends Plugin {
 
 			target = view.domConverter.viewRangeToDom( newRange );
 		} else {
-			const targetLink = this._getSelectedLinkElement();
-			const range = viewDocument.selection.getFirstRange();
+			// Make sure the target is calculated on demand at the last moment because a cached DOM range
+			// (which is very fragile) can desynchronize with the state of the editing view if there was
+			// any rendering done in the meantime. This can happen, for instance, when an inline widget
+			// gets unlinked.
+			target = () => {
+				const targetLink = this._getSelectedLinkElement();
 
-			target = targetLink ?
-				// When selection is inside link element, then attach panel to this element.
-				view.domConverter.mapViewToDom( targetLink ) :
-				// Otherwise attach panel to the selection.
-				view.domConverter.viewRangeToDom( range );
+				return targetLink ?
+					// When selection is inside link element, then attach panel to this element.
+					view.domConverter.mapViewToDom( targetLink ) :
+					// Otherwise attach panel to the selection.
+					view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+			};
 		}
 
 		return { target };
@@ -611,8 +616,9 @@ export default class LinkUI extends Plugin {
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 *
-	 * **Note**: For a non–collapsed selection, the link element is only returned when **fully**
-	 * selected and the **only** element within the selection boundaries.
+	 * **Note**: For a non–collapsed selection, the link element is returned when **fully**
+	 * selected and the **only** element within the selection boundaries, or when
+	 * a linked widget is selected.
 	 *
 	 * @private
 	 * @returns {module:engine/view/attributeelement~AttributeElement|null}
@@ -620,8 +626,10 @@ export default class LinkUI extends Plugin {
 	_getSelectedLinkElement() {
 		const view = this.editor.editing.view;
 		const selection = view.document.selection;
+		const selectedElement = selection.getSelectedElement();
 
-		if ( selection.isCollapsed ) {
+		// The selection is collapsed or some widget is selected (especially inline widget).
+		if ( selection.isCollapsed || selectedElement && isWidget( selectedElement ) ) {
 			return findLinkElementAncestor( selection.getFirstPosition() );
 		} else {
 			// The range for fully selected link is usually anchored in adjacent text nodes.

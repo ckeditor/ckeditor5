@@ -10,6 +10,7 @@ import DragDrop from '../src/dragdrop';
 import PastePlainText from '../src/pasteplaintext';
 
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -1755,6 +1756,107 @@ describe( 'Drag and Drop', () => {
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 				expect( data.targetRanges.length ).to.equal( 1 );
 				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'integration with the WidgetToolbarRepository plugin', () => {
+		let editor, widgetToolbarRepository, editorElement, viewDocument;
+
+		beforeEach( () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, WidgetToolbarRepository, DragDrop, HorizontalLine ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					viewDocument = editor.editing.view.document;
+					widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+
+					editor.setData( '<p></p>' );
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		describe( 'WidgetToolbarRepository#isEnabled', () => {
+			it( 'is enabled by default', () => {
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'is enabled when starts dragging the text node', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					dataTransfer: createDataTransfer( {} )
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'is disabled when starts dragging the widget', () => {
+				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 1 ),
+					dataTransfer: createDataTransfer( {} )
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+			} );
+
+			it( 'is enabled when ends dragging (drop in the editable)', () => {
+				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+				viewDocument.fire( 'drop', {
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer,
+					method: 'drop'
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'is enabled when ends dragging (drop outside the editable)', () => {
+				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+				viewDocument.fire( 'dragend', {
+					preventDefault: sinon.spy(),
+					dataTransfer
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
 			} );
 		} );
 	} );

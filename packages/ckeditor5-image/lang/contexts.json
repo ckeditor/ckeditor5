@@ -1,5 +1,8 @@
 {
 	"image widget": "The label for the image widget.",
+	"Wrap text": "The label for the image style button that wraps text around the image.",
+	"Break text": "The label for the image style button that breaks the text around the image.",
+	"In line": "The label for the image style button that places the image inside the line of text.",
 	"Side image": "The label for the Side image option.",
 	"Full size image": "The label for the Full size image option.",
 	"Left aligned image": "The label for the Left aligned image option.",
