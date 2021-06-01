@@ -57,3 +57,18 @@
 	margin: 1em 0;
 	padding-left: 40px;
 }
+
+.ck.ck-content a[data-button="true"] {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 28px;
+	text-decoration: none;
+	background-color: rgba(30, 123, 160, 1);
+	font-size: 18px;
+	color: #f8f8f8;
+	padding: 11px 44px;
+	max-width: 25%;
+	margin: auto;
+	cursor: pointer;
+}
