@@ -298,10 +298,18 @@ describe( 'RedoCommand', () => {
 			sinon.assert.called( spy );
 		} );
 
-		it( 'should not clear stack on DataController#set() when supportUndo option is set to true', () => {
+		it( 'should clear stack on DataController set() when the `batchType` is set to `transparent`', () => {
+			const spy = sinon.stub( redo, 'clearStack' );
+
+			editor.setData( 'foo' );
+
+			sinon.assert.called( spy );
+		} );
+
+		it( 'should not clear stack on DataController#set() when the `batchType` is set to `default`', () => {
 			const spy = sinon.spy( redo, 'clearStack' );
 
-			editor.data.set( 'foo', { supportUndo: true } );
+			editor.data.set( 'foo', { batchType: 'default' } );
 
 			sinon.assert.notCalled( spy );
 		} );

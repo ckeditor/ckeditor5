@@ -347,14 +347,17 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
+	 * To set data with preserved undo stacks and the current change to this stack, use the `{ batchType: 'default' }` option.
+	 *
+	 *		dataController.set( '<p>Foo</p>', { batchType: 'default' } ); // Sets data as a new change.
+	 *
 	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
 	 * @param {Object} [options={}] Options for setting data.
-	 * @param {Boolean} [options.supportUndo=false] When set to `true`, then the undo and redo stacks will be preserved and the current data
-	 * change will be added to the undo stack.
-	 * @param {String} [options.batchType='default'] An internal flag for setting the batch type that will be used to create the batch
-	 * for the changes.
+	 * @param {'default'|'transparent'} [options.batchType='default'] The batch type that will be used to create a batch for the changes.
+	 * When set to `default`, the undo and redo stacks will be preserved. Note that when not set, the undo feature (when present) will
+	 * override it to `transparent` and all undo steps will be lost.
 	 */
 	set( data, options = {} ) {
 		let newData = {};

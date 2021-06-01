@@ -43,7 +43,7 @@ export default class BaseCommand extends Command {
 		this.refresh();
 
 		// Set the transparent batch for the `editor.data.set()` call if the
-		// batch type is not set and the `options.supportUndo` is falsy.
+		// batch type is not set already.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
 			// Create a shallow copy of the options to not change the original args.
 			// And make sure that an object is assigned to data[ 1 ].
@@ -55,17 +55,16 @@ export default class BaseCommand extends Command {
 				return;
 			}
 
-			options.batchType = options.supportUndo ? 'default' : 'transparent';
+			options.batchType = 'transparent';
 		}, { priority: 'high' } );
 
-		// Clear the stack when the undo should not be supported
-		// after the editor.data.set() is executed.
+		// Clear the stack for the `transparent` batches.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
 			// We can assume that the object exists - it was ensured
 			// with the high priority listener before.
 			const options = data[ 1 ];
 
-			if ( !options.supportUndo ) {
+			if ( options.batchType === 'transparent' ) {
 				this.clearStack();
 			}
 		} );

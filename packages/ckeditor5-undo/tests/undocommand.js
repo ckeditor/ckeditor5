@@ -349,23 +349,31 @@ describe( 'UndoCommand', () => {
 			expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).to.be.true;
 		} );
 
-		it( 'should clear stack on DataController#set() by default', () => {
-			const spy = sinon.spy( undo, 'clearStack' );
+		it( 'should clear stack on DataController set()', () => {
+			const spy = sinon.stub( undo, 'clearStack' );
 
-			editor.data.set( 'foo' );
+			editor.setData( 'foo' );
 
 			sinon.assert.called( spy );
 		} );
 
-		it( 'should not clear stack on DataController#set() when supportUndo option is set to true', () => {
+		it( 'should clear stack on DataController set() when the `batchType` is set to `transparent`', () => {
+			const spy = sinon.stub( undo, 'clearStack' );
+
+			editor.setData( 'foo' );
+
+			sinon.assert.called( spy );
+		} );
+
+		it( 'should not clear stack on DataController#set() when the `batchType` is set to `default`', () => {
 			const spy = sinon.spy( undo, 'clearStack' );
 
-			editor.data.set( 'foo', { supportUndo: true } );
+			editor.data.set( 'foo', { batchType: 'default' } );
 
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should override the batch type in editor.data.set() when the batch type is not set', () => {
+		it( 'should override the batch type when the batch type is not set', () => {
 			const dataSetSpy = sinon.spy();
 
 			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
