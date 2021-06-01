@@ -23,7 +23,7 @@ import { setViewAttributes, mergeViewElementAttributes } from './conversionutils
 export function disallowedAttributesConverter( { view: viewName }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			dataFilter.consumeDisallowedAttributes( data.viewItem, conversionApi );
+			dataFilter._consumeDisallowedAttributes( data.viewItem, conversionApi );
 		}, { priority: 'high' } );
 	};
 }
@@ -104,7 +104,7 @@ export function createObjectView( viewName, modelElement, writer ) {
 export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			const viewAttributes = dataFilter.consumeAllowedAttributes( data.viewItem, conversionApi );
+			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
 
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.
@@ -164,7 +164,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
 				return;
 			}
 
-			const viewAttributes = dataFilter.consumeAllowedAttributes( data.viewItem, conversionApi );
+			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
 
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
