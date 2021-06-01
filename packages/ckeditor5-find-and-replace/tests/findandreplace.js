@@ -5,7 +5,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import FindAndReplace from './findandreplace';
+import FindAndReplace from '../src/findandreplace';
 
 describe( 'FindAndReplace', () => {
 	// Data with 8 blocks that can contain $text.
@@ -36,6 +36,10 @@ describe( 'FindAndReplace', () => {
 		root = model.document.getRoot();
 
 		findAndReplace = editor.plugins.get( 'FindAndReplace' );
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	describe( 'downcast conversion', () => {
