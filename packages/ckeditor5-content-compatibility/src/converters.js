@@ -31,8 +31,7 @@ export function disallowedAttributesConverter( { view: viewName }, dataFilter ) 
 /**
  * View-to-model conversion helper for object elements.
  *
- * Preserves object element content in `htmlContent` attribute. Also, all allowed attributes
- * will be preserved on `htmlAttributes` attribute.
+ * Preserves object element content in `htmlContent` attribute.
  *
  * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
  * @returns {Function} Returns a conversion callback.
@@ -79,8 +78,6 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 
 /**
 * Creates object view element from the given model element.
-*
-* Applies attributes preserved in `htmlAttributes` model attribute.
 *
 * @param {String} viewName
 * @param {module:engine/model/element~Element} modelElement
