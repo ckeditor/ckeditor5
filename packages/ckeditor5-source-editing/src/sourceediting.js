@@ -14,7 +14,7 @@ import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 import '../theme/sourceediting.css';
 
 // TODO: create icon
-// import sourceEditingIcon from '../theme/icons/sourceediting.svg';
+// import sourceEditingIcon from '../theme/icons/source-editing.svg';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
