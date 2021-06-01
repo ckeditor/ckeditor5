@@ -16,9 +16,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Table, TableToolbar, SourceEditing ],
 		toolbar: [
-			'heading', '|', 'bold', 'italic', 'link', '|',
+			'sourceEditing', '|', 'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
-			'sourceEditing', '|', 'undo', 'redo'
+			'undo', 'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]

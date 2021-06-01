@@ -51,6 +51,7 @@ describe( 'SourceEditing', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.tooltip ).to.be.true;
 			expect( button.label ).to.equal( 'Edit source' );
+			expect( button.class ).to.equal( 'ck-source-editing' );
 		} );
 
 		it( 'should disable button if plugin is disabled', () => {

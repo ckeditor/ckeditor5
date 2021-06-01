@@ -17,6 +17,8 @@ ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
+			'sourceEditing',
+			'|',
 			'heading',
 			'|',
 			'bold',
@@ -32,8 +34,6 @@ ClassicEditor.defaultConfig = {
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
-			'|',
-			'sourceEditing',
 			'|',
 			'undo',
 			'redo'

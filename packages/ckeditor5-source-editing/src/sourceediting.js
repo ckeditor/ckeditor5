@@ -89,7 +89,8 @@ export default class SourceEditing extends Plugin {
 				// TODO: use icon
 				// icon: sourceEditingIcon,
 				tooltip: true,
-				withText: true
+				withText: true,
+				class: 'ck-source-editing'
 			} );
 
 			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
