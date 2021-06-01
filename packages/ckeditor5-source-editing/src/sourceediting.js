@@ -94,18 +94,30 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
 
-			// Disable button if:
-			// - plugin is disabled, or
-			// - editor is in a read-only mode, or
-			// - there is a pending action.
-			//
-			// Pending action may change the model, so viewing and/or editing the document source should be prevented until the model is
-			// finally set.
+			// The button should be disabled if one of the following condition is met.
 			buttonView.bind( 'isEnabled' ).to(
 				this, 'isEnabled',
 				editor, 'isReadOnly',
 				editor.plugins.get( PendingActions ), 'hasAny',
-				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => isEnabled && !isEditorReadOnly && !hasAnyPendingActions
+				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
+					// (1) The plugin is disabled itself.
+					if ( !isEnabled ) {
+						return false;
+					}
+
+					// (2) The editor is in a read-only mode.
+					if ( isEditorReadOnly ) {
+						return false;
+					}
+
+					// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
+					// until the model is finally set.
+					if ( hasAnyPendingActions ) {
+						return false;
+					}
+
+					return true;
+				}
 			);
 
 			this.listenTo( buttonView, 'execute', () => {
