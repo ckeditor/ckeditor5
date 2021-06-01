@@ -102,7 +102,6 @@ BalloonEditor.defaultConfig = {
 			"outdent",
 			"subscript",
 			"superscript",
-			"link",
 		],
 	},
 	image: {
