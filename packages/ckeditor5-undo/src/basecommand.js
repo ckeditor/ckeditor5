@@ -61,7 +61,9 @@ export default class BaseCommand extends Command {
 		// Clear the stack when the undo should not be supported
 		// after the editor.data.set() is executed.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
-			const options = data[ 1 ] || {};
+			// We can assume that the object exists - it was ensured
+			// with the high priority listener before.
+			const options = data[ 1 ];
 
 			if ( !options.supportUndo ) {
 				this.clearStack();
