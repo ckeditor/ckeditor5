@@ -271,7 +271,6 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
-	 * @returns {Boolean}
 	 */
 	_registerObjectElement( definition ) {
 		const editor = this.editor;
@@ -323,7 +322,6 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
-	 * @returns {Boolean}
 	 */
 	_registerBlockElement( definition ) {
 		const editor = this.editor;
@@ -372,7 +370,6 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @private
 	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
-	 * @returns {Boolean}
 	 */
 	_registerInlineElement( definition ) {
 		const editor = this.editor;
@@ -432,9 +429,9 @@ export default class DataFilter extends Plugin {
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {module:engine/view/matcher~Matcher Matcher} matcher
 // @returns {Object} [result]
-// @returns {Object} result.attributes Set with matched attribute names.
-// @returns {Object} result.styles Set with matched style names.
-// @returns {Array.<String>} result.classes Set with matched class names.
+// @returns {Object} result.attributes
+// @returns {Object} result.styles
+// @returns {Array.<String>} result.classes
 function consumeAttributes( viewElement, conversionApi, matcher ) {
 	const matches = consumeAttributeMatches( viewElement, conversionApi, matcher );
 	const { attributes, styles, classes } = mergeMatchResults( matches );

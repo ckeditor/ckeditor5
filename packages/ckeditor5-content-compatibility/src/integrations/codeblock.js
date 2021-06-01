@@ -19,7 +19,7 @@ export default class CodeBlockHtmlSupport extends Plugin {
 	}
 
 	init() {
-		if ( !this.editor.plugins.has( 'CodeBlock' ) ) {
+		if ( !this.editor.plugins.has( 'CodeBlockEditing' ) ) {
 			return;
 		}
 

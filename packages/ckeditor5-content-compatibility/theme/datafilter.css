@@ -36,7 +36,7 @@
 	}
 
 	& .html-object-embed__content {
-		/* Disable user interation with embed content */
+		/* Disable user interaction with embed content */
 		pointer-events: none;
 	}
 }
