@@ -175,6 +175,7 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Matches and consumes allowed view attributes.
 	 *
+	 * @protected
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 	 * @returns {Object} [result]
@@ -182,13 +183,14 @@ export default class DataFilter extends Plugin {
 	 * @returns {Object} result.styles Set with matched style names.
 	 * @returns {Array.<String>} result.classes Set with matched class names.
 	 */
-	consumeAllowedAttributes( viewElement, conversionApi ) {
+	_consumeAllowedAttributes( viewElement, conversionApi ) {
 		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
 	}
 
 	/**
 	 * Matches and consumes disallowed view attributes.
 	 *
+	 * @protected
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 	 * @returns {Object} [result]
@@ -196,7 +198,7 @@ export default class DataFilter extends Plugin {
 	 * @returns {Object} result.styles Set with matched style names.
 	 * @returns {Array.<String>} result.classes Set with matched class names.
 	 */
-	consumeDisallowedAttributes( viewElement, conversionApi ) {
+	_consumeDisallowedAttributes( viewElement, conversionApi ) {
 		return consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
 	}
 
