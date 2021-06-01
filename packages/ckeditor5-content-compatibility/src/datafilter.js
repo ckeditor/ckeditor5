@@ -231,6 +231,8 @@ export default class DataFilter extends Plugin {
 			const schema = this.editor.model.schema;
 
 			// Object element should be only registered for new features.
+			// If the model schema is already registered, it should be handled by
+			// #_registerBlockElement() or #_registerObjectElement() attribute handlers.
 			if ( definition.isObject && !schema.isRegistered( definition.model ) ) {
 				this._registerObjectElement( definition );
 			} else if ( definition.isBlock ) {
