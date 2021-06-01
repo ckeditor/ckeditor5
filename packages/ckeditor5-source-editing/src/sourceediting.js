@@ -137,7 +137,7 @@ export default class SourceEditing extends Plugin {
 			return buttonView;
 		} );
 
-		// Currently, plugin handles the source editing mode by itself only for the Classic Editor. To use this plugin with other
+		// Currently, plugin handles the source editing mode by itself only for the classic editor. To use this plugin with other
 		// integrations, listen to `sourceEditing` event and act accordingly.
 		if ( this._isAllowedToHandleSourceEditingMode() ) {
 			this.on( 'sourceEditing', ( evt, { isSourceEditingMode } ) => {
@@ -306,7 +306,8 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
-	 * Checks, if the editor's editable belongs to the editor's DOM tree.
+	 * Checks, if the plugin is allowed to handle the source editing mode by itself. Currently, the source editing mode is supported only
+	 * for the {@link module:editor-classic/classiceditor~ClassicEditor classic editor}.
 	 *
 	 * @private
 	 * @returns {Boolean}
@@ -315,6 +316,7 @@ export default class SourceEditing extends Plugin {
 		const editor = this.editor;
 		const editable = editor.ui.view.editable;
 
+		// Checks, if the editor's editable belongs to the editor's DOM tree.
 		return editable && !editable._hasExternalElement;
 	}
 }
