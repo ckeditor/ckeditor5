@@ -17,7 +17,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, FindAndReplace ],
-		toolbar: [ 'undo', 'redo'/* , 'findandreplace' */ ]
+		toolbar: [ 'undo', 'redo', 'findAndReplace' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

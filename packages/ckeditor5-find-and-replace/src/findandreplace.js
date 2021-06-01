@@ -1,5 +1,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Collection, uid } from 'ckeditor5/src/utils';
+import FindAndReplaceUI from './findandreplaceui';
 
 const HIGHLIGHT_CLASS = 'find-result_selected';
 
@@ -207,6 +208,16 @@ function setupSelectedResultHighlighting( editor ) {
  * - Updates list of found results on document changes.
  */
 export default class FindAndReplace extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ FindAndReplaceUI ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'FindAndReplace';
 	}

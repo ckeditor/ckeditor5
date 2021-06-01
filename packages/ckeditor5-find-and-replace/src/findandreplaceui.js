@@ -1,4 +1,6 @@
 import { Plugin } from 'ckeditor5/src/core';
+import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+
 // import React from 'react';
 // import ReactDOM from 'react-dom';
 // import FindAndReplaceForm from './findandreplaceform';
@@ -17,5 +19,31 @@ export default class FindAndReplaceUI extends Plugin {
 		// ReactDOM.render(<FindAndReplaceForm editor={editor} />, container);
 
 		this.activeSearch = null;
+
+		this.addToolbarDropdown();
+	}
+	addToolbarDropdown() {
+		const editor = this.editor;
+		const t = editor.t;
+		const componentFactory = editor.ui.componentFactory;
+
+		componentFactory.add( 'findAndReplace', locale => {
+			const dropdown = createDropdown( locale, SplitButtonView );
+
+			// Configure dropdown's button properties:
+			dropdown.buttonView.set( {
+				withText: true,
+				label: t( 'Find and replace' ),
+				tooltip: true
+			} );
+
+			dropdown.buttonView.on( 'execute', () => {
+				// console.log( 'find and replace button clicked' );
+			} );
+
+			dropdown.render();
+
+			return dropdown;
+		} );
 	}
 }
