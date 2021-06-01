@@ -14,7 +14,7 @@ import ImageStyleUI from './imagestyle/imagestyleui';
 /**
  * The image style plugin.
  *
- * For a detailed overview of the image styles feature, check the {@glink features/image#image-styles documentation}.
+ * For a detailed overview of the image styles feature, check the {@glink features/images/images-styles documentation}.
  *
  * This is a "glue" plugin which loads the following plugins:
  * * {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing},
@@ -72,11 +72,12 @@ export default class ImageStyle extends Plugin {
  *
  * # **Buttons**
  *
- * The buttons that execute the command with different values are registered
+ * All of the image style options provided in the configuration are registered
  * in the {@link module:ui/componentfactory~ComponentFactory UI components factory} with the "imageStyle:" prefixes and can be used
- * in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.
+ * in the {@link module:image/image~ImageConfig#toolbar image toolbar configuration}. The buttons available by default depending
+ * on the loaded plugins are listed in the next section.
  *
- * Read more about styling images in the {@glink features/image#image-styles Image styles guide}.
+ * Read more about styling images in the {@glink features/images/images-styles Image styles guide}.
  *
  * # **Default options and buttons**
  *

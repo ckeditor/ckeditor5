@@ -17,10 +17,7 @@ ClassicEditor
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:wrapText',
-				'imageStyle:breakText',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageStyle:breakText'
 			]
 		},
 		cloudServices: CS_CONFIG

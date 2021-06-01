@@ -26,10 +26,10 @@ import CloudServicesUploadAdapter from './cloudservicesuploadadapter';
  * * {@link module:image/image~Image},
  * * {@link module:image/imageupload~ImageUpload},
  *
- * See the {@glink features/image-upload/easy-image "Easy Image integration" guide} to learn how to configure
+ * See the {@glink features/images/image-upload/easy-image "Easy Image integration" guide} to learn how to configure
  * and use this feature.
  *
- * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload" guide} to learn about
+ * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload" guide} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * **Note**: After enabling the Easy Image plugin you need to configure the

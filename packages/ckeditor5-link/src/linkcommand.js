@@ -44,7 +44,7 @@ export default class LinkCommand extends Command {
 
 		/**
 		 * An instance of the helper that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition}
-		 * that are used by the {@glink features/link link} and the {@glink features/image#linking-images linking images} features.
+		 * that are used by the {@glink features/link link} and the {@glink features/images/images-linking linking images} features.
 		 *
 		 * @readonly
 		 * @type {module:link/utils~AutomaticDecorators}
