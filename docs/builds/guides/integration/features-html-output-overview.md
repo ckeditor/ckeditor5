@@ -19,10 +19,10 @@ The data used to generate the following tables comes from the package metadata. 
 		width: 33.333%;
 	}
 
-    table.features-html-output td.plugin a,
-    table.features-html-output td.plugin code {
-        white-space: nowrap;
-    }
+	table.features-html-output td.plugin a,
+	table.features-html-output td.plugin code {
+		white-space: nowrap;
+	}
 
 	table.features-html-output td.html-output > code {
 		display: block;
