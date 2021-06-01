@@ -1,15 +1,21 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-
-/**
- * @module find-and-replace/findandreplaceui
- */
-
 import { Plugin } from 'ckeditor5/src/core';
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import FindAndReplaceForm from './findandreplaceform';
 
+/**
+ * Example Find & Replace UI that uses FindAndReplace plugin API.
+ *
+ * It demonstrates how to use that API form outside the editor (except UI buttons).
+ */
 export default class FindAndReplaceUI extends Plugin {
-	init() {
+	constructor( editor ) {
+		super( editor );
+
+		// const container = document.getElementById( 'search-results' );
+
+		// ReactDOM.render(<FindAndReplaceForm editor={editor} />, container);
+
+		this.activeSearch = null;
 	}
 }

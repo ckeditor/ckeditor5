@@ -8,5 +8,3 @@
  */
 
 export { default as FindAndReplace } from './findandreplace';
-export { default as FindAndReplaceEditing } from './findandreplaceediting';
-export { default as FindAndReplaceUI } from './findandreplaceui';
