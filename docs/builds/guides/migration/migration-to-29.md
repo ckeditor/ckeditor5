@@ -1,22 +1,23 @@
 
 ---
 category: builds-migration
-menu-title: Migration to v28.x
+menu-title: Migration to v29.x
 order: 95
 ---
 
 # Migration to CKEditor 5 v29.0.0
 
-This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v28.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
+This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
-For the entire list of the changes introduced in version 28.0.0 of the CKEditor 5 see the [changelog](TODO:link).
+For the entire list of the changes introduced in version 29.0.0 of the CKEditor 5 see the changelog (TODO:link).
 
 To see the new editor UI for the images visit the {@link features/images-overview image feature guide}, especially:
 * Images in the structured content, (TODO:link)
 * Images in the document-like content (TODO:link)
 
 ## Inline images
-From the 28.0.0 version, the existing {@link module:image/image~Image} plugin loads two independent plugins - {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
+
+From the 29.0.0 version, the existing {@link module:image/image~Image} plugin loads two independent plugins - {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
 * The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting an inline `<img>` tag nested in any {@link framework/guides/deep-dive/schema#defining-advanced-rules-in-checkchild-callbacks `$block` element} in the editor. In the model, it is represented by an `imageInline` element.
 * The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin. In the model, the previous `image` element is renamed to `imageBlock`.
 
@@ -25,6 +26,7 @@ From the 28.0.0 version, the existing {@link module:image/image~Image} plugin lo
 </info-box>
 
 ## Image caption
+
 An image caption is no longer automatically showed up when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `toggleImageCaption` button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link builds/guides/overview#available-builds predefined editor builds}.
 
 <info-box>
@@ -32,6 +34,7 @@ To provide a valid HTML data output, an image caption is supported for the block
 </info-box>
 
 ## Image styles
+
 Since the appearance of the image in the document depends on the image type (block/inline), the {@link module:image/imagestyle~ImageStyle} plugin is now in charge of switching between these types. Thus, the following changes have been introduced:
 
 * {@link module:image/image~ImageConfig#styles A new set of buttons} is available to manage the image type and appearance.
@@ -177,6 +180,7 @@ if ( imageUtils.isImage( selectedElement ) ) {
 	* doesn't require a `model` parameter any longer,
 	* as a second parameter also {@link module:engine/model/selection~Selectable} can be passed not only {@link module:engine/model/position~Position},
 	* a new parameter `imageType` is now supported to force a type of the image to be inserted.
+
 ```js
 // Old code
 import { insertImage } from './utils';
@@ -196,6 +200,7 @@ const imageType = 'imageBlock';
 
 imageUtils.insertImage( { src }, selection, imageType );
 ```
+
 * The {@link module:image/imageutils~ImageUtils#isImage} function returns now an `Element` for both, inline and block images.
 * There are two new helpers: {@link module:image/imageutils~ImageUtils#isBlockImageView} and {@link module:image/imageutils~ImageUtils#isInlineImageView} functions.
 * The `getSelectedImageWidget` function is now protected and is renamed to `getClosestSelectedImageElement`.
