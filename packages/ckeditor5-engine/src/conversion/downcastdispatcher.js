@@ -183,11 +183,7 @@ export default class DowncastDispatcher {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( data );
-		}
-
+		this._convertInsert( range );
 		this._clearConversionApi();
 	}
 
@@ -271,23 +267,23 @@ export default class DowncastDispatcher {
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		const elements = Array.from( range.getItems( { shallow: true } ) );
-		const currentViewElements = new Set();
-
-		for ( const element of elements ) {
-			let currentView = mapper.toViewElement( element );
-
-			while ( mapper.toModelElement( currentView ) === element ) {
-				const parentView = currentView.parent;
-
-				currentViewElements.add( currentView );
-
-				// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-				writer.remove( currentView );
-
-				// But also go up the view tree and remove all elements that are mapped to the same model element.
-				currentView = parentView;
-			}
-		}
+		// const currentViewElements = new Set();
+		//
+		// for ( const element of elements ) {
+		// 	let currentView = mapper.toViewElement( element );
+		//
+		// 	while ( mapper.toModelElement( currentView ) === element ) {
+		// 		const parentView = currentView.parent;
+		//
+		// 		currentViewElements.add( currentView );
+		//
+		// 		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
+		// 		writer.remove( currentView );
+		//
+		// 		// But also go up the view tree and remove all elements that are mapped to the same model element.
+		// 		currentView = parentView;
+		// 	}
+		// }
 
 		if ( magicUid ) {
 			// Trigger single insert for magic conversion.
@@ -319,44 +315,44 @@ export default class DowncastDispatcher {
 			}
 		}
 
-		for ( const element of elements ) {
-			const convertedViewElement = mapper.toViewElement( element );
-
-			// Conversion could already reuse old view element.
-			if ( currentViewElements.has( convertedViewElement ) ) {
-				currentViewElements.delete( convertedViewElement );
-
-				continue;
-			}
-
-			// Iterate over children of reconverted element in order to...
-			for ( const value of Range._createIn( element ) ) {
-				const { item } = value;
-
-				const view = elementOrTextProxyToView( item, mapper );
-
-				// ...either bring back previously converted view...
-				if ( view ) {
-					// Do not move views that are already in converted element - those might be created by the main element converter
-					// in case when main element converts also its direct children.
-					if ( view.root !== convertedViewElement.root ) {
-						writer.move(
-							writer.createRangeOn( view ),
-							mapper.toViewPosition( Position._createBefore( item ) )
-						);
-					}
-				}
-				// ... or by converting newly inserted elements.
-				else {
-					this._convertInsertWithAttributes( walkerValueToEventData( value ) );
-				}
-			}
-		}
-
-		// After reconversion is done we can unbind the old view.
-		for ( const currentView of currentViewElements ) {
-			mapper.unbindViewElement( currentView );
-		}
+		// for ( const element of elements ) {
+		// 	const convertedViewElement = mapper.toViewElement( element );
+		//
+		// 	// Conversion could already reuse old view element.
+		// 	if ( currentViewElements.has( convertedViewElement ) ) {
+		// 		currentViewElements.delete( convertedViewElement );
+		//
+		// 		continue;
+		// 	}
+		//
+		// 	// Iterate over children of reconverted element in order to...
+		// 	for ( const value of Range._createIn( element ) ) {
+		// 		const { item } = value;
+		//
+		// 		const view = elementOrTextProxyToView( item, mapper );
+		//
+		// 		// ...either bring back previously converted view...
+		// 		if ( view ) {
+		// 			// Do not move views that are already in converted element - those might be created by the main element converter
+		// 			// in case when main element converts also its direct children.
+		// 			if ( view.root !== convertedViewElement.root ) {
+		// 				writer.move(
+		// 					writer.createRangeOn( view ),
+		// 					mapper.toViewPosition( Position._createBefore( item ) )
+		// 				);
+		// 			}
+		// 		}
+		// 		// ... or by converting newly inserted elements.
+		// 		else {
+		// 			this._convertInsertWithAttributes( walkerValueToEventData( value ) );
+		// 		}
+		// 	}
+		// }
+		//
+		// // After reconversion is done we can unbind the old view.
+		// for ( const currentView of currentViewElements ) {
+		// 	mapper.unbindViewElement( currentView );
+		// }
 
 		this._clearConversionApi();
 	}
@@ -612,6 +608,24 @@ export default class DowncastDispatcher {
 			data.attributeNewValue = data.item.getAttribute( key );
 
 			this._testAndFire( `attribute:${ key }`, data );
+		}
+	}
+
+	/**
+	 * TODO
+ 	 */
+	_convertInsert( range ) {
+		const mapper = this.conversionApi.mapper;
+
+		// Fire a separate insert event for each node and text fragment contained in the range.
+		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
+			// const oldViewElement = mapper.toViewElement( data.item );
+
+			// if ( oldViewElement && !oldViewElement.isAttached ) {
+			// 	debugger;
+			// }
+
+			this._convertInsertWithAttributes( data );
 		}
 	}
 

@@ -245,14 +245,14 @@ function Box( editor ) {
 
 	editor.conversion.for( 'upcast' ).add( getBoxUpcastConverter( editor ) );
 
-	editor.conversion.for( 'downcast' ).elementToElement( {
-		model: 'box',
-		view: downcastBox,
-		// triggerBy: {
-		// 	attributes: [ 'meta' ],
-		// 	children: [ 'boxField' ]
-		// }
-	} );
+	// editor.conversion.for( 'downcast' ).elementToElement( {
+	// 	model: 'box',
+	// 	view: downcastBox,
+	// 	// triggerBy: {
+	// 	// 	attributes: [ 'meta' ],
+	// 	// 	children: [ 'boxField' ]
+	// 	// }
+	// } );
 
 	editor.conversion.for( 'downcast' ).magic( {
 		model: 'box',
@@ -261,6 +261,11 @@ function Box( editor ) {
 			attributes: [ 'meta' ],
 			children: [ 'boxField' ]
 		}
+	} );
+
+	editor.conversion.for( 'downcast' ).elementToElement( {
+		model: 'boxField',
+		view: { name: 'div', classes: 'box-content-field' }
 	} );
 
 	addBoxMetaButton( editor, 'boxTitle', 'Box title', () => ( {
