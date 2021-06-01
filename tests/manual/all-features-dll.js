@@ -182,8 +182,8 @@ const config = {
 			}
 		],
 		toolbar: [
-			'imageTextAlternative', '|',
-			'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
+			'imageTextAlternative', 'toggleImageCaption', '|',
+			'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
 			'resizeImage'
 		],
 		insert: {

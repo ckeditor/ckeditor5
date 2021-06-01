@@ -240,7 +240,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-					'<span style="display:inline-block"><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
+					'<span class="ck-table-bogus-paragraph"><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
 					'</td></tr></tbody></table>' +
 					'</figure>'
 				);

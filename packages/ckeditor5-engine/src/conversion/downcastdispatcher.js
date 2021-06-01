@@ -736,7 +736,7 @@ export default class DowncastDispatcher {
 	 * `name` is either `'$text'` if change was on {@link module:engine/model/text~Text a text node},
 	 * or the {@link module:engine/model/element~Element#name name} of element which attribute has changed.
 	 *
-	 * This way listeners can either listen to a general `attribute:bold` event or specific event (for example `attribute:src:image`).
+	 * This way listeners can either listen to a general `attribute:bold` event or specific event (for example `attribute:src:imageBlock`).
 	 *
 	 * @event attribute
 	 * @param {Object} data Additional information about the change.

@@ -19,7 +19,7 @@ import FileRepository from '../filerepository';
  * This kind of image upload does not require server processing – images are stored with the rest of the text and
  * displayed by the web browser without additional requests.
  *
- * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
+ * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin

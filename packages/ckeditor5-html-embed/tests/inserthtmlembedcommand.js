@@ -68,17 +68,18 @@ describe( 'InsertHtmlEmbedCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other raw html element', () => {
+		it( 'should be true when the selection is on another raw html element', () => {
 			setModelData( model, '[<rawHtml></rawHtml>]' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other object', () => {
+		it( 'should be true when the selection is on another object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
 			setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows raw html', () => {
@@ -163,6 +164,29 @@ describe( 'InsertHtmlEmbedCommand', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>fo</paragraph>[<rawHtml></rawHtml>]<paragraph>o</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing selected object with a raw HTML', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing raw HTML with another raw HTML', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
 			);
 		} );
 	} );

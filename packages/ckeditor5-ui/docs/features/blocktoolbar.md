@@ -21,7 +21,7 @@ The block toolbar comes in handy when the main editor toolbar cannot be accessed
 The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
 
 <info-box hint>
-	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headings}) or insert objects (e.g. {@link features/image images} or {@link features/table tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
+	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headings}) or insert objects (e.g. {@link features/images-overview images} or {@link features/table tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
 </info-box>
 
 To adjust the position of the block toolbar button to match the styles of your website, use the CSS `transform` property:

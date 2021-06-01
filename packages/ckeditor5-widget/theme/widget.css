@@ -10,6 +10,7 @@
 
 	--ck-resizer-border-radius: var(--ck-border-radius);
 	--ck-resizer-tooltip-offset: 10px;
+	--ck-resizer-tooltip-height: calc(var(--ck-spacing-small) * 2 + 10px);
 }
 
 .ck .ck-widget {
@@ -49,12 +50,15 @@
 	border-radius: var(--ck-resizer-border-radius);
 	font-size: var(--ck-font-size-tiny);
 	display: block;
-	padding: var(--ck-spacing-small);
+	padding: 0 var(--ck-spacing-small);
+	height: var(--ck-resizer-tooltip-height);
+	line-height: var(--ck-resizer-tooltip-height);
 
 	&.ck-orientation-top-left,
 	&.ck-orientation-top-right,
 	&.ck-orientation-bottom-right,
-	&.ck-orientation-bottom-left {
+	&.ck-orientation-bottom-left,
+	&.ck-orientation-above-center {
 		position: absolute;
 	}
 
@@ -76,5 +80,12 @@
 	&.ck-orientation-bottom-left {
 		bottom: var(--ck-resizer-tooltip-offset);
 		left: var(--ck-resizer-tooltip-offset);
+	}
+
+	/* Class applied if the widget is too small to contain the size label */
+	&.ck-orientation-above-center {
+		top: calc(var(--ck-resizer-tooltip-height) * -1);
+		left: 50%;
+		transform: translate(-50%);
 	}
 }

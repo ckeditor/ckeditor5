@@ -68,17 +68,19 @@ describe( 'HorizontalLineCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other horizontal line element', () => {
+		it( 'should be true when the selection is on another horizontal line element', () => {
 			setModelData( model, '[<horizontalLine></horizontalLine>]' );
-			expect( command.isEnabled ).to.be.false;
+
+			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other object', () => {
+		it( 'should be true when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
 			setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows horizontal line', () => {
@@ -273,6 +275,29 @@ describe( 'HorizontalLineCommand', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<heading1>foo</heading1><horizontalLine></horizontalLine><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing selected object with a horizontal line', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><horizontalLine></horizontalLine><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing horizontal line with another horizontal line', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<horizontalLine></horizontalLine>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><horizontalLine></horizontalLine><paragraph>[]bar</paragraph>'
 			);
 		} );
 	} );

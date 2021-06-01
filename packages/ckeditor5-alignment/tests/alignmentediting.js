@@ -72,7 +72,7 @@ describe( 'AlignmentEditing', () => {
 		} );
 
 		it( 'is disallowed on caption', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'image', 'caption' ], 'alignment' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock', 'caption' ], 'alignment' ) ).to.be.false;
 		} );
 	} );
 

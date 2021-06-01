@@ -76,12 +76,13 @@ function initEditor() {
 				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
 			},
 			image: {
-				styles: [
-					'full',
-					'alignLeft',
-					'alignRight'
-				],
-				toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]
+				toolbar: [
+					'imageTextAlternative',
+					'toggleImageCaption', '|',
+					'imageStyle:inline',
+					'imageStyle:wrapText',
+					'imageStyle:breakText'
+				]
 			},
 			placeholder: 'Type the content here!',
 			mention: {
