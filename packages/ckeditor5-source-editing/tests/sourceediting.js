@@ -116,13 +116,13 @@ describe( 'SourceEditing', () => {
 	} );
 
 	describe( 'default listener', () => {
-		it( 'should listen to own event if editable is not external', () => {
+		it( 'should listen to own observable properties if editable is not external', () => {
 			const emitterId = _getEmitterId( plugin );
 
-			expect( _getEmitterListenedTo( plugin, emitterId ) ).to.equal( plugin );
+			expect( _getEmitterListenedTo( plugin, emitterId ).id ).to.equal( plugin.id );
 		} );
 
-		it( 'should not listen to own event if editable is external', async () => {
+		it( 'should not listen to own observable properties if editable is external', async () => {
 			class ClassicTestEditorWithExternalEditable extends ClassicTestEditor {
 				constructor( sourceElementOrData, config ) {
 					super( sourceElementOrData, config );
