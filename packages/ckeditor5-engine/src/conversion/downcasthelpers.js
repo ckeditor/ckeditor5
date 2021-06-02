@@ -917,8 +917,7 @@ function insertStructure( elementCreator ) {
 
 		// View creation.
 		// TODO maybe elementCreator (generated from description).
-		// TODO elements.length == 1 is temporary
-		const viewElement = elementCreator( elements.length == 1 ? elements[ 0 ] : data.range, {
+		const viewElement = elementCreator( data.range, {
 			...conversionApi,
 			slotFor( element, mode = 'children' ) {
 				const slot = writer.createContainerElement( '$slot' );
@@ -1555,7 +1554,10 @@ function downcastElementToElement( config ) {
 function downcastElementToStructure( config ) {
 	config = cloneDeep( config );
 
-	config.view = normalizeToElementConfig( config.view, 'container' );
+	const elementCreator = normalizeToElementConfig( config.view, 'container' );
+
+	// The elementCreator expects model element here but insertStructure operates on ranges.
+	config.view = ( range, ...rest ) => elementCreator( range.start.nodeAfter, ...rest );
 
 	return dispatcher => {
 		dispatcher.on( 'insert:' + config.model, insertStructure( config.view ), { priority: config.converterPriority || 'normal' } );

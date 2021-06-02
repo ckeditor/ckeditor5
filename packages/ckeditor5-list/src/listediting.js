@@ -183,11 +183,100 @@ export default class ListEditing extends Plugin {
 					editor.model.createPositionAfter( endElement )
 				);
 			},
-			model: data => {
-				return {};
-			},
-			view: ( data, { writer, slotFor } ) => {
-				data;
+			view: ( range, { writer, mapper, consumable, slotFor } ) => {
+				const modelElements = Array.from( range.getItems( { shallow: true } ) );
+
+				for ( const modelItem of modelElements ) {
+					if (
+						!consumable.test( modelItem, 'attribute:listItem' ) ||
+						!consumable.test( modelItem, 'attribute:listType' ) ||
+						!consumable.test( modelItem, 'attribute:listIndent' )
+					) {
+						return;
+					}
+				}
+
+				const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+				const viewList = writer.createContainerElement( listType );
+
+				// let previousItem = null;
+
+				for ( const modelItem of modelElements ) {
+					consumable.consume( modelItem, 'attribute:listItem' );
+					consumable.consume( modelItem, 'attribute:listType' );
+					consumable.consume( modelItem, 'attribute:listIndent' );
+
+					const viewItem = createViewListItemElement( writer );
+
+					writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+					mapper.bindElements( modelItem, viewList );
+					mapper.bindElements( modelItem, viewItem );
+
+					writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+
+					// const itemModelPosition = editor.model.createPositionBefore( modelItem );
+					//
+					// // Don't insert ol/ul or li if this is a continuation of some other list item.
+					// const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
+					//
+					// console.log( 'converting', modelItem ); // eslint-disable-line
+					//
+					// consumable.consume( modelItem, 'attribute:listItem' );
+					// consumable.consume( modelItem, 'attribute:listType' );
+					// consumable.consume( modelItem, 'attribute:listIndent' );
+					//
+					// if ( isFirstInListItem ) {
+					// 	console.log( 'create list item' ); // eslint-disable-line
+					// 	let viewList;
+					//
+					// 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+					// 	const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
+					//
+					// 	// First element of the top level list.
+					// 	if (
+					// 		!previousIsListItem ||
+					// 		modelItem.getAttribute( 'listIndent' ) == 0 &&
+					// 		previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
+					// 	) {
+					// 		viewList = writer.createContainerElement( listType );
+					// 		writer.insert( mapper.toViewPosition( itemModelPosition ), viewList );
+					// 	}
+					//
+					// 	// Deeper nested list.
+					// 	else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
+					// 		const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
+					//
+					// 		viewList = writer.createContainerElement( listType );
+					// 		writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
+					// 	}
+					//
+					// 	// Same or shallower level.
+					// 	else {
+					// 		viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
+					//
+					// 		for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
+					// 			viewList = viewList.findAncestor( isList );
+					// 		}
+					// 	}
+					//
+					// 	// Inserting the li.
+					// 	const viewItem = createViewListItemElement( writer );
+					//
+					// 	writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+					// 	mapper.bindElements( modelItem, viewList );
+					// 	mapper.bindElements( modelItem, viewItem );
+					//
+					// 	writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+					// } else {
+					// 	writer.insert( mapper.toViewPosition( itemModelPosition ), slotFor( modelItem, 'self' ) );
+					// }
+					//
+					// previousItem = modelItem;
+				}
+
+				debugger;
+
+				return viewList;
 			}
 		} );
 

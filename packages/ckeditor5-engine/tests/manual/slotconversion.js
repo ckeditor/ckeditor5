@@ -245,15 +245,6 @@ function Box( editor ) {
 
 	editor.conversion.for( 'upcast' ).add( getBoxUpcastConverter( editor ) );
 
-	// editor.conversion.for( 'downcast' ).elementToElement( {
-	// 	model: 'box',
-	// 	view: downcastBox,
-	// 	// triggerBy: {
-	// 	// 	attributes: [ 'meta' ],
-	// 	// 	children: [ 'boxField' ]
-	// 	// }
-	// } );
-
 	editor.conversion.for( 'downcast' ).elementToStructure( {
 		model: 'box',
 		view: downcastMagicBox,
