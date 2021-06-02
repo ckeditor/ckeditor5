@@ -18,7 +18,7 @@ After reading this guide, you may find additional interesting details and exampl
 
 ## Keyboard support
 
-You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>⌘</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
+You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
 
 ## Installation
 
