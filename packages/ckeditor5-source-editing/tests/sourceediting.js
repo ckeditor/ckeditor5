@@ -97,22 +97,21 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should toggle the plugin property after execution', () => {
+			const spy = sinon.spy();
+
+			plugin.on( 'change:isSourceEditingMode', spy );
+
 			button.fire( 'execute' );
 
 			expect( plugin.isSourceEditingMode ).to.be.true;
-		} );
-
-		it( 'should fire an event', () => {
-			const spy = sinon.spy();
-
-			plugin.on( 'sourceEditing', spy );
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 2 ] ).to.be.true;
 
 			button.fire( 'execute' );
-			button.fire( 'execute' );
 
+			expect( plugin.isSourceEditingMode ).to.be.false;
 			expect( spy.calledTwice ).to.be.true;
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { isSourceEditingMode: true } );
-			expect( spy.args[ 1 ][ 1 ] ).to.deep.equal( { isSourceEditingMode: false } );
+			expect( spy.secondCall.args[ 2 ] ).to.be.false;
 		} );
 	} );
 
@@ -324,7 +323,7 @@ describe( 'SourceEditing', () => {
 			button.fire( 'execute' );
 
 			expect( setDataSpy.calledOnce ).to.be.true;
-			expect( setDataSpy.args[ 0 ][ 1 ] ).to.deep.equal( [
+			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: '<p>Foo</p><p>bar</p>' },
 				{ batchType: 'default' }
 			] );

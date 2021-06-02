@@ -123,24 +123,15 @@ export default class SourceEditing extends Plugin {
 
 			this.listenTo( buttonView, 'execute', () => {
 				this.isSourceEditingMode = !this.isSourceEditingMode;
-
-				/**
-				 * Fired whenever the source editing mode is toggled.
-				 *
-				 * @event sourceEditing
-				 * @param {Object} data Additional information about the event.
-				 * @param {Boolean} data.isSourceEditingMode Flag indicating whether the document source mode is active.
-				 */
-				this.fire( 'sourceEditing', { isSourceEditingMode: this.isSourceEditingMode } );
 			} );
 
 			return buttonView;
 		} );
 
 		// Currently, plugin handles the source editing mode by itself only for the classic editor. To use this plugin with other
-		// integrations, listen to `sourceEditing` event and act accordingly.
+		// integrations, listen to `change:isSourceEditingMode` event and act accordingly.
 		if ( this._isAllowedToHandleSourceEditingMode() ) {
-			this.on( 'sourceEditing', ( evt, { isSourceEditingMode } ) => {
+			this.on( 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
 				if ( isSourceEditingMode ) {
 					this._showSourceEditing();
 					this._disableCommands();
