@@ -95,18 +95,18 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
 
-			// The button should be disabled if one of the following condition is met.
+			// The button should be disabled if one of the following conditions is met:
 			buttonView.bind( 'isEnabled' ).to(
 				this, 'isEnabled',
 				editor, 'isReadOnly',
 				editor.plugins.get( PendingActions ), 'hasAny',
 				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
-					// (1) The plugin is disabled itself.
+					// (1) The plugin itself is disabled.
 					if ( !isEnabled ) {
 						return false;
 					}
 
-					// (2) The editor is in a read-only mode.
+					// (2) The editor is in read-only mode.
 					if ( isEditorReadOnly ) {
 						return false;
 					}
@@ -128,8 +128,8 @@ export default class SourceEditing extends Plugin {
 			return buttonView;
 		} );
 
-		// Currently, plugin handles the source editing mode by itself only for the classic editor. To use this plugin with other
-		// integrations, listen to `change:isSourceEditingMode` event and act accordingly.
+		// Currently, the plugin handles the source editing mode by itself only for the classic editor. To use this plugin with other
+		// integrations, listen to the `change:isSourceEditingMode` event and act accordingly.
 		if ( this._isAllowedToHandleSourceEditingMode() ) {
 			this.on( 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
 				if ( isSourceEditingMode ) {
@@ -148,7 +148,8 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
-	 * Creates source editing wrappers, that replace each editing root. Each wrapper contains the document source from corresponding root.
+	 * Creates source editing wrappers that replace each editing root. Each wrapper contains
+	 *  the document source from the corresponding root.
 	 *
 	 * The wrapper element contains a textarea and it solves the problem, that the textarea element cannot auto expand its height based on
 	 * the content it contains. The solution is to make the textarea more like a plain div element, which expands in height as much as it
@@ -171,7 +172,7 @@ export default class SourceEditing extends Plugin {
 			writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 		} );
 
-		// It is not needed to iterate through all editing roots, as currently the plugin supports only the Classic Editor with single
+		// It is not needed to iterate through all editing roots, as currently the plugin supports only the Classic Editor with a single
 		// main root, but this code may help understand and use this feature in external integrations.
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
 			const data = editor.data.get( { rootName } );
@@ -220,7 +221,7 @@ export default class SourceEditing extends Plugin {
 			const oldData = editor.data.get( { rootName } );
 			const newData = domSourceEditingElementWrapper.dataset.value;
 
-			// Do not set the data unless some changes has been made in the meantime.
+			// Do not set the data unless some changes have been made in the meantime.
 			// This prevents empty undo steps after switching to the normal editor.
 			if ( oldData !== newData ) {
 				data[ rootName ] = newData;
@@ -282,7 +283,7 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
-	 * Adds or removes the `readonly` attribute from textarea from all roots, if document source mode is active.
+	 * Adds or removes the `readonly` attribute from the textarea from all roots, if document source mode is active.
 	 *
 	 * @param {Boolean} isReadOnly Indicates whether all textarea elements should be read-only.
 	 */
