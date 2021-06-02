@@ -18,6 +18,7 @@ export default class FindAndReplaceUI extends Plugin {
 		this.activeSearch = null;
 
 		this.addToolbarDropdown();
+		this.findAndReplacePlugin = this.editor.plugins.get( 'FindAndReplace' );
 		// this.on( 'change:searchText', ( event, propertyName, newValue, oldValue ) => {
 		// console.log( propertyName, newValue, oldValue );
 		// } );
@@ -47,35 +48,91 @@ export default class FindAndReplaceUI extends Plugin {
 
 			dropdown.render();
 
-			const childView = new View();
+			const findView = new View();
+			const replaceView = new View();
 
-			const findNextInputView = this._createButton( t( '>' ), 'ck-button-next', 'submit' );
-			const findPrevInputView = this._createButton( t( '<' ), 'ck-button-prev', 'submit' );
-			const findInputView = this._createInputField();
+			const findInputView = this._createInputField( 'Find', 'Search for something you\'d like to find' );
+			const findPrevView = this._createButton( t( '<' ), 'ck-button-prev', 'submit' );
+			const findNextView = this._createButton( t( '>' ), 'ck-button-next', 'submit' );
 
-			childView.setTemplate( {
-				tag: 'form',
-				attributes: {
-					class: [
-						'ck',
-						'ck-media-form',
-						'ck-responsive-form'
-					],
-					tabindex: '-1'
-				},
-				children: [
-					findInputView,
-					findPrevInputView,
-					findNextInputView
-				]
-			} );
+			const replaceInputView = this._createInputField( 'Replace', 'Replace what you\'ve previously selected' );
+			const replacePrevView = this._createButton( t( '?' ), 'ck-button-prev', 'submit' );
+			const replaceNextView = this._createButton( t( 'REPLACE' ), 'ck-button-next', 'submit' );
 
-			dropdown.panelView.children.add( childView );
+			const findViewConfig = this._findViewConfig( findView, t, findNextView, findPrevView, findInputView );
+			const replaceViewConfig = this._replaceViewConfig( replaceView, t, replaceNextView, replacePrevView, replaceInputView );
+
+			dropdown.panelView.children.add( findViewConfig );
+			dropdown.panelView.children.add( replaceViewConfig );
 
 			return dropdown;
 		} );
 	}
-	_createInputField() {
+	_findViewConfig( viewName, t, NextInputView, PrevInputView, InputView ) {
+		NextInputView.on( 'execute', () => {
+			// this.findAndReplacePlugin.stop();
+			if ( this.searchText.length !== 0 ) {
+				this.findAndReplacePlugin.stop();
+			}
+			const resultsFound = this.findAndReplacePlugin.find( this.searchText );
+
+			// eslint-disable-next-line no-unused-vars
+			const currentResultId = resultsFound.get( 0 ).id;
+
+			// console.log( 'currentResultId ', currentResultId );
+		} );
+
+		PrevInputView.on( 'execute', () => {
+			// console.log( 'prevButton has been clicked' );
+		} );
+
+		viewName.setTemplate( {
+			tag: 'form',
+			attributes: {
+				class: [
+					'ck',
+					'ck-media-form',
+					'ck-responsive-form'
+				],
+				tabindex: '-1'
+			},
+			children: [
+				InputView,
+				PrevInputView,
+				NextInputView
+			]
+		} );
+		return viewName;
+	}
+	_replaceViewConfig( viewName, t, NextInputView, PrevInputView, InputView ) {
+		NextInputView.on( 'execute', () => {
+			this.findAndReplacePlugin.replaceAll( 'testingReplace' );
+			this.findAndReplacePlugin.stop();
+		} );
+
+		PrevInputView.on( 'execute', () => {
+			// console.log( 'prevButton has been clicked' );
+		} );
+
+		viewName.setTemplate( {
+			tag: 'form',
+			attributes: {
+				class: [
+					'ck',
+					'ck-media-form',
+					'ck-responsive-form'
+				],
+				tabindex: '-1'
+			},
+			children: [
+				InputView,
+				PrevInputView,
+				NextInputView
+			]
+		} );
+		return viewName;
+	}
+	_createInputField( labelText, infoText ) {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputView = labeledInput.fieldView;
 
@@ -83,8 +140,8 @@ export default class FindAndReplaceUI extends Plugin {
 			this.searchText = inputView.element.value;
 		} );
 
-		labeledInput.label = 'Find';
-		labeledInput.infoText = 'Search for something you\'d like to find';
+		labeledInput.label = labelText;
+		labeledInput.infoText = infoText;
 		labeledInput.render();
 
 		return labeledInput.element;
@@ -102,6 +159,10 @@ export default class FindAndReplaceUI extends Plugin {
 				class: className
 			}
 		} );
+		// button.on( 'execute', () => {
+		// 	this.findAndReplacePlugin.stop();
+		// 	this.findAndReplacePlugin.find( this.searchText );
+		// } );
 		// button.type = 'submit';
 
 		return button;
