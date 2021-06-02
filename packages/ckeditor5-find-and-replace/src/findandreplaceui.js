@@ -1,9 +1,7 @@
 import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
-
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import FindAndReplaceForm from './findandreplaceform';
+import { createDropdown, ButtonView, SplitButtonView, LabeledFieldView, createLabeledInputText, View } from 'ckeditor5/src/ui';
+import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+import 'ckeditor5/packages/ckeditor5-media-embed/theme/mediaform.css';
 
 /**
  * Example Find & Replace UI that uses FindAndReplace plugin API.
@@ -14,13 +12,15 @@ export default class FindAndReplaceUI extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		// const container = document.getElementById( 'search-results' );
-
-		// ReactDOM.render(<FindAndReplaceForm editor={editor} />, container);
-
+		this.set( 'searchText' );
+	}
+	init() {
 		this.activeSearch = null;
 
 		this.addToolbarDropdown();
+		// this.on( 'change:searchText', ( event, propertyName, newValue, oldValue ) => {
+		// console.log( propertyName, newValue, oldValue );
+		// } );
 	}
 	addToolbarDropdown() {
 		const editor = this.editor;
@@ -38,12 +38,72 @@ export default class FindAndReplaceUI extends Plugin {
 			} );
 
 			dropdown.buttonView.on( 'execute', () => {
-				// console.log( 'find and replace button clicked' );
+
+			} );
+
+			dropdown.buttonView.on( 'open', () => {
+
 			} );
 
 			dropdown.render();
 
+			const childView = new View();
+
+			const findNextInputView = this._createButton( t( '>' ), 'ck-button-next', 'submit' );
+			const findPrevInputView = this._createButton( t( '<' ), 'ck-button-prev', 'submit' );
+			const findInputView = this._createInputField();
+
+			childView.setTemplate( {
+				tag: 'form',
+				attributes: {
+					class: [
+						'ck',
+						'ck-media-form',
+						'ck-responsive-form'
+					],
+					tabindex: '-1'
+				},
+				children: [
+					findInputView,
+					findPrevInputView,
+					findNextInputView
+				]
+			} );
+
+			dropdown.panelView.children.add( childView );
+
 			return dropdown;
 		} );
+	}
+	_createInputField() {
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+		const inputView = labeledInput.fieldView;
+
+		inputView.on( 'input', () => {
+			this.searchText = inputView.element.value;
+		} );
+
+		labeledInput.label = 'Find';
+		labeledInput.infoText = 'Search for something you\'d like to find';
+		labeledInput.render();
+
+		return labeledInput.element;
+	}
+	_createButton( label, icon, className ) {
+		const button = new ButtonView( this.locale );
+
+		button.set( {
+			label,
+			withText: true,
+			tooltip: true
+		} );
+		button.extendTemplate( {
+			attributes: {
+				class: className
+			}
+		} );
+		// button.type = 'submit';
+
+		return button;
 	}
 }
