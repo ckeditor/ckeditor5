@@ -786,15 +786,16 @@ describe( 'DowncastHelpers', () => {
 				} );
 			} );
 
+			// TODO those tests are for elementToStructure
 			describe( 'with complex view structure (slot conversion)', () => {
 				beforeEach( () => {
 					model.schema.register( 'complex', {
 						allowIn: '$root',
 						allowAttributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
 					} );
-					downcastHelpers.elementToElement( {
+					downcastHelpers.elementToStructure( {
 						model: 'complex',
-						view: ( modelElement, { writer, mapper } ) => {
+						view: ( modelElement, { writer, mapper, slotFor } ) => {
 							const classForMain = !!modelElement.getAttribute( 'classForMain' );
 							const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
 							const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
@@ -814,12 +815,14 @@ describe( 'DowncastHelpers', () => {
 							writer.insert( writer.createPositionAt( outer, 'end' ), inner );
 							mapper.bindElements( modelElement, inner );
 
-							for ( const slot of modelElement.getChildren() ) {
-								const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
+							writer.insert( writer.createPositionAt( inner, 0 ), slotFor( modelElement, 'children' ) );
 
-								writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
-								mapper.bindElements( slot, viewSlot );
-							}
+							// for ( const slot of modelElement.getChildren() ) {
+							// 	const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
+							//
+							// 	writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
+							// 	mapper.bindElements( slot, viewSlot );
+							// }
 
 							return outer;
 						},
@@ -827,6 +830,11 @@ describe( 'DowncastHelpers', () => {
 							attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ],
 							children: [ 'slot' ]
 						}
+					} );
+
+					downcastHelpers.elementToElement( {
+						model: 'slot',
+						view: { name: 'div', classes: 'slot' }
 					} );
 
 					model.schema.register( 'slot', {
@@ -1088,8 +1096,8 @@ describe( 'DowncastHelpers', () => {
 							slotTwoAfter, paraTwoAfter, textNodeTwoAfter ] = getNodes();
 
 						expect( mainAfter, 'main view' ).to.not.equal( main );
-						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
-						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
+						expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
+						expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
 						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
 						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
 						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
@@ -1122,8 +1130,8 @@ describe( 'DowncastHelpers', () => {
 						] = getNodes();
 
 						expect( mainAfter, 'main view' ).to.not.equal( main );
-						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
-						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
+						expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
+						expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
 						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
 						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
 						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );

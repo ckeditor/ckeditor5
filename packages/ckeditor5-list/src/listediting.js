@@ -118,7 +118,7 @@ export default class ListEditing extends Plugin {
 			data.viewPosition = editing.mapper.findPositionIn( listView, data.modelPosition.offset - firstModelItem.startOffset );
 		}
 
-		editor.conversion.for( 'downcast' ).magic( {
+		editor.conversion.for( 'downcast' ).rangeToStructure( {
 			triggerBy: diffItem => {
 				let element = null;
 

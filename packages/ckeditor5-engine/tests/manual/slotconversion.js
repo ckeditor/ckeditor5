@@ -254,7 +254,7 @@ function Box( editor ) {
 	// 	// }
 	// } );
 
-	editor.conversion.for( 'downcast' ).magic( {
+	editor.conversion.for( 'downcast' ).elementToStructure( {
 		model: 'box',
 		view: downcastMagicBox,
 		triggerBy: {

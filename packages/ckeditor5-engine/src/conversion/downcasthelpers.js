@@ -10,6 +10,7 @@
  */
 
 import ModelRange from '../model/range';
+import ModelPosition from '../model/position';
 import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
 
@@ -95,6 +96,20 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 */
 	elementToElement( config ) {
 		return this.add( downcastElementToElement( config ) );
+	}
+
+	/**
+	 * TODO
+	 */
+	elementToStructure( config ) {
+		return this.add( downcastElementToStructure( config ) );
+	}
+
+	/**
+	 * TODO
+	 */
+	rangeToStructure( config ) {
+		return this.add( downcastRangeToStructure( config ) );
 	}
 
 	/**
@@ -268,13 +283,6 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 */
 	attributeToAttribute( config ) {
 		return this.add( downcastAttributeToAttribute( config ) );
-	}
-
-	/**
-	 * TODO
-	 */
-	magic( config ) {
-		return this.add( magicDowncast( config ) );
 	}
 
 	/**
@@ -815,20 +823,171 @@ export function wrap( elementCreator ) {
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const viewElement = elementCreator( data.item, conversionApi );
+		const { mapper, consumable, writer } = conversionApi;
+		const element = data.item;
+
+		if ( !consumable.test( element, 'insert' ) ) {
+			return;
+		}
+
+		// Remove old view elements but keep mapping so they could be reinserted into the slots.
+		const currentViewElement = mapper.toViewElement( element );
+
+		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
+		if ( currentViewElement ) {
+			writer.remove( currentViewElement );
+		}
+
+		// Create new view element.
+		const viewElement = elementCreator( element, conversionApi );
 
 		if ( !viewElement ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		if ( !consumable.consume( element, 'insert' ) ) {
 			return;
 		}
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewPosition = mapper.toViewPosition( data.range.start );
 
+		mapper.bindElements( element, viewElement );
+		writer.insert( viewPosition, viewElement );
+
+		// Fill with nested view nodes.
+		for ( const modelChildNode of element.getChildren() ) {
+			const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
+
+			if ( viewChildNode && viewChildNode.root != viewElement.root ) {
+				writer.move(
+					writer.createRangeOn( viewChildNode ),
+					mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+				);
+			} else {
+				// TODO this should be exposed by conversionApi?
+				// Note that this is not creating another consumable, it's using the current one.
+				conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+			}
+		}
+
+		// After reconversion is done we can unbind the old view.
+		if ( currentViewElement ) {
+			if ( currentViewElement.root != viewElement.root ) {
+				mapper.unbindViewElement( currentViewElement );
+			}
+		}
+	};
+}
+
+// TODO
+function insertStructure( elementCreator ) {
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper } = conversionApi;
+
+		// Scan for elements and it's current mapped view elements.
+		const elements = Array.from( data.range.getItems( { shallow: true } ) );
+
+		for ( const element of elements ) {
+			if ( !conversionApi.consumable.test( element, 'insert' ) ) {
+				return;
+			}
+		}
+
+		// Remove old view elements but keep mapping so they could be reinserted into the slots.
+		const currentViewElements = new Set();
+
+		for ( const element of elements ) {
+			let currentView = mapper.toViewElement( element );
+
+			while ( mapper.toModelElement( currentView ) === element ) {
+				const parentView = currentView.parent;
+
+				currentViewElements.add( currentView );
+
+				// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
+				writer.remove( currentView );
+
+				// But also go up the view tree and remove all elements that are mapped to the same model element.
+				currentView = parentView;
+			}
+		}
+
+		// Trigger new view structure creation.
+		const slots = new Map();
+
+		// View creation.
+		// TODO maybe elementCreator (generated from description).
+		// TODO elements.length == 1 is temporary
+		const viewElement = elementCreator( elements.length == 1 ? elements[ 0 ] : data.range, {
+			...conversionApi,
+			slotFor( element, mode = 'children' ) {
+				const slot = writer.createContainerElement( '$slot' );
+
+				slots.set( slot, { element, mode } );
+
+				return slot;
+			}
+		} );
+
+		if ( !viewElement ) {
+			return;
+		}
+
+		for ( const element of elements ) {
+			if ( !conversionApi.consumable.consume( element, 'insert' ) ) {
+				return;
+			}
+		}
+
+		const viewPosition = mapper.toViewPosition( data.range.start );
+
+		// TODO data.item is not available for range conversion
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
+
+		// Fill slots with nested view nodes.
+		for ( const [ slot, { element, mode } ] of slots.entries() ) {
+			// TODO Make sure that slots are created for the elements themself or direct descendants and not other elements.
+
+			if ( mode == 'children' ) {
+				// Bind slot with element so children will be down-casted into it.
+				mapper.bindElements( element, slot );
+
+				for ( const modelChildNode of element.getChildren() ) {
+					const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
+
+					if ( viewChildNode && viewChildNode.root != viewElement.root ) {
+						writer.move(
+							writer.createRangeOn( viewChildNode ),
+							mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+						);
+					} else {
+						// TODO this should be exposed by conversionApi?
+						// Note that this is not creating another consumable, it's using the current one.
+						conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+					}
+				}
+
+				writer.move( writer.createRangeIn( slot ), writer.createPositionBefore( slot ) );
+				writer.remove( slot );
+
+				// Rebind the original view element to the correct model element.
+				mapper.bindElements( element, viewElement );
+			} else {
+				// TODO element itself
+				// TODO callback check (for example tbody vs thead)
+			}
+		}
+
+		// After reconversion is done we can unbind the old view.
+		for ( const currentView of currentViewElements ) {
+			if ( currentView.root != viewElement.root ) {
+				mapper.unbindViewElement( currentView );
+			}
+		}
+
+		// TODO Consuming content
+		// TODO binding (based on slot element and same for not bound parents).
 	};
 }
 
@@ -1392,6 +1551,41 @@ function downcastElementToElement( config ) {
 	};
 }
 
+// TODO
+function downcastElementToStructure( config ) {
+	config = cloneDeep( config );
+
+	config.view = normalizeToElementConfig( config.view, 'container' );
+
+	return dispatcher => {
+		dispatcher.on( 'insert:' + config.model, insertStructure( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.triggerBy ) {
+			dispatcher.on( 'magicTrigger', createMagicHandler( config ) );
+		}
+	};
+}
+
+// TODO
+function downcastRangeToStructure( config ) {
+	config = cloneDeep( config );
+
+	config.view = normalizeToElementConfig( config.view, 'container' );
+
+	// TODO make sure that insert event matches the triggerBy so there is no need to verify range inside the model callback
+	// An abstract name of the model structure conversion.
+	const magicUid = uid();
+
+	return dispatcher => {
+		dispatcher.on( 'magic:' + magicUid, insertStructure( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.triggerBy ) {
+			// TODO trigger by for nested inside blockquote
+			dispatcher.on( 'magicTrigger', createMagicHandler( config, { magicUid } ) );
+		}
+	};
+}
+
 // Model attribute to view element conversion helper.
 //
 // See {@link ~DowncastHelpers#attributeToElement `.attributeToElement()` downcast helper} for examples.
@@ -1466,159 +1660,6 @@ function downcastAttributeToAttribute( config ) {
 
 	return dispatcher => {
 		dispatcher.on( eventName, changeAttribute( elementCreator ), { priority: config.converterPriority || 'normal' } );
-	};
-}
-
-// trigger by for nested inside blockquote
-
-// TODO
-// downcastToStructure
-function magicDowncast( config ) {
-	config = cloneDeep( config );
-
-	// TODO make sure that insert event matches the triggerBy so there is no need to verify range inside the model callback
-	// An abstract name of the model structure conversion.
-	const magicUid = uid();
-
-	return dispatcher => {
-		dispatcher.on( config.model ? 'insert:' + config.model : 'magic:' + magicUid, ( evt, data, conversionApi ) => {
-			const { writer, mapper } = conversionApi;
-			// data.item, data.range
-
-			console.log( '--', data );
-
-			// Model check.
-			// TODO maybe call it for every element in the range.
-			// const modelResult = config.model( data );
-			//
-			// if ( !modelResult ) {
-			// 	return;
-			// }
-
-			// const { consumables } = modelResult;
-
-			// Scan for elements and it's current mapped view elements.
-			const elements = Array.from( data.range.getItems( { shallow: true } ) );
-
-			for ( const element of elements ) {
-				if ( !conversionApi.consumable.consume( element, 'insert' ) ) {
-					return;
-				}
-			}
-
-			const currentViewElements = new Set();
-
-			for ( const element of elements ) {
-				let currentView = mapper.toViewElement( element );
-
-				while ( mapper.toModelElement( currentView ) === element ) {
-					const parentView = currentView.parent;
-
-					currentViewElements.add( currentView );
-
-					// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-					writer.remove( currentView );
-
-					// But also go up the view tree and remove all elements that are mapped to the same model element.
-					currentView = parentView;
-				}
-			}
-
-			// Trigger new view structure creation.
-			const slots = new Map();
-
-			// View creation.
-			const viewElement = config.view( data.range, {
-				...conversionApi,
-				slotFor( element, mode = 'children' ) {
-					const slot = writer.createContainerElement( '$slot' );
-
-					slots.set( slot, { element, mode } );
-
-					return slot;
-				}
-			} );
-
-			const viewPosition = mapper.toViewPosition( data.range.start );
-
-			// TODO data.item is not available for range converstion
-			conversionApi.mapper.bindElements( data.item, viewElement );
-			conversionApi.writer.insert( viewPosition, viewElement );
-
-			// Fill slots with nested view nodes.
-			for ( const [ slot, { element, mode } ] of slots.entries() ) {
-				// TODO Make sure that slots are created for the elements themself or direct descendants and not other elements.
-
-				if ( mode == 'children' ) {
-					// Bind slot with element so children will be down-casted into it.
-					mapper.bindElements( element, slot );
-
-					// TODO this should be exposed by conversionApi?
-					// Note that this is not creating another consumable, it's using the current one.
-					dispatcher._convertInsert( ModelRange._createIn( element ) );
-
-					writer.move( writer.createRangeIn( slot ), writer.createPositionBefore( slot ) );
-					writer.remove( slot );
-
-					// Rebind the original view element to the correct model element.
-					mapper.bindElements( element, viewElement );
-				} else {
-					// TODO element itself
-					// TODO callback check (for example tbody vs thead)
-				}
-			}
-
-			// for ( const element of elements ) {
-			// 	const convertedViewElement = mapper.toViewElement( element );
-			//
-			// 	// Conversion could already reuse old view element.
-			// 	if ( currentViewElements.has( convertedViewElement ) ) {
-			// 		currentViewElements.delete( convertedViewElement );
-			//
-			// 		continue;
-			// 	}
-			//
-			// 	// Iterate over children of reconverted element in order to...
-			// 	for ( const value of ModelRange._createIn( element ) ) {
-			// 		const { item } = value;
-			//
-			// 		const view = elementOrTextProxyToView( item, mapper );
-			//
-			// 		// ...either bring back previously converted view...
-			// 		if ( view ) {
-			// 			// Do not move views that are already in converted element - those might be created by the main element converter
-			// 			// in case when main element converts also its direct children.
-			// 			if ( view.root !== convertedViewElement.root ) {
-			// 				writer.move(
-			// 					writer.createRangeOn( view ),
-			// 					mapper.toViewPosition( Position._createBefore( item ) )
-			// 				);
-			// 			}
-			// 		}
-			// 		// ... or by converting newly inserted elements.
-			// 		else {
-			// 			// TODO this should be exposed by conversionApi (and maybe it should be convertChildren as in upcast)
-			// 			dispatcher._convertInsertWithAttributes( walkerValueToEventData( value ) );
-			// 		}
-			// 	}
-			// }
-			//
-			// // After reconversion is done we can unbind the old view.
-			// for ( const currentView of currentViewElements ) {
-			// 	mapper.unbindViewElement( currentView );
-			// }
-
-			// Consuming content of `consumable` (processing from DX form to event names).
-			// consumables;
-
-			// View insertion, filling slots, binding (based on slot element and same for not bound parents).
-			// ...
-
-		}, { priority: config.converterPriority || 'normal' } );
-
-		if ( config.triggerBy ) {
-			dispatcher.on( 'magicTrigger', createMagicHandler( config, !config.model ? { magicUid } : null ) );
-		}
 	};
 }
 
@@ -1855,6 +1896,18 @@ function createMagicHandler( config, auxData = null ) {
 		evt.return = { ...auxData, range: ModelRange._createOn( element ) };
 		evt.stop();
 	};
+}
+
+// TODO
+function elementOrTextProxyToView( item, mapper ) {
+	if ( item.is( '$text' ) ) {
+		const mappedPosition = mapper.toViewPosition( ModelPosition._createBefore( item ) );
+		const positionParent = mappedPosition.parent;
+
+		return positionParent.is( '$text' ) ? positionParent : null;
+	}
+
+	return mapper.toViewElement( item );
 }
 
 /**
