@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CKEditor5 w/ Media Embed</title>
+    <style>
+      html {
+        text-align: center;
+      }
+      body {
+        max-width: 768px;
+        margin: 0 auto;
+        font-feature-settings: "kern" 1;
+        font-kerning: normal;
+        -webkit-font-smoothing: antialiased; /* Chrome, Safari */
+        -moz-osx-font-smoothing: grayscale; /* Firefox */
+        font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        letter-spacing: 0.015em;
+        word-spacing: 0.001em;
+      }
+
+      o-embed {
+        --social-embed-iframe-height: 100%;
+        --social-embed-iframe-width: 100%;
+        height: 30rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>
+      CKEditor 5 with
+      <a
+        href="https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html"
+        rel="noopener noreferrer"
+        target="_blank"
+        >ckeditor5-media-embed</a
+      >
+    </h2>
+    <figure id="editor">
+      <p />
+      <figure class="media">
+        <o-embed url="https://www.bing.com"></o-embed>
+      </figure>
+      <figure class="media">
+        <o-embed url="https://www.ibm.com"></o-embed>
+      </figure>
+    </figure>
+  </body>
+</html>

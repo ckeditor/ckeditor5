@@ -191,6 +191,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
+      "packages/sample/*",
       "external/*",
       "external/*/packages/*",
       "external/*/external/*",
