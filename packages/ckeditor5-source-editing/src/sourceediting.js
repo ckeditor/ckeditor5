@@ -178,7 +178,7 @@ export default class SourceEditing extends Plugin {
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
 
 			const domSourceEditingElementWrapper = createElement( domRootElement.ownerDocument, 'div', {
-				class: 'source-editing',
+				class: 'ck-source-editing-area',
 				'data-value': data
 			}, [ domSourceEditingElementTextarea ] );
 

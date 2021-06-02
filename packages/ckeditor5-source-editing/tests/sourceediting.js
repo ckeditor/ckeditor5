@@ -191,7 +191,7 @@ describe( 'SourceEditing', () => {
 			const wrapper = domRoot.nextSibling;
 
 			expect( wrapper.nodeName ).to.equal( 'DIV' );
-			expect( wrapper.className ).to.equal( 'source-editing' );
+			expect( wrapper.className ).to.equal( 'ck-source-editing-area' );
 			expect( wrapper.dataset.value ).to.equal( data );
 		} );
 

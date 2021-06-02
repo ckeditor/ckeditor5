@@ -7,14 +7,14 @@
 @import "../../ckeditor5-theme-lark/theme/mixins/_focus.css";
 @import "../../ckeditor5-theme-lark/theme/mixins/_shadow.css";
 
-.source-editing {
+.ck-source-editing-area {
 	display: inline-grid;
 	width: 100%;
 	font-family: monospace;
 }
 
-.source-editing::after,
-.source-editing textarea {
+.ck-source-editing-area::after,
+.ck-source-editing-area textarea {
 	grid-area: 1/1;
 	padding: var(--ck-spacing-large);
 	margin: 0;
@@ -24,12 +24,12 @@
 	white-space: pre-wrap;
 }
 
-.source-editing::after {
+.ck-source-editing-area::after {
 	content: attr(data-value) " ";
 	visibility: hidden;
 }
 
-.source-editing textarea {
+.ck-source-editing-area textarea {
 	resize: none;
 	outline: none;
 	overflow: hidden;
