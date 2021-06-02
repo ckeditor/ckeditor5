@@ -202,8 +202,7 @@ export default class DataFilter extends Plugin {
 		for ( const pattern of config ) {
 			this.allowElement( { name: pattern.name } );
 
-			this._splitRules( pattern )
-				.forEach( rule => handleAttributes( rule ) );
+			this._splitRules( pattern ).forEach( handleAttributes );
 		}
 	}
 

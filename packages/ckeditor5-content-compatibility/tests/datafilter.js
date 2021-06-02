@@ -1283,7 +1283,7 @@ describe( 'DataFilter', () => {
 					name: 'span',
 					styles: { color: true },
 					classes: [ 'foo', 'bar', 'test' ],
-					attributes: [ { key: /data-foo.*/, value: true } ]
+					attributes: [ { key: /^data-foo.*$/, value: true } ]
 				}
 			];
 
@@ -1389,7 +1389,7 @@ describe( 'DataFilter', () => {
 			const config = [
 				{
 					name: 'span',
-					attributes: [ { key: /data-foo.*/, value: true } ]
+					attributes: [ { key: /^data-foo.*$/, value: true } ]
 				}
 			];
 
@@ -1524,7 +1524,7 @@ describe( 'DataFilter', () => {
 					name: 'span',
 					styles: { color: true },
 					classes: [ 'foo', 'bar', 'test' ],
-					attributes: [ { key: /data-foo.*/, value: true } ]
+					attributes: [ { key: /^data-foo.*$/, value: true } ]
 				}
 			];
 
@@ -1601,7 +1601,7 @@ describe( 'DataFilter', () => {
 			const config = [
 				{
 					name: 'span',
-					attributes: [ { key: /data-foo.*/, value: true } ]
+					attributes: [ { key: /^data-foo.*$/, value: true } ]
 				}
 			];
 
