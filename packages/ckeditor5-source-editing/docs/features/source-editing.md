@@ -6,9 +6,9 @@ modified_at: 2021-05-28
 
 # Source editing
 
-The {@link module:source-editing/sourceediting~SourceEditing} feature provides the ability for viewing and editing the source of the document. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are the high-level ones.
+The {@link module:source-editing/sourceediting~SourceEditing} feature provides the ability for viewing and editing the source of the document. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are high-level ones.
 
-The changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only, if the editor understands (via loaded plugins) the given syntax. You will lose all changes that editor features can't understand. For example, if editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
+The changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only, if the editor understands (via loaded plugins) the given syntax. You will lose all changes that the editor features cannot understand. For example, if the editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
 
 <info-box>
 	Currently, the source editing mode is supported only for the {@link examples/builds/classic-editor classic editor}.
@@ -22,7 +22,7 @@ Use the editor below to see the source editing plugin in action. Toggle the sour
 
 {@snippet features/source-editing}
 
-The source editing plugin also works well with the {@link features/markdown Markdown} output. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+The source editing plugin also works well with the {@link features/markdown Markdown output} plugin. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 {@snippet features/source-editing-with-markdown}
 

@@ -5,15 +5,15 @@ CKEditor 5 source editing feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-source-editing/status.svg)](https://david-dm.org/ckeditor/ckeditor5-source-editing)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-source-editing/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-source-editing?type=dev)
 
-This package implements source editing support for CKEditor 5 that allows you to view and edit source of the document.
+This package implements the source editing support for CKEditor 5 that allows you to view and edit the source of the document.
 
 ## Demo
 
-Check out the [demo in the Source editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html#demo) guide.
+Check out the [demo in the source editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html#demo) guide.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-source-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/source-editing.html) page as well as the [Source editing feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-source-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/source-editing.html) page as well as the [source editing feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html) in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

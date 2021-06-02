@@ -347,7 +347,7 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
-	 * To set data with preserved undo stacks and the current change to this stack, use the `{ batchType: 'default' }` option.
+	 * To set the data with preserved undo stacks and set the current change to this stack, use the `{ batchType: 'default' }` option.
 	 *
 	 *		dataController.set( '<p>Foo</p>', { batchType: 'default' } ); // Sets data as a new change.
 	 *
