@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "sourceEditing",
-					"iconPath": "theme/icons/sourceediting.svg"
+					"iconPath": "theme/icons/source-editing.svg"
 				}
 			]
 		}
