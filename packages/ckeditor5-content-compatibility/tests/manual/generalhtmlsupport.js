@@ -38,6 +38,9 @@ class ExtendHTMLSupport extends Plugin {
 				inheritAllFrom: '$htmlBlock'
 			}
 		} );
+
+		// Custom elements need to be filtered using direct API instead of config.
+		dataFilter.allowElement( { name: 'xyz' } );
 	}
 }
 
