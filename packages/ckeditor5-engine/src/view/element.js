@@ -468,7 +468,7 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all style names.
 	 *
-	 * @param {Boolean} [deep=false] Expand shorthand style properties and all return equivalent style representations.
+	 * @param {Boolean} [deep=false] Expand shorthand style properties and return all equivalent style representations.
 	 * @returns {Iterable.<String>}
 	 */
 	getStyleNames( deep = false ) {
