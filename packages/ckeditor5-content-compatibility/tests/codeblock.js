@@ -37,7 +37,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 	} );
 
 	it( 'should allow attributes', () => {
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
 
 		editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
@@ -64,7 +64,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 	} );
 
 	it( 'should allow attributes (classes)', () => {
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
 
 		editor.setData( '<pre class="foo"><code class="foo">foobar</code></pre>' );
@@ -87,7 +87,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 	} );
 
 	it( 'should allow attributes (styles)', () => {
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: 'pre', styles: { background: 'blue' } } );
 		dataFilter.allowAttributes( { name: 'code', styles: { color: 'red' } } );
 
@@ -115,7 +115,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 	} );
 
 	it( 'should disallow attributes', () => {
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
 		dataFilter.disallowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
 
@@ -130,7 +130,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 	} );
 
 	it( 'should disallow attributes (classes)', () => {
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
 		dataFilter.disallowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );
 
@@ -145,7 +145,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 	} );
 
 	it( 'should disallow attributes (styles)', () => {
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 
 		dataFilter.allowAttributes( { name: 'pre', styles: { background: 'blue' } } );
 		dataFilter.allowAttributes( { name: 'code', styles: { color: 'red' } } );
@@ -164,7 +164,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 	} );
 
 	it( 'should allow attributes on code element existing alone', () => {
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: 'code', attributes: { 'data-foo': /[\s\S]+/ } } );
 
 		editor.setData( '<p><code data-foo="foo">foobar</code></p>' );
@@ -192,7 +192,7 @@ describe( 'CodeBlockHtmlSupport', () => {
 			} );
 		} );
 
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': true } } );
 
 		editor.setData( '<pre data-foo><code data-foo>foobar</code></section>' );
