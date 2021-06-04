@@ -93,7 +93,7 @@ describe( 'DataFilter', () => {
 		it( 'should allow element registered after editor initialization', () => {
 			const dataFilter = initEditor.plugins.get( DataFilter );
 
-			dataFilter.allowElement( { name: 'span' } );
+			dataFilter.allowElement( 'span' );
 
 			initEditor.setData( '<p><span>foobar</span></p>' );
 
@@ -126,12 +126,12 @@ describe( 'DataFilter', () => {
 
 			init() {
 				const dataFilter = this.editor.plugins.get( DataFilter );
-				dataFilter.allowElement( { name: 'article' } );
+				dataFilter.allowElement( 'article' );
 			}
 
 			afterInit() {
 				const dataFilter = this.editor.plugins.get( DataFilter );
-				dataFilter.allowElement( { name: 'section' } );
+				dataFilter.allowElement( 'section' );
 			}
 		}
 	} );
@@ -324,7 +324,7 @@ describe( 'DataFilter', () => {
 
 	describe( 'block', () => {
 		it( 'should allow element', () => {
-			dataFilter.allowElement( { name: 'article' } );
+			dataFilter.allowElement( 'article' );
 
 			editor.setData( '<article>' +
 				'<section><paragraph>section1</paragraph></section>' +
@@ -339,7 +339,7 @@ describe( 'DataFilter', () => {
 				'<article><p>section1section2</p></article>'
 			);
 
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 
 			editor.setData( '<article>' +
 				'<section><paragraph>section1</paragraph></section>' +
@@ -360,7 +360,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow deeply nested structure', () => {
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 
 			editor.setData(
 				'<section><p>1</p>' +
@@ -385,7 +385,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes', () => {
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( {
 				name: 'section',
 				attributes: {
@@ -412,7 +412,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( {
 				name: 'section',
 				styles: {
@@ -441,7 +441,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', classes: [ 'foo', 'bar' ] } );
 
 			editor.setData( '<section class="foo bar"><p>foobar</p></section>' );
@@ -459,7 +459,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow nested attributes', () => {
-			dataFilter.allowElement( { name: /^(article|section)$/ } );
+			dataFilter.allowElement( /^(article|section)$/ );
 			dataFilter.allowAttributes( { name: /[\s\S]+/, attributes: { 'data-foo': /foo|bar/ } } );
 
 			editor.setData( '<article data-foo="foo">' +
@@ -494,7 +494,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes for all allowed definitions', () => {
-			dataFilter.allowElement( { name: /^(section|article)$/ } );
+			dataFilter.allowElement( /^(section|article)$/ );
 
 			dataFilter.allowAttributes( { name: /^(section|article)$/, attributes: { 'data-foo': 'foo' } } );
 			dataFilter.allowAttributes( { name: /^(section|article)$/, attributes: { 'data-bar': 'bar' } } );
@@ -528,7 +528,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes', () => {
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': /[\s\S]+/ } } );
 			dataFilter.disallowAttributes( { name: 'section', attributes: { 'data-foo': 'bar' } } );
 
@@ -556,7 +556,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', styles: { color: /[\s\S]+/ } } );
 			dataFilter.disallowAttributes( { name: 'section', styles: { color: 'red' } } );
 
@@ -584,7 +584,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', classes: [ 'foo', 'bar' ] } );
 			dataFilter.disallowAttributes( { name: 'section', classes: [ 'bar' ] } );
 
@@ -616,7 +616,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( () => {
-				dataFilter.allowElement( { name: 'xyz' } );
+				dataFilter.allowElement( 'xyz' );
 			} ).to.not.throw();
 		} );
 
@@ -627,7 +627,7 @@ describe( 'DataFilter', () => {
 				} );
 			} );
 
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': true } } );
 
 			editor.setData( '<section data-foo><p>foo</p></section>' );
@@ -647,7 +647,7 @@ describe( 'DataFilter', () => {
 				}, { priority: 'high' } );
 			} );
 
-			dataFilter.allowElement( { name: 'section' } );
+			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( { name: 'section', attributes: { 'data-foo': true } } );
 
 			editor.setData( '<section data-foo><p>foo</p></section>' );
@@ -670,7 +670,7 @@ describe( 'DataFilter', () => {
 		it( 'should not convert attributes if the model schema item definition is not registered', () => {
 			dataSchema.registerBlockElement( { view: 'xyz', model: 'modelXyz' } );
 
-			dataFilter.allowElement( { name: 'xyz' } );
+			dataFilter.allowElement( 'xyz' );
 			dataFilter.allowAttributes( { name: 'xyz', attributes: { 'data-foo': 'foo' } } );
 
 			// We are not registering model schema anywhere, to check if upcast
@@ -694,7 +694,7 @@ describe( 'DataFilter', () => {
 
 			editor.model.schema.register( 'htmlXyz', { inheritAllFrom: '$block' } );
 
-			dataFilter.allowElement( { name: 'xyz' } );
+			dataFilter.allowElement( 'xyz' );
 
 			editor.setData( '<xyz>foo</xyz>' );
 
@@ -725,7 +725,7 @@ describe( 'DataFilter', () => {
 
 	describe( 'inline', () => {
 		it( 'should allow element', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 
 			editor.setData( '<p><cite>foobar</cite></p>' );
 
@@ -740,7 +740,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow deeply nested structure', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 
 			editor.setData( '<p><cite>foo<cite>bar<cite>baz</cite></cite></cite>' );
 
@@ -757,7 +757,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( {
 				name: 'cite',
 				attributes: {
@@ -782,7 +782,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( {
 				name: 'cite',
 				styles: {
@@ -811,7 +811,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( { name: 'cite', classes: [ 'foo', 'bar' ] } );
 
 			editor.setData( '<p><cite class="foo bar">foobar</cite></p>' );
@@ -827,7 +827,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow nested attributes', () => {
-			dataFilter.allowElement( { name: /^(span|cite)$/ } );
+			dataFilter.allowElement( /^(span|cite)$/ );
 			dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-foo': 'foo' } } );
 			dataFilter.allowAttributes( { name: /^(span|cite)$/, attributes: { 'data-bar': 'bar' } } );
 
@@ -869,7 +869,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( { name: 'cite', attributes: { 'data-foo': /[\s\S]+/ } } );
 			dataFilter.disallowAttributes( { name: 'cite', attributes: { 'data-foo': 'bar' } } );
 
@@ -891,7 +891,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( { name: 'cite', styles: { color: /[\s\S]+/ } } );
 			dataFilter.disallowAttributes( { name: 'cite', styles: { color: 'red' } } );
 
@@ -920,7 +920,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( { name: 'cite', classes: [ 'foo', 'bar' ] } );
 			dataFilter.disallowAttributes( { name: 'cite', classes: [ 'bar' ] } );
 
@@ -949,7 +949,7 @@ describe( 'DataFilter', () => {
 				} );
 			} );
 
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( { name: 'cite', attributes: { 'data-foo': true } } );
 
 			editor.setData( '<p><cite data-foo>foo</cite></p>' );
@@ -971,7 +971,7 @@ describe( 'DataFilter', () => {
 				}, { priority: 'high' } );
 			} );
 
-			dataFilter.allowElement( { name: 'cite' } );
+			dataFilter.allowElement( 'cite' );
 			dataFilter.allowAttributes( { name: 'cite', attributes: { 'data-foo': true } } );
 
 			editor.setData( '<p><cite data-foo>foo</cite></p>' );
@@ -992,7 +992,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should correctly merge class names', () => {
-			dataFilter.allowElement( { name: 'span' } );
+			dataFilter.allowElement( 'span' );
 			dataFilter.allowAttributes( { name: 'span', classes: /[\s\S]+/ } );
 
 			editor.setData( '<p><span class="foo">foo<span class="bar">bar<span class="baz">baz</span></span></span></p>' );
@@ -1027,7 +1027,7 @@ describe( 'DataFilter', () => {
 					}
 				} );
 
-				dataFilter.allowElement( { name: 'xyz' } );
+				dataFilter.allowElement( 'xyz' );
 
 				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).to.deep.equal( { copyOnEnter: true } );
 			} );
@@ -1038,7 +1038,7 @@ describe( 'DataFilter', () => {
 					model: 'htmlXyz'
 				} );
 
-				dataFilter.allowElement( { name: 'xyz' } );
+				dataFilter.allowElement( 'xyz' );
 
 				expect( editor.model.schema.getAttributeProperties( 'htmlXyz' ) ).to.deep.equal( {} );
 			} );
@@ -1059,7 +1059,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			dataFilter.allowElement( { name: 'xyz' } );
+			dataFilter.allowElement( 'xyz' );
 
 			editor.setData( '<p><xyz>foobar</xyz></p>' );
 
@@ -1072,7 +1072,7 @@ describe( 'DataFilter', () => {
 			// 'a' element is registered by data schema with priority 5.
 			// We are checking if this element will be correctly nested due to different
 			// AttributeElement priority than default.
-			dataFilter.allowElement( { name: 'a' } );
+			dataFilter.allowElement( 'a' );
 			dataFilter.allowAttributes( { name: 'a', attributes: { 'data-foo': 'foo' } } );
 
 			editor.setData( '<p><a href="example.com" data-foo="foo">link</a></p>' );
@@ -1093,7 +1093,7 @@ describe( 'DataFilter', () => {
 	} );
 
 	it( 'should correctly resolve attributes nesting order', () => {
-		dataFilter.allowElement( { name: 'span' } );
+		dataFilter.allowElement( 'span' );
 		dataFilter.allowAttributes( { name: 'span', styles: { 'font-weight': /[\s\S]+/ } } );
 
 		editor.setData( '<p><span style="font-weight:700;"><span style="font-weight:400;">foobar</span></span>' );
@@ -1111,7 +1111,7 @@ describe( 'DataFilter', () => {
 	} );
 
 	it( 'should allow using attributes by other features', () => {
-		dataFilter.allowElement( { name: 'span' } );
+		dataFilter.allowElement( 'span' );
 		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/ } } );
 
 		editor.setData( '<p><span style="color:blue;">foobar</span></p>' );
@@ -1129,7 +1129,7 @@ describe( 'DataFilter', () => {
 
 	describe( 'existing features', () => {
 		it( 'should allow additional attributes', () => {
-			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': 'foo' } } );
 
 			editor.setData( '<p data-foo="foo">foo</p>' );
@@ -1147,7 +1147,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow additional attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', classes: /[\s\S]+/ } );
 
 			editor.setData( '<p class="foo">foo</p><p class="bar">bar</p>' );
@@ -1168,7 +1168,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow additional attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: { 'color': /[\s\S]+/ } } );
 
 			editor.setData( '<p style="color:red;">foo</p>' );
@@ -1186,7 +1186,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes', () => {
-			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': /[\s\S]+/ } } );
 			dataFilter.disallowAttributes( { name: 'p', attributes: { 'data-foo': 'bar' } } );
 
@@ -1207,7 +1207,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: { color: /[\s\S]+/ } } );
 			dataFilter.disallowAttributes( { name: 'p', styles: { color: 'red' } } );
 
@@ -1228,7 +1228,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'p' } );
+			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', classes: [ 'foo', 'bar' ] } );
 			dataFilter.disallowAttributes( { name: 'p', classes: [ 'bar' ] } );
 
@@ -1244,7 +1244,7 @@ describe( 'DataFilter', () => {
 	} );
 
 	it( 'should preserve attributes not used by other features', () => {
-		dataFilter.allowElement( { name: 'span' } );
+		dataFilter.allowElement( 'span' );
 		dataFilter.allowAttributes( { name: 'span', styles: { 'color': /[\s\S]+/ } } );
 		dataFilter.allowAttributes( { name: 'span', classes: [ 'foo', 'bar' ] } );
 
@@ -1272,8 +1272,13 @@ describe( 'DataFilter', () => {
 		sinon.stub( dataSchema, 'getDefinitionsForView' ).returns( new Set( [ definition ] ) );
 
 		expectToThrowCKEditorError( () => {
+<<<<<<< HEAD
 			dataFilter.allowElement( { name: 'xyz' } );
 		}, /data-filter-invalid-definition/, null, definition );
+=======
+			dataFilter.allowElement( 'xyz' );
+		}, /data-filter-invalid-definition-type/, null, definition );
+>>>>>>> 8dd542497f (Update `allowElement()` method and tests.)
 	} );
 
 	describe( 'loadAllowedConfig', () => {

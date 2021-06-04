@@ -40,7 +40,7 @@ class ExtendHTMLSupport extends Plugin {
 		} );
 
 		// Custom elements need to be filtered using direct API instead of config.
-		dataFilter.allowElement( { name: 'xyz' } );
+		dataFilter.allowElement( 'xyz' );
 	}
 }
 
