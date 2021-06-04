@@ -7,6 +7,8 @@
  * @module source-editing/sourceediting
  */
 
+/* global console */
+
 import { Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
@@ -146,8 +148,30 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
-	 * Creates source editing wrappers that replace each editing root. Each wrapper contains
-	 *  the document source from the corresponding root.
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+
+		const pluginNamesToWarn = [
+			'RealTimeCollaborativeEditing',
+			'CommentsEditing',
+			'TrackChangesEditing'
+		];
+
+		// Currently, the basic integration with Collaboration Features is to display a warning in the console.
+		if ( pluginNamesToWarn.some( pluginName => editor.plugins.has( pluginName ) ) ) {
+			console.warn(
+				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
+				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
+				'that contains markers created by the collaboration features.'
+			);
+		}
+	}
+
+	/**
+	 * Creates source editing wrappers that replace each editing root. Each wrapper contains the document source from the corresponding
+	 * root.
 	 *
 	 * The wrapper element contains a textarea and it solves the problem, that the textarea element cannot auto expand its height based on
 	 * the content it contains. The solution is to make the textarea more like a plain div element, which expands in height as much as it

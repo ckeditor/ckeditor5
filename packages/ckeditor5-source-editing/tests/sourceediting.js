@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -112,6 +113,48 @@ describe( 'SourceEditing', () => {
 			expect( plugin.isSourceEditingMode ).to.be.false;
 			expect( spy.calledTwice ).to.be.true;
 			expect( spy.secondCall.args[ 2 ] ).to.be.false;
+		} );
+
+		it( 'should display a warning in the console if CF plugin is loaded', async () => {
+			sinon.stub( console, 'warn' );
+
+			class RealTimeCollaborativeEditing extends Plugin {
+				static get pluginName() {
+					return 'RealTimeCollaborativeEditing';
+				}
+			}
+
+			class CommentsEditing extends Plugin {
+				static get pluginName() {
+					return 'CommentsEditing';
+				}
+			}
+
+			class TrackChangesEditing extends Plugin {
+				static get pluginName() {
+					return 'TrackChangesEditing';
+				}
+			}
+
+			const pluginsFromCF = [ RealTimeCollaborativeEditing, CommentsEditing, TrackChangesEditing ];
+
+			const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ SourceEditing, Paragraph, Essentials, ...pluginsFromCF ],
+				initialData: '<p>Foo</p>'
+			} );
+
+			expect( console.warn.calledOnce ).to.be.true;
+			expect( console.warn.firstCall.args[ 0 ] ).to.equal(
+				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
+				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
+				'that contains markers created by the collaboration features.'
+			);
+
+			editorElement.remove();
+
+			await editor.destroy();
 		} );
 	} );
 
