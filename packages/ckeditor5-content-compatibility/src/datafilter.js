@@ -35,9 +35,7 @@ import '../theme/datafilter.css';
  *
  * To enable registered element in the editor, use {@link module:content-compatibility/datafilter~DataFilter#allowElement} method:
  *
- *		dataFilter.allowElement( {
- *			name: 'section'
- *		} );
+ *		dataFilter.allowElement( 'section' );
  *
  * You can also allow or disallow specific element attributes:
  *
@@ -155,8 +153,8 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @param {String|RegExp} viewName String or regular expression matching view name.
 	 */
-	allowElement( config ) {
-		for ( const definition of this._dataSchema.getDefinitionsForView( config.name, true ) ) {
+	allowElement( viewName ) {
+		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, true ) ) {
 			if ( this._allowedElements.has( definition ) ) {
 				continue;
 			}
@@ -200,7 +198,7 @@ export default class DataFilter extends Plugin {
 	 */
 	_loadConfig( config, handleAttributes ) {
 		for ( const pattern of config ) {
-			this.allowElement( { name: pattern.name } );
+			this.allowElement( pattern.name );
 
 			this._splitRules( pattern ).forEach( handleAttributes );
 		}
