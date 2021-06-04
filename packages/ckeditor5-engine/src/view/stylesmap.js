@@ -575,7 +575,7 @@ export class StylesProcessor {
 	}
 
 	/**
-	 * Return all style properties. Also expand shorthand properties (e.g. `margin`, `background`) if
+	 * Return all style properties. Also expand shorthand properties (e.g. `margin`, `background`) if respective extractor is available.
 	 *
 	 * @param {Object} styles Object holding normalized styles.
 	 * @returns {Array.<String>}
