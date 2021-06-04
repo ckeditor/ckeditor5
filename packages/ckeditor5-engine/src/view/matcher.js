@@ -293,8 +293,9 @@ function matchName( pattern, name ) {
 //		[ 'rel', 'nofollow' ]
 //	]
 //
+// @param {Function} valueGetter A function providing value for a given item key.
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
-function matchPatterns( patterns, items, getter ) {
+function matchPatterns( patterns, items, valueGetter ) {
 	const normalizedPatterns = normalizePatterns( patterns );
 	const normalizedItems = Array.from( items );
 	const match = [];
@@ -303,7 +304,7 @@ function matchPatterns( patterns, items, getter ) {
 		normalizedItems.forEach( itemKey => {
 			if (
 				isKeyMatched( patternKey, itemKey ) &&
-				isValueMatched( patternValue, itemKey, getter )
+				isValueMatched( patternValue, itemKey, valueGetter )
 			) {
 				match.push( itemKey );
 			}
@@ -362,15 +363,15 @@ function isKeyMatched( patternKey, itemKey ) {
 }
 
 // @param {String|RegExp} patternValue A pattern representing a value we want to match.
-// TODO param
-// @param {String} itemValue An actual item value (e.g. `'http://example.com/'`, `'red'`) we're testing against pattern.
+// @param {String} itemKey An item key, e.g. `background`, `href`, 'rel', etc.
+// @param {Function} valueGetter A function used to provide a value for a given `itemKey`.
 // @returns {Boolean}
-function isValueMatched( patternValue, itemKey, getter ) {
+function isValueMatched( patternValue, itemKey, valueGetter ) {
 	if ( patternValue === true ) {
 		return true;
 	}
 
-	const itemValue = getter( itemKey );
+	const itemValue = valueGetter( itemKey );
 
 	return patternValue === itemValue || patternValue instanceof RegExp && patternValue.test( itemValue );
 }
@@ -382,13 +383,7 @@ function isValueMatched( patternValue, itemKey, getter ) {
 // @param {module:engine/view/element~Element} element Element which attributes will be tested.
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
 function matchAttributes( patterns, element ) {
-	// Both `class` and `style` attributes are handled in `matchClasses()` and `matchStyles()` respectively.
-	const attributesToExclude = new Set( [ 'class', 'style' ] );
-	const attributeKeys = [ ...element.getAttributeKeys() ].filter(
-		key => !attributesToExclude.has( key )
-	);
-
-	return matchPatterns( patterns, attributeKeys, key => element.getAttribute( key ) );
+	return matchPatterns( patterns, element.getAttributeKeys(), key => element.getAttribute( key ) );
 }
 
 // Checks if classes of provided element can be matched against provided patterns.
@@ -430,6 +425,11 @@ function matchStyles( patterns, element ) {
  *		// Match view element's name.
  *		const pattern = { name: /^p/ };
  *
+ *		// Match view element with any attribute value.
+ *		const pattern = {
+ *			attributes: true
+ *		}
+ *
  *		// Match view element which has matching attributes.
  *		const pattern = {
  *			attributes: {
@@ -452,6 +452,11 @@ function matchStyles( patterns, element ) {
  *		// Multiple classes to match.
  *		const pattern = {
  *			classes: [ 'baz', 'bar', /foo.../ ]
+ *		};
+ *
+ *		// Multiple attributes to match, value does not matter.
+ *		const pattern = {
+ *			attributes: [ 'title', 'href', /^data-foo.*$/ ]
  *		};
  *
  *		// Match view element which has given styles.
