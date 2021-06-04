@@ -27,7 +27,7 @@ class ExtendHTMLSupport extends Plugin {
 	init() {
 		const dataFilter = this.editor.plugins.get( 'DataFilter' );
 
-		dataFilter.allowElement( { name: /^(pre|code)$/ } );
+		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, styles: { color: /[\s\S]+/ } } );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, styles: { background: /[\s\S]+/ } } );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
