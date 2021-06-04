@@ -63,7 +63,7 @@ class ExtendHTMLSupport extends Plugin {
 		];
 
 		for ( const definition of definitions ) {
-			dataFilter.allowElement( { name: definition.name } );
+			dataFilter.allowElement( definition.name );
 
 			for ( const key of ( definition.attributes || [] ) ) {
 				const attributes = {};

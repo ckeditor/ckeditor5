@@ -138,7 +138,7 @@ describe( 'DataFilter', () => {
 
 	describe( 'object', () => {
 		it( 'should allow element', () => {
-			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowElement( 'input' );
 
 			editor.setData( '<p><input></p>' );
 
@@ -150,7 +150,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow element content', () => {
-			dataFilter.allowElement( { name: 'video' } );
+			dataFilter.allowElement( 'video' );
 
 			editor.setData( '<p><video>' +
 				'<source src="https://example.com/video.mp4" type="video/mp4">' +
@@ -181,7 +181,7 @@ describe( 'DataFilter', () => {
 				}
 			} );
 
-			dataFilter.allowElement( { name: 'xyz' } );
+			dataFilter.allowElement( 'xyz' );
 
 			editor.setData( '<xyz>foobar</xyz>' );
 
@@ -193,8 +193,8 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes', () => {
-			dataFilter.allowElement( { name: 'input' } );
-			dataFilter.allowAttributes( { name: 'input', attributes: { type: true } } );
+			dataFilter.allowElement( 'input' );
+			dataFilter.allowAttributes( { name: 'input', attributes: { type: 'text' } } );
 
 			editor.setData( '<p><input type="text"></p>' );
 
@@ -213,7 +213,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowElement( 'input' );
 			dataFilter.allowAttributes( { name: 'input', styles: { color: 'red' } } );
 
 			editor.setData( '<p><input style="color:red;"></p>' );
@@ -233,7 +233,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should allow attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowElement( 'input' );
 			dataFilter.allowAttributes( { name: 'input', classes: [ 'foobar' ] } );
 
 			editor.setData( '<p><input class="foobar"></p>' );
@@ -251,7 +251,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes', () => {
-			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowElement( 'input' );
 			dataFilter.allowAttributes( { name: 'input', attributes: { type: true } } );
 			dataFilter.disallowAttributes( { name: 'input', attributes: { type: 'hidden' } } );
 
@@ -275,7 +275,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (styles)', () => {
-			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowElement( 'input' );
 			dataFilter.allowAttributes( { name: 'input', styles: { color: /^(red|blue)$/ } } );
 			dataFilter.disallowAttributes( { name: 'input', styles: { color: 'red' } } );
 
@@ -299,7 +299,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should disallow attributes (classes)', () => {
-			dataFilter.allowElement( { name: 'input' } );
+			dataFilter.allowElement( 'input' );
 			dataFilter.allowAttributes( { name: 'input', classes: [ 'foo', 'bar' ] } );
 			dataFilter.disallowAttributes( { name: 'input', classes: [ 'bar' ] } );
 
@@ -718,7 +718,7 @@ describe( 'DataFilter', () => {
 
 			// At this point we will be trying to register converter without valid view name.
 			expect( () => {
-				dataFilter.allowElement( { name: 'bar' } );
+				dataFilter.allowElement( 'bar' );
 			} ).to.not.throw();
 		} );
 	} );
@@ -1272,13 +1272,8 @@ describe( 'DataFilter', () => {
 		sinon.stub( dataSchema, 'getDefinitionsForView' ).returns( new Set( [ definition ] ) );
 
 		expectToThrowCKEditorError( () => {
-<<<<<<< HEAD
-			dataFilter.allowElement( { name: 'xyz' } );
-		}, /data-filter-invalid-definition/, null, definition );
-=======
 			dataFilter.allowElement( 'xyz' );
-		}, /data-filter-invalid-definition-type/, null, definition );
->>>>>>> 8dd542497f (Update `allowElement()` method and tests.)
+		}, /data-filter-invalid-definition/, null, definition );
 	} );
 
 	describe( 'loadAllowedConfig', () => {
@@ -1720,49 +1715,4 @@ describe( 'DataFilter', () => {
 			);
 		} );
 	} );
-
-	function getModelDataWithAttributes( model, options ) {
-		// Simplify GHS attributes as they are not very readable at this point due to object structure.
-		let counter = 1;
-		const data = getModelData( model, options ).replace( /(html.*?)="{.*?}"/g, ( fullMatch, attributeName ) => {
-			return `${ attributeName }="(${ counter++ })"`;
-		} );
-
-		const range = model.createRangeIn( model.document.getRoot() );
-
-		let attributes = [];
-		for ( const item of range.getItems() ) {
-			for ( const [ key, value ] of sortAttributes( item.getAttributes() ) ) {
-				if ( key.startsWith( 'html' ) ) {
-					attributes.push( value );
-				}
-			}
-		}
-
-		attributes = attributes.reduce( ( prev, cur, index ) => {
-			prev[ index + 1 ] = cur;
-			return prev;
-		}, {} );
-
-		return { data, attributes };
-	}
-
-	function sortAttributes( attributes ) {
-		attributes = Array.from( attributes );
-
-		return attributes.sort( ( attr1, attr2 ) => {
-			const key1 = attr1[ 0 ];
-			const key2 = attr2[ 0 ];
-
-			if ( key1 > key2 ) {
-				return 1;
-			}
-
-			if ( key1 < key2 ) {
-				return -1;
-			}
-
-			return 0;
-		} );
-	}
 } );
