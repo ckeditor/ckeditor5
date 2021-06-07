@@ -1915,6 +1915,19 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/table.html#table-caption">Table caption</a>
+				</p>
+				<p>
+					<a href="../../../api/module_table_tablecaption-TableCaption.html"><code>TableCaption</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>figcaption</strong> <strong>data-placeholder</strong>="*"&gt;</code>
+			</td>
+		</tr>
 	</tbody>
 </table>
 <h3 id="ckeditor5-track-changes"><code>ckeditor5-track-changes</code></h3>
