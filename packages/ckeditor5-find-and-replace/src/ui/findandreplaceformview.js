@@ -5,14 +5,12 @@ export default class FindAndReplaceFormView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		// this.findAndReplacePlugin = plugins.get( 'FindAndReplace' );
-
 		const t = locale.t;
 
 		/**
 		 * The Find Previous button view.
 		 */
-		this.findPrevView = this._createButton( t( '<' ), 'ck-button-prev', 'submit' );
+		this.findPrevButtonView = this._createButton( t( '<' ), 'ck-button-prev', 'submit' );
 
 		/**
 		 * The Find Next button view.
@@ -25,12 +23,12 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The Replace One button view.
 		 */
-		this.replaceOneView = this._createButton( t( '?' ), 'ck-button-prev', 'submit' );
+		this.replaceOneButtonView = this._createButton( t( '?' ), 'ck-button-prev', 'submit' );
 
 		/**
 		 * The Replace All button view.
 		 */
-		this.replaceAllView = this._createButton( t( 'REPLACE' ), 'ck-button-next', 'submit' );
+		this.replaceAllButtonView = this._createButton( t( 'REPLACE' ), 'ck-button-next', 'submit' );
 
 		/**
 		 * The Find input view.
@@ -45,12 +43,28 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * Find view config
 		 */
-		this.findViewConfig = this._createFindView( this.findNextButtonView, this.findPrevView, this.findInputView );
+		this.findView = this._createFindView( this.findNextButtonView, this.findPrevButtonView, this.findInputView );
 
 		/**
 		 * Replace view config
 		 */
-		this.replaceViewConfig = this._createReplaceView( this.replaceAllView, this.replaceOneView, this.replaceInputView );
+		this.replaceView = this._createReplaceView( this.replaceAllButtonView, this.replaceOneButtonView, this.replaceInputView );
+
+		this.setTemplate( {
+			tag: 'form',
+
+			attributes: {
+				class: [
+					'ck',
+					'ck-find-and-replace-form'
+				]
+			},
+
+			children: [
+				this.findView,
+				this.replaceView
+			]
+		} );
 	}
 
 	render() {
@@ -59,8 +73,6 @@ export default class FindAndReplaceFormView extends View {
 		submitHandler( {
 			view: this
 		} );
-
-		this._createToolbarDropdown();
 	}
 
 	/**
@@ -72,11 +84,8 @@ export default class FindAndReplaceFormView extends View {
 	_createFindView( NextInputView, PrevInputView, InputView ) {
 		const findView = new View();
 
-		// PrevInputView.on( 'execute', () => {
-		// 	console.log( 'prevButton has been clicked' );
-		// } );
 		findView.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 			attributes: {
 				class: [
 					'ck',
@@ -104,13 +113,8 @@ export default class FindAndReplaceFormView extends View {
 	_createReplaceView( NextInputView, PrevInputView, InputView ) {
 		const replaceView = new View();
 
-		// NextInputView.on( 'execute', () => {
-		// 	this.findAndReplacePlugin.replaceAll( 'testingReplace' );
-		// 	this.findAndReplacePlugin.stop();
-		// } );
-
 		replaceView.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 			attributes: {
 				class: [
 					'ck',

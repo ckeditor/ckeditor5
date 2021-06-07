@@ -35,7 +35,9 @@ export default class FindAndReplaceUI extends Plugin {
 
 			formView.delegate( 'findNext' ).to( this );
 
-			this._createToolbarDropdown( dropdown, formView );
+			this._createToolbarDropdown( dropdown );
+
+			dropdown.panelView.children.add( formView );
 
 			return dropdown;
 		} );
@@ -44,9 +46,8 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
-	 * @param {module:ui/view~View} form
 	 */
-	_createToolbarDropdown( dropdown, form ) {
+	_createToolbarDropdown( dropdown ) {
 		const editor = this.editor;
 		const t = editor.t;
 
@@ -56,13 +57,5 @@ export default class FindAndReplaceUI extends Plugin {
 			label: t( 'Find and replace' ),
 			tooltip: true
 		} );
-
-		dropdown.panelView.children.add( form.findViewConfig );
-		dropdown.panelView.children.add( form.replaceViewConfig );
 	}
-
-	// NextInputView.on( 'execute', () => {
-	// 	// eslint-disable-next-line no-unused-vars
-	// 	const currentResultId = resultsFound.get( 0 ).id;
-	// } );
 }
