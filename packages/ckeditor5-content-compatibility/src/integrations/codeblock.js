@@ -13,6 +13,11 @@ import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
 
+/**
+ * Provides the General HTML Support integration with {@link module:code-block/codeblock~CodeBlock Code Block} feature.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class CodeBlockHtmlSupport extends Plugin {
 	static get requires() {
 		return [ DataFilter ];
