@@ -59,9 +59,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be true where only image is allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
-			model.schema.extend( 'image', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: [ 'paragraph', 'image' ]
+			} );
 
 			// Block link attribute.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
@@ -74,8 +75,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be true where only link is allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
@@ -92,8 +95,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be false where link & image are not allowed', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block link attribute - image is not allowed in 'block'.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
@@ -368,8 +373,10 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should show warning notification if image cannot be inserted', done => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', {
+				inheritAllFrom: '$block',
+				allowChildren: 'paragraph'
+			} );
 
 			// Block image in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
@@ -403,9 +410,9 @@ describe( 'CKFinderCommand', () => {
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			model.schema.register( 'other', {
 				allowIn: '$root',
+				allowChildren: '$text',
 				isLimit: true
 			} );
-			model.schema.extend( '$text', { allowIn: 'other' } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 

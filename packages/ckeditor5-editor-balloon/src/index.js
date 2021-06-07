@@ -7,8 +7,4 @@
  * @module editor-balloon
  */
 
-import BalloonEditor from './ballooneditor';
-
-export default {
-	BalloonEditor
-};
+export { default as BalloonEditor } from './ballooneditor';

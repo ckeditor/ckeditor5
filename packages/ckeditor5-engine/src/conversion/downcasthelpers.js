@@ -405,9 +405,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * This conversion creates a representation for model marker boundaries in the view:
 	 *
-	 * * If the marker boundary is at a position where text nodes are allowed, then a view element with the specified tag name
-	 * and `name` attribute is added at this position.
-	 * * In other cases, a specified attribute is set on a view element that is before or after the marker boundary.
+	 * * If the marker boundary is before or after a model element, a view attribute is set on a corresponding view element.
+	 * * In other cases, a view element with the specified tag name is inserted at corresponding view position.
 	 *
 	 * Typically, marker names use the `group:uniqueId:otherData` convention. For example: `comment:e34zfk9k2n459df53sjl34:zx32c`.
 	 * The default configuration for this conversion is that the first part is the `group` part and the rest of
@@ -584,7 +583,7 @@ export function createViewElementFromHighlightDescriptor( writer, descriptor ) {
 		viewElement._addClass( descriptor.classes );
 	}
 
-	if ( descriptor.priority ) {
+	if ( typeof descriptor.priority === 'number' ) {
 		viewElement._priority = descriptor.priority;
 	}
 
@@ -945,33 +944,40 @@ function insertMarkerData( viewCreator ) {
 // Helper function for `insertMarkerData()` that marks a marker boundary at the beginning or end of given `range`.
 function handleMarkerBoundary( range, isStart, conversionApi, data, viewMarkerData ) {
 	const modelPosition = isStart ? range.start : range.end;
-	const canInsertElement = conversionApi.schema.checkChild( modelPosition, '$text' );
+	const elementAfter = modelPosition.nodeAfter && modelPosition.nodeAfter.is( 'element' ) ? modelPosition.nodeAfter : null;
+	const elementBefore = modelPosition.nodeBefore && modelPosition.nodeBefore.is( 'element' ) ? modelPosition.nodeBefore : null;
 
-	if ( canInsertElement ) {
-		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
-
-		insertMarkerAsElement( viewPosition, isStart, conversionApi, data, viewMarkerData );
-	} else {
+	if ( elementAfter || elementBefore ) {
 		let modelElement;
 		let isBefore;
 
 		// If possible, we want to add `data-group-start-before` and `data-group-end-after` attributes.
-		// Below `if` is constructed in a way that will favor adding these attributes.
-		//
-		// Also, I assume that there will be always an element either after or before the position.
-		// If not, then it is a case when we are not in a position where text is allowed and also there are no elements around...
-		if ( isStart && modelPosition.nodeAfter || !isStart && !modelPosition.nodeBefore ) {
-			modelElement = modelPosition.nodeAfter;
+		if ( isStart && elementAfter || !isStart && !elementBefore ) {
+			// [<elementAfter>...</elementAfter> -> <elementAfter data-group-start-before="...">...</elementAfter>
+			// <parent>]<elementAfter> -> <parent><elementAfter data-group-end-before="...">
+			modelElement = elementAfter;
 			isBefore = true;
 		} else {
-			modelElement = modelPosition.nodeBefore;
+			// <elementBefore>...</elementBefore>] -> <elementBefore data-group-end-after="...">...</elementBefore>
+			// </elementBefore>[</parent> -> </elementBefore data-group-start-after="..."></parent>
+			modelElement = elementBefore;
 			isBefore = false;
 		}
 
 		const viewElement = conversionApi.mapper.toViewElement( modelElement );
 
-		insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );
+		// On rare circumstances, the model element could be not mapped to any view element and that would cause an error.
+		// One of those situations is a soft break inside code block.
+		if ( viewElement ) {
+			insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );
+
+			return;
+		}
 	}
+
+	const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
+
+	insertMarkerAsElement( viewPosition, isStart, conversionApi, data, viewMarkerData );
 }
 
 // Helper function for `insertMarkerData()` that marks a marker boundary in the view as an attribute on a view element.

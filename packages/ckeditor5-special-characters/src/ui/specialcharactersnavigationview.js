@@ -53,7 +53,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 	/**
 	 * Returns the name of the character group currently selected in the {@link #groupDropdownView}.
 	 *
-	 * @returns {String}
+	 * @type {String}
 	 */
 	get currentGroupName() {
 		return this.groupDropdownView.value;

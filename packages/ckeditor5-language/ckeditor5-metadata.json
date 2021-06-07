@@ -1,0 +1,27 @@
+{
+	"plugins": [
+		{
+			"name": "Text part language",
+			"className": "TextPartLanguage",
+			"description": "The text part language feature provides the ability to change the language of selected text fragments and set the text direction ensuring correct content presentation in multilingual documents.",
+			"docs": "features/language.html",
+			"path": "src/textpartlanguage.js",
+			"uiComponents": [
+				{
+					"type": "Dropdown",
+					"name": "textPartLanguage",
+					"label": "Language"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"attributes": [
+						"dir",
+						"lang"
+					]
+				}
+			]
+		}
+	]
+}

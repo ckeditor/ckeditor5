@@ -36,8 +36,9 @@ export default class TableCellVerticalAlignmentCommand extends TableCellProperty
 	 * Creates a new `TableCellVerticalAlignmentCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value for the "alignment" attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'verticalAlignment' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'verticalAlignment', defaultValue );
 	}
 }

@@ -426,6 +426,7 @@ export default class Range {
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
 	 * @param {Boolean} [options.ignoreElementEnd=false]
+	 * @returns {module:engine/model/treewalker~TreeWalker}
 	 */
 	getWalker( options = {} ) {
 		options.boundaries = this;
@@ -1031,7 +1032,7 @@ export default class Range {
 	 *
 	 * @param {Object} json Plain object to be converted to `Range`.
 	 * @param {module:engine/model/document~Document} doc Document object that will be range owner.
-	 * @returns {module:engine/model/element~Element} `Range` instance created using given plain object.
+	 * @returns {module:engine/model/range~Range} `Range` instance created using given plain object.
 	 */
 	static fromJSON( json, doc ) {
 		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );

@@ -70,9 +70,24 @@ describe( 'upcastTable()', () => {
 	} );
 
 	it( 'should not convert empty figure', () => {
-		'<figure class="table"></figure>';
+		editor.setData( '<figure class="table"></figure>' );
 
 		expectModel( '<paragraph></paragraph>' );
+	} );
+
+	it( 'should not convert if table was not converted', () => {
+		// Test a case when a conversion of a table inside a figure is not returning anything.
+		// Either because of a failed conversion or if the table was already consumed.
+		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+
+				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+			}, { priority: 'highest' } );
+		} );
+		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
+
+		expectModel( '<paragraph>xyz</paragraph>' );
 	} );
 
 	it( 'should convert if figure do not have class="table" attribute', () => {
@@ -570,8 +585,11 @@ describe( 'upcastTable()', () => {
 
 	describe( 'inline contents', () => {
 		it( 'should upcast inline element inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(
@@ -590,8 +608,12 @@ describe( 'upcastTable()', () => {
 		} );
 
 		it( 'should upcast inline object inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true, isObject: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true,
+				isObject: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(
