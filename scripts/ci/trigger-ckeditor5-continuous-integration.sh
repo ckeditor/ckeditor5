@@ -17,7 +17,7 @@ then
   exit 0
 fi
 
-REPOSITORY="cksource/ckeditor5"
+REPOSITORY="ckeditor/ckeditor5"
 LAST_COMMIT=$( git rev-parse HEAD )
 
 BUILD_MESSAGE="Repository: $REPOSITORY\n\nCommit: https://github.com/$REPOSITORY/commit/$LAST_COMMIT."
