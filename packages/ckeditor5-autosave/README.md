@@ -2,8 +2,8 @@ CKEditor 5 autosave feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-autosave.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-autosave/status.svg)](https://david-dm.org/ckeditor/ckeditor5-autosave)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-autosave/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-autosave?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements the autosave feature for CKEditor 5.
 
