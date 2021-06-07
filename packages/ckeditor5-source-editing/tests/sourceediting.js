@@ -115,7 +115,7 @@ describe( 'SourceEditing', () => {
 			expect( spy.secondCall.args[ 2 ] ).to.be.false;
 		} );
 
-		it( 'should display a warning in the console if CF plugin is loaded', async () => {
+		it( 'should display a warning in the console only once if all CF plugins are loaded', async () => {
 			sinon.stub( console, 'warn' );
 
 			class RealTimeCollaborativeEditing extends Plugin {
@@ -136,7 +136,13 @@ describe( 'SourceEditing', () => {
 				}
 			}
 
-			const pluginsFromCF = [ RealTimeCollaborativeEditing, CommentsEditing, TrackChangesEditing ];
+			class RevisionHistory extends Plugin {
+				static get pluginName() {
+					return 'RevisionHistory';
+				}
+			}
+
+			const pluginsFromCF = [ RealTimeCollaborativeEditing, CommentsEditing, TrackChangesEditing, RevisionHistory ];
 
 			const editorElement = document.body.appendChild( document.createElement( 'div' ) );
 

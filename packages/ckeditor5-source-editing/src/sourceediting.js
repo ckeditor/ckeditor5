@@ -156,7 +156,8 @@ export default class SourceEditing extends Plugin {
 		const pluginNamesToWarn = [
 			'RealTimeCollaborativeEditing',
 			'CommentsEditing',
-			'TrackChangesEditing'
+			'TrackChangesEditing',
+			'RevisionHistory'
 		];
 
 		// Currently, the basic integration with Collaboration Features is to display a warning in the console.
