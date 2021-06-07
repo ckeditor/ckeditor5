@@ -31,7 +31,7 @@ export default class FindAndReplaceUI extends Plugin {
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
 			const dropdown = createDropdown( locale, SplitButtonView );
 
-			const viewFrom = new FindAndReplaceFormView( editor.locale, this.findAndReplacePlugin );
+			const viewFrom = new FindAndReplaceFormView( editor.locale, editor.plugins );
 
 			this._createToolbarDropdown( dropdown, viewFrom );
 

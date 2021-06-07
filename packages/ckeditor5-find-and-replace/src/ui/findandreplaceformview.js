@@ -1,11 +1,15 @@
 
-import { createDropdown, ButtonView, SplitButtonView, LabeledFieldView, createLabeledInputText, View } from 'ckeditor5/src/ui';
+import { ButtonView, LabeledFieldView, createLabeledInputText, View, submitHandler } from 'ckeditor5/src/ui';
 
 export default class FindAndReplaceFormView extends View {
-	constructor( locale, findAndReplacePlugin ) {
+	constructor( locale, plugins ) {
 		super( locale );
 
-		this.findAndReplacePlugin = findAndReplacePlugin;
+		// console.log( 'locale ', locale );
+		// console.log( 'plugins', plugins)
+		this.findAndReplacePlugin = plugins.get( 'FindAndReplace' );
+
+		// this.findAndReplacePlugin = findAndReplacePlugin;
 		const t = locale.t;
 
 		/**
@@ -48,44 +52,15 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.replaceViewConfig = this._createReplaceView( this.replaceAllView, this.replaceOneView, this.replaceInputView );
 	}
-	render() {
-		/**
-		 * Do we need this?
-		 */
-		// super.render();
 
-		// submitHandler( {
-		// 	view: this
-		// } );
+	render() {
+		super.render();
+
+		submitHandler( {
+			view: this
+		} );
 
 		this._createToolbarDropdown();
-	}
-
-	/**
-	 * Creates a toolbar dropdown
-	 */
-	_createToolbarDropdown() {
-		const editor = this.editor;
-		const t = editor.t;
-		const componentFactory = editor.ui.componentFactory;
-
-		componentFactory.add( 'findAndReplace', locale => {
-			const dropdown = createDropdown( locale, SplitButtonView );
-
-			// Configure dropdown's button properties:
-			dropdown.buttonView.set( {
-				withText: true,
-				label: t( 'Find and replace' ),
-				tooltip: true
-			} );
-
-			dropdown.render();
-
-			dropdown.panelView.children.add( this.findViewConfig );
-			dropdown.panelView.children.add( this.eplaceViewConfig );
-
-			return dropdown;
-		} );
 	}
 
 	/**
