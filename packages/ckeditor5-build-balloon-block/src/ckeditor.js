@@ -134,6 +134,24 @@ BalloonEditor.defaultConfig = {
 			},
 		],
 	},
+	link: {
+		decorators: {
+			isExternal: {
+				mode: "manual",
+				label: "Open in a new tab",
+				attributes: {
+					target: "_blank",
+				},
+			},
+			isButton: {
+				mode: "manual",
+				label: "Call to action button",
+				attributes: {
+					"data-button": "true",
+				},
+			},
+		},
+	},
 	table: {
 		contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
 	},
