@@ -159,9 +159,8 @@ function downcastMagicBox( modelRangeOrElement, conversionApi ) {
 	const modelElement = modelRangeOrElement.is( 'element' ) ? modelRangeOrElement : modelRangeOrElement.getContainedElement();
 
 	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
-	conversionApi.mapper.bindElements( modelElement, viewBox );
-
 	const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
+
 	writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
 
 	for ( const [ meta, metaValue ] of Object.entries( modelElement.getAttribute( 'meta' ) ) ) {
@@ -187,14 +186,6 @@ function downcastMagicBox( modelRangeOrElement, conversionApi ) {
 	}
 
 	writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( modelElement, 'children' ) );
-
-	// for ( const field of modelElement.getChildren() ) {
-	// 	const viewField = writer.createContainerElement( 'div', { class: 'box-content-field' } );
-	//
-	// 	writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
-	// 	conversionApi.mapper.bindElements( field, viewField );
-	// 	conversionApi.consumable.consume( field, 'insert' );
-	// }
 
 	return viewBox;
 }

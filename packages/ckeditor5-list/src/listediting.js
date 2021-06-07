@@ -92,7 +92,7 @@ export default class ListEditing extends Plugin {
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
 
 		function modelToViewPosition( evt, data ) {
-			if ( data.isPhantom ) {
+			if ( data.isPhantom || data.viewPosition ) {
 				return;
 			}
 
@@ -120,9 +120,15 @@ export default class ListEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).rangeToStructure( {
 			triggerBy: diffItem => {
+				if ( diffItem.name == '$text' ) {
+					return;
+				}
+
+				const consumables = [];
 				let element = null;
 
 				switch ( diffItem.type ) {
+
 					case 'attribute':
 						if ( ![ 'listIndent', 'listType', 'listItem' ].includes( diffItem.attributeKey ) ) {
 							return;
@@ -162,6 +168,8 @@ export default class ListEditing extends Plugin {
 				let startElement = element;
 				let endElement = element;
 
+				addConsumable( element );
+
 				let node;
 
 				while (
@@ -169,6 +177,7 @@ export default class ListEditing extends Plugin {
 					node.is( 'element' ) && node.hasAttribute( 'listItem' )
 				) {
 					startElement = node;
+					addConsumable( node );
 				}
 
 				while (
@@ -176,25 +185,27 @@ export default class ListEditing extends Plugin {
 					node.is( 'element' ) && node.hasAttribute( 'listItem' )
 				) {
 					endElement = node;
+					addConsumable( node );
 				}
 
-				return editor.model.createRange(
+				const range = editor.model.createRange(
 					editor.model.createPositionBefore( startElement ),
 					editor.model.createPositionAfter( endElement )
 				);
-			},
-			view: ( range, { writer, mapper, consumable, slotFor } ) => {
-				const modelElements = Array.from( range.getItems( { shallow: true } ) );
 
-				for ( const modelItem of modelElements ) {
-					if (
-						!consumable.test( modelItem, 'attribute:listItem' ) ||
-						!consumable.test( modelItem, 'attribute:listType' ) ||
-						!consumable.test( modelItem, 'attribute:listIndent' )
-					) {
-						return;
-					}
+				return {
+					range,
+					consumables
+				};
+
+				function addConsumable( node ) {
+					consumables.push( [ node, 'attribute:listItem' ] );
+					consumables.push( [ node, 'attribute:listType' ] );
+					consumables.push( [ node, 'attribute:listIndent' ] );
 				}
+			},
+			view: ( range, { writer, slotFor } ) => {
+				const modelElements = Array.from( range.getItems( { shallow: true } ) );
 
 				const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
 				const viewList = writer.createContainerElement( listType );
@@ -202,15 +213,9 @@ export default class ListEditing extends Plugin {
 				// let previousItem = null;
 
 				for ( const modelItem of modelElements ) {
-					consumable.consume( modelItem, 'attribute:listItem' );
-					consumable.consume( modelItem, 'attribute:listType' );
-					consumable.consume( modelItem, 'attribute:listIndent' );
-
 					const viewItem = createViewListItemElement( writer );
 
 					writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-					mapper.bindElements( modelItem, viewList );
-					mapper.bindElements( modelItem, viewItem );
 
 					writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
 
@@ -273,8 +278,6 @@ export default class ListEditing extends Plugin {
 					//
 					// previousItem = modelItem;
 				}
-
-				debugger;
 
 				return viewList;
 			}

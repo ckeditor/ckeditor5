@@ -147,7 +147,7 @@ export default class DowncastDispatcher {
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type === 'reconvert' ) {
-				this.reconvertRange( entry.range, entry.magicUid, writer );
+				this.reconvertRange( entry.range, entry, writer );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -256,8 +256,8 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/element~Element} element The element to be reconverted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	reconvertRange( range, magicUid, writer ) {
-		console.log( 'reconverting range:', range.start.path + ' - ' + range.end.path ); // eslint-disable-line
+	reconvertRange( range, data, writer ) {
+		const mapper = this.conversionApi.mapper;
 
 		this.conversionApi.writer = writer;
 
@@ -266,18 +266,22 @@ export default class DowncastDispatcher {
 
 		const elements = Array.from( range.getItems( { shallow: true } ) );
 
-		if ( magicUid ) {
+		if ( data.magicUid ) {
 			// Trigger single insert for magic conversion.
-			this.fire( 'magic:' + magicUid, { range }, this.conversionApi );
+			this.fire( 'magic:' + data.magicUid, {
+				...data,
+				reconversion: !!mapper.toViewElement( elements[ 0 ] )
+			}, this.conversionApi );
 		}
 
 		// Convert the element - without converting children.
 		for ( const element of elements ) {
 			// TODO temporary for elementToElement with triggerBy
-			if ( !magicUid ) {
+			if ( !data.magicUid ) {
 				this._testAndFire( 'insert', {
+					...data,
 					item: range.start.nodeAfter,
-					range
+					reconversion: !!mapper.toViewElement( element )
 				} );
 			}
 

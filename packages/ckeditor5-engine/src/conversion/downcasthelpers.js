@@ -830,8 +830,9 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
+		// TODO throw error if old view is still there on reconversion?
 		// Remove old view elements but keep mapping so they could be reinserted into the slots.
-		const currentViewElement = mapper.toViewElement( element );
+		const currentViewElement = data.reconversion ? mapper.toViewElement( element ) : null;
 
 		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
 		if ( currentViewElement ) {
@@ -858,7 +859,7 @@ export function insertElement( elementCreator ) {
 		for ( const modelChildNode of element.getChildren() ) {
 			const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
 
-			if ( viewChildNode && viewChildNode.root != viewElement.root ) {
+			if ( data.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
 				writer.move(
 					writer.createRangeOn( viewChildNode ),
 					mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
@@ -887,42 +888,69 @@ function insertStructure( elementCreator ) {
 		// Scan for elements and it's current mapped view elements.
 		const elements = Array.from( data.range.getItems( { shallow: true } ) );
 
-		for ( const element of elements ) {
-			if ( !conversionApi.consumable.test( element, 'insert' ) ) {
-				return;
+		if ( data.consumables ) {
+			for ( const [ item, eventName ] of data.consumables ) {
+				if ( !conversionApi.consumable.test( item, eventName ) ) {
+					return;
+				}
+			}
+		} else {
+			for ( const element of elements ) {
+				if ( !conversionApi.consumable.test( element, 'insert' ) ) {
+					return;
+				}
 			}
 		}
+
+		// Target view position.
+		let viewPosition = null;
 
 		// Remove old view elements but keep mapping so they could be reinserted into the slots.
 		const currentViewElements = new Set();
+		const currentMapping = new Map();
 
-		for ( const element of elements ) {
-			let currentView = mapper.toViewElement( element );
+		// TODO throw error if old view is still there?
+		if ( data.reconversion ) {
+			for ( const element of elements ) {
+				let currentView = mapper.toViewElement( element );
 
-			while ( mapper.toModelElement( currentView ) === element ) {
-				const parentView = currentView.parent;
+				currentMapping.set( element, currentView );
 
-				currentViewElements.add( currentView );
+				while ( mapper.toModelElement( currentView ) === element ) {
+					const parentView = currentView.parent;
 
-				// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-				writer.remove( currentView );
+					currentViewElements.add( currentView );
 
-				// But also go up the view tree and remove all elements that are mapped to the same model element.
-				currentView = parentView;
+					// The toViewPosition would provide invalid position because of multiple mappings.
+					if ( element == elements[ 0 ] ) {
+						viewPosition = writer.createPositionBefore( currentView );
+					}
+
+					// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
+					writer.remove( currentView );
+
+					// But also go up the view tree and remove all elements that are mapped to the same model element.
+					currentView = parentView;
+				}
 			}
+		} else {
+			viewPosition = mapper.toViewPosition( data.range.start );
 		}
 
 		// Trigger new view structure creation.
-		const slots = new Map();
+		const slotsMap = new Map();
 
 		// View creation.
-		// TODO maybe elementCreator (generated from description).
 		const viewElement = elementCreator( data.range, {
 			...conversionApi,
 			slotFor( element, mode = 'children' ) {
 				const slot = writer.createContainerElement( '$slot' );
 
-				slots.set( slot, { element, mode } );
+				if ( slotsMap.has( element ) ) {
+					slotsMap.get( element ).push( { slot, mode } );
+				} else {
+					slotsMap.set( element, [ { slot, mode } ] );
+				}
 
 				return slot;
 			}
@@ -932,51 +960,85 @@ function insertStructure( elementCreator ) {
 			return;
 		}
 
-		for ( const element of elements ) {
-			if ( !conversionApi.consumable.consume( element, 'insert' ) ) {
-				return;
+		if ( data.consumables ) {
+			for ( const [ item, eventName ] of data.consumables ) {
+				if ( !conversionApi.consumable.consume( item, eventName ) ) {
+					return;
+				}
+			}
+		} else {
+			for ( const element of elements ) {
+				if ( !conversionApi.consumable.consume( element, 'insert' ) ) {
+					return;
+				}
 			}
 		}
 
-		const viewPosition = mapper.toViewPosition( data.range.start );
+		// TODO make sure that provided viewElement has no bindings (else there could be an infinite loop).
 
-		// TODO data.item is not available for range conversion
-		conversionApi.mapper.bindElements( data.item, viewElement );
+		conversionApi.mapper.bindElements( elements[ 0 ], viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
+		mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'high' } );
+
 		// Fill slots with nested view nodes.
-		for ( const [ slot, { element, mode } ] of slots.entries() ) {
-			// TODO Make sure that slots are created for the elements themself or direct descendants and not other elements.
+		for ( const [ element, elementSlots ] of slotsMap.entries() ) {
+			for ( const { slot, mode } of elementSlots ) {
+				// TODO Make sure that slots are created for the elements themself or direct descendants and not other elements.
 
-			if ( mode == 'children' ) {
-				// Bind slot with element so children will be down-casted into it.
-				mapper.bindElements( element, slot );
+				if ( mode == 'children' ) {
+					// Bind slot with element so children will be down-casted into it.
+					mapper.bindElements( element, slot );
 
-				for ( const modelChildNode of element.getChildren() ) {
-					const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
+					for ( const modelChildNode of element.getChildren() ) {
+						const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
 
-					if ( viewChildNode && viewChildNode.root != viewElement.root ) {
+						if ( data.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
+							writer.move(
+								writer.createRangeOn( viewChildNode ),
+								mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+							);
+						} else {
+							// TODO this should be exposed by conversionApi?
+							// Note that this is not creating another consumable, it's using the current one.
+							conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+						}
+					}
+
+					writer.move( writer.createRangeIn( slot ), writer.createPositionBefore( slot ) );
+					writer.remove( slot );
+
+					// Rebind the original view element to the correct model element.
+					mapper.bindElements( element, viewElement );
+				} else if ( mode == 'self' ) {
+					const currentViewElement = currentMapping.get( element );
+
+					// Bind slot parents to the element so they could be found while reconverting.
+					// TODO probably all parents that have no mapping yet (so excluding main viewElement)
+					mapper.bindElements( element, slot.parent );
+
+					if ( data.reconversion && currentViewElement && currentViewElement.root != viewElement.root ) {
 						writer.move(
-							writer.createRangeOn( viewChildNode ),
-							mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+							writer.createRangeOn( currentViewElement ),
+							mapper.toViewPosition( ModelPosition._createBefore( element ) )
 						);
+
+						// Rebind the original view element to the correct model element.
+						mapper.bindElements( element, currentViewElement );
 					} else {
 						// TODO this should be exposed by conversionApi?
 						// Note that this is not creating another consumable, it's using the current one.
-						conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+						conversionApi.dispatcher._convertInsert( ModelRange._createOn( element ) );
 					}
+
+					writer.remove( slot );
+				} else {
+					// TODO callback check (for example tbody vs thead)
 				}
-
-				writer.move( writer.createRangeIn( slot ), writer.createPositionBefore( slot ) );
-				writer.remove( slot );
-
-				// Rebind the original view element to the correct model element.
-				mapper.bindElements( element, viewElement );
-			} else {
-				// TODO element itself
-				// TODO callback check (for example tbody vs thead)
 			}
 		}
+
+		mapper.off( 'modelToViewPosition', toViewPositionMapping );
 
 		// After reconversion is done we can unbind the old view.
 		for ( const currentView of currentViewElements ) {
@@ -985,8 +1047,23 @@ function insertStructure( elementCreator ) {
 			}
 		}
 
-		// TODO Consuming content
-		// TODO binding (based on slot element and same for not bound parents).
+		function toViewPositionMapping( evt, data ) {
+			if ( data.isPhantom || data.viewPosition ) {
+				return;
+			}
+
+			const elementSlots = slotsMap.get( data.modelPosition.nodeAfter );
+
+			if ( !elementSlots ) {
+				return;
+			}
+
+			// TODO conditional slots?
+
+			if ( elementSlots[ 0 ].mode == 'self' ) {
+				data.viewPosition = writer.createPositionBefore( elementSlots[ 0 ].slot );
+			}
+		}
 	};
 }
 
@@ -1865,13 +1942,14 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 function createMagicHandler( config, auxData = null ) {
 	if ( typeof config.triggerBy == 'function' ) {
 		return ( evt, diffItem ) => {
-			const range = config.triggerBy( diffItem );
+			const data = config.triggerBy( diffItem );
+			// data.range, data.consumables
 
-			if ( !range ) {
+			if ( !data || !data.range ) {
 				return;
 			}
 
-			evt.return = { ...auxData, range };
+			evt.return = { ...auxData, ...data };
 			evt.stop();
 		};
 	}
@@ -1895,7 +1973,9 @@ function createMagicHandler( config, auxData = null ) {
 			}
 		}
 
-		evt.return = { ...auxData, range: ModelRange._createOn( element ) };
+		evt.return = {
+			...auxData,
+			range: ModelRange._createOn( element ) };
 		evt.stop();
 	};
 }
