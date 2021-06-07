@@ -253,6 +253,13 @@ export default class FindAndReplace extends Plugin {
 			this.find( data.searchText );
 		} );
 
+		// replaceAll
+		ui.on( 'replaceAll', ( event, data ) => {
+			if ( data.searchText.length !== 0 && data.replaceText.length !== 0 ) {
+				this.replaceAll( data.replaceText );
+			}
+		} );
+
 		setupSelectedResultHighlighting( this.editor );
 
 		this.activeResults = null;

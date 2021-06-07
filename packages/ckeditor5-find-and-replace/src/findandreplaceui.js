@@ -1,7 +1,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import 'ckeditor5/packages/ckeditor5-media-embed/theme/mediaform.css';
+import '../theme/findandreplaceform.css';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 /**
@@ -21,6 +21,7 @@ export default class FindAndReplaceUI extends Plugin {
 		super( editor );
 
 		this.set( 'searchText' );
+		this.set( 'replaceText' );
 	}
 	init() {
 		this.activeSearch = null;
@@ -34,6 +35,7 @@ export default class FindAndReplaceUI extends Plugin {
 			const formView = new FindAndReplaceFormView( editor.locale );
 
 			formView.delegate( 'findNext' ).to( this );
+			formView.delegate( 'replaceAll' ).to( this );
 
 			this._createToolbarDropdown( dropdown );
 

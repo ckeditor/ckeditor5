@@ -1,6 +1,10 @@
 
 import { ButtonView, LabeledFieldView, createLabeledInputText, View, submitHandler } from 'ckeditor5/src/ui';
 
+// See: #8833.
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+import '../../theme/findandreplaceform.css';
 export default class FindAndReplaceFormView extends View {
 	constructor( locale ) {
 		super( locale );
@@ -29,6 +33,9 @@ export default class FindAndReplaceFormView extends View {
 		 * The Replace All button view.
 		 */
 		this.replaceAllButtonView = this._createButton( t( 'REPLACE' ), 'ck-button-next', 'submit' );
+		this.replaceAllButtonView.on( 'execute', () => {
+			this.fire( 'replaceAll', { replaceText: this.replaceText, searchText: this.searchText } );
+		} );
 
 		/**
 		 * The Find input view.
@@ -56,7 +63,7 @@ export default class FindAndReplaceFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-find-and-replace-form'
+					'ck-find-and-replace-form__wrapper'
 				]
 			},
 
@@ -89,7 +96,7 @@ export default class FindAndReplaceFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-media-form',
+					'ck-find-and-replace-form',
 					'ck-responsive-form'
 				],
 				tabindex: '-1'
@@ -118,7 +125,7 @@ export default class FindAndReplaceFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-media-form',
+					'ck-find-and-replace-form',
 					'ck-responsive-form'
 				],
 				tabindex: '-1'
@@ -142,17 +149,21 @@ export default class FindAndReplaceFormView extends View {
 	 */
 	_createInputField( label, infoText ) {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
-		const inputView = labeledInput.fieldView;
+		const inputField = labeledInput.fieldView;
 
-		inputView.on( 'input', () => {
-			this.searchText = inputView.element.value;
+		inputField.on( 'input', () => {
+			if ( label === 'Find' ) {
+				this.searchText = inputField.element.value;
+			} else {
+				this.replaceText = inputField.element.value;
+			}
 		} );
 
 		labeledInput.label = label;
 		labeledInput.infoText = infoText;
 		labeledInput.render();
 
-		return labeledInput.element;
+		return labeledInput;
 	}
 
 	/**
