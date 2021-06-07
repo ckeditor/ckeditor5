@@ -2,14 +2,11 @@
 import { ButtonView, LabeledFieldView, createLabeledInputText, View, submitHandler } from 'ckeditor5/src/ui';
 
 export default class FindAndReplaceFormView extends View {
-	constructor( locale, plugins ) {
+	constructor( locale ) {
 		super( locale );
 
-		// console.log( 'locale ', locale );
-		// console.log( 'plugins', plugins)
-		this.findAndReplacePlugin = plugins.get( 'FindAndReplace' );
+		// this.findAndReplacePlugin = plugins.get( 'FindAndReplace' );
 
-		// this.findAndReplacePlugin = findAndReplacePlugin;
 		const t = locale.t;
 
 		/**
@@ -20,7 +17,10 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The Find Next button view.
 		 */
-		this.findNextView = this._createButton( t( '>' ), 'ck-button-next', 'submit' );
+		this.findNextButtonView = this._createButton( t( '>' ), 'ck-button-next', 'submit' );
+		this.findNextButtonView.on( 'execute', () => {
+			this.fire( 'findNext', { searchText: this.searchText } );
+		} );
 
 		/**
 		 * The Replace One button view.
@@ -45,7 +45,7 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * Find view config
 		 */
-		this.findViewConfig = this._createFindView( this.findNextView, this.findPrevView, this.findInputView );
+		this.findViewConfig = this._createFindView( this.findNextButtonView, this.findPrevView, this.findInputView );
 
 		/**
 		 * Replace view config
@@ -71,16 +71,6 @@ export default class FindAndReplaceFormView extends View {
 	 */
 	_createFindView( NextInputView, PrevInputView, InputView ) {
 		const findView = new View();
-
-		NextInputView.on( 'execute', () => {
-			if ( this.searchText.length !== 0 ) {
-				this.findAndReplacePlugin.stop();
-			}
-			const resultsFound = this.findAndReplacePlugin.find( this.searchText );
-
-			// eslint-disable-next-line no-unused-vars
-			const currentResultId = resultsFound.get( 0 ).id;
-		} );
 
 		// PrevInputView.on( 'execute', () => {
 		// 	console.log( 'prevButton has been clicked' );
@@ -114,10 +104,10 @@ export default class FindAndReplaceFormView extends View {
 	_createReplaceView( NextInputView, PrevInputView, InputView ) {
 		const replaceView = new View();
 
-		NextInputView.on( 'execute', () => {
-			this.findAndReplacePlugin.replaceAll( 'testingReplace' );
-			this.findAndReplacePlugin.stop();
-		} );
+		// NextInputView.on( 'execute', () => {
+		// 	this.findAndReplacePlugin.replaceAll( 'testingReplace' );
+		// 	this.findAndReplacePlugin.stop();
+		// } );
 
 		replaceView.setTemplate( {
 			tag: 'form',
@@ -178,6 +168,7 @@ export default class FindAndReplaceFormView extends View {
 			withText: true,
 			tooltip: true
 		} );
+
 		button.extendTemplate( {
 			attributes: {
 				class: className

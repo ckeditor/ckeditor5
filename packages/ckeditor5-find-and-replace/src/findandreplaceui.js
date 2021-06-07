@@ -31,9 +31,11 @@ export default class FindAndReplaceUI extends Plugin {
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
 			const dropdown = createDropdown( locale, SplitButtonView );
 
-			const viewFrom = new FindAndReplaceFormView( editor.locale, editor.plugins );
+			const formView = new FindAndReplaceFormView( editor.locale );
 
-			this._createToolbarDropdown( dropdown, viewFrom );
+			formView.delegate( 'findNext' ).to( this );
+
+			this._createToolbarDropdown( dropdown, formView );
 
 			return dropdown;
 		} );
@@ -58,4 +60,9 @@ export default class FindAndReplaceUI extends Plugin {
 		dropdown.panelView.children.add( form.findViewConfig );
 		dropdown.panelView.children.add( form.replaceViewConfig );
 	}
+
+	// NextInputView.on( 'execute', () => {
+	// 	// eslint-disable-next-line no-unused-vars
+	// 	const currentResultId = resultsFound.get( 0 ).id;
+	// } );
 }

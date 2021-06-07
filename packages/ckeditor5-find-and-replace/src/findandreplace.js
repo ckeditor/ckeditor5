@@ -242,6 +242,17 @@ export default class FindAndReplace extends Plugin {
 			}
 		} );
 
+		const ui = this.editor.plugins.get( 'FindAndReplaceUI' );
+
+		// findNext
+		ui.on( 'findNext', ( event, data ) => {
+			if ( data.searchText.length !== 0 ) {
+				this.stop();
+			}
+
+			this.find( data.searchText );
+		} );
+
 		setupSelectedResultHighlighting( this.editor );
 
 		this.activeResults = null;
