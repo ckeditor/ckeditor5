@@ -41,7 +41,7 @@ import '../theme/datafilter.css';
  * You can also allow or disallow specific element attributes:
  *
  *		// Allow `data-foo` attribute on `section` element.
- *		dataFilter.allowedAttributes( {
+ *		dataFilter.allowAttributes( {
  *			name: 'section',
  *			attributes: {
  *				'data-foo': true
@@ -49,7 +49,7 @@ import '../theme/datafilter.css';
  *		} );
  *
  *		// Disallow `color` style attribute on 'section' element.
- *		dataFilter.disallowedAttributes( {
+ *		dataFilter.disallowAttributes( {
  *			name: 'section',
  *			styles: {
  *				color: /[\s\S]+/
