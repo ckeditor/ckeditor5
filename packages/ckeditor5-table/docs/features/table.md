@@ -280,9 +280,9 @@ The stylesheet for the editor displayed below looks as follows:
 
 ```css
 .ck-content .table {
-    float: right;
-    width: 500px;
-    height: 250px;
+    float: left;
+    width: 550px;
+    height: 450px;
 }
 
 .ck-content .table table {
@@ -313,9 +313,9 @@ const tableConfig = {
 	            borderStyle: 'dashed',
 	            borderColor: 'hsl(90, 75%, 60%)',
 	            borderWidth: '3px',
-	            alignment: 'right',
-	            width: '500px',
-	            height: '250px'
+	            alignment: 'left',
+	            width: '550px',
+	            height: '450px'
             },
             // The default styles for table cells in the editor.
 			// They should be synchronized with the content styles.
@@ -331,7 +331,7 @@ const tableConfig = {
 };
 ```
 
-The table element should be aligned to the `right` side by default. Its size should be `500x250px`. The border style should be `dashed`, `3px` of its width, and the color specified as `Light green`.
+The table element should be aligned to the `left` side by default. Its size should be `550x450px`. The border style should be `dashed`, `3px` of its width, and the color specified as `Light green`.
 
 The content should be away about `10px` from the cell's edges (`padding`), vertically aligned to `bottom` and horizontally to `center`.
 
