@@ -54,18 +54,30 @@ describe( 'ImageInlineEditing', () => {
 		expect( editor.plugins.get( ImageInlineEditing ) ).to.be.instanceOf( ImageInlineEditing );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
-		expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
-		expect( model.schema.isObject( 'imageInline' ) ).to.be.true;
+	describe( 'schema rules', () => {
+		it( 'should be set', () => {
+			expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
+			expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
+			expect( model.schema.isObject( 'imageInline' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
+			expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
+		} );
+
+		it( 'should disallow imageInline in the caption element', () => {
+			model.schema.register( 'caption', {
+				allowIn: '$root',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+
+			expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'imageInline' ) ).to.be.false;
+		} );
 	} );
 
 	it( 'should register ImageLoadObserver', () => {
