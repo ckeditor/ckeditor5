@@ -53,7 +53,10 @@ export default class CodeBlockCommand extends Command {
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
-		const language = options.language || firstLanguageInConfig.language;
+		let language = options.language || firstLanguageInConfig.language;
+		if ( options.usePreviousLanguageChoice && options.lastLanguage ) {
+			language = options.lastLanguage;
+		}
 
 		model.change( writer => {
 			if ( value ) {
