@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "../../ckeditor5-theme-lark/theme/mixins/_rounded.css";
-@import "../../ckeditor5-theme-lark/theme/mixins/_focus.css";
-@import "../../ckeditor5-theme-lark/theme/mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_focus.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
 
 .ck-source-editing-area {
 	display: inline-grid;

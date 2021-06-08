@@ -36,7 +36,7 @@ There is other source-related CKEditor 5 feature you may want to check:
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-source-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing) package:
 
-```plaintext
+```bash
 npm install --save @ckeditor/ckeditor5-source-editing
 ```
 
