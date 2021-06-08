@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global console */
+
 import Matcher from '../../src/view/matcher';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
@@ -318,11 +320,10 @@ describe( 'Matcher', () => {
 		} );
 
 		it( 'should match element class names using an array', () => {
-			const pattern = { classes: [ 'foobar', 'foobaz' ] };
+			const pattern = { classes: [ 'foo', 'bar' ] };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foobar foobaz' } );
-
-			const el2 = new Element( document, 'p', { class: 'foobaz'	} );
+			const el1 = new Element( document, 'p', { class: 'foo bar' } );
+			const el2 = new Element( document, 'p', { class: 'bar'	} );
 			const el3 = new Element( document, 'p', { class: 'qux'	} );
 
 			const result = matcher.match( el1 );
@@ -330,7 +331,9 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
-			expect( result.match.classes[ 0 ] ).equal( 'foobar' );
+			expect( result.match.classes.length ).equal( 2 );
+			expect( result.match.classes[ 0 ] ).equal( 'foo' );
+			expect( result.match.classes[ 1 ] ).equal( 'bar' );
 
 			expect( matcher.match( el2 ) ).to.be.null;
 			expect( matcher.match( el3 ) ).to.be.null;
@@ -585,6 +588,25 @@ describe( 'Matcher', () => {
 			] );
 
 			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should display warning when key->value pattern is missing either key or value', () => {
+			const pattern = {
+				styles: [
+					{ key: /border-.*/ }
+				]
+			};
+			const warnStub = sinon.stub( console, 'warn' );
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
+
+			matcher.match( el1 );
+
+			sinon.assert.calledOnceWithMatch(
+				warnStub,
+				'matcher-patterns-pattern-missing-key-or-value',
+				pattern.styles[ 0 ]
+			);
 		} );
 
 		it( 'should allow to use function as a pattern', () => {

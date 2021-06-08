@@ -7,6 +7,7 @@
  * @module engine/view/matcher
  */
 
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { isPlainObject } from 'lodash-es';
 
 /**
@@ -338,7 +339,12 @@ function matchPatterns( patterns, items, valueGetter ) {
 function normalizePatterns( patterns ) {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( pattern => {
-			if ( isPlainObject( pattern ) && pattern.key && pattern.value ) {
+			if ( isPlainObject( pattern ) ) {
+				if ( pattern.key === undefined || pattern.value === undefined ) {
+					// Documented at the end of matcher.js.
+					logWarning( 'matcher-patterns-pattern-missing-key-or-value', pattern );
+				}
+
 				return [ pattern.key, pattern.value ];
 			}
 
@@ -523,4 +529,12 @@ function matchStyles( patterns, element ) {
  * Each object key represents style name. Value can be given as `String` or `RegExp`.
  * @property {Object} [attributes] Object with key-value pairs representing attributes to match.
  * Each object key represents attribute name. Value can be given as `String` or `RegExp`.
+ */
+
+/**
+ * The key-value matcher pattern is missing key or value. Both must be present.
+ * Refer the documentation: {@link module:engine/view/matcher~MatcherPattern}.
+ *
+ * @param {Object} pattern Pattern with missing properties.
+ * @error matcher-patterns-pattern-missing-key-or-value
  */
