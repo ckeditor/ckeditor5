@@ -69,7 +69,11 @@ export default class ListEditing extends Plugin {
 		// editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
 
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		editing.mapper.registerViewToModelLength( 'ul', getViewListItemLength );
+		editing.mapper.registerViewToModelLength( 'ol', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		data.mapper.registerViewToModelLength( 'ul', getViewListItemLength );
+		data.mapper.registerViewToModelLength( 'ol', getViewListItemLength );
 
 		function getViewListItemLength( element ) {
 			let length = 0;
@@ -128,8 +132,7 @@ export default class ListEditing extends Plugin {
 				let element = null;
 
 				switch ( diffItem.type ) {
-
-					case 'attribute':
+					case 'attribute': {
 						if ( ![ 'listIndent', 'listType', 'listItem' ].includes( diffItem.attributeKey ) ) {
 							return;
 						}
@@ -137,8 +140,9 @@ export default class ListEditing extends Plugin {
 						element = diffItem.range.start.nodeAfter;
 
 						break;
+					}
 
-					case 'insert':
+					case 'insert': {
 						element = diffItem.position.nodeAfter;
 
 						if ( !element.hasAttribute( 'listItem' ) ) {
@@ -146,19 +150,28 @@ export default class ListEditing extends Plugin {
 						}
 
 						break;
+					}
 
-					// TODO remove
-					// Find sibling list item for removed list item.
-					// // if ( diffItem.type == 'remove' ) {
-					// // 	const nodeBefore = diffItem.position.nodeBefore;
-					// // 	const nodeAfter = diffItem.position.nodeAfter;
-					// //
-					// // 	if ( nodeBefore && nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
-					// // 		removedElement = nodeBefore;
-					// // 	} else if ( nodeAfter && nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
-					// // 		removedElement = nodeAfter;
-					// // 	}
-					// // }
+					case 'remove': {
+						if ( !diffItem.attributes.has( 'listItem' ) ) {
+							return;
+						}
+
+						const nodeBefore = diffItem.position.nodeBefore;
+						const nodeAfter = diffItem.position.nodeAfter;
+
+						if ( nodeBefore && nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
+							element = nodeBefore;
+						} else if ( nodeAfter && nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
+							element = nodeAfter;
+						} else {
+							return {
+								range: editor.model.createRange( diffItem.position )
+							};
+						}
+
+						break;
+					}
 				}
 
 				if ( !element ) {
@@ -207,6 +220,10 @@ export default class ListEditing extends Plugin {
 			view: ( range, { writer, slotFor } ) => {
 				const modelElements = Array.from( range.getItems( { shallow: true } ) );
 
+				if ( !modelElements.length ) {
+					return null;
+				}
+
 				const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
 				const viewList = writer.createContainerElement( listType );
 
@@ -216,7 +233,6 @@ export default class ListEditing extends Plugin {
 					const viewItem = createViewListItemElement( writer );
 
 					writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-
 					writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
 
 					// const itemModelPosition = editor.model.createPositionBefore( modelItem );

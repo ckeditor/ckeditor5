@@ -887,18 +887,12 @@ function insertStructure( elementCreator ) {
 
 		// Scan for elements and it's current mapped view elements.
 		const elements = Array.from( data.range.getItems( { shallow: true } ) );
+		const consumables = data.consumables || elements.map( element => [ element, 'insert' ] );
 
-		if ( data.consumables ) {
-			for ( const [ item, eventName ] of data.consumables ) {
-				if ( !conversionApi.consumable.test( item, eventName ) ) {
-					return;
-				}
-			}
-		} else {
-			for ( const element of elements ) {
-				if ( !conversionApi.consumable.test( element, 'insert' ) ) {
-					return;
-				}
+		// Verify if all consumables are available to be consumed.
+		for ( const [ item, eventName ] of consumables ) {
+			if ( !conversionApi.consumable.test( item, eventName ) ) {
+				return;
 			}
 		}
 
@@ -956,21 +950,15 @@ function insertStructure( elementCreator ) {
 			}
 		} );
 
+		// Insert the new structure if any was created. Otherwise it's removed.
 		if ( !viewElement ) {
 			return;
 		}
 
-		if ( data.consumables ) {
-			for ( const [ item, eventName ] of data.consumables ) {
-				if ( !conversionApi.consumable.consume( item, eventName ) ) {
-					return;
-				}
-			}
-		} else {
-			for ( const element of elements ) {
-				if ( !conversionApi.consumable.consume( element, 'insert' ) ) {
-					return;
-				}
+		// Consume consumables.
+		for ( const [ item, eventName ] of consumables ) {
+			if ( !conversionApi.consumable.consume( item, eventName ) ) {
+				return;
 			}
 		}
 

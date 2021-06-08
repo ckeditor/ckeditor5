@@ -267,11 +267,19 @@ export default class DowncastDispatcher {
 		const elements = Array.from( range.getItems( { shallow: true } ) );
 
 		if ( data.magicUid ) {
-			// Trigger single insert for magic conversion.
-			this.fire( 'magic:' + data.magicUid, {
-				...data,
-				reconversion: !!mapper.toViewElement( elements[ 0 ] )
-			}, this.conversionApi );
+			if ( elements.length ) {
+				// Trigger single insert for magic conversion.
+				this.fire( 'magic:' + data.magicUid, {
+					...data,
+					reconversion: !!mapper.toViewElement( elements[ 0 ] )
+				}, this.conversionApi );
+			} else {
+				// If the range is empty then it's a trigger for removing down-casted structure.
+				this.fire( 'remove', {
+					position: range.start,
+					length: data.length
+				}, this.conversionApi );
+			}
 		}
 
 		// Convert the element - without converting children.
@@ -597,7 +605,6 @@ export default class DowncastDispatcher {
 	 * @private
 	 */
 	_mapChangesWithAutomaticReconversion( differ ) {
-		const rangesToReconvert = [];
 		const updated = [];
 
 		for ( const entry of differ.getChanges() ) {
@@ -605,15 +612,26 @@ export default class DowncastDispatcher {
 
 			if ( data ) {
 				// TODO make sure those are not intersecting.
-				if ( rangesToReconvert.some( entry => entry.range.isEqual( data.range ) && entry.magicUid == data.magicUid ) ) {
+				const otherChange = updated.find( entry => (
+					entry.type == 'reconvert' &&
+					entry.range.isEqual( data.range ) &&
+					entry.magicUid == data.magicUid
+				) );
+
+				if ( otherChange ) {
+					// TODO this is used only for remove to count number of removed elements so maybe should be collected only for it?
+					otherChange.length = otherChange.length + entry.length;
+
 					// Range is already marked for reconversion, so skip this change.
 					continue;
 				}
 
-				rangesToReconvert.push( data );
-
 				// Add special "reconvert" change.
-				updated.push( { type: 'reconvert', ...data } );
+				updated.push( {
+					...data,
+					type: 'reconvert', // TODO maybe this should be different for remove
+					length: entry.length
+				} );
 			} else {
 				updated.push( entry );
 			}

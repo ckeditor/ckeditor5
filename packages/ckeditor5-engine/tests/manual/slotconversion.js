@@ -86,74 +86,7 @@ function getBoxUpcastConverter( editor ) {
 	} );
 }
 
-function downcastBox( modelElement, conversionApi ) {
-	const { writer } = conversionApi;
-
-	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
-	conversionApi.mapper.bindElements( modelElement, viewBox );
-
-	const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
-	writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
-
-	for ( const [ meta, metaValue ] of Object.entries( modelElement.getAttribute( 'meta' ) ) ) {
-		if ( meta === 'header' ) {
-			const header = writer.createRawElement( 'div', {
-				class: 'box-meta box-meta-header'
-			}, domElement => {
-				domElement.innerHTML = `<div class="box-meta-header-title"><h2>${ metaValue.title }</h2></div>`;
-			} );
-
-			writer.insert( writer.createPositionBefore( contentWrap ), header );
-		}
-
-		if ( meta === 'author' ) {
-			const author = writer.createRawElement( 'div', {
-				class: 'box-meta box-meta-author'
-			}, domElement => {
-				domElement.innerHTML = `<a href="${ metaValue.website }">${ metaValue.name }</a>`;
-			} );
-
-			writer.insert( writer.createPositionAfter( contentWrap ), author );
-		}
-	}
-
-	for ( const field of modelElement.getChildren() ) {
-		const viewField = writer.createContainerElement( 'div', { class: 'box-content-field' } );
-
-		writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
-		conversionApi.mapper.bindElements( field, viewField );
-		conversionApi.consumable.consume( field, 'insert' );
-
-		// Might be simplified to:
-		//
-		// writer.defineSlot( field, viewField, field.index );
-		//
-		// but would require a converter:
-		//
-		// editor.conversion.for( 'downcast' ).elementToElement( {	// .slotToElement()?
-		// 		model: 'viewField',
-		// 		view: { name: 'div', class: 'box-content-field' }
-		// 	} );
-	}
-
-	// At this point we're inserting whole "component". Equivalent to (JSX-like notation):
-	//
-	//	"rendered" view																					Mapping/source
-	//
-	//	<div:container class="box">												<-- top-level			box
-	//		<div:raw class="box-meta box-meta-header">...</div:raw>										box[meta.header]
-	//		<div:container class="box-content">
-	//			<div:container class="box-content-field">...</div:container>	<-- this is "slot"		boxField
-	//			... many
-	//			<div:container class="box-content-field">...</div:container>	<-- this is "slot"		boxField
-	//		</div:container>
-	//		<div:raw class="box-meta box-meta-author">...</div:raw>										box[meta.author]
-	//	</div:container>
-
-	return viewBox;
-}
-
-function downcastMagicBox( modelRangeOrElement, conversionApi ) {
+function downcastBox( modelRangeOrElement, conversionApi ) {
 	const { writer, slotFor } = conversionApi;
 
 	const modelElement = modelRangeOrElement.is( 'element' ) ? modelRangeOrElement : modelRangeOrElement.getContainedElement();
@@ -238,7 +171,7 @@ function Box( editor ) {
 
 	editor.conversion.for( 'downcast' ).elementToStructure( {
 		model: 'box',
-		view: downcastMagicBox,
+		view: downcastBox,
 		triggerBy: {
 			attributes: [ 'meta' ],
 			children: [ 'boxField' ]
