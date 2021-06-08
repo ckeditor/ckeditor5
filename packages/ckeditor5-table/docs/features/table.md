@@ -1,6 +1,7 @@
 ---
 title: Tables
 category: features
+modified_at: 2021-06-07
 ---
 
 {@snippet features/build-table-source}
@@ -327,7 +328,7 @@ const tableConfig = {
 };
 ```
 
-The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`. 
+The table element should be aligned to the `right` side by default. Its size should be `500x250px`. Border style should be `dashed`, `3px` of its width, and the color specified as `“Light green”`.
 
 The content should be away about `10px` from the cell's edges (`padding`), vertically aligned to `bottom` and horizontally to `center`.
 
