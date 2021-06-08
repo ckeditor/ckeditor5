@@ -9,14 +9,13 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import DataFilter from './datafilter';
-import DataSchema from './dataschema';
 import CodeBlockHtmlSupport from './integrations/codeblock';
 
 /**
  * The General HTML Support feature.
  *
- * This is a "glue" plugin which initializes the {@link module:content-compatibility/dataschema~DataSchema data schema}
- * and {@link module:content-compatibility/datafilter~DataFilter data filter} features.
+ * This is a "glue" plugin which initializes the {@link module:content-compatibility/datafilter~DataFilter data filter} configuration
+ * and features integration with the General HTML Support.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -28,33 +27,13 @@ export default class GeneralHtmlSupport extends Plugin {
 		return 'GeneralHtmlSupport';
 	}
 
-	/**
-	 * @param {module:core/editor/editor~Editor} editor
-	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * An instance of the {@link module:content-compatibility/dataschema~DataSchema}.
-		 *
-		 * @readonly
-		 * @member {module:content-compatibility/dataschema~DataSchema} #dataSchema
-		 */
-		this.dataSchema = new DataSchema();
-
-		/**
-		 * An instance of the {@link module:content-compatibility/datafilter~DataFilter}.
-		 *
-		 * @readonly
-		 * @member {module:content-compatibility/datafilter~DataFilter} #dataFilter
-		 */
-		this.dataFilter = new DataFilter( editor, this.dataSchema );
-	}
-
 	init() {
+		const editor = this.editor;
+		const dataFilter = editor.plugins.get( DataFilter );
+
 		// Load the filtering configuration.
-		this.dataFilter.loadAllowedConfig( this.editor.config.get( 'generalHtmlSupport.allowed' ) || [] );
-		this.dataFilter.loadDisallowedConfig( this.editor.config.get( 'generalHtmlSupport.disallowed' ) || [] );
+		dataFilter.loadAllowedConfig( editor.config.get( 'generalHtmlSupport.allowed' ) || [] );
+		dataFilter.loadDisallowedConfig( editor.config.get( 'generalHtmlSupport.disallowed' ) || [] );
 	}
 
 	/**
@@ -63,7 +42,6 @@ export default class GeneralHtmlSupport extends Plugin {
 	static get requires() {
 		return [
 			DataFilter,
-			DataSchema,
 			CodeBlockHtmlSupport
 		];
 	}
