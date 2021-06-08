@@ -1,5 +1,6 @@
 
-import { ButtonView, LabeledFieldView, createLabeledInputText, View, submitHandler } from 'ckeditor5/src/ui';
+import { ButtonView, FocusCycler, LabeledFieldView, createLabeledInputText, View, submitHandler, ViewCollection } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -30,9 +31,9 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The Replace One button view.
 		 */
-		this.replaceOneButtonView = this._createButton( t( '?' ), 'ck-button-prev', 'submit' );
-		this.replaceOneButtonView.on( 'execute', () => {
-			this.fire( 'replace', { searchText: this.searchText } );
+		this.replaceButtonView = this._createButton( t( '?' ), 'ck-button-prev', 'submit' );
+		this.replaceButtonView.on( 'execute', () => {
+			this.fire( 'replace', { marker: this.marker, replaceText: this.replaceText } );
 		} );
 
 		/**
@@ -61,7 +62,7 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * Replace view config
 		 */
-		this.replaceView = this._createReplaceView( this.replaceAllButtonView, this.replaceOneButtonView, this.replaceInputView );
+		this.replaceView = this._createReplaceView( this.replaceAllButtonView, this.replaceButtonView, this.replaceInputView );
 
 		this.setTemplate( {
 			tag: 'form',
@@ -78,6 +79,51 @@ export default class FindAndReplaceFormView extends View {
 				this.replaceView
 			]
 		} );
+
+		/**
+		 * Tracks information about the DOM focus in the form.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * A collection of views that can be focused in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this._focusables = new ViewCollection();
+
+		/**
+		  * Helps cycling over {@link #_focusables} in the form.
+		  *
+		  * @readonly
+		  * @protected
+		  * @member {module:ui/focuscycler~FocusCycler}
+		  */
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				focusPrevious: 'shift + tab',
+
+				// Navigate form fields forwards using the <kbd>Tab</kbd> key.
+				focusNext: 'tab'
+			}
+		} );
 	}
 
 	render() {
@@ -86,6 +132,52 @@ export default class FindAndReplaceFormView extends View {
 		submitHandler( {
 			view: this
 		} );
+
+		const childViews = [
+			this.findNextButtonView,
+			this.findPrevButtonView,
+			this.findInputView,
+			this.replaceAllButtonView,
+			this.replaceButtonView,
+			this.replaceInputView
+		];
+
+		childViews.forEach( v => {
+			// Register the view as focusable.
+			this._focusables.add( v );
+
+			// Register the view in the focus tracker.
+			this.focusTracker.add( v.element );
+		} );
+
+		// Start listening for the keystrokes coming from #element.
+		this.keystrokes.listenTo( this.element );
+
+		const stopPropagation = data => data.stopPropagation();
+
+		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
+		// keystroke handler would take over the key management in the URL input. We need to prevent
+		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
+		this.keystrokes.set( 'arrowright', stopPropagation );
+		this.keystrokes.set( 'arrowleft', stopPropagation );
+		this.keystrokes.set( 'arrowup', stopPropagation );
+		this.keystrokes.set( 'arrowdown', stopPropagation );
+
+		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
+		// of the DropdownView#panelView.
+		this.listenTo( this.findInputView.element, 'selectstart', ( evt, domEvt ) => {
+			domEvt.stopPropagation();
+		}, { priority: 'high' } );
+		this.listenTo( this.replaceInputView.element, 'selectstart', ( evt, domEvt ) => {
+			domEvt.stopPropagation();
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Focuses the fist {@link #_focusables} in the form.
+	 */
+	focus() {
+		this._focusCycler.focusFirst();
 	}
 
 	/**

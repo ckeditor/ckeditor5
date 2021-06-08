@@ -6,6 +6,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import FindAndReplace from '../src/findandreplace';
+import FindAndReplaceUI from '../src/findandreplaceui';
 
 describe( 'FindAndReplace', () => {
 	// Data with 8 blocks that can contain $text.
@@ -26,16 +27,18 @@ describe( 'FindAndReplace', () => {
 	let findAndReplace;
 	let model;
 	let root;
+	let findAndReplaceUI;
 
 	beforeEach( async () => {
 		editor = await DecoupledEditor.create( '', {
-			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace ]
+			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI ]
 		} );
 
 		model = editor.model;
 		root = model.document.getRoot();
 
 		findAndReplace = editor.plugins.get( 'FindAndReplace' );
+		findAndReplaceUI = editor.plugins.get( 'FindAndReplaceUI' );
 	} );
 
 	afterEach( async () => {
@@ -204,6 +207,51 @@ describe( 'FindAndReplace', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 				'<p>Foo <span class="find-result" data-find-result="test-uid">bar</span> baz</p>'
 			);
+		} );
+	} );
+
+	describe( 'findAndReplaceUI listeners', () => {
+		it( 'should trigger findNext event', () => {
+			const spy = sinon.spy();
+
+			findAndReplaceUI.on( 'findNext', spy );
+
+			findAndReplaceUI.fire( 'findNext', { searchText: 'test' } );
+
+			expect( spy.calledOnce ).to.true;
+		} );
+
+		it( 'should trigger findPrev event', () => {
+			const spy = sinon.spy();
+
+			findAndReplaceUI.on( 'findPrev', spy );
+
+			findAndReplaceUI.fire( 'findPrev', { searchText: 'test' } );
+
+			expect( spy.calledOnce ).to.true;
+		} );
+
+		it( 'should trigger replace event', () => {
+			// TODO: check for possible cleanup of this test
+			const spy = sinon.spy();
+
+			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+			const [ firstResult ] = findAndReplace.find( 'bar' );
+
+			findAndReplaceUI.on( 'replace', spy );
+			findAndReplaceUI.fire( 'replace', { marker: firstResult, replaceText: 'test' } );
+
+			expect( spy.calledOnce ).to.true;
+		} );
+
+		it( 'should trigger replaceAll event', () => {
+			const spy = sinon.spy();
+
+			findAndReplaceUI.on( 'replaceAll', spy );
+
+			findAndReplaceUI.fire( 'replaceAll', { searchText: 'test', replaceText: 'find' } );
+
+			expect( spy.calledOnce ).to.true;
 		} );
 	} );
 
