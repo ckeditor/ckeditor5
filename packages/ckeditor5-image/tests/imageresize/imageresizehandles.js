@@ -129,6 +129,27 @@ describe( 'ImageResizeHandles', () => {
 				expect( resizer.isEnabled ).to.be.false;
 				expect( resizerWrapper.style.display ).to.equal( 'none' );
 			} );
+
+			it( 'removes the image_resized class if the command was overriden and canceled', async () => {
+				// Stub "execute" to override the command like, for instance, Track Changes would.
+				const stub = sinon.stub( editor.commands.get( 'resizeImage' ), 'execute' );
+
+				await setModelAndWaitForImages( editor,
+					`<paragraph>foo</paragraph>[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
+
+				widget = viewDocument.getRoot().getChild( 1 );
+
+				const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
+				const finalPointerPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' ).moveBy( 10, -10 );
+
+				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+
+				expect( stub.calledOnce ).to.be.true;
+				expect( stub.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
+
+				expect( widget.hasClass( 'image_resized' ), 'CSS class' ).to.be.false;
+				expect( widget.hasStyle( 'width' ), 'width style' ).to.be.false;
+			} );
 		} );
 
 		describe( 'side image resizing', () => {
