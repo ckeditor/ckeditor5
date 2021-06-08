@@ -18,9 +18,9 @@ ClassicEditor
 					borderStyle: 'dashed',
 					borderColor: 'hsl(90, 75%, 60%)',
 					borderWidth: '3px',
-					alignment: 'right',
-					width: '500px',
-					height: '250px'
+					alignment: 'left',
+					width: '550px',
+					height: '450px'
 				}
 			},
 			tableCellProperties: {
