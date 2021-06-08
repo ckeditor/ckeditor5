@@ -685,10 +685,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 
 ## Known issues
 
-While the table nesting functionality is fully functional, it is not yet supported with some output features. Feel free to upvote 👍&nbsp; these issues on GitHub if they are important for you:
-
-* [#9474](https://github.com/ckeditor/ckeditor5/issues/9474) &ndash; The `.docx` file generated with the [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) feature will not open properly if it contains nested tables. Due to this, an alert will be shown if you attempt to export a file containing a nested table to Word.
-* [#9475](https://github.com/ckeditor/ckeditor5/issues/9475) &ndash; The Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables.
+While the table nesting functionality is fully functional, the Markdown code generated with the {@link features/autoformat Markdown output} feature will not properly render nested tables ([#9475](https://github.com/ckeditor/ckeditor5/issues/9475)). Feel free to upvote 👍&nbsp; this issue on GitHub if it is important for you.
 
 ## Contribute
 
