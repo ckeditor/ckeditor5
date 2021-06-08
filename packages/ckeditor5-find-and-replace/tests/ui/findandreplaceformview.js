@@ -69,6 +69,20 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( view.replaceInputView.infoText ).to.match( /^Replace what you've previously selected/ );
 			} );
 		} );
+
+		describe( 'template', () => {
+			it( 'has find and replace views', () => {
+				expect( view.template.children[ 0 ] ).to.equal( view.findView );
+				expect( view.template.children[ 1 ] ).to.equal( view.replaceView );
+			} );
+
+			// ?
+			// ? How to check if the general findView has children
+			// ?
+			// it( 'findView has button views', () => {
+			// 	expect( view.findView.template.children[ 0 ] ).to.equal( view.findNextButtonView );
+			// } );
+		} );
 	} );
 
 	describe( 'DOM bindings', () => {
@@ -84,11 +98,18 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 		} );
 
-		// describe( 'findNext event', () => {
+		// describe.only( 'findNext event', () => {
 		// 	it( 'should trigger findNext', () => {
 		// 		const spy = sinon.spy();
 
-		// 		view.on( 'findNext', spy );
+		// 		view.findView.on( 'findNext', spy );
+
+		// 		console.log( view.findView.template.children[0] );
+
+		// 		// this.findNextButtonView.on( 'execute', () => {
+		// 		// 	this.fire( 'findNext', { searchText: this.searchText } );
+		// 		// } );
+		// 		// eslint-disable-next-line no-undef
 		// 		view.element.dispatchEvent( new Event( 'findNext' ) );
 
 		// 		expect( spy.calledOnce ).to.true;
@@ -96,7 +117,10 @@ describe( 'FindAndReplaceFormView', () => {
 		// } );
 	} );
 
-	// describe( 'focus()', () => {
+	// ?
+	// ? Should we add focusCycler to the findandreplaceform as it is implemented in both link and media-embed
+	// ?
+	// describe.only( 'focus()', () => {
 	// 	it( 'focuses the #findInputView', () => {
 	// 		const spy = sinon.spy( view.findInputView, 'focus' );
 

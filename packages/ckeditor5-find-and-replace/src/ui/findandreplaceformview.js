@@ -15,6 +15,9 @@ export default class FindAndReplaceFormView extends View {
 		 * The Find Previous button view.
 		 */
 		this.findPrevButtonView = this._createButton( t( '<' ), 'ck-button-prev', 'submit' );
+		this.findPrevButtonView.on( 'execute', () => {
+			this.fire( 'findPrev', { searchText: this.searchText } );
+		} );
 
 		/**
 		 * The Find Next button view.
@@ -28,6 +31,9 @@ export default class FindAndReplaceFormView extends View {
 		 * The Replace One button view.
 		 */
 		this.replaceOneButtonView = this._createButton( t( '?' ), 'ck-button-prev', 'submit' );
+		this.replaceOneButtonView.on( 'execute', () => {
+			this.fire( 'replace', { searchText: this.searchText } );
+		} );
 
 		/**
 		 * The Replace All button view.

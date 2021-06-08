@@ -35,6 +35,8 @@ export default class FindAndReplaceUI extends Plugin {
 			const formView = new FindAndReplaceFormView( editor.locale );
 
 			formView.delegate( 'findNext' ).to( this );
+			formView.delegate( 'findPrev' ).to( this );
+			formView.delegate( 'replace' ).to( this );
 			formView.delegate( 'replaceAll' ).to( this );
 
 			this._createToolbarDropdown( dropdown );

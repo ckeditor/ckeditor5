@@ -253,6 +253,17 @@ export default class FindAndReplace extends Plugin {
 			this.find( data.searchText );
 		} );
 
+		// // findPrev
+		// ui.on( 'findPrev', ( event, data ) => {
+		// 	console.log( 'findPrev' );
+		// 	console.log( this.find( data.searchText ) );
+		// } );
+
+		// // replace
+		// ui.on( 'replace', ( event, data ) => {
+		// 	console.log( 'replace' );
+		// } );
+
 		// replaceAll
 		ui.on( 'replaceAll', ( event, data ) => {
 			if ( data.searchText.length !== 0 && data.replaceText.length !== 0 ) {
