@@ -76,7 +76,7 @@ describe( 'ImageInlineEditing', () => {
 				isLimit: true
 			} );
 
-			expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'imageInline' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root', 'caption' ], 'imageInline' ) ).to.be.false;
 		} );
 	} );
 
