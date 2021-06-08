@@ -198,7 +198,11 @@ export default class DataFilter extends Plugin {
 	 */
 	_loadConfig( config, handleAttributes ) {
 		for ( const pattern of config ) {
-			this.allowElement( pattern.name );
+			// MatcherPattern allows omitting `name` to not narrow searches to specific elements.
+			// Let's keep it consistent and match every element if a `name` has not been provided.
+			const elementName = pattern.name || /[\s\S]+/;
+
+			this.allowElement( elementName );
 
 			this._splitRules( pattern ).forEach( handleAttributes );
 		}
