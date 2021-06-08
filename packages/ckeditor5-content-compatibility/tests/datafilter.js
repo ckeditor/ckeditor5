@@ -1277,6 +1277,25 @@ describe( 'DataFilter', () => {
 	} );
 
 	describe( 'loadAllowedConfig', () => {
+		it( 'should allow match all elements by ommiting pattern name', () => {
+			dataSchema.registerBlockElement( {
+				model: 'htmlXyz',
+				view: 'xyz',
+				modelSchema: {
+					inheritAllFrom: '$block'
+				}
+			} );
+
+			const config = [ {} ];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData( '<xyz>foobar</xyz>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foobar</htmlXyz>' );
+			expect( editor.getData() ).to.equal( '<xyz>foobar</xyz>' );
+		} );
+
 		it( 'should load config and match whenever a single match has been found', () => {
 			const config = [
 				{
