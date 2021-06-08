@@ -18,6 +18,8 @@ const RESIZABLE_IMAGES_CSS_SELECTOR = 'figure.image.ck-widget > img,' +
 
 const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /(image|image-inline)/;
 
+const RESIZED_IMAGE_CLASS = 'image_resized';
+
 /**
  * The image resize by handles feature.
  *
@@ -108,14 +110,20 @@ export default class ImageResizeHandles extends Plugin {
 					},
 
 					onCommit( newValue ) {
+						// Get rid of the CSS class in case the command execution that follows is unsuccessful
+						// (e.g. Track Changes can override it and the new dimensions will not apply).
+						editingView.change( writer => {
+							writer.removeClass( RESIZED_IMAGE_CLASS, widgetView );
+						} );
+
 						editor.execute( 'resizeImage', { width: newValue } );
 					}
 				} );
 
 			resizer.on( 'updateSize', () => {
-				if ( !widgetView.hasClass( 'image_resized' ) ) {
+				if ( !widgetView.hasClass( RESIZED_IMAGE_CLASS ) ) {
 					editingView.change( writer => {
-						writer.addClass( 'image_resized', widgetView );
+						writer.addClass( RESIZED_IMAGE_CLASS, widgetView );
 					} );
 				}
 			} );
