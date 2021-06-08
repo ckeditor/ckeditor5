@@ -64,6 +64,15 @@ export default class ImageInlineEditing extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
+		// Disallow inline images in captions (for now). This is the best spot to do that because
+		// independent packages can introduce captions (ImageCaption, TableCaption, etc.) so better this
+		// be future-proof.
+		schema.addChildCheck( ( context, childDefinition ) => {
+			if ( context.endsWith( 'caption' ) && childDefinition.name === 'imageInline' ) {
+				return false;
+			}
+		} );
+
 		this._setupConversion();
 
 		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {

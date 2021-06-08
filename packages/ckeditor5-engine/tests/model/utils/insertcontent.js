@@ -538,6 +538,29 @@ describe( 'DataController utils', () => {
 				expect( stringify( root, affectedRange ) ).to.equal( '[<heading1>bar</heading1>]' );
 			} );
 
+			// https://github.com/ckeditor/ckeditor5/issues/9794
+			it( 'should not insert a disallowed inline widget into a limit element', () => {
+				const schema = model.schema;
+
+				schema.register( 'limit', {
+					isLimit: true,
+					allowIn: '$root'
+				} );
+
+				schema.extend( '$text', {
+					allowIn: 'limit'
+				} );
+
+				const content = new DocumentFragment( [ new Element( 'inlineWidget' ) ] );
+
+				setData( model, '<limit>[]</limit>' );
+
+				const affectedRange = insertContent( model, content );
+
+				expect( getData( model ) ).to.equal( '<limit>[]</limit>' );
+				expect( stringify( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
+			} );
+
 			describe( 'block to block handling', () => {
 				it( 'inserts one paragraph', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
@@ -1372,8 +1395,8 @@ describe( 'DataController utils', () => {
 				// Pasted content is forbidden in current selection.
 				const affectedRange = insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>' );
 
-				expect( getData( model ) ).to.equal( '<wrapper><limit>[]<paragraph></paragraph></limit></wrapper>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit>[]<paragraph></paragraph></limit></wrapper>' );
+				expect( getData( model ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
 			} );
 
 			it( 'should correctly paste allowed nodes', () => {
