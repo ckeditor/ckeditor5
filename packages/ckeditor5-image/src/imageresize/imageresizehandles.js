@@ -111,7 +111,9 @@ export default class ImageResizeHandles extends Plugin {
 
 					onCommit( newValue ) {
 						// Get rid of the CSS class in case the command execution that follows is unsuccessful
-						// (e.g. Track Changes can override it and the new dimensions will not apply).
+						// (e.g. Track Changes can override it and the new dimensions will not apply). Otherwise,
+						// the presence of the class and the absence of the width style will cause it to take 100%
+						// of the horizontal space.
 						editingView.change( writer => {
 							writer.removeClass( RESIZED_IMAGE_CLASS, widgetView );
 						} );
