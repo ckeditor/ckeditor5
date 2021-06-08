@@ -40,7 +40,7 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 
 The {@link module:table/tablecaption~TableCaption} plugin adds support for table captions. These work very much like image captions &mdash; the caption informs the reader about the content of the table. Using captions is also beneficial from the accessability point of view as they would be read by screen readers.
 
-Click on table caption in the demo to edit it or use the table toolbar to toggle the caption on and off.
+Click on the table caption in the demo to edit it or use the table toolbar to toggle the caption on and off.
 
 {@snippet features/table-caption}
 
@@ -339,7 +339,7 @@ The same will be applied for new tables and cells if they are inserted into the 
 
 {@snippet features/table-default-properties}
 
-Read more about all supported properties for the {@link module:table/tableproperties~TablePropertiesOptions table} and {@link module:table/tablecellproperties~TableCellPropertiesOptions table cells} features.
+Read more about all supported properties for the {@link module:table/tableproperties~TablePropertiesOptions table} and {@link module:table/tablecellproperties~TableCellPropertiesOptions table cell} features in their API documentation.
 
 <info-box>
 	The default table and table cell styles **do** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}. Default properties will not be kept in the editor model.

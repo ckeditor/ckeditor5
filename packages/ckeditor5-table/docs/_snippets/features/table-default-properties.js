@@ -39,7 +39,7 @@ ClassicEditor
 				'imageTextAlternative'
 			]
 		},
-		placeholder: 'Insert the new table with applied the default styles.'
+		placeholder: 'Insert the new table with the default styles applied.'
 	} )
 	.then( editor => {
 		window.editorDefaultStyles = editor;
