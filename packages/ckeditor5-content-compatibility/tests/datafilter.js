@@ -1328,7 +1328,7 @@ describe( 'DataFilter', () => {
 			);
 		} );
 
-		it( 'should match all values', () => {
+		it( 'should match all values - across styles, classes and attributes', () => {
 			// Sanity check test for splitting patterns that are not objects nor arrays.
 
 			const config = [
@@ -1381,6 +1381,180 @@ describe( 'DataFilter', () => {
 					'</span>' +
 					'<span data-foo="foo data">foo data</span>' +
 					'<span data-bar="bar data">bar data</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match all values - array of values', () => {
+			const config = [
+				{
+					name: 'span',
+					classes: [ 'foo', 'bar' ]
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span class="foo bar">foo bar</span>' +
+					'<span class="foo">foo</span>' +
+					'<span class="bar">bar</span>' +
+					'<span class="bar baz">bar baz</span>' +
+				'</p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foo bar</$text>' +
+						'<$text htmlSpan="(2)">foo</$text>' +
+						'<$text htmlSpan="(3)">barbar baz</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo', 'bar' ]
+					},
+					2: {
+						classes: [ 'foo' ]
+					},
+					3: {
+						classes: [ 'bar' ]
+					},
+					4: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span class="foo bar">foo bar</span>' +
+					'<span class="foo">foo</span>' +
+					'<span class="bar">barbar baz</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match all values - array of objects', () => {
+			const config = [
+				{
+					name: 'span',
+					styles: [
+						{ key: 'position', value: true },
+						{ key: 'visibility', value: true }
+					]
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="position: absolute; visibility: hidden;">foo bar</span>' +
+					'<span style="position: absolute;">foo</span>' +
+					'<span style="visibility: hidden;">bar</span>' +
+					'<span style="visibility: hidden; margin-left: 1px;">bar baz</span>' +
+				'</p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foo bar</$text>' +
+						'<$text htmlSpan="(2)">foo</$text>' +
+						'<$text htmlSpan="(3)">barbar baz</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							position: 'absolute',
+							visibility: 'hidden'
+						}
+					},
+					2: {
+						styles: {
+							position: 'absolute'
+						}
+					},
+					3: {
+						styles: {
+							visibility: 'hidden'
+						}
+					},
+					4: {
+						styles: {
+							visibility: 'hidden'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="position:absolute;visibility:hidden;">foo bar</span>' +
+					'<span style="position:absolute;">foo</span>' +
+					'<span style="visibility:hidden;">barbar baz</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should match all values - object', () => {
+			const config = [
+				{
+					name: 'span',
+					styles: {
+						position: true,
+						visibility: true
+					}
+				}
+			];
+
+			dataFilter.loadAllowedConfig( config );
+
+			editor.setData(
+				'<p>' +
+					'<span style="position: absolute; visibility: hidden;">foo bar</span>' +
+					'<span style="position: absolute;">foo</span>' +
+					'<span style="visibility: hidden;">bar</span>' +
+					'<span style="visibility: hidden; margin-left: 1px;">bar baz</span>' +
+				'</p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<$text htmlSpan="(1)">foo bar</$text>' +
+						'<$text htmlSpan="(2)">foo</$text>' +
+						'<$text htmlSpan="(3)">barbar baz</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							position: 'absolute',
+							visibility: 'hidden'
+						}
+					},
+					2: {
+						styles: {
+							position: 'absolute'
+						}
+					},
+					3: {
+						styles: {
+							visibility: 'hidden'
+						}
+					},
+					4: {
+						styles: {
+							visibility: 'hidden'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="position:absolute;visibility:hidden;">foo bar</span>' +
+					'<span style="position:absolute;">foo</span>' +
+					'<span style="visibility:hidden;">barbar baz</span>' +
 				'</p>'
 			);
 		} );

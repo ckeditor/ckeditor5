@@ -11,7 +11,7 @@ import DataSchema from './dataschema';
 
 import { Plugin } from 'ckeditor5/src/core';
 import { Matcher } from 'ckeditor5/src/engine';
-import { priorities, toArray, CKEditorError } from 'ckeditor5/src/utils';
+import { priorities, CKEditorError } from 'ckeditor5/src/utils';
 import { Widget } from 'ckeditor5/src/widget';
 import {
 	disallowedAttributesConverter,
