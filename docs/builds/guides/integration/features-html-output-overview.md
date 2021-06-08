@@ -101,7 +101,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>$block</strong> <strong>style</strong>="text-align:*"&gt;</code>
 				<p>
-					By default, the alignment is set inline using <code>text-align</code> CSS property.
+					By default, the alignment feature uses the <code>text-align</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -109,7 +109,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>$block</strong> <strong>class</strong>="*"&gt;</code>
 				<p>
-					If class names are defined in <code>config.alignment.options</code>, then these classes are used for alignment instead of inline styles.
+					If <code>config.alignment.options</code> is set, then these classes are used for alignment instead of inline styles.
 				</p>
 			</td>
 		</tr>
@@ -220,7 +220,7 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 			<td class="html-output">
-				<code>&lt;<strong>code</strong> <strong>class</strong>="ck-code_selected"&gt;</code>
+				<code>&lt;<strong>code</strong>&gt;</code>
 			</td>
 		</tr>
 		<tr>
@@ -654,7 +654,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>class</strong>="text-tiny text-small text-big text-huge"&gt;</code>
 				<p>
-					If the configuration <code>config.fontSize.options</code> is not set or it contains predefined named presets, then the font size is configured by the class name.
+					If the <code>config.fontSize.options</code> option is not set or it contains predefined named presets, then the feature uses class names.
 				</p>
 			</td>
 		</tr>
@@ -662,7 +662,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>style</strong>="font-size:*"&gt;</code>
 				<p>
-					If the configuration <code>config.fontSize.options</code> contains numerical values, the font size is configured inline using the <code>font-size</code> CSS property.
+					If the <code>config.fontSize.options</code> option contains numerical values, then the font size feature uses the <code>font-size</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -686,7 +686,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>style</strong>="font-family:*"&gt;</code>
 				<p>
-					By default, the font family is configured inline using the <code>font-family</code> CSS property.
+					By default, the font family feature uses the <code>font-family</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -694,7 +694,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>&gt;</code>
 				<p>
-					The plugin can be configured to return any element with any classes and any custom inline styles.
+					The plugin can be configured to return any element with any classes and any inline styles.
 				</p>
 			</td>
 		</tr>
@@ -739,7 +739,7 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 			<td class="html-output">
-				<code>&lt;<strong>h1</strong>&gt;</code><code>&lt;<strong>h2</strong>&gt;</code><code>&lt;<strong>h3</strong>&gt;</code><code>&lt;<strong>h4</strong>&gt;</code>
+				<code>&lt;<strong>h2</strong>&gt;</code><code>&lt;<strong>h3</strong>&gt;</code><code>&lt;<strong>h4</strong>&gt;</code>
 				<p>
 					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
@@ -845,7 +845,7 @@ The data used to generate the following tables comes from the package metadata. 
 	</thead>
 	<tbody>
 		<tr>
-			<td class="plugin">
+			<td class="plugin" rowspan="2">
 				<p>
 					<a href="../../../features/html-embed.html">HTML embed</a>
 				</p>
@@ -855,6 +855,14 @@ The data used to generate the following tables comes from the package metadata. 
 			</td>
 			<td class="html-output">
 				<code>&lt;<strong>div</strong> <strong>class</strong>="raw-html-embed"&gt;</code>
+			</td>
+		</tr>
+		<tr>
+			<td class="html-output">
+				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>&gt;</code>
+				<p>
+					The plugin can output any arbitrary HTML provided by the user. That HTML is always wrapped with a <code>&lt;div class="raw-html-embed"&gt;</code> element.
+				</p>
 			</td>
 		</tr>
 	</tbody>
@@ -1332,18 +1340,24 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong> <strong>url</strong>="*"&gt;</code>
 				<p>
-					If preview configuration <code>config.mediaEmbed.previewsInData</code> is turned off, the plugin can be configured to return any element name specified by <code>config.mediaEmbed.elementName</code>.
+					If <code>config.mediaEmbed.previewsInData</code> is turned off, the plugin can be configured to return any element name specified by <code>config.mediaEmbed.elementName</code>.
 				</p>
 			</td>
 		</tr>
 		<tr>
 			<td class="html-output">
 				<code>&lt;<strong>div</strong> <strong>style</strong>="height:*; padding-bottom:*; position:*"&gt;</code>
+				<p>
+					If <code>config.mediaEmbed.previewsInData</code> is turned on, the media preview is displayed in the view.
+				</p>
 			</td>
 		</tr>
 		<tr>
 			<td class="html-output">
 				<code>&lt;<strong>iframe</strong><br>    <strong>style</strong>="height:*; left:*; position:*; top:*; width:*"<br>    <strong>*allow*</strong>="*"<br>    <strong>frameborder</strong>="*"<br>    <strong>src</strong>="*"<br>&gt;</code>
+				<p>
+					If <code>config.mediaEmbed.previewsInData</code> is turned on, the media preview is displayed in the view.
+				</p>
 			</td>
 		</tr>
 		<tr>
@@ -1465,6 +1479,9 @@ The data used to generate the following tables comes from the package metadata. 
 			</td>
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>style</strong>="page-break-before:*"<br>    <strong>data-pagination-page</strong>="*"<br>&gt;</code>
+				<p>
+					When using <code>editor.getData( { pagination: true } )</code>. Otherwise, no additional elements are generated.
+				</p>
 			</td>
 		</tr>
 	</tbody>
@@ -1899,6 +1916,19 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/table.html#table-caption">Table caption</a>
+				</p>
+				<p>
+					<a href="../../../api/module_table_tablecaption-TableCaption.html"><code>TableCaption</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>figcaption</strong> <strong>data-placeholder</strong>="*"&gt;</code>
+			</td>
+		</tr>
 	</tbody>
 </table>
 <h3 id="ckeditor5-track-changes"><code>ckeditor5-track-changes</code></h3>
@@ -2142,7 +2172,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong> <strong>*</strong>="*"&gt;</code>
 				<p>
-					For a complete list of available element and attribute names, visit <a href="https://developer.mozilla.org/en-US/docs/Web/MathML" target="_blank" rel="noopener">MDN Web Docs</a>.
+					For a complete list of available MathML element and attribute names, visit <a href="https://developer.mozilla.org/en-US/docs/Web/MathML" target="_blank" rel="noopener">MDN Web Docs for MathML</a>.
 				</p>
 			</td>
 		</tr>

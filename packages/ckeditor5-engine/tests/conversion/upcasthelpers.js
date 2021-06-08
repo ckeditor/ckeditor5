@@ -1012,7 +1012,8 @@ describe( 'UpcastHelpers', () => {
 					expect( conversionApi.writer ).to.instanceof( Writer );
 
 					return 'group:' + name.split( '_' )[ 0 ];
-				} } );
+				}
+			} );
 
 			expectResult(
 				viewParse(
@@ -1044,10 +1045,30 @@ describe( 'UpcastHelpers', () => {
 			expectResult(
 				viewParse( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
 				'<paragraph>Foo</paragraph>',
-				[
-					{ name: 'group:foo', start: [ 0 ], end: [ 1 ] }
-				]
+				{ name: 'group:foo', start: [ 0 ], end: [ 1 ] }
 			);
+		} );
+
+		it( 'should not invoke conversion API when the attributes are not consumable', () => {
+			upcastHelpers.dataToMarker( { view: 'fake' } );
+
+			let conversionConsumeSpy = sinon.spy();
+
+			upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
+				conversionConsumeSpy = sinon.spy( conversionApi.consumable, 'consume' );
+			} );
+
+			expectResult(
+				viewParse( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
+				'<paragraph>Foo</paragraph>',
+				[]
+			);
+
+			for ( const consumeCall of conversionConsumeSpy.getCalls() ) {
+				if ( consumeCall.args[ 1 ] ) {
+					expect( consumeCall.args[ 1 ] ).to.not.have.property( 'attributes' );
+				}
+			}
 		} );
 	} );
 
