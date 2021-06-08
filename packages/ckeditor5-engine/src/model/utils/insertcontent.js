@@ -759,11 +759,6 @@ class Insertion {
 		}
 
 		while ( allowedIn != this.position.parent ) {
-			// If a parent which we'd need to leave is a limit element, break.
-			if ( this.schema.isLimit( this.position.parent ) ) {
-				return false;
-			}
-
 			if ( this.position.isAtStart ) {
 				// If insertion position is at the beginning of the parent, move it out instead of splitting.
 				// <p>^Foo</p> -> ^<p>Foo</p>
@@ -824,10 +819,6 @@ class Insertion {
 			return null;
 		}
 
-		if ( contextElement.parent ) {
-			return this._getAllowedIn( contextElement.parent, childNode );
-		}
-
-		return null;
+		return this._getAllowedIn( contextElement.parent, childNode );
 	}
 }
