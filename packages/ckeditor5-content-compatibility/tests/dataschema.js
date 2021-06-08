@@ -14,11 +14,13 @@ describe( 'DataSchema', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor
-			.create()
+			.create( {
+				plugins: [ DataSchema ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
 
-				dataSchema = new DataSchema();
+				dataSchema = editor.plugins.get( DataSchema );
 			} );
 	} );
 
