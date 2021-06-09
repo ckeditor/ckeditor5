@@ -19,6 +19,20 @@ import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
  */
 export default class CodeBlockCommand extends Command {
 	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * TODO
+		 * @protected
+		 * @type {String|null}
+		 */
+		this._lastLanguage = null;
+	}
+
+	/**
 	 * Whether the selection starts in a code block.
 	 *
 	 * @observable
@@ -41,8 +55,10 @@ export default class CodeBlockCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Command options.
+	 * @param {String|null} [options.language] TODO.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
+	 * @param {Boolean} [options.usePreviousLanguageChoice=false] TODO.
 	 */
 	execute( options = {} ) {
 		const editor = this.editor;
@@ -53,8 +69,7 @@ export default class CodeBlockCommand extends Command {
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
-		const lastLanguageEnabled = options.usePreviousLanguageChoice && options.lastLanguage;
-		const language = lastLanguageEnabled ? options.lastLanguage : options.language || firstLanguageInConfig.language;
+		const language = getLanguage( options, this._lastLanguage, firstLanguageInConfig.language );
 
 		model.change( writer => {
 			if ( value ) {
@@ -109,6 +124,9 @@ export default class CodeBlockCommand extends Command {
 	 * @param {String} [language]
 	 */
 	_applyCodeBlock( writer, blocks, language ) {
+		// TODO: Make sure it's proper place.
+		this._lastLanguage = language;
+
 		const schema = this.editor.model.schema;
 		const allowedBlocks = blocks.filter( block => canBeCodeBlock( schema, block ) );
 
@@ -166,4 +184,24 @@ function canBeCodeBlock( schema, element ) {
 	}
 
 	return schema.checkChild( element.parent, 'codeBlock' );
+}
+
+// TODO: Docs
+//
+// @param {Object} options
+// @param {Boolean} [options.usePreviousLanguageChoice]
+// @param {String} [options.language]
+// @param {String|null} lastLanguage
+// @param {String} defaultLanguage
+// @return {String}
+function getLanguage( options, lastLanguage, defaultLanguage ) {
+	if ( options.usePreviousLanguageChoice && lastLanguage ) {
+		return lastLanguage;
+	}
+
+	if ( options.language ) {
+		return options.language;
+	}
+
+	return defaultLanguage;
 }

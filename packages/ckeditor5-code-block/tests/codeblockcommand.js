@@ -276,6 +276,44 @@ describe( 'CodeBlockCommand', () => {
 				'<codeBlock language="plaintext">[FooBar<softBreak></softBreak>Baz]</codeBlock>'
 			);
 		} );
+
+		describe( 'options.usePreviousLanguageChoice=true', () => {
+			it( 'it should remember the selected language', () => {
+				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				command.execute( { language: 'php' } );
+
+				expect( command._lastLanguage ).to.equal( 'php' );
+			} );
+
+			it( 'it should apply the previous language if specified', () => {
+				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				command._lastLanguage = 'css';
+
+				command.execute( { usePreviousLanguageChoice: true } );
+
+				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">fo[]o</codeBlock>' );
+			} );
+
+			it( 'it should not apply the previous language if specified but usePreviousLanguageChoice=false', () => {
+				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				command._lastLanguage = 'css';
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
+			} );
+
+			it( 'it should apply the default language when the last language is not set yet', () => {
+				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				command.execute( { usePreviousLanguageChoice: true } );
+
+				expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
+			} );
+		} );
 	} );
 
 	describe( 'BlockQuote integration', () => {

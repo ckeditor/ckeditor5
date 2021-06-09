@@ -219,7 +219,8 @@ describe( 'CodeBlockUI', () => {
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledOnce( focusSpy );
 				sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
-					language: 'plaintext'
+					language: 'plaintext',
+					usePreviousLanguageChoice: true
 				} );
 			} );
 		} );
