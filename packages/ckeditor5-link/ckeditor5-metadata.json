@@ -3,7 +3,7 @@
 		{
 			"name": "Autolink",
 			"className": "AutoLink",
-			"description": "Automatically turns plain links in the document into active URLs as you write. Works for emails, too.",
+			"description": "This feature automatically turns plain text links in the document into active URLs as you write. Works for emails, too.",
 			"docs": "features/link.html#autolink-feature",
 			"path": "src/autolink.js",
 			"requires": [

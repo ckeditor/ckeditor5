@@ -3,7 +3,7 @@
 		{
 			"name": "Title",
 			"className": "Title",
-			"description": "Enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of the document.",
+			"description": "This package enables the support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of the document.",
 			"docs": "features/title.html",
 			"path": "src/title.js",
 			"htmlOutput": [

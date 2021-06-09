@@ -3,7 +3,7 @@
 		{
 			"name": "Font background color",
 			"className": "FontBackgroundColor",
-			"description": "Introduces font background color support with a configurable color palette panel.",
+			"description": "This package introduces the font background color support with a configurable color palette panel.",
 			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
 			"path": "src/fontbackgroundcolor.js",
 			"uiComponents": [
