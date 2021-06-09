@@ -25,7 +25,7 @@ export default class CodeBlockCommand extends Command {
 		super( editor );
 
 		/**
-		 * TODO
+		 * Remebers what language the last code block was created in.
 		 * @protected
 		 * @type {String|null}
 		 */
@@ -124,7 +124,6 @@ export default class CodeBlockCommand extends Command {
 	 * @param {String} [language]
 	 */
 	_applyCodeBlock( writer, blocks, language ) {
-		// TODO: Make sure it's proper place.
 		this._lastLanguage = language;
 
 		const schema = this.editor.model.schema;
@@ -186,7 +185,10 @@ function canBeCodeBlock( schema, element ) {
 	return schema.checkChild( element.parent, 'codeBlock' );
 }
 
-// TODO: Docs
+// Picks the language for the new code block. If option usePreviousLanguageChoice
+// is true and some code block was already created (lastLanguage is not null) then previously
+// used language will be returned. Else, it will see if any language is passed as an option
+// and return that. If not, it will return default language.
 //
 // @param {Object} options
 // @param {Boolean} [options.usePreviousLanguageChoice]
