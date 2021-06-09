@@ -208,7 +208,7 @@ describe( 'CodeBlockUI', () => {
 				expect( button ).to.have.property( 'isOn', true );
 			} );
 
-			it( 'should execute the command with the first configured language', () => {
+			it( 'should execute the command with the "usePreviousLanguageChoice" option set to "true"', () => {
 				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
 				const button = dropdown.buttonView;
 				const executeSpy = sinon.stub( editor, 'execute' );
@@ -219,35 +219,7 @@ describe( 'CodeBlockUI', () => {
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledOnce( focusSpy );
 				sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
-					language: 'plaintext',
 					usePreviousLanguageChoice: true
-				} );
-			} );
-
-			describe( 'integration with "usePreviousLanguageChoice=true"', () => {
-				it( 'should create second code block with the same language as the first one', () => {
-					const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
-					const button = dropdown.buttonView;
-					const executeSpy = sinon.stub( editor, 'execute' );
-					const listView = dropdown.panelView.children.first;
-					const cSharpButton = listView.items.get( 2 ).children.first;
-
-					expect( cSharpButton.label ).to.equal( 'C#' );
-
-					// Dropdown call - using the dropdown to select language and create code block.
-					cSharpButton.fire( 'execute' );
-
-					// Executing the `codeBlock` command when selection is inside the `<codeBlock>`, removes it.
-					button.fire( 'execute' );
-
-					// Executing it once again should create the code block the C# language instead of the default (plaintext).
-					button.fire( 'execute' );
-
-					sinon.expect( executeSpy.callCount ).to.equal( 3 );
-					sinon.assert.calledWithExactly( executeSpy.thirdCall, 'codeBlock', {
-						language: 'C#',
-						usePreviousLanguageChoice: true
-					} );
 				} );
 			} );
 		} );
