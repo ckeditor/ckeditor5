@@ -272,10 +272,10 @@ export default class FindAndReplace extends Plugin {
 
 		// replaceAll
 		ui.on( 'replaceAll', ( event, data ) => {
-			// TODO: It needs to check if we have any active results.
-			if ( data.searchText.length !== 0 && data.replaceText.length !== 0 ) {
-				this.replaceAll( data.replaceText );
+			if ( data.searchText.length === 0 || data.replaceText.length === 0 ) {
+				return;
 			}
+			this.replaceAll( data.replaceText );
 		} );
 
 		setupSelectedResultHighlighting( this.editor );

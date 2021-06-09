@@ -31,7 +31,7 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The Replace One button view.
 		 */
-		this.replaceButtonView = this._createButton( t( '?' ), 'ck-button-prev', 'submit' );
+		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-prev', 'submit' );
 		this.replaceButtonView.on( 'execute', () => {
 			this.fire( 'replace', { marker: this.marker, replaceText: this.replaceText } );
 		} );
@@ -39,7 +39,7 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The Replace All button view.
 		 */
-		this.replaceAllButtonView = this._createButton( t( 'REPLACE' ), 'ck-button-next', 'submit' );
+		this.replaceAllButtonView = this._createButton( t( 'ReplaceAll' ), 'ck-button-next', 'submit' );
 		this.replaceAllButtonView.on( 'execute', () => {
 			this.fire( 'replaceAll', { replaceText: this.replaceText, searchText: this.searchText } );
 		} );
@@ -134,12 +134,12 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		const childViews = [
-			this.findNextButtonView,
-			this.findPrevButtonView,
 			this.findInputView,
-			this.replaceAllButtonView,
+			this.findPrevButtonView,
+			this.findNextButtonView,
+			this.replaceInputView,
 			this.replaceButtonView,
-			this.replaceInputView
+			this.replaceAllButtonView
 		];
 
 		childViews.forEach( v => {
