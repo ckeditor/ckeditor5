@@ -906,9 +906,13 @@ function insertStructure( elementCreator ) {
 		// TODO throw error if old view is still there?
 		if ( data.reconversion ) {
 			for ( const element of elements ) {
+				const positionBefore = ModelPosition._createBefore( element );
 				let currentView = mapper.toViewElement( element );
 
-				currentMapping.set( element, currentView );
+				// Do not save the view element of newly inserted element (it could be from rename).
+				if ( !data.related.some( entry => entry.type == 'insert' && entry.position.isEqual( positionBefore ) ) ) {
+					currentMapping.set( element, currentView );
+				}
 
 				while ( mapper.toModelElement( currentView ) === element ) {
 					const parentView = currentView.parent;
@@ -1937,7 +1941,7 @@ function createMagicHandler( config, auxData = null ) {
 				return;
 			}
 
-			evt.return = { ...auxData, ...data };
+			evt.return = { ...auxData, type: 'range', ...data };
 			evt.stop();
 		};
 	}
@@ -1961,9 +1965,7 @@ function createMagicHandler( config, auxData = null ) {
 			}
 		}
 
-		evt.return = {
-			...auxData,
-			range: ModelRange._createOn( element ) };
+		evt.return = { ...auxData, type: 'reconvert', element };
 		evt.stop();
 	};
 }

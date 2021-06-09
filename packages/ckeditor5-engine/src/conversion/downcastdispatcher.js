@@ -147,7 +147,9 @@ export default class DowncastDispatcher {
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type === 'reconvert' ) {
-				this.reconvertRange( entry.range, entry, writer );
+				this.reconvertElement( entry.element, entry.related, writer );
+			} else if ( entry.type === 'range' ) {
+				this.convertRange( entry.range, entry, writer );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -256,7 +258,29 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/element~Element} element The element to be reconverted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	reconvertRange( range, data, writer ) {
+	reconvertElement( element, relatedChanges, writer ) {
+		const elementRange = Range._createOn( element );
+
+		this.conversionApi.writer = writer;
+
+		// Create a list of things that can be consumed, consisting of nodes and their attributes.
+		this.conversionApi.consumable = this._createInsertConsumable( elementRange );
+
+		// Trigger conversion for the element itself and it's attributes (but without children).
+		this._convertInsertWithAttributes( {
+			item: element,
+			range: elementRange,
+			reconversion: true,
+			related: relatedChanges
+		} );
+
+		this._clearConversionApi();
+	}
+
+	/**
+	 * TODO
+	 */
+	convertRange( range, data, writer ) {
 		const mapper = this.conversionApi.mapper;
 
 		this.conversionApi.writer = writer;
@@ -266,33 +290,14 @@ export default class DowncastDispatcher {
 
 		const elements = Array.from( range.getItems( { shallow: true } ) );
 
-		if ( data.magicUid ) {
-			if ( elements.length ) {
-				// Trigger single insert for magic conversion.
-				this.fire( 'magic:' + data.magicUid, {
-					...data,
-					reconversion: !!mapper.toViewElement( elements[ 0 ] )
-				}, this.conversionApi );
-			} else {
-				// If the range is empty then it's a trigger for removing down-casted structure.
-				this.fire( 'remove', {
-					position: range.start,
-					length: data.length
-				}, this.conversionApi );
-			}
-		}
+		// Trigger single insert for magic conversion.
+		this.fire( 'magic:' + data.magicUid, {
+			...data,
+			reconversion: !!mapper.toViewElement( elements[ 0 ] ) // TODO is this needed?
+		}, this.conversionApi );
 
 		// Convert the element - without converting children.
 		for ( const element of elements ) {
-			// TODO temporary for elementToElement with triggerBy
-			if ( !data.magicUid ) {
-				this._testAndFire( 'insert', {
-					...data,
-					item: range.start.nodeAfter,
-					reconversion: !!mapper.toViewElement( element )
-				} );
-			}
-
 			// TODO this is extracted from _convertInsertWithAttributes
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
@@ -576,7 +581,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Returns differ changes together with added "reconvert" type changes for {@link #reconvertRange}. These are defined by
+	 * Returns differ changes together with added "reconvert" type changes for {@link #convertRange}. These are defined by
 	 * a the `triggerBy()` configuration for the
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
@@ -611,27 +616,72 @@ export default class DowncastDispatcher {
 			const data = this.fire( 'magicTrigger', entry ); // { range, magicUid }
 
 			if ( data ) {
-				// TODO make sure those are not intersecting.
-				const otherChange = updated.find( entry => (
-					entry.type == 'reconvert' &&
-					entry.range.isEqual( data.range ) &&
-					entry.magicUid == data.magicUid
-				) );
-
-				if ( otherChange ) {
-					// TODO this is used only for remove to count number of removed elements so maybe should be collected only for it?
-					otherChange.length = otherChange.length + entry.length;
+				// Single element reconversion.
+				if ( data.type == 'reconvert' ) {
+					const otherChange = updated.find( entry => (
+						entry.type == data.type &&
+						entry.element &&
+						entry.element == data.element
+					) );
 
 					// Range is already marked for reconversion, so skip this change.
-					continue;
+					if ( otherChange ) {
+						otherChange.related.push( entry );
+					} else {
+						// Add special "reconvert" change.
+						updated.push( {
+							...data,
+							type: data.type,
+							related: [ entry ]
+						} );
+					}
 				}
+				// A range reconversion.
+				else if ( data.type == 'range' ) {
+					// TODO make sure those are not intersecting.
+					const otherChange = updated.find( entry => (
+						entry.type == data.type &&
+						entry.range.isEqual( data.range ) &&
+						entry.magicUid == data.magicUid
+					) );
 
-				// Add special "reconvert" change.
-				updated.push( {
-					...data,
-					type: 'reconvert', // TODO maybe this should be different for remove
-					length: entry.length
-				} );
+					// Range is already marked for reconversion, so skip this change.
+					if ( otherChange ) {
+						otherChange.related.push( entry );
+					} else {
+						// Add special "range" change.
+						updated.push( {
+							...data,
+							type: data.type,
+							related: [ entry ]
+						} );
+					}
+				}
+				// A range removed as a whole.
+				else if ( data.type == 'remove' ) {
+					// TODO make sure those are not intersecting.
+					const otherChange = updated.find( entry => (
+						entry.type == data.type &&
+						entry.range &&
+						entry.range.isEqual( data.range ) &&
+						entry.magicUid == data.magicUid
+					) );
+
+					// Range is already marked for reconversion, so skip this change.
+					if ( otherChange ) {
+						otherChange.length += entry.length;
+					} else {
+						updated.push( {
+							...data,
+							type: data.type,
+							position: data.range.start,
+							length: entry.length
+						} );
+					}
+				} else {
+					// TODO CKEditorError
+					throw new Error( 'invalid type' );
+				}
 			} else {
 				updated.push( entry );
 			}

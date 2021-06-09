@@ -165,7 +165,9 @@ export default class ListEditing extends Plugin {
 						} else if ( nodeAfter && nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
 							element = nodeAfter;
 						} else {
+							// Collapsed range to indicate the deletion of the whole structure that starts at that position.
 							return {
+								type: 'remove',
 								range: editor.model.createRange( diffItem.position )
 							};
 						}
