@@ -60,7 +60,7 @@ export default class WidgetResize extends Plugin {
 		/**
 		 * A map of resizers created using this plugin instance.
 		 *
-		 * @private
+		 * @protected
 		 * @type {Map.<module:engine/view/containerelement~ContainerElement, module:widget/widgetresize/resizer~Resizer>}
 		 */
 		this._resizers = new Map();

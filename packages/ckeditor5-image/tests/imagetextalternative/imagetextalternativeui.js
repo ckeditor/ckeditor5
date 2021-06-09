@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Image from '../../src/image';
 import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
 import ImageTextAlternativeUI from '../../src/imagetextalternative/imagetextalternativeui';
+import ImageCaption from '../../src/imagecaption';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -25,7 +26,7 @@ describe( 'ImageTextAlternativeUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImageTextAlternativeEditing, ImageTextAlternativeUI, Image, Paragraph ]
+				plugins: [ ImageTextAlternativeEditing, ImageTextAlternativeUI, Image, Paragraph, ImageCaption ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -66,7 +67,7 @@ describe( 'ImageTextAlternativeUI', () => {
 		it( 'should show balloon panel on execute', () => {
 			expect( balloon.visibleView ).to.be.null;
 
-			setData( model, '[<image src="" alt="foo bar"></image>]' );
+			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
 
 			button.fire( 'execute' );
 			expect( balloon.visibleView ).to.equal( form );
@@ -80,7 +81,7 @@ describe( 'ImageTextAlternativeUI', () => {
 		it( 'should set alt attribute value to textarea and select it', () => {
 			const spy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
-			setData( model, '[<image src="" alt="foo bar"></image>]' );
+			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
 
 			button.fire( 'execute' );
 			sinon.assert.calledOnce( spy );
@@ -90,7 +91,7 @@ describe( 'ImageTextAlternativeUI', () => {
 		it( 'should set empty text to textarea and select it when there is no alt attribute', () => {
 			const spy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
-			setData( model, '[<image src=""></image>]' );
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			button.fire( 'execute' );
 			sinon.assert.calledOnce( spy );
@@ -103,7 +104,7 @@ describe( 'ImageTextAlternativeUI', () => {
 			const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
 			const selectSpy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
-			setData( model, '[<image src="" alt="foo bar"></image>]' );
+			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
 
 			button.fire( 'execute' );
 
@@ -123,7 +124,7 @@ describe( 'ImageTextAlternativeUI', () => {
 			form.labeledInput.fieldView.element.value = 'This value was canceled.';
 
 			// Mock the user editing the same image once again.
-			setData( model, '[<image src="" alt="foo"></image>]' );
+			setData( model, '[<imageBlock src="" alt="foo"></imageBlock>]' );
 
 			button.fire( 'execute' );
 			expect( form.labeledInput.fieldView.element.value ).to.equal( 'foo' );
@@ -142,7 +143,7 @@ describe( 'ImageTextAlternativeUI', () => {
 		it( 'should hide the panel on cancel and focus the editing view', () => {
 			const spy = sinon.spy( editor.editing.view, 'focus' );
 
-			setData( model, '[<image src="" alt="foo bar"></image>]' );
+			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
 
 			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
 			expect( balloon.visibleView ).to.equal( form );
@@ -153,7 +154,7 @@ describe( 'ImageTextAlternativeUI', () => {
 		} );
 
 		it( 'should not engage when the form is in the balloon yet invisible', () => {
-			setData( model, '[<image src=""></image>]' );
+			setData( model, '[<imageBlock src=""></imageBlock>]' );
 			button.fire( 'execute' );
 			expect( balloon.visibleView ).to.equal( form );
 
@@ -175,7 +176,7 @@ describe( 'ImageTextAlternativeUI', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/1501
 		it( 'should blur url input element before hiding the view', () => {
-			setData( model, '[<image src="" alt="foo bar"></image>]' );
+			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
 
 			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
 
@@ -191,7 +192,7 @@ describe( 'ImageTextAlternativeUI', () => {
 
 		// https://github.com/ckeditor/ckeditor5-image/issues/299
 		it( 'should not blur url input element before hiding the view when view was not focused', () => {
-			setData( model, '[<image src="" alt="foo bar"></image>]' );
+			setData( model, '[<imageBlock src="" alt="foo bar"></imageBlock>]' );
 
 			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
 
@@ -205,7 +206,7 @@ describe( 'ImageTextAlternativeUI', () => {
 		} );
 
 		it( 'should be removed from balloon when is in not visible stack', () => {
-			setData( model, '<paragraph>foo</paragraph>[<image src="" alt="foo bar"></image>]' );
+			setData( model, '<paragraph>foo</paragraph>[<imageBlock src="" alt="foo bar"></imageBlock>]' );
 
 			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
 
@@ -230,7 +231,7 @@ describe( 'ImageTextAlternativeUI', () => {
 
 		describe( 'integration with the editor selection (ui#update event)', () => {
 			it( 'should re-position the form', () => {
-				setData( model, '[<image src=""></image>]' );
+				setData( model, '[<imageBlock src=""></imageBlock>]' );
 				button.fire( 'execute' );
 
 				const spy = sinon.spy( balloon, 'updatePosition' );
@@ -240,7 +241,7 @@ describe( 'ImageTextAlternativeUI', () => {
 			} );
 
 			it( 'should hide the form and focus editable when image widget has been removed by external change', () => {
-				setData( model, '[<image src=""></image>]' );
+				setData( model, '[<imageBlock src=""></imageBlock>]' );
 				button.fire( 'execute' );
 
 				const removeSpy = sinon.spy( balloon, 'remove' );
@@ -253,6 +254,15 @@ describe( 'ImageTextAlternativeUI', () => {
 				sinon.assert.calledWithExactly( removeSpy, form );
 				sinon.assert.calledOnce( focusSpy );
 			} );
+
+			it( 'should not hide the form when the selection is moved to a block image caption', () => {
+				setData( model, '<imageBlock src=""><caption>[]</caption></imageBlock>' );
+				button.fire( 'execute' );
+
+				editor.ui.fire( 'update' );
+
+				expect( balloon.visibleView ).to.be.an.instanceOf( View );
+			} );
 		} );
 
 		describe( 'close listeners', () => {
@@ -261,7 +271,7 @@ describe( 'ImageTextAlternativeUI', () => {
 					const hideSpy = sinon.spy( plugin, '_hideForm' );
 					const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
-					setData( model, '[<image src=""></image>]' );
+					setData( model, '[<imageBlock src=""></imageBlock>]' );
 					button.fire( 'execute' );
 
 					const keyEvtData = {
@@ -282,7 +292,7 @@ describe( 'ImageTextAlternativeUI', () => {
 					const hideSpy = sinon.spy( plugin, '_hideForm' );
 					const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
-					setData( model, '[<image src=""></image>]' );
+					setData( model, '[<imageBlock src=""></imageBlock>]' );
 					button.fire( 'execute' );
 
 					global.document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
@@ -293,7 +303,7 @@ describe( 'ImageTextAlternativeUI', () => {
 				it( 'should not close on click inside the panel', () => {
 					const spy = sinon.spy( plugin, '_hideForm' );
 
-					setData( model, '[<image src=""></image>]' );
+					setData( model, '[<imageBlock src=""></imageBlock>]' );
 					button.fire( 'execute' );
 
 					form.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );

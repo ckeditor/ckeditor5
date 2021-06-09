@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, Worker, setTimeout, ClassicEditor, CS_CONFIG */
+/* globals console, window, document, ClassicEditor, CS_CONFIG */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-link-decorators' ), {
@@ -31,27 +31,12 @@ ClassicEditor
 		window.editors.decorators = editor;
 
 		const outputElement = document.querySelector( '#output-link-decorators' );
-		const worker = new Worker( window.umberto.relativeAppPath + '/highlight.worker.js' );
 
-		worker.addEventListener( 'message', evt => {
-			const data = JSON.parse( evt.data );
-
-			outputElement.innerHTML = data.payload;
-		} );
+		outputElement.innerHTML = window.Prism.highlight( editor.getData(), window.Prism.languages.html, 'html' );
 
 		editor.model.document.on( 'change', () => {
-			worker.postMessage( JSON.stringify( {
-				payload: editor.getData(),
-				language: 'html'
-			} ) );
+			outputElement.innerHTML = window.Prism.highlight( editor.getData(), window.Prism.languages.html, 'html' );
 		} );
-
-		setTimeout( () => {
-			worker.postMessage( JSON.stringify( {
-				payload: editor.getData(),
-				language: 'html'
-			} ) );
-		}, 500 );
 	} )
 	.catch( err => {
 		console.error( err.stack );

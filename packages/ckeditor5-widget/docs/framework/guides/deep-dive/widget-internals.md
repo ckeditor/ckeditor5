@@ -35,7 +35,7 @@ If you only want to customize the type around widget buttons, you can use the sa
 
 ### Disabling the entire feature
 
-Although the {@link module:widget/widgettypearound~WidgetTypeAround `WidgetTypeAround`} plugin is an integral part of the {@link module:widget/widget~Widget widget} subsystem and is loaded by default whenever an editor feature uses widgets (for instance, for {@link features/image images} or {@link features/table tables}), you can still disable it on the fly. Turning off the feature will both hide the widget buttons and disable other behaviors, for instance:
+Although the {@link module:widget/widgettypearound~WidgetTypeAround `WidgetTypeAround`} plugin is an integral part of the {@link module:widget/widget~Widget widget} subsystem and is loaded by default whenever an editor feature uses widgets (for instance, for {@link features/images-overview images} or {@link features/table tables}), you can still disable it on the fly. Turning off the feature will both hide the widget buttons and disable other behaviors, for instance:
 
 * The caret will not be rendered before or after a widget when the user navigates the document using arrow keys.
 * The <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd> keystrokes will no longer insert paragraphs if pressed when a widget is selected.

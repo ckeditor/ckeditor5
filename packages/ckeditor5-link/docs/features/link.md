@@ -11,7 +11,7 @@ After you enable the optional [autolink](#autolink-feature) plugin, typed or pas
 
 ## Demo
 
-You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> to create a new link.
+You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link.
 
 {@snippet features/link}
 
@@ -247,7 +247,7 @@ You can enable automatic linking of URLs typed or pasted into the editor. The {@
 To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
-	Autolink action can always be reverted by the undo feature (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
+	Autolink action can always be reverted by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>).
 </info-box>
 
 {@snippet features/autolink}
@@ -304,7 +304,7 @@ editor.execute( 'link', 'http://example.com', { linkIsExternal: true } );
 editor.execute( 'unlink' );
 ```
 
-The package provides a plugin for {@link module:link/linkimage~LinkImage linking images}. See the {@link features/image#linking-images Linking images} section in the {@link features/image feature guide}.
+The package provides a plugin for {@link module:link/linkimage~LinkImage linking images}. See the {@link features/images-linking Linking images} section in the {@link features/images-overview feature guide}.
 
 Links are represented in the {@link module:engine/model/model~Model model} using the `linkHref` attribute. [Manual link decorators](#adding-attributes-to-links-using-the-ui-manual-decorators) are represented in the model using text attributes corresponding to their names, as configured in {@link module:link/link~LinkConfig#decorators `config.link.decorators`}.
 

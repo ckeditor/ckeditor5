@@ -31,7 +31,7 @@ describe( 'Operation utils', () => {
 		root._appendChild( [
 			new Text( 'foo' ),
 			new Text( 'bar', { bold: true } ),
-			new Element( 'image', { src: 'img.jpg' } ),
+			new Element( 'imageBlock', { src: 'img.jpg' } ),
 			new Text( 'xyz' )
 		] );
 	} );
@@ -40,19 +40,19 @@ describe( 'Operation utils', () => {
 		it( 'should insert nodes between nodes', () => {
 			utils._insert( Position._createAt( root, 3 ), [ 'xxx', new Element( 'p' ) ] );
 
-			expectData( 'fooxxx<p></p><$text bold="true">bar</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'fooxxx<p></p><$text bold="true">bar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should split text node if nodes at inserted at offset inside text node', () => {
 			utils._insert( Position._createAt( root, 5 ), new Element( 'p' ) );
 
-			expectData( 'foo<$text bold="true">ba</$text><p></p><$text bold="true">r</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'foo<$text bold="true">ba</$text><p></p><$text bold="true">r</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
 			utils._insert( Position._createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
 
-			expectData( 'foo<$text bold="true">xxxbar</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'foo<$text bold="true">xxxbar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 	} );
 
@@ -61,14 +61,14 @@ describe( 'Operation utils', () => {
 			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
 			utils._remove( range );
 
-			expectData( 'foo<image src="img.jpg"></image>xyz' );
+			expectData( 'foo<imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should split text node if range starts or ends inside text node', () => {
 			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 5 ) );
 			utils._remove( range );
 
-			expectData( 'f<$text bold="true">r</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'f<$text bold="true">r</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
@@ -91,14 +91,14 @@ describe( 'Operation utils', () => {
 			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
 			utils._move( range, Position._createAt( root, 0 ) );
 
-			expectData( '<$text bold="true">bar</$text>foo<image src="img.jpg"></image>xyz' );
+			expectData( '<$text bold="true">bar</$text>foo<imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should correctly move if target position is in same element as moved range, but after range', () => {
 			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
 			utils._move( range, Position._createAt( root, 10 ) );
 
-			expectData( 'foo<image src="img.jpg"></image>xyz<$text bold="true">bar</$text>' );
+			expectData( 'foo<imageBlock src="img.jpg"></imageBlock>xyz<$text bold="true">bar</$text>' );
 		} );
 
 		it( 'should throw if given range is not flat', () => {
@@ -113,21 +113,24 @@ describe( 'Operation utils', () => {
 			const range = new Range( Position._createAt( root, 6 ), Position._createAt( root, 8 ) );
 			utils._setAttribute( range, 'newAttr', true );
 
-			expectData( 'foo<$text bold="true">bar</$text><image newAttr="true" src="img.jpg"></image><$text newAttr="true">x</$text>yz' );
+			expectData( 'foo<$text bold="true">bar</$text>' +
+				'<imageBlock newAttr="true" src="img.jpg"></imageBlock>' +
+				'<$text newAttr="true">x</$text>yz'
+			);
 		} );
 
 		it( 'should remove attribute if null was passed as a value', () => {
 			const range = new Range( Position._createAt( root, 6 ), Position._createAt( root, 7 ) );
 			utils._setAttribute( range, 'src', null );
 
-			expectData( 'foo<$text bold="true">bar</$text><image></image>xyz' );
+			expectData( 'foo<$text bold="true">bar</$text><imageBlock></imageBlock>xyz' );
 		} );
 
 		it( 'should merge nodes if possible', () => {
 			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 3 ) );
 			utils._setAttribute( range, 'bold', true );
 
-			expectData( '<$text bold="true">foobar</$text><image src="img.jpg"></image>xyz' );
+			expectData( '<$text bold="true">foobar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 	} );
 } );
@@ -168,7 +171,7 @@ describe( 'normalizeNodes', () => {
 
 	it( 'should accept arrays', () => {
 		const text = new Text( 'foo', { bold: true } );
-		const image = new Element( 'image' );
+		const image = new Element( 'imageBlock' );
 		const nodes = [ 'abc', text, image, 1, 'xyz' ];
 
 		const normalized = utils._normalizeNodes( nodes );
@@ -189,7 +192,7 @@ describe( 'normalizeNodes', () => {
 	it( 'should replace document fragment by the list of it\'s children', () => {
 		const nodes = [
 			new Text( 'foo', { bold: true } ),
-			new DocumentFragment( [ new Text( 'bar', { bold: true } ), new Element( 'image' ) ] ),
+			new DocumentFragment( [ new Text( 'bar', { bold: true } ), new Element( 'imageBlock' ) ] ),
 			'xyz'
 		];
 
@@ -198,7 +201,7 @@ describe( 'normalizeNodes', () => {
 		expect( normalized[ 0 ] ).to.be.instanceof( Text );
 		expect( normalized[ 0 ].getAttribute( 'bold' ) ).to.be.true;
 		expect( normalized[ 0 ].data ).to.equal( 'foobar' );
-		expect( normalized[ 1 ].name ).to.equal( 'image' );
+		expect( normalized[ 1 ].name ).to.equal( 'imageBlock' );
 		expect( normalized[ 2 ].data ).to.equal( 'xyz' );
 	} );
 } );

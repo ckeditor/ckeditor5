@@ -184,7 +184,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( '_removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
-			const frag = new DocumentFragment( [ new Text( 'foobar' ), new Element( 'image' ) ] );
+			const frag = new DocumentFragment( [ new Text( 'foobar' ), new Element( 'imageBlock' ) ] );
 			const removed = frag._removeChildren( 1, 1 );
 
 			expect( frag.childCount ).to.equal( 1 );
@@ -193,16 +193,16 @@ describe( 'DocumentFragment', () => {
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'foobar' );
 
 			expect( removed.length ).to.equal( 1 );
-			expect( removed[ 0 ].name ).to.equal( 'image' );
+			expect( removed[ 0 ].name ).to.equal( 'imageBlock' );
 		} );
 
 		it( 'should remove one child when second parameter is not specified', () => {
-			const frag = new DocumentFragment( [ new Text( 'foo' ), new Element( 'image' ) ] );
+			const frag = new DocumentFragment( [ new Text( 'foo' ), new Element( 'imageBlock' ) ] );
 			const removed = frag._removeChildren( 0 );
 
 			expect( frag.childCount ).to.equal( 1 );
 			expect( frag.maxOffset ).to.equal( 1 );
-			expect( frag.getChild( 0 ).name ).to.equal( 'image' );
+			expect( frag.getChild( 0 ).name ).to.equal( 'imageBlock' );
 
 			expect( removed.length ).to.equal( 1 );
 			expect( removed[ 0 ].data ).to.equal( 'foo' );
@@ -327,7 +327,7 @@ describe( 'DocumentFragment', () => {
 
 		it( 'should return a descendant of this node', () => {
 			const foo = new Text( 'foo' );
-			const image = new Element( 'image' );
+			const image = new Element( 'imageBlock' );
 			const element = new Element( 'elem', [], [
 				new Element( 'elem', [], [
 					foo,

@@ -12,8 +12,8 @@ import { first } from 'ckeditor5/src/utils';
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
- * @param {Object} styles An object containing available styles. See {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}
- * for more details.
+ * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} styles
+ * An array containing available image style options.
  * @returns {Function} A model-to-view attribute converter.
  */
 export function modelToViewStyleAttribute( styles ) {
@@ -23,8 +23,8 @@ export function modelToViewStyleAttribute( styles ) {
 		}
 
 		// Check if there is class name associated with given value.
-		const newStyle = getStyleByName( data.attributeNewValue, styles );
-		const oldStyle = getStyleByName( data.attributeOldValue, styles );
+		const newStyle = getStyleDefinitionByName( data.attributeNewValue, styles );
+		const oldStyle = getStyleDefinitionByName( data.attributeOldValue, styles );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -42,31 +42,39 @@ export function modelToViewStyleAttribute( styles ) {
 /**
  * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles The styles for which the converter is created.
+ * @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition>} styles
+ * Image style options for which the converter is created.
  * @returns {Function} A view-to-model converter.
  */
 export function viewToModelStyleAttribute( styles ) {
 	// Convert only non–default styles.
-	const filteredStyles = styles.filter( style => !style.isDefault );
+	const nonDefaultStyles = {
+		imageInline: styles.filter( style => !style.isDefault && style.modelElements.includes( 'imageInline' ) ),
+		imageBlock: styles.filter( style => !style.isDefault && style.modelElements.includes( 'imageBlock' ) )
+	};
 
 	return ( evt, data, conversionApi ) => {
 		if ( !data.modelRange ) {
 			return;
 		}
 
-		const viewFigureElement = data.viewItem;
+		const viewElement = data.viewItem;
 		const modelImageElement = first( data.modelRange.getItems() );
 
-		// Check if `modelImageElement` exists (see: https://github.com/ckeditor/ckeditor5/issues/8270)
-		// and `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
-		if ( modelImageElement && !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
+		// Check if `modelImageElement` exists (see: #8270, and #9563)...
+		if ( !modelImageElement ) {
 			return;
 		}
 
-		// Convert style one by one.
-		for ( const style of filteredStyles ) {
-			// Try to consume class corresponding with style.
-			if ( conversionApi.consumable.consume( viewFigureElement, { classes: style.className } ) ) {
+		// ...and the `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
+		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
+			return;
+		}
+
+		// Convert styles one by one.
+		for ( const style of nonDefaultStyles[ modelImageElement.name ] ) {
+			// Try to consume class corresponding with the style.
+			if ( conversionApi.consumable.consume( viewElement, { classes: style.className } ) ) {
 				// And convert this style to model attribute.
 				conversionApi.writer.setAttribute( 'imageStyle', style.name, modelImageElement );
 			}
@@ -77,9 +85,9 @@ export function viewToModelStyleAttribute( styles ) {
 // Returns the style with a given `name` from an array of styles.
 //
 // @param {String} name
-// @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat> } styles
-// @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat|undefined}
-function getStyleByName( name, styles ) {
+// @param {Array.<module:image/imagestyle~ImageStyleOptionDefinition> } styles
+// @returns {module:image/imagestyle~ImageStyleOptionDefinition|undefined}
+function getStyleDefinitionByName( name, styles ) {
 	for ( const style of styles ) {
 		if ( style.name === name ) {
 			return style;

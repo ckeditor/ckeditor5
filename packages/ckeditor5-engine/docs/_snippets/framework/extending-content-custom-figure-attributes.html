@@ -1,7 +1,8 @@
 <head>
 	<style>
 		.ck-content figure.table-foo table,
-		.ck-content figure.img-foo {
+		.ck-content figure.img-foo,
+		.ck-content .image-inline.img-foo {
 			border: 2px solid deeppink;
 		}
 	</style>
@@ -10,7 +11,7 @@
 <div id="snippet-custom-figure-attributes">
 	<h2>Image:</h2>
 	<figure class="image">
-		<img alt="bar" class="img-foo" id="img-foo-1" src="%BASE_PATH%/assets/img/fields.jpg">
+		<img alt="bar" class="img-foo" id="img-foo-1" src="%BASE_PATH%/assets/img/fields.jpg" srcset="%BASE_PATH%/assets/img/fields.jpg, %BASE_PATH%/assets/img/fields_2x.jpg 2x">
 		<figcaption>Caption</figcaption>
 	</figure>
 

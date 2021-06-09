@@ -171,16 +171,19 @@ export default class ToolbarView extends View {
 		 * @protected
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
+
+		const isRtl = locale.uiLanguageDirection === 'rtl';
+
 		this._focusCycler = new FocusCycler( {
 			focusables: this.focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate toolbar items backwards using the arrow[left,up] keys.
-				focusPrevious: [ 'arrowleft', 'arrowup' ],
+				focusPrevious: [ isRtl ? 'arrowright' : 'arrowleft', 'arrowup' ],
 
 				// Navigate toolbar items forwards using the arrow[right,down] keys.
-				focusNext: [ 'arrowright', 'arrowdown' ]
+				focusNext: [ isRtl ? 'arrowleft' : 'arrowright', 'arrowdown' ]
 			}
 		} );
 

@@ -1,0 +1,1 @@
+## Inline image feature

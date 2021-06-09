@@ -14,7 +14,7 @@ import ImageTextAlternativeUI from './imagetextalternative/imagetextalternativeu
 /**
  * The image text alternative plugin.
  *
- * For a detailed overview, check the {@glink features/image#image-styles image styles} documentation.
+ * For a detailed overview, check the {@glink features/images/images-styles image styles} documentation.
  *
  * This is a "glue" plugin which loads the
  *  {@link module:image/imagetextalternative/imagetextalternativeediting~ImageTextAlternativeEditing}

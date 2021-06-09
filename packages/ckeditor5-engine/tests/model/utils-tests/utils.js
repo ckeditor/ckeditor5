@@ -41,7 +41,7 @@ describe( 'itemAt', () => {
 
 	beforeEach( () => {
 		foo = new Text( 'foo' );
-		img = new Element( 'image' );
+		img = new Element( 'imageBlock' );
 		bar = new Text( 'bar' );
 
 		element = new Element( 'p', null, [ foo, img, bar ] );
