@@ -7,7 +7,11 @@ modified_at: 2021-06-07
 
 # Features' HTML output overview
 
-Listed below are both official CKEditor 5 and third-party plugin packages and their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column. The classes, styles or attributes applied to an HTML element are all **possible** results. It does not mean they all will always be used. If a given plugin does not generate any output, the "HTML output" is described as "None".  Wildcard character `*` means any value is possible.
+Listed below are all official CKEditor 5 packages as well as some partner packages together with their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column.
+
+The classes, styles or attributes applied to an HTML element are all **possible** results. It does not mean they all will always be used.
+
+If a given plugin does not generate any output, the "HTML output" is described as "None".  Wildcard character `*` means any value is possible.
 
 The data used to generate the following tables comes from the package metadata. You can read more about it in the {@link framework/guides/contributing/package-metadata package metadata} guide.
 
@@ -37,7 +41,7 @@ The data used to generate the following tables comes from the package metadata. 
 	}
 </style>
 
-<!-- Do not delete the comment below as it indicates the place, where the features HTML output will be stored. -->
+<!-- Do not delete the comment below as it indicates the place where the features HTML output will be stored. -->
 
 <!-- features-html-output-marker -->
 <h3 id="ckeditor5-adapter-ckfinder"><code>ckeditor5-adapter-ckfinder</code></h3>
@@ -109,7 +113,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>$block</strong> <strong>class</strong>="*"&gt;</code>
 				<p>
-					If <code>config.alignment.options</code> is set, then these classes are used for alignment instead of inline styles.
+					If <code>config.alignment.options</code> is set, these classes are used for alignment instead of inline styles.
 				</p>
 			</td>
 		</tr>
@@ -420,7 +424,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>code</strong> <strong>class</strong>="* language-*"&gt;</code>
 				<p>
-					By default, the language of the code block is represented as a CSS class prefixed by <code>language-</code>. CSS class name can be customized via <code>config.codeBlock.languages</code> array.
+					By default, the language of the code block is represented as a CSS class prefixed by <code>language-</code>. The CSS class name can be customized via the <code>config.codeBlock.languages</code> array.
 				</p>
 			</td>
 		</tr>
@@ -464,7 +468,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>data-comment-end-after</strong>="*"<br>    <strong>data-comment-start-before</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin adds <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which comments starts or ends.
+					The plugin adds the <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which comments start or end.
 				</p>
 			</td>
 		</tr>
@@ -654,7 +658,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>class</strong>="text-tiny text-small text-big text-huge"&gt;</code>
 				<p>
-					If the <code>config.fontSize.options</code> option is not set or it contains predefined named presets, then the feature uses class names.
+					If the <code>config.fontSize.options</code> option is not set or it contains predefined named presets, the feature uses class names.
 				</p>
 			</td>
 		</tr>
@@ -662,7 +666,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>style</strong>="font-size:*"&gt;</code>
 				<p>
-					If the <code>config.fontSize.options</code> option contains numerical values, then the font size feature uses the <code>font-size</code> inline style.
+					If the <code>config.fontSize.options</code> option contains numerical values, the font size feature uses the <code>font-size</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -741,7 +745,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>h2</strong>&gt;</code><code>&lt;<strong>h3</strong>&gt;</code><code>&lt;<strong>h4</strong>&gt;</code>
 				<p>
-					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
 			</td>
 		</tr>
@@ -861,7 +865,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>&gt;</code>
 				<p>
-					The plugin can output any arbitrary HTML provided by the user. That HTML is always wrapped with a <code>&lt;div class="raw-html-embed"&gt;</code> element.
+					The plugin can output any arbitrary HTML provided by the user. This HTML is always wrapped with a <code>&lt;div class="raw-html-embed"&gt;</code> element.
 				</p>
 			</td>
 		</tr>
@@ -1146,7 +1150,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>a</strong><br>    <strong>rel</strong>="*"<br>    <strong>target</strong>="*"<br>&gt;</code>
 				<p>
-					If <code>config.link.addTargetToExternalLinks</code> is enabled, then the external links are decorated with <code>rel</code> and <code>target</code> attributes.
+					If <code>config.link.addTargetToExternalLinks</code> is enabled, external links are decorated with the <code>rel</code> and <code>target</code> attributes.
 				</p>
 			</td>
 		</tr>
@@ -1154,7 +1158,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>a</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin can be configured to set any classes, styles or attributes on the <code>&lt;a&gt;</code> tag via custom <code>config.link.decorators</code> configuration.
+					The plugin can be configured to set any classes, styles or attributes on the <code>&lt;a&gt;</code> tag via a custom <code>config.link.decorators</code> configuration.
 				</p>
 			</td>
 		</tr>
@@ -1206,7 +1210,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>li</strong>&gt;</code>
 				<p>
-					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
 			</td>
 		</tr>
@@ -1364,7 +1368,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin can be configured to return any element with any class, inline style, and attribute, via <code>config.mediaEmbed.providers</code> for previewable media.
+					The plugin can be configured to return any element with any class, inline style, and attribute for previewable media via <code>config.mediaEmbed.providers</code>.
 				</p>
 			</td>
 		</tr>
@@ -1514,7 +1518,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>p</strong>&gt;</code>
 				<p>
-					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
 			</td>
 		</tr>
