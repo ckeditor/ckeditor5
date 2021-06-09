@@ -324,6 +324,44 @@ class App extends Component {
 export default App;
 ```
 
+### The `JavaScript heap out of memory` error
+
+When building the application for the production using the `yarn build` command, it may end with an error related to the available memory on a machine:
+
+```
+<--- Last few GCs --->
+
+[32550:0x110008000]    42721 ms: Scavenge (reduce) 4061.0 (4069.6) -> 4060.5 (4070.8) MB, 4.3 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
+[32550:0x110008000]    42726 ms: Scavenge (reduce) 4061.2 (4069.8) -> 4060.6 (4071.3) MB, 4.0 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
+[32550:0x110008000]    42730 ms: Scavenge (reduce) 4061.4 (4073.3) -> 4060.9 (4073.3) MB, 3.7 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+ 1: 0x1012e4da5 node::Abort() (.cold.1) [/usr/local/bin/node]
+```
+
+Increasing the available memory for Node.js using the `--max_old_space_size` modifier should resolve the problem.
+
+```bash
+node --max_old_space_size=4096 node_modules/.bin/react-scripts build
+```
+
+Also, the memory limit can be set globally:
+
+```bash
+# Save it in the `.bash_profile` file to avoid typing it after rebooting the machine.
+export NODE_OPTIONS="--max-old-space-size=4096"
+
+yarn build
+```
+
+Or per a command call, on-demand:
+
+```bash
+NODE_OPTIONS="--max-old-space-size=4096" yarn build
+```
+
 ## Integrating CKEditor 5 built from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
