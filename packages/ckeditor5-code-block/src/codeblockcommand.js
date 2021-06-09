@@ -55,10 +55,11 @@ export default class CodeBlockCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Command options.
-	 * @param {String|null} [options.language] TODO.
+	 * @param {String|null} [options.language] Language picked from dropdown.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
-	 * @param {Boolean} [options.usePreviousLanguageChoice=false] TODO.
+	 * @param {Boolean} [options.usePreviousLanguageChoice=true] Defines whether or not button will create code block with the same
+	 * language as the previous code block.
 	 */
 	execute( options = {} ) {
 		const editor = this.editor;
