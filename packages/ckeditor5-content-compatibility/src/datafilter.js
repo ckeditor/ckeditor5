@@ -204,33 +204,8 @@ export default class DataFilter extends Plugin {
 
 			this.allowElement( elementName );
 
-			this._splitRules( pattern ).forEach( handleAttributes );
+			splitRules( pattern ).forEach( handleAttributes );
 		}
-	}
-
-	/**
-	 * Rules are matched in conjunction (AND operation), but we want to have a match if any of the rules is matched (OR operation).
-	 * By splitting the rules we force the latter effect.
-	 *
-	 * @private
-	 * @param {module:engine/view/matcher~MatcherPattern} rules
-	 * @returns {Array.<module:engine/view/matcher~MatcherPattern>}
-	 */
-	_splitRules( rules ) {
-		const { name, attributes, classes, styles } = rules;
-		const splitRules = [];
-
-		if ( attributes ) {
-			splitRules.push( ...this._splitPattern( { name, attributes }, 'attributes' ) );
-		}
-		if ( classes ) {
-			splitRules.push( ...this._splitPattern( { name, classes }, 'classes' ) );
-		}
-		if ( styles ) {
-			splitRules.push( ...this._splitPattern( { name, styles }, 'styles' ) );
-		}
-
-		return splitRules;
 	}
 
 	/**
@@ -261,38 +236,6 @@ export default class DataFilter extends Plugin {
 	 */
 	_consumeDisallowedAttributes( viewElement, conversionApi ) {
 		return consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
-	}
-
-	/**
-	 * Matcher by default has to match **all** patterns to count it as an actual match. By splitting the pattern
-	 * into separate patterns means that any matched pattern will be count as a match.
-	 *
-	 * @private
-	 * @param {module:engine/view/matcher~MatcherPattern} pattern Pattern to split.
-	 * @param {String} attributeName Name of the attribute to split (e.g. 'attributes', 'classes', 'styles').
-	 * @returns {Array.<module:engine/view/matcher~MatcherPattern>}
-	 */
-	_splitPattern( pattern, attributeName ) {
-		const { name } = pattern;
-
-		if ( isPlainObject( pattern[ attributeName ] ) ) {
-			return Object.entries( pattern[ attributeName ] ).map(
-				( [ key, value ] ) => ( {
-					name,
-					[ attributeName ]: {
-						[ key ]: value
-					}
-				} ) );
-		} else if ( Array.isArray( pattern[ attributeName ] ) ) {
-			return pattern[ attributeName ].map(
-				value => ( {
-					name,
-					[ attributeName ]: [ value ]
-				} )
-			);
-		}
-
-		return [ pattern ];
 	}
 
 	/**
@@ -616,4 +559,57 @@ function iterableToObject( iterable, getValue ) {
 	}
 
 	return attributesObject;
+}
+
+// Matcher by default has to match **all** patterns to count it as an actual match. By splitting the pattern
+// into separate patterns means that any matched pattern will be count as a match.
+//
+// @private
+// @param {module:engine/view/matcher~MatcherPattern} pattern Pattern to split.
+// @param {String} attributeName Name of the attribute to split (e.g. 'attributes', 'classes', 'styles').
+// @returns {Array.<module:engine/view/matcher~MatcherPattern>}
+function splitPattern( pattern, attributeName ) {
+	const { name } = pattern;
+
+	if ( isPlainObject( pattern[ attributeName ] ) ) {
+		return Object.entries( pattern[ attributeName ] ).map(
+			( [ key, value ] ) => ( {
+				name,
+				[ attributeName ]: {
+					[ key ]: value
+				}
+			} ) );
+	} else if ( Array.isArray( pattern[ attributeName ] ) ) {
+		return pattern[ attributeName ].map(
+			value => ( {
+				name,
+				[ attributeName ]: [ value ]
+			} )
+		);
+	}
+
+	return [ pattern ];
+}
+
+// Rules are matched in conjunction (AND operation), but we want to have a match if *any* of the rules is matched (OR operation).
+// By splitting the rules we force the latter effect.
+//
+// @private
+// @param {module:engine/view/matcher~MatcherPattern} rules
+// @returns {Array.<module:engine/view/matcher~MatcherPattern>}
+function splitRules( rules ) {
+	const { name, attributes, classes, styles } = rules;
+	const splittedRules = [];
+
+	if ( attributes ) {
+		splittedRules.push( ...splitPattern( { name, attributes }, 'attributes' ) );
+	}
+	if ( classes ) {
+		splittedRules.push( ...splitPattern( { name, classes }, 'classes' ) );
+	}
+	if ( styles ) {
+		splittedRules.push( ...splitPattern( { name, styles }, 'styles' ) );
+	}
+
+	return splittedRules;
 }
