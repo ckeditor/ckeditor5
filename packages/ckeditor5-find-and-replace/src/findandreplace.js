@@ -255,8 +255,6 @@ export default class FindAndReplace extends Plugin {
 
 		// findPrev
 		ui.on( 'findPrev', ( event, data ) => {
-			// console.log( 'findPrev' );
-			// console.log( this.find( data.searchText ) );
 			if ( data.searchText.length !== 0 ) {
 				this.stop();
 			}
@@ -267,14 +265,10 @@ export default class FindAndReplace extends Plugin {
 		ui.on( 'replace', ( event, data ) => {
 			// TODO: the { marker } needs to be passed down to the .replace()
 			this.replace( data.marker, data.replaceText );
-			// console.log( 'replace' );
 		} );
 
 		// replaceAll
 		ui.on( 'replaceAll', ( event, data ) => {
-			if ( data.searchText.length === 0 || data.replaceText.length === 0 ) {
-				return;
-			}
 			this.replaceAll( data.replaceText );
 		} );
 

@@ -160,8 +160,8 @@ describe( 'FindAndReplaceFormView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'focuses the #findNextButtonView', () => {
-			const spy = sinon.spy( view.findNextButtonView, 'focus' );
+		it( 'focuses the #findInputView', () => {
+			const spy = sinon.spy( view.findInputView, 'focus' );
 
 			view.focus();
 
@@ -172,12 +172,12 @@ describe( 'FindAndReplaceFormView', () => {
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
-				view.findNextButtonView,
-				view.findPrevButtonView,
 				view.findInputView,
-				view.replaceAllButtonView,
+				view.findPrevButtonView,
+				view.findNextButtonView,
+				view.replaceInputView,
 				view.replaceButtonView,
-				view.replaceInputView
+				view.replaceAllButtonView
 			] );
 		} );
 
@@ -188,12 +188,12 @@ describe( 'FindAndReplaceFormView', () => {
 
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.findNextButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.findInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.findPrevButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.findInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.replaceAllButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.findNextButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.replaceInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.replaceButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.replaceInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.replaceAllButtonView.element );
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
@@ -218,7 +218,7 @@ describe( 'FindAndReplaceFormView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.findNextButtonView.element;
 
-				const spy = sinon.spy( view.findPrevButtonView, 'focus' );
+				const spy = sinon.spy( view.replaceInputView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -238,7 +238,7 @@ describe( 'FindAndReplaceFormView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.findNextButtonView.element;
 
-				const spy = sinon.spy( view.replaceInputView, 'focus' );
+				const spy = sinon.spy( view.findPrevButtonView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
