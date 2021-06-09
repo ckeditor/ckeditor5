@@ -288,7 +288,7 @@ The downcast converters shown in the previous section will not work correctly ye
 
 This is not a correct view structure. The content of the model's `<infoBox>` element ended up directly inside the outer `<div>`. The `<infoBox>`'s content should be inside the `<div class="info-box-content">`.
 
-You defined downcast conversion for `<infoBox>` itself, but you need to specify where its content should land in its view structure. By default, it is converted as direct children of `<div class="info-box">` (as shown in the above snippet) but it should go into `<div class="info-box-content">`. To achieve this, you need to register a callback for the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition`} event, so positions inside the model `<infoBox>` element would map to positions inside the `<div class="info-box-content">` view element.
+You defined downcast conversion for `<infoBox>` itself, but you need to specify where its content should land in its view structure. By default, it is converted as direct children of `<div class="info-box">` (as shown in the above snippet) but it should go into `<div class="info-box-content">`. To achieve this, you need to register a callback for the {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition `Mapper#modelToViewPosition`} event, so the positions inside the model `<infoBox>` element would map to the positions inside the `<div class="info-box-content">` view element.
 
 ```
 <infoBox infoBoxType="Info">    ->    <div class="info-box info-box-info">
@@ -309,7 +309,7 @@ function createModelToViewPositionMapper( view ) {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
 
-		// Only mapping of positions that are directly in
+		// Only the mapping of positions that are directly in
 		// the <infoBox> model element should be modified.
 		if ( !parent.is( 'element', 'infoBox' ) ) {
 			return;
@@ -372,7 +372,7 @@ class InfoBox {
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
 
-		// Model-to-view position mapper is needed since the model <infoBox> content needs to end up in the inner
+		// The model-to-view position mapper is needed since the model <infoBox> content needs to end up in the inner
 		// <div class="info-box-content">.
 		editor.editing.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
 		editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
