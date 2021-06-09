@@ -68,14 +68,14 @@ describe( 'RemoveFormat', () => {
 
 		it( 'does not remove image width attribute', () => {
 			setModelData( model, '<paragraph>foo[<$text bold="true">foo</$text></paragraph>' +
-				'<image src="assets/sample.png" width="50%"><caption>caption</caption></image>' +
+				'<imageBlock src="assets/sample.png" width="50%"><caption>caption</caption></imageBlock>' +
 				'<paragraph>bar]</paragraph>' );
 
 			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>foo[foo</paragraph>' +
-					'<image src="assets/sample.png" width="50%"><caption>caption</caption></image>' +
+					'<imageBlock src="assets/sample.png" width="50%"><caption>caption</caption></imageBlock>' +
 					'<paragraph>bar]</paragraph>' );
 		} );
 
