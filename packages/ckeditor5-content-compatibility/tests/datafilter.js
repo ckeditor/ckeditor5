@@ -1310,18 +1310,18 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
-						'<$text htmlSpan="(2)">foo data</$text>' +
-						'<$text htmlSpan="(3)">bar data</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">ccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {
@@ -1338,11 +1338,9 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="color:blue;">' +
-						'<span class="foo bar">foobar</span>' +
-					'</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span>bar data</span>' +
+					'<span class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span>ccc</span>' +
 				'</p>'
 			);
 		} );
@@ -1363,22 +1361,25 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
-						'<$text htmlSpan="(2)">foo data</$text>' +
-						'<$text htmlSpan="(3)">bar data</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">ccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {
-						classes: [ 'foo', 'bar' ]
+						attributes: {
+							class: 'foo bar',
+							style: 'font-weight:400;line-height:1em;'
+						}
 					},
 					2: {
 						attributes: {
@@ -1395,11 +1396,9 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="color:blue;">' +
-						'<span class="foo bar">foobar</span>' +
-					'</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span class="foo bar" style="font-weight:400;line-height:1em;">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 		} );
@@ -1416,18 +1415,18 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span class="foo bar">foo bar</span>' +
-					'<span class="foo">foo</span>' +
-					'<span class="bar">bar</span>' +
-					'<span class="bar baz">bar baz</span>' +
+					'<span class="foo bar">aaa</span>' +
+					'<span class="foo">bbb</span>' +
+					'<span class="bar">ccc</span>' +
+					'<span class="bar baz">ddd</span>' +
 				'</p>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text htmlSpan="(1)">foo bar</$text>' +
-						'<$text htmlSpan="(2)">foo</$text>' +
-						'<$text htmlSpan="(3)">barbar baz</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">cccddd</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {
@@ -1447,9 +1446,9 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span class="foo bar">foo bar</span>' +
-					'<span class="foo">foo</span>' +
-					'<span class="bar">barbar baz</span>' +
+					'<span class="foo bar">aaa</span>' +
+					'<span class="foo">bbb</span>' +
+					'<span class="bar">cccddd</span>' +
 				'</p>'
 			);
 		} );
@@ -1469,18 +1468,18 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span style="position: absolute; visibility: hidden;">foo bar</span>' +
-					'<span style="position: absolute;">foo</span>' +
-					'<span style="visibility: hidden;">bar</span>' +
-					'<span style="visibility: hidden; margin-left: 1px;">bar baz</span>' +
+					'<span style="position: absolute; visibility: hidden;">aaa</span>' +
+					'<span style="position: absolute;">bbb</span>' +
+					'<span style="visibility: hidden;">ccc</span>' +
+					'<span style="visibility: hidden; margin-left: 1px;">ddd</span>' +
 				'</p>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text htmlSpan="(1)">foo bar</$text>' +
-						'<$text htmlSpan="(2)">foo</$text>' +
-						'<$text htmlSpan="(3)">barbar baz</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">cccddd</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {
@@ -1509,9 +1508,9 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="position:absolute;visibility:hidden;">foo bar</span>' +
-					'<span style="position:absolute;">foo</span>' +
-					'<span style="visibility:hidden;">barbar baz</span>' +
+					'<span style="position:absolute;visibility:hidden;">aaa</span>' +
+					'<span style="position:absolute;">bbb</span>' +
+					'<span style="visibility:hidden;">cccddd</span>' +
 				'</p>'
 			);
 		} );
@@ -1531,18 +1530,18 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span style="position: absolute; visibility: hidden;">foo bar</span>' +
-					'<span style="position: absolute;">foo</span>' +
-					'<span style="visibility: hidden;">bar</span>' +
-					'<span style="visibility: hidden; margin-left: 1px;">bar baz</span>' +
+					'<span style="position: absolute; visibility: hidden;">aaa</span>' +
+					'<span style="position: absolute;">bbb</span>' +
+					'<span style="visibility: hidden;">ccc</span>' +
+					'<span style="visibility: hidden; margin-left: 1px;">ddd</span>' +
 				'</p>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text htmlSpan="(1)">foo bar</$text>' +
-						'<$text htmlSpan="(2)">foo</$text>' +
-						'<$text htmlSpan="(3)">barbar baz</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">cccddd</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {
@@ -1571,9 +1570,9 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="position:absolute;visibility:hidden;">foo bar</span>' +
-					'<span style="position:absolute;">foo</span>' +
-					'<span style="visibility:hidden;">barbar baz</span>' +
+					'<span style="position:absolute;visibility:hidden;">aaa</span>' +
+					'<span style="position:absolute;">bbb</span>' +
+					'<span style="visibility:hidden;">cccddd</span>' +
 				'</p>'
 			);
 		} );
@@ -1590,18 +1589,18 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
-						'<$text htmlSpan="(2)">foo data</$text>' +
-						'<$text htmlSpan="(3)">bar data</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">ccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {},
@@ -1616,11 +1615,9 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="color:blue;">' +
-						'<span>foobar</span>' +
-					'</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span>bar data</span>' +
+					'<span>aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span>ccc</span>' +
 				'</p>'
 			);
 		} );
@@ -1637,17 +1634,17 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
-						'<$text htmlSpan="(2)">foo databar data</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbbccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {
@@ -1660,10 +1657,8 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="color:blue;">' +
-						'<span class="foo bar">foobar</span>' +
-					'</span>' +
-					'<span>foo databar data</span>' +
+					'<span class="foo bar">aaa</span>' +
+					'<span>bbbccc</span>' +
 				'</p>'
 			);
 		} );
@@ -1672,7 +1667,7 @@ describe( 'DataFilter', () => {
 			const config = [
 				{
 					name: 'span',
-					styles: { color: true }
+					styles: { 'line-height': true }
 				}
 			];
 
@@ -1680,31 +1675,38 @@ describe( 'DataFilter', () => {
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span style="font-weight: 400;">bbb</span>' +
+					'<span style="line-height: 2em;">ccc</span>' +
 				'</p>'
 			);
 
-			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
-						'<$text htmlSpan="(2)">foo databar data</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">ccc</$text>' +
 					'</paragraph>',
 				attributes: {
-					1: {},
+					1: {
+						styles: {
+							'line-height': '1em'
+						}
+					},
 					2: {},
-					3: {}
+					3: {
+						styles: {
+							'line-height': '2em'
+						}
+					}
 				}
 			} );
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="color:blue;">' +
-						'<span>foobar</span>' +
-					'</span>' +
-					'<span>foo databar data</span>' +
+					'<span style="line-height:1em;">aaa</span>' +
+					'<span>bbb</span>' +
+					'<span style="line-height:2em;">ccc</span>' +
 				'</p>'
 			);
 		} );
@@ -1721,19 +1723,23 @@ describe( 'DataFilter', () => {
 				}
 			];
 
+			// First, allow all the elements matching config.
+			dataFilter.loadAllowedConfig( config );
+
+			// Then, disallow and verify it's actually working.
 			dataFilter.loadDisallowedConfig( config );
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text htmlSpan="(1)">foobarfoo databar data</$text>' +
+						'<$text htmlSpan="(1)">aaabbbccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {},
@@ -1744,7 +1750,7 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span>foobarfoo databar data</span>' +
+					'<span>aaabbbccc</span>' +
 				'</p>'
 			);
 		} );
@@ -1761,20 +1767,24 @@ describe( 'DataFilter', () => {
 				}
 			];
 
+			// First, allow all the elements matching config.
+			dataFilter.loadAllowedConfig( config );
+
+			// Then, disallow and verify it's actually working.
 			dataFilter.loadDisallowedConfig( config );
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text htmlSpan="(1)">foobarfoo databar data</$text>' +
+						'<$text htmlSpan="(1)">aaabbbccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {},
@@ -1785,7 +1795,7 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span>foobarfoo databar data</span>' +
+					'<span>aaabbbccc</span>' +
 				'</p>'
 			);
 		} );
@@ -1798,21 +1808,24 @@ describe( 'DataFilter', () => {
 				}
 			];
 
+			// First, allow all the elements matching config.
+			dataFilter.loadAllowedConfig( config );
+
+			// Then, disallow and verify it's actually working.
 			dataFilter.loadDisallowedConfig( config );
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
-						'<$text htmlSpan="(2)">foo databar data</$text>' +
+						'<$text htmlSpan="(1)">aaabbbccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {},
@@ -1823,87 +1836,126 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="color:blue;">' +
-						'<span>foobar</span>' +
-					'</span>' +
-					'<span>foo databar data</span>' +
+					'<span>aaabbbccc</span>' +
 				'</p>'
 			);
 		} );
 
 		it( 'should match classes', () => {
-			const config = [
+			const allowedConfig = [
+				{
+					name: 'span',
+					attributes: true,
+					// Allow it to really verify that the disallowing works.
+					classes: [ 'foo', 'bar', 'test' ]
+				}
+			];
+			const disallowedConfig = [
 				{
 					name: 'span',
 					classes: [ 'foo', 'bar', 'test' ]
 				}
 			];
 
-			dataFilter.loadDisallowedConfig( config );
+			dataFilter.loadAllowedConfig( allowedConfig );
+			dataFilter.loadDisallowedConfig( disallowedConfig );
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue; font-weight:400" class="foo bar">foobar</span>' +
-					'<span data-foo="foo data">foo data</span>' +
-					'<span data-bar="bar data">bar data</span>' +
+					'<span style="line-height: 1em; font-weight:400" class="foo bar">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text fontColor="blue" htmlSpan="(1)">foobar</$text>' +
-						'<$text htmlSpan="(2)">foo databar data</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">ccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {},
-					2: {},
-					3: {}
+					2: {
+						attributes: {
+							'data-foo': 'foo data'
+						}
+					},
+					3: {
+						attributes: {
+							'data-bar': 'bar data'
+						}
+					}
 				}
 			} );
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span style="color:blue;">' +
-						'<span>foobar</span>' +
-					'</span>' +
-					'<span>foo databar data</span>' +
+					'<span>aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 		} );
 
 		it( 'should match styles', () => {
-			const config = [
+			const allowedConfig = [
 				{
 					name: 'span',
-					styles: { color: true }
+					attributes: true,
+					// Allow it to really verify that the disallowing works.
+					styles: { 'line-height': true }
+				}
+			];
+			const disallowedConfig = [
+				{
+					name: 'span',
+					styles: { 'line-height': true }
 				}
 			];
 
-			dataFilter.loadDisallowedConfig( config );
+			// First, allow all the elements matching config.
+			dataFilter.loadAllowedConfig( allowedConfig );
+
+			// Then, disallow and verify it's actually working.
+			dataFilter.loadDisallowedConfig( disallowedConfig );
 
 			editor.setData(
 				'<p>' +
-					'<span style="color:blue;">' +
-					'<span>foobar</span>' +
-					'<span>foo databar data</span>' +
+					'<span style="line-height:1em;">aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 
 			// Font feature should take over color CSS property.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-						'<$text htmlSpan="(1)">foobarfoo databar data</$text>' +
+						'<$text htmlSpan="(1)">aaa</$text>' +
+						'<$text htmlSpan="(2)">bbb</$text>' +
+						'<$text htmlSpan="(3)">ccc</$text>' +
 					'</paragraph>',
 				attributes: {
 					1: {},
-					2: {}
+					2: {
+						attributes: {
+							'data-foo': 'foo data'
+						}
+					},
+					3: {
+						attributes: {
+							'data-bar': 'bar data'
+						}
+					}
 				}
 			} );
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span>foobarfoo databar data</span>' +
+					'<span>aaa</span>' +
+					'<span data-foo="foo data">bbb</span>' +
+					'<span data-bar="bar data">ccc</span>' +
 				'</p>'
 			);
 		} );

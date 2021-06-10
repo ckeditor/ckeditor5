@@ -579,7 +579,9 @@ function splitPattern( pattern, attributeName ) {
 					[ key ]: value
 				}
 			} ) );
-	} else if ( Array.isArray( pattern[ attributeName ] ) ) {
+	}
+
+	if ( Array.isArray( pattern[ attributeName ] ) ) {
 		return pattern[ attributeName ].map(
 			value => ( {
 				name,
