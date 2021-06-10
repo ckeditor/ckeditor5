@@ -8,83 +8,13 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Collection, uid } from 'ckeditor5/src/utils';
+import { Collection } from 'ckeditor5/src/utils';
 import FindAndReplaceUI from './findandreplaceui';
-// import FindAndReplaceEditing from './findandreplaceediting';
+import FindAndReplaceEditing from './findandreplaceediting';
+
+import { updateFindResultFromRange } from './utils';
 
 const HIGHLIGHT_CLASS = 'find-result_selected';
-
-/**
- * Returns text representation of a range. The returned text length should be the same as range length.
- * In order to achieve this this function will:
- * - replace inline elements (text-line) as new line character ("\n").
- * - @todo: check unicode characters
- */
-export function rangeToText( range ) {
-	return Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
-		// Trim text to a last occurrence of an inline element and update range start.
-		if ( !( node.is( 'text' ) || node.is( 'textProxy' ) ) ) {
-			// Editor has only one inline element defined in schema: `<softBreak>` which is treated as new line character in blocks.
-			// Special handling might be needed for other inline elements (inline widgets).
-			return `${ rangeText }\n`;
-		}
-
-		return rangeText + node.data;
-	}, '' );
-}
-
-function findInsertIndex( resultsList, markerToInsert ) {
-	const result = resultsList.find( ( { marker } ) => {
-		return markerToInsert.getStart().isBefore( marker.getStart() );
-	} );
-
-	return result ? resultsList.getIndex( result ) : resultsList.length;
-}
-
-/**
- * Executes findCallback and updates search results list.
- */
-function updateFindResultFromRange( range, model, findCallback, results ) {
-	[ ...range ].forEach( ( { type, item } ) => {
-		if ( type === 'elementStart' ) {
-			if ( model.schema.checkChild( item, '$text' ) ) {
-				const foundItems = findCallback( {
-					item,
-					text: rangeToText( model.createRangeIn( item ) )
-				} );
-
-				if ( !foundItems ) {
-					return;
-				}
-
-				foundItems.forEach( foundItem => {
-					model.change( writer => {
-						const resultId = `findResult:${ uid() }`;
-						const marker = writer.addMarker( resultId, {
-							usingOperation: false,
-							affectsData: false,
-							range: writer.createRange(
-								writer.createPositionAt( item, foundItem.start ),
-								writer.createPositionAt( item, foundItem.end )
-							)
-						} );
-
-						const index = findInsertIndex( results, marker );
-
-						results.add(
-							{
-								id: resultId,
-								label: foundItem.label,
-								marker
-							},
-							index
-						);
-					} );
-				} );
-			}
-		}
-	} );
-}
 
 function regexpMatchToFindResult( matchResult ) {
 	return {
@@ -226,7 +156,7 @@ export default class FindAndReplace extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ /* FindAndReplaceEditing ,*/ FindAndReplaceUI ];
+		return [ FindAndReplaceEditing, FindAndReplaceUI ];
 	}
 
 	/**
