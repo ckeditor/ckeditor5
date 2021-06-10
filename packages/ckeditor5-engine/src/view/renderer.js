@@ -116,6 +116,14 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
+
+		/**
+		 * TODO
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._disableSelectionRendering = false;
 	}
 
 	/**
@@ -684,6 +692,10 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
+		if ( this._disableSelectionRendering ) {
+			return;
+		}
+
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelection();

@@ -87,6 +87,14 @@ export default class SelectionObserver extends Observer {
 		 * @member {Number} module:engine/view/observer/selectionobserver~SelectionObserver#_loopbackCounter
 		 */
 		this._loopbackCounter = 0;
+
+		/**
+		 * TODO
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._isSelecting = false;
 	}
 
 	/**
@@ -99,6 +107,18 @@ export default class SelectionObserver extends Observer {
 		if ( this._documents.has( domDocument ) ) {
 			return;
 		}
+
+		this.listenTo( domDocument, 'selectstart', () => {
+			this._isSelecting = true;
+			this.document.fire( 'selectionChangeStart' );
+		}, { useCapture: true } );
+
+		this.listenTo( domDocument, 'mouseup', () => {
+			if ( this._isSelecting ) {
+				this._isSelecting = false;
+				this.document.fire( 'selectionChangeEnd' );
+			}
+		}, { useCapture: true } );
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );

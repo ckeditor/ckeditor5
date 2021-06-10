@@ -69,6 +69,14 @@ export default class EditingController {
 			schema: model.schema
 		} );
 
+		/**
+		 * TODO
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._isSelecting = false;
+
 		const doc = this.model.document;
 		const selection = doc.selection;
 		const markers = this.model.markers;
@@ -92,9 +100,28 @@ export default class EditingController {
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
-				this.downcastDispatcher.convertSelection( selection, markers, writer );
+
+				if ( !this._isSelecting ) {
+					this.downcastDispatcher.convertSelection( selection, markers, writer );
+				}
 			} );
 		}, { priority: 'low' } );
+
+		this.listenTo( this.view.document, 'selectionChangeStart', () => {
+			this._isSelecting = true;
+			// TODO use some nice API
+			this.view._renderer._disableSelectionRendering = true;
+		} );
+
+		this.listenTo( this.view.document, 'selectionChangeEnd', () => {
+			this._isSelecting = false;
+			// TODO use some nice API
+			this.view._renderer._disableSelectionRendering = false;
+
+			this.view.change( writer => {
+				this.downcastDispatcher.convertSelection( selection, markers, writer );
+			} );
+		} );
 
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
