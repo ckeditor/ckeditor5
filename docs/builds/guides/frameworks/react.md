@@ -341,7 +341,7 @@ FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaS
  1: 0x1012e4da5 node::Abort() (.cold.1) [/usr/local/bin/node]
 ```
 
-Increasing the available memory for Node.js using the `--max_old_space_size` modifier should resolve the problem.
+This issue has not been fixed yet, however, there is a workaround for this. Increasing the available memory for Node.js using the `--max_old_space_size` modifier should resolve the problem.
 
 ```bash
 node --max_old_space_size=4096 node_modules/.bin/react-scripts build
