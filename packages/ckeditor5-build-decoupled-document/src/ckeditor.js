@@ -111,15 +111,15 @@ class InsertSmartField extends Plugin {
 			addListToDropdown( dropdownView, items );
 			dropdownView.on( 'execute', evt => {
 				const formattedText = `[[${ evt.source.label.replace( / /g, '' ) }]]`;
-				console.log( { configHere: editor.config } );
-				editor.model.change( writer => {
-					if ( editor.config._config.insertSmartField.parseField ) {
-						editor.config._config.insertSmartField.cbFn( editor, writer, formattedText );
-					} else {
-						const smartField = writer.createElement( 'span' );
-						writer.insertText( formattedText, smartField );
-						editor.model.insertContent( smartField, editor.model.document.selection );
-					}
+				editor.model.change( () => {
+					editor.config._config.insertSmartField.cbFn( editor, formattedText );
+					// if ( editor.config._config.insertSmartField.parseField ) {
+					// 	editor.config._config.insertSmartField.cbFn( editor, formattedText );
+					// } else {
+					// 	const smartField = writer.createElement( 'span' );
+					// 	writer.insertText( formattedText, smartField );
+					// 	editor.model.insertContent( smartField, editor.model.document.selection );
+					// }
 				} );
 			} );
 			return dropdownView;
