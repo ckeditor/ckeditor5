@@ -7,8 +7,8 @@
  * @module engine/view/matcher
  */
 
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { isPlainObject } from 'lodash-es';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * View matcher class.

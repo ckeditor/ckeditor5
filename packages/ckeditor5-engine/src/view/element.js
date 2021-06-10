@@ -468,11 +468,11 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all style names.
 	 *
-	 * @param {Boolean} [deep=false] Expand shorthand style properties and return all equivalent style representations.
+	 * @param {Boolean} [expand=false] Expand shorthand style properties and return all equivalent style representations.
 	 * @returns {Iterable.<String>}
 	 */
-	getStyleNames( deep = false ) {
-		return this._styles.getStyleNames( deep );
+	getStyleNames( expand = false ) {
+		return this._styles.getStyleNames( expand );
 	}
 
 	/**

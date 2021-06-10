@@ -352,7 +352,7 @@ export default class StylesMap {
 	/**
 	 * Returns all style properties names as they would appear when using {@link #toString `#toString()`}.
 	 *
-	 * When `deep` is set to true and there's a shorthand style property set, it will also return all equivalent styles:
+	 * When `expand` is set to true and there's a shorthand style property set, it will also return all equivalent styles:
 	 *
 	 * 		stylesMap.setTo( 'margin: 1em' )
 	 *
@@ -360,15 +360,15 @@ export default class StylesMap {
 	 *
 	 * 		[ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ]
 	 *
-	 * @param {Boolean} [deep=false] Expand shorthand style properties and all return equivalent style representations.
+	 * @param {Boolean} [expand=false] Expand shorthand style properties and all return equivalent style representations.
 	 * @returns {Array.<String>}
 	 */
-	getStyleNames( deep = false ) {
+	getStyleNames( expand = false ) {
 		if ( this.isEmpty ) {
 			return [];
 		}
 
-		if ( deep ) {
+		if ( expand ) {
 			return this._styleProcessor.getStyleNames( this._styles );
 		}
 
