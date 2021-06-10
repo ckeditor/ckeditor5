@@ -237,13 +237,13 @@
 							"name": "Real-time collaboration",
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
-							"order": 400
+							"order": 300
 						},
 						{
 							"name": "Annotations",
 							"id": "features-annotations",
 							"slug": "annotations",
-							"order": 500
+							"order": 400
 						}
 					]
 				},
