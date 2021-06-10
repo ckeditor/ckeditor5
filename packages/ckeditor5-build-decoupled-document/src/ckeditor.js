@@ -54,9 +54,8 @@ class InsertSmartField extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		console.log( { editor } );
-		const cbFn = editor.config._config.insertSmartField.parseField;
-		console.log({ cbFn });
+		console.log( { editor, config: editor.config } );
+		let cbFn;
 
 		const smartFields = [
 			'Bill To Address',
