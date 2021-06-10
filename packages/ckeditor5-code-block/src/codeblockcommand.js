@@ -59,7 +59,8 @@ export default class CodeBlockCommand extends Command {
 	 * @param {String} [options.language] The code block language.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
-	 * @param {Boolean} [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command will apply the previous language (if the command was already executed) when inserting the `codeBlock` element.
+	 * @param {Boolean} [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command
+	 * will apply the previous language (if the command was already executed) when inserting the `codeBlock` element.
 	 * language as the previous code block.
 	 */
 	execute( options = {} ) {
@@ -187,10 +188,10 @@ function canBeCodeBlock( schema, element ) {
 	return schema.checkChild( element.parent, 'codeBlock' );
 }
 
-// Picks the language for the new code block. If option usePreviousLanguageChoice
-// is true and some code block was already created (lastLanguage is not null) then previously
-// used language will be returned. Else, it will see if any language is passed as an option
-// and return that. If not, it will return default language.
+// Picks the language for the new code block. If any language is passed as an option,
+// it will be returned. Else, if option usePreviousLanguageChoice is true and some
+// code block was already created (lastLanguage is not null) then previously used
+// language will be returned. If not, it will return default language.
 //
 // @param {Object} options
 // @param {Boolean} [options.usePreviousLanguageChoice]
