@@ -237,13 +237,13 @@
 							"name": "Real-time collaboration",
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
-							"order": 300
+							"order": 400
 						},
 						{
 							"name": "Annotations",
 							"id": "features-annotations",
 							"slug": "annotations",
-							"order": 400
+							"order": 500
 						}
 					]
 				},
@@ -261,6 +261,11 @@
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
+				},
+				{
+					"name": "Revision history",
+					"id": "features-revision-history",
+					"slug": "revision-history"
 				},
 				{
 					"name": "Toolbar",
