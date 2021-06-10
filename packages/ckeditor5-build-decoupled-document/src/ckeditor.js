@@ -114,7 +114,7 @@ class InsertSmartField extends Plugin {
 				console.log( { configHere: editor.config } );
 				editor.model.change( writer => {
 					if ( editor.config._config.insertSmartField.parseField ) {
-						editor.config._config.insertSmartField.cbFn( editor, formattedText );
+						editor.config._config.insertSmartField.cbFn( editor, writer, formattedText );
 					} else {
 						const smartField = writer.createElement( 'span' );
 						writer.insertText( formattedText, smartField );
