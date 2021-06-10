@@ -111,8 +111,8 @@ class InsertSmartField extends Plugin {
 			addListToDropdown( dropdownView, items );
 			dropdownView.on( 'execute', evt => {
 				const formattedText = `[[${ evt.source.label.replace( / /g, '' ) }]]`;
+				console.log( { configHere: editor.config } );
 				editor.model.change( writer => {
-					console.log( { configHere: editor.config } );
 					if ( editor.config._config.insertSmartField.parseField ) {
 						editor.config._config.insertSmartField.cbFn( editor, formattedText );
 					} else {
