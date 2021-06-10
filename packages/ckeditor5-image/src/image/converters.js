@@ -117,6 +117,50 @@ export function srcsetAttributeConverter( imageUtils, imageType ) {
  * @param {String} attributeKey The name of the attribute to convert.
  * @returns {Function}
  */
+export function sourcesAttributeConverter( imageUtils, imageType ) {
+	return dispatcher => {
+		dispatcher.on( `attribute:sources:${ imageType }`, converter );
+	};
+
+	function converter( evt, data, conversionApi ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
+		const viewWriter = conversionApi.writer;
+		const element = conversionApi.mapper.toViewElement( data.item );
+		const imgElement = imageUtils.getViewImageFromWidget( element );
+
+		if ( data.attributeNewValue && data.attributeNewValue.length ) {
+			const pictureElement = viewWriter.createContainerElement( 'picture' );
+
+			for ( const sourceAttributes of data.attributeNewValue ) {
+				const sourceElement = viewWriter.createEmptyElement( 'source', sourceAttributes );
+
+				viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), sourceElement );
+			}
+
+			viewWriter.insert( viewWriter.createPositionAt( imgElement.parent, 0 ), pictureElement );
+			viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), imgElement );
+		} else {
+			if ( imgElement.parent.is( 'element', 'picture' ) ) {
+				const pictureElement = imgElement.parent;
+
+				viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionBefore( pictureElement ) );
+				viewWriter.remove( pictureElement );
+			}
+		}
+	}
+}
+
+/**
+ * Converter used to convert a given image attribute from the model to the view.
+ *
+ * @param {module:image/imageutils~ImageUtils} imageUtils
+ * @param {'imageBlock'|'imageInline'} imageType The type of the image.
+ * @param {String} attributeKey The name of the attribute to convert.
+ * @returns {Function}
+ */
 export function modelToViewAttributeConverter( imageUtils, imageType, attributeKey ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:${ attributeKey }:${ imageType }`, converter );
@@ -134,3 +178,4 @@ export function modelToViewAttributeConverter( imageUtils, imageType, attributeK
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}
 }
+

@@ -11,15 +11,21 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
-import { modelToViewAttributeConverter, srcsetAttributeConverter, viewFigureToModel } from './converters';
+import {
+	modelToViewAttributeConverter,
+	srcsetAttributeConverter,
+	sourcesAttributeConverter,
+	viewFigureToModel
+} from './converters';
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
-	getImageTypeMatcher,
+	getViewImgElementMatcher,
 	createImageViewElement,
-	determineImageTypeForInsertionAtSelection
+	determineImageTypeForInsertionAtSelection,
+	extractImageAttributesFromViewElement
 } from '../image/utils';
 
 /**
@@ -61,7 +67,7 @@ export default class ImageBlockEditing extends Plugin {
 			isObject: true,
 			isBlock: true,
 			allowWhere: '$block',
-			allowAttributes: [ 'alt', 'src', 'srcset' ]
+			allowAttributes: [ 'alt', 'src', 'srcset', 'sources' ]
 		} );
 
 		this._setupConversion();
@@ -102,13 +108,16 @@ export default class ImageBlockEditing extends Plugin {
 		conversion.for( 'downcast' )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'src' ) )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'alt' ) )
+			.add( sourcesAttributeConverter( imageUtils, 'imageBlock' ) )
 			.add( srcsetAttributeConverter( imageUtils, 'imageBlock' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( editor, 'imageBlock' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } )
+				view: getViewImgElementMatcher( editor, 'imageBlock' ),
+				model: ( viewImage, { writer } ) => {
+					return writer.createElement( 'imageBlock', extractImageAttributesFromViewElement( viewImage ) );
+				}
 			} )
 			.add( viewFigureToModel( imageUtils ) );
 	}

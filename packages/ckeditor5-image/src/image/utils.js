@@ -47,7 +47,7 @@ export function createImageViewElement( writer, imageType ) {
  * @param {'imageBlock'|'imageInline'} matchImageType The type of created image.
  * @returns {module:engine/view/matcher~MatcherPattern}
  */
-export function getImageTypeMatcher( editor, matchImageType ) {
+export function getViewImgElementMatcher( editor, matchImageType ) {
 	if ( editor.plugins.has( 'ImageInlineEditing' ) !== editor.plugins.has( 'ImageBlockEditing' ) ) {
 		return {
 			name: 'img',
@@ -75,6 +75,36 @@ export function getImageTypeMatcher( editor, matchImageType ) {
 
 		return { name: true, attributes: [ 'src' ] };
 	};
+}
+
+/**
+ * TODO
+ *
+ * @param {*} imgViewElement
+ * @returns
+ */
+export function extractImageAttributesFromViewElement( imgViewElement ) {
+	if ( imgViewElement.parent && !imgViewElement.parent.is( 'element', 'picture' ) ) {
+		return {
+			src: imgViewElement.getAttribute( 'src' )
+		};
+	}
+
+	const attributes = {};
+
+	for ( const child of imgViewElement.parent.getChildren() ) {
+		if ( child.is( 'element', 'source' ) ) {
+			if ( !attributes.sources ) {
+				attributes.sources = [];
+			}
+
+			attributes.sources.push( Object.fromEntries( [ ...child.getAttributes() ] ) );
+		} else if ( child.is( 'element', 'img' ) ) {
+			attributes.src = child.getAttribute( 'src' );
+		}
+	}
+
+	return attributes;
 }
 
 /**

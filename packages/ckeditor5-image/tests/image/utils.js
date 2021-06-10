@@ -24,7 +24,7 @@ import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageUtils from '../../src/imageutils';
 
 import {
-	getImageTypeMatcher,
+	getViewImgElementMatcher,
 	createImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../../src/image/utils';
@@ -126,7 +126,7 @@ describe( 'image utils', () => {
 		} );
 	} );
 
-	describe( 'getImageTypeMatcher()', () => {
+	describe( 'getViewImgElementMatcher()', () => {
 		let editor;
 
 		beforeEach( async () => {
@@ -152,15 +152,15 @@ describe( 'image utils', () => {
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				expect( getImageTypeMatcher( editor, 'imageBlock' ) ).to.eql( returnValue );
-				expect( getImageTypeMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				expect( getViewImgElementMatcher( editor, 'imageBlock' ) ).to.eql( returnValue );
+				expect( getViewImgElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
 			} );
 
 			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				expect( getImageTypeMatcher( editor, 'imageBlock', editor ) ).to.eql( returnValue );
-				expect( getImageTypeMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				expect( getViewImgElementMatcher( editor, 'imageBlock', editor ) ).to.eql( returnValue );
+				expect( getViewImgElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
 			} );
 		} );
 
@@ -188,7 +188,7 @@ describe( 'image utils', () => {
 			describe( 'the returned matcherPattern function', () => {
 				describe( 'for the "image" type requested', () => {
 					beforeEach( () => {
-						matcherPattern = getImageTypeMatcher( editor, 'imageBlock' );
+						matcherPattern = getViewImgElementMatcher( editor, 'imageBlock' );
 					} );
 
 					it( 'should return a function', () => {
@@ -236,7 +236,7 @@ describe( 'image utils', () => {
 
 				describe( 'for the "imageInline" type requested', () => {
 					beforeEach( () => {
-						matcherPattern = getImageTypeMatcher( editor, 'imageInline' );
+						matcherPattern = getViewImgElementMatcher( editor, 'imageInline' );
 					} );
 
 					it( 'should return a function', () => {

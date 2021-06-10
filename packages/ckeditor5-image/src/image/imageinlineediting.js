@@ -11,13 +11,18 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
-import { modelToViewAttributeConverter, srcsetAttributeConverter } from './converters';
+import {
+	modelToViewAttributeConverter,
+	sourcesAttributeConverter,
+	srcsetAttributeConverter
+} from './converters';
 
 import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
-	getImageTypeMatcher,
+	getViewImgElementMatcher,
+	extractImageAttributesFromViewElement,
 	createImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
@@ -61,7 +66,7 @@ export default class ImageInlineEditing extends Plugin {
 			isObject: true,
 			isInline: true,
 			allowWhere: '$text',
-			allowAttributes: [ 'alt', 'src', 'srcset' ]
+			allowAttributes: [ 'alt', 'src', 'srcset', 'sources' ]
 		} );
 
 		// Disallow inline images in captions (for now). This is the best spot to do that because
@@ -111,13 +116,16 @@ export default class ImageInlineEditing extends Plugin {
 		conversion.for( 'downcast' )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) )
+			.add( sourcesAttributeConverter( imageUtils, 'imageInline' ) )
 			.add( srcsetAttributeConverter( imageUtils, 'imageInline' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getImageTypeMatcher( editor, 'imageInline' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
+				view: getViewImgElementMatcher( editor, 'imageInline' ),
+				model: ( viewImage, { writer } ) => {
+					return writer.createElement( 'imageInline', extractImageAttributesFromViewElement( viewImage ) );
+				}
 			} );
 	}
 
