@@ -25,7 +25,8 @@ export default class CodeBlockCommand extends Command {
 		super( editor );
 
 		/**
-		 * Remebers what language the last code block was created in.
+		 * Contains the last used language.
+
 		 * @protected
 		 * @type {String|null}
 		 */
@@ -55,10 +56,10 @@ export default class CodeBlockCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Command options.
-	 * @param {String|null} [options.language] Language picked from dropdown.
+	 * @param {String} [options.language] The code block language.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
-	 * @param {Boolean} [options.usePreviousLanguageChoice=true] Defines whether or not button will create code block with the same
+	 * @param {Boolean} [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command will apply the previous language (if the command was already executed) when inserting the `codeBlock` element.
 	 * language as the previous code block.
 	 */
 	execute( options = {} ) {
@@ -198,12 +199,12 @@ function canBeCodeBlock( schema, element ) {
 // @param {String} defaultLanguage
 // @return {String}
 function getLanguage( options, lastLanguage, defaultLanguage ) {
-	if ( options.usePreviousLanguageChoice && lastLanguage ) {
-		return lastLanguage;
-	}
-
 	if ( options.language ) {
 		return options.language;
+	}
+
+	if ( options.usePreviousLanguageChoice && lastLanguage ) {
+		return lastLanguage;
 	}
 
 	return defaultLanguage;
