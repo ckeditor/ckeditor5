@@ -54,8 +54,6 @@ class InsertSmartField extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		console.log( { editor, config: editor.config } );
-
 		const smartFields = [
 			'Bill To Address',
 			'Company Name',
@@ -113,13 +111,6 @@ class InsertSmartField extends Plugin {
 				const formattedText = `[[${ evt.source.label.replace( / /g, '' ) }]]`;
 				editor.model.change( () => {
 					editor.config._config.insertSmartField.cbFn( editor, formattedText );
-					// if ( editor.config._config.insertSmartField.parseField ) {
-					// 	editor.config._config.insertSmartField.cbFn( editor, formattedText );
-					// } else {
-					// 	const smartField = writer.createElement( 'span' );
-					// 	writer.insertText( formattedText, smartField );
-					// 	editor.model.insertContent( smartField, editor.model.document.selection );
-					// }
 				} );
 			} );
 			return dropdownView;
