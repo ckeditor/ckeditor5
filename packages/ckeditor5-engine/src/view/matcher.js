@@ -8,6 +8,7 @@
  */
 
 import { isPlainObject } from 'lodash-es';
+
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -321,19 +322,51 @@ function matchPatterns( patterns, items, valueGetter ) {
 	return match;
 }
 
-// Bring all the possible pattern forms to an array of objects with `key` and `value` property.
-// For example:
+// Bring all the possible pattern forms to an array of arrays where first item is a key and second is a value.
 //
-//	{
-//		src: /https:.*/
-//	}
+// Examples:
+//
+// Boolean pattern value:
+//
+//		true
+//
+// to
+//
+//		[ [ true, true ] ]
+//
+// Textual pattern value:
+//
+//		'attribute-name-or-class-or-style'
+//
+// to
+//
+//		[ [ 'attribute-name-or-class-or-style', true ] ]
+//
+// Regular expression:
+//
+//		/^data-.*$/
+//
+// to
+//
+//		[ [ /^data-.*$/, true ] ]
+//
+// Objects (plain or with `key` and `value` specified explicitly):
+//
+//		{
+//			src: /^https:.*$/
+//		}
+//
+// or
+//
+//		[ {
+//			key: 'src',
+//			value: /^https:.*$/
+//		} ]
 //
 // to:
 //
-//	{
-//		key: 'src',
-//		value: /https:.*/
-//	}
+//		[ [ 'src', /^https:.*$/ ] ]
+//
 // @param {Object|Array} patterns
 // @returns {Array|null} Returns an array of objects or null if provided patterns were not in an expected form.
 function normalizePatterns( patterns ) {
@@ -342,7 +375,7 @@ function normalizePatterns( patterns ) {
 			if ( isPlainObject( pattern ) ) {
 				if ( pattern.key === undefined || pattern.value === undefined ) {
 					// Documented at the end of matcher.js.
-					logWarning( 'matcher-patterns-pattern-missing-key-or-value', pattern );
+					logWarning( 'matcher-pattern-missing-key-or-value', pattern );
 				}
 
 				return [ pattern.key, pattern.value ];
@@ -351,7 +384,9 @@ function normalizePatterns( patterns ) {
 			// Assume the pattern is either String or RegExp.
 			return [ pattern, true ];
 		} );
-	} else if ( isPlainObject( patterns ) ) {
+	}
+
+	if ( isPlainObject( patterns ) ) {
 		return Object.entries( patterns );
 	}
 
@@ -536,5 +571,5 @@ function matchStyles( patterns, element ) {
  * Refer the documentation: {@link module:engine/view/matcher~MatcherPattern}.
  *
  * @param {Object} pattern Pattern with missing properties.
- * @error matcher-patterns-pattern-missing-key-or-value
+ * @error matcher-pattern-missing-key-or-value
  */
