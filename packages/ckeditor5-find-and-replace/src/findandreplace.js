@@ -12,29 +12,7 @@ import { Collection } from 'ckeditor5/src/utils';
 import FindAndReplaceUI from './findandreplaceui';
 import FindAndReplaceEditing from './findandreplaceediting';
 
-import { updateFindResultFromRange } from './utils';
-
-const HIGHLIGHT_CLASS = 'find-result_selected';
-
-function regexpMatchToFindResult( matchResult ) {
-	return {
-		label: matchResult[ 0 ],
-		start: matchResult.index,
-		end: matchResult.index + matchResult[ 0 ].length
-	};
-}
-
-function findByTextCallback( searchTerm ) {
-	const regExp = new RegExp( `${ searchTerm }`, 'igu' );
-
-	function findCallback( { text } ) {
-		const matches = [ ...text.matchAll( regExp ) ];
-
-		return matches.map( regexpMatchToFindResult );
-	}
-
-	return findCallback;
-}
+import { updateFindResultFromRange, findByTextCallback } from './utils';
 
 // Reacts to document changes in order to update search list.
 function onDocumentChange( results, model, searchCallback ) {
@@ -82,60 +60,6 @@ function onDocumentChange( results, model, searchCallback ) {
 	// Run search callback again on updated nodes.
 	changedNodes.forEach( nodeToCheck => {
 		updateFindResultFromRange( model.createRangeOn( nodeToCheck ), model, searchCallback, results );
-	} );
-}
-
-function getDefaultCallback( textOrCallback ) {
-	return writer => {
-		return writer.createText( textOrCallback );
-	};
-}
-
-function isPositionInRangeBoundaries( range, position ) {
-	return range.containsPosition( position ) || range.end.isEqual( position ) || range.start.isEqual( position );
-}
-
-function setupSelectedResultHighlighting( editor ) {
-	const { view } = editor.editing;
-	const { model } = editor;
-	const highlightedMarkers = new Set();
-
-	const getMarkerAtPosition = position =>
-		[ ...editor.model.markers ].find( marker => {
-			return isPositionInRangeBoundaries( marker.getRange(), position ) && marker.name.startsWith( 'findResult:' );
-		} );
-
-	view.document.registerPostFixer( writer => {
-		const modelSelection = model.document.selection;
-
-		const marker = getMarkerAtPosition( modelSelection.focus );
-
-		if ( !marker ) {
-			return;
-		}
-
-		[ ...editor.editing.mapper.markerNameToElements( marker.name ) ].forEach( viewElement => {
-			writer.addClass( HIGHLIGHT_CLASS, viewElement );
-			highlightedMarkers.add( viewElement );
-		} );
-	} );
-
-	function removeHighlight() {
-		view.change( writer => {
-			[ ...highlightedMarkers.values() ].forEach( item => {
-				writer.removeClass( HIGHLIGHT_CLASS, item );
-				highlightedMarkers.delete( item );
-			} );
-		} );
-	}
-
-	// Removing the class.
-	editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-		// Make sure the highlight is removed on every possible event, before conversion is started.
-		dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
-		dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
-		dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-		dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
 	} );
 }
 
@@ -224,8 +148,6 @@ export default class FindAndReplace extends Plugin {
 			this.replaceAll( data.replaceText );
 		} );
 
-		setupSelectedResultHighlighting( this.editor );
-
 		this.activeResults = null;
 	}
 
@@ -297,6 +219,12 @@ export default class FindAndReplace extends Plugin {
 
 			model.insertContent( callback( writer ), range );
 		} );
+
+		function getDefaultCallback( textOrCallback ) {
+			return writer => {
+				return writer.createText( textOrCallback );
+			};
+		}
 	}
 
 	/**

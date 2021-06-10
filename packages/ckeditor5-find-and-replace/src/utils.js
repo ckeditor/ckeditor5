@@ -80,3 +80,23 @@ function findInsertIndex( resultsList, markerToInsert ) {
 
 	return result ? resultsList.getIndex( result ) : resultsList.length;
 }
+
+function regexpMatchToFindResult( matchResult ) {
+	return {
+		label: matchResult[ 0 ],
+		start: matchResult.index,
+		end: matchResult.index + matchResult[ 0 ].length
+	};
+}
+
+export function findByTextCallback( searchTerm ) {
+	const regExp = new RegExp( `${ searchTerm }`, 'igu' );
+
+	function findCallback( { text } ) {
+		const matches = [ ...text.matchAll( regExp ) ];
+
+		return matches.map( regexpMatchToFindResult );
+	}
+
+	return findCallback;
+}
