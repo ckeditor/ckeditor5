@@ -607,6 +607,30 @@ describe( 'MergeCellCommand', () => {
 				expect( command.value ).to.be.undefined;
 			} );
 
+			it( 'should be undefined if in last row - ignore non-row elements', () => {
+				model.schema.register( 'foo', {
+					allowIn: 'table',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>10[]</paragraph></tableCell>' +
+							'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+
+				expect( command.value ).to.be.undefined;
+			} );
+
 			it( 'should be set to mergeable cell with the same rowspan', () => {
 				setData( model, modelTable( [
 					[ { colspan: 2, contents: '00[]' }, '02' ],

@@ -6,6 +6,7 @@
 /* globals console */
 
 import EditingController from '../../src/controller/editingcontroller';
+import DataController from '../../src/controller/datacontroller';
 
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
@@ -2468,6 +2469,59 @@ describe( 'DowncastHelpers', () => {
 			expectResult( '<p>Foo</p>' );
 		} );
 
+		it( 'default conversion, document fragment, text', () => {
+			const dataController = new DataController( model, new StylesProcessor() );
+			downcastHelpers = new DowncastHelpers( [ dataController.downcastDispatcher ] );
+
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			let modelDocumentFragment;
+
+			model.change( writer => {
+				modelDocumentFragment = writer.createDocumentFragment();
+
+				writer.insertText( 'foobar', [], modelDocumentFragment, 0 );
+
+				const range = writer.createRange(
+					writer.createPositionFromPath( modelDocumentFragment, [ 2 ] ),
+					writer.createPositionFromPath( modelDocumentFragment, [ 5 ] )
+				);
+
+				modelDocumentFragment.markers.set( 'group:foo:bar', range );
+			} );
+
+			const expectedResult = 'fo<group-start name="foo:bar"></group-start>oba<group-end name="foo:bar"></group-end>r';
+
+			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
+		} );
+
+		it( 'default conversion, document fragment, element', () => {
+			const dataController = new DataController( model, new StylesProcessor() );
+			downcastHelpers = new DowncastHelpers( [ dataController.downcastDispatcher ] );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			let modelDocumentFragment;
+
+			model.change( writer => {
+				modelDocumentFragment = writer.createDocumentFragment();
+
+				writer.insertElement( 'paragraph', [], modelDocumentFragment, 0 );
+
+				const range = writer.createRange(
+					writer.createPositionFromPath( modelDocumentFragment, [ 0 ] ),
+					writer.createPositionFromPath( modelDocumentFragment, [ 1 ] )
+				);
+
+				modelDocumentFragment.markers.set( 'group:foo:bar', range );
+			} );
+
+			const expectedResult = '<p data-group-end-after="foo:bar" data-group-start-before="foo:bar">&nbsp;</p>';
+
+			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
+		} );
+
 		it( 'conversion callback, mixed, multiple markers, name', () => {
 			const customData = {
 				foo: 'bar',
@@ -2555,6 +2609,38 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		// Fix for a bug that happens for soft breaks in code blocks.
+		// In that case, soft break model element is not converted to a view element.
+		it( 'default conversion, over model element not mapped to the view', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			model.schema.register( 'customElement', { inheritAllFrom: '$block' } );
+
+			controller.downcastDispatcher.on( 'insert:customElement', ( evt, data, conversionApi ) => {
+				const viewText = conversionApi.writer.createText( 'A' );
+				const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+				conversionApi.writer.insert( viewPosition, viewText );
+			} );
+
+			// <paragraph> added so it can store selection, otherwise it throws.
+			setModelData( model, '<paragraph></paragraph><customElement></customElement>' );
+
+			model.change( writer => {
+				const range = writer.createRangeOn( root.getChild( 1 ) );
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p></p><group-start name="foo:bar:baz"></group-start>A<group-end name="foo:bar:baz"></group-end>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p></p>A' );
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
@@ -3426,6 +3512,15 @@ describe( 'downcast converters', () => {
 			expect( element.name ).to.equal( 'span' );
 			expect( element.priority ).to.equal( 7 );
 			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+		} );
+
+		it( 'should pass priority 0', () => {
+			const descriptor = {
+				priority: 0
+			};
+			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+
+			expect( element.priority ).to.equal( 0 );
 		} );
 	} );
 } );

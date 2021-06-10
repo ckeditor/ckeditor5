@@ -101,10 +101,15 @@ function getSanitizeHtmlConfig( defaultConfig ) {
 		'video',
 		'picture',
 		'source',
-		'img'
+		'img',
+
+		// Allows embedding scripts.
+		'script'
 	);
 
 	config.selfClosing.push( 'source' );
+
+	config.allowVulnerableTags = true;
 
 	// Remove duplicates.
 	config.allowedTags = [ ...new Set( config.allowedTags ) ];

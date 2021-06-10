@@ -15,7 +15,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableCellBorderColorCommand', () => {
+		describe( 'TableCellBorderColorCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -24,7 +24,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableCellBorderColorCommand( editor );
+				command = new TableCellBorderColorCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -201,7 +201,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table cell borderColor to a passed value', () => {
@@ -209,7 +209,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table cell if no value is passed', () => {
@@ -227,7 +227,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should change selected table cell borderColor to a passed value', () => {
@@ -235,7 +235,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
 					it( 'should remove borderColor from a selected table cell if no value is passed', () => {
@@ -259,8 +259,8 @@ describe( 'table cell properties', () => {
 						command.execute( { value: '#f00' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
-							[ { contents: '00', style: 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' }, '01' ],
-							[ '10', { contents: '11', style: 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' } ]
+							[ { contents: '00', style: 'border-color:#f00;' }, '01' ],
+							[ '10', { contents: '11', style: 'border-color:#f00;' } ]
 						] ) );
 					} );
 
@@ -271,6 +271,110 @@ describe( 'table cell properties', () => {
 						] ) );
 
 						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableCellBorderColorCommand: non-default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TableCellPropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableCellBorderColorCommand( editor, 'red' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default borderColor property (single string)', () => {
+						setData( model, modelTable( [ [ { borderColor: 'red', contents: '[]foo' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if selected table cell has the default borderColor property object with same values', () => {
+						setTableCellWithObjectAttributes( model, {
+							borderColor: {
+								top: 'red',
+								right: 'red',
+								bottom: 'red',
+								left: 'red'
+							}
+						}, '[]foo' );
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined is selection contains the default value', () => {
+						setData( model, modelTable( [ [ { borderColor: 'red', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it(
+						'should be undefined if all table cells have the same "borderColor" property value which is the default value',
+						() => {
+							setData( model, modelTable( [
+								[
+									{ contents: '00', isSelected: true, borderColor: 'red' },
+									{ contents: '01', isSelected: true, borderColor: 'red' }
+								],
+								[
+									'10',
+									{ contents: '11', isSelected: true, borderColor: 'red' }
+								]
+							] ) );
+
+							expect( command.value ).to.be.undefined;
+						} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove borderColor from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { borderColor: 'blue', contents: '[]foo' } ] ] ) );
+
+						command.execute( { value: 'red' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove borderColor from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute( { value: 'red' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should remove "borderColor" from the selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, borderColor: '#f00' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, borderColor: '#f00' } ]
+						] ) );
+
+						command.execute( { value: 'red' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[ '00', '01' ],

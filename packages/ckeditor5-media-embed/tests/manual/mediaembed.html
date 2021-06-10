@@ -1,9 +1,13 @@
 <head>
-	<!-- For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI. -->
+	<!--
+		For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI.
+		Additionally, the embedded Spotify player has started to throw an uncaught exception, but only on CI. See #9678.
+	-->
 	<meta name="x-cke-crawler-ignore-patterns" content='{
 		"request-failure": "vimeo.com",
 		"response-failure": "vimeo.com",
-		"console-error": [ "<svg> attribute preserveAspectRatio", "vimeo.com" ]
+		"console-error": [ "<svg> attribute preserveAspectRatio", "vimeo.com" ],
+		"uncaught-exception": "retargetingPixels is not defined"
 	}'>
 
 	<style>

@@ -3877,24 +3877,9 @@ describe( 'table clipboard', () => {
 
 			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( tableCell.getAttribute( 'borderColor' ) ).to.deep.equal( {
-				top: '#f00',
-				right: '#f00',
-				bottom: '#f00',
-				left: '#f00'
-			} );
-			expect( tableCell.getAttribute( 'borderStyle' ) ).to.deep.equal( {
-				top: 'solid',
-				right: 'solid',
-				bottom: 'solid',
-				left: 'solid'
-			} );
-			expect( tableCell.getAttribute( 'borderWidth' ) ).to.deep.equal( {
-				top: '1px',
-				right: '1px',
-				bottom: '1px',
-				left: '1px'
-			} );
+			expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+			expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+			expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 			expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#ba7' );
 			expect( tableCell.getAttribute( 'width' ) ).to.equal( '1337px' );
 		} );
@@ -3988,9 +3973,9 @@ describe( 'table clipboard', () => {
 			const tableModelData = modelTable( [
 				[ {
 					contents: '<paragraph>Test</paragraph>',
-					borderColor: `{"top":"${ color }","bottom":"${ color }","right":"${ color }","left":"${ color }"}`,
-					borderStyle: `{"top":"${ style }","bottom":"${ style }","right":"${ style }","left":"${ style }"}`,
-					borderWidth: `{"top":"${ width }","bottom":"${ width }","right":"${ width }","left":"${ width }"}`
+					borderColor: color,
+					borderStyle: style,
+					borderWidth: width
 				} ]
 			] );
 

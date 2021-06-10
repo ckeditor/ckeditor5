@@ -73,8 +73,7 @@ describe( 'MediaEmbedCommand', () => {
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( '$text', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 
 			setData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;

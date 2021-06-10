@@ -1,6 +1,6 @@
 ---
 category: framework-contributing
-order: 40
+order: 50
 ---
 
 # Git commit message convention

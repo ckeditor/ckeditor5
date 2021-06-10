@@ -72,6 +72,7 @@
 		/* Place the drag handler outside the widget wrapper. */
 		transform: translateY(-100%);
 		left: calc(0px - var(--ck-widget-outline-thickness));
+		top: 0;
 
 		& .ck-icon {
 			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */

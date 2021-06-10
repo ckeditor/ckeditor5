@@ -43,6 +43,14 @@ describe( 'table cell properties', () => {
 			expect( TableCellPropertiesEditing.pluginName ).to.equal( 'TableCellPropertiesEditing' );
 		} );
 
+		it( 'should define table.tableCellProperties config', () => {
+			const config = editor.config.get( 'table.tableCellProperties' );
+
+			expect( config ).to.be.an( 'object' );
+			expect( config ).to.have.property( 'defaultProperties' );
+			expect( config.defaultProperties ).to.deep.equal( {} );
+		} );
+
 		it( 'adds tableCellBorderColor command', () => {
 			expect( editor.commands.get( 'tableCellBorderColor' ) ).to.be.instanceOf( TableCellBorderColorCommand );
 		} );
@@ -92,9 +100,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00' );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid' );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px' );
+					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -102,7 +110,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00' );
+					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -110,7 +118,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderStyle', 'ridge' );
+					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -118,7 +126,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px' );
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
@@ -295,7 +303,7 @@ describe( 'table cell properties', () => {
 						left: '#f00'
 					}, tableCell ) );
 
-					assertTableCellStyle( editor, 'border-bottom:#f00;border-left:#f00;border-right:#f00;border-top:#f00;' );
+					assertTableCellStyle( editor, 'border-color:#f00;' );
 				} );
 
 				it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
@@ -307,10 +315,10 @@ describe( 'table cell properties', () => {
 					}, tableCell ) );
 
 					assertTableCellStyle( editor,
-						'border-bottom:deeppink;' +
-						'border-left:rgb(255, 0, 0);' +
-						'border-right:hsla(0, 100%, 50%, 0.5);' +
-						'border-top:#f00;'
+						'border-bottom-color:deeppink;' +
+						'border-left-color:rgb(255, 0, 0);' +
+						'border-right-color:hsla(0, 100%, 50%, 0.5);' +
+						'border-top-color:#f00;'
 					);
 				} );
 
@@ -342,7 +350,7 @@ describe( 'table cell properties', () => {
 						left: 'solid'
 					}, tableCell ) );
 
-					assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+					assertTableCellStyle( editor, 'border-style:solid;' );
 				} );
 
 				it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
@@ -353,7 +361,12 @@ describe( 'table cell properties', () => {
 						left: 'dashed'
 					}, tableCell ) );
 
-					assertTableCellStyle( editor, 'border-bottom:dotted;border-left:dashed;border-right:ridge;border-top:solid;' );
+					assertTableCellStyle( editor,
+						'border-bottom-style:dotted;' +
+						'border-left-style:dashed;' +
+						'border-right-style:ridge;' +
+						'border-top-style:solid;'
+					);
 				} );
 
 				it( 'should consume converted item borderWidth attribute', () => {
@@ -384,7 +397,12 @@ describe( 'table cell properties', () => {
 						left: 'thick'
 					}, tableCell ) );
 
-					assertTableCellStyle( editor, 'border-bottom:1337rem;border-left:thick;border-right:.1em;border-top:42px;' );
+					assertTableCellStyle( editor,
+						'border-bottom-width:1337rem;' +
+						'border-left-width:thick;' +
+						'border-right-width:.1em;' +
+						'border-top-width:42px;'
+					);
 				} );
 
 				it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
@@ -395,7 +413,7 @@ describe( 'table cell properties', () => {
 						left: '42px'
 					}, tableCell ) );
 
-					assertTableCellStyle( editor, 'border-bottom:42px;border-left:42px;border-right:42px;border-top:42px;' );
+					assertTableCellStyle( editor, 'border-width:42px;' );
 				} );
 
 				it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
@@ -422,12 +440,7 @@ describe( 'table cell properties', () => {
 						}, tableCell );
 					} );
 
-					assertTableCellStyle( editor,
-						'border-bottom:42px solid #f00;' +
-						'border-left:42px solid #f00;' +
-						'border-right:42px solid #f00;' +
-						'border-top:42px solid #f00;'
-					);
+					assertTableCellStyle( editor, 'border:42px solid #f00;' );
 				} );
 
 				it(
@@ -499,12 +512,7 @@ describe( 'table cell properties', () => {
 							left: 'deeppink'
 						}, tableCell ) );
 
-						assertTableCellStyle( editor,
-							'border-bottom:42px solid deeppink;' +
-							'border-left:42px solid deeppink;' +
-							'border-right:42px solid deeppink;' +
-							'border-top:42px solid deeppink;'
-						);
+						assertTableCellStyle( editor, 'border:42px solid deeppink;' );
 					} );
 
 					it( 'should downcast borderStyle attribute change', () => {
@@ -515,12 +523,7 @@ describe( 'table cell properties', () => {
 							left: 'ridge'
 						}, tableCell ) );
 
-						assertTableCellStyle( editor,
-							'border-bottom:42px ridge #f00;' +
-							'border-left:42px ridge #f00;' +
-							'border-right:42px ridge #f00;' +
-							'border-top:42px ridge #f00;'
-						);
+						assertTableCellStyle( editor, 'border:42px ridge #f00;' );
 					} );
 
 					it( 'should downcast borderWidth attribute change', () => {
@@ -531,22 +534,15 @@ describe( 'table cell properties', () => {
 							left: 'thick'
 						}, tableCell ) );
 
-						assertTableCellStyle( editor,
-							'border-bottom:thick solid #f00;' +
-							'border-left:thick solid #f00;' +
-							'border-right:thick solid #f00;' +
-							'border-top:thick solid #f00;'
-						);
+						assertTableCellStyle( editor, 'border:thick solid #f00;' );
 					} );
 
 					it( 'should downcast borderColor attribute removal', () => {
 						model.change( writer => writer.removeAttribute( 'borderColor', tableCell ) );
 
 						assertTableCellStyle( editor,
-							'border-bottom:42px solid;' +
-							'border-left:42px solid;' +
-							'border-right:42px solid;' +
-							'border-top:42px solid;'
+							'border-style:solid;' +
+							'border-width:42px;'
 						);
 					} );
 
@@ -554,10 +550,8 @@ describe( 'table cell properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderStyle', tableCell ) );
 
 						assertTableCellStyle( editor,
-							'border-bottom:42px #f00;' +
-							'border-left:42px #f00;' +
-							'border-right:42px #f00;' +
-							'border-top:42px #f00;'
+							'border-color:#f00;' +
+							'border-width:42px;'
 						);
 					} );
 
@@ -565,10 +559,8 @@ describe( 'table cell properties', () => {
 						model.change( writer => writer.removeAttribute( 'borderWidth', tableCell ) );
 
 						assertTableCellStyle( editor,
-							'border-bottom:solid #f00;' +
-							'border-left:solid #f00;' +
-							'border-right:solid #f00;' +
-							'border-top:solid #f00;'
+							'border-color:#f00;' +
+							'border-style:solid;'
 						);
 					} );
 
@@ -685,7 +677,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should not upcast text-align:left style', () => {
+				it( 'should upcast text-align:left style (due to the default value of the property)', () => {
 					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -699,7 +691,7 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
 				} );
 
-				it( 'should upcast text-align:center style', () => {
+				it( 'should not upcast text-align:center style', () => {
 					editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -711,6 +703,36 @@ describe( 'table cell properties', () => {
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+				} );
+
+				describe( 'the [align] attribute', () => {
+					it( 'should not upcast the align=left attribute (due to the default value of the property)', () => {
+						editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					} );
+
+					it( 'should upcast the align=right attribute', () => {
+						editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
+					} );
+
+					it( 'should upcast the align=center attribute', () => {
+						editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+					} );
+
+					it( 'should upcast the align=justify attribute', () => {
+						editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+					} );
 				} );
 
 				describe( 'for RTL content language', () => {
@@ -729,7 +751,7 @@ describe( 'table cell properties', () => {
 						await editor.destroy();
 					} );
 
-					it( 'should not upcast text-align:right style', () => {
+					it( 'should not upcast text-align:right style (due to the default value of the property)', () => {
 						editor.setData( '<table><tr><td style="text-align:right">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -743,7 +765,7 @@ describe( 'table cell properties', () => {
 						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
 					} );
 
-					it( 'should upcast text-align:center style', () => {
+					it( 'should not upcast text-align:center style', () => {
 						editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -755,6 +777,36 @@ describe( 'table cell properties', () => {
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+					} );
+
+					describe( 'the [align] attribute', () => {
+						it( 'should upcast the align=left attribute', () => {
+							editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+						} );
+
+						it( 'should not upcast the align=right attribute  (due to the default value of the property)', () => {
+							editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+						} );
+
+						it( 'should upcast the align=center attribute', () => {
+							editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+						} );
+
+						it( 'should upcast the align=justify attribute', () => {
+							editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+						} );
 					} );
 				} );
 			} );
@@ -796,10 +848,10 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should not downcast horizontalAlignment=left', () => {
+				it( 'should downcast horizontalAlignment=left', () => {
 					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'left', tableCell ) );
 
-					assertTableCellStyle( editor );
+					assertTableCellStyle( editor, 'text-align:left;' );
 				} );
 
 				it( 'should downcast horizontalAlignment=right', () => {
@@ -872,7 +924,7 @@ describe( 'table cell properties', () => {
 					it( 'should not downcast horizontalAlignment=right', () => {
 						model.change( writer => writer.setAttribute( 'horizontalAlignment', 'right', tableCell ) );
 
-						assertTableCellStyle( editor );
+						assertTableCellStyle( editor, 'text-align:right;' );
 					} );
 
 					it( 'should downcast horizontalAlignment=left', () => {
@@ -916,7 +968,7 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'bottom' );
 				} );
 
-				it( 'should not upcast "middle" vertical-align', () => {
+				it( 'should not upcast "middle" vertical-align (due to the default value of the property)', () => {
 					editor.setData( '<table><tr><td style="vertical-align:middle">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -937,7 +989,7 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'bottom' );
 				} );
 
-				it( 'should not upcast "middle" valign attribute', () => {
+				it( 'should not upcast "middle" valign attribute (due to the default value of the property)', () => {
 					editor.setData( '<table><tr><td valign="middle">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -1241,6 +1293,233 @@ describe( 'table cell properties', () => {
 					model.change( writer => writer.setAttribute( 'height', '1410em', tableCell ) );
 
 					assertTableCellStyle( editor, 'height:1410em;' );
+				} );
+			} );
+		} );
+
+		// When default properties are specified, we do not want to put them into the model values if they are equal to the defaults.
+		describe( 'default table cell properties', () => {
+			let editor, model;
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									horizontalAlignment: 'left',
+									verticalAlignment: 'bottom',
+									borderStyle: 'dashed',
+									borderColor: '#ff0',
+									borderWidth: '2px',
+									backgroundColor: '#00f',
+									width: '250px',
+									height: '150px',
+									padding: '10px'
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						model = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				editor.destroy();
+			} );
+
+			describe( 'border', () => {
+				it( 'should not upcast the default `border` values from <td>', () => {
+					editor.setData( '<table><tr><td style="border:2px dashed #ff0">foo</td></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border` values from <th>', () => {
+					editor.setData( '<table><tr><th style="border:2px dashed #ff0">foo</th></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-color` value from <td>', () => {
+					editor.setData( '<table><tr><td style="border-color:#ff0">foo</td></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-style` value from <th>', () => {
+					editor.setData( '<table><tr><th style="border-style:dashed">foo</th></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-width` value from <td>', () => {
+					editor.setData( '<table><tr><td style="border-width:2px">foo</td></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `border-width` value from <th>', () => {
+					editor.setData( '<table><tr><th style="border-width:2px">foo</th></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'background color', () => {
+				it( 'should not upcast the default `background-color` value from <td>', () => {
+					editor.setData( '<table><tr><td style="background-color:#00f">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `background` value from <td>', () => {
+					editor.setData( '<table><tr><td style="background:#00f">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+				it( 'should not upcast the default `background-color` value from <th>', () => {
+					editor.setData( '<table><tr><th style="background-color:#00f">foo</th></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `background` value from <th>', () => {
+					editor.setData( '<table><tr><th style="background:#00f">foo</th></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'width', () => {
+				it( 'should upcast the default `width` value from <td>', () => {
+					editor.setData( '<table><tr><td style="width:250px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `width` value from <th>', () => {
+					editor.setData( '<table><tr><th style="width:250px">foo</th></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'width' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'height', () => {
+				it( 'should not upcast the default `height` value from <td>', () => {
+					editor.setData( '<table><tr><td style="height:150px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'height' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `height` value from <th>', () => {
+					editor.setData( '<table><tr><td style="height:150px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'height' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'padding', () => {
+				it( 'should not upcast the default `padding` value from <td>', () => {
+					editor.setData( '<table><tr><td style="padding:10px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'padding' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default `padding` value from <th>', () => {
+					editor.setData( '<table><tr><td style="padding:10px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'padding' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'horizontalAlignment', () => {
+				it( 'should not upcast the default value from the style attribute (text-align:left) from <td>', () => {
+					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the style attribute (text-align:left) from <th>', () => {
+					editor.setData( '<table><tr><th style="text-align:left">foo</th></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the align attribute (left) from <td>', () => {
+					editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the align attribute (left) from <th>', () => {
+					editor.setData( '<table><tr><th align="left">foo</th></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+				} );
+			} );
+
+			describe( 'verticalAlignment', () => {
+				it( 'should not upcast the default value from the style attribute (vertical-align:bottom;) from <td>', () => {
+					editor.setData( '<table><tr><td style="vertical-align:bottom;">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the style attribute (vertical-align:bottom;) from <th>', () => {
+					editor.setData( '<table><tr><th style="vertical-align:bottom;">foo</th></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the valign attribute (bottom) from <td>', () => {
+					editor.setData( '<table><tr><td valign="bottom">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast the default value from the valign attribute (bottom) from <th>', () => {
+					editor.setData( '<table><tr><th valign="bottom">foo</th></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
 				} );
 			} );
 		} );

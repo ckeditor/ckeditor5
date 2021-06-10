@@ -76,8 +76,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph any inline element', () => {
-				editor.model.schema.register( 'inline', { allowWhere: '$text' } );
-				editor.model.schema.extend( '$text', { allowIn: 'inline' } );
+				editor.model.schema.register( 'inline', { allowWhere: '$text', allowChildren: '$text' } );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'inline', view: 'span' } );
 				editor.conversion.for( 'upcast' ).elementToElement( { model: 'inline', view: 'span' } );
@@ -89,8 +88,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph any inline element with children', () => {
-				editor.model.schema.register( 'inline', { allowWhere: '$text' } );
-				editor.model.schema.extend( '$text', { allowIn: 'inline' } );
+				editor.model.schema.register( 'inline', { allowWhere: '$text', allowChildren: '$text' } );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'inline', view: 'span' } );
 				editor.conversion.for( 'upcast' ).elementToElement( { model: 'inline', view: 'span' } );
