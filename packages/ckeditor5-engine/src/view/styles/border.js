@@ -243,13 +243,13 @@ function normalizeBorderShorthand( string ) {
 //
 //      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
 //
-// It will produce: `border-style: solid` output.
+// It will produce: `border-style: solid`.
 // For a border style and color:
 //
 //      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
 //      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
 //
-// It will produce: `border-color: #ff0; border-style: solid`
+// It will produce: `border-color: #ff0; border-style: solid`.
 // If all border parameters are specified:
 //
 //      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
@@ -320,8 +320,8 @@ function getBorderPositionReducer( which ) {
 
 // Returns an array with reduced border styles depending on the specified values.
 //
-// If all (width, style, color) border properties are specified, the returned selector will be
-// merged into the group: `border-*: [width] [style] [color]`.
+// If all border properties (width, style, color) are specified, the returned selector will be
+// merged into a group: `border-*: [width] [style] [color]`.
 //
 // Otherwise, the specific definitions will be returned: `border-(width|style|color)-*: [value]`.
 //

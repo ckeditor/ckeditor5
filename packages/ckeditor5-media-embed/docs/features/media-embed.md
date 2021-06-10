@@ -109,7 +109,7 @@ Further customization of the semantic data output can be done through the {@link
 </figure>
 ```
 
-If `elementName` is overridden to something beside the default value, existing `<oembed>` elements will still be shown for backward compatibility purposes.
+If `elementName` is overridden to something other than the default value, the existing `<oembed>` elements will still be shown for backwards compatibility purposes.
 
 #### Including previews in data
 

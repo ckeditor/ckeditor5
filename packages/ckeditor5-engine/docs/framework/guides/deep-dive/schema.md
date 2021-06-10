@@ -45,7 +45,7 @@ While this would be incorrect:
 </$root>
 ```
 
-To declare which nodes could be inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
+To declare which nodes are allowed inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
 
 ```js
 schema.register( 'myElement', {
