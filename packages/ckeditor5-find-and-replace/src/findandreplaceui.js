@@ -1,3 +1,12 @@
+/**
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module find-and-replace/findandreplaceui
+ */
+
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
@@ -8,6 +17,8 @@ import FindAndReplaceFormView from './ui/findandreplaceformview';
  * Example Find & Replace UI that uses FindAndReplace plugin API.
  *
  * It demonstrates how to use that API form outside the editor (except UI buttons).
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class FindAndReplaceUI extends Plugin {
 	/**
@@ -23,6 +34,10 @@ export default class FindAndReplaceUI extends Plugin {
 		this.set( 'searchText' );
 		this.set( 'replaceText' );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this.activeSearch = null;
 		this.findAndReplacePlugin = this.editor.plugins.get( 'FindAndReplace' );

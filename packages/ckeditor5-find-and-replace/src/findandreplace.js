@@ -1,6 +1,16 @@
+/**
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module find-and-replace/findandreplace
+ */
+
 import { Plugin } from 'ckeditor5/src/core';
 import { Collection, uid } from 'ckeditor5/src/utils';
 import FindAndReplaceUI from './findandreplaceui';
+// import FindAndReplaceEditing from './findandreplaceediting';
 
 const HIGHLIGHT_CLASS = 'find-result_selected';
 
@@ -200,19 +210,23 @@ function setupSelectedResultHighlighting( editor ) {
 }
 
 /**
- * Editor plugin that provides Find & Replace API.
+ * The find and replace plugin.
  *
- * This plugin:
- * - Exposes `find( callback )` API that initiates search.
- * - Renders search result markers in the editing area.
- * - Updates list of found results on document changes.
+ * For a detailed overview, check the {@glink features/find-and-replace Find and replace feature documentation}.
+ *
+ * This is a "glue" plugin which loads the following plugins:
+ *
+ * * The {@link module:find-and-replace/findandreplaceediting~FindAndReplaceEditing find and replace editing feature},
+ * * The {@link module:find-and-replace/findandreplaceui~FindAndReplaceUI find and replace UI feature} and
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class FindAndReplace extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FindAndReplaceUI ];
+		return [ /* FindAndReplaceEditing ,*/ FindAndReplaceUI ];
 	}
 
 	/**
@@ -244,7 +258,9 @@ export default class FindAndReplace extends Plugin {
 
 		const ui = this.editor.plugins.get( 'FindAndReplaceUI' );
 
-		// findNext
+		/**
+		 * findNext button logic
+		 */
 		ui.on( 'findNext', ( event, data ) => {
 			if ( data.searchText.length !== 0 ) {
 				this.stop();
@@ -253,7 +269,9 @@ export default class FindAndReplace extends Plugin {
 			this.find( data.searchText );
 		} );
 
-		// findPrev
+		/**
+		 * FindPrev button logic
+		 */
 		ui.on( 'findPrev', ( event, data ) => {
 			if ( data.searchText.length !== 0 ) {
 				this.stop();
@@ -261,13 +279,17 @@ export default class FindAndReplace extends Plugin {
 			this.find( data.searchText );
 		} );
 
-		// replace
+		/**
+		 * Replace button logic
+		 */
 		ui.on( 'replace', ( event, data ) => {
 			// TODO: the { marker } needs to be passed down to the .replace()
 			this.replace( data.marker, data.replaceText );
 		} );
 
-		// replaceAll
+		/**
+		 * Replace all button logic
+		 */
 		ui.on( 'replaceAll', ( event, data ) => {
 			this.replaceAll( data.replaceText );
 		} );
@@ -278,10 +300,10 @@ export default class FindAndReplace extends Plugin {
 	}
 
 	/**
-   * Initiate a search.
-   *
-   * @param {Function|String} callbackOrText
-   */
+	 * Initiate a search.
+	 *
+	 * @param {Function|String} callbackOrText
+	 */
 	find( callbackOrText ) {
 		const { editor } = this;
 		const { model } = editor;
@@ -310,8 +332,8 @@ export default class FindAndReplace extends Plugin {
 	}
 
 	/**
-   * Stops active results from updating.
-   */
+	 * Stops active results from updating.
+	 */
 	stop() {
 		if ( !this.activeResults ) {
 			return;
@@ -330,11 +352,11 @@ export default class FindAndReplace extends Plugin {
 	}
 
 	/**
-   * Replace given find result by a string or a callback.
-   *
-   * @param result
-   * @param {String|Function} textOrCallback
-   */
+	 * Replace given find result by a string or a callback.
+	 *
+	 * @param result
+	 * @param {String|Function} textOrCallback
+	 */
 	replace( { marker }, textOrCallback ) {
 		const { model } = this.editor;
 
@@ -348,10 +370,10 @@ export default class FindAndReplace extends Plugin {
 	}
 
 	/**
-   * Replace all find results by a string or a callback.
-   *
-   * @param {String|Function} textOrCallback
-   */
+	 * Replaces all find results by a string or a callback.
+	 *
+	 * @param {String|Function} textOrCallback
+	 */
 	replaceAll( textOrCallback ) {
 		if ( !this.activeResults ) {
 			return;

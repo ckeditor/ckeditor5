@@ -1,3 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module find-and-replace/ui/findandreplaceformview
+ */
 
 import { ButtonView, FocusCycler, LabeledFieldView, createLabeledInputText, View, submitHandler, ViewCollection } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
@@ -6,6 +14,14 @@ import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/findandreplaceform.css';
+
+/**
+ * The media form view controller class.
+ *
+ * See {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
+ *
+ * @extends module:ui/view~View
+ */
 export default class FindAndReplaceFormView extends View {
 	constructor( locale ) {
 		super( locale );
@@ -13,44 +29,56 @@ export default class FindAndReplaceFormView extends View {
 		const t = locale.t;
 
 		/**
-		 * The Find Previous button view.
+		 * The FindPrevious button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.findPrevButtonView = this._createButton( t( '<' ), 'ck-button-prev', 'submit' );
+		this.findPrevButtonView = this._createButton( t( '<' ), 'ck-button-prev' );
 		this.findPrevButtonView.on( 'execute', () => {
 			this.fire( 'findPrev', { searchText: this.searchText } );
 		} );
 
 		/**
-		 * The Find Next button view.
+		 * The FindNext button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.findNextButtonView = this._createButton( t( '>' ), 'ck-button-next', 'submit' );
+		this.findNextButtonView = this._createButton( t( '>' ), 'ck-button-next' );
 		this.findNextButtonView.on( 'execute', () => {
 			this.fire( 'findNext', { searchText: this.searchText } );
 		} );
 
 		/**
-		 * The Replace One button view.
+		 * The Replace button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-prev', 'submit' );
+		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-prev' );
 		this.replaceButtonView.on( 'execute', () => {
 			this.fire( 'replace', { marker: this.marker, replaceText: this.replaceText } );
 		} );
 
 		/**
-		 * The Replace All button view.
+		 * The ReplaceAll button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.replaceAllButtonView = this._createButton( t( 'ReplaceAll' ), 'ck-button-next', 'submit' );
+		this.replaceAllButtonView = this._createButton( t( 'ReplaceAll' ), 'ck-button-next' );
 		this.replaceAllButtonView.on( 'execute', () => {
 			this.fire( 'replaceAll', { replaceText: this.replaceText, searchText: this.searchText } );
 		} );
 
 		/**
 		 * The Find input view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.findInputView = this._createInputField( 'Find', 'Search for something you\'d like to find' );
 
 		/**
 		 * The Replace input view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.replaceInputView = this._createInputField( 'Replace', 'Replace what you\'ve previously selected' );
 
@@ -183,10 +211,14 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * Find view configuration
 	 *
+	 * TODO: change the {String} params or remove them alltogether.
 	 * @private
+	 * @param {String} NextInputView NextButtonInput view.
+	 * @param {String} PrevInputView PrevButtonInput view.
+	 * @param {String} InputView Input view.
 	 * @return {module:ui/view~View} The find view instance.
 	 */
-	_createFindView( NextInputView, PrevInputView, InputView ) {
+	_createFindView( NextButtonInputView, PrevButtonInputView, InputView ) {
 		const findView = new View();
 
 		findView.setTemplate( {
@@ -201,8 +233,8 @@ export default class FindAndReplaceFormView extends View {
 			},
 			children: [
 				InputView,
-				PrevInputView,
-				NextInputView
+				PrevButtonInputView,
+				NextButtonInputView
 			]
 		} );
 
@@ -212,10 +244,14 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * Replace view configuration
 	 *
+	 * TODO: change the {String} params or remove them alltogether.
 	 * @private
+	 * @param {String} NextInputView NextButtonInput view.
+	 * @param {String} PrevInputView PrevButtonInput view.
+	 * @param {String} InputView Input view.
 	 * @returns {module:ui/view~View} The replace view instance.
 	 */
-	_createReplaceView( NextInputView, PrevInputView, InputView ) {
+	_createReplaceView( NextButtonInputView, PrevButtonInputView, InputView ) {
 		const replaceView = new View();
 
 		replaceView.setTemplate( {
@@ -230,8 +266,8 @@ export default class FindAndReplaceFormView extends View {
 			},
 			children: [
 				InputView,
-				PrevInputView,
-				NextInputView
+				PrevButtonInputView,
+				NextButtonInputView
 			]
 		} );
 		return replaceView;
@@ -241,7 +277,7 @@ export default class FindAndReplaceFormView extends View {
 	 * Creates a labeled input view.
 	 *
 	 * @private
-	 * @param {String} labelText The input label.
+	 * @param {String} label The input label.
 	 * @param {String} infoText The additional information text.
 	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled input view instance.
 	 */
@@ -269,11 +305,10 @@ export default class FindAndReplaceFormView extends View {
 	 *
 	 * @private
 	 * @param {String} label The button label.
-	 * @param {String} icon The button icon.
-	 * @param {String} className The additional button CSS class name.
+	 * @param {String} className The individual button CSS class name.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, icon, className ) {
+	_createButton( label, className ) {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
