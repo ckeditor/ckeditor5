@@ -272,6 +272,11 @@
 					"slug": "pasting"
 				},
 				{
+					"name": "Revision history",
+					"id": "features-revision-history",
+					"slug": "revision-history"
+				},
+				{
 					"name": "Toolbar",
 					"id": "features-toolbar",
 					"slug": "toolbar"
