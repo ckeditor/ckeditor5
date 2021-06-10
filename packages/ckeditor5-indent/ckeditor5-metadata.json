@@ -3,7 +3,7 @@
 		{
 			"name": "Indent",
 			"className": "Indent",
-			"description": "Implements the core of the indent feature. It requires compatible plugins, such as indent block or list, to work.",
+			"description": "This package implements the core of the indent feature. It requires compatible plugins, such as indent block or list, to work.",
 			"docs": "features/indent.html",
 			"path": "src/indent.js",
 			"uiComponents": [

@@ -64,10 +64,10 @@ To allow the following structure:
 </$root>
 ```
 
-Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can be also inherited from other `SchemaItemDefinition` items. 
+Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can be also inherited from other `SchemaItemDefinition` items.
 
 <info-box>
-	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
+	You can read more about the format of the item definition in the {@link module:engine/model/schema~SchemaItemDefinition} API guide.
 </info-box>
 
 ## Defining additional semantics

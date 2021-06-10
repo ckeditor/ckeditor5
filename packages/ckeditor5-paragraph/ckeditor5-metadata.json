@@ -3,7 +3,7 @@
 		{
 			"name": "Paragraph",
 			"className": "Paragraph",
-			"description": "Enables support for adding paragraphs to your content.",
+			"description": "This package enables support for adding paragraphs to your content.",
 			"path": "src/paragraph.js",
 			"htmlOutput": [
 				{

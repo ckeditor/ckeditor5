@@ -3,7 +3,7 @@
 		{
 			"name": "Code blocks",
 			"className": "CodeBlock",
-			"description": "Allows for inserting and editing blocks of pre–formatted code with the programming language assigned.",
+			"description": "This package allows for inserting and editing of blocks of pre–formatted code with the programming language assigned.",
 			"docs": "features/code-blocks.html",
 			"path": "src/codeblock.js",
 			"uiComponents": [
