@@ -55,6 +55,8 @@ class InsertSmartField extends Plugin {
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
 		console.log( { editor } );
+		const cbFn = editor.config._config.insertSmartField.parseField;
+		console.log({ cbFn });
 
 		const smartFields = [
 			'Bill To Address',
@@ -113,8 +115,8 @@ class InsertSmartField extends Plugin {
 				const formattedText = `[[${ evt.source.label.replace( / /g, '' ) }]]`;
 				console.log( { configHere: editor.config } );
 				editor.model.change( writer => {
-					if ( editor.config._config.insertSmartField.parseField ) {
-						editor.config._config.insertSmartField.cbFn( editor, formattedText );
+					if ( cbFn ) {
+						cbFn( editor, formattedText );
 					} else {
 						const smartField = writer.createElement( 'span' );
 						writer.insertText( formattedText, smartField );
