@@ -7,6 +7,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import FindAndReplace from '../src/findandreplace';
 import FindAndReplaceUI from '../src/findandreplaceui';
+import FindAndReplaceEditing from '../src/findandreplaceediting';
 
 describe( 'FindAndReplace', () => {
 	// Data with 8 blocks that can contain $text.
@@ -24,20 +25,20 @@ describe( 'FindAndReplace', () => {
 	const TWO_FOO_BAR_PARAGRAPHS = FOO_BAR_PARAGRAPH + FOO_BAR_PARAGRAPH;
 
 	let editor;
-	let findAndReplace;
 	let model;
 	let root;
 	let findAndReplaceUI;
+	let findAndReplaceEditing;
 
 	beforeEach( async () => {
 		editor = await DecoupledEditor.create( '', {
-			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI ]
+			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing ]
 		} );
 
 		model = editor.model;
 		root = model.document.getRoot();
 
-		findAndReplace = editor.plugins.get( 'FindAndReplace' );
+		findAndReplaceEditing = editor.plugins.get( 'FindAndReplaceEditing' );
 		findAndReplaceUI = editor.plugins.get( 'FindAndReplaceUI' );
 	} );
 
@@ -71,7 +72,7 @@ describe( 'FindAndReplace', () => {
 			const spy = sinon.spy();
 
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
-			const [ firstResult ] = findAndReplace.find( 'bar' );
+			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
 
 			findAndReplaceUI.on( 'replace', spy );
 			findAndReplaceUI.fire( 'replace', { marker: firstResult, replaceText: 'test' } );
@@ -94,7 +95,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should return list of results', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplace.find( 'bears' );
+			const findResults = findAndReplaceEditing.find( 'bears' );
 
 			expect( findResults ).to.be.instanceOf( Collection );
 			expect( findResults ).to.have.property( 'length', 6 );
@@ -103,7 +104,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should return properly formatted result', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			const findResults = findAndReplace.find( 'bar' );
+			const findResults = findAndReplaceEditing.find( 'bar' );
 
 			const [ result ] = findResults;
 
@@ -124,7 +125,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (text insert)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplace.find( 'bears' );
+			const findResults = findAndReplaceEditing.find( 'bears' );
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -138,7 +139,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (block with text insert)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplace.find( 'bears' );
+			const findResults = findAndReplaceEditing.find( 'bears' );
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -156,7 +157,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (removed block)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplace.find( 'bears' );
+			const findResults = findAndReplaceEditing.find( 'bears' );
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -170,7 +171,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (changed text in marker)', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			const findResults = findAndReplace.find( 'bar' );
+			const findResults = findAndReplaceEditing.find( 'bar' );
 
 			expect( findResults ).to.have.property( 'length', 1 );
 
@@ -189,14 +190,14 @@ describe( 'FindAndReplace', () => {
 			editor.conversion.elementToElement( { model: 'test', view: 'test' } );
 			editor.setData( '<test>Foo bar baz</test>' );
 
-			const findResults = findAndReplace.find( 'bar' );
+			const findResults = findAndReplaceEditing.find( 'bar' );
 			expect( findResults ).to.have.property( 'length', 1 );
 		} );
 
 		it( 'should insert marker for a find result', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			findAndReplace.find( 'bar' );
+			findAndReplaceEditing.find( 'bar' );
 
 			const markers = [ ...model.markers.getMarkersGroup( 'findResult' ) ];
 
@@ -215,7 +216,7 @@ describe( 'FindAndReplace', () => {
 
 			const callbackSpy = sinon.spy();
 
-			findAndReplace.find( callbackSpy );
+			findAndReplaceEditing.find( callbackSpy );
 
 			sinon.assert.callCount( callbackSpy, 8 );
 		} );
@@ -234,7 +235,7 @@ describe( 'FindAndReplace', () => {
 
 			const callbackSpy = sinon.spy();
 
-			findAndReplace.find( callbackSpy );
+			findAndReplaceEditing.find( callbackSpy );
 
 			expect( callbackSpy.callCount ).to.equal( 2 );
 		} );
@@ -243,7 +244,7 @@ describe( 'FindAndReplace', () => {
 			editor.setData( LONG_TEXT );
 
 			const callbackSpy = sinon.spy();
-			findAndReplace.find( callbackSpy );
+			findAndReplaceEditing.find( callbackSpy );
 			callbackSpy.resetHistory();
 
 			model.change( writer => {
@@ -256,7 +257,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should handle custom callback return value', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			const findResults = findAndReplace.find( () => {
+			const findResults = findAndReplaceEditing.find( () => {
 				return [
 					{
 						label: 'XXX',
@@ -286,7 +287,7 @@ describe( 'FindAndReplace', () => {
 			const paragraph = root.getChild( 0 );
 			const spy = sinon.spy();
 
-			findAndReplace.find( spy );
+			findAndReplaceEditing.find( spy );
 
 			sinon.assert.calledWith( spy, sinon.match( { text: 'Foo\nbar\nbaz' } ) );
 			sinon.assert.calledWith( spy, sinon.match.has( 'item', sinon.match.same( paragraph ) ) );
@@ -295,17 +296,17 @@ describe( 'FindAndReplace', () => {
 
 	describe( 'stop()', () => {
 		it( 'should not throw if no active results', () => {
-			expect( () => findAndReplace.stop() ).to.not.throw();
+			expect( () => findAndReplaceEditing.stop() ).to.not.throw();
 		} );
 
 		it( 'should remove all markers', () => {
 			editor.setData( LONG_TEXT );
 
-			findAndReplace.find( 'bears' );
+			findAndReplaceEditing.find( 'bears' );
 
 			expect( [ ...model.markers.getMarkersGroup( 'findResult' ) ] ).to.have.length( 6 );
 
-			findAndReplace.stop();
+			findAndReplaceEditing.stop();
 
 			expect( [ ...model.markers.getMarkersGroup( 'findResult' ) ] ).to.have.length( 0 );
 		} );
@@ -314,10 +315,10 @@ describe( 'FindAndReplace', () => {
 			editor.setData( LONG_TEXT );
 
 			const callbackSpy = sinon.spy();
-			findAndReplace.find( callbackSpy );
+			findAndReplaceEditing.find( callbackSpy );
 			callbackSpy.resetHistory();
 
-			findAndReplace.stop();
+			findAndReplaceEditing.stop();
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'Foo bears foo' ), root.getChild( 0 ), 0 );
@@ -331,32 +332,32 @@ describe( 'FindAndReplace', () => {
 		it( 'should replace single search result using text', () => {
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 
-			const [ firstResult ] = findAndReplace.find( 'bar' );
+			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
 
-			findAndReplace.replace( firstResult, 'box' );
+			findAndReplaceEditing.replace( firstResult, 'box' );
 			expect( editor.getData() ).to.equal( '<p>Foo box baz</p><p>Foo bar baz</p>' );
 		} );
 
 		it( 'should replace single search result using callback', () => {
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 
-			const [ firstResult ] = findAndReplace.find( 'bar' );
+			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
 
-			findAndReplace.replace( firstResult, writer => writer.createText( 'box', { bold: true } ) );
+			findAndReplaceEditing.replace( firstResult, writer => writer.createText( 'box', { bold: true } ) );
 			expect( editor.getData() ).to.equal( '<p>Foo <strong>box</strong> baz</p><p>Foo bar baz</p>' );
 		} );
 	} );
 
 	describe( 'replaceAll()', () => {
 		it( 'should not throw if no active results', () => {
-			expect( () => findAndReplace.replaceAll() ).to.not.throw();
+			expect( () => findAndReplaceEditing.replaceAll() ).to.not.throw();
 		} );
 
 		it( 'should replace all by text', () => {
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 
-			findAndReplace.find( 'bar' );
-			findAndReplace.replaceAll( 'box' );
+			findAndReplaceEditing.find( 'bar' );
+			findAndReplaceEditing.replaceAll( 'box' );
 
 			expect( editor.getData() ).to.equal( '<p>Foo box baz</p><p>Foo box baz</p>' );
 		} );
@@ -364,8 +365,8 @@ describe( 'FindAndReplace', () => {
 		it( 'should replace all by callback', () => {
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 
-			findAndReplace.find( 'bar' );
-			findAndReplace.replaceAll( writer => writer.createText( 'box', { bold: true } ) );
+			findAndReplaceEditing.find( 'bar' );
+			findAndReplaceEditing.replaceAll( writer => writer.createText( 'box', { bold: true } ) );
 
 			expect( editor.getData() ).to.equal( '<p>Foo <strong>box</strong> baz</p><p>Foo <strong>box</strong> baz</p>' );
 		} );
