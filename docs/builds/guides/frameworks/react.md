@@ -326,7 +326,7 @@ export default App;
 
 ### The `JavaScript heap out of memory` error
 
-When building the application for the production using the `yarn build` command, it may end with an error related to the available memory on a machine:
+When building the application for the production using the `yarn build` command, it may produce an error related to the memory available on the build machine:
 
 ```
 <--- Last few GCs --->
@@ -347,7 +347,7 @@ Increasing the available memory for Node.js using the `--max_old_space_size` mod
 node --max_old_space_size=4096 node_modules/.bin/react-scripts build
 ```
 
-Also, the memory limit can be set globally:
+The memory limit can be set globally as well:
 
 ```bash
 # Save it in the `.bash_profile` file to avoid typing it after rebooting the machine.
@@ -356,7 +356,7 @@ export NODE_OPTIONS="--max-old-space-size=4096"
 yarn build
 ```
 
-Or per a command call, on-demand:
+It can also be set on-demand, per command call:
 
 ```bash
 NODE_OPTIONS="--max-old-space-size=4096" yarn build
