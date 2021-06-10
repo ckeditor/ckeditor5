@@ -25,8 +25,9 @@ export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * @param {module:engine/model/position~Position} start Start position.
-	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @param {module:engine/model/position~Position} start The start position.
+	 * @param {module:engine/model/position~Position} [end] The end position. If not set,
+	 * the range will be collapsed at the `start` position.
 	 */
 	constructor( start, end = null ) {
 		/**
