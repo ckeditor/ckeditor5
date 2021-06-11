@@ -61,7 +61,6 @@ export default class CodeBlockCommand extends Command {
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
 	 * @param {Boolean} [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command
 	 * will apply the previous language (if the command was already executed) when inserting the `codeBlock` element.
-	 * language as the previous code block.
 	 */
 	execute( options = {} ) {
 		const editor = this.editor;
