@@ -18,7 +18,7 @@
 	.semantical-custom .ck-content .image {
 		margin-top: 50px;
 		margin-bottom: 50px;
-		clip-path: url('../../assets/img/icons/map.svg');
+		clip-path: url('../../assets/img/icons/rocket.svg');
 	}
 	.semantical-custom .ck-content .image::before {
 		content: '';
@@ -54,11 +54,12 @@
 	.semantical-custom .ck-content .image-inline {
 		margin: 0 4px;
 		vertical-align: middle;
+		border-radius: 12px;
 	}
 	.semantical-custom .ck-content .image-inline img {
-		width: 30px;
-		max-height: 30px;
-		min-height: 30px;
+		width: 24px;
+		max-height: 24px;
+		min-height: 24px;
 	}
 
 	.semantical-custom .ck-content .image-inline.margin-left {
@@ -81,7 +82,7 @@
 		padding: 12% 17%;
 		font-family: 'Helvetica';
 		overflow-x: hidden;
-		max-height: 500px;
+		max-height: 700px;
 	}
 
 	.semantical-custom .ck-content h2 {
@@ -92,6 +93,7 @@
 		border: none;
 		margin-bottom: 120px;
 		position: relative;
+		text-align: center;
 	}
 	.semantical-custom .ck-content h2::after {
 		content: '';
@@ -115,6 +117,7 @@
 		left: calc( -12.5% - 25px );
 		top: auto;
 		background-color: #1138b0;
+		display: none;
 	}
 
 	.semantical-custom .ck-content h3 {
@@ -157,76 +160,73 @@
 
 <style>
 	@media ( max-width: 400px ) {
-		.ck.ck-content {
+		.semantical-custom .ck.ck-content {
 			padding: 1em;
 		}
-		.ck-content .image-inline.margin-right,
-		.ck-content .image-inline.margin-left {
+		.semantical-custom .ck-content .image-inline.margin-right,
+		.semantical-custom .ck-content .image-inline.margin-left {
 			display: none;
 		}
 	}
 	@media (min-width: 750px) {
-		.ck-content .image.side {
+		.semantical-custom .ck-content .image.side {
 			float: right;
 			margin-right: -200px;
 			margin-left: 50px;
 			margin-top: -50px;
 		}
-		.ck-content .image.side img {
+		.semantical-custom .ck-content .image.side img {
 			width: 360px;
 			height: 360px;
 		}
-		.ck-content .image.side > figcaption {
+		.semantical-custom .ck-content .image.side > figcaption {
 			top: 50px;
 			left: 0;
 			bottom: auto;
 		}
-		.ck-content h2 + figure.image.side {
+		.semantical-custom .ck-content h2 + figure.image.side {
 			margin-top: -150px;
 		}
-		.ck-content h2 {
+		.semantical-custom .ck-content h2 {
 			text-align: left;
 		}
-		.ck-content h2::after {
+		.semantical-custom .ck-content h2::after {
 			left: 0;
+		}
+		.semantical-custom .ck-content h2::before {
+			display: block;
 		}
 	}
 </style>
 
 <div id="snippet-image-semantical-style-custom">
 	<h1>Handshake over the clouds</h1>
-	<figure class="image">
+	<figure class="image side">
 		<img src="%BASE_PATH%/assets/img/nasa-7Cz6bWjdlDs-unsplash.jpg" alt="Space shuttle">
 		<figcaption>High over the world</figcaption>
 	</figure>
 	<p>
 		Rivalry is what drove early space exploration. After WW2, the two superpowers on opposite sides of the world set off on a race from the planet’s surface into the cosmic void. For most of the time, they would compete and race each other. But after the Soviets set up permanent space stations on Low Earth Orbit and the Americans put a man on the Moon, the time came to hold back the competition and cooperate.
 	</p>
-	<p></p>
 	<hr/>
-	<p></p>
-	<figure class="image side">
+	<figure class="image">
 		<img src="%BASE_PATH%/assets/img/Astronaut_Donald_K._Slayton_and_cosmonaut_Aleksey_A._Leonov_in_the_Soyuz_Orbital_Module.jpg" alt="Leonov and Slayton in orbit">
 		<figcaption>Friends not foes</figcaption>
 	</figure>
 	<p>
-		The first step on the eventual road to building International Space Station was the <a href="https://en.wikipedia.org/wiki/Apollo%E2%80%93Soyuz"><img class="margin-left" src="%BASE_PATH%/assets/img/icons/map.svg">Apollo Soyuz Test Project</a>. A specially redesigned pair of the Apollo and Soyuz spacecraft met in orbit and docked together in 1975. Their respective commanders, Thomas Stafford and Alexei Leonov shook hands inside the airlock brought to orbit by Apollo. They remained docked for two days.
+		The first step on the eventual road to building International Space Station was the <a href="https://en.wikipedia.org/wiki/Apollo%E2%80%93Soyuz">Apollo Soyuz<img class="margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg"> Test Project</a>. A specially redesigned pair of the Apollo and Soyuz spacecraft met in orbit and docked together in 1975. Their respective commanders, <a href="https://www.nasa.gov/image-feature/thomas-stafford-and-alexey-leonov">Thomas Stafford and Alexei Leonov</a> shook hands inside the airlock brought to orbit by Apollo. They remained docked for two days.
 
-	</p>
-	<p>
-		The ASTP mission was a great step forward, but for a long time and only one. It also marked the end of an era, as the Apollo flown then was the last of its kind. Six years later an era of space shuttles came. These new cosmic planes also marked the return to cooperation. In 1994 Russia and the USA started the <a href="https://en.wikipedia.org/wiki/Shuttle%E2%80%93Mir_program"><img class="margin-left" src="%BASE_PATH%/assets/img/icons/map.svg">Shuttle-<i>Mir</i> program</a>, which saw Russians riding shuttles and Americans visiting Mir space station, with Norman Thagard to be the first US citizen to ever fly a Soyuz. This was the preliminary phase and a technology testbed before launching the first module of the International Space Station in 1998.
 	</p>
 	<figure class="image">
 		<img src="%BASE_PATH%/assets/img/Thagard-ne.jpg" alt="Norman Thagard">
 		<figcaption>Norman Thagard</figcaption>
 	</figure>
+	<p>
+		The ASTP mission was a great step forward, but for a long time and only one. It also marked the end of an era, as the Apollo flown then was the last of its kind. Six years later an era of space shuttles came. These new cosmic planes also marked the return to cooperation. In 1994 Russia and the USA started the <a href="https://en.wikipedia.org/wiki/Shuttle%E2%80%93Mir_program"><img class="margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg">Shuttle-<i>Mir</i> program</a>, which saw Russians riding shuttles and Americans visiting Mir space station, with <a href="https://en.wikipedia.org/wiki/Norman_Thagard">Norman<img class="margin-right" src="%BASE_PATH%/assets/img/icons/comment.svg"> Thagard</a> to be the first US citizen to ever fly a Soyuz. This was the preliminary phase and a technology testbed before launching the first module of the International Space Station in 1998.
+	</p>
 	<p></p>
 	<p></p>
 	<p style="text-align: center">
-		<a href="https://en.wikipedia.org/wiki/International_Space_Station">
-			<i>The next step in collaboration</i>
-			<img src="%BASE_PATH%/assets/img/icons/fingerprint.svg">
-			<i>International Space Station</i>
-		</a>
+		<i>The next step in collaboration:</i><br/><a href="https://en.wikipedia.org/wiki/International_Space_Station"><i>International Space</i></a>
 	</p>
 </div>

@@ -6,8 +6,11 @@
 /* globals ClassicEditor, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import plusIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/plus.svg';
-import earthIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/map.svg';
+import centerIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/center.svg';
+import inlineIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/inline.svg';
+import leftIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/left.svg';
+import rightIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/right.svg';
+import sideIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/side.svg';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-semantical-style-custom' ), {
@@ -20,34 +23,41 @@ ClassicEditor
 			styles: {
 				options: [ {
 					name: 'side',
-					icon: 'right',
-					title: 'side',
+					icon: sideIcon,
+					title: 'Side image',
 					className: 'side',
-					modelElements: [ 'image' ]
+					modelElements: [ 'imageBlock' ]
 				}, {
 					name: 'margin-left',
-					icon: plusIcon,
-					title: 'margin-left',
+					icon: leftIcon,
+					title: 'Image on left margin',
 					className: 'margin-left',
 					modelElements: [ 'imageInline' ]
 				}, {
 					name: 'margin-right',
-					icon: earthIcon,
-					title: 'margin-right',
+					icon: rightIcon,
+					title: 'Image on right margin',
 					className: 'margin-right',
 					modelElements: [ 'imageInline' ]
 				},
-				'inline',
-				'full'
-				]
+				{
+					name: 'inline',
+					icon: inlineIcon
+				}, {
+					name: 'full',
+					title: 'Centered image',
+					icon: centerIcon
+				} ]
 			},
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:side',
-				'imageStyle:margin-left',
-				'imageStyle:margin-right',
-				'imageStyle:full',
-				'toggleImageCaption'
+			toolbar: [ {
+				name: 'imageStyle:icons',
+				items: [ 'imageStyle:margin-left', 'imageStyle:margin-right', 'imageStyle:inline' ],
+				defaultItem: 'imageStyle:margin-left'
+			}, {
+				name: 'imageStyle:pictures',
+				items: [ 'imageStyle:full', 'imageStyle:side' ],
+				defaultItem: 'imageStyle:full'
+			}, '|', 'toggleImageCaption', 'imageTextAlternative', 'linkImage'
 			]
 		}
 	} )
