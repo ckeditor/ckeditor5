@@ -337,14 +337,5 @@ describe( 'FindAndReplace', () => {
 			findAndReplaceEditing.replace( firstResult, 'box' );
 			expect( editor.getData() ).to.equal( '<p>Foo box baz</p><p>Foo bar baz</p>' );
 		} );
-
-		it( 'should replace single search result using callback', () => {
-			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
-
-			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
-
-			findAndReplaceEditing.replace( firstResult, writer => writer.createText( 'box', { bold: true } ) );
-			expect( editor.getData() ).to.equal( '<p>Foo <strong>box</strong> baz</p><p>Foo bar baz</p>' );
-		} );
 	} );
 } );

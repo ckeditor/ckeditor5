@@ -60,24 +60,5 @@ describe( 'ReplaceCommand', () => {
 
 			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo new baz</p>' );
 		} );
-
-		it( 'should replace single search result using callback', () => {
-			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo [bar] baz</paragraph>' );
-
-			const range = editor.model.document.selection.getFirstRange();
-			const markerId = 'my-marker-id';
-
-			model.change( writer => {
-				const marker = writer.addMarker( markerId, {
-					usingOperation: false,
-					affectsData: false,
-					range
-				} );
-
-				editor.execute( 'replace', { marker }, writer => writer.createText( 'new', { bold: true } ) );
-			} );
-
-			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo <strong>new</strong> baz</p>' );
-		} );
 	} );
 } );

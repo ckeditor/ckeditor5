@@ -89,13 +89,6 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		this.activeResults = null;
 
-		// const { model } = this.editor;
-
-		// this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, this._lastFindCallback ) );
-		// this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
-
-		// this.stopListening( this.editor.model.document );
-
 		this.editor.commands.add( 'find', new FindCommand( this.editor ) );
 		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor ) );
 		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor ) );
@@ -212,10 +205,10 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * Replace given find result by a string or a callback.
 	 *
 	 * @param result
-	 * @param {String|Function} textOrCallback
+	 * @param {String} replacementText
 	 */
-	replace( { marker }, textOrCallback ) {
-		this.editor.execute( 'replace', { marker }, textOrCallback );
+	replace( { marker }, replacementText ) {
+		this.editor.execute( 'replace', { marker }, replacementText );
 	}
 
 	/**

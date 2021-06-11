@@ -86,5 +86,13 @@ describe( 'ReplaceAllCommand', () => {
 
 			expect( editor.getData() ).to.equal( '<p>Foo bar newaz</p><p>new bar baz</p>' );
 		} );
+
+		it( 'should work with empty document', () => {
+			setData( model, '' );
+
+			editor.execute( 'replaceAll', 'new', 'bar' );
+
+			expect( editor.getData() ).to.equal( '' );
+		} );
 	} );
 } );
