@@ -1,1 +1,1 @@
-# Content compatibility
+# General HTML Support
