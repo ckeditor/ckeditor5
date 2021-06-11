@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { Collection } from 'ckeditor5/src/utils';
-import { updateFindResultFromRange, findByTextCallback } from './utils';
+import { updateFindResultFromRange } from './utils';
+import FindCommand from './findcommand';
 
 const HIGHLIGHT_CLASS = 'find-result_selected';
 
@@ -86,6 +86,15 @@ export default class FindAndReplaceEditing extends Plugin {
 		this._defineConverters();
 
 		this.activeResults = null;
+
+		// const { model } = this.editor;
+
+		// this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, this._lastFindCallback ) );
+		// this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
+
+		// this.stopListening( this.editor.model.document );
+
+		this.editor.commands.add( 'find', new FindCommand( this.editor ) );
 	}
 
 	/**
@@ -164,25 +173,12 @@ export default class FindAndReplaceEditing extends Plugin {
 		const { editor } = this;
 		const { model } = editor;
 
-		let findCallback;
-
-		// Allow to execute `find()` on a plugin with a keyword only.
-		if ( typeof callbackOrText === 'string' ) {
-			findCallback = findByTextCallback( callbackOrText );
-		} else {
-			findCallback = callbackOrText;
-		}
-
-		const results = new Collection();
-
-		// Initial search is done on all nodes inside content.
-		const range = model.createRangeIn( model.document.getRoot() );
-
-		updateFindResultFromRange( range, model, findCallback, results );
-
-		this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
+		const { findCallback, results } = editor.execute( 'find', callbackOrText );
 
 		this.activeResults = results;
+
+		// @todo: handle this listener, another copy is in findcommand.js file.
+		this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
 
 		return this.activeResults;
 	}

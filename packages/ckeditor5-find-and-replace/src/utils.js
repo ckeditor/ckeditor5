@@ -7,12 +7,31 @@
  * @module find-and-replace
  */
 
-import { uid } from 'ckeditor5/src/utils';
+import { uid, Collection } from 'ckeditor5/src/utils';
 
 /**
  * Executes findCallback and updates search results list.
+ *
+ * @param {module:engine/model/range~Range} range
+ * @param {module:engine/model/model~Model} model
+ * @param {Function} findCallback
+ * @param {module:utils/collection~Collection} [startResults] An optional collection of find matches that the function should
+ * starts with. This would be a collection returned by a previous `updateFindResultFromRange()` call.
+ * @returns {module:utils/collection~Collection} A collection of objects describing find match.
+ *
+ * An example structure:
+ *
+ * ```js
+ * {
+ *	id: resultId,
+ *	label: foundItem.label,
+ *	marker
+ *	}
+ * ```
  */
-export function updateFindResultFromRange( range, model, findCallback, results ) {
+export function updateFindResultFromRange( range, model, findCallback, startResults ) {
+	const results = startResults || new Collection();
+
 	[ ...range ].forEach( ( { type, item } ) => {
 		if ( type === 'elementStart' ) {
 			if ( model.schema.checkChild( item, '$text' ) ) {
@@ -52,6 +71,8 @@ export function updateFindResultFromRange( range, model, findCallback, results )
 			}
 		}
 	} );
+
+	return results;
 }
 
 /**

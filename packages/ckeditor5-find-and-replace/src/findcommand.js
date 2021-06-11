@@ -8,6 +8,7 @@
 */
 
 import { Command } from 'ckeditor5/src/core';
+import { updateFindResultFromRange, findByTextCallback } from './utils';
 
 /**
  * Find command. It is used by the {@link module:findandreplace/findandreplace~FindAndReplace link feature}.
@@ -16,17 +17,47 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class FindCommand extends Command {
 	/**
-	 * @inheritDoc
+	 * Creates a new `FindCommand` instance.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 */
-	refresh() {
-		// this.isEnabled = true;
+	constructor( editor ) {
+		super( editor );
+
+		// Find command is always enabled.
+		this.isEnabled = true;
 	}
 
 	/**
 	 * Executes the command.
-	*
-	* @fires execute
-	*/
-	execute() {
+	 *
+	 * @param {Function|String} callbackOrText
+	 * @fires execute
+	 */
+	execute( callbackOrText ) {
+		const { editor } = this;
+		const { model } = editor;
+
+		let findCallback;
+
+		// Allow to execute `find()` on a plugin with a keyword only.
+		if ( typeof callbackOrText === 'string' ) {
+			findCallback = findByTextCallback( callbackOrText );
+		} else {
+			findCallback = callbackOrText;
+		}
+
+		// Initial search is done on all nodes inside content.
+		const range = model.createRangeIn( model.document.getRoot() );
+
+		// @todo: fix me
+		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
+
+		this.activeResults = updateFindResultFromRange( range, model, findCallback );
+
+		return {
+			results: this.activeResults,
+			findCallback
+		};
 	}
 }
