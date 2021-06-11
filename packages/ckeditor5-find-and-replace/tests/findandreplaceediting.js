@@ -210,4 +210,28 @@ describe( 'FindAndReplaceEditing', () => {
 			expect( editor.commands.get( 'replace' ) ).to.be.instanceOf( ReplaceCommand );
 		} );
 	} );
+
+	describe( 'replaceAll()', () => {
+		it( 'should not throw if no active results', () => {
+			expect( () => editor.plugins.get( 'FindAndReplaceEditing' ).replaceAll() ).to.not.throw();
+		} );
+
+		it( 'should replace all by text', () => {
+			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+			editor.plugins.get( 'FindAndReplaceEditing' ).find( 'bar' );
+			editor.plugins.get( 'FindAndReplaceEditing' ).replaceAll( 'box' );
+
+			expect( editor.getData() ).to.equal( '<p>Foo box baz</p><p>Foo box baz</p>' );
+		} );
+
+		it( 'should replace all by callback', () => {
+			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+			editor.plugins.get( 'FindAndReplaceEditing' ).find( 'bar' );
+			editor.plugins.get( 'FindAndReplaceEditing' ).replaceAll( writer => writer.createText( 'box', { bold: true } ) );
+
+			expect( editor.getData() ).to.equal( '<p>Foo <strong>box</strong> baz</p><p>Foo <strong>box</strong> baz</p>' );
+		} );
+	} );
 } );

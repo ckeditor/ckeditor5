@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { updateFindResultFromRange } from './utils';
 import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
+import ReplaceAllCommand from './replaceallcommand';
 
 const HIGHLIGHT_CLASS = 'find-result_selected';
 
@@ -97,6 +98,7 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		this.editor.commands.add( 'find', new FindCommand( this.editor ) );
 		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor ) );
+		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor ) );
 	}
 
 	/**
@@ -219,17 +221,9 @@ export default class FindAndReplaceEditing extends Plugin {
 	/**
 	 * Replaces all find results by a string or a callback.
 	 *
-	 * @param {String|Function} textOrCallback
+	 * @param {String} replacementText
 	 */
-	replaceAll( textOrCallback ) {
-		if ( !this.activeResults ) {
-			return;
-		}
-
-		this.editor.model.change( () => {
-			[ ...this.activeResults ].forEach( replace => {
-				this.replace( replace, textOrCallback );
-			} );
-		} );
+	replaceAll( replacementText ) {
+		this.editor.execute( 'replaceAll', replacementText, this.activeResults );
 	}
 }

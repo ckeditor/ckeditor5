@@ -347,28 +347,4 @@ describe( 'FindAndReplace', () => {
 			expect( editor.getData() ).to.equal( '<p>Foo <strong>box</strong> baz</p><p>Foo bar baz</p>' );
 		} );
 	} );
-
-	describe( 'replaceAll()', () => {
-		it( 'should not throw if no active results', () => {
-			expect( () => findAndReplaceEditing.replaceAll() ).to.not.throw();
-		} );
-
-		it( 'should replace all by text', () => {
-			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
-
-			findAndReplaceEditing.find( 'bar' );
-			findAndReplaceEditing.replaceAll( 'box' );
-
-			expect( editor.getData() ).to.equal( '<p>Foo box baz</p><p>Foo box baz</p>' );
-		} );
-
-		it( 'should replace all by callback', () => {
-			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
-
-			findAndReplaceEditing.find( 'bar' );
-			findAndReplaceEditing.replaceAll( writer => writer.createText( 'box', { bold: true } ) );
-
-			expect( editor.getData() ).to.equal( '<p>Foo <strong>box</strong> baz</p><p>Foo <strong>box</strong> baz</p>' );
-		} );
-	} );
 } );
