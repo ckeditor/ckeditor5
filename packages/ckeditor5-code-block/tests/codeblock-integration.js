@@ -9,7 +9,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
+import CodeBlockUI from '../src/codeblockui';
 import CodeBlockEditing from '../src/codeblockediting';
 
 describe( 'CodeBlock - integration', () => {
@@ -107,6 +109,49 @@ describe( 'CodeBlock - integration', () => {
 					'<code class="language-plaintext">FooBar.</code>' +
 				'</pre>'
 			);
+		} );
+	} );
+
+	describe( 'integration with "usePreviousLanguageChoice=true"', () => {
+		let editor;
+
+		beforeEach( () => {
+			return ClassicTestEditor
+				.create( '', {
+					plugins: [ CodeBlockEditing, CodeBlockUI, Enter, Paragraph ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should create a second code block with the same language as the first one', () => {
+			const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+			const codeBlock = dropdown.buttonView;
+			const listView = dropdown.panelView.children.first;
+			const cSharpButton = listView.items.get( 2 ).children.first;
+
+			expect( cSharpButton.label ).to.equal( 'C#' );
+
+			// Initial state.
+			expect( getData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+			// Select a language from dropdown.
+			cSharpButton.fire( 'execute' );
+			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+
+			// Click on the `codeBlock` button next to the dropdown. When selection is inside the `<codeBlock>` element,
+			// the entire element should be replaced with the paragraph.
+			codeBlock.fire( 'execute' );
+			expect( getData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+			// Clicking the button once again should create the code block with the C# language instead of the default (plaintext).
+			codeBlock.fire( 'execute' );
+			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
 		} );
 	} );
 } );
