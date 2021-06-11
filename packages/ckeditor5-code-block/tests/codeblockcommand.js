@@ -313,6 +313,16 @@ describe( 'CodeBlockCommand', () => {
 
 				expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 			} );
+
+			it( 'it should prioritize using language passed as an option over previous language', () => {
+				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				command._lastLanguage = 'css';
+
+				command.execute( { language: 'php', usePreviousLanguageChoice: true } );
+
+				expect( getModelData( model ) ).to.equal( '<codeBlock language="php">fo[]o</codeBlock>' );
+			} );
 		} );
 	} );
 
