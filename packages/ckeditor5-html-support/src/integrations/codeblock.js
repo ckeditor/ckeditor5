@@ -4,7 +4,7 @@
  */
 
 /**
- * @module content-compatibility/integrations/codeblock
+ * @module html-support/integrations/codeblock
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -59,7 +59,7 @@ export default class CodeBlockHtmlSupport extends Plugin {
 // Attributes are preserved as a value of `htmlAttributes` model attribute.
 //
 // @private
-// @param {module:content-compatibility/datafilter~DataFilter} dataFilter
+// @param {module:html-support/datafilter~DataFilter} dataFilter
 // @returns {Function} Returns a conversion callback.
 function viewToModelCodeBlockAttributeConverter( dataFilter ) {
 	return dispatcher => {

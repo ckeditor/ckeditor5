@@ -4,7 +4,7 @@
  */
 
 /**
- * @module content-compatibility/dataschema
+ * @module html-support/dataschema
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -17,7 +17,7 @@ import { toArray } from 'ckeditor5/src/utils';
  * Data schema is represented by data schema definitions.
  *
  * To add new definition for block element,
- * use {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method:
+ * use {@link module:html-support/dataschema~DataSchema#registerBlockElement} method:
  *
  *		dataSchema.registerBlockElement( {
  *			view: 'section',
@@ -28,7 +28,7 @@ import { toArray } from 'ckeditor5/src/utils';
  *		} );
  *
  * To add new definition for inline element,
- * use {@link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method:
+ * use {@link module:html-support/dataschema~DataSchema#registerInlineElement} method:
  *
  *		dataSchema.registerInlineElement( {
  *			view: 'span',
@@ -49,7 +49,7 @@ export default class DataSchema extends Plugin {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Map.<String, module:content-compatibility/dataschema~DataSchemaDefinition>} #_definitions
+		 * @member {Map.<String, module:html-support/dataschema~DataSchemaDefinition>} #_definitions
 		 */
 		this._definitions = new Map();
 
@@ -66,7 +66,7 @@ export default class DataSchema extends Plugin {
 	/**
 	 * Add new data schema definition describing block element.
 	 *
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	registerBlockElement( definition ) {
 		this._definitions.set( definition.model, { ...definition, isBlock: true } );
@@ -75,7 +75,7 @@ export default class DataSchema extends Plugin {
 	/**
 	 * Add new data schema definition describing inline element.
 	 *
-	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	registerInlineElement( definition ) {
 		this._definitions.set( definition.model, { ...definition, isInline: true } );
@@ -86,7 +86,7 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @param {String|RegExp} viewName
 	 * @param {Boolean} [includeReferences] Indicates if this method should also include definitions of referenced models.
-	 * @returns {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>}
+	 * @returns {Set.<module:html-support/dataschema~DataSchemaDefinition>}
 	 */
 	getDefinitionsForView( viewName, includeReferences ) {
 		const definitions = new Set();
@@ -377,7 +377,7 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @private
 	 * @param {String|RegExp} viewName
-	 * @returns {Array.<module:content-compatibility/dataschema~DataSchemaDefinition>}
+	 * @returns {Array.<module:html-support/dataschema~DataSchemaDefinition>}
 	 */
 	_getMatchingViewDefinitions( viewName ) {
 		return Array.from( this._definitions.values() )
@@ -389,7 +389,7 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @private
 	 * @param {String} modelName Data schema model name.
-	 * @returns {Iterable.<module:content-compatibility/dataschema~DataSchemaDefinition>}
+	 * @returns {Iterable.<module:html-support/dataschema~DataSchemaDefinition>}
 	 */
 	* _getReferences( modelName ) {
 		const { modelSchema } = this._definitions.get( modelName );
@@ -432,33 +432,33 @@ function testViewName( pattern, viewName ) {
 }
 
 /**
- * A base definition of {@link module:content-compatibility/dataschema~DataSchema data schema}.
+ * A base definition of {@link module:html-support/dataschema~DataSchema data schema}.
  *
- * @typedef {Object} module:content-compatibility/dataschema~DataSchemaDefinition
+ * @typedef {Object} module:html-support/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
  * @property {Boolean} [isObject] Indicates that the definition describes object element.
  * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
  */
 
 /**
- * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema} for block elements.
+ * A definition of {@link module:html-support/dataschema~DataSchema data schema} for block elements.
  *
- * @typedef {Object} module:content-compatibility/dataschema~DataSchemaBlockElementDefinition
+ * @typedef {Object} module:html-support/dataschema~DataSchemaBlockElementDefinition
  * @property {String} [view] Name of the view element.
  * @property {Boolean} isBlock Indicates that the definition describes block element.
- * Set by {@link module:content-compatibility/dataschema~DataSchema#registerBlockElement} method.
- * @extends module:content-compatibility/dataschema~DataSchemaDefinition
+ * Set by {@link module:html-support/dataschema~DataSchema#registerBlockElement} method.
+ * @extends module:html-support/dataschema~DataSchemaDefinition
  */
 
 /**
- * A definition of {@link module:content-compatibility/dataschema~DataSchema data schema} for inline elements.
+ * A definition of {@link module:html-support/dataschema~DataSchema data schema} for inline elements.
  *
- * @typedef {Object} module:content-compatibility/dataschema~DataSchemaInlineElementDefinition
+ * @typedef {Object} module:html-support/dataschema~DataSchemaInlineElementDefinition
  * @property {String} view Name of the view element.
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
  * @property {Boolean} isInline Indicates that the definition descibes inline element.
  * @property {Number} [priority] Element priority. Decides in what order elements are wrapped by
  * {@link module:engine/view/downcastwriter~DowncastWriter}.
- * Set by {@link module:content-compatibility/dataschema~DataSchema#registerInlineElement} method.
- * @extends module:content-compatibility/dataschema~DataSchemaDefinition
+ * Set by {@link module:html-support/dataschema~DataSchema#registerInlineElement} method.
+ * @extends module:html-support/dataschema~DataSchemaDefinition
  */
