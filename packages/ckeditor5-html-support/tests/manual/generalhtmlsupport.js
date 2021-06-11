@@ -67,8 +67,8 @@ ClassicEditor
 			'|',
 			'blockquote'
 		],
-		generalHtmlSupport: {
-			allowed: [
+		htmlSupport: {
+			allow: [
 				{ name: 'article' },
 				{ name: /^(details|summary)$/ },
 				{ name: /^(dl|dd|dt)$/ },
@@ -109,7 +109,7 @@ ClassicEditor
 					styles: { 'background-color': true }
 				}
 			],
-			disallowed: [
+			disallow: [
 				{ name: 'section', attributes: { id: /^_.*/ } },
 				{ name: /^(span|cite)$/, styles: { color: 'red' } }
 			]

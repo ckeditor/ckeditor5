@@ -32,8 +32,8 @@ export default class GeneralHtmlSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		// Load the filtering configuration.
-		dataFilter.loadAllowedConfig( editor.config.get( 'generalHtmlSupport.allowed' ) || [] );
-		dataFilter.loadDisallowedConfig( editor.config.get( 'generalHtmlSupport.disallowed' ) || [] );
+		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
+		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
 	}
 
 	/**
