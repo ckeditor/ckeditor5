@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import FindAndReplaceEditing from '../src/findandreplaceediting';
 import FindCommand from '../src/findcommand';
 
@@ -41,39 +41,63 @@ describe( 'FindCommand', () => {
 		} );
 	} );
 
-	describe.skip( 'execute()', () => {
+	describe( 'execute()', () => {
 		describe( 'with string passed', () => {
-			it( 'matches the first occurrence', () => {
+			it( 'places markers correctly in the model', () => {
 				setData( model, '<p>[]Foo bar baz. Bam bar bom.</p>' );
 
-				command.execute( 'bar' );
+				const { results } = command.execute( 'bar' );
+				const markers = results.map( item => {
+					// Replace markers id to a predefined value, as originally these are unique random ids.
+					item.marker.name = 'X';
 
-				expect( getData( model ) ).to.equal( '<p>Foo [bar] baz. Bam bar bom.</p>' );
+					return item.marker;
+				} );
+
+				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					'<p>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</p>' );
 			} );
 
-			it( 'matches second occurrence', () => {
+			it( 'returns no result if nothing matched', () => {
+				setData( model, '<p>[]Foo bar baz. Bam bar bom.</p>' );
+
+				const { results } = command.execute( 'missing' );
+
+				expect( results.length ).to.equal( 0 );
+			} );
+
+			it( 'assigns proper labels to matches', () => {
 				setData( model, '<p>Foo bar b[]az. Bam bar bom.</p>' );
 
-				command.execute( 'bar' );
+				const { results } = command.execute( 'bar' );
+				const labels = results.map( result => result.label );
 
-				expect( getData( model ) ).to.equal( '<p>Foo bar baz. Bam [bar] bom.</p>' );
+				expect( labels ).to.deep.equal( [ 'bar', 'bar' ] );
+			} );
+
+			it( 'assigns non-empty ids for each match', () => {
+				setData( model, '<p>Foo bar b[]az. Bam bar bom.</p>' );
+
+				const { results } = command.execute( 'bar' );
+				const ids = results.map( result => result.id );
+
+				for ( let i = 0; i < ids.length; i++ ) {
+					const currentId = ids[ i ];
+
+					expect( currentId, `id #${ i }` ).to.be.a.string;
+					expect( currentId.length, `id #${ i }` ).to.not.equal( 0 );
+				}
+			} );
+
+			it( 'assigns an unique ids for each match', () => {
+				setData( model, '<p>Foo bar b[]az. Bam bar bom bar.</p>' );
+
+				const { results } = command.execute( 'bar' );
+				const ids = results.map( result => result.id );
+
+				expect( ids[ 0 ] ).not.to.equal( ids[ 1 ] );
+				expect( ids[ 1 ] ).not.to.equal( ids[ 2 ] );
 			} );
 		} );
-
-		// it( 'should insert a media in an empty root and select it', () => {
-		// 	setData( model, '[]' );
-
-		// 	command.execute( 'http://ckeditor.com' );
-
-		// 	expect( getData( model ) ).to.equal( '[<media url="http://ckeditor.com"></media>]' );
-		// } );
-
-		// it( 'should update media url', () => {
-		// 	setData( model, '[<media url="http://ckeditor.com"></media>]' );
-
-		// 	command.execute( 'http://cksource.com' );
-
-		// 	expect( getData( model ) ).to.equal( '[<media url="http://cksource.com"></media>]' );
-		// } );
 	} );
 } );

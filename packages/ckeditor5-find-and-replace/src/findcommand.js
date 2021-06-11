@@ -53,10 +53,8 @@ export default class FindCommand extends Command {
 		// @todo: fix me
 		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
 
-		this.activeResults = updateFindResultFromRange( range, model, findCallback );
-
 		return {
-			results: this.activeResults,
+			results: updateFindResultFromRange( range, model, findCallback ),
 			findCallback
 		};
 	}
