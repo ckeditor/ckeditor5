@@ -314,8 +314,6 @@ export default class Document {
 			// Theoretically, it is not necessary to refresh selection after change event because
 			// post-fixers are the last who should change the model, but just in case...
 			this.selection.refresh();
-
-			this.differ.reset();
 		}
 
 		this._hasSelectionChangedFromTheLastChangeBlock = false;

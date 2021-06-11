@@ -682,6 +682,16 @@ export default class View {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @protected
+	 * @param {Boolean} flag
+	 */
+	_disableRenderingSelection( flag ) {
+		this._renderer.disableSelectionRendering( flag );
+	}
+
+	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
 	 * before rendering and re-enabled after that.
 	 *
