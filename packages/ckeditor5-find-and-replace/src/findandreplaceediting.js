@@ -200,23 +200,4 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		this.activeResults = null;
 	}
-
-	/**
-	 * Replace given find result by a string or a callback.
-	 *
-	 * @param result
-	 * @param {String} replacementText
-	 */
-	replace( { marker }, replacementText ) {
-		this.editor.execute( 'replace', { marker }, replacementText );
-	}
-
-	/**
-	 * Replaces all find results by a string or a callback.
-	 *
-	 * @param {String} replacementText
-	 */
-	replaceAll( replacementText ) {
-		this.editor.execute( 'replaceAll', replacementText, this.activeResults );
-	}
 }

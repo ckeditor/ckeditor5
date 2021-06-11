@@ -50,7 +50,7 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 		this.editor.model.change( () => {
 			[ ...results ].forEach( searchResult => {
 				// Just reuse logic from replace command to replace a single match.
-				super.execute( searchResult, newText );
+				super.execute( newText, searchResult );
 			} );
 		} );
 	}

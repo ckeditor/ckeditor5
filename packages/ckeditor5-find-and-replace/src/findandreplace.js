@@ -67,15 +67,18 @@ export default class FindAndReplace extends Plugin {
 		 * Replace button logic
 		 */
 		ui.on( 'replace', ( event, data ) => {
-			// TODO: the { marker } needs to be passed down to the .replace()
-			findAndReplaceEditing.replace( data.marker, data.replaceText );
+			this.editor.execute( 'replace', data.replaceText, findAndReplaceEditing.activeResults.get( 0 ) );
+			// @todo: it should be possible to make replacement without prior find call.
 		} );
 
 		/**
 		 * Replace all button logic
 		 */
 		ui.on( 'replaceAll', ( event, data ) => {
-			findAndReplaceEditing.replaceAll( data.replaceText );
+			// this.editor.execute( 'replaceAll', data.replaceText, data.searchText );
+			// Without referencing findAndReplaceEditing.activeResults the on `onDocumentChange` method throws if you attempt
+			// to perform replace all on editor that has already some find results matched.
+			this.editor.execute( 'replaceAll', data.replaceText, findAndReplaceEditing.activeResults );
 		} );
 	}
 }

@@ -68,16 +68,16 @@ describe( 'FindAndReplace', () => {
 		} );
 
 		it( 'should trigger replace event', () => {
-			// TODO: check for possible cleanup of this test
-			const spy = sinon.spy();
-
+			const replaceCommandSpy = sinon.spy( editor.commands.get( 'replace' ), 'execute' );
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
 
-			findAndReplaceUI.on( 'replace', spy );
 			findAndReplaceUI.fire( 'replace', { marker: firstResult, replaceText: 'test' } );
 
-			expect( spy.calledOnce ).to.true;
+			replaceCommandSpy.restore();
+
+			expect( replaceCommandSpy.calledOnce ).to.true;
+			sinon.assert.calledWithExactly( replaceCommandSpy, 'test', firstResult );
 		} );
 
 		it( 'should trigger replaceAll event', () => {
@@ -325,17 +325,6 @@ describe( 'FindAndReplace', () => {
 			} );
 
 			expect( callbackSpy.callCount ).to.equal( 0 );
-		} );
-	} );
-
-	describe( 'replace()', () => {
-		it( 'should replace single search result using text', () => {
-			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
-
-			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
-
-			findAndReplaceEditing.replace( firstResult, 'box' );
-			expect( editor.getData() ).to.equal( '<p>Foo box baz</p><p>Foo bar baz</p>' );
 		} );
 	} );
 } );

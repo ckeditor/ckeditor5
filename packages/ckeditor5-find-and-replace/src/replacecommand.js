@@ -30,27 +30,16 @@ export default class ReplaceCommand extends Command {
 	/**
 	 * Replace given find result by a string or a callback.
 	 *
-	 * @param {Object} result A single result from the find command.
 	 * @param {String} replacementText
+	 * @param {Object} result A single result from the find command.
 	 */
-	execute( { marker }, replacementText ) {
+	execute( replacementText, { marker } ) {
 		const { model } = this.editor;
 
 		model.change( writer => {
 			const range = marker.getRange();
 
-			// model.insertContent( getDefaultCallback( replacementText ), range );
-			// model.insertContent( writer => {
-			// 	return writer.createText( replacementText );
-			// }, range );
-
 			model.insertContent( writer.createText( replacementText ), range );
 		} );
-
-		// function getDefaultCallback( textOrCallback ) {
-		// 	return writer => {
-		// 		return writer.createText( textOrCallback );
-		// 	};
-		// }
 	}
 }

@@ -55,7 +55,7 @@ describe( 'ReplaceCommand', () => {
 					range
 				} );
 
-				editor.execute( 'replace', { marker }, 'new' );
+				editor.execute( 'replace', 'new', { marker } );
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo new baz</p>' );
