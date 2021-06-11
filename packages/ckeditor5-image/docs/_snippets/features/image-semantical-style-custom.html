@@ -1,4 +1,12 @@
 <style>
+	pre {
+		max-height: 70vh;
+		overflow-y: auto !important;
+	}
+</style>
+
+<style>
+	/* Custom images styling */
 	:root {
 		--icon-size: 30px;
 	}
@@ -18,7 +26,6 @@
 	.semantical-custom .ck-content .image {
 		margin-top: 50px;
 		margin-bottom: 50px;
-		clip-path: url('../../assets/img/icons/rocket.svg');
 	}
 	.semantical-custom .ck-content .image::before {
 		content: '';
@@ -60,24 +67,32 @@
 		width: 24px;
 		max-height: 24px;
 		min-height: 24px;
+		filter: grayscale(100%);
 	}
 
-	.semantical-custom .ck-content .image-inline.margin-left {
+	.semantical-custom .ck-content .image-inline.image-margin-left,
+	.semantical-custom .ck-content .image-inline.image-margin-right {
 		position: absolute;
 		margin: 0;
 		top: auto;
+	}
+
+	.semantical-custom .ck-content .image-inline.image-margin-left {
 		left: calc( -12.5% - var(--icon-size) / 2 );
 	}
 
-	.semantical-custom .ck-content .image-inline.margin-right {
-		position: absolute;
-		margin: 0;
-		top: auto;
+	.semantical-custom .ck-content .image-inline.image-margin-right {
 		right: calc( -12.5% - var(--icon-size) / 2 );
+	}
+
+	.semantical-custom .ck-content .image-inline.image-margin-left img,
+	.semantical-custom .ck-content .image-inline.image-margin-right img {
+		filter: none;
 	}
 </style>
 
 <style>
+	/* Custom content styling */
 	.semantical-custom .ck.ck-content {
 		padding: 12% 17%;
 		font-family: 'Helvetica';
@@ -159,32 +174,33 @@
 </style>
 
 <style>
+	/* Responsiveness */
 	@media ( max-width: 400px ) {
 		.semantical-custom .ck.ck-content {
 			padding: 1em;
 		}
-		.semantical-custom .ck-content .image-inline.margin-right,
-		.semantical-custom .ck-content .image-inline.margin-left {
+		.semantical-custom .ck-content .image-inline.image-margin-right,
+		.semantical-custom .ck-content .image-inline.image-margin-left {
 			display: none;
 		}
 	}
 	@media (min-width: 750px) {
-		.semantical-custom .ck-content .image.side {
+		.semantical-custom .ck-content .image.image-side {
 			float: right;
 			margin-right: -200px;
 			margin-left: 50px;
 			margin-top: -50px;
 		}
-		.semantical-custom .ck-content .image.side img {
+		.semantical-custom .ck-content .image.image-side img {
 			width: 360px;
 			height: 360px;
 		}
-		.semantical-custom .ck-content .image.side > figcaption {
+		.semantical-custom .ck-content .image.image-side > figcaption {
 			top: 50px;
 			left: 0;
 			bottom: auto;
 		}
-		.semantical-custom .ck-content h2 + figure.image.side {
+		.semantical-custom .ck-content h2 + figure.image.image-side {
 			margin-top: -150px;
 		}
 		.semantical-custom .ck-content h2 {
@@ -201,7 +217,7 @@
 
 <div id="snippet-image-semantical-style-custom">
 	<h1>Handshake over the clouds</h1>
-	<figure class="image side">
+	<figure class="image image-side">
 		<img src="%BASE_PATH%/assets/img/nasa-7Cz6bWjdlDs-unsplash.jpg" alt="Space shuttle">
 		<figcaption>High over the world</figcaption>
 	</figure>
@@ -214,7 +230,7 @@
 		<figcaption>Friends not foes</figcaption>
 	</figure>
 	<p>
-		The first step on the eventual road to building International Space Station was the <a href="https://en.wikipedia.org/wiki/Apollo%E2%80%93Soyuz">Apollo Soyuz<img class="margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg"> Test Project</a>. A specially redesigned pair of the Apollo and Soyuz spacecraft met in orbit and docked together in 1975. Their respective commanders, <a href="https://www.nasa.gov/image-feature/thomas-stafford-and-alexey-leonov">Thomas Stafford and Alexei Leonov</a> shook hands inside the airlock brought to orbit by Apollo. They remained docked for two days.
+		The first step on the eventual road to building International Space Station was the <a href="https://en.wikipedia.org/wiki/Apollo%E2%80%93Soyuz">Apollo Soyuz<img class="image-margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg"> Test Project</a>. A specially redesigned pair of the Apollo and Soyuz spacecraft met in orbit and docked together in 1975. Their respective commanders, <a href="https://www.nasa.gov/image-feature/thomas-stafford-and-alexey-leonov">Thomas Stafford and Alexei Leonov</a> shook hands inside the airlock brought to orbit by Apollo. They remained docked for two days.
 
 	</p>
 	<figure class="image">
@@ -222,7 +238,7 @@
 		<figcaption>Norman Thagard</figcaption>
 	</figure>
 	<p>
-		The ASTP mission was a great step forward, but for a long time and only one. It also marked the end of an era, as the Apollo flown then was the last of its kind. Six years later an era of space shuttles came. These new cosmic planes also marked the return to cooperation. In 1994 Russia and the USA started the <a href="https://en.wikipedia.org/wiki/Shuttle%E2%80%93Mir_program"><img class="margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg">Shuttle-<i>Mir</i> program</a>, which saw Russians riding shuttles and Americans visiting Mir space station, with <a href="https://en.wikipedia.org/wiki/Norman_Thagard">Norman<img class="margin-right" src="%BASE_PATH%/assets/img/icons/comment.svg"> Thagard</a> to be the first US citizen to ever fly a Soyuz. This was the preliminary phase and a technology testbed before launching the first module of the International Space Station in 1998.
+		The ASTP mission was a great step forward, but for a long time and only one. It also marked the end of an era, as the Apollo flown then was the last of its kind. Six years later an era of space shuttles came. These new cosmic planes also marked the return to cooperation. In 1994 Russia and the USA started the <a href="https://en.wikipedia.org/wiki/Shuttle%E2%80%93Mir_program"><img class="image-margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg">Shuttle-<i>Mir</i> program</a>, which saw Russians riding shuttles and Americans visiting Mir space station, with <a href="https://en.wikipedia.org/wiki/Norman_Thagard">Norman<img class="image-margin-right" src="%BASE_PATH%/assets/img/icons/comment.svg"> Thagard</a> to be the first US citizen to ever fly a Soyuz. This was the preliminary phase and a technology testbed before launching the first module of the International Space Station in 1998.
 	</p>
 	<p></p>
 	<p></p>

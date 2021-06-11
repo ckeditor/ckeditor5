@@ -160,12 +160,179 @@ Semantical styles gives the integrator an ability to put at the user's disposal 
 
 {@snippet features/image-semantical-style-custom}
 
-```
-TODO: editor configuration (CSS???)
+The editor presented above requires defining custom image style options and custom image toolbar configuration. Read more about defining the [custom styles](#defining-custom-styles) and {@link module:image/imagestyle/imagestyleui-ImageStyleDropdownDefinition declarative drop-downs}.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		...
+		image: {
+			styles: {
+				// Defining custom styling options for the images.
+				options: [ {
+					name: 'side',
+					icon: sideIcon,
+					title: 'Side image',
+					className: 'image-side',
+					modelElements: [ 'imageBlock' ]
+				}, {
+					name: 'margin-left',
+					icon: leftIcon,
+					title: 'Image on left margin',
+					className: 'image-margin-left',
+					modelElements: [ 'imageInline' ]
+				}, {
+					name: 'margin-right',
+					icon: rightIcon,
+					title: 'Image on right margin',
+					className: 'image-margin-right',
+					modelElements: [ 'imageInline' ]
+				},
+				// Modifying icons and titles of the default inline and
+				// block image styles to reflect its real appearance.
+				{
+					name: 'inline',
+					icon: inlineIcon
+				}, {
+					name: 'full',
+					title: 'Centered image',
+					icon: centerIcon
+				} ]
+			},
+			toolbar: [ {
+				// Grouping the buttons for the icon-like image styling
+				// into one drop-down.
+				name: 'imageStyle:icons',
+				items: [
+					'imageStyle:margin-left',
+					'imageStyle:margin-right',
+					'imageStyle:inline'
+				],
+				defaultItem: 'imageStyle:margin-left'
+			}, {
+				// Grouping the buttons for the regular
+				// picture-like image styling into one drop-down.
+				name: 'imageStyle:pictures',
+				items: [ 'imageStyle:full', 'imageStyle:side' ],
+				defaultItem: 'imageStyle:full'
+			}, '|', 'toggleImageCaption', 'linkImage'
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
 ```
 
-TODO: editor configuration description
-Read more about defining the [custom styles](#defining-custom-styles).
+It also applies multiple CSS rules to not only display custom image styles properly, but also to provide the default content styles, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.
+
+The most important rules regarding the image styling are presented below, you can see the complete content stylesheet [here](https://github.com/ckeditor/ckeditor5/blob/a95554244e9fc71af5aa9e53c6841f114c6d2483/packages/ckeditor5-image/docs/_snippets/features/image-semantical-style-custom.html).
+
+```css
+/* Defining the default content styles for the block images.
+This is how the newly inserted image without any
+style-specific class will look like. */
+.ck-content .image {
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+.ck-content .image::before {
+	content: '';
+	width: 100%;
+	height: 100%;
+	background-color: #1138b0;
+	top: 5%;
+	left: 5%;
+	position: absolute;
+	border-radius: 50%;
+}
+.ck-content .image::after {
+	content: '';
+	width: 200%;
+	height: 200%;
+	background-image: url(../../assets/img/image-context.svg);
+	background-size: contain;
+	background-repeat: no-repeat;
+	position: absolute;
+	top: -60%;
+	pointer-events: none;
+	left: -60%;
+}
+.ck-content .image img {
+	border-radius: 50%;
+	width: 180px;
+	height: 180px;
+	object-fit: cover;
+	filter: grayscale(100%) brightness(70%);
+	box-shadow: 10px 10px 30px #00000078;
+}
+
+/* Defining the default content styles for the inline images.
+This is how the newly inserted image without any
+style-specific class will look like. */
+.ck-content .image-inline {
+	margin: 0 4px;
+	vertical-align: middle;
+	border-radius: 12px;
+}
+.ck-content .image-inline img {
+	width: 24px;
+	max-height: 24px;
+	min-height: 24px;
+	filter: grayscale(100%);
+}
+
+/* Defining the custom content styles for the images
+placed on the side of the editing area. */
+.ck-content .image.image-side {
+	float: right;
+	margin-right: -200px;
+	margin-left: 50px;
+	margin-top: -50px;
+}
+.ck-content .image.image-side img {
+	width: 360px;
+	height: 360px;
+}
+.ck-content .image.image-side > figcaption {
+	top: 50px;
+	left: 0;
+	bottom: auto;
+}
+
+/* Defining the custom content styles for the images
+placed on the editor margins. */
+.ck-content .image-inline.image-margin-left,
+.ck-content .image-inline.image-margin-right {
+	position: absolute;
+	margin: 0;
+	top: auto;
+}
+.ck-content .image-inline.image-margin-left {
+	left: calc( -12.5% - var(--icon-size) / 2 );
+}
+.ck-content .image-inline.image-margin-right {
+	right: calc( -12.5% - var(--icon-size) / 2 );
+}
+.ck-content .image-inline.image-margin-left img,
+.ck-content .image-inline.image-margin-right img {
+	filter: none;
+}
+
+/* Defining the custom content styles for the image captions. */
+.ck-content .image > figcaption {
+	z-index: 1;
+	position: absolute;
+	bottom: 20px;
+	left: -20px;
+	font-style: italic;
+	border-radius: 41px;
+	background-color: #ffffffe8;
+	color: #1138b0;
+	padding: 5px 12px;
+	font-size: 13px;
+	box-shadow: 0 0 18px #1a1a1a26
+}
+```
 
 ### Presentational styles
 Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determines the image alignment behavior. Check the list of the available semantical styles in the [table](#styles-table) above.

@@ -25,19 +25,19 @@ ClassicEditor
 					name: 'side',
 					icon: sideIcon,
 					title: 'Side image',
-					className: 'side',
+					className: 'image-side',
 					modelElements: [ 'imageBlock' ]
 				}, {
 					name: 'margin-left',
 					icon: leftIcon,
 					title: 'Image on left margin',
-					className: 'margin-left',
+					className: 'image-margin-left',
 					modelElements: [ 'imageInline' ]
 				}, {
 					name: 'margin-right',
 					icon: rightIcon,
 					title: 'Image on right margin',
-					className: 'margin-right',
+					className: 'image-margin-right',
 					modelElements: [ 'imageInline' ]
 				},
 				{
@@ -57,7 +57,7 @@ ClassicEditor
 				name: 'imageStyle:pictures',
 				items: [ 'imageStyle:full', 'imageStyle:side' ],
 				defaultItem: 'imageStyle:full'
-			}, '|', 'toggleImageCaption', 'imageTextAlternative', 'linkImage'
+			}, '|', 'toggleImageCaption', 'linkImage'
 			]
 		}
 	} )
