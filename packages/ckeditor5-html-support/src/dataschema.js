@@ -12,7 +12,7 @@ import { toArray } from 'ckeditor5/src/utils';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
- * editor in content compatibility support.
+ * editor in HTML support.
  *
  * Data schema is represented by data schema definitions.
  *

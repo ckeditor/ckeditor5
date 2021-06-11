@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-html-support",
   "version": "28.0.0",
-  "description": "Content compatibility feature",
+  "description": "HTML Support feature",
   "private": true,
   "keywords": [
     "ckeditor",
