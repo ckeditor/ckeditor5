@@ -4,7 +4,7 @@
  */
 
 /**
- * @module content-compatibility/converters
+ * @module html-support/converters
  */
 
 import { toWidget } from 'ckeditor5/src/widget';
@@ -16,8 +16,8 @@ import { setViewAttributes, mergeViewElementAttributes } from './conversionutils
  * This converter listenes on `high` priority to ensure that all attributes are consumed
  * before standard priority converters.
  *
- * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
- * @param {module:content-compatibility/datafilter~DataFilter} dataFilter
+ * @param {module:html-support/dataschema~DataSchemaDefinition} definition
+ * @param {module:html-support/datafilter~DataFilter} dataFilter
  * @returns {Function} Returns a conversion callback.
 */
 export function disallowedAttributesConverter( { view: viewName }, dataFilter ) {
@@ -33,7 +33,7 @@ export function disallowedAttributesConverter( { view: viewName }, dataFilter ) 
  *
  * Preserves object element content in `htmlContent` attribute.
  *
- * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+ * @param {module:html-support/dataschema~DataSchemaDefinition} definition
  * @returns {Function} Returns a conversion callback.
 */
 export function viewToModelObjectConverter( { model: modelName } ) {
@@ -49,7 +49,7 @@ export function viewToModelObjectConverter( { model: modelName } ) {
  * Conversion helper converting object element to HTML object widget.
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+ * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
  * @returns {Function} Returns a conversion callback.
 */
 export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
@@ -94,11 +94,11 @@ export function createObjectView( viewName, modelElement, writer ) {
  * View-to-attribute conversion helper preserving inline element attributes on `$text`.
  *
  * All allowed element attributes will be preserved as a value of
- * {@link module:content-compatibility/dataschema~DataSchemaInlineElementDefinition~model definition model}
+ * {@link module:html-support/dataschema~DataSchemaInlineElementDefinition~model definition model}
  * attribute.
  *
- * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
- * @param {module:content-compatibility/datafilter~DataFilter} dataFilter
+ * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
+ * @param {module:html-support/datafilter~DataFilter} dataFilter
  * @returns {Function} Returns a conversion callback.
 */
 export function viewToAttributeInlineConverter( { view: viewName, model: attributeKey }, dataFilter ) {
@@ -130,7 +130,7 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 /**
  * Attribute-to-view conversion helper applying attributes to view element preserved on `$text`.
  *
- * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+ * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
  * @returns {Function} Returns a conversion callback.
 */
 export function attributeToViewInlineConverter( { priority, view: viewName } ) {
@@ -153,8 +153,8 @@ export function attributeToViewInlineConverter( { priority, view: viewName } ) {
  *
  * All matched attributes will be preserved on `htmlAttributes` attribute.
  *
- * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
- * @param {module:content-compatibility/datafilter~DataFilter} dataFilter
+ * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
+ * @param {module:html-support/datafilter~DataFilter} dataFilter
  * @returns {Function} Returns a conversion callback.
 */
 export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilter ) {
@@ -177,7 +177,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }, dataFilt
  * Model-to-view conversion helper applying attributes preserved in `htmlAttributes` attribute
  * for block elements.
  *
- * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+ * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
  * @returns {Function} Returns a conversion callback.
 */
 export function modelToViewBlockAttributeConverter( { model: modelName } ) {

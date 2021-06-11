@@ -4,7 +4,7 @@
  */
 
 /**
- * @module content-compatibility/datafilter
+ * @module html-support/datafilter
  */
 
 import DataSchema from './dataschema';
@@ -31,9 +31,9 @@ import { isPlainObject } from 'lodash-es';
 import '../theme/datafilter.css';
 
 /**
- * Allows to validate elements and element attributes registered by {@link module:content-compatibility/dataschema~DataSchema}.
+ * Allows to validate elements and element attributes registered by {@link module:html-support/dataschema~DataSchema}.
  *
- * To enable registered element in the editor, use {@link module:content-compatibility/datafilter~DataFilter#allowElement} method:
+ * To enable registered element in the editor, use {@link module:html-support/datafilter~DataFilter#allowElement} method:
  *
  *		dataFilter.allowElement( 'section' );
  *
@@ -62,11 +62,11 @@ export default class DataFilter extends Plugin {
 		super( editor );
 
 		/**
-		 * An instance of the {@link module:content-compatibility/dataschema~DataSchema}.
+		 * An instance of the {@link module:html-support/dataschema~DataSchema}.
 		 *
 		 * @readonly
 		 * @private
-		 * @member {module:content-compatibility/dataschema~DataSchema} #_dataSchema
+		 * @member {module:html-support/dataschema~DataSchema} #_dataSchema
 		 */
 		this._dataSchema = editor.plugins.get( 'DataSchema' );
 
@@ -91,11 +91,11 @@ export default class DataFilter extends Plugin {
 		this._disallowedAttributes = new Matcher();
 
 		/**
-		 * Allowed element definitions by {@link module:content-compatibility/datafilter~DataFilter#allowElement} method.
+		 * Allowed element definitions by {@link module:html-support/datafilter~DataFilter#allowElement} method.
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Set.<module:content-compatibility/dataschema~DataSchemaDefinition>} #_allowedElements
+		 * @member {Set.<module:html-support/dataschema~DataSchemaDefinition>} #_allowedElements
 		*/
 		this._allowedElements = new Set();
 
@@ -148,7 +148,7 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Allow the given element in the editor context.
 	 *
-	 * This method will only allow elements described by the {@link module:content-compatibility/dataschema~DataSchema} used
+	 * This method will only allow elements described by the {@link module:html-support/dataschema~DataSchema} used
 	 * to create data filter.
 	 *
 	 * @param {String|RegExp} viewName String or regular expression matching view name.
@@ -239,7 +239,7 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Registers elements allowed by {@link module:content-compatibility/datafilter~DataFilter#allowElement} method
+	 * Registers elements allowed by {@link module:html-support/datafilter~DataFilter#allowElement} method
 	 * once {@link module:core/editor~Editor#data editor's data controller} is initialized.
 	 *
 	 * @private
@@ -300,7 +300,7 @@ export default class DataFilter extends Plugin {
 	 * Fires `register` event for the given element definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition
 	 */
 	_fireRegisterEvent( definition ) {
 		this.fire( definition.view ? `register:${ definition.view }` : 'register', definition );
@@ -310,7 +310,7 @@ export default class DataFilter extends Plugin {
 	 * Registers object element and attribute converters for the given data schema definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition
 	 */
 	_registerObjectElement( definition ) {
 		const editor = this.editor;
@@ -361,7 +361,7 @@ export default class DataFilter extends Plugin {
 	 * Registers block element and attribute converters for the given data schema definition.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaBlockElementDefinition} definition
+	 * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
 	 */
 	_registerBlockElement( definition ) {
 		const editor = this.editor;
@@ -409,7 +409,7 @@ export default class DataFilter extends Plugin {
 	 * Extends `$text` model schema to allow the given definition model attribute and its properties.
 	 *
 	 * @private
-	 * @param {module:content-compatibility/dataschema~DataSchemaInlineElementDefinition} definition
+	 * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
 	 */
 	_registerInlineElement( definition ) {
 		const editor = this.editor;
@@ -435,10 +435,10 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Fired when {@link module:content-compatibility/datafilter~DataFilter} is registering element and attribute
-	 * converters for the {@link module:content-compatibility/dataschema~DataSchemaDefinition element definition}.
+	 * Fired when {@link module:html-support/datafilter~DataFilter} is registering element and attribute
+	 * converters for the {@link module:html-support/dataschema~DataSchemaDefinition element definition}.
 	 *
-	 * The event also accepts {@link module:content-compatibility/dataschema~DataSchemaDefinition#view} value
+	 * The event also accepts {@link module:html-support/dataschema~DataSchemaDefinition#view} value
 	 * as an event namespace, e.g. `register:span`.
 	 *
 	 * 		dataFilter.on( 'register', ( evt, definition ) => {
@@ -458,7 +458,7 @@ export default class DataFilter extends Plugin {
 	 * 		}, { priority: 'high' } )
 	 *
 	 * @event register
-	 * @param {module:content-compatibility/dataschema~DataSchemaDefinition} definition
+	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition
 	 */
 }
 

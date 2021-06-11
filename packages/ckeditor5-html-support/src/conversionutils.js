@@ -4,7 +4,7 @@
  */
 
 /**
- * @module content-compatibility/conversionutils
+ * @module html-support/conversionutils
  */
 
 import { cloneDeep } from 'lodash-es';

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module content-compatibility/generalhtmlsupport
+ * @module html-support/generalhtmlsupport
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -14,7 +14,7 @@ import CodeBlockHtmlSupport from './integrations/codeblock';
 /**
  * The General HTML Support feature.
  *
- * This is a "glue" plugin which initializes the {@link module:content-compatibility/datafilter~DataFilter data filter} configuration
+ * This is a "glue" plugin which initializes the {@link module:html-support/datafilter~DataFilter data filter} configuration
  * and features integration with the General HTML Support.
  *
  * @extends module:core/plugin~Plugin
