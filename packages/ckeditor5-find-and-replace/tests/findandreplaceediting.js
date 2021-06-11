@@ -12,6 +12,7 @@ import FindAndReplaceUI from '../src/findandreplaceui';
 
 import FindCommand from '../src/findcommand';
 import ReplaceCommand from '../src/replacecommand';
+import ReplaceAllCommand from '../src/replaceallcommand';
 
 describe( 'FindAndReplaceEditing', () => {
 	const FOO_BAR_PARAGRAPH = '<p>Foo bar baz</p>';
@@ -208,6 +209,10 @@ describe( 'FindAndReplaceEditing', () => {
 
 		it( 'should register replace command', () => {
 			expect( editor.commands.get( 'replace' ) ).to.be.instanceOf( ReplaceCommand );
+		} );
+
+		it( 'should register replace all command', () => {
+			expect( editor.commands.get( 'replaceAll' ) ).to.be.instanceOf( ReplaceAllCommand );
 		} );
 	} );
 } );
