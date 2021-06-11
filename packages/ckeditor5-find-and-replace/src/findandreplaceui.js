@@ -58,6 +58,12 @@ export default class FindAndReplaceUI extends Plugin {
 
 			dropdown.panelView.children.add( formView );
 
+			dropdown.on( 'change:isOpen', ( event, name, value ) => {
+				if ( !value ) {
+					this.fire( 'dropdown:closed' );
+				}
+			} );
+
 			return dropdown;
 		} );
 	}

@@ -89,6 +89,15 @@ describe( 'FindAndReplace', () => {
 
 			expect( spy.calledOnce ).to.true;
 		} );
+
+		it( 'should react to closed ui dropdown event', () => {
+			const spy = sinon.spy( findAndReplaceEditing, 'stop' );
+
+			findAndReplaceUI.fire( 'dropdown:closed' );
+			spy.restore();
+
+			expect( spy.calledOnce ).to.true;
+		} );
 	} );
 
 	describe( 'find()', () => {

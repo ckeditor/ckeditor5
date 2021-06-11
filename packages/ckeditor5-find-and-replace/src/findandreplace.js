@@ -80,5 +80,9 @@ export default class FindAndReplace extends Plugin {
 			// to perform replace all on editor that has already some find results matched.
 			this.editor.execute( 'replaceAll', data.replaceText, findAndReplaceEditing.activeResults );
 		} );
+
+		ui.on( 'dropdown:closed', () => {
+			findAndReplaceEditing.stop();
+		} );
 	}
 }

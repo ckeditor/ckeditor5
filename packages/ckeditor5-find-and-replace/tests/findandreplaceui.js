@@ -52,4 +52,15 @@ describe( 'FindAndReplaceUI', () => {
 		} ).not.to.throw();
 		expect( dropdown ).to.not.equal( secondInstance );
 	} );
+
+	it( 'should delegate dropdown:closed event', () => {
+		const plugin = editor.plugins.get( 'FindAndReplaceUI' );
+		const spy = sinon.spy();
+
+		plugin.on( 'dropdown:closed', spy );
+
+		dropdown.fire( 'change:isOpen', 'isClosed', false );
+
+		expect( spy.calledOnce ).to.be.true;
+	} );
 } );
