@@ -10,6 +10,9 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import FindAndReplace from '../src/findandreplace';
 import FindAndReplaceUI from '../src/findandreplaceui';
 
+import FindCommand from '../src/findcommand';
+import ReplaceCommand from '../src/replacecommand';
+
 describe( 'FindAndReplaceEditing', () => {
 	const FOO_BAR_PARAGRAPH = '<p>Foo bar baz</p>';
 	const TWO_FOO_BAR_PARAGRAPHS = FOO_BAR_PARAGRAPH + FOO_BAR_PARAGRAPH;
@@ -195,6 +198,16 @@ describe( 'FindAndReplaceEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 				'<p>Foo <span class="find-result" data-find-result="test-uid">bar</span> baz</p>'
 			);
+		} );
+	} );
+
+	describe( 'commands', () => {
+		it( 'should register find command', () => {
+			expect( editor.commands.get( 'find' ) ).to.be.instanceOf( FindCommand );
+		} );
+
+		it( 'should register replace command', () => {
+			expect( editor.commands.get( 'replace' ) ).to.be.instanceOf( ReplaceCommand );
 		} );
 	} );
 } );

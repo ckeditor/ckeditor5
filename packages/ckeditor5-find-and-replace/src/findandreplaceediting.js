@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { updateFindResultFromRange } from './utils';
 import FindCommand from './findcommand';
+import ReplaceCommand from './replacecommand';
 
 const HIGHLIGHT_CLASS = 'find-result_selected';
 
@@ -95,6 +96,7 @@ export default class FindAndReplaceEditing extends Plugin {
 		// this.stopListening( this.editor.model.document );
 
 		this.editor.commands.add( 'find', new FindCommand( this.editor ) );
+		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor ) );
 	}
 
 	/**
@@ -168,6 +170,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * Initiate a search.
 	 *
 	 * @param {Function|String} callbackOrText
+	 * @returns {module:utils/collection~Collection}
 	 */
 	find( callbackOrText ) {
 		const { editor } = this;
@@ -210,21 +213,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * @param {String|Function} textOrCallback
 	 */
 	replace( { marker }, textOrCallback ) {
-		const { model } = this.editor;
-
-		const callback = typeof textOrCallback === 'function' ? textOrCallback : getDefaultCallback( textOrCallback );
-
-		model.change( writer => {
-			const range = marker.getRange();
-
-			model.insertContent( callback( writer ), range );
-		} );
-
-		function getDefaultCallback( textOrCallback ) {
-			return writer => {
-				return writer.createText( textOrCallback );
-			};
-		}
+		this.editor.execute( 'replace', { marker }, textOrCallback );
 	}
 
 	/**

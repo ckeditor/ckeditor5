@@ -121,3 +121,9 @@ export function findByTextCallback( searchTerm ) {
 
 	return findCallback;
 }
+
+export function getDefaultCallback( textOrCallback ) {
+	return writer => {
+		return writer.createText( textOrCallback );
+	};
+}
