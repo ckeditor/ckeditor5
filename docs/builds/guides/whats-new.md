@@ -22,7 +22,7 @@ Inserting images into the content is now very intuitive, with all technical aspe
 
 <iframe width="600" height="337" src="https://www.youtube.com/embed/WWT9pkPZSnI?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
 
-The outdated concept of image alignment was dropped in favor of {@link features/image#image-styles image styles}:
+The outdated concept of image alignment was dropped in favor of {@link features/images-styles image styles}:
 
 {@img assets/img/builds-image-styles.png 736 Image styles toolbar.}
 

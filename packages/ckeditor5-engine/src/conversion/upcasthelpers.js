@@ -173,7 +173,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * View attribute to model attribute conversion helper.
 	 *
 	 * This conversion results in setting an attribute on a model node. For example, view `<img src="foo.jpg"></img>` becomes
-	 * `<image source="foo.jpg"></image>` in the model.
+	 * `<imageBlock source="foo.jpg"></imageBlock>` in the model.
 	 *
 	 * This helper is meant to convert view attributes from view elements which got converted to the model, so the view attribute
 	 * is set only on the corresponding model node:
@@ -389,7 +389,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 *		// Model:
 	 *		<paragraph>Foo[bar</paragraph>
-	 *		<image src="abc.jpg"></image>]
+	 *		<imageBlock src="abc.jpg"></imageBlock>]
 	 *
 	 * Where `[]` are boundaries of a marker that will receive the `comment:commentId:uid` name.
 	 *
@@ -653,7 +653,7 @@ function upcastDataToMarker( config ) {
 		// This converter handles both element conversion and attribute conversion, which means that if a single
 		// `config.converterPriority` is used, it will lead to problems. For example, if `'high'` priority is used,
 		// then attribute conversion will be performed before a lot of element upcast converters.
-		// On the other hand we want to support `config.converterPriority` and overwriting conveters.
+		// On the other hand we want to support `config.converterPriority` and overwriting converters.
 		//
 		// To have it work, we need to do some extra processing for priority for attribute converter.
 		// Priority `'low'` value should be the base value and then we will change it depending on `config.converterPriority` value.
@@ -682,12 +682,23 @@ function upcastAttributeToMarker( config ) {
 	return ( evt, data, conversionApi ) => {
 		const attrName = `data-${ config.view }`;
 
+		// Check if any attribute for the given view item can be consumed before changing the conversion data
+		// and consuming view items with these attributes.
+		if (
+			!conversionApi.consumable.test( data.viewItem, { attributes: attrName + '-end-after' } ) &&
+			!conversionApi.consumable.test( data.viewItem, { attributes: attrName + '-start-after' } ) &&
+			!conversionApi.consumable.test( data.viewItem, { attributes: attrName + '-end-before' } ) &&
+			!conversionApi.consumable.test( data.viewItem, { attributes: attrName + '-start-before' } )
+		) {
+			return;
+		}
+
 		// This converter wants to add a model element, marking a marker, before/after an element (or maybe even group of elements).
 		// To do that, we can use `data.modelRange` which is set on an element (or a group of elements) that has been upcasted.
 		// But, if the processed view element has not been upcasted yet (it does not have been converted), we need to
 		// fire conversion for its children first, then we will have `data.modelRange` available.
 		if ( !data.modelRange ) {
-			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
 		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-end-after' } ) ) {
@@ -893,7 +904,7 @@ function prepareToAttributeConverter( config, shallow ) {
 		// If the range is not created yet, let's create it by converting children of the current node first.
 		if ( !data.modelRange ) {
 			// Convert children and set conversion result as a current data.
-			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
 		// Set attribute on current `output`. `Schema` is checked inside this helper function.

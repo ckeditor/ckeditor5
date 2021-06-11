@@ -268,7 +268,7 @@ function getIsOnButtonCallback( value ) {
  * * If you configure the feature using the resize dropdown, this name will be used for a list item in the dropdown.
  * @property {String} value The value of the resize option without the unit
  * ({@link module:image/image~ImageConfig#resizeUnit configured separately}). `null` resets an image to its original size.
- * @property {String} [resizeOptions.icon] An icon used by an individual resize button (see the `name` property to learn more).
+ * @property {String} [icon] An icon used by an individual resize button (see the `name` property to learn more).
  * Available icons are: `'small'`, `'medium'`, `'large'`, `'original'`.
  * @property {String} [label] An option label displayed in the dropdown or, if the feature is configured using
  * individual buttons, a {@link module:ui/button/buttonview~ButtonView#tooltip} and an ARIA attribute of a button.

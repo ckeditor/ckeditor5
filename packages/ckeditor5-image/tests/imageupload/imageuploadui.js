@@ -140,8 +140,9 @@ describe( 'ImageUploadUI', () => {
 		const id = fileRepository.getLoader( files[ 0 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
-			`[<image uploadId="${ id }" uploadStatus="reading"></image>]` +
-			'<paragraph>foo</paragraph>'
+			'<paragraph>' +
+				`f[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]oo` +
+			'</paragraph>'
 		);
 	} );
 
@@ -157,9 +158,10 @@ describe( 'ImageUploadUI', () => {
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
-			'<paragraph>foo</paragraph>' +
-			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
-			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +
+			'<paragraph>' +
+				`foo<imageInline uploadId="${ id1 }" uploadStatus="reading"></imageInline>` +
+				`[<imageInline uploadId="${ id2 }" uploadStatus="reading"></imageInline>]` +
+			'</paragraph>' +
 			'<paragraph>bar</paragraph>'
 		);
 	} );

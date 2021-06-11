@@ -2,11 +2,16 @@
 menu-title: Features' HTML output
 category: builds-integration
 order: 90
+modified_at: 2021-06-07
 ---
 
 # Features' HTML output overview
 
-Listed below are both official CKEditor 5 and third-party plugin packages and their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column. The classes, styles or attributes applied to an HTML element are all **possible** results. It does not mean they all will always be used. If a given plugin does not generate any output, the "HTML output" is described as "None".  Wildcard character `*` means any value is possible.
+Listed below are all official CKEditor 5 packages as well as some partner packages together with their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column.
+
+The classes, styles or attributes applied to an HTML element are all **possible** results. It does not mean they all will always be used.
+
+If a given plugin does not generate any output, the "HTML output" is described as "None".  Wildcard character `*` means any value is possible.
 
 The data used to generate the following tables comes from the package metadata. You can read more about it in the {@link framework/guides/contributing/package-metadata package metadata} guide.
 
@@ -19,10 +24,10 @@ The data used to generate the following tables comes from the package metadata. 
 		width: 33.333%;
 	}
 
-    table.features-html-output td.plugin a,
-    table.features-html-output td.plugin code {
-        white-space: nowrap;
-    }
+	table.features-html-output td.plugin a,
+	table.features-html-output td.plugin code {
+		white-space: nowrap;
+	}
 
 	table.features-html-output td.html-output > code {
 		display: block;
@@ -36,7 +41,7 @@ The data used to generate the following tables comes from the package metadata. 
 	}
 </style>
 
-<!-- Do not delete the comment below as it indicates the place, where the features HTML output will be stored. -->
+<!-- Do not delete the comment below as it indicates the place where the features HTML output will be stored. -->
 
 <!-- features-html-output-marker -->
 <h3 id="ckeditor5-adapter-ckfinder"><code>ckeditor5-adapter-ckfinder</code></h3>
@@ -58,7 +63,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
+					<a href="../../../features/images/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html"><code>CKFinderUploadAdapter</code></a>
@@ -91,7 +96,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder">Alignment</a>
+					<a href="../../../features/images/image-upload/image-upload.html#ckfinder">Alignment</a>
 				</p>
 				<p>
 					<a href="../../../api/module_alignment_alignment-Alignment.html"><code>Alignment</code></a>
@@ -100,7 +105,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>$block</strong> <strong>style</strong>="text-align:*"&gt;</code>
 				<p>
-					By default, the alignment is set inline using <code>text-align</code> CSS property.
+					By default, the alignment feature uses the <code>text-align</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -108,7 +113,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>$block</strong> <strong>class</strong>="*"&gt;</code>
 				<p>
-					If class names are defined in <code>config.alignment.options</code>, then these classes are used for alignment instead of inline styles.
+					If <code>config.alignment.options</code> is set, these classes are used for alignment instead of inline styles.
 				</p>
 			</td>
 		</tr>
@@ -219,7 +224,7 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 			<td class="html-output">
-				<code>&lt;<strong>code</strong> <strong>class</strong>="ck-code_selected"&gt;</code>
+				<code>&lt;<strong>code</strong>&gt;</code>
 			</td>
 		</tr>
 		<tr>
@@ -339,7 +344,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/ckfinder.html">CKFinder</a>
+					<a href="../../../features/images/image-upload/ckfinder.html">CKFinder</a>
 				</p>
 				<p>
 					<a href="../../../api/module_ckfinder_ckfinder-CKFinder.html"><code>CKFinder</code></a>
@@ -419,7 +424,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>code</strong> <strong>class</strong>="* language-*"&gt;</code>
 				<p>
-					By default, the language of the code block is represented as a CSS class prefixed by <code>language-</code>. CSS class name can be customized via <code>config.codeBlock.languages</code> array.
+					By default, the language of the code block is represented as a CSS class prefixed by <code>language-</code>. The CSS class name can be customized via the <code>config.codeBlock.languages</code> array.
 				</p>
 			</td>
 		</tr>
@@ -463,7 +468,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>data-comment-end-after</strong>="*"<br>    <strong>data-comment-start-before</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin adds <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which comments starts or ends.
+					The plugin adds the <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which comments start or end.
 				</p>
 			</td>
 		</tr>
@@ -488,7 +493,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/easy-image.html">Easy Image</a>
+					<a href="../../../features/images/image-upload/easy-image.html">Easy Image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_easy-image_easyimage-EasyImage.html"><code>EasyImage</code></a>
@@ -653,7 +658,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>class</strong>="text-tiny text-small text-big text-huge"&gt;</code>
 				<p>
-					If the configuration <code>config.fontSize.options</code> is not set or it contains predefined named presets, then the font size is configured by the class name.
+					If the <code>config.fontSize.options</code> option is not set or it contains predefined named presets, the feature uses class names.
 				</p>
 			</td>
 		</tr>
@@ -661,7 +666,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>style</strong>="font-size:*"&gt;</code>
 				<p>
-					If the configuration <code>config.fontSize.options</code> contains numerical values, the font size is configured inline using the <code>font-size</code> CSS property.
+					If the <code>config.fontSize.options</code> option contains numerical values, the font size feature uses the <code>font-size</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -685,7 +690,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>style</strong>="font-family:*"&gt;</code>
 				<p>
-					By default, the font family is configured inline using the <code>font-family</code> CSS property.
+					By default, the font family feature uses the <code>font-family</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -693,7 +698,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>&gt;</code>
 				<p>
-					The plugin can be configured to return any element with any classes and any custom inline styles.
+					The plugin can be configured to return any element with any classes and any inline styles.
 				</p>
 			</td>
 		</tr>
@@ -738,9 +743,9 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 			<td class="html-output">
-				<code>&lt;<strong>h1</strong>&gt;</code><code>&lt;<strong>h2</strong>&gt;</code><code>&lt;<strong>h3</strong>&gt;</code><code>&lt;<strong>h4</strong>&gt;</code>
+				<code>&lt;<strong>h2</strong>&gt;</code><code>&lt;<strong>h3</strong>&gt;</code><code>&lt;<strong>h4</strong>&gt;</code>
 				<p>
-					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
 			</td>
 		</tr>
@@ -844,7 +849,7 @@ The data used to generate the following tables comes from the package metadata. 
 	</thead>
 	<tbody>
 		<tr>
-			<td class="plugin">
+			<td class="plugin" rowspan="2">
 				<p>
 					<a href="../../../features/html-embed.html">HTML embed</a>
 				</p>
@@ -854,6 +859,14 @@ The data used to generate the following tables comes from the package metadata. 
 			</td>
 			<td class="html-output">
 				<code>&lt;<strong>div</strong> <strong>class</strong>="raw-html-embed"&gt;</code>
+			</td>
+		</tr>
+		<tr>
+			<td class="html-output">
+				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>&gt;</code>
+				<p>
+					The plugin can output any arbitrary HTML provided by the user. This HTML is always wrapped with a <code>&lt;div class="raw-html-embed"&gt;</code> element.
+				</p>
 			</td>
 		</tr>
 	</tbody>
@@ -877,7 +890,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-pasting-url-into-editor">Auto image</a>
+					<a href="../../../features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor">Auto image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_autoimage-AutoImage.html"><code>AutoImage</code></a>
@@ -892,7 +905,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image.html">Image</a>
+					<a href="../../../features/images/images-overview.html">Image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_image-Image.html"><code>Image</code></a>
@@ -910,7 +923,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-captions">Image caption</a>
+					<a href="../../../features/images/images-captions.html">Image caption</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagecaption-ImageCaption.html"><code>ImageCaption</code></a>
@@ -923,7 +936,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#resizing-images">Image resize</a>
+					<a href="../../../features/images/images-resizing.html">Image resize</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageresize-ImageResize.html"><code>ImageResize</code></a>
@@ -936,7 +949,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image.html#image-styles">Image style</a>
+					<a href="../../../features/images/images-styles.html">Image style</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagestyle-ImageStyle.html"><code>ImageStyle</code></a>
@@ -957,7 +970,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-contextual-toolbar">Image toolbar</a>
+					<a href="../../../features/images/images-overview.html#image-contextual-toolbar">Image toolbar</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagetoolbar-ImageToolbar.html"><code>ImageToolbar</code></a>
@@ -972,7 +985,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-upload">Image upload</a>
+					<a href="../../../features/images/image-upload/image-upload.html">Image upload</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageupload-ImageUpload.html"><code>ImageUpload</code></a>
@@ -987,7 +1000,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-source-url">Image insert</a>
+					<a href="../../../features/images/image-upload/images-inserting.html#inserting-images-via-source-url">Image insert</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageinsert-ImageInsert.html"><code>ImageInsert</code></a>
@@ -1137,7 +1150,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>a</strong><br>    <strong>rel</strong>="*"<br>    <strong>target</strong>="*"<br>&gt;</code>
 				<p>
-					If <code>config.link.addTargetToExternalLinks</code> is enabled, then the external links are decorated with <code>rel</code> and <code>target</code> attributes.
+					If <code>config.link.addTargetToExternalLinks</code> is enabled, external links are decorated with the <code>rel</code> and <code>target</code> attributes.
 				</p>
 			</td>
 		</tr>
@@ -1145,14 +1158,14 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>a</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin can be configured to set any classes, styles or attributes on the <code>&lt;a&gt;</code> tag via custom <code>config.link.decorators</code> configuration.
+					The plugin can be configured to set any classes, styles or attributes on the <code>&lt;a&gt;</code> tag via a custom <code>config.link.decorators</code> configuration.
 				</p>
 			</td>
 		</tr>
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#linking-images">Link image</a>
+					<a href="../../../features/images/images-linking.html">Link image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_link_linkimage-LinkImage.html"><code>LinkImage</code></a>
@@ -1197,7 +1210,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>li</strong>&gt;</code>
 				<p>
-					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
 			</td>
 		</tr>
@@ -1331,25 +1344,31 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong> <strong>url</strong>="*"&gt;</code>
 				<p>
-					If preview configuration <code>config.mediaEmbed.previewsInData</code> is turned off, the plugin can be configured to return any element name specified by <code>config.mediaEmbed.elementName</code>.
+					If <code>config.mediaEmbed.previewsInData</code> is turned off, the plugin can be configured to return any element name specified by <code>config.mediaEmbed.elementName</code>.
 				</p>
 			</td>
 		</tr>
 		<tr>
 			<td class="html-output">
 				<code>&lt;<strong>div</strong> <strong>style</strong>="height:*; padding-bottom:*; position:*"&gt;</code>
+				<p>
+					If <code>config.mediaEmbed.previewsInData</code> is turned on, the media preview is displayed in the view.
+				</p>
 			</td>
 		</tr>
 		<tr>
 			<td class="html-output">
 				<code>&lt;<strong>iframe</strong><br>    <strong>style</strong>="height:*; left:*; position:*; top:*; width:*"<br>    <strong>*allow*</strong>="*"<br>    <strong>frameborder</strong>="*"<br>    <strong>src</strong>="*"<br>&gt;</code>
+				<p>
+					If <code>config.mediaEmbed.previewsInData</code> is turned on, the media preview is displayed in the view.
+				</p>
 			</td>
 		</tr>
 		<tr>
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin can be configured to return any element with any class, inline style, and attribute, via <code>config.mediaEmbed.providers</code> for previewable media.
+					The plugin can be configured to return any element with any class, inline style, and attribute for previewable media via <code>config.mediaEmbed.providers</code>.
 				</p>
 			</td>
 		</tr>
@@ -1464,6 +1483,9 @@ The data used to generate the following tables comes from the package metadata. 
 			</td>
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>style</strong>="page-break-before:*"<br>    <strong>data-pagination-page</strong>="*"<br>&gt;</code>
+				<p>
+					When using <code>editor.getData( { pagination: true } )</code>. Otherwise, no additional elements are generated.
+				</p>
 			</td>
 		</tr>
 	</tbody>
@@ -1496,7 +1518,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>p</strong>&gt;</code>
 				<p>
-					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
 			</td>
 		</tr>
@@ -1898,6 +1920,19 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/table.html#table-caption">Table caption</a>
+				</p>
+				<p>
+					<a href="../../../api/module_table_tablecaption-TableCaption.html"><code>TableCaption</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>figcaption</strong> <strong>data-placeholder</strong>="*"&gt;</code>
+			</td>
+		</tr>
 	</tbody>
 </table>
 <h3 id="ckeditor5-track-changes"><code>ckeditor5-track-changes</code></h3>
@@ -2018,7 +2053,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/base64-upload-adapter.html">Base64 upload adapter</a>
+					<a href="../../../features/images/image-upload/base64-upload-adapter.html">Base64 upload adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_upload_adapters_base64uploadadapter-Base64UploadAdapter.html"><code>Base64UploadAdapter</code></a>
@@ -2033,7 +2068,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/simple-upload-adapter.html">Simple upload adapter</a>
+					<a href="../../../features/images/image-upload/simple-upload-adapter.html">Simple upload adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_upload_adapters_simpleuploadadapter-SimpleUploadAdapter.html"><code>SimpleUploadAdapter</code></a>
@@ -2141,7 +2176,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong> <strong>*</strong>="*"&gt;</code>
 				<p>
-					For a complete list of available element and attribute names, visit <a href="https://developer.mozilla.org/en-US/docs/Web/MathML" target="_blank" rel="noopener">MDN Web Docs</a>.
+					For a complete list of available MathML element and attribute names, visit <a href="https://developer.mozilla.org/en-US/docs/Web/MathML" target="_blank" rel="noopener">MDN Web Docs for MathML</a>.
 				</p>
 			</td>
 		</tr>

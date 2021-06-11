@@ -60,16 +60,12 @@ export default class WidgetResize extends Plugin {
 		/**
 		 * A map of resizers created using this plugin instance.
 		 *
-		 * @private
+		 * @protected
 		 * @type {Map.<module:engine/view/containerelement~ContainerElement, module:widget/widgetresize/resizer~Resizer>}
 		 */
 		this._resizers = new Map();
 
 		const domDocument = global.window.document;
-
-		this.editor.model.schema.setAttributeProperties( 'width', {
-			isFormatting: true
-		} );
 
 		this.editor.editing.view.addObserver( MouseObserver );
 

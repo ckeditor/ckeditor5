@@ -30,7 +30,7 @@ export default class LinkImageUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ LinkEditing, LinkUI, 'Image' ];
+		return [ LinkEditing, LinkUI, 'ImageBlockEditing' ];
 	}
 
 	/**
@@ -48,12 +48,15 @@ export default class LinkImageUI extends Plugin {
 		const viewDocument = editor.editing.view.document;
 
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
-			const hasLink = isImageLinked( viewDocument.selection.getSelectedElement(), editor.plugins.get( 'Image' ) );
-
-			if ( hasLink ) {
+			if ( this._isSelectedLinkedImage( editor.model.document.selection ) ) {
+				// Prevent browser navigation when clicking a linked image.
 				data.preventDefault();
+
+				// Block the `LinkUI` plugin when an image was clicked.
+				// In such a case, we'd like to display the image toolbar.
+				evt.stop();
 			}
-		} );
+		}, { priority: 'high' } );
 
 		this._createToolbarLinkImageButton();
 	}
@@ -91,9 +94,7 @@ export default class LinkImageUI extends Plugin {
 
 			// Show the actionsView or formView (both from LinkUI) on button click depending on whether the image is linked already.
 			this.listenTo( button, 'execute', () => {
-				const hasLink = isImageLinked( editor.editing.view.document.selection.getSelectedElement(), editor.plugins.get( 'Image' ) );
-
-				if ( hasLink ) {
+				if ( this._isSelectedLinkedImage( editor.model.document.selection ) ) {
 					plugin._addActionsView();
 				} else {
 					plugin._showUI( true );
@@ -103,18 +104,19 @@ export default class LinkImageUI extends Plugin {
 			return button;
 		} );
 	}
-}
 
-// A helper function that checks whether the element is a linked image.
-//
-// @param {module:engine/model/element~Element} element
-// @returns {Boolean}
-function isImageLinked( element, image ) {
-	const isImage = element && image.isImageWidget( element );
+	/**
+	 * Returns true if a linked image (either block or inline) is the only selected element
+	 * in the model document.
+	 *
+	 * @private
+	 * @param {module:engine/model/selection~Selection} selection
+	 * @returns {Boolean}
+	 */
+	_isSelectedLinkedImage( selection ) {
+		const selectedModelElement = selection.getSelectedElement();
+		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
-	if ( !isImage ) {
-		return false;
+		return imageUtils.isImage( selectedModelElement ) && selectedModelElement.hasAttribute( 'linkHref' );
 	}
-
-	return element.getChild( 0 ).is( 'element', 'a' );
 }

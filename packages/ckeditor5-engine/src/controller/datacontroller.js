@@ -347,11 +347,19 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
+	 * To set the data with preserved undo stacks and set the current change to this stack, use the `{ batchType: 'default' }` option.
+	 *
+	 *		dataController.set( '<p>Foo</p>', { batchType: 'default' } ); // Sets data as a new change.
+	 *
 	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
+	 * @param {Object} [options={}] Options for setting data.
+	 * @param {'default'|'transparent'} [options.batchType='default'] The batch type that will be used to create a batch for the changes.
+	 * When set to `default`, the undo and redo stacks will be preserved. Note that when not set, the undo feature (when present) will
+	 * override it to `transparent` and all undo steps will be lost.
 	 */
-	set( data ) {
+	set( data, options = {} ) {
 		let newData = {};
 
 		if ( typeof data === 'string' ) {
@@ -375,7 +383,9 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-set-non-existent-root', this );
 		}
 
-		this.model.enqueueChange( 'transparent', writer => {
+		const batchType = options.batchType || 'default';
+
+		this.model.enqueueChange( batchType, writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 

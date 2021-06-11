@@ -13,7 +13,7 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 
 import { getData, parse } from '../../../../src/dev-utils/model';
 import { transformSets } from '../../../../src/model/operation/transform';
@@ -40,7 +40,7 @@ export class Client {
 			// Block plugins are needed for proper data serializing.
 			// BoldEditing is needed for bold command.
 			plugins: [
-				Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing, ImageEditing
+				Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing, ImageBlockEditing
 			]
 		} ).then( editor => {
 			this.editor = editor;

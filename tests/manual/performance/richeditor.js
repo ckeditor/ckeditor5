@@ -127,7 +127,13 @@ ClassicEditor
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties' ]
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText', '|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( newEditor => {

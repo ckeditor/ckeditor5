@@ -356,5 +356,49 @@ describe( 'UndoCommand', () => {
 
 			sinon.assert.called( spy );
 		} );
+
+		it( 'should clear stack on DataController set() when the `batchType` is set to `transparent`', () => {
+			const spy = sinon.stub( undo, 'clearStack' );
+
+			editor.setData( 'foo' );
+
+			sinon.assert.called( spy );
+		} );
+
+		it( 'should not clear stack on DataController#set() when the `batchType` is set to `default`', () => {
+			const spy = sinon.spy( undo, 'clearStack' );
+
+			editor.data.set( 'foo', { batchType: 'default' } );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should override the batch type when the batch type is not set', () => {
+			const dataSetSpy = sinon.spy();
+
+			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
+
+			editor.data.set( 'foo' );
+
+			const firstCall = dataSetSpy.firstCall;
+			const data = firstCall.args[ 1 ];
+
+			expect( data[ 1 ] ).to.be.an( 'object' );
+			expect( data[ 1 ] ).to.have.property( 'batchType', 'transparent' );
+		} );
+
+		it( 'should not override the batch type in editor.data.set() when the batch type is set', () => {
+			const dataSetSpy = sinon.spy();
+
+			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
+
+			editor.data.set( 'foo', { batchType: 'default' } );
+
+			const firstCall = dataSetSpy.firstCall;
+			const data = firstCall.args[ 1 ];
+
+			expect( data[ 1 ] ).to.be.an( 'object' );
+			expect( data[ 1 ] ).to.have.property( 'batchType', 'default' );
+		} );
 	} );
 } );

@@ -64,3 +64,4 @@ Wordcount plugin logs into the console number of characters and words in the edi
 - Mention plugin is configured with an array of feed: `[ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],`
 - ImageUpload uses EasyImage
 - Styles for printing preview are served by official docs
+- The `SourceEditing` plugin should be disabled if there is at least one pending action.

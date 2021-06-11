@@ -163,7 +163,7 @@ This upload adapter will notify users about the [file upload progress](https://d
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
 
-See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5 WYSIWYG editor.
+See the {@link features/images-overview Image feature} guide to find out more about handling images in CKEditor 5 WYSIWYG editor.
 
 ## Contribute
 

@@ -259,6 +259,11 @@ export default class DragDrop extends Plugin {
 				const modelElement = editor.editing.mapper.toModelElement( draggableWidget );
 
 				this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
+
+				// Disable toolbars so they won't obscure the drop area.
+				if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+					editor.plugins.get( 'WidgetToolbarRepository' ).forceDisabled( 'dragDrop' );
+				}
 			}
 
 			// If this was not a widget we should check if we need to drag some text content.
@@ -609,6 +614,10 @@ export default class DragDrop extends Plugin {
 
 		this._removeDropMarker();
 		this._clearDraggableAttributes();
+
+		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
+			editor.plugins.get( 'WidgetToolbarRepository' ).clearForceDisabled( 'dragDrop' );
+		}
 
 		this._draggingUid = '';
 

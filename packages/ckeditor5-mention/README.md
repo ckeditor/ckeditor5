@@ -2,8 +2,8 @@ CKEditor 5 mention feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-mention.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-mention/status.svg)](https://david-dm.org/ckeditor/ckeditor5-mention)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-mention/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-mention?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements mention support for CKEditor 5 and brings smart autocompletion based on user input.
 

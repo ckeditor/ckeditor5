@@ -34,15 +34,10 @@ ClassicEditor
 					icon: 'large'
 				}
 			],
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight'
-			],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:alignCenter',
-				'imageStyle:alignRight',
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
 				'|',
 				'resizeImage:50',
 				'resizeImage:75',
