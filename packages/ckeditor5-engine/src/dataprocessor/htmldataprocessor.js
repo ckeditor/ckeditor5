@@ -35,8 +35,6 @@ export default class HtmlDataProcessor {
 
 		/**
 		 * A regular expression used to check whether the MIME type of <script> elements matches one of the JavaScript mimetypes.
-		 * See {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#javascript_types} and
-		 * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-type}
 		 *
 		 * @private
 		 * @member {RegExp}
