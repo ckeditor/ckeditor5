@@ -1,5 +1,5 @@
 {
-  "name": "@ckeditor/ckeditor5-content-compatibility",
+  "name": "@ckeditor/ckeditor5-html-support",
   "version": "28.0.0",
   "description": "Content compatibility feature",
   "private": true,
