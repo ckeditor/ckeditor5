@@ -51,7 +51,7 @@ export default class ColorTableView extends View {
 		/**
 		 * An array with objects representing colors to be displayed in the grid.
 		 *
-		 * @type {Arrray.<module:ui/colorgrid/colorgrid~ColorDefinition>}
+		 * @type {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
 		 */
 		this.colorDefinitions = colors;
 
