@@ -9,10 +9,14 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-semantical-image-style-default' ), {
+		removePlugins: [ 'imageCaption' ],
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:full', 'imageStyle:side' ]
+		}
 	} )
 	.then( editor => {
 		window.editorStyle = editor;
