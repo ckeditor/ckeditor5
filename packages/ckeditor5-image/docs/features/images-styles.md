@@ -133,7 +133,7 @@ In addition to that, the sample is configured to use the {@link features/images-
 
 See the result below:
 
-<div class="presentational-example">
+<div id="presentational-example">
 
 {@snippet features/image-style-presentational}
 
