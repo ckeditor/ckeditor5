@@ -41,6 +41,8 @@ export function addBackgroundRules( stylesProcessor ) {
 
 		return ret;
 	} );
+
+	stylesProcessor.setStyleRelation( 'background', [ 'background-color' ] );
 }
 
 function normalizeBackground( value ) {

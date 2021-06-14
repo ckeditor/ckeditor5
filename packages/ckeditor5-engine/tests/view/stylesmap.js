@@ -6,13 +6,14 @@
 import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
 import encodedImage from './_utils/encodedimage.txt';
 import { addMarginRules } from '../../src/view/styles/margin';
+import { addBorderRules } from '../../src/view/styles/border';
 import { getBoxSidesValueReducer } from '../../src/view/styles/utils';
 
 describe( 'StylesMap', () => {
-	let stylesMap;
+	let stylesMap, stylesProcessor;
 
 	beforeEach( () => {
-		const stylesProcessor = new StylesProcessor();
+		stylesProcessor = new StylesProcessor();
 
 		// Define simple "foo" shorthand normalizers, similar to the "margin" shorthand normalizers, for testing purposes.
 		stylesProcessor.setNormalizer( 'foo', value => ( {
@@ -269,6 +270,33 @@ describe( 'StylesMap', () => {
 			stylesMap.setTo( 'foo: 1px;foo-top: 2em;' );
 
 			expect( stylesMap.getStyleNames() ).to.deep.equal( [ 'foo' ] );
+		} );
+
+		it( 'should output full names for known style names - expand = true', () => {
+			stylesMap.setTo( 'margin: 1px' );
+
+			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [
+				'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'
+			] );
+
+			stylesMap.setTo( 'margin-top: 1px' );
+
+			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [ 'margin', 'margin-top' ] );
+		} );
+
+		it( 'should output full names for known style names - expand = true - other extractors must not affect the output', () => {
+			// Let's add this line to ensure that only matching extractors are used to expand style names.
+			addBorderRules( stylesProcessor );
+
+			stylesMap.setTo( 'margin: 1px' );
+
+			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [
+				'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'
+			] );
+
+			stylesMap.setTo( 'margin-top: 1px' );
+
+			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [ 'margin', 'margin-top' ] );
 		} );
 	} );
 } );
