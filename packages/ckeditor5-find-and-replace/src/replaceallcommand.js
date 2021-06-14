@@ -43,15 +43,13 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 		const results = oldText instanceof Collection ?
 			oldText : updateFindResultFromRange( range, model, findByTextCallback( oldText ) );
 
-		if ( !results ) {
-			return;
-		}
-
-		this.editor.model.change( () => {
-			[ ...results ].forEach( searchResult => {
-				// Just reuse logic from replace command to replace a single match.
-				super.execute( newText, searchResult );
+		if ( results.length ) {
+			this.editor.model.change( () => {
+				[ ...results ].forEach( searchResult => {
+					// Just reuse logic from replace command to replace a single match.
+					super.execute( newText, searchResult );
+				} );
 			} );
-		} );
+		}
 	}
 }
