@@ -39,7 +39,6 @@ export default class CodeBlockUI extends Plugin {
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
 		const normalizedLanguageDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
-		const defaultLanguageDefinition = normalizedLanguageDefs[ 0 ];
 
 		componentFactory.add( 'codeBlock', locale => {
 			const command = editor.commands.get( 'codeBlock' );
@@ -57,7 +56,7 @@ export default class CodeBlockUI extends Plugin {
 
 			splitButtonView.on( 'execute', () => {
 				editor.execute( 'codeBlock', {
-					language: defaultLanguageDefinition.language
+					usePreviousLanguageChoice: true
 				} );
 
 				editor.editing.view.focus();

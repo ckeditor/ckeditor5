@@ -205,6 +205,7 @@ export default class Schema {
 	 *		schema.isRegistered( 'foo' ); // -> false
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+ 	 * @returns {Boolean}
 	 */
 	isRegistered( item ) {
 		return !!this.getDefinition( item );
@@ -224,6 +225,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+  	 * @returns {Boolean}
 	 */
 	isBlock( item ) {
 		const def = this.getDefinition( item );
@@ -249,6 +251,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+  	 * @returns {Boolean}
 	 */
 	isLimit( item ) {
 		const def = this.getDefinition( item );
@@ -278,6 +281,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+  	 * @returns {Boolean}
 	 */
 	isObject( item ) {
 		const def = this.getDefinition( item );
@@ -305,6 +309,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 * @returns {Boolean}
 	 */
 	isInline( item ) {
 		const def = this.getDefinition( item );
@@ -328,6 +333,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 * @returns {Boolean}
 	 */
 	isSelectable( item ) {
 		const def = this.getDefinition( item );
@@ -355,6 +361,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 * @returns {Boolean}
 	 */
 	isContent( item ) {
 		const def = this.getDefinition( item );
@@ -384,6 +391,7 @@ export default class Schema {
 	 * @fires checkChild
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context The context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} def The child to check.
+	 * @returns {Boolean}
 	 */
 	checkChild( context, def ) {
 		// Note: context and child are already normalized here to a SchemaContext and SchemaCompiledItemDefinition.
@@ -408,6 +416,7 @@ export default class Schema {
 	 * @fires checkAttribute
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context The context in which the attribute will be checked.
 	 * @param {String} attributeName
+	 * @returns {Boolean}
 	 */
 	checkAttribute( context, attributeName ) {
 		const def = this.getDefinition( context.last );
