@@ -86,9 +86,15 @@ export default class FindAndReplaceEditing extends Plugin {
 	 */
 	init() {
 		this._defineConverters();
+		this._defineCommands();
 
 		this.activeResults = null;
+	}
 
+	/**
+	 * @private
+	 */
+	_defineCommands() {
 		this.editor.commands.add( 'find', new FindCommand( this.editor ) );
 		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor ) );
 		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor ) );
