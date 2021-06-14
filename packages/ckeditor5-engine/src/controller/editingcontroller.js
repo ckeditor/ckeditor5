@@ -77,6 +77,11 @@ export default class EditingController {
 		 */
 		this._isSelecting = false;
 
+		const document = this.model.document;
+		const markers = this.model.markers;
+		const selection = document.selection;
+		const differ = document.differ;
+
 		// When plugins listen on model changes (on selection change, post fixers, etc.) and change the view as a result of
 		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
 		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
@@ -94,20 +99,29 @@ export default class EditingController {
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
 		this.listenTo( this.model.document, 'change', () => {
-			if ( !this._isSelecting ) {
-				this._downcastChangesAndSelection();
-			}
+			this.view.change( writer => {
+				if ( !this._isSelecting ) {
+					this.downcastDispatcher.convertChanges( differ, markers, writer );
+					this.downcastDispatcher.convertSelection( selection, markers, writer, this._isSelecting );
+
+					differ.reset();
+				}
+			} );
 		}, { priority: 'low' } );
 
 		this.listenTo( this.view.document, 'selectionChangeStart', () => {
 			this._isSelecting = true;
-			this.view._disableRenderingSelection( true );
 		} );
 
 		this.listenTo( this.view.document, 'selectionChangeEnd', () => {
 			this._isSelecting = false;
-			this.view._disableRenderingSelection( false );
-			this._downcastChangesAndSelection();
+
+			this.view.change( writer => {
+				this.downcastDispatcher.convertChanges( differ, markers, writer );
+				this.downcastDispatcher.convertSelection( selection, markers, writer, false );
+			} );
+
+			differ.reset();
 		} );
 
 		// Convert selection from the view to the model when it changes in the view.
@@ -148,25 +162,6 @@ export default class EditingController {
 		// @if CK_DEBUG_ENGINE // this.model.document.on( 'change', () => {
 		// @if CK_DEBUG_ENGINE //	dumpTrees( this.view.document, this.model.document.version );
 		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @private
-	 */
-	_downcastChangesAndSelection() {
-		const document = this.model.document;
-		const markers = this.model.markers;
-		const selection = document.selection;
-		const differ = document.differ;
-
-		this.view.change( writer => {
-			this.downcastDispatcher.convertChanges( differ, markers, writer );
-			this.downcastDispatcher.convertSelection( selection, markers, writer );
-		} );
-
-		differ.reset();
 	}
 
 	/**

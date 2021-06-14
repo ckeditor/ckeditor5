@@ -7,8 +7,6 @@
  * @module engine/view/observer/focusobserver
  */
 
-/* globals setTimeout, clearTimeout */
-
 import DomEventObserver from './domeventobserver';
 
 /**
@@ -29,15 +27,12 @@ export default class FocusObserver extends DomEventObserver {
 		this.useCapture = true;
 		const document = this.document;
 
-		document.on( 'focus', () => {
+		document.on( 'focus', ( evt, data ) => {
 			document.isFocused = true;
 
-			// Unfortunately native `selectionchange` event is fired asynchronously.
-			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
-			// overwrite new DOM selection with selection from the view.
-			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
-			// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
-			this._renderTimeoutId = setTimeout( () => view.forceRender(), 50 );
+			if ( data.target.is( 'editableElement' ) && !data.target.is( 'rootElement' ) ) {
+				data.target.isFocused = true;
+			}
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
@@ -45,33 +40,12 @@ export default class FocusObserver extends DomEventObserver {
 
 			if ( selectedEditable === null || selectedEditable === data.target ) {
 				document.isFocused = false;
-
-				// Re-render the document to update view elements.
-				view.forceRender();
 			}
 		} );
-
-		/**
-		 * Identifier of the timeout currently used by focus listener to delay rendering execution.
-		 *
-		 * @private
-		 * @member {Number} #_renderTimeoutId
-		 */
 	}
 
 	onDomEvent( domEvent ) {
 		this.fire( domEvent.type, domEvent );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		if ( this._renderTimeoutId ) {
-			clearTimeout( this._renderTimeoutId );
-		}
-
-		super.destroy();
 	}
 }
 

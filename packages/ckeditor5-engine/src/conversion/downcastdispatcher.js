@@ -332,15 +332,17 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with the converted model.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
 	 */
-	convertSelection( selection, markers, writer ) {
+	convertSelection( selection, markers, writer, isSelecting = false ) {
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
 
 		this.conversionApi.writer = writer;
 		this.conversionApi.consumable = this._createSelectionConsumable( selection, markersAtSelection );
 
-		this.fire( 'selection', { selection }, this.conversionApi );
+		this.fire( 'selection', { selection, isSelecting }, this.conversionApi );
 
-		if ( !selection.isCollapsed ) {
+		if ( !selection.isCollapsed || isSelecting ) {
+			this._clearConversionApi();
+
 			return;
 		}
 

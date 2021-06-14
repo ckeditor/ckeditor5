@@ -210,6 +210,11 @@ export default class View {
 		this.listenTo( this.document.selection, 'change', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
+
+		// Trigger re-render if only the focus changed.
+		this.listenTo( this.document, 'change:isFocused', () => {
+			this._hasChangedSinceTheLastRendering = true;
+		} );
 	}
 
 	/**
@@ -679,16 +684,6 @@ export default class View {
 			// Render when you stop blocking rendering.
 			this.change( () => {} );
 		}
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @protected
-	 * @param {Boolean} flag
-	 */
-	_disableRenderingSelection( flag ) {
-		this._renderer.disableSelectionRendering( flag );
 	}
 
 	/**

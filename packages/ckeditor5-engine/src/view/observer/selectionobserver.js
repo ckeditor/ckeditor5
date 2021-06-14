@@ -113,6 +113,7 @@ export default class SelectionObserver extends Observer {
 			this.document.fire( 'selectionChangeStart' );
 		}, { useCapture: true } );
 
+		// TODO this is not enough if selection is made by the keyboard
 		this.listenTo( domDocument, 'mouseup', () => {
 			if ( this._isSelecting ) {
 				this._isSelecting = false;
