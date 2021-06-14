@@ -3,7 +3,7 @@ title: Find and replace
 category: features
 ---
 
-{@snippet features/build-select-all-source}
+{@snippet features/build-find-and-replace-source}
 
 The {@link module:find-and-replace/findandreplace~FindAndReplace} feature allows for finding and replacing text in the editor easily.
 
@@ -14,7 +14,7 @@ Use the toolbar "Find and replace" button to find and replace parts of the text 
 {@snippet features/find-and-replace}
 
 <info-box>
-	When the selection is inside the {@link features/image#image-captions image caption}, it will only expand to the boundaries of the caption. Use the keystroke or the toolbar button again to include more content until the entire content of the editor is selected. The same rule applies, for instance, when the selection is inside a table cell or any self–contained (nested) editable region in the content.
+	In order to replace some text you need to search for some first. Only after that it is possible to replace results one by one, or all at once.
 </info-box>
 
 ## Related features
@@ -51,16 +51,16 @@ ClassicEditor
 	.catch( ... );
 ```
 
-<!-- TODO: Update this with proper description and values -->
+<!-- TODO: Update this with proper description and values, and code snippet for replace / replaceAll-->
 ## Common API
 
-The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the `'findNext'`, `'findPrev'`, `'replace'`, `'replaceAll'` commands implemented by {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
+The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the `'find'`, `'replace'`, `'replaceAll'` commands implemented by {@link module:find-and-replace/findcommand~FindCommand}, {@link module:find-and-replace/replacecommand~ReplaceCommand}, {@link module:find-and-replace/replaceallcommand~ReplaceAllCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+The commands can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
-// Find next element
-editor.execute( 'findNext', { searchText: data.searchText } );
+// Find some element
+editor.execute( 'find', 'Cupcake' )
 ```
 
 <info-box>

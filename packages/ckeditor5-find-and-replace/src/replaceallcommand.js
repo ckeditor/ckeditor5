@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/replaceallcommand
+ * @module find-and-replace/replaceallcommand
  */
 
 import { updateFindResultFromRange, findByTextCallback } from './utils';
@@ -12,7 +12,7 @@ import { Collection } from 'ckeditor5/src/utils';
 import ReplaceCommand from './replacecommand';
 
 /**
- * Replace all command. It is used by the {@link module:findandreplace/findandreplace~FindAndReplace link feature}.
+ * Replace all command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
  * @extends module:core/command~Command
  */
@@ -33,15 +33,15 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 	 * Replaces all find results by a string or a callback.
 	 *
 	 * @param {String} newText
-	 * @param {String} oldText
+	 * @param {Collection} activeResults
 	 */
-	execute( newText, oldText ) {
+	execute( newText, activeResults ) {
 		const { editor } = this;
 		const { model } = editor;
 		const range = model.createRangeIn( model.document.getRoot() );
 
-		const results = oldText instanceof Collection ?
-			oldText : updateFindResultFromRange( range, model, findByTextCallback( oldText ) );
+		const results = activeResults instanceof Collection ?
+			activeResults : updateFindResultFromRange( range, model, findByTextCallback( activeResults ) );
 
 		if ( results.length ) {
 			this.editor.model.change( () => {

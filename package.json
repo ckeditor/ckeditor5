@@ -45,6 +45,7 @@
     "@ckeditor/ckeditor5-engine": "^27.1.0",
     "@ckeditor/ckeditor5-enter": "^27.1.0",
     "@ckeditor/ckeditor5-essentials": "^27.1.0",
+    "@ckeditor/ckeditor5-find-and-replace": "^0.0.1",
     "@ckeditor/ckeditor5-font": "^27.1.0",
     "@ckeditor/ckeditor5-heading": "^27.1.0",
     "@ckeditor/ckeditor5-highlight": "^27.1.0",

@@ -13,7 +13,7 @@ import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '../../theme/findandreplaceform.css';
+import '@ckeditor/ckeditor5-find-and-replace/theme/findandreplaceform.css';
 
 /**
  * The media form view controller class.
@@ -55,7 +55,7 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-prev' );
 		this.replaceButtonView.on( 'execute', () => {
-			this.fire( 'replace', { marker: this.marker, replaceText: this.replaceText } );
+			this.fire( 'replace', { replaceText: this.replaceText } );
 		} );
 
 		/**
@@ -65,7 +65,7 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.replaceAllButtonView = this._createButton( t( 'ReplaceAll' ), 'ck-button-next' );
 		this.replaceAllButtonView.on( 'execute', () => {
-			this.fire( 'replaceAll', { replaceText: this.replaceText, searchText: this.searchText } );
+			this.fire( 'replaceAll', { replaceText: this.replaceText } );
 		} );
 
 		/**
