@@ -462,7 +462,7 @@ function matchStyles( patterns, element ) {
  *		const pattern = /^p/;
  *
  * If `MatcherPattern` is given as an `Object`, all the object's properties will be matched with view element properties.
- * If the view element won't meet all of the object's pattern properties, the match won't happen.
+ * If the view element does not meet all of the object's pattern properties, the match will not happen.
  * Available `Object` matching properties:
  *
  * Matching view element:
