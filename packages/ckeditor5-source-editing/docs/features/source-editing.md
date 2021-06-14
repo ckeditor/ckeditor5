@@ -27,7 +27,7 @@ The source editing plugin also works well with the {@link features/markdown Mark
 
 ## Related features
 
-There is other source-related CKEditor 5 feature you may want to check:
+There are other source-related CKEditor 5 features you may want to check:
 
 * {@link features/general-html-support General HTML support} &ndash; Allows enabling a generic support for additional HTML features.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.
