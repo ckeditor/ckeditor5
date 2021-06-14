@@ -518,7 +518,7 @@ function matchStyles( patterns, element ) {
 *			]
  *		};
  *
- *		// Match view element which has matching attributes (key-value-pairs).
+ *		// Match view element which has matching attributes (key-value pairs).
  *		const pattern = {
  *			name: 'input',
  *			attributes: [
@@ -571,7 +571,7 @@ function matchStyles( patterns, element ) {
 *			]
  *		};
  *
- *		// Match view element which has matching styles (key-value-pairs).
+ *		// Match view element which has matching styles (key-value pairs).
  *		const pattern = {
  *			name: 'p',
  *			attributes: [
@@ -623,7 +623,7 @@ function matchStyles( patterns, element ) {
  *			]
  *		};
  *
- *		// Match view element which has matching classes (key-value-pairs).
+ *		// Match view element which has matching classes (key-value pairs).
  *		const pattern = {
  *			name: 'figure',
  *			classes: [
