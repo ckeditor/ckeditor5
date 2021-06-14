@@ -462,7 +462,8 @@ function matchStyles( patterns, element ) {
  *		const pattern = /^p/;
  *
  * If `MatcherPattern` is given as an `Object`, all the object's properties will be matched with view element properties.
- * Let's examine available pattern options:
+ * If the view element won't meet all of the object's pattern properties, the match won't happen.
+ * Available `Object` matching properties:
  *
  * Matching view element:
  *
@@ -515,7 +516,7 @@ function matchStyles( patterns, element ) {
  *			attributes: [
  *				'title',    // Match `title` attribute (can be empty).
  *				/^data-*$/, // Match attributes starting with `data-` e.g. `data-foo` with any value (can be empty).
-*			]
+ *			]
  *		};
  *
  *		// Match view element which has matching attributes (key-value pairs).
@@ -528,10 +529,10 @@ function matchStyles( patterns, element ) {
  *				{
  *					key: /^data-.*$/,                // Match attributes starting with `data-` e.g. `data-foo`.
  *					value: true                      // Match any value (can be empty).
-*				}
-*			]
+ *				}
+ *			]
  *		};
-*
+ *
  * Matching view element styles:
  *
  *		// Match view element with any style.
@@ -539,7 +540,7 @@ function matchStyles( patterns, element ) {
  *			name: 'p',
  *			styles: true
  *		};
-*
+ *
  *		// Match view element which has matching styles (String).
  *		const pattern = {
  *			name: 'p',
@@ -568,7 +569,7 @@ function matchStyles( patterns, element ) {
  *			attributes: [
  *				'color',      // Match `color` with any value.
  *				/^border.*$/, // Match all border properties.
-*			]
+ *			]
  *		};
  *
  *		// Match view element which has matching styles (key-value pairs).
@@ -581,8 +582,8 @@ function matchStyles( patterns, element ) {
  *				{
  *					key: /^border.*$/, // Match any border style.
  *					value: true        // Match any value.
-*				}
-*			]
+ *				}
+ *			]
  *		};
  *
  * Matching view element classes:
@@ -592,7 +593,7 @@ function matchStyles( patterns, element ) {
  *			name: 'p',
  *			classes: true
  *		};
-*
+ *
  *		// Match view element which has matching class (String).
  *		const pattern = {
  *			name: 'p',
@@ -633,8 +634,8 @@ function matchStyles( patterns, element ) {
  *				{
  *					key: /^image-side-(left|right)$/, // Match `image-side-left` or `image-side-right` class.
  *					value: true
-*				}
-*			]
+ *				}
+ *			]
  *		};
  *
  * Pattern can combine multiple properties allowing for more complex view element matching:
