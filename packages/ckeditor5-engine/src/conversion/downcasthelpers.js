@@ -661,8 +661,9 @@ export function convertCollapsedSelection() {
 		const viewWriter = conversionApi.writer;
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
+		const brokenPosition = viewWriter.breakAttributes( viewPosition );
 
-		viewWriter.setSelection( viewWriter.breakAttributes( viewPosition ) );
+		viewWriter.setSelection( brokenPosition );
 	};
 }
 

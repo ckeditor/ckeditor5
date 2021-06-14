@@ -217,7 +217,6 @@ export default class Renderer {
 		// Fix those and similar scenarios.
 		if ( inlineFillerPosition ) {
 			const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
-
 			const domDocument = fillerDomPosition.parent.ownerDocument;
 
 			if ( !startsWithFiller( fillerDomPosition.parent ) ) {
