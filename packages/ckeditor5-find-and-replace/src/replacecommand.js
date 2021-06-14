@@ -20,11 +20,13 @@ export default class ReplaceCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 */
-	constructor( editor ) {
+	constructor( editor, state ) {
 		super( editor );
 
 		// Replace command is always enabled.
 		this.isEnabled = true;
+
+		this.state = state;
 	}
 
 	/**

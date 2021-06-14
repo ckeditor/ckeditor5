@@ -18,18 +18,6 @@ import ReplaceCommand from './replacecommand';
  */
 export default class ReplaceAllCommand extends ReplaceCommand {
 	/**
-	 * Creates a new `ReplaceAllCommand` instance.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
-	 */
-	constructor( editor ) {
-		super( editor );
-
-		// Replace command is always enabled.
-		this.isEnabled = true;
-	}
-
-	/**
 	 * Replaces all find results by a string or a callback.
 	 *
 	 * @param {String} newText

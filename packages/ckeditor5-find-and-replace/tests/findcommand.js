@@ -6,7 +6,6 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import FindAndReplaceEditing from '../src/findandreplaceediting';
-import FindCommand from '../src/findcommand';
 
 describe( 'FindCommand', () => {
 	let editor, model, command;
@@ -19,7 +18,7 @@ describe( 'FindCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = new FindCommand( editor );
+				command = editor.commands.get( 'find' );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 			} );
@@ -38,6 +37,12 @@ describe( 'FindCommand', () => {
 		it( 'should be enabled by default', () => {
 			setData( model, '<p>foo[]</p>' );
 			expect( command.isEnabled ).to.be.true;
+		} );
+	} );
+
+	describe( 'state', () => {
+		it( 'is set to plugin\'s state', () => {
+			expect( command.state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 

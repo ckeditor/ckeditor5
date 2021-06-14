@@ -13,6 +13,29 @@ import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
 
+import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
+
+/**
+ * Object storing find & replace plugin state in a given editor instance.
+ *
+ */
+class FindAndReplaceState {
+	constructor() {
+		this.set( 'results', new Collection() );
+
+		this.set( 'highlightedResult', null );
+
+		this.set( 'searchText', '' );
+
+		this.set( 'replaceText', '' );
+
+		this.set( 'matchCase', false );
+		this.set( 'matchWholeWords', false );
+	}
+}
+
+mix( FindAndReplaceState, ObservableMixin );
+
 const HIGHLIGHT_CLASS = 'find-result_selected';
 
 // Reacts to document changes in order to update search list.
@@ -85,10 +108,11 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		this.activeResults = null;
+		this.state = new FindAndReplaceState();
+
 		this._defineConverters();
 		this._defineCommands();
-
-		this.activeResults = null;
 	}
 
 	/**
@@ -135,9 +159,9 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * @private
 	 */
 	_defineCommands() {
-		this.editor.commands.add( 'find', new FindCommand( this.editor ) );
-		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor ) );
-		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor ) );
+		this.editor.commands.add( 'find', new FindCommand( this.editor, this.state ) );
+		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor, this.state ) );
+		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor, this.state ) );
 	}
 
 	/**
