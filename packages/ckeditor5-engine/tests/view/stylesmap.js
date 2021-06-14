@@ -272,7 +272,7 @@ describe( 'StylesMap', () => {
 			expect( stylesMap.getStyleNames() ).to.deep.equal( [ 'foo' ] );
 		} );
 
-		it( 'should output full names for known style names - deep = true', () => {
+		it( 'should output full names for known style names - expand = true', () => {
 			stylesMap.setTo( 'margin: 1px' );
 
 			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [
@@ -284,7 +284,7 @@ describe( 'StylesMap', () => {
 			expect( stylesMap.getStyleNames( true ) ).to.deep.equal( [ 'margin', 'margin-top' ] );
 		} );
 
-		it( 'should output full names for known style names - deep = true - other extractors must not affect the output', () => {
+		it( 'should output full names for known style names - expand = true - other extractors must not affect the output', () => {
 			// Let's add this line to ensure that only matching extractors are used to expand style names.
 			addBorderRules( stylesProcessor );
 

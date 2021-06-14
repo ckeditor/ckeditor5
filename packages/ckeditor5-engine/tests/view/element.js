@@ -912,7 +912,7 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'getStyleNames - deep = true', () => {
+		describe( 'getStyleNames - expand = true', () => {
 			it( 'should return all styles in an expanded form', () => {
 				addBorderRules( el.document.stylesProcessor );
 				addMarginRules( el.document.stylesProcessor );

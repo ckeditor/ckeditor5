@@ -582,7 +582,7 @@ export class StylesProcessor {
 	 */
 	getStyleNames( styles ) {
 		// Find all extractable styles that have a value.
-		const deepStyleNames = Array.from( this._consumables.keys() ).filter( name => {
+		const expandedStyleNames = Array.from( this._consumables.keys() ).filter( name => {
 			const style = this.getNormalized( name, styles );
 
 			if ( style && typeof style == 'object' ) {
@@ -595,7 +595,7 @@ export class StylesProcessor {
 		// For simple styles (for example `color`) we don't have a map of those styles
 		// but they are 1 to 1 with normalized object keys.
 		const styleNamesKeysSet = new Set( [
-			...deepStyleNames,
+			...expandedStyleNames,
 			...Object.keys( styles )
 		] );
 
