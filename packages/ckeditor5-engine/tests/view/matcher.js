@@ -337,6 +337,56 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
+		it( 'should match element class names using an object', () => {
+			const pattern = {
+				classes: {
+					foo: true,
+					bar: true
+				}
+			};
+
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foo bar' } );
+			const el2 = new Element( document, 'p', { class: 'bar'	} );
+			const el3 = new Element( document, 'p', { class: 'qux'	} );
+
+			const result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes.length ).equal( 2 );
+			expect( result.match.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element class names using key->value pairs', () => {
+			const pattern = {
+				classes: [
+					{ key: 'foo', value: true },
+					{ key: /^b.*$/, value: true }
+				]
+			};
+
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foo bar' } );
+			const el2 = new Element( document, 'p', { class: 'bar'	} );
+			const el3 = new Element( document, 'p', { class: 'qux'	} );
+
+			const result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes.length ).equal( 2 );
+			expect( result.match.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
 		it( 'should match element class names using RegExp', () => {
 			const pattern = { classes: /fooba./ };
 			const matcher = new Matcher( pattern );
@@ -437,7 +487,7 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
-		it( 'should match element deep styles', () => {
+		it( 'should match element expanded styles', () => {
 			const pattern = {
 				styles: {
 					'border-left-style': /.*/
@@ -466,7 +516,7 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
-		it( 'should match element deep styles when CSS shorthand is used', () => {
+		it( 'should match element expanded styles when CSS shorthand is used', () => {
 			const pattern = {
 				styles: {
 					'border-left': /.*/

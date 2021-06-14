@@ -462,62 +462,186 @@ function matchStyles( patterns, element ) {
  *		const pattern = /^p/;
  *
  * If `MatcherPattern` is given as an `Object`, all the object's properties will be matched with view element properties.
+ * Let's examine available pattern options:
  *
- *		// Match view element's name.
- *		const pattern = { name: /^p/ };
+ * Matching view element:
+ *
+ *		// Match view element's name using String:
+ *		const pattern = { name: 'p' };
+ *
+ *		// or by providing RegExp:
+ *		const pattern = { name: /^(ul|ol)$/ };
+ *
+ *		// The name can also be skipped to match any view element with matching attributes:
+ *		const pattern = {
+ *			attributes: {
+ *				'title': true
+ *			}
+ *		};
+ *
+ * Matching view element attributes:
  *
  *		// Match view element with any attribute value.
  *		const pattern = {
+ *			name: 'p',
  *			attributes: true
- *		}
+ *		};
  *
- *		// Match view element which has matching attributes.
+ *		// Match view element which has matching attributes (String).
  *		const pattern = {
+ *			name: 'figure',
+ *			attributes: 'title' // Match title attribute (can be empty).
+ *		};
+ *
+ *		// Match view element which has matching attributes (RegExp).
+ *		const pattern = {
+ *			name: 'figure',
+ *			attributes: /^data-.*$/ // Match attributes starting with `data-` e.g. `data-foo` with any value (can be empty).
+ *		};
+ *
+ *		// Match view element which has matching attributes (Object).
+ *		const pattern = {
+ *			name: 'figure',
  *			attributes: {
- *				title: 'foobar',	// Attribute title should equal 'foobar'.
- *				foo: /^\w+/,		// Attribute foo should match /^\w+/ regexp.
- *				bar: true			// Attribute bar should be set (can be empty).
+ *				title: 'foobar',           // Match `title` attribute with 'foobar' value.
+ *				alt: true,                 // Match `alt` attribute with any value (can be empty).
+ *				'data-type': /^(jpg|png)$/ // Match `data-type` attribute with `jpg` or `png` value.
  *			}
  *		};
  *
- *		// Match view element which has given class.
+ *		// Match view element which has matching attributes (Array).
  *		const pattern = {
- *			classes: 'foobar'
- *		};
- *
- *		// Match view element class using regular expression.
- *		const pattern = {
- *			classes: /foo.../
- *		};
- *
- *		// Multiple classes to match.
- *		const pattern = {
- *			classes: [ 'baz', 'bar', /foo.../ ]
- *		};
- *
- *		// Multiple attributes to match, value does not matter.
- *		const pattern = {
- *			attributes: [ 'title', 'href', /^data-foo.*$/ ]
- *		};
- *
- *		// Match view element which has given styles.
- *		const pattern = {
- *			styles: {
- *				position: 'absolute',
- *				color: /^\w*blue$/
- *			}
- *		};
- *
- *		// Match view element which has many custom data attributes.
- *		const pattern = {
+ *			name: 'figure',
  *			attributes: [
- *				{ key: /data-.+/, value: true }
- *			]
- *		}
+ *				'title',    // Match `title` attribute (can be empty).
+ *				/^data-*$/, // Match attributes starting with `data-` e.g. `data-foo` with any value (can be empty).
+*			]
+ *		};
  *
- *		// Pattern with multiple properties.
+ *		// Match view element which has matching attributes (key-value-pairs).
+ *		const pattern = {
+ *			name: 'input',
+ *			attributes: [
+ *				{
+ *					key: 'type',                     // Match `type` as an attribute key.
+ *					value: /^(text|number|date)$/ }, // Match `text`, `number` or `date` values.
+ *				{
+ *					key: /^data-.*$/,                // Match attributes starting with `data-` e.g. `data-foo`.
+ *					value: true                      // Match any value (can be empty).
+*				}
+*			]
+ *		};
+*
+ * Matching view element styles:
+ *
+ *		// Match view element with any style.
+ *		const pattern = {
+ *			name: 'p',
+ *			styles: true
+ *		};
+*
+ *		// Match view element which has matching styles (String).
+ *		const pattern = {
+ *			name: 'p',
+ *			styles: 'color' // Match attributes with `color` style.
+ *		};
+ *
+ *		// Match view element which has matching styles (RegExp).
+ *		const pattern = {
+ *			name: 'p',
+ *			styles: /^border.*$/ // Match view element with any border style.
+ *		};
+ *
+ *		// Match view element which has matching styles (Object).
+ *		const pattern = {
+ *			name: 'p',
+ *			attributes: {
+ *				color: /rgb\((\d{1,3}), (\d{1,3}), (\d{1,3})\)/, // Match `color` in RGB format only.
+ *				'font-weight': 600,                              // Match `font-weight` only if it's `600`.
+ *				'text-decoration': true                          // Match any text decoration.
+ *			}
+ *		};
+ *
+ *		// Match view element which has matching styles (Array).
+ *		const pattern = {
+ *			name: 'p',
+ *			attributes: [
+ *				'color',      // Match `color` with any value.
+ *				/^border.*$/, // Match all border properties.
+*			]
+ *		};
+ *
+ *		// Match view element which has matching styles (key-value-pairs).
+ *		const pattern = {
+ *			name: 'p',
+ *			attributes: [
+ *				{
+ *					key: 'color',                                    // Match `color` as an property key.
+ *					value: /rgb\((\d{1,3}), (\d{1,3}), (\d{1,3})\)/, // Match RGB format only.
+ *				{
+ *					key: /^border.*$/, // Match any border style.
+ *					value: true        // Match any value.
+*				}
+*			]
+ *		};
+ *
+ * Matching view element classes:
+ *
+ *		// Match view element with any class.
+ *		const pattern = {
+ *			name: 'p',
+ *			classes: true
+ *		};
+*
+ *		// Match view element which has matching class (String).
+ *		const pattern = {
+ *			name: 'p',
+ *			classes: 'highlighted' // Match `highlighted` class.
+ *		};
+ *
+ *		// Match view element which has matching classes (RegExp).
+ *		const pattern = {
+ *			name: 'figure',
+ *			classes: /^image-side-(left|right)$/ // Match `image-side-left` or `image-side-right` class.
+ *		};
+ *
+ *		// Match view element which has matching classes (Object).
+ *		const pattern = {
+ *			name: 'p',
+ *			classes: {
+ *				highlighted: true, // Match `highlighted` class.
+ *				marker: true       // Match `marker` class.
+ *			}
+ *		};
+ *
+ *		// Match view element which has matching classes (Array).
+ *		const pattern = {
+ *			name: 'figure',
+ *			classes: [
+ *				'image',                    // Match `image` class.
+ *				/^image-side-(left|right)$/ // Match `image-side-left` or `image-side-right` class.
+ *			]
+ *		};
+ *
+ *		// Match view element which has matching classes (key-value-pairs).
+ *		const pattern = {
+ *			name: 'figure',
+ *			classes: [
+ *				{
+ *					key: 'image', // Match `image` class.
+ *					value: true
+ *				{
+ *					key: /^image-side-(left|right)$/, // Match `image-side-left` or `image-side-right` class.
+ *					value: true
+*				}
+*			]
+ *		};
+ *
+ * Pattern can combine multiple properties allowing for more complex view element matching:
+ *
  *		const pattern = {
  *			name: 'span',
+ *			attributes: [ 'title' ],
  *			styles: {
  *				'font-weight': 'bold'
  *			},
