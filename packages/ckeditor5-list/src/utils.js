@@ -240,7 +240,7 @@ export function getSiblingListItem( modelItem, options ) {
  * @private
  * @param {module:core/editor/editor~Editor} editor The editor instance to which the UI component will be added.
  * @param {String} commandName The name of the command.
- * @param {Object} label The button label.
+ * @param {String} label The button label.
  * @param {String} icon The source of the icon.
  */
 export function createUIComponent( editor, commandName, label, icon ) {
