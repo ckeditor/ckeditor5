@@ -69,14 +69,6 @@ export default class EditingController {
 			schema: model.schema
 		} );
 
-		/**
-		 * TODO
-		 *
-		 * @private
-		 * @type {Boolean}
-		 */
-		this._isSelecting = false;
-
 		const document = this.model.document;
 		const markers = this.model.markers;
 		const selection = document.selection;
@@ -99,32 +91,43 @@ export default class EditingController {
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
 		this.listenTo( this.model.document, 'change', () => {
-			this.view.change( writer => {
-				if ( !this._isSelecting ) {
-					this.downcastDispatcher.convertChanges( differ, markers, writer );
-					this.downcastDispatcher.convertSelection( selection, markers, writer, this._isSelecting );
-
-					differ.reset();
-				}
-			} );
-		}, { priority: 'low' } );
-
-		this.listenTo( this.view.document, 'selectionChangeStart', () => {
-			this._isSelecting = true;
-		} );
-
-		this.listenTo( this.view.document, 'selectionChangeEnd', () => {
-			this._isSelecting = false;
+			if ( this.view.document.isSelecting ) {
+				return;
+			}
 
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( differ, markers, writer );
-				this.downcastDispatcher.convertSelection( selection, markers, writer, false );
-			} );
+				this.downcastDispatcher.convertSelection( selection, markers, writer );
 
-			differ.reset();
+				differ.reset();
+			} );
+		}, { priority: 'low' } );
+
+		this.listenTo( this.view.document, 'change:isSelecting', () => {
+			if ( this.view.document.isSelecting ) {
+				return;
+			}
+
+			// User stopped selecting - trigger conversion to model selection.
+			this.view.document.fire( 'selectionChange', {
+				newSelection: this.view.document.selection
+			} );
 		} );
 
 		// Convert selection from the view to the model when it changes in the view.
+		this.listenTo( this.view.document, 'selectionChange', ( evt, data ) => {
+			if ( !this.view.document.isSelecting ) {
+				return;
+			}
+
+			evt.stop();
+
+			this.view.change( writer => {
+				writer.setSelection( data.newSelection, { backward: data.newSelection.isBackward } );
+			} );
+		}, { priority: 'high' } );
+
+		// Update model selection.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.

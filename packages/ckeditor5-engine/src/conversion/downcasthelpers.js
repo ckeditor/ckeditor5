@@ -662,7 +662,7 @@ export function convertCollapsedSelection() {
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
 
-		viewWriter.setSelection( data.isSelecting ? viewPosition : viewWriter.breakAttributes( viewPosition ) );
+		viewWriter.setSelection( viewWriter.breakAttributes( viewPosition ) );
 	};
 }
 

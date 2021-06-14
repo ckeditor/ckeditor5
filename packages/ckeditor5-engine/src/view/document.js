@@ -92,7 +92,10 @@ export default class Document {
 		 */
 		this.set( 'isComposing', false );
 
-		// TODO isSelecting here as it's similar to isComposing?
+		/**
+		 * TODO
+		 */
+		this.set( 'isSelecting', false );
 
 		/**
 		 * Post-fixer callbacks registered to the view document.

@@ -87,14 +87,6 @@ export default class SelectionObserver extends Observer {
 		 * @member {Number} module:engine/view/observer/selectionobserver~SelectionObserver#_loopbackCounter
 		 */
 		this._loopbackCounter = 0;
-
-		/**
-		 * TODO
-		 *
-		 * @private
-		 * @type {Boolean}
-		 */
-		this._isSelecting = false;
 	}
 
 	/**
@@ -109,17 +101,15 @@ export default class SelectionObserver extends Observer {
 		}
 
 		this.listenTo( domDocument, 'selectstart', () => {
-			this._isSelecting = true;
-			this.document.fire( 'selectionChangeStart' );
-		}, { useCapture: true } );
+			this.document.isSelecting = true;
+		} );
 
 		// TODO this is not enough if selection is made by the keyboard
-		this.listenTo( domDocument, 'mouseup', () => {
-			if ( this._isSelecting ) {
-				this._isSelecting = false;
-				this.document.fire( 'selectionChangeEnd' );
-			}
-		}, { useCapture: true } );
+		this.listenTo( domDocument, 'mouseup', () => ( this.document.isSelecting = false ) );
+
+		// TODO This should end for unsafe keystrokes?
+		this.listenTo( domDocument, 'keydown', () => ( this.document.isSelecting = false ) );
+		this.listenTo( domDocument, 'keyup', () => ( this.document.isSelecting = false ) );
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
