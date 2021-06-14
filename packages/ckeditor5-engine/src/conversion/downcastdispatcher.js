@@ -416,6 +416,8 @@ export default class DowncastDispatcher {
 		// Do not fire events for each item inside the range if the range got consumed.
 		//
 		if ( !consumable.test( markerRange, eventName ) ) {
+			this._clearConversionApi();
+
 			return;
 		}
 
