@@ -232,8 +232,6 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should create a wrapper with a class and a data property', () => {
-			const data = editor.data.get();
-
 			button.fire( 'execute' );
 
 			const domRoot = editor.editing.view.getDomRoot();
@@ -241,12 +239,14 @@ describe( 'SourceEditing', () => {
 
 			expect( wrapper.nodeName ).to.equal( 'DIV' );
 			expect( wrapper.className ).to.equal( 'ck-source-editing-area' );
-			expect( wrapper.dataset.value ).to.equal( data );
+			expect( wrapper.dataset.value ).to.equal(
+				'<p>\n' +
+				'    Foo\n' +
+				'</p>'
+			);
 		} );
 
 		it( 'should create a textarea inside a wrapper', () => {
-			const data = editor.data.get();
-
 			button.fire( 'execute' );
 
 			const domRoot = editor.editing.view.getDomRoot();
@@ -254,7 +254,11 @@ describe( 'SourceEditing', () => {
 
 			expect( textarea.nodeName ).to.equal( 'TEXTAREA' );
 			expect( textarea.rows ).to.equal( 1 );
-			expect( textarea.value ).to.equal( data );
+			expect( textarea.value ).to.equal(
+				'<p>\n' +
+				'    Foo\n' +
+				'</p>'
+			);
 		} );
 
 		it( 'should add an event listener in textarea on input which updates data property in the wrapper', () => {
@@ -385,10 +389,11 @@ describe( 'SourceEditing', () => {
 			button.fire( 'execute' );
 
 			const domRoot = editor.editing.view.getDomRoot();
-			const textarea = domRoot.nextSibling.children[ 0 ];
+			const wrapper = domRoot.nextSibling;
+			const textarea = wrapper.children[ 0 ];
 
 			// The same value as the initial one.
-			textarea.value = '<p>Foo</p>';
+			textarea.value = wrapper.dataset.value;
 
 			textarea.dispatchEvent( new Event( 'input' ) );
 

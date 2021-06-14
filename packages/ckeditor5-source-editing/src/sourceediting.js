@@ -198,7 +198,7 @@ export default class SourceEditing extends Plugin {
 		// It is not needed to iterate through all editing roots, as currently the plugin supports only the Classic Editor with a single
 		// main root, but this code may help understand and use this feature in external integrations.
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
-			const data = editor.data.get( { rootName } );
+			const data = formatSource( editor.data.get( { rootName } ) );
 
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
 
@@ -241,7 +241,7 @@ export default class SourceEditing extends Plugin {
 		const data = {};
 
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
-			const oldData = editor.data.get( { rootName } );
+			const oldData = formatSource( editor.data.get( { rootName } ) );
 			const newData = domSourceEditingElementWrapper.dataset.value;
 
 			// Do not set the data unless some changes have been made in the meantime.
@@ -334,4 +334,106 @@ export default class SourceEditing extends Plugin {
 		// Checks, if the editor's editable belongs to the editor's DOM tree.
 		return editable && !editable._hasExternalElement;
 	}
+}
+
+// Beautifies the input HTML string by adding new lines and indenting some HTML elements.
+//
+// @param {String} input HTML string to beautify.
+// @returns {String}
+function formatSource( input ) {
+	const elementsToFormat = [
+		{ name: 'blockquote', isVoid: false },
+		{ name: 'br', isVoid: true },
+		{ name: 'div', isVoid: false },
+		{ name: 'figcaption', isVoid: false },
+		{ name: 'figure', isVoid: false },
+		{ name: 'h1', isVoid: false },
+		{ name: 'h2', isVoid: false },
+		{ name: 'h3', isVoid: false },
+		{ name: 'h4', isVoid: false },
+		{ name: 'h5', isVoid: false },
+		{ name: 'h6', isVoid: false },
+		{ name: 'hr', isVoid: true },
+		{ name: 'li', isVoid: false },
+		{ name: 'ol', isVoid: false },
+		{ name: 'p', isVoid: false },
+		{ name: 'table', isVoid: false },
+		{ name: 'tbody', isVoid: false },
+		{ name: 'td', isVoid: false },
+		{ name: 'th', isVoid: false },
+		{ name: 'thead', isVoid: false },
+		{ name: 'tr', isVoid: false },
+		{ name: 'ul', isVoid: false }
+	];
+
+	const elementNamesToFormat = elementsToFormat.map( element => element.name ).join( '|' );
+
+	const lines = input
+		// Add new line before `<tag>` or `</tag>`, but only if it is not already preceded by a new line (negative lookbehind).
+		.replace( new RegExp( `(?<!\n)</?(${ elementNamesToFormat })( .*?)?>`, 'g' ), '\n$&' )
+		// Add new line after `<tag>` or `</tag>`, but only if it is not already followed by a new line (negative lookahead).
+		.replace( new RegExp( `</?(${ elementNamesToFormat })( .*?)?>(?!\n)`, 'g' ), '$&\n' )
+		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
+		.split( '\n' );
+
+	let indentCount = 0;
+
+	return lines
+		.filter( line => line.length )
+		.map( line => {
+			if ( isNonVoidOpeningTag( line, elementsToFormat ) ) {
+				return indentLine( line, indentCount++ );
+			}
+
+			if ( isClosingTag( line, elementsToFormat ) ) {
+				return indentLine( line, --indentCount );
+			}
+
+			return indentLine( line, indentCount );
+		} )
+		.join( '\n' );
+}
+
+// Checks, if an argument is an opening tag of a non-void element to be formatted.
+//
+// @param {String} line String to check.
+// @param {Array} elementsToFormat Elements to be formatted.
+// @param {String} elementsToFormat.name Element name.
+// @param {Boolean} elementsToFormat.isVoid Flag indicating whether element is a void (self-closing) element.
+// @returns {Boolean}
+function isNonVoidOpeningTag( line, elementsToFormat ) {
+	return elementsToFormat.some( element => {
+		if ( element.isVoid ) {
+			return false;
+		}
+
+		if ( !new RegExp( `<${ element.name }( .*?)?>` ).test( line ) ) {
+			return false;
+		}
+
+		return true;
+	} );
+}
+
+// Checks, if an argument is a closing tag.
+//
+// @param {String} line String to check.
+// @param {Array} elementsToFormat Elements to be formatted.
+// @param {String} elementsToFormat.name Element name.
+// @param {Boolean} elementsToFormat.isVoid Flag indicating whether element is a void (self-closing) element.
+// @returns {Boolean}
+function isClosingTag( line, elementsToFormat ) {
+	return elementsToFormat.some( element => {
+		return new RegExp( `</${ element.name }>` ).test( line );
+	} );
+}
+
+// Indents a line by a specified number of characters.
+//
+// @param {String} line Line to indent.
+// @param {Number} indentCount Number of characters to use for indentation.
+// @param {String} [indentChar] Indentation character(s). 4 spaces by default.
+// @returns {String}
+function indentLine( line, indentCount, indentChar = '    ' ) {
+	return `${ indentChar.repeat( indentCount ) }${ line }`;
 }
