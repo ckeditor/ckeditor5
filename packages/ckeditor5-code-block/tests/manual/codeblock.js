@@ -14,6 +14,7 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet ],
 		toolbar: [
 			'heading', '|',

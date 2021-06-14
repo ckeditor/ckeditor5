@@ -13,6 +13,7 @@ import TableCellProperties from '../../src/tablecellproperties';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, TableProperties, TableCellProperties ],
 		language: {
 			ui: 'ar',

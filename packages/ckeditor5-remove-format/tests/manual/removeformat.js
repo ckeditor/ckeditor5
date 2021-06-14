@@ -26,6 +26,7 @@ import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
 			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize

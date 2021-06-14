@@ -15,6 +15,7 @@ document.querySelector( '.container-outer' ).scrollTop = 450;
 // Init editor with balloon attached to the target element.
 ClassicEditor
 	.create( document.querySelector( '#editor-attach' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
@@ -40,6 +41,7 @@ ClassicEditor
 // Init editor with balloon sticked to the target element.
 ClassicEditor
 	.create( document.querySelector( '#editor-stick' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )

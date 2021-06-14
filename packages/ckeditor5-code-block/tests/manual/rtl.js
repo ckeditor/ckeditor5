@@ -12,6 +12,7 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		language: 'ar',
 		plugins: [ Code, CodeBlock, ArticlePluginSet ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'code', 'blockQuote', 'codeBlock', 'undo', 'redo', 'insertTable' ]

@@ -12,6 +12,7 @@ import BalloonToolbar from '../../../../src/toolbar/balloon/balloontoolbar';
 // Editor for the external insert.
 ClassicEditor
 	.create( document.querySelector( '#editor-insert' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'undo', 'redo' ],
 		balloonToolbar: [ 'bold', 'italic' ]
@@ -29,6 +30,7 @@ ClassicEditor
 // Editor for the external delete.
 ClassicEditor
 	.create( document.querySelector( '#editor-delete' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'undo', 'redo' ],
 		balloonToolbar: [ 'bold', 'italic' ]

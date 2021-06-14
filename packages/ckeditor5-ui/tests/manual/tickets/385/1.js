@@ -11,6 +11,7 @@ import BalloonToolbar from '../../../../src/toolbar/balloon/balloontoolbar';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
 		balloonToolbar: [ 'bold', 'italic', 'link' ]

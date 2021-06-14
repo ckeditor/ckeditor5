@@ -18,6 +18,7 @@ import { getSelectionAffectedTableCells } from '../../src/utils/selection';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [
 			'insertTable', 'undo', 'redo'

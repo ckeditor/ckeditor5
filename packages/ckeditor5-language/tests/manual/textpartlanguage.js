@@ -11,6 +11,7 @@ import TextPartLanguage from '../../src/textpartlanguage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,
 			TextPartLanguage

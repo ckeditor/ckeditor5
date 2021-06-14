@@ -38,6 +38,7 @@ async function reloadEditor( options = {} ) {
 	}
 
 	const config = {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, FontFamily ],
 		toolbar: [
 			'heading', '|', 'fontFamily', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'

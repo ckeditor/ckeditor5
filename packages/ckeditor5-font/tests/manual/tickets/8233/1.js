@@ -11,6 +11,7 @@ import FontSize from '../../../../src/fontsize';
 import FontFamily from '../../../../src/fontfamily';
 
 const config = {
+	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [ ArticlePluginSet, FontSize, FontFamily ],
 	toolbar: [
 		'heading', '|', 'fontFamily', 'fontSize', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'

@@ -12,6 +12,7 @@ import FontBackgroundColor from '../../src/fontbackgroundcolor';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,
 			FontColor,
