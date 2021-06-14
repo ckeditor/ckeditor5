@@ -3,39 +3,45 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console */
+/* globals console, window, document */
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import MathType from '@wiris/mathtype-ckeditor5';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-content-compatibility/src/generalhtmlsupport';
 
 ClassicEditor
-	.create( document.querySelector( '#mathtype-editor' ), {
+	.create( document.querySelector( '#snippet-general-html-support' ), {
 		plugins: [
 			ArticlePluginSet,
+			Code,
 			EasyImage,
 			ImageUpload,
 			CloudServices,
-			MathType
+			SourceEditing,
+			GeneralHtmlSupport
 		],
 		toolbar: {
 			items: [
+				'sourceEditing',
+				'|',
 				'heading',
 				'|',
 				'bold',
 				'italic',
+				'code',
 				'bulletedList',
 				'numberedList',
 				'|',
 				'outdent',
 				'indent',
-				'|',
-				'MathType',
-				'ChemType',
 				'|',
 				'blockQuote',
 				'link',
@@ -60,16 +66,47 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG
-	} )
+		cloudServices: CS_CONFIG,
 
+		generalHtmlSupport: {
+			allowed: [
+				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
+				{
+					name: /^(div|details|summary)$/,
+					styles: true,
+					classes: true,
+					attributes: true
+				},
+
+				// Extends the existing Paragraph and Heading features
+				// with classes and data-* attributes.
+				{
+					name: /^(p|h[2-4])$/,
+					classes: true,
+					attributes: /^data-/
+				},
+
+				// Enables <span>s with any inline styles.
+				{
+					name: 'span',
+					styles: true
+				},
+
+				// Enables <abbr>s with the title attribute.
+				{
+					name: 'abbr',
+					attributes: [ 'title' ]
+				}
+			]
+		}
+	} )
 	.then( editor => {
 		window.editor = editor;
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Insert a math equation - MathType' ),
-			text: 'Click to insert mathematical or chemical formulas.',
+				item => item.label && item.label === 'Source' ),
+			text: 'Switch to the source mode to check out the source of the content and play with it.',
 			editor
 		} );
 	} )
