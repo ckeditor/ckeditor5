@@ -536,6 +536,31 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/9650
+		it( 'should not try to fix the marker if it was removed from markers collection', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 5 )
+					),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			expect( () => {
+				model.change( writer => {
+					writer.removeMarker( 'restrictedEditingException:1' );
+				} );
+			} ).not.to.throw();
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo bar baz</paragraph>' );
+		} );
+
 		it( 'should not move collapsed marker to $graveyard if it was removed by dragging', () => {
 			setModelData( model, '<paragraph>foo bar b[]az</paragraph>' );
 
