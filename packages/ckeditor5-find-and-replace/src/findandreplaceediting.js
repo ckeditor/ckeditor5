@@ -92,6 +92,46 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
+	 * Initiate a search.
+	 *
+	 * @param {Function|String} callbackOrText
+	 * @returns {module:utils/collection~Collection}
+	 */
+	find( callbackOrText ) {
+		const { editor } = this;
+		const { model } = editor;
+
+		const { findCallback, results } = editor.execute( 'find', callbackOrText );
+
+		this.activeResults = results;
+
+		// @todo: handle this listener, another copy is in findcommand.js file.
+		this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
+
+		return this.activeResults;
+	}
+
+	/**
+	 * Stops active results from updating.
+	 */
+	stop() {
+		if ( !this.activeResults ) {
+			return;
+		}
+
+		this.stopListening( this.editor.model.document );
+
+		// Remove all markers from the editor.
+		this.editor.model.change( writer => {
+			[ ...this.activeResults ].forEach( ( { marker } ) => {
+				writer.removeMarker( marker );
+			} );
+		} );
+
+		this.activeResults = null;
+	}
+
+	/**
 	 * @private
 	 */
 	_defineCommands() {
@@ -165,45 +205,5 @@ export default class FindAndReplaceEditing extends Plugin {
 				};
 			}
 		} );
-	}
-
-	/**
-	 * Initiate a search.
-	 *
-	 * @param {Function|String} callbackOrText
-	 * @returns {module:utils/collection~Collection}
-	 */
-	find( callbackOrText ) {
-		const { editor } = this;
-		const { model } = editor;
-
-		const { findCallback, results } = editor.execute( 'find', callbackOrText );
-
-		this.activeResults = results;
-
-		// @todo: handle this listener, another copy is in findcommand.js file.
-		this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
-
-		return this.activeResults;
-	}
-
-	/**
-	 * Stops active results from updating.
-	 */
-	stop() {
-		if ( !this.activeResults ) {
-			return;
-		}
-
-		this.stopListening( this.editor.model.document );
-
-		// Remove all markers from the editor.
-		this.editor.model.change( writer => {
-			[ ...this.activeResults ].forEach( ( { marker } ) => {
-				writer.removeMarker( marker );
-			} );
-		} );
-
-		this.activeResults = null;
 	}
 }
