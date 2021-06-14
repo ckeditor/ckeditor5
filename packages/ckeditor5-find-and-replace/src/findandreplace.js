@@ -43,7 +43,7 @@ export default class FindAndReplace extends Plugin {
 		const findAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
 
 		/**
-		 * findNext button logic
+		 * Delegate find next request.
 		 */
 		ui.on( 'findNext', ( event, data ) => {
 			if ( data.searchText.length !== 0 ) {
@@ -54,7 +54,7 @@ export default class FindAndReplace extends Plugin {
 		} );
 
 		/**
-		 * FindPrev button logic
+		 * Delegate find previous request.
 		 */
 		ui.on( 'findPrev', ( event, data ) => {
 			if ( data.searchText.length !== 0 ) {
@@ -64,7 +64,7 @@ export default class FindAndReplace extends Plugin {
 		} );
 
 		/**
-		 * Replace button logic
+		 * Delegate replace action.
 		 */
 		ui.on( 'replace', ( event, data ) => {
 			this.editor.execute( 'replace', data.replaceText, findAndReplaceEditing.activeResults.get( 0 ) );
@@ -72,7 +72,7 @@ export default class FindAndReplace extends Plugin {
 		} );
 
 		/**
-		 * Replace all button logic
+		 * Delegate replace all action.
 		 */
 		ui.on( 'replaceAll', ( event, data ) => {
 			// this.editor.execute( 'replaceAll', data.replaceText, data.searchText );
