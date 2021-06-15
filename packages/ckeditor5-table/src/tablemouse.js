@@ -172,9 +172,6 @@ export default class TableMouse extends Plugin {
 				return;
 			}
 
-			// TODO exit from selecting (this is temporary - should be handled in a nicer way).
-			editor.editing.view.document.isSelecting = false;
-
 			blockSelectionChange = true;
 			tableSelection.setCellSelection( anchorCell, targetCell );
 

@@ -315,7 +315,7 @@ export default class Document {
 			// post-fixers are the last who should change the model, but just in case...
 			this.selection.refresh();
 
-			// this.differ.reset();
+			this.differ.reset();
 		}
 
 		this._hasSelectionChangedFromTheLastChangeBlock = false;

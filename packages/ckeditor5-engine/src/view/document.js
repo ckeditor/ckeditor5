@@ -93,11 +93,6 @@ export default class Document {
 		this.set( 'isComposing', false );
 
 		/**
-		 * TODO
-		 */
-		this.set( 'isSelecting', false );
-
-		/**
 		 * Post-fixer callbacks registered to the view document.
 		 *
 		 * @private

@@ -100,17 +100,6 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		this.listenTo( domDocument, 'selectstart', () => {
-			this.document.isSelecting = true;
-		} );
-
-		// TODO this is not enough if selection is made by the keyboard
-		this.listenTo( domDocument, 'mouseup', () => ( this.document.isSelecting = false ) );
-
-		// TODO This should end for unsafe keystrokes?
-		this.listenTo( domDocument, 'keydown', () => ( this.document.isSelecting = false ) );
-		this.listenTo( domDocument, 'keyup', () => ( this.document.isSelecting = false ) );
-
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
 		} );

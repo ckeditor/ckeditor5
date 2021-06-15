@@ -69,10 +69,9 @@ export default class EditingController {
 			schema: model.schema
 		} );
 
-		const document = this.model.document;
+		const doc = this.model.document;
+		const selection = doc.selection;
 		const markers = this.model.markers;
-		const selection = document.selection;
-		const differ = document.differ;
 
 		// When plugins listen on model changes (on selection change, post fixers, etc.) and change the view as a result of
 		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
@@ -90,44 +89,14 @@ export default class EditingController {
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
-		this.listenTo( this.model.document, 'change', () => {
-			if ( this.view.document.isSelecting ) {
-				return;
-			}
-
+		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
-				this.downcastDispatcher.convertChanges( differ, markers, writer );
+				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
-
-				differ.reset();
 			} );
 		}, { priority: 'low' } );
 
-		this.listenTo( this.view.document, 'change:isSelecting', () => {
-			if ( this.view.document.isSelecting ) {
-				return;
-			}
-
-			// User stopped selecting - trigger conversion to model selection.
-			this.view.document.fire( 'selectionChange', {
-				newSelection: this.view.document.selection
-			} );
-		} );
-
 		// Convert selection from the view to the model when it changes in the view.
-		this.listenTo( this.view.document, 'selectionChange', ( evt, data ) => {
-			if ( !this.view.document.isSelecting ) {
-				return;
-			}
-
-			evt.stop();
-
-			this.view.change( writer => {
-				writer.setSelection( data.newSelection, { backward: data.newSelection.isBackward } );
-			} );
-		}, { priority: 'high' } );
-
-		// Update model selection.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.
