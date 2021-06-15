@@ -228,7 +228,7 @@ describe( 'LinkImageUI', () => {
 			it( 'should show plugin#actionsView after "execute" if an image is already linked', () => {
 				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-				editor.setData( '<p><a href="https://example.com"><img src="sample.jpg" /></a></p>' );
+				editor.setData( '<p><a href="https://example.com"><img src="/assets/sample.png" /></a></p>' );
 
 				editor.model.change( writer => {
 					writer.setSelection( root.getChild( 0 ), 'in' );

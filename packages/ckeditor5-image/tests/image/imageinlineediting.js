@@ -54,18 +54,30 @@ describe( 'ImageInlineEditing', () => {
 		expect( editor.plugins.get( ImageInlineEditing ) ).to.be.instanceOf( ImageInlineEditing );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
-		expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
-		expect( model.schema.isObject( 'imageInline' ) ).to.be.true;
+	describe( 'schema rules', () => {
+		it( 'should be set', () => {
+			expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
+			expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
+			expect( model.schema.isObject( 'imageInline' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
+			expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
+		} );
+
+		it( 'should disallow imageInline in the caption element', () => {
+			model.schema.register( 'caption', {
+				allowIn: '$root',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+
+			expect( model.schema.checkChild( [ '$root', 'caption' ], 'imageInline' ) ).to.be.false;
+		} );
 	} );
 
 	it( 'should register ImageLoadObserver', () => {
@@ -854,6 +866,92 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline src="/assets/sample.png" width="25%"></imageInline>[]oo</paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'integration with the caption element', () => {
+		let editorElement, editor, model, view;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [
+					ImageInlineEditing,
+					ImageBlockEditing,
+					ImageCaption,
+					ImageResizeEditing,
+					Clipboard,
+					LinkImage,
+					Paragraph,
+					ListEditing
+				]
+			} );
+
+			model = editor.model;
+			doc = model.document;
+			view = editor.editing.view;
+			viewDocument = view.document;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should disallow (nested) inline images inside the caption', () => {
+			editor.setData(
+				'<figure class="image">' +
+					'<img src="/assets/sample.png" />' +
+					'<figcaption>foo<img src="/assets/sample.png" />bar</figcaption>' +
+				'</figure>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<imageBlock src="/assets/sample.png"><caption>foobar</caption></imageBlock>' );
+		} );
+
+		it( 'should disallow (nested) linked inline images inside the caption', () => {
+			editor.setData(
+				'<figure class="image">' +
+					'<img src="/assets/sample.png" />' +
+					'<figcaption>foo<a href="https://cksource.com"><img src="/assets/sample.png" /></a>bar</figcaption>' +
+				'</figure>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<imageBlock src="/assets/sample.png"><caption>foobar</caption></imageBlock>' );
+		} );
+
+		it( 'should disallow pasting inline images into the caption', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<img src="/assets/sample.png" />'
+			} );
+
+			setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>'
+			);
+		} );
+
+		it( 'should disallow pasting linked inline images into the caption', () => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<a href="https://cksource.com"><img src="/assets/sample.png" /></a>'
+			} );
+
+			setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>'
 			);
 		} );
 	} );

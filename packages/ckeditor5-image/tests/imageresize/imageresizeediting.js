@@ -213,10 +213,6 @@ describe( 'ImageResizeEditing', () => {
 			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'width' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
-
-		it( 'defines width as a formatting attribute', () => {
-			expect( editor.model.schema.getAttributeProperties( 'width' ) ).to.have.property( 'isFormatting', true );
-		} );
 	} );
 
 	describe( 'command', () => {

@@ -92,10 +92,6 @@ export default class ImageResizeEditing extends Plugin {
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
 			this.editor.model.schema.extend( 'imageInline', { allowAttributes: 'width' } );
 		}
-
-		this.editor.model.schema.setAttributeProperties( 'width', {
-			isFormatting: true
-		} );
 	}
 
 	/**
