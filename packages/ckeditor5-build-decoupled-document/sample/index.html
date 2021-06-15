@@ -60,7 +60,6 @@
 	DecoupledEditor.create( editorData )
 		.then( editor => {
 			window.editor = editor;
-
 			document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 			document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
 		} )
