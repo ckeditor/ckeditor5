@@ -148,6 +148,15 @@ export default class DataSchema extends Plugin {
 			}
 		} );
 
+		// TODO Remove it once we have proper support for div elements.
+		this.registerBlockElement( {
+			model: 'htmlDiv',
+			view: 'div',
+			modelSchema: {
+				inheritAllFrom: '$htmlBlock'
+			}
+		} );
+
 		this.registerBlockElement( {
 			view: 'article',
 			model: 'htmlArticle',

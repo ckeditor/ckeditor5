@@ -27,7 +27,7 @@ The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, o
 
 ## Demo
 
-The general HTML support feature is configured via the `config.generalHtmlSupport` property in which you need to list the HTML features that should be handled by GHS.
+The general HTML support feature is configured via the `config.htmlSupport` property in which you need to list the HTML features that should be handled by GHS.
 
 The demo below uses the following configuration:
 
@@ -39,8 +39,8 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ SourceEditing, GeneralHtmlSupport, ... ],
 		toolbar: [ 'sourceEditing', ... ],
-		generalHtmlSupport: {
-			allowed: {
+		htmlSupport: {
+			allow: {
 				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
 				{
 					name: /^(div|details|summary)$/,
@@ -96,20 +96,18 @@ Therefore, GHS's main use cases would be:
 
 ## Configuration
 
-By default, enabling the {@link module:content-compatibility/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any element. The elements the user wants to be supported, need to be configured via the {@link TODOmodule:core/editor/editorconfig~EditorConfig#generalHtmlSupport `config.generalHtmlSupport`} option:
+By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any element. The elements the user wants to be supported, need to be configured via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option:
 
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	generalHtmlSupport: {
-		allowed: [ /* HTML features to allow */ ]
-		disallowed: [ /* HTML features to disallow */ ]
+	htmlSupport: {
+		allow: [ /* HTML features to allow */ ]
+		disallow: [ /* HTML features to disallow */ ]
 	}
 } )
 ```
 
-The notation of the `allowed` and `disallowed` rules looks as follows:
-
-<!-- TODO REVIEW THE BELOW. I WROTE IT FROM THE TOP OF MY HEAD. -->
+The notation of the `allow` and `disallow` rules looks as follows:
 
 ```js
 [
@@ -119,13 +117,13 @@ The notation of the `allowed` and `disallowed` rules looks as follows:
 		name: string|regexp,
 
 		// Styles to allow (by name, name and value or just all).
-		styles: object<string=>true|string|regexp>|array<string>|true,
+		styles: object<string=>true|string|regexp>|array<string|object>|true,
 
 		// Classes to allow (by name or just all).
 		classes: array<string|regexp>|true,
 
 		// Other attributes to allow (by name, name and value or just all).
-		attributes: object<string=>true|string|regexp>|array<string>|true,
+		attributes: object<string=>true|string|regexp>|array<string|object>|true,
 	}
 ]
 ```
@@ -133,8 +131,8 @@ The notation of the `allowed` and `disallowed` rules looks as follows:
 Several implementation examples:
 
 ```js
-generalHtmlSupport: {
-	allowed: [
+htmlSupport: {
+	allow: [
 		// Enables plain <div> elements.
 		{
 			name: 'div'

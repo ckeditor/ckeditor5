@@ -15,7 +15,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-content-compatibility/src/generalhtmlsupport';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-general-html-support' ), {
@@ -68,8 +68,8 @@ ClassicEditor
 		},
 		cloudServices: CS_CONFIG,
 
-		generalHtmlSupport: {
-			allowed: [
+		htmlSupport: {
+			allow: [
 				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
 				{
 					name: /^(div|details|summary)$/,
