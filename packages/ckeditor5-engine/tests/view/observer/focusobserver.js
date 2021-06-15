@@ -140,6 +140,33 @@ describe( 'FocusObserver', () => {
 
 			expect( viewDocument.isFocused ).to.be.true;
 		} );
+
+		it( 'should trigger fallback rendering after 50ms', () => {
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
+			const clock = sinon.useFakeTimers();
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+			sinon.assert.notCalled( renderSpy );
+			clock.tick( 50 );
+			sinon.assert.called( renderSpy );
+
+			clock.restore();
+		} );
+
+		it( 'should not call render if destroyed', () => {
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
+			const clock = sinon.useFakeTimers();
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+			sinon.assert.notCalled( renderSpy );
+			observer.destroy();
+			clock.tick( 50 );
+			sinon.assert.notCalled( renderSpy );
+
+			clock.restore();
+		} );
 	} );
 
 	describe( 'integration test', () => {
