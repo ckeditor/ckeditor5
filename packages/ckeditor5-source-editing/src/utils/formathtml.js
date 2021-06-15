@@ -4,7 +4,7 @@
  */
 
 /**
- * @module source-editing/utils/formatsource
+ * @module source-editing/utils/formathtml
  */
 
 /**
@@ -16,7 +16,7 @@
  * @param {String} input HTML string to beautify.
  * @returns {String}
  */
-export function formatSource( input ) {
+export function formatHtml( input ) {
 	if ( !isHtml( input ) ) {
 		return input;
 	}

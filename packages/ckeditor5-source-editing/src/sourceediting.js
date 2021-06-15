@@ -12,7 +12,7 @@
 import { Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
-import { formatSource } from './utils/formatsource';
+import { formatHtml } from './utils/formathtml';
 
 import '../theme/sourceediting.css';
 
@@ -207,7 +207,7 @@ export default class SourceEditing extends Plugin {
 		// It is not needed to iterate through all editing roots, as currently the plugin supports only the Classic Editor with a single
 		// main root, but this code may help understand and use this feature in external integrations.
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
-			const data = formatSource( editor.data.get( { rootName } ) );
+			const data = formatHtml( editor.data.get( { rootName } ) );
 
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
 

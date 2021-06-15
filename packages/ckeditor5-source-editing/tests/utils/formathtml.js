@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { formatSource } from '../../src/utils/formatsource';
+import { formatHtml } from '../../src/utils/formathtml';
 
 describe( 'SourceEditing utils', () => {
-	describe( 'formatSource()', () => {
+	describe( 'formatHtml()', () => {
 		it( 'should not change the non-HTML sources', () => {
 			const nonHtmlSources = [
 				'## Markdown header\n\nMarkdown is a lightweight markup language',
@@ -15,7 +15,7 @@ describe( 'SourceEditing utils', () => {
 			];
 
 			for ( const source of nonHtmlSources ) {
-				expect( formatSource( source ) ).to.equal( source );
+				expect( formatHtml( source ) ).to.equal( source );
 			}
 		} );
 
@@ -59,7 +59,7 @@ describe( 'SourceEditing utils', () => {
 					'    </table>\n' +
 					'</figure>';
 
-				expect( formatSource( source ) ).to.equal( sourceFormatted );
+				expect( formatHtml( source ) ).to.equal( sourceFormatted );
 			} );
 
 			it( 'should format ordered and bulleted lists', () => {
@@ -111,7 +111,7 @@ describe( 'SourceEditing utils', () => {
 					'    </li>\n' +
 					'</ul>';
 
-				expect( formatSource( source ) ).to.equal( sourceFormatted );
+				expect( formatHtml( source ) ).to.equal( sourceFormatted );
 			} );
 
 			it( 'should format mixed nested block elements with inline elements #1', () => {
@@ -145,7 +145,7 @@ describe( 'SourceEditing utils', () => {
 					'    </p>\n' +
 					'</div>';
 
-				expect( formatSource( source ) ).to.equal( sourceFormatted );
+				expect( formatHtml( source ) ).to.equal( sourceFormatted );
 			} );
 
 			it( 'should format mixed nested block elements with inline elements #2', () => {
@@ -172,7 +172,7 @@ describe( 'SourceEditing utils', () => {
 					'    </address>\n' +
 					'</aside>';
 
-				expect( formatSource( source ) ).to.equal( sourceFormatted );
+				expect( formatHtml( source ) ).to.equal( sourceFormatted );
 			} );
 
 			it( 'should format mixed nested block elements with inline elements #3', () => {
@@ -205,7 +205,7 @@ describe( 'SourceEditing utils', () => {
 					'    </form>\n' +
 					'</main>';
 
-				expect( formatSource( source ) ).to.equal( sourceFormatted );
+				expect( formatHtml( source ) ).to.equal( sourceFormatted );
 			} );
 
 			it( 'should keep all attributes unchanged', () => {
@@ -219,7 +219,7 @@ describe( 'SourceEditing utils', () => {
 					'    Paragraph\n' +
 					'</p>';
 
-				expect( formatSource( source ) ).to.equal( sourceFormatted );
+				expect( formatHtml( source ) ).to.equal( sourceFormatted );
 			} );
 		} );
 	} );
