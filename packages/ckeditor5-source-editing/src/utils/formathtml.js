@@ -8,10 +8,13 @@
  */
 
 /**
- * Simple HTML source formatter. Beautifies the HTML code by adding new lines and indenting some elements. Repeatedly calling this
- * function on already formatted text will damage the formatting.
+ * Simple HTML source formatter. Beautifies the HTML code by wrapping the opening and closing tag with a new line character for all elements
+ * defined in the `elementsToFormat` array. Between the opening and closing tags, an indentation is incremented for all the other elements
+ * therein.
  *
  * For a non-HTML source the unchanged input string is returned.
+ *
+ * WARNING: Repeatedly calling this function on already formatted text will damage the formatting.
  *
  * @param {String} input HTML string to beautify.
  * @returns {String}
