@@ -3,13 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* disabled buttons bg color: #C3C3C3 */
+/* button color #4E8AE4 */
+
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-find-and-replace-form {
+
+.ck.ck-find-form__wrapper, .ck.ck-replace-form__wrapper {
 	display: flex; 
 	align-items: flex-start;
 	flex-direction: row;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
+
+	& .replace-buttons > .ck-button, & .find-buttons > .ck-button {
+		margin-top: var(--ck-spacing-unit);
+		background-color: var(--ck-color-base-active);
+		color: var(--ck-color-base-background);
+		padding: 5px 10px;
+		border-radius: 4px;
+
+		&:hover {
+			background-color: var(--ck-color-base-focus);
+			cursor: pointer;
+		}
+	}
 
 	& .ck-labeled-field-view {
 		display: inline-block;
@@ -28,6 +45,61 @@
 
 		& .ck-button {
 			flex-basis: 50%;
+		}
+	}
+}
+
+.ck.ck-find-form__wrapper {
+	justify-content: space-between;
+	
+	&.isEnabled {
+		& .ck-button.ck-button-prev, & .ck-button.ck-button-next {
+			margin-left: calc(var(--ck-spacing-unit) * 0.2);
+		}
+
+		& .ck-button.ck-button-find {
+			display: none;
+		}
+	}
+
+	&.isDisabled {
+		& .ck-button.ck-button-prev, & .ck-button.ck-button-next {
+			display: none;
+		}
+
+		& .ck-button.ck-button-find {
+			display: flex;
+		}
+	}
+
+	&.ck-responsive-form .find-checkboxes {
+		margin: 0;
+
+		& .find-checkboxes__box {
+			display: flex;
+			align-items: center;
+
+			& label {
+				margin: 5px;
+			}
+		}
+	}
+}
+
+.ck.ck-replace-form__wrapper {
+	justify-content: flex-end;
+	border-top: 1px solid var(--ck-color-base-border);
+
+	& .replace-buttons > .ck-button:last-child {
+		margin-left: var(--ck-spacing-unit)
+	}
+
+	&.isDisabled .ck-button{
+		background-color: var(--ck-color-switch-button-off-background);
+
+		&:hover {
+			background-color: var(--ck-color-switch-button-off-background);
+			cursor: default;
 		}
 	}
 }

@@ -29,6 +29,16 @@ export default class FindAndReplaceFormView extends View {
 		const t = locale.t;
 
 		/**
+		 * The Find button view that's visible initially.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.findButtonView = this._createButton( t( 'FIND' ), 'ck-button-find' );
+		this.findButtonView.on( 'execute', () => {
+			this.fire( 'findNext', { searchText: this.searchText } );
+		} );
+
+		/**
 		 * The FindPrevious button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
@@ -53,7 +63,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-prev' );
+		this.replaceButtonView = this._createButton( t( 'REPLACE' ), 'ck-button-replace' );
 		this.replaceButtonView.on( 'execute', () => {
 			this.fire( 'replace', { replaceText: this.replaceText } );
 		} );
@@ -63,29 +73,45 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.replaceAllButtonView = this._createButton( t( 'ReplaceAll' ), 'ck-button-next' );
+		this.replaceAllButtonView = this._createButton( t( 'REPLACE ALL' ), 'ck-button-replaceall' );
 		this.replaceAllButtonView.on( 'execute', () => {
 			this.fire( 'replaceAll', { replaceText: this.replaceText } );
 		} );
 
 		/**
+		 * Match case checkbox view
+		 *
+		 * @member {module:ui/view~View}
+		*/
+		this.matchCaseCheckbox = this._createCheckbox( 'matchcase', 'Match case' );
+
+		/**
+		 * Whole words only checkbox view
+		 *
+		 * @member {module:ui/view~View}
+		*/
+		this.matchWholeWordsCheckbox = this._createCheckbox( 'wholewords', 'Whole words only' );
+
+		/**
 		 * The Find input view.
 		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.findInputView = this._createInputField( 'Find', 'Search for something you\'d like to find' );
+		this.findInputView = this._createInputField( 'Find', 'Find in text' );
 
 		/**
 		 * The Replace input view.
 		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.replaceInputView = this._createInputField( 'Replace', 'Replace what you\'ve previously selected' );
+		this.replaceInputView = this._createInputField( 'Replace', 'Replace with' );
 
 		/**
 		 * Find view config
 		 */
-		this.findView = this._createFindView( this.findNextButtonView, this.findPrevButtonView, this.findInputView );
+		// TODO
+		// eslint-disable-next-line max-len
+		this.findView = this._createFindView( this.findInputView, this.matchCaseCheckbox, this.matchWholeWordsCheckbox, this.findButtonView, this.findNextButtonView, this.findPrevButtonView );
 
 		/**
 		 * Replace view config
@@ -98,7 +124,7 @@ export default class FindAndReplaceFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-find-and-replace-form__wrapper'
+					'ck-find-and-replace-form'
 				]
 			},
 
@@ -163,11 +189,14 @@ export default class FindAndReplaceFormView extends View {
 
 		const childViews = [
 			this.findInputView,
+			this.matchCaseCheckbox,
+			this.matchWholeWordsCheckbox,
+			this.findButtonView,
 			this.findPrevButtonView,
 			this.findNextButtonView,
 			this.replaceInputView,
-			this.replaceButtonView,
-			this.replaceAllButtonView
+			this.replaceAllButtonView,
+			this.replaceButtonView
 		];
 
 		childViews.forEach( v => {
@@ -218,7 +247,8 @@ export default class FindAndReplaceFormView extends View {
 	 * @param {String} InputView Input view.
 	 * @return {module:ui/view~View} The find view instance.
 	 */
-	_createFindView( NextButtonInputView, PrevButtonInputView, InputView ) {
+
+	_createFindView( InputView, matchCaseCheckbox, matchWholeWordsCheckbox, findButtonView, findNextButtonView, findPrevButtonView ) {
 		const findView = new View();
 
 		findView.setTemplate( {
@@ -226,15 +256,39 @@ export default class FindAndReplaceFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-find-and-replace-form',
-					'ck-responsive-form'
+					'ck-find-form__wrapper',
+					'ck-responsive-form',
+					'isEnabled'
+					// 'isDisabled'
 				],
 				tabindex: '-1'
 			},
 			children: [
 				InputView,
-				PrevButtonInputView,
-				NextButtonInputView
+				{
+					tag: 'div',
+					attributes: {
+						class: [ 'find-checkboxes' ]
+					},
+					children: [
+						matchCaseCheckbox,
+						matchWholeWordsCheckbox
+					]
+				},
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'find-buttons'
+						],
+						tabindex: '-1'
+					},
+					children: [
+						findButtonView,
+						findPrevButtonView,
+						findNextButtonView
+					]
+				}
 			]
 		} );
 
@@ -246,12 +300,12 @@ export default class FindAndReplaceFormView extends View {
 	 *
 	 * TODO: change the {String} params or remove them alltogether.
 	 * @private
-	 * @param {String} NextInputView NextButtonInput view.
-	 * @param {String} PrevInputView PrevButtonInput view.
+	 * @param {String} replaceAllButtonView NextButtonInput view.
+	 * @param {String} replaceButtonView PrevButtonInput view.
 	 * @param {String} InputView Input view.
 	 * @returns {module:ui/view~View} The replace view instance.
 	 */
-	_createReplaceView( NextButtonInputView, PrevButtonInputView, InputView ) {
+	_createReplaceView( replaceAllButtonView, replaceButtonView, InputView ) {
 		const replaceView = new View();
 
 		replaceView.setTemplate( {
@@ -259,15 +313,26 @@ export default class FindAndReplaceFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-find-and-replace-form',
-					'ck-responsive-form'
+					'ck-replace-form__wrapper',
+					'ck-responsive-form',
+					'isEnabled'
 				],
 				tabindex: '-1'
 			},
 			children: [
 				InputView,
-				PrevButtonInputView,
-				NextButtonInputView
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'replace-buttons'
+						]
+					},
+					children: [
+						replaceAllButtonView,
+						replaceButtonView
+					]
+				}
 			]
 		} );
 		return replaceView;
@@ -293,8 +358,7 @@ export default class FindAndReplaceFormView extends View {
 			}
 		} );
 
-		labeledInput.label = label;
-		labeledInput.infoText = infoText;
+		labeledInput.label = infoText;
 		labeledInput.render();
 
 		return labeledInput;
@@ -324,5 +388,45 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		return button;
+	}
+
+	/**
+	 * Creates a view for checkboxes.
+	 *
+	 * @private
+	 * @param {String} checkboxId Checkbox id.
+	 * @param {String} label The checkbox label.
+	 * @returns {module:ui/view~View} The checkbox view instance.
+	 */
+	_createCheckbox( checkboxId, label ) {
+		const checkboxView = new View();
+
+		checkboxView.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: 'find-checkboxes__box'
+			},
+			children: [
+				{
+					tag: 'input',
+					attributes: {
+						type: 'checkbox',
+						id: checkboxId,
+						name: label,
+						value: label
+					}
+				},
+				{
+					tag: 'label',
+					attributes: {
+						for: checkboxId
+					}
+				},
+				{
+					text: label
+				}
+			]
+		} );
+		return checkboxView;
 	}
 }
