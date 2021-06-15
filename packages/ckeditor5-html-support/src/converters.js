@@ -93,10 +93,6 @@ export function createObjectView( viewName, modelElement, writer ) {
 /**
  * View-to-attribute conversion helper preserving inline element attributes on `$text`.
  *
- * All allowed element attributes will be preserved as a value of
- * {@link module:html-support/dataschema~DataSchemaInlineElementDefinition~model definition model}
- * attribute.
- *
  * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition
  * @param {module:html-support/datafilter~DataFilter} dataFilter
  * @returns {Function} Returns a conversion callback.
