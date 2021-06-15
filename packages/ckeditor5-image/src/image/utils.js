@@ -78,13 +78,31 @@ export function getViewImgElementMatcher( editor, matchImageType ) {
 }
 
 /**
- * TODO
+ * Returns an object of model attributes collected from an `<img />` view element
+ * (or `<picture><source /><source />...<img /></picture>` structure) for data upcast.
  *
- * @param {*} imgViewElement
- * @returns
+ * Depending on whether `<picture>` is used or not (and what the picture sources are),
+ * the returned object structure will look as follows:
+ *
+ *		{
+ *			src: 'http://path.to/image.png'
+ *			[sources]: [
+ *				{
+ *					[srcset]: 'http://path.to/image.webp',
+ *					[media]: '(min-width: 1024px)',
+ *					[type]: 'image/jpeg',
+ *				},
+ *				{
+ *					// ...
+ *				}
+ *			]
+ *		}
+ *
+ * @param {module:engine/view/emptyelement~EmptyElement} imgViewElement
+ * @returns {Object}
  */
 export function extractImageAttributesFromViewElement( imgViewElement ) {
-	// Get the src attribute from a plain <img />.
+	// Get only the src attribute from a plain <img />.
 	if ( imgViewElement.parent && !imgViewElement.parent.is( 'element', 'picture' ) ) {
 		return {
 			src: imgViewElement.getAttribute( 'src' )
