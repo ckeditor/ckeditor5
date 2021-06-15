@@ -20,7 +20,6 @@
 		background-color: var(--ck-color-base-active);
 		color: var(--ck-color-base-background);
 		padding: 5px 10px;
-		border-radius: 4px;
 
 		&:hover {
 			background-color: var(--ck-color-base-focus);
@@ -48,10 +47,46 @@
 		}
 	}
 }
-
+.ck.ck-find-and-replace-form 
 .ck.ck-find-form__wrapper {
 	justify-content: space-between;
+
+	& span.results-found-counter {
+		position: absolute;
+		top: calc(var(--ck-spacing-unit) * 2);
+    	right: calc(var(--ck-spacing-unit) * 3);
+		color: var(--ck-color-base-border)
+	}
+
+	& .find-buttons {
+		display: flex;
+		align-items: center;
 	
+		& .ck-button {
+			border-radius: 5px;
+			padding: 5px;
+			
+			& svg.ck-button__icon {
+				margin: 0;
+			}
+
+			&:first-child {
+				padding: 4px 16px;
+			}
+
+			&:nth-child(2) {
+				border-radius: 5px 0 0 5px;
+
+				& svg {
+					transform: rotate(180deg);
+				}
+			}
+
+			&:last-child {
+				border-radius: 0 5px 5px 0;
+			}
+		}
+	}
 	&.isEnabled {
 		& .ck-button.ck-button-prev, & .ck-button.ck-button-next {
 			margin-left: calc(var(--ck-spacing-unit) * 0.2);
@@ -80,7 +115,7 @@
 			align-items: center;
 
 			& label {
-				margin: 5px;
+				margin-left: 5px;
 			}
 		}
 	}
@@ -90,8 +125,13 @@
 	justify-content: flex-end;
 	border-top: 1px solid var(--ck-color-base-border);
 
-	& .replace-buttons > .ck-button:last-child {
-		margin-left: var(--ck-spacing-unit)
+	& .replace-buttons > .ck-button {
+		border-radius: 5px;
+		font-size: calc(var(--ck-font-size-normal) * 0.9);
+
+		&:last-child {
+			margin-left: var(--ck-spacing-unit)
+		}
 	}
 
 	&.isDisabled .ck-button{

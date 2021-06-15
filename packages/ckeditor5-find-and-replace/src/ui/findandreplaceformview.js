@@ -14,6 +14,7 @@ import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '@ckeditor/ckeditor5-find-and-replace/theme/findandreplaceform.css';
+import findArrowIcon from '../../theme/icons/find_arrow.svg';
 
 /**
  * The media form view controller class.
@@ -43,7 +44,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.findPrevButtonView = this._createButton( t( '<' ), 'ck-button-prev' );
+		this.findPrevButtonView = this._createButton( '', 'ck-button-prev', findArrowIcon );
 		this.findPrevButtonView.on( 'execute', () => {
 			this.fire( 'findPrev', { searchText: this.searchText } );
 		} );
@@ -53,7 +54,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.findNextButtonView = this._createButton( t( '>' ), 'ck-button-next' );
+		this.findNextButtonView = this._createButton( '', 'ck-button-next', findArrowIcon );
 		this.findNextButtonView.on( 'execute', () => {
 			this.fire( 'findNext', { searchText: this.searchText } );
 		} );
@@ -265,6 +266,16 @@ export default class FindAndReplaceFormView extends View {
 			},
 			children: [
 				InputView,
+				{ tag: 'span',
+					attributes: {
+						class: [
+							'results-found-counter'
+						]
+					},
+					children: [
+						'1 of 3'
+					]
+				},
 				{
 					tag: 'div',
 					attributes: {
@@ -370,13 +381,15 @@ export default class FindAndReplaceFormView extends View {
 	 * @private
 	 * @param {String} label The button label.
 	 * @param {String} className The individual button CSS class name.
+	 * @param {Svg} findArrowIcon SVG image for icon usage.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, className ) {
+	_createButton( label, className, findArrowIcon ) {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
 			label,
+			icon: findArrowIcon,
 			withText: true,
 			tooltip: true
 		} );
