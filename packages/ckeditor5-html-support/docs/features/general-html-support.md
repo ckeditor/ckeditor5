@@ -117,13 +117,13 @@ The notation of the `allow` and `disallow` rules looks as follows:
 		name: string|regexp,
 
 		// Styles to allow (by name, name and value or just all).
-		styles: object<string=>true|string|regexp>|array<string|object>|true,
+		styles: object<string=>true|string|regexp>|array<string>|true,
 
 		// Classes to allow (by name or just all).
 		classes: array<string|regexp>|true,
 
 		// Other attributes to allow (by name, name and value or just all).
-		attributes: object<string=>true|string|regexp>|array<string|object>|true,
+		attributes: object<string=>true|string|regexp>|array<string>|true,
 	}
 ]
 ```
