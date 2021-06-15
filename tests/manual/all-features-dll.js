@@ -40,6 +40,7 @@ import '@ckeditor/ckeditor5-page-break/build/page-break';
 import '@ckeditor/ckeditor5-paste-from-office/build/paste-from-office';
 import '@ckeditor/ckeditor5-remove-format/build/remove-format';
 import '@ckeditor/ckeditor5-word-count/build/word-count';
+import '@ckeditor/ckeditor5-source-editing/build/source-editing';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -74,6 +75,7 @@ const { PasteFromOffice } = window.CKEditor5.pasteFromOffice;
 const { RemoveFormat } = window.CKEditor5.removeFormat;
 const { TextPartLanguage } = window.CKEditor5.language;
 const { WordCount } = window.CKEditor5.wordCount;
+const { SourceEditing } = window.CKEditor5.sourceEditing;
 
 const { Plugin } = window.CKEditor5.core;
 const { ButtonView } = window.CKEditor5.ui;
@@ -129,7 +131,8 @@ const config = {
 		SpecialCharacters, SpecialCharactersEssentials,
 		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption,
 		TextPartLanguage,
-		WordCount
+		WordCount,
+		SourceEditing
 	],
 	toolbar: [
 		'heading',
@@ -151,6 +154,8 @@ const config = {
 		'pageBreak', 'horizontalLine', 'specialCharacters',
 		'|',
 		'textPartLanguage',
+		'|',
+		'sourceEditing',
 		'|',
 		'undo', 'redo'
 	],

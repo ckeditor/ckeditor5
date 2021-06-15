@@ -5,9 +5,9 @@
 
 <h3>Console</h3>
 
-<pre><code class="plaintext title-console title-console__title">''</code></pre>
-<pre><code class="plaintext title-console title-console__body">'&lt;p>&amp;nbsp;&lt;/p>'</code></pre>
-<pre><code class="plaintext title-console title-console__data">''</code></pre>
+<pre class="console-container"><code class="no-highlight title-console title-console__title">''</code></pre>
+<pre class="console-container"><code class="no-highlight title-console title-console__body">'&lt;p>&amp;nbsp;&lt;/p>'</code></pre>
+<pre class="console-container"><code class="no-highlight title-console title-console__data">''</code></pre>
 
 <style>
 	.ck.ck-editor__editable_inline {
@@ -42,6 +42,14 @@
 
 	#title-console.updated {
 		background: green;
+	}
+
+	pre.console-container {
+		background: #2b2c26;
+		padding-top: 1.333em;
+		padding-bottom: 1.333em;
+		color: #f8f8f2;
+		overflow-x: auto;
 	}
 
 	.title-console__title,

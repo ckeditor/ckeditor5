@@ -22,12 +22,13 @@ import RemoveFormat from '../../src/removeformat';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
-			Underline, Undo, Image, ImageCaption, ImageToolbar
+			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize
 		],
 		toolbar: [ 'removeFormat', '|', 'italic', 'bold', 'link', 'underline', '|', 'undo', 'redo' ]
 	} )
