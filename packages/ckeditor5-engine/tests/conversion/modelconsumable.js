@@ -51,6 +51,23 @@ describe( 'ModelConsumable', () => {
 
 			expect( modelConsumable.test( modelElement, 'foo:xxx' ) ).to.be.null;
 		} );
+
+		it( 'should not normalize type name for markers', () => {
+			modelConsumable.add( modelElement, 'addMarker:foo:bar:baz:abc' );
+			modelConsumable.add( modelElement, 'removeMarker:foo:bar:baz:abc' );
+
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:xxx' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:xxx' ) ).to.be.null;
+
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:xxx' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:xxx' ) ).to.be.null;
+		} );
 	} );
 
 	describe( 'consume', () => {
@@ -95,6 +112,27 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.false;
 			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.false;
 			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.false;
+		} );
+
+		it( 'should not normalize type names for markers', () => {
+			modelConsumable.add( modelElement, 'addMarker:foo:bar:baz' );
+			modelConsumable.add( modelElement, 'removeMarker:foo:bar:baz' );
+
+			const addResult = modelConsumable.consume( modelElement, 'addMarker:foo:bar:baz' );
+			const removeResult = modelConsumable.consume( modelElement, 'removeMarker:foo:bar:baz' );
+
+			expect( addResult ).to.be.true;
+			expect( removeResult ).to.be.true;
+
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo' ) ).to.be.null;
+
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo' ) ).to.be.null;
 		} );
 	} );
 
