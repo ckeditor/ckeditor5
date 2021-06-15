@@ -30,7 +30,9 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
+// eslint-disable-next-line ckeditor5-rules/no-relative-imports
+import List from '../../ckeditor5-list/src/list';
+// import List from '@ckeditor/ckeditor5-list/src/list';
 import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Pagination from '@ckeditor/ckeditor5-pagination/src/pagination';
