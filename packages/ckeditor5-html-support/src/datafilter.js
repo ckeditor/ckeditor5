@@ -100,7 +100,8 @@ export default class DataFilter extends Plugin {
 		this._allowedElements = new Set();
 
 		/**
-		 * Indicates if {@link module:core/editor~Editor#data editor's data controller} data has been already initialized.
+		 * Indicates if {@link module:engine/controller/datacontroller~DataController editor's data controller}
+		 * data has been already initialized.
 		 *
 		 * @private
 		 * @member {Boolean} [#_dataInitialized=false]
@@ -240,7 +241,7 @@ export default class DataFilter extends Plugin {
 
 	/**
 	 * Registers elements allowed by {@link module:html-support/datafilter~DataFilter#allowElement} method
-	 * once {@link module:core/editor~Editor#data editor's data controller} is initialized.
+	 * once {@link module:engine/controller/datacontroller~DataController editor's data controller} is initialized.
 	 *
 	 * @private
 	*/

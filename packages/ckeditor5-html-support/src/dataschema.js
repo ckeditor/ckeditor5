@@ -45,7 +45,7 @@ export default class DataSchema extends Plugin {
 		super( editor );
 
 		/**
-		 * A map of registered data schema definitions via {@link #register} method.
+		 * A map of registered data schema definitions.
 		 *
 		 * @readonly
 		 * @private
@@ -436,6 +436,7 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:html-support/dataschema~DataSchemaDefinition
  * @property {String} model Name of the model.
+ * @property {String} [view] Name of the view element.
  * @property {Boolean} [isObject] Indicates that the definition describes object element.
  * @property {module:engine/model/schema~SchemaItemDefinition} [modelSchema] The model schema item definition describing registered model.
  */
@@ -444,7 +445,6 @@ function testViewName( pattern, viewName ) {
  * A definition of {@link module:html-support/dataschema~DataSchema data schema} for block elements.
  *
  * @typedef {Object} module:html-support/dataschema~DataSchemaBlockElementDefinition
- * @property {String} [view] Name of the view element.
  * @property {Boolean} isBlock Indicates that the definition describes block element.
  * Set by {@link module:html-support/dataschema~DataSchema#registerBlockElement} method.
  * @extends module:html-support/dataschema~DataSchemaDefinition
@@ -454,7 +454,6 @@ function testViewName( pattern, viewName ) {
  * A definition of {@link module:html-support/dataschema~DataSchema data schema} for inline elements.
  *
  * @typedef {Object} module:html-support/dataschema~DataSchemaInlineElementDefinition
- * @property {String} view Name of the view element.
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
  * @property {Boolean} isInline Indicates that the definition descibes inline element.
  * @property {Number} [priority] Element priority. Decides in what order elements are wrapped by
