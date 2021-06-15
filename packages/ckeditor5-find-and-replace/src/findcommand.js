@@ -45,7 +45,10 @@ export default class FindCommand extends Command {
 		// Allow to execute `find()` on a plugin with a keyword only.
 		if ( typeof callbackOrText === 'string' ) {
 			findCallback = findByTextCallback( callbackOrText );
+
+			this.state.searchText = callbackOrText;
 		} else {
+			// @todo: disable callback version
 			findCallback = callbackOrText;
 		}
 
@@ -55,9 +58,17 @@ export default class FindCommand extends Command {
 		// @todo: fix me
 		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
 
-		return {
+		const ret = {
 			results: updateFindResultFromRange( range, model, findCallback ),
 			findCallback
 		};
+
+		if ( ret.results.length ) {
+			for ( const item of ret.results ) {
+				this.state.results.add( item );
+			}
+		}
+
+		return ret;
 	}
 }

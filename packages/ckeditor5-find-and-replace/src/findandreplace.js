@@ -50,16 +50,23 @@ export default class FindAndReplace extends Plugin {
 				findAndReplaceEditing.stop();
 			}
 
+			// findAndReplaceEditing.state.searchText = data.searchText;
+
+			// this.editor.execute( 'find' );
+
 			findAndReplaceEditing.find( data.searchText );
 		} );
 
 		/**
-		 * Delegate find previous request.
+		 * Delegate find previous request.i
 		 */
 		ui.on( 'findPrev', ( event, data ) => {
 			if ( data.searchText.length !== 0 ) {
 				findAndReplaceEditing.stop();
 			}
+
+			// findAndReplaceEditing.state.searchText = data.searchText;
+
 			findAndReplaceEditing.find( data.searchText );
 		} );
 
