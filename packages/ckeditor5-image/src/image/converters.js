@@ -36,7 +36,7 @@ export function viewFigureToModel( imageUtils ) {
 		}
 
 		// Find an image element inside the figure element.
-		const viewImage = imageUtils.getViewImageFromWidget( data.viewItem );
+		const viewImage = imageUtils.findViewImgElement( data.viewItem );
 
 		// Do not convert if image element is absent, is missing src attribute or was already converted.
 		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
@@ -80,7 +80,7 @@ export function srcsetAttributeConverter( imageUtils, imageType ) {
 
 		const writer = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item );
-		const img = imageUtils.getViewImageFromWidget( element );
+		const img = imageUtils.findViewImgElement( element );
 
 		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
@@ -110,11 +110,11 @@ export function srcsetAttributeConverter( imageUtils, imageType ) {
 }
 
 /**
- * Converter used to convert a given image attribute from the model to the view.
+ * Converts the `source` model attribute to the `<picture><source /><source />...<img /></picture>`
+ * view structure.
  *
  * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {'imageBlock'|'imageInline'} imageType The type of the image.
- * @param {String} attributeKey The name of the attribute to convert.
  * @returns {Function}
  */
 export function sourcesAttributeConverter( imageUtils, imageType ) {
@@ -129,7 +129,7 @@ export function sourcesAttributeConverter( imageUtils, imageType ) {
 
 		const viewWriter = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item );
-		const imgElement = imageUtils.getViewImageFromWidget( element );
+		const imgElement = imageUtils.findViewImgElement( element );
 
 		if ( data.attributeNewValue && data.attributeNewValue.length ) {
 			const pictureElement = viewWriter.createContainerElement( 'picture' );
@@ -143,12 +143,10 @@ export function sourcesAttributeConverter( imageUtils, imageType ) {
 			viewWriter.insert( viewWriter.createPositionAt( imgElement.parent, 0 ), pictureElement );
 			viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), imgElement );
 		} else {
-			if ( imgElement.parent.is( 'element', 'picture' ) ) {
-				const pictureElement = imgElement.parent;
+			const pictureElement = imgElement.parent;
 
-				viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionBefore( pictureElement ) );
-				viewWriter.remove( pictureElement );
-			}
+			viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionBefore( pictureElement ) );
+			viewWriter.remove( pictureElement );
 		}
 	}
 }
@@ -173,7 +171,7 @@ export function modelToViewAttributeConverter( imageUtils, imageType, attributeK
 
 		const viewWriter = conversionApi.writer;
 		const element = conversionApi.mapper.toViewElement( data.item );
-		const img = imageUtils.getViewImageFromWidget( element );
+		const img = imageUtils.findViewImgElement( element );
 
 		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}

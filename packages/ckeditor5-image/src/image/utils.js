@@ -84,6 +84,7 @@ export function getViewImgElementMatcher( editor, matchImageType ) {
  * @returns
  */
 export function extractImageAttributesFromViewElement( imgViewElement ) {
+	// Get the src attribute from a plain <img />.
 	if ( imgViewElement.parent && !imgViewElement.parent.is( 'element', 'picture' ) ) {
 		return {
 			src: imgViewElement.getAttribute( 'src' )
@@ -92,6 +93,7 @@ export function extractImageAttributesFromViewElement( imgViewElement ) {
 
 	const attributes = {};
 
+	// Harvest data from <img /> and sources (<picture><source /><source />...<img /></picture>).
 	for ( const child of imgViewElement.parent.getChildren() ) {
 		if ( child.is( 'element', 'source' ) ) {
 			if ( !attributes.sources ) {

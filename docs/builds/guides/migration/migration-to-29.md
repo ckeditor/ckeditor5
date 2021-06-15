@@ -204,7 +204,7 @@ imageUtils.insertImage( { src }, selection, imageType );
 * The {@link module:image/imageutils~ImageUtils#isImage} function returns now an `Element` for both, inline and block images.
 * There are two new helpers: {@link module:image/imageutils~ImageUtils#isBlockImageView} and {@link module:image/imageutils~ImageUtils#isInlineImageView} functions.
 * The `getSelectedImageWidget` function is now protected and is renamed to `getClosestSelectedImageElement`.
-* The `getViewImgFromWidget` function is now protected and is renamed to `getViewImageFromWidget`.
+* The `getViewImgFromWidget` function is now protected and is renamed to `findViewImgElement`.
 * The `isImageAllowed` function is now protected.
 * The `isImageWidget` function is now protected.
 * The `toImageWidget` function is now protected.

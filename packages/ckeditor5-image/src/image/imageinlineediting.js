@@ -193,7 +193,7 @@ export default class ImageInlineEditing extends Plugin {
 						Array.from( blockViewImage.getAttributes() )
 							.forEach( attribute => writer.setAttribute(
 								...attribute,
-								imageUtils.getViewImageFromWidget( blockViewImage )
+								imageUtils.findViewImgElement( blockViewImage )
 							) );
 
 						return blockViewImage.getChild( 0 );

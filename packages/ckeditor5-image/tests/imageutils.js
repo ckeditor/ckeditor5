@@ -701,11 +701,11 @@ describe( 'ImageUtils plugin', () => {
 		} );
 	} );
 
-	describe( 'getViewImageFromWidget()', () => {
+	describe( 'findViewImgElement()', () => {
 		// figure
 		//   img
 		it( 'returns the the img element from widget if the img is the first children', () => {
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -713,7 +713,7 @@ describe( 'ImageUtils plugin', () => {
 		//   img
 		it( 'returns the the img element from widget if the img is not the first children', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), writer.createContainerElement( 'div' ) );
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -725,7 +725,7 @@ describe( 'ImageUtils plugin', () => {
 			writer.insert( writer.createPositionAt( element, 0 ), divElement );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 0 ) );
 
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 
 		// figure
@@ -741,7 +741,7 @@ describe( 'ImageUtils plugin', () => {
 			writer.insert( writer.createPositionAt( divElement, 0 ), writer.createText( 'Bar' ) );
 			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement, 1 ) );
 
-			expect( imageUtils.getViewImageFromWidget( element ) ).to.equal( image );
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
 		} );
 	} );
 } );
