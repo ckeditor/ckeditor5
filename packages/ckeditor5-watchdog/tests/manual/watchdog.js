@@ -30,6 +30,7 @@ class TypingError {
 }
 
 const editorConfig = {
+	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [
 		ArticlePluginSet, TypingError
 	],
