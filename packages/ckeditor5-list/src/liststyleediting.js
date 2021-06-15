@@ -311,14 +311,24 @@ function fixListAfterIndentListCommand( editor ) {
 				sameIndent: true, direction: 'backward', listIndent: rootIndent
 			} );
 
-			valueToSet = previousSibling.getAttribute( 'listStyle' );
+			valueToSet = previousSibling ? previousSibling.getAttribute( 'listStyle' ) : null;
 		}
-
-		editor.model.change( writer => {
-			for ( const item of itemsToUpdate ) {
-				writer.setAttribute( 'listStyle', valueToSet, item );
-			}
-		} );
+		if ( !valueToSet ) {
+			// In here because first item in list included in indentation
+			editor.model.change( writer => {
+				for ( const item of itemsToUpdate ) {
+					const margin = item._attrs.get( 'blockIndent' ) ? parseInt( item._attrs.get( 'blockIndent' ), 10 ) + 40 : 40;
+					writer.setAttribute( 'blockIndent', `${ margin }px`, item );
+				}
+			} );
+		} else {
+			editor.model.change( writer => {
+				for ( const item of itemsToUpdate ) {
+					writer.setAttribute( 'listStyle', valueToSet, item );
+					writer.setAttribute( 'blockIndent', 0, item );
+				}
+			} );
+		}
 	};
 }
 
@@ -339,12 +349,30 @@ function fixListAfterIndentListCommand( editor ) {
 // @returns {Function}
 function fixListAfterOutdentListCommand( editor ) {
 	return ( evt, changedItems ) => {
-		changedItems = changedItems.reverse().filter( item => item.is( 'element', 'listItem' ) );
+		const filteredChangedItems = changedItems.reverse().filter( item => item.is( 'element', 'listItem' ) );
+		if ( !filteredChangedItems.length || changedItems.length !== filteredChangedItems.length ) {
+			if ( !changedItems.some( item => item._attrs.get( 'blockIndent' ) ) ) {
+				return;
+			}
 
-		if ( !changedItems.length ) {
+			editor.model.change( writer => {
+				changedItems.forEach( item => {
+					const newBlockIndent = item._attrs.get( 'blockIndent' ) ?
+						parseInt( item._attrs.get( 'blockIndent' ), 0 ) - 40 :
+						parseInt( item.previousSibling._attrs.get( 'blockIndent' ), 0 ) + 40;
+					if ( newBlockIndent < 0 ) {
+						writer.removeAttribute( 'blockIndent', item );
+					} else {
+						if ( item._attrs.has( 'blockIndent' ) ) {
+							writer.rename( item, 'listItem' );
+						}
+						writer.setAttribute( 'blockIndent', `${ newBlockIndent }px`, item );
+					}
+				} );
+			} );
 			return;
 		}
-
+		changedItems = filteredChangedItems;
 		const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
 		const listType = changedItems[ 0 ].getAttribute( 'listType' );
 		let listItem = changedItems[ 0 ].previousSibling;

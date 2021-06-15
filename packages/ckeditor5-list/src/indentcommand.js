@@ -141,7 +141,9 @@ export default class IndentCommand extends Command {
 			}
 
 			// Could not find similar list item, this means that `listItem` is first in its list.
-			return false;
+
+			// Commenting out return so that it is possible to indent first item in a list
+			// return false;
 		}
 
 		// If we are outdenting it is enough to be in list item. Every list item can always be outdented.
