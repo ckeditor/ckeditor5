@@ -9,6 +9,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
+import { getModelDataWithAttributes } from './_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 /* global document */
@@ -86,6 +87,43 @@ describe( 'ParagraphableHtmlSupport', () => {
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDiv><paragraph>foobar</paragraph></htmlDiv>'
 		);
+
+		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div>' );
+	} );
+
+	it( 'should preserve allowed attributes', () => {
+		// Sanity check to ensure that preserving attributes provided by block
+		// elements handling still works.
+		dataFilter.allowElement( 'div' );
+		dataFilter.allowAttributes( { name: 'div', attributes: { 'data-foo': true } } );
+
+		editor.setData( '<div data-foo><p>foobar</p></div>' );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data: '<htmlDiv htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>',
+			attributes: {
+				1: {
+					attributes: { 'data-foo': '' }
+				}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal( '<div data-foo=""><p>foobar</p></div>' );
+	} );
+
+	it( 'should remove disallowed attributes', () => {
+		// Sanity check to ensure that disallowing attributes provided by block
+		// elements handling still works.
+		dataFilter.allowElement( 'div' );
+		dataFilter.allowAttributes( { name: 'div', attributes: { 'data-foo': true } } );
+		dataFilter.disallowAttributes( { name: 'div', attributes: { 'data-foo': true } } );
+
+		editor.setData( '<div data-foo><p>foobar</p></div>' );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data: '<htmlDiv><paragraph>foobar</paragraph></htmlDiv>',
+			attributes: {}
+		} );
 
 		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div>' );
 	} );
