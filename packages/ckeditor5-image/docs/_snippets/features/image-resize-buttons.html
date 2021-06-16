@@ -1,8 +1,40 @@
-<div id="snippet-image-resize-buttons">
-	<p>Click me and resize using the image toolbar buttons!</p>
+<style>
+	#snippet-image-resize-buttons + .ck .ck-content .image {
+		margin: none !important;
+		display: inline-block;
+	}
+	#snippet-image-resize-buttons + .ck .ck-content h2 {
+		border-bottom: 4px solid black;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+	#snippet-image-resize-buttons + .ck .ck-content hr {
+		background-color: black;
+	}
+	#snippet-image-resize-buttons + .ck .ck-content .ck-horizontal-line {
+		margin-top: -12px;
+	}
+</style>
 
-	<figure class="image">
-		<img src="%BASE_PATH%/assets/img/mostek.jpg" alt="A romantic pedestrian bridge">
-		<figcaption>A romantic pedestrian bridge</figcaption>
+<div id="snippet-image-resize-buttons">
+	<h2>Fancy title about the bee eaters</h2>
+
+	<figure class="image image_resized" style="width: 20%">
+		<img src="%BASE_PATH%/assets/img/birds/bee-eater_2.jpg" srcset="%BASE_PATH%/assets/img/birds/bee-eater_2.jpg, %BASE_PATH%/assets/img/birds/bee-eater_2_2x.jpg 2x">
 	</figure>
+
+	<figure class="image image_resized" style="width: 40%">
+		<img src="%BASE_PATH%/assets/img/birds/bee-eater_1.jpg" srcset="%BASE_PATH%/assets/img/birds/bee-eater_1.jpg, %BASE_PATH%/assets/img/birds/bee-eater_1_2x.jpg 2x">
+	</figure>
+
+	<figure class="image image_resized" style="width: 40%">
+		<img src="%BASE_PATH%/assets/img/birds/bee-eater.jpg" srcset="%BASE_PATH%/assets/img/birds/bee-eater.jpg, %BASE_PATH%/assets/img/birds/bee-eater_2x.jpg 2x">
+	</figure>
+
+	<hr/>
+
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+	</p>
 </div>
+
