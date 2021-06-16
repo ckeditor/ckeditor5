@@ -21,7 +21,7 @@ import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
-	getViewImgElementMatcher,
+	getImgViewElementMatcher,
 	createImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
@@ -111,7 +111,7 @@ export default class ImageBlockEditing extends Plugin {
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getViewImgElementMatcher( editor, 'imageBlock' ),
+				view: getImgViewElementMatcher( editor, 'imageBlock' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel( imageUtils ) );

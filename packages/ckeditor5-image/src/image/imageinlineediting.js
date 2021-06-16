@@ -20,7 +20,7 @@ import ImageEditing from './imageediting';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
-	getViewImgElementMatcher,
+	getImgViewElementMatcher,
 	createImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
@@ -119,7 +119,7 @@ export default class ImageInlineEditing extends Plugin {
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
-				view: getViewImgElementMatcher( editor, 'imageInline' ),
+				view: getImgViewElementMatcher( editor, 'imageInline' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
 	}

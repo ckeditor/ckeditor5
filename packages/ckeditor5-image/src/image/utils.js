@@ -47,7 +47,7 @@ export function createImageViewElement( writer, imageType ) {
  * @param {'imageBlock'|'imageInline'} matchImageType The type of created image.
  * @returns {module:engine/view/matcher~MatcherPattern}
  */
-export function getViewImgElementMatcher( editor, matchImageType ) {
+export function getImgViewElementMatcher( editor, matchImageType ) {
 	if ( editor.plugins.has( 'ImageInlineEditing' ) !== editor.plugins.has( 'ImageBlockEditing' ) ) {
 		return {
 			name: 'img',
