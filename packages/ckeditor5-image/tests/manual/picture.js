@@ -88,6 +88,15 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		// Simulate an upload adapter that supports sources.
+		editor.plugins.get( 'ImageUploadEditing' ).on( 'uploadComplete', ( evt, { data } ) => {
+			data.default = 'logo-wide.png';
+			data.sources = [
+				{ srcset: 'logo-square.png', type: 'image/png', media: '(max-width: 800px)' },
+				{ srcset: 'logo-wide.png', type: 'image/png', media: '(min-width: 800px)' }
+			];
+		}, { priority: 'high' } );
 	} )
 	.catch( err => {
 		console.error( err.stack );

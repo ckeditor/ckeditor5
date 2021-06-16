@@ -55,7 +55,7 @@ export default class ImageInlineEditing extends Plugin {
 		}
 
 		this._setupConversion();
-		// this._setupImageUploadEditingIntegration();
+		this._setupImageUploadEditingIntegration();
 	}
 
 	/**
@@ -70,5 +70,35 @@ export default class ImageInlineEditing extends Plugin {
 
 		conversion.for( 'upcast' ).add( viewPictureToModel( imageUtils ) );
 		conversion.for( 'downcast' ).add( sourcesAttributeConverter( imageUtils ) );
+	}
+
+	/**
+	 * Makes it possible for uploaded images to get the `sources` model attribute and the `<picture>...</picture>`
+	 * view structure out-of-the-box if relevant data is provided along the
+	 * {@link module:image/imageupload/imageuploadediting~ImageUploadEditing#event:uploadComplete} event.
+	 *
+	 * @private
+	 */
+	_setupImageUploadEditingIntegration() {
+		const editor = this.editor;
+
+		if ( !editor.plugins.has( 'ImageUploadEditing' ) ) {
+			return;
+		}
+
+		this.listenTo( editor.plugins.get( 'ImageUploadEditing' ), 'uploadComplete', ( evt, { imageElement, data } ) => {
+			const sources = data.sources;
+
+			if ( !sources ) {
+				return;
+			}
+
+			editor.model.change( writer => {
+				writer.setAttributes( {
+					src: data.default,
+					sources
+				}, imageElement );
+			} );
+		} );
 	}
 }
