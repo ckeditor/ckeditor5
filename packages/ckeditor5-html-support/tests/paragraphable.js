@@ -92,40 +92,41 @@ describe( 'ParagraphableHtmlSupport', () => {
 	} );
 
 	it( 'should preserve allowed attributes', () => {
-		// Sanity check to ensure that preserving attributes provided by block
-		// elements handling still works.
 		dataFilter.allowElement( 'div' );
 		dataFilter.allowAttributes( { name: 'div', attributes: { 'data-foo': true } } );
 
-		editor.setData( '<div data-foo><p>foobar</p></div>' );
+		editor.setData( '<div data-foo><p>foobar</p></div><div data-foo>foobar</div>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<htmlDiv htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>',
+			data: '<htmlDiv htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
+			'<htmlDivParagraph htmlAttributes="(2)">foobar</htmlDivParagraph>',
 			attributes: {
 				1: {
+					attributes: { 'data-foo': '' }
+				},
+				2: {
 					attributes: { 'data-foo': '' }
 				}
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( '<div data-foo=""><p>foobar</p></div>' );
+		expect( editor.getData() ).to.equal( '<div data-foo=""><p>foobar</p></div><div data-foo="">foobar</div>' );
 	} );
 
 	it( 'should remove disallowed attributes', () => {
-		// Sanity check to ensure that disallowing attributes provided by block
-		// elements handling still works.
 		dataFilter.allowElement( 'div' );
 		dataFilter.allowAttributes( { name: 'div', attributes: { 'data-foo': true } } );
 		dataFilter.disallowAttributes( { name: 'div', attributes: { 'data-foo': true } } );
 
-		editor.setData( '<div data-foo><p>foobar</p></div>' );
+		editor.setData( '<div data-foo><p>foobar</p></div><div data-foo>foobar</div>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<htmlDiv><paragraph>foobar</paragraph></htmlDiv>',
+			data: '<htmlDiv><paragraph>foobar</paragraph></htmlDiv>' +
+			'<htmlDivParagraph>foobar</htmlDivParagraph>',
 			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div>' );
+		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div><div>foobar</div>' );
 	} );
 
 	it( 'should ensure that model element is allowed in the insertion context', () => {
