@@ -6,14 +6,14 @@ updated_at: 2021-06-14
 
 # General HTML support
 
-The general HTML support ("GHS") feature allows the user to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 features.
+The general HTML support ("GHS") feature allows the user to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins.
 
-Some examples of HTML features that can be easily enabled thanks to GHS include:
+Some examples of HTML features that can be easily enabled using general HTML support include:
 
-* The `<section>`, `<article>`, and `<div>` elements,
-* the `<audio>`, `<video>`, and `<iframe>` elements,
-* the `<span>` and `<cite>` elements,
-* some of the attributes on existing dedicated CKEditor 5 features:
+* The `<section>`, `<article>`, and `<div>` elements.
+* The `<audio>`, `<video>`, and `<iframe>` elements.
+* The `<span>` and `<cite>` elements.
+* Some of the attributes on existing dedicated CKEditor 5 features:
 	* `data-*` and `id` attributes on e.g. `<p>` and `<h1-h6>`,
 	* `style` and `classes` on e.g. `<strong>` and `<a>`.
 
@@ -27,7 +27,7 @@ The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, o
 
 ## Demo
 
-The general HTML support feature is configured via the `config.htmlSupport` property in which you need to list the HTML features that should be handled by GHS.
+The general HTML support feature is configured via the `config.htmlSupport` property. In it, you need to list the HTML features that should be handled by GHS.
 
 The demo below uses the following configuration:
 
@@ -79,11 +79,11 @@ ClassicEditor
 
 ## Level of support
 
-The difference between specific CKEditor 5 features such as {@link features/basic-styles basic styles} or {@link features/headings headings} and the HTML features enabled by GHS is that a plugin that support a specific HTML feature provides a complete user experience for that feature, whereas GHS ensures only that such a content is accepted by the editor.
+The difference between specific CKEditor 5 features such as {@link features/basic-styles basic styles} or {@link features/headings headings} and the HTML features enabled by GHS is that a plugin that supports a specific HTML feature provides a complete user experience for that feature, whereas GHS ensures only that such a content is accepted by the editor.
 
-For instance, the dedicated {@link module:basic-styles/bold~Bold} feature offers a toolbar button used to make the selected text bold. Together with the {@link features/autoformat autoformatting feature}, it also allows for applying bold style to content by typing a Markdown shortcode (`**foo**`). The {@link features/headings headings} feature offers a dropdown from which the user can choose a heading level and ensures that pressing <kbd>Enter</kbd> at the end of a heading creates a new paragraph (and not another heading).
+For instance, the dedicated {@link features/basic-styles#available-text-styles bold} feature offers a toolbar button used to make the selected text bold. Together with the {@link features/autoformat autoformatting feature}, it also allows for applying bold style to content by typing a Markdown shortcode (`**foo**`) in the editor. The {@link features/headings headings} feature offers a dropdown from which the user can choose a heading level and ensures that pressing <kbd>Enter</kbd> at the end of a heading creates a new paragraph (and not another heading).
 
-General HTML support does not offer any UI for the enabled features and takes only basic semantics of a given feature into account. If you enable support for `<div>`s via GHS, the user will not be able to create `<div>`s from the editor UI. The GHS will know that a `<div>` is a container element, so it can wrap other blocks (like paragraphs) but cannot be used inline (next to e.g. a `<strong>` element). But there is no more.
+The general HTML support does not offer any UI for the enabled features and takes only basic semantics of a given feature into account. If you enable support for `<div>`s via GHS, the user will not be able to create `<div>`s from the editor UI. The GHS will know that a `<div>` is a container element, so it can wrap other blocks (like paragraphs) but cannot be used inline (next to e.g. a `<strong>` element). There is no more, however.
 
 Therefore, GHS's main use cases would be:
 
@@ -96,7 +96,7 @@ Therefore, GHS's main use cases would be:
 
 ## Configuration
 
-By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any element. The elements the user wants to be supported, need to be configured via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option:
+By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any given element. The elements the user wants to be supported, need to be configured via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option:
 
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -156,7 +156,7 @@ htmlSupport: {
 		},
 
 		// Adds support for `foo` and `bar` classes to the already supported
-		// <p> elements (those are enabled by the specific Paragraph feature).
+		// <p> elements (those are enabled by the dedicated paragraph feature).
 		{
 			name: 'p',
 			classes: [ 'foo', 'bar' ]
@@ -172,7 +172,7 @@ htmlSupport: {
 			}
 		},
 
-		// Adds support for style="color: *" to already supported
+		// Adds support for style="color: *" to the already supported
 		// <p> and <h2-h4> elements.
 		{
 			name: /^(p|h[2-4])$/',
@@ -181,13 +181,13 @@ htmlSupport: {
 }
 ```
 
-The GHS feature distinguishes several content types that it treats a bit differently:
+The general HTML support feature distinguishes several content types that it treats a bit differently:
 
-* Container elements (e.g. `<section>`, `<div>`),
-* inline elements (e.g. `<span>`, `<a>`),
-* and object elements (e.g. `<iframe>`, `<video>`).
+* Container elements (e.g. `<section>`, `<div>`).
+* Inline elements (e.g. `<span>`, `<a>`).
+* Object elements (e.g. `<iframe>`, `<video>`).
 
-Enabled elements will not be available "anywhere" in the content, as they still need to adhere to certain rules derived from the HTML schema and from common sense. Also, the behavior of specific types of elements in the editing area will be different. For instance, the object elements will only be selectable as a whole, and the inline elements will work same as other formatting features supported by CKEditor 5 (e.g. bold, italic).
+The enabled elements will not just be available "anywhere" in the content, as they still need to adhere to certain rules derived from the HTML schema and from common sense. Also, the behavior of specific types of elements in the editing area will be different. For instance, the object elements will only be selectable as a whole, and the inline elements will work the same as other formatting features supported by CKEditor 5 (e.g. bold, italic) do.
 
 ## Extending specific editor features
 
