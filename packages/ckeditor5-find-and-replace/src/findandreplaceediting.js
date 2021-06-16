@@ -13,7 +13,7 @@ import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
 
-const HIGHLIGHT_CLASS = 'find-result_selected';
+const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
 // Reacts to document changes in order to update search list.
 function onDocumentChange( results, model, searchCallback ) {
@@ -197,7 +197,7 @@ export default class FindAndReplaceEditing extends Plugin {
 				// A minimal option is to return a new object for each converted marker...
 				return {
 					name: 'span',
-					classes: [ 'find-result' ],
+					classes: [ 'ck-find-result' ],
 					attributes: {
 						// ...however, adding a unique attribute should be future-proof..
 						'data-find-result': id
