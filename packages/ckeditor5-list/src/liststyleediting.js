@@ -354,19 +354,23 @@ function fixListAfterOutdentListCommand( editor ) {
 			if ( !changedItems.some( item => item._attrs.get( 'blockIndent' ) ) ) {
 				return;
 			}
-
 			editor.model.change( writer => {
 				changedItems.forEach( item => {
 					const newBlockIndent = item._attrs.get( 'blockIndent' ) ?
 						parseInt( item._attrs.get( 'blockIndent' ), 0 ) - 40 :
-						parseInt( item.previousSibling._attrs.get( 'blockIndent' ), 0 ) + 40;
+						null;
+
 					if ( newBlockIndent < 0 ) {
 						writer.removeAttribute( 'blockIndent', item );
 					} else {
-						if ( item._attrs.has( 'blockIndent' ) ) {
-							writer.rename( item, 'listItem' );
+						if ( item._attrs.get( 'blockIndent' ) === 0 ) {
+							const oldIndent = item._attrs.get( 'listIndent' );
+							writer.setAttribute( 'listIndent', oldIndent + 1, item );
 						}
-						writer.setAttribute( 'blockIndent', `${ newBlockIndent }px`, item );
+						else if ( item._attrs.has( 'blockIndent' ) ) {
+							writer.rename( item, 'listItem' );
+							writer.setAttribute( 'blockIndent', `${ newBlockIndent }px`, item );
+						}
 					}
 				} );
 			} );
