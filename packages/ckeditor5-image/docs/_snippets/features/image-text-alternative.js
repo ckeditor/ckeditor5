@@ -14,11 +14,7 @@ ClassicEditor
 			toolbar: [
 				'imageTextAlternative',
 				'|',
-				'toggleImageCaption',
-				'|',
-				'imageStyle:inline',
-				'imageStyle:full',
-				'imageStyle:side'
+				'toggleImageCaption'
 			]
 		},
 		toolbar: {
