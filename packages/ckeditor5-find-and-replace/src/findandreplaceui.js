@@ -13,6 +13,8 @@ import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/respons
 import '../theme/findandreplaceform.css';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
+import loupeIcon from '../theme/icons/find-replace.svg';
+
 /**
  * Example Find & Replace UI that uses FindAndReplace plugin API.
  *
@@ -54,7 +56,7 @@ export default class FindAndReplaceUI extends Plugin {
 			formView.delegate( 'replace' ).to( this );
 			formView.delegate( 'replaceAll' ).to( this );
 
-			this._createToolbarDropdown( dropdown );
+			this._createToolbarDropdown( dropdown, loupeIcon );
 
 			dropdown.panelView.children.add( formView );
 
@@ -72,14 +74,11 @@ export default class FindAndReplaceUI extends Plugin {
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
 	 */
-	_createToolbarDropdown( dropdown ) {
-		const editor = this.editor;
-		const t = editor.t;
-
+	_createToolbarDropdown( dropdown, icon ) {
 		// Configure dropdown's button properties:
 		dropdown.buttonView.set( {
+			icon,
 			withText: true,
-			label: t( 'Find and replace' ),
 			tooltip: true
 		} );
 	}

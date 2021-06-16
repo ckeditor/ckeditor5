@@ -13,8 +13,8 @@ import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '@ckeditor/ckeditor5-find-and-replace/theme/findandreplaceform.css';
-import findArrowIcon from '../../theme/icons/find_arrow.svg';
+import '../../theme/findandreplaceform.css';
+import findArrowIcon from '../../theme/icons/find-arrow.svg';
 
 /**
  * The media form view controller class.
@@ -259,7 +259,7 @@ export default class FindAndReplaceFormView extends View {
 					'ck',
 					'ck-find-form__wrapper',
 					'ck-responsive-form',
-					'isEnabled'
+					'ck-isEnabled'
 					// 'isDisabled'
 				],
 				tabindex: '-1'
@@ -269,7 +269,7 @@ export default class FindAndReplaceFormView extends View {
 				{ tag: 'span',
 					attributes: {
 						class: [
-							'results-found-counter'
+							'ck-results-found-counter'
 						]
 					},
 					children: [
@@ -279,7 +279,7 @@ export default class FindAndReplaceFormView extends View {
 				{
 					tag: 'div',
 					attributes: {
-						class: [ 'find-checkboxes' ]
+						class: [ 'ck-find-checkboxes' ]
 					},
 					children: [
 						matchCaseCheckbox,
@@ -290,7 +290,7 @@ export default class FindAndReplaceFormView extends View {
 					tag: 'div',
 					attributes: {
 						class: [
-							'find-buttons'
+							'ck-find-buttons'
 						],
 						tabindex: '-1'
 					},
@@ -326,7 +326,7 @@ export default class FindAndReplaceFormView extends View {
 					'ck',
 					'ck-replace-form__wrapper',
 					'ck-responsive-form',
-					'isEnabled'
+					'ck-isEnabled'
 				],
 				tabindex: '-1'
 			},
@@ -336,7 +336,7 @@ export default class FindAndReplaceFormView extends View {
 					tag: 'div',
 					attributes: {
 						class: [
-							'replace-buttons'
+							'ck-replace-buttons'
 						]
 					},
 					children: [
@@ -417,7 +417,7 @@ export default class FindAndReplaceFormView extends View {
 		checkboxView.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: 'find-checkboxes__box'
+				class: 'ck-find-checkboxes__box'
 			},
 			children: [
 				{
