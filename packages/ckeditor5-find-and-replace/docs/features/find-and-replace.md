@@ -13,19 +13,11 @@ Use the toolbar "Find and replace" button to find and replace parts of the text 
 
 {@snippet features/find-and-replace}
 
-<info-box>
-	In order to replace some text you need to search for some first. Only after that it is possible to replace results one by one, or all at once.
-</info-box>
-
 ## Related features
 
 * No related features as of now.
 
 ## Installation
-
-<info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-replace`](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace) package:
 
@@ -33,7 +25,6 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-r
 npm install --save @ckeditor/ckeditor5-find-and-replace
 ```
 
-<!-- TODO: possibly this will needs to be updated -->
 Then add the `FindAndReplace` plugin to your plugin list:
 
 ```js
@@ -41,15 +32,16 @@ import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandrepl
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
 		plugins: [ FindAndReplace, ... ],
-
-		// Display the "Find and Replace" button in the toolbar.
 		toolbar: [ 'findAndReplace', ... ],
 	} )
 	.then( ... )
 	.catch( ... );
 ```
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
 
 <!-- TODO: Update this with proper description and values, and code snippet for replace / replaceAll-->
 ## Common API

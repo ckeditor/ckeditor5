@@ -58,7 +58,7 @@ describe( 'FindAndReplaceEditing', () => {
 			addMarker( 'findResult:test-uid', paragraph, 4, 7 );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result" data-find-result="test-uid">bar</span> baz</p>'
 			);
 		} );
 
@@ -69,15 +69,15 @@ describe( 'FindAndReplaceEditing', () => {
 			addMarker( 'findResult:test-uid-1', secondParagraph, 4, 7 );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo bar baz</p><p>Foo <span class="find-result" data-find-result="test-uid-1">bar</span> baz</p>'
+				'<p>Foo bar baz</p><p>Foo <span class="ck-find-result" data-find-result="test-uid-1">bar</span> baz</p>'
 			);
 
 			const firstParagraph = root.getChild( 0 );
 			addMarker( 'findResult:test-uid-2', firstParagraph, 4, 7 );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result" data-find-result="test-uid-2">bar</span> baz</p>' +
-          '<p>Foo <span class="find-result" data-find-result="test-uid-1">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result" data-find-result="test-uid-2">bar</span> baz</p>' +
+          '<p>Foo <span class="ck-find-result" data-find-result="test-uid-1">bar</span> baz</p>'
 			);
 		} );
 
@@ -98,8 +98,8 @@ describe( 'FindAndReplaceEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 				'<p>Foo bar baz</p>' +
           '<p>' +
-          '<span class="find-result" data-find-result="test-uid-2">Foo</span>' +
-          ' <span class="find-result" data-find-result="test-uid-3">bar</span>' +
+          '<span class="ck-find-result" data-find-result="test-uid-2">Foo</span>' +
+          ' <span class="ck-find-result" data-find-result="test-uid-3">bar</span>' +
           ' baz' +
           '</p>'
 			);
@@ -115,7 +115,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result ck-find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
 			);
 		} );
 
@@ -129,7 +129,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result ck-find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
 			);
 		} );
 
@@ -143,7 +143,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result ck-find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
 			);
 		} );
 
@@ -159,7 +159,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result ck-find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
 			);
 		} );
 
@@ -175,7 +175,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result ck-find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
 			);
 		} );
 
@@ -189,7 +189,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result ck-find-result_selected" data-find-result="test-uid">bar</span> baz</p>'
 			);
 
 			model.change( writer => {
@@ -197,7 +197,7 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>Foo <span class="find-result" data-find-result="test-uid">bar</span> baz</p>'
+				'<p>Foo <span class="ck-find-result" data-find-result="test-uid">bar</span> baz</p>'
 			);
 		} );
 	} );
