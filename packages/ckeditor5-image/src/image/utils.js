@@ -78,56 +78,6 @@ export function getViewImgElementMatcher( editor, matchImageType ) {
 }
 
 /**
- * Returns an object of model attributes collected from an `<img />` view element
- * (or `<picture><source /><source />...<img /></picture>` structure) for data upcast.
- *
- * Depending on whether `<picture>` is used or not (and what the picture sources are),
- * the returned object structure will look as follows:
- *
- *		{
- *			src: 'http://path.to/image.png'
- *			[sources]: [
- *				{
- *					[srcset]: 'http://path.to/image.webp',
- *					[media]: '(min-width: 1024px)',
- *					[type]: 'image/jpeg',
- *				},
- *				{
- *					// ...
- *				}
- *			]
- *		}
- *
- * @param {module:engine/view/emptyelement~EmptyElement} imgViewElement
- * @returns {Object}
- */
-export function extractImageAttributesFromViewElement( imgViewElement ) {
-	// Get only the src attribute from a plain <img />.
-	if ( imgViewElement.parent && !imgViewElement.parent.is( 'element', 'picture' ) ) {
-		return {
-			src: imgViewElement.getAttribute( 'src' )
-		};
-	}
-
-	const attributes = {};
-
-	// Harvest data from <img /> and sources (<picture><source /><source />...<img /></picture>).
-	for ( const child of imgViewElement.parent.getChildren() ) {
-		if ( child.is( 'element', 'source' ) ) {
-			if ( !attributes.sources ) {
-				attributes.sources = [];
-			}
-
-			attributes.sources.push( Object.fromEntries( [ ...child.getAttributes() ] ) );
-		} else if ( child.is( 'element', 'img' ) ) {
-			attributes.src = child.getAttribute( 'src' );
-		}
-	}
-
-	return attributes;
-}
-
-/**
  * Considering the current model selection, it returns the name of the model image element
  * (`'imageBlock'` or `'imageInline'`) that will make most sense from the UX perspective if a new
  * image was inserted (also: uploaded, dropped, pasted) at that selection.

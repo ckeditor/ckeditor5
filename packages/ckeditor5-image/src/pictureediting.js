@@ -40,6 +40,20 @@ export default class ImageInlineEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
+			editor.model.schema.extend( 'imageBlock', {
+				allowAttributes: [ 'sources' ]
+			} );
+		}
+
+		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
+			editor.model.schema.extend( 'imageInline', {
+				allowAttributes: [ 'sources' ]
+			} );
+		}
+
 		this._setupConversion();
 		// this._setupImageUploadEditingIntegration();
 	}
@@ -50,8 +64,9 @@ export default class ImageInlineEditing extends Plugin {
 	 * @private
 	 */
 	_setupConversion() {
-		const conversion = this.editor.conversion;
-		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
+		const editor = this.editor;
+		const conversion = editor.conversion;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'upcast' ).add( viewPictureToModel( imageUtils ) );
 		conversion.for( 'downcast' ).add( sourcesAttributeConverter( imageUtils ) );
