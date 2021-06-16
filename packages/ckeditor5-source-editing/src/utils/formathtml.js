@@ -8,22 +8,23 @@
  */
 
 /**
- * Simple HTML source formatter. Beautifies the HTML code by wrapping the opening and closing tag with a new line character for all elements
- * defined in the `elementsToFormat` array. Between the opening and closing tags, an indentation is incremented for all the other elements
- * therein.
+ * A simple (and naive) HTML code formatter that returns a formatted HTML markup that can be easily
+ * parsed by human eyes. It beautifies the HTML code by adding new lines between elements that behave like block elements
+ * (https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
+ * and a few more like `tr`, `td`, and similar ones) and inserting indents for nested content.
  *
- * For a non-HTML source the unchanged input string is returned.
+ * WARNING: This function works only on a text that does not contain any indentations or new lines.
+ * Calling this function on the already formatted text will damage the formatting.
  *
- * WARNING: Repeatedly calling this function on already formatted text will damage the formatting.
- *
- * @param {String} input HTML string to beautify.
+ * @param {String} input An HTML string to format.
  * @returns {String}
  */
 export function formatHtml( input ) {
-	if ( !isHtml( input ) ) {
-		return input;
-	}
-
+	// A list of block-like elements around which the new lines should be inserted, and within which
+	// the indentation of their children should be increased.
+	// The list is partially based on https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements that contains
+	// a full list of HTML block-level elements.
+	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
 	const elementsToFormat = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
@@ -70,6 +71,7 @@ export function formatHtml( input ) {
 
 	const elementNamesToFormat = elementsToFormat.map( element => element.name ).join( '|' );
 
+	// It is not the fastest way to format the HTML markup but the performance should be good enough.
 	const lines = input
 		// Add new line before `<tag>` or `</tag>`, but only if it is not already preceded by a new line (negative lookbehind).
 		.replace( new RegExp( `(?<!\n)</?(${ elementNamesToFormat })( .*?)?>`, 'g' ), '\n$&' )
@@ -94,14 +96,6 @@ export function formatHtml( input ) {
 			return indentLine( line, indentCount );
 		} )
 		.join( '\n' );
-}
-
-// Checks, if the document source is HTML. It is sufficient to just check the first character from the document data.
-//
-// @param {String} input Input string to check.
-// @returns {Boolean}
-function isHtml( input ) {
-	return input.startsWith( '<' );
 }
 
 // Checks, if an argument is an opening tag of a non-void element to be formatted.

@@ -15,6 +15,8 @@ import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 import SourceEditing from '../src/sourceediting';
 
@@ -422,6 +424,21 @@ describe( 'SourceEditing', () => {
 			expect( setData.callCount ).to.equal( 0 );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
 		} );
+
+		it( 'should insert the formatted HTML source (editor output) into the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const wrapper = domRoot.nextSibling;
+			const textarea = wrapper.children[ 0 ];
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p>' );
+			expect( textarea.value ).to.equal(
+				'<p>\n' +
+				'    Foo\n' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'integration with undo', () => {
@@ -468,5 +485,52 @@ describe( 'SourceEditing', () => {
 			// Adds 2 new operations MoveOperation (delete content) + InsertOperation.
 			expect( editor.model.document.history.getOperations().length ).to.equal( 5 );
 		} );
+	} );
+} );
+
+describe( 'SourceEditing - integration with Markdown', () => {
+	let editor, editorElement, button;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ SourceEditing, Paragraph, Essentials, Markdown, Heading ],
+			initialData: '## Heading'
+		} );
+
+		button = editor.ui.componentFactory.create( 'sourceEditing' );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
+	} );
+
+	it( 'the content should not be additionally formatted', () => {
+		button.fire( 'execute' );
+
+		const domRoot = editor.editing.view.getDomRoot();
+		const wrapper = domRoot.nextSibling;
+		const textarea = wrapper.children[ 0 ];
+
+		expect( editor.getData() ).to.equal( '## Heading' );
+		expect( textarea.value ).to.equal( '## Heading' );
+	} );
+
+	it( 'the content should not be additionally formatted when the content includes <> characters', () => {
+		editor.setData( '\\<paragraph\\>Foo\\</paragraph\\>' );
+
+		button.fire( 'execute' );
+
+		const domRoot = editor.editing.view.getDomRoot();
+		const wrapper = domRoot.nextSibling;
+		const textarea = wrapper.children[ 0 ];
+
+		expect( editor.getData() ).to.equal( '\\<paragraph>Foo\\</paragraph>' );
+		expect( textarea.value ).to.equal( '\\<paragraph>Foo\\</paragraph>' );
 	} );
 } );
