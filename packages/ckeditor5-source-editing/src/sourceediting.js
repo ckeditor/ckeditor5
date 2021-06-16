@@ -282,7 +282,7 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
-	 * Focuses the textarea containing document source from the first editing root. Places the cursor at the beginning of the textarea.
+	 * Focuses the textarea containing document source from the first editing root.
 	 *
 	 * @private
 	 */
@@ -292,7 +292,6 @@ export default class SourceEditing extends Plugin {
 		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' );
 
 		textarea.focus();
-		textarea.selectionEnd = 0;
 	}
 
 	/**

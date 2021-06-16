@@ -362,16 +362,6 @@ describe( 'SourceEditing', () => {
 			expect( document.activeElement ).to.equal( textarea );
 		} );
 
-		it( 'should place the cursor at the beginning of the textarea after switching to the source editing mode', () => {
-			button.fire( 'execute' );
-
-			const domRoot = editor.editing.view.getDomRoot();
-			const textarea = domRoot.nextSibling.children[ 0 ];
-
-			expect( textarea.selectionStart ).to.equal( 0 );
-			expect( textarea.selectionEnd ).to.equal( 0 );
-		} );
-
 		it( 'should focus the editing view after switching back from the source editing mode', () => {
 			const spy = sinon.spy( editor.editing.view, 'focus' );
 
