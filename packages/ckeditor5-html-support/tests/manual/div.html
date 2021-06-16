@@ -1,18 +1,7 @@
-<head>
-	<meta http-equiv="Content-Security-Policy"
-		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
-</head>
-
 <div id="editor">
 	<h3>This is a div treated as a paragraph with some phrasing content:</h3>
 	<div>
-		<strong>Strong</strong>
-		<br>
-		<i>Italic</i>
-		<br>
-		<u>Underline</u>
-		<br>
-		<s>Strikethrough</s>
+		<strong>Strong</strong><br><i>Italic</i><br><u>Underline</u><br><s>Strikethrough</s>
 	</div>
 
 	<h3>This is a div treated as a section element with some paragraphs:</h3>
@@ -21,6 +10,33 @@
 		<p>Paragraph 2</p>
 		<p>Paragraph 3</p>
 	</div>
+
+	<h3>Mixed inline and block elements</h3>
+	<div>
+		foo
+		<h2>bar</h2>
+		abc
+	</div>
+
+	<div>
+		foo
+		<div>bar</div>
+	</div>
+
+	<div>
+		foo
+		<v-evil></v-evil>
+		bar
+	</div>
+
+	<figure class="image">
+		<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/fields.jpg">
+		<figcaption>
+			<div data-foo="bar">
+				abc
+<!--				<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/fields.jpg">-->
+				def
+			</div>
+		</figcaption>
+	</figure>
 </div>
-
-

@@ -135,7 +135,7 @@ describe( 'ParagraphableHtmlSupport', () => {
 			view: 'xyz',
 			asParagraph: 'htmlXyzParagraph',
 			modelSchema: {
-				allowChildren: 'p'
+				allowChildren: 'paragraph'
 			}
 		} );
 
@@ -143,6 +143,6 @@ describe( 'ParagraphableHtmlSupport', () => {
 
 		editor.setData( '<xyz><p>xyz</p></xyz>' );
 
-		expect( editor.getData() ).to.equal( '' );
+		expect( editor.getData() ).to.equal( '<p>xyz</p>' );
 	} );
 } );

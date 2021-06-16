@@ -10,8 +10,8 @@
 import { Plugin } from 'ckeditor5/src/core';
 import {
 	disallowedAttributesConverter,
-	viewToModelBlockAttributeConverter,
-	modelToViewBlockAttributeConverter
+	modelToViewBlockAttributeConverter,
+	viewToModelBlockAttributeConverter
 } from '../converters';
 
 import DataFilter from '../datafilter';
@@ -106,44 +106,58 @@ export default class ParagraphableHtmlSupport extends Plugin {
 function viewToModelParagraphableElementConverter( definition ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ definition.view }`, ( evt, data, conversionApi ) => {
+			const { writer, schema } = conversionApi;
+
 			// We are using document fragment to convert children, as we need them
 			// to decide which model element to create.
-			const documentFragment = conversionApi.writer.createDocumentFragment();
+			const documentFragment = writer.createDocumentFragment();
+
 			conversionApi.convertChildren( data.viewItem, documentFragment );
 
 			// Nodes are moved later on, so we can't use iterable directly.
 			const conversionChildren = Array.from( documentFragment.getChildren() );
+			const treatAsParagraph = conversionChildren.every( node => schema.isInline( node ) );
 
-			const treatAsParagraph = conversionChildren.every( isTextable );
-			const modelName = treatAsParagraph ? definition.asParagraph : definition.model;
+			const modelElement = writer.createElement( treatAsParagraph ? definition.asParagraph : definition.model );
 
-			const modelElement = conversionApi.writer.createElement( modelName );
+			if ( conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
+				safeInsertNodes( conversionChildren, writer.createPositionAt( modelElement, 0 ), conversionApi );
 
-			for ( const child of conversionChildren ) {
-				// Some child nodes may not be allowed in the model when using document
-				// fragment as a conversion context.
-				if ( conversionApi.schema.checkChild( modelElement, child ) ) {
-					conversionApi.writer.append( child, modelElement );
-				}
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+				conversionApi.updateConversionResult( modelElement, data );
+			} else {
+				const { modelRange, modelCursor } = safeInsertNodes( conversionChildren, data.modelCursor, conversionApi );
+
+				data.modelRange = modelRange;
+				data.modelCursor = modelCursor;
 			}
-
-			if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
-				return;
-			}
-
-			conversionApi.consumable.consume( data.viewItem, { name: true } );
-			conversionApi.updateConversionResult( modelElement, data );
 		} );
 	};
 }
 
-// Tells whethever the node should be treated as a textable element.
-//
-// @private
-// @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean}
-function isTextable( node ) {
-	return node.is( '$text' ) || node.is( 'element', 'softBreak' );
+// TODO docs
+function safeInsertNodes( nodes, modelCursor, conversionApi ) {
+	const modelRange = conversionApi.writer.createRange( modelCursor );
+
+	for ( const node of nodes ) {
+		const data = { modelRange: null, modelCursor };
+
+		// Insert at the modelCursor position so in the proper split part if container was split
+		// (in cases when inserted element is not allowed inside current parent and requires splitting).
+		if ( !conversionApi.safeInsert( node, data.modelCursor ) ) {
+			// Note: That was already consumed but is not inserted.
+			continue;
+		}
+
+		// Advance the modelCursor with the knowledge of possible split elements
+		// (so the cursor should be inside the new part of the split element).
+		conversionApi.updateConversionResult( node, data );
+
+		modelRange.end = data.modelRange.end;
+		modelCursor = data.modelCursor;
+	}
+
+	return { modelRange, modelCursor };
 }
 
 /**
