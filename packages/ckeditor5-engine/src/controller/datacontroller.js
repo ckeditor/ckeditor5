@@ -537,17 +537,22 @@ function _getMarkersRelativeToElement( element ) {
 		return [];
 	}
 
-	const isRootElement = element.is( 'element', '$root' );
-	const range = ModelRange._createIn( element );
 	const markers = [ ...doc.model.markers ];
+	const isRootElement = element.is( 'element', '$root' );
 
-	return markers
+	if ( isRootElement ) {
 		// For $root element, take all markers unconditionally, because any marker is always contained in the $root element.
-		// For other element, check if the marker is intersecting with this element.
-		.filter( marker => isRootElement || range.isIntersecting( marker.getRange() ) )
+		return markers.map( marker => [ marker.name, marker.getRange() ] );
+	}
+
+	const range = ModelRange._createIn( element );
+
+	// For other element, return only markers that intersect with this element.
+	return markers
+		.filter( marker => range.isIntersecting( marker.getRange() ) )
 		.map( marker => {
-			return isRootElement ?
-				[ marker.name, marker.getRange() ] :
-				[ marker.name, range.getIntersection( marker.getRange() ) ];
+			const intersection = range.getIntersection( marker.getRange() );
+
+			return [ marker.name, intersection ];
 		} );
 }
