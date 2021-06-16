@@ -671,6 +671,41 @@ describe( 'DataController', () => {
 			expect( stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/8485.
+		it( 'should fire an addMarker event for markers located at start or at end of the $root element', () => {
+			const root = model.document.getRoot();
+			const spy = sinon.spy();
+
+			data.downcastDispatcher.on( 'addMarker:fooMarkerAtRootStart', spy );
+			data.downcastDispatcher.on( 'addMarker:fooMarkerAtRootEnd', spy );
+
+			setData( model, '<paragraph>foobar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'fooMarkerAtRootStart', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0 ] ),
+						writer.createPositionFromPath( root, [ 0 ] )
+					),
+					usingOperation: true
+				} );
+
+				writer.addMarker( 'fooMarkerAtRootEnd', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 1 ] ),
+						writer.createPositionFromPath( root, [ 1 ] )
+					),
+					usingOperation: true
+				} );
+			} );
+
+			data.toView( root );
+
+			sinon.assert.calledTwice( spy );
+			expect( spy.firstCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtRootStart' );
+			expect( spy.secondCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtRootEnd' );
+		} );
+
 		it( 'should convert a document fragment and its markers', () => {
 			downcastHelpers.markerToData( { model: 'foo' } );
 			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );

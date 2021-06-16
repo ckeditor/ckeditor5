@@ -531,22 +531,23 @@ mix( DataController, ObservableMixin );
 // Takes a document element (element that is added to a model document) and checks which markers are inside it
 // and which markers are containing it. If the marker is intersecting with element, the intersection is returned.
 function _getMarkersRelativeToElement( element ) {
-	const result = [];
 	const doc = element.root.document;
 
 	if ( !doc ) {
 		return [];
 	}
 
-	const elementRange = ModelRange._createIn( element );
+	const isRootElement = element.is( 'element', '$root' );
+	const range = ModelRange._createIn( element );
+	const markers = [ ...doc.model.markers ];
 
-	for ( const marker of doc.model.markers ) {
-		const intersection = elementRange.getIntersection( marker.getRange() );
-
-		if ( intersection ) {
-			result.push( [ marker.name, intersection ] );
-		}
-	}
-
-	return result;
+	return markers
+		// For $root element, take all markers unconditionally, because any marker is always contained in the $root element.
+		// For other element, check if the marker is intersecting with this element.
+		.filter( marker => isRootElement || range.isIntersecting( marker.getRange() ) )
+		.map( marker => {
+			return isRootElement ?
+				[ marker.name, marker.getRange() ] :
+				[ marker.name, range.getIntersection( marker.getRange() ) ];
+		} );
 }
