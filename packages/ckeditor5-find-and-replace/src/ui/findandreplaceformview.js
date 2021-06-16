@@ -16,7 +16,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '@ckeditor/ckeditor5-find-and-replace/theme/findandreplaceform.css';
 
 /**
- * The media form view controller class.
+ * The find and replace form view controller class.
  *
  * See {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
  *
@@ -29,7 +29,7 @@ export default class FindAndReplaceFormView extends View {
 		const t = locale.t;
 
 		/**
-		 * The FindPrevious button view.
+		 * The findPrevious button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -39,7 +39,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The FindNext button view.
+		 * The findNext button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -49,7 +49,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The Replace button view.
+		 * The replace button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -59,7 +59,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The ReplaceAll button view.
+		 * The replaceAll button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -69,26 +69,30 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The Find input view.
+		 * The find input view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.findInputView = this._createInputField( 'Find', 'Search for something you\'d like to find' );
 
 		/**
-		 * The Replace input view.
+		 * The replace input view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.replaceInputView = this._createInputField( 'Replace', 'Replace what you\'ve previously selected' );
 
 		/**
-		 * Find view config
+		 * Stores gathered views related to find functionality of the feature
+		 *
+		 * @member {module:ui/view~View}
 		 */
 		this.findView = this._createFindView( this.findNextButtonView, this.findPrevButtonView, this.findInputView );
 
 		/**
-		 * Replace view config
+		 * Stores gathered views related to replace functionality of the feature
+		 *
+		 * @member {module:ui/view~View}
 		 */
 		this.replaceView = this._createReplaceView( this.replaceAllButtonView, this.replaceButtonView, this.replaceInputView );
 
@@ -209,13 +213,12 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Find view configuration
+	 * Collection of views for the 'find' functionality of the feature
 	 *
-	 * TODO: change the {String} params or remove them alltogether.
 	 * @private
-	 * @param {String} NextInputView NextButtonInput view.
-	 * @param {String} PrevInputView PrevButtonInput view.
-	 * @param {String} InputView Input view.
+	 * @param {module:ui/view~View} NextInputView NextButtonInput view.
+	 * @param {module:ui/view~View} PrevInputView PrevButtonInput view.
+	 * @param {module:ui/view~View} InputView Input view.
 	 * @return {module:ui/view~View} The find view instance.
 	 */
 	_createFindView( NextButtonInputView, PrevButtonInputView, InputView ) {
@@ -242,13 +245,12 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Replace view configuration
+	 * Collection of views for the 'replace' functionality of the feature
 	 *
-	 * TODO: change the {String} params or remove them alltogether.
 	 * @private
-	 * @param {String} NextInputView NextButtonInput view.
-	 * @param {String} PrevInputView PrevButtonInput view.
-	 * @param {String} InputView Input view.
+	 * @param {module:ui/view~View} NextInputView NextButtonInput view.
+	 * @param {module:ui/view~View} PrevInputView PrevButtonInput view.
+	 * @param {module:ui/view~View} InputView Input view.
 	 * @returns {module:ui/view~View} The replace view instance.
 	 */
 	_createReplaceView( NextButtonInputView, PrevButtonInputView, InputView ) {
@@ -326,3 +328,27 @@ export default class FindAndReplaceFormView extends View {
 		return button;
 	}
 }
+
+/**
+ * Fired when the {@link #findNextButtonView} is clicked.
+ *
+ * @event findNext
+ */
+
+/**
+ * Fired when the {@link #findPrevButtonView} is clicked.
+ *
+ * @event findPrev
+ */
+
+/**
+ * Fired when the {@link #replaceButtonView} is clicked.
+ *
+ * @event replace
+ */
+
+/**
+ * Fired when the {@link #replaceAllButtonView} is clicked.
+ *
+ * @event replaceAll
+ */

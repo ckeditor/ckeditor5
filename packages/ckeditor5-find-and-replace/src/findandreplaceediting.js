@@ -112,7 +112,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
-	 * Stops active results from updating.
+	 * Stops active results from updating, and clears out the results.
 	 */
 	stop() {
 		if ( !this.activeResults ) {

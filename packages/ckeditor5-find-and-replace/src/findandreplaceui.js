@@ -14,9 +14,14 @@ import '../theme/findandreplaceform.css';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 /**
- * Example Find & Replace UI that uses FindAndReplace plugin API.
+ * Default find and replace UI. It introduces:
  *
- * It demonstrates how to use that API form outside the editor (except UI buttons).
+ * * The `'Find and replace'` dropdown button.
+ *
+ * It registers the `'findAndReplace'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}.
+ * that uses {@link module:find-and-replace/findandreplace~FindAndReplace FindAndReplace} plugin API.
+ *
+ * It emits events regarding of user search/replace intents.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -83,4 +88,28 @@ export default class FindAndReplaceUI extends Plugin {
 			tooltip: true
 		} );
 	}
+
+	/**
+	 * Delegates find next command.
+	 *
+	 * @event findNext
+	 */
+
+	/**
+	 * Delegates find previous command.
+	 *
+	 * @event findPrev
+	 */
+
+	/**
+	 * Delegates replace command.
+	 *
+	 * @event replace
+	 */
+
+	/**
+	 * Delegates replaceAll command.
+	 *
+	 * @event replaceAll
+	 */
 }
