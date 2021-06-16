@@ -359,7 +359,6 @@ function fixListAfterOutdentListCommand( editor ) {
 					const newBlockIndent = item._attrs.get( 'blockIndent' ) ?
 						parseInt( item._attrs.get( 'blockIndent' ), 0 ) - 40 :
 						null;
-
 					if ( newBlockIndent < 0 ) {
 						writer.removeAttribute( 'blockIndent', item );
 					} else {
@@ -380,7 +379,6 @@ function fixListAfterOutdentListCommand( editor ) {
 		const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
 		const listType = changedItems[ 0 ].getAttribute( 'listType' );
 		let listItem = changedItems[ 0 ].previousSibling;
-
 		// ■ List item 1.
 		//     ○ List item 2.
 		//     ○ List item 3.[]
@@ -428,6 +426,10 @@ function fixListAfterOutdentListCommand( editor ) {
 			const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === indent );
 
 			for ( const item of itemsToUpdate ) {
+				const newBlockIndent = listItem._attrs.get( 'blockIndent' ) ?
+					parseInt( listItem._attrs.get( 'blockIndent' ), 0 ) :
+					null;
+				writer.setAttribute( 'blockIndent', `${ newBlockIndent }px`, item );
 				writer.setAttribute( 'listStyle', listItem.getAttribute( 'listStyle' ), item );
 			}
 		} );
