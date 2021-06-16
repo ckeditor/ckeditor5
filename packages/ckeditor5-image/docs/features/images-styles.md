@@ -68,7 +68,7 @@ The distinction made above is purely theoretical. Setting up both semantical and
 </info-box>
 
 ### Semantical styles
-A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [table](#styles-table) below. Semantical styles give the integrator an ability to put a wide range of predefined image appearances at the user's disposal. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
+A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [tble](#ready-to-use-styles) below. Semantical styles give the integrator an ability to put a wide range of predefined image appearances at the user's disposal. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
 
 <info-box hint>
 	Try to understand what use cases you system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. The "side image" in the example below is displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
@@ -107,7 +107,7 @@ ClassicEditor
 ```
 
 ### Presentational styles
-Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determine the image alignment behavior. Check the list of the available semantical styles in the [table](#styles-table) below.
+Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determine the image alignment behavior. Check the list of the available semantical styles in the [tble](#ready-to-use-styles) below.
 
 <info-box hint>
 	Presentational image styles should be combined with the optional {@link features/images-resizing image resizing feature} as these features were designed to be used together. The image width is then controlled by the image resize feature, while the alignment is controlled by the image style feature.
