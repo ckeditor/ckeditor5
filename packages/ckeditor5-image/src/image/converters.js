@@ -83,19 +83,21 @@ export function viewPictureToModel( imageUtils ) {
 	function converter( evt, data, conversionApi ) {
 		const pictureViewElement = data.viewItem;
 
-		// Do not convert <picture> if already converted.
+		// Do not convert <picture> if already consumed.
 		if ( !conversionApi.consumable.test( pictureViewElement, { name: true } ) ) {
 			return;
 		}
 
 		const sources = new Map();
 
+		// Collect all <source /> elements attribute values.
 		for ( const childSourceElement of pictureViewElement.getChildren() ) {
 			if ( childSourceElement.is( 'element', 'source' ) ) {
 				const attributes = {};
 
 				for ( const name of sourceAttributeNames ) {
 					if ( childSourceElement.hasAttribute( name ) ) {
+						// Don't collect <source /> attribute if already consumed somewhere else.
 						if ( conversionApi.consumable.test( childSourceElement, { attributes: name } ) ) {
 							attributes[ name ] = childSourceElement.getAttribute( name );
 						}
@@ -108,16 +110,22 @@ export function viewPictureToModel( imageUtils ) {
 			}
 		}
 
-		const imageInPicture = imageUtils.findViewImgElement( pictureViewElement );
+		const imgViewElement = imageUtils.findViewImgElement( pictureViewElement );
 
-		if ( !imageInPicture ) {
+		// Don't convert when a picture has no <img/> inside (it is broken).
+		if ( !imgViewElement ) {
 			return;
 		}
 
 		let modelImage = data.modelCursor.parent;
 
+		// - In case of an inline image (cursor parent in a <paragraph>), the <img/> must be converted right away
+		// because no converter handled it yet and otherwise there would be no model element to set the sources attribute on.
+		// - In case of a block image, the <figure class="image"> converter (in ImageBlockEditing) converts the
+		// <img/> right away on its own and the modelCursor is already inside an imageBlock and there's nothing special
+		// to do here.
 		if ( !modelImage.is( 'element', 'imageBlock' ) ) {
-			const conversionResult = conversionApi.convertItem( imageInPicture, data.modelCursor );
+			const conversionResult = conversionApi.convertItem( imgViewElement, data.modelCursor );
 
 			// Set image range as conversion result.
 			data.modelRange = conversionResult.modelRange;
@@ -127,6 +135,8 @@ export function viewPictureToModel( imageUtils ) {
 
 			modelImage = first( conversionResult.modelRange.getItems() );
 
+			// It could be that the <img/> was broken (e.g. missing "src"). There's no point in converting
+			// <picture> any further around a broken <img/>.
 			if ( !modelImage ) {
 				return;
 			}
@@ -134,6 +144,8 @@ export function viewPictureToModel( imageUtils ) {
 
 		conversionApi.consumable.consume( pictureViewElement, { name: true } );
 
+		// Consume only these <source/> attributes that were actually collected and will be passed on
+		// to the image model element.
 		for ( const [ sourceElement, attributes ] of sources ) {
 			conversionApi.consumable.consume( sourceElement, { attributes: Object.keys( attributes ) } );
 		}
