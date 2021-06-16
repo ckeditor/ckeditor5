@@ -14,7 +14,6 @@ import { UpcastWriter } from 'ckeditor5/src/engine';
 import {
 	modelToViewAttributeConverter,
 	srcsetAttributeConverter,
-	sourcesAttributeConverter,
 	viewFigureToModel
 } from './converters';
 
@@ -24,8 +23,7 @@ import ImageUtils from '../imageutils';
 import {
 	getViewImgElementMatcher,
 	createImageViewElement,
-	determineImageTypeForInsertionAtSelection,
-	extractImageAttributesFromViewElement
+	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
 
 /**
@@ -108,16 +106,13 @@ export default class ImageBlockEditing extends Plugin {
 		conversion.for( 'downcast' )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'src' ) )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'alt' ) )
-			.add( sourcesAttributeConverter( imageUtils, 'imageBlock' ) )
 			.add( srcsetAttributeConverter( imageUtils, 'imageBlock' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getViewImgElementMatcher( editor, 'imageBlock' ),
-				model: ( viewImage, { writer } ) => {
-					return writer.createElement( 'imageBlock', extractImageAttributesFromViewElement( viewImage ) );
-				}
+				model: ( viewImage, { writer } ) => writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.add( viewFigureToModel( imageUtils ) );
 	}

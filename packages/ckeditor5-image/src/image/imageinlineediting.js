@@ -13,7 +13,6 @@ import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import {
 	modelToViewAttributeConverter,
-	sourcesAttributeConverter,
 	srcsetAttributeConverter
 } from './converters';
 
@@ -22,7 +21,6 @@ import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
 	getViewImgElementMatcher,
-	extractImageAttributesFromViewElement,
 	createImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
@@ -116,16 +114,13 @@ export default class ImageInlineEditing extends Plugin {
 		conversion.for( 'downcast' )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
 			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) )
-			.add( sourcesAttributeConverter( imageUtils, 'imageInline' ) )
 			.add( srcsetAttributeConverter( imageUtils, 'imageInline' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getViewImgElementMatcher( editor, 'imageInline' ),
-				model: ( viewImage, { writer } ) => {
-					return writer.createElement( 'imageInline', extractImageAttributesFromViewElement( viewImage ) );
-				}
+				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', { src: viewImage.getAttribute( 'src' ) } )
 			} );
 	}
 

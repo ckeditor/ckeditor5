@@ -62,6 +62,89 @@ export function viewFigureToModel( imageUtils ) {
 }
 
 /**
+ * Returns a function that converts the image view representation:
+ *
+ *		<picture><source ... /><source ... />...<img ... /></picture>
+ *
+ * to the model representation as the `sources` attribute:
+ *
+ *		<image[Block|Inline] ... sources="..."></image[Block|Inline]>
+ *
+ * @param {module:image/imageutils~ImageUtils} imageUtils
+ * @returns {Function}
+ */
+export function viewPictureToModel( imageUtils ) {
+	const sourceAttributeNames = [ 'srcset', 'media', 'type' ];
+
+	return dispatcher => {
+		dispatcher.on( 'element:picture', converter );
+	};
+
+	function converter( evt, data, conversionApi ) {
+		const pictureViewElement = data.viewItem;
+
+		// Do not convert <picture> if already converted.
+		if ( !conversionApi.consumable.test( pictureViewElement, { name: true } ) ) {
+			return;
+		}
+
+		const sources = new Map();
+
+		for ( const childSourceElement of pictureViewElement.getChildren() ) {
+			if ( childSourceElement.is( 'element', 'source' ) ) {
+				const attributes = {};
+
+				for ( const name of sourceAttributeNames ) {
+					if ( childSourceElement.hasAttribute( name ) ) {
+						if ( conversionApi.consumable.test( childSourceElement, { attributes: name } ) ) {
+							attributes[ name ] = childSourceElement.getAttribute( name );
+						}
+					}
+				}
+
+				if ( Object.keys( attributes ).length ) {
+					sources.set( childSourceElement, attributes );
+				}
+			}
+		}
+
+		const imageInPicture = imageUtils.findViewImgElement( pictureViewElement );
+
+		if ( !imageInPicture ) {
+			return;
+		}
+
+		let modelImage = data.modelCursor.parent;
+
+		if ( !modelImage.is( 'element', 'imageBlock' ) ) {
+			const conversionResult = conversionApi.convertItem( imageInPicture, data.modelCursor );
+
+			// Set image range as conversion result.
+			data.modelRange = conversionResult.modelRange;
+
+			// Continue conversion where image conversion ends.
+			data.modelCursor = conversionResult.modelCursor;
+
+			modelImage = first( conversionResult.modelRange.getItems() );
+
+			if ( !modelImage ) {
+				return;
+			}
+		}
+
+		conversionApi.consumable.consume( pictureViewElement, { name: true } );
+
+		for ( const [ sourceElement, attributes ] of sources ) {
+			conversionApi.consumable.consume( sourceElement, { attributes: Object.keys( attributes ) } );
+		}
+
+		if ( sources.size ) {
+			conversionApi.writer.setAttribute( 'sources', Array.from( sources.values() ), modelImage );
+		}
+	}
+}
+
+/**
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
  * @param {module:image/imageutils~ImageUtils} imageUtils
@@ -114,12 +197,12 @@ export function srcsetAttributeConverter( imageUtils, imageType ) {
  * view structure.
  *
  * @param {module:image/imageutils~ImageUtils} imageUtils
- * @param {'imageBlock'|'imageInline'} imageType The type of the image.
  * @returns {Function}
  */
-export function sourcesAttributeConverter( imageUtils, imageType ) {
+export function sourcesAttributeConverter( imageUtils ) {
 	return dispatcher => {
-		dispatcher.on( `attribute:sources:${ imageType }`, converter );
+		dispatcher.on( 'attribute:sources:imageBlock', converter );
+		dispatcher.on( 'attribute:sources:imageInline', converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -140,7 +223,7 @@ export function sourcesAttributeConverter( imageUtils, imageType ) {
 				viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), sourceElement );
 			}
 
-			viewWriter.insert( viewWriter.createPositionAt( imgElement.parent, 0 ), pictureElement );
+			viewWriter.insert( viewWriter.createPositionBefore( imgElement ), pictureElement );
 			viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), imgElement );
 		} else {
 			const pictureElement = imgElement.parent;

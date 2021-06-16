@@ -119,11 +119,12 @@ function upcastLink( editor ) {
 
 			const blockImageView = imageInLink.findAncestor( element => imageUtils.isBlockImageView( element ) );
 
-			// There are three possible cases to consider here
+			// There are four possible cases to consider here
 			//
 			// 1. A "root > ... > figure.image > a > img" structure.
 			// 2. A "root > ... > figure.image > a > picture > img" structure.
 			// 3. A "root > ... > block > a > img" structure.
+			// 4. A "root > ... > block > a > picture > img" structure.
 			//
 			// but the latter should only be considered by this converter when the inline image plugin
 			// is NOT loaded in the editor (because otherwise, that would be a plain, linked inline image).

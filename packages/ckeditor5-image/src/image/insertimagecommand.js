@@ -96,6 +96,7 @@ export default class InsertImageCommand extends Command {
 		// Note: Selection attributes that do not make sense for images will be filtered out by insertImage() anyway.
 		const selectionAttributes = Object.fromEntries( selection.getAttributes() );
 
+		// TODO: src can be 'string' or { object } (for picture <source>).
 		sources.forEach( ( src, index ) => {
 			const selectedElement = selection.getSelectedElement();
 

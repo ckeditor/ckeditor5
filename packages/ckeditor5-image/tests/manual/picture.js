@@ -13,6 +13,7 @@ import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import AutoImage from '../../src/autoimage';
 import ImageResize from '../../src/imageresize';
 import ImageUpload from '../../src/imageupload';
+import PictureEditing from '../../src/pictureediting';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -25,20 +26,25 @@ ClassicEditor
 			ImageResize,
 			LinkImage,
 			AutoImage,
+			PictureEditing,
 			ImageUpload
 		],
-		toolbar: [
-			'heading',
-			'|',
-			'bold', 'italic', 'link',
-			'|',
-			'|',
-			'bulletedList', 'numberedList',
-			'|',
-			'uploadImage', 'insertTable',
-			'|',
-			'undo', 'redo'
-		],
+		toolbar: {
+			items: [
+				'uploadImage',
+				'-',
+				'heading',
+				'|',
+				'bold', 'italic', 'link',
+				'|',
+				'bulletedList', 'numberedList',
+				'|',
+				'insertTable',
+				'|',
+				'undo', 'redo'
+			],
+			shouldNotGroupWhenFull: true
+		},
 		cloudServices: CS_CONFIG,
 		table: {
 			contentToolbar: [
