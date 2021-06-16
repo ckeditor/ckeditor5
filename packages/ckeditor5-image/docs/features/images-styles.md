@@ -165,6 +165,8 @@ There are three options of defining the image styles in the editor configuration
 	Reusing (or modifying) predefined styles has the following advantage: CKEditor 5 will use its official translations for the defined button titles.
 </info-box>
 
+### Demo
+
 The editor example below shows the possibilities of customizing the image visual representation and customizing image styles UI (icons, tooltips and drop-downs).
 
 {@snippet features/image-style-custom}
