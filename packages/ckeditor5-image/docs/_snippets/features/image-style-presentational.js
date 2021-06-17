@@ -8,7 +8,7 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-image-style-custom' ), {
+	.create( document.querySelector( '#snippet-presentational-image-style-default' ), {
 		removePlugins: [ 'LinkImage', 'AutoImage', 'imageCaption' ],
 		image: {
 			toolbar: [
@@ -23,7 +23,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.editorStyleCustom = editor;
+		window.editorStylePresentational = editor;
 	} )
 	.catch( err => {
 		console.error( err );

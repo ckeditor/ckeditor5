@@ -62,7 +62,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.semanticalStyleCustomEditor = editor;
+		window.editorStyleCustom = editor;
 		editor.sourceElement.nextSibling.classList.add( 'semantical-custom' );
 	} )
 	.catch( err => {
