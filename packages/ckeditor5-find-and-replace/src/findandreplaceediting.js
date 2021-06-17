@@ -13,6 +13,8 @@ import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
 
+import '../theme/findandreplace.css';
+
 const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
 // Reacts to document changes in order to update search list.
@@ -112,7 +114,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
-	 * Stops active results from updating.
+	 * Stops active results from updating, and clears out the results.
 	 */
 	stop() {
 		if ( !this.activeResults ) {

@@ -17,7 +17,7 @@ import '../../theme/findandreplaceform.css';
 import findArrowIcon from '../../theme/icons/find-arrow.svg';
 
 /**
- * The media form view controller class.
+ * The find and replace form view controller class.
  *
  * See {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
  *
@@ -50,7 +50,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The FindNext button view.
+		 * The findNext button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -60,7 +60,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The Replace button view.
+		 * The replace button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -70,7 +70,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The ReplaceAll button view.
+		 * The replaceAll button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -101,21 +101,25 @@ export default class FindAndReplaceFormView extends View {
 		this.findInputView = this._createInputField( 'Find', 'Find in text' );
 
 		/**
-		 * The Replace input view.
+		 * The replace input view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
 		this.replaceInputView = this._createInputField( 'Replace', 'Replace with' );
 
 		/**
-		 * Find view config
+		 * Stores gathered views related to find functionality of the feature
+		 *
+		 * @member {module:ui/view~View}
 		 */
 		// TODO
 		// eslint-disable-next-line max-len
 		this.findView = this._createFindView( this.findInputView, this.matchCaseCheckbox, this.matchWholeWordsCheckbox, this.findButtonView, this.findNextButtonView, this.findPrevButtonView );
 
 		/**
-		 * Replace view config
+		 * Stores gathered views related to replace functionality of the feature
+		 *
+		 * @member {module:ui/view~View}
 		 */
 		this.replaceView = this._createReplaceView( this.replaceAllButtonView, this.replaceButtonView, this.replaceInputView );
 
@@ -239,13 +243,12 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Find view configuration
+	 * Collection of views for the 'find' functionality of the feature
 	 *
-	 * TODO: change the {String} params or remove them alltogether.
 	 * @private
-	 * @param {String} NextInputView NextButtonInput view.
-	 * @param {String} PrevInputView PrevButtonInput view.
-	 * @param {String} InputView Input view.
+	 * @param {module:ui/view~View} NextInputView NextButtonInput view.
+	 * @param {module:ui/view~View} PrevInputView PrevButtonInput view.
+	 * @param {module:ui/view~View} InputView Input view.
 	 * @return {module:ui/view~View} The find view instance.
 	 */
 
@@ -307,13 +310,12 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Replace view configuration
+	 * Collection of views for the 'replace' functionality of the feature
 	 *
-	 * TODO: change the {String} params or remove them alltogether.
 	 * @private
-	 * @param {String} replaceAllButtonView NextButtonInput view.
-	 * @param {String} replaceButtonView PrevButtonInput view.
-	 * @param {String} InputView Input view.
+	 * @param {module:ui/view~View} NextInputView NextButtonInput view.
+	 * @param {module:ui/view~View} PrevInputView PrevButtonInput view.
+	 * @param {module:ui/view~View} InputView Input view.
 	 * @returns {module:ui/view~View} The replace view instance.
 	 */
 	_createReplaceView( replaceAllButtonView, replaceButtonView, InputView ) {
@@ -443,3 +445,31 @@ export default class FindAndReplaceFormView extends View {
 		return checkboxView;
 	}
 }
+
+/**
+ * Fired when the {@link #findNextButtonView} is triggered.
+ *
+ * @event findNext
+ * @param {String} searchText Search text.
+ */
+
+/**
+ * Fired when the {@link #findPrevButtonView} is triggered.
+ *
+ * @event findPrev
+ * @param {String} searchText Search text.
+ */
+
+/**
+ * Fired when the {@link #replaceButtonView} is triggered.
+ *
+ * @event replace
+ * @param {String} replaceText Replacement text.
+ */
+
+/**
+ * Fired when the {@link #replaceAllButtonView} is triggered.
+ *
+ * @event replaceAll
+ * @param {String} replaceText Replacement text.
+ */
