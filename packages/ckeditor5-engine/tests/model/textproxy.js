@@ -110,7 +110,7 @@ describe( 'TextProxy', () => {
 			expect( textProxy.is( 'model:node' ) ).to.be.false;
 			expect( textProxy.is( '$text' ) ).to.be.false;
 			expect( textProxy.is( 'element' ) ).to.be.false;
-			expect( textProxy.is( 'model:element', 'image' ) ).to.be.false;
+			expect( textProxy.is( 'model:element', 'imageBlock' ) ).to.be.false;
 			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
 			expect( textProxy.is( 'rootElement' ) ).to.be.false;
 		} );

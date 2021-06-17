@@ -205,6 +205,7 @@ export default class Schema {
 	 *		schema.isRegistered( 'foo' ); // -> false
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+ 	 * @returns {Boolean}
 	 */
 	isRegistered( item ) {
 		return !!this.getDefinition( item );
@@ -224,6 +225,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+  	 * @returns {Boolean}
 	 */
 	isBlock( item ) {
 		const def = this.getDefinition( item );
@@ -243,12 +245,13 @@ export default class Schema {
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
-	 *		schema.isLimit( 'image' ); // -> true
+	 *		schema.isLimit( 'imageBlock' ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the Schema deep dive
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+  	 * @returns {Boolean}
 	 */
 	isLimit( item ) {
 		const def = this.getDefinition( item );
@@ -269,15 +272,16 @@ export default class Schema {
 	 * was set to `true`.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
-	 *		schema.isObject( 'image' ); // -> true
+	 *		schema.isObject( 'imageBlock' ); // -> true
 	 *
-	 *		const imageElement = writer.createElement( 'image' );
+	 *		const imageElement = writer.createElement( 'imageBlock' );
 	 *		schema.isObject( imageElement ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+  	 * @returns {Boolean}
 	 */
 	isObject( item ) {
 		const def = this.getDefinition( item );
@@ -305,6 +309,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 * @returns {Boolean}
 	 */
 	isInline( item ) {
 		const def = this.getDefinition( item );
@@ -318,7 +323,7 @@ export default class Schema {
 	 *
 	 *		schema.isSelectable( 'paragraph' ); // -> false
 	 *		schema.isSelectable( 'heading1' ); // -> false
-	 *		schema.isSelectable( 'image' ); // -> true
+	 *		schema.isSelectable( 'imageBlock' ); // -> true
 	 *		schema.isSelectable( 'tableCell' ); // -> true
 	 *
 	 *		const text = writer.createText( 'foo' );
@@ -328,6 +333,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 * @returns {Boolean}
 	 */
 	isSelectable( item ) {
 		const def = this.getDefinition( item );
@@ -345,7 +351,7 @@ export default class Schema {
 	 *
 	 *		schema.isContent( 'paragraph' ); // -> false
 	 *		schema.isContent( 'heading1' ); // -> false
-	 *		schema.isContent( 'image' ); // -> true
+	 *		schema.isContent( 'imageBlock' ); // -> true
 	 *		schema.isContent( 'horizontalLine' ); // -> true
 	 *
 	 *		const text = writer.createText( 'foo' );
@@ -355,6 +361,7 @@ export default class Schema {
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 * @returns {Boolean}
 	 */
 	isContent( item ) {
 		const def = this.getDefinition( item );
@@ -384,6 +391,7 @@ export default class Schema {
 	 * @fires checkChild
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context The context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} def The child to check.
+	 * @returns {Boolean}
 	 */
 	checkChild( context, def ) {
 		// Note: context and child are already normalized here to a SchemaContext and SchemaCompiledItemDefinition.
@@ -408,6 +416,7 @@ export default class Schema {
 	 * @fires checkAttribute
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context The context in which the attribute will be checked.
 	 * @param {String} attributeName
+	 * @returns {Boolean}
 	 */
 	checkAttribute( context, attributeName ) {
 		const def = this.getDefinition( context.last );
@@ -1118,7 +1127,7 @@ mix( Schema, ObservableMixin );
  * In other words, all actions that happen inside a limit element are limited to its content.
  * All objects are treated as limit elements, too.
  * * {@link ~SchemaItemDefinition#isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole.
- * Examples of object elements: `image`, `table`, `video`, etc. An object is also a limit, so
+ * Examples of object elements: `imageBlock`, `table`, `video`, etc. An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the meaning of these types in the
@@ -1171,21 +1180,21 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *
- * Make `image` a block object, which is allowed everywhere where `$block` is.
+ * Make `imageBlock` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
- *		schema.register( 'image', {
+ *		schema.register( 'imageBlock', {
  *			allowWhere: '$block',
  *			allowAttributes: [ 'src', 'alt' ],
  *			isBlock: true,
  *			isObject: true
  *		} );
  *
- * Make `caption` allowed in `image` and make it allow all the content of `$block`s (usually, `$text`).
+ * Make `caption` allowed in `imageBlock` and make it allow all the content of `$block`s (usually, `$text`).
  * Also, mark it as a limit element so it cannot be split:
  *
  *		schema.register( 'caption', {
- *			allowIn: 'image',
+ *			allowIn: 'imageBlock',
  *			allowContentOf: '$block',
  *			isLimit: true
  *		} );
@@ -1253,7 +1262,7 @@ mix( Schema, ObservableMixin );
  *
  * @property {Boolean} isObject
  * Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
- * `image`, `table`, `video`, etc.
+ * `imageBlock`, `table`, `video`, etc.
  *
  * **Note:** An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
@@ -1262,7 +1271,8 @@ mix( Schema, ObservableMixin );
  * {@glink framework/guides/deep-dive/schema#object-elements Object elements section} of the Schema deep dive guide.
  *
  * @property {Boolean} isSelectable
- * `true` when an element should be selectable as a whole by the user. Examples of selectable elements: `image`, `table`, `tableCell`, etc.
+ * `true` when an element should be selectable as a whole by the user. Examples of selectable elements: `imageBlock`, `table`, `tableCell`,
+ * etc.
  *
  * **Note:** An object is also a selectable element, so
  * {@link module:engine/model/schema~Schema#isSelectable `isSelectable()`} returns `true` for object elements automatically.
@@ -1272,7 +1282,7 @@ mix( Schema, ObservableMixin );
  *
  * @property {Boolean} isContent
  * An item is a content when it always finds its way to the editor data output regardless of the number and type of its descendants.
- * Examples of content elements: `$text`, `image`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
+ * Examples of content elements: `$text`, `imageBlock`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
  *
  * **Note:** An object is also a content element, so
  * {@link module:engine/model/schema~Schema#isContent `isContent()`} returns `true` for object elements automatically.

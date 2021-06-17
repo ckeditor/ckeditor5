@@ -11,7 +11,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-image-toolbar' ), {
 		removePlugins: [ 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage', 'AutoImage' ],
 		image: {
-			toolbar: [ 'imageTextAlternative' ]
+			toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()

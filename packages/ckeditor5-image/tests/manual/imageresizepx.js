@@ -31,12 +31,7 @@ const commonConfig = {
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
 	image: {
 		resizeUnit: 'px',
-		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'resizeImage' ],
-		styles: [
-			'alignLeft',
-			'alignCenter',
-			'alignRight'
-		]
+		toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'toggleImageCaption', 'resizeImage' ]
 	},
 	cloudServices: CS_CONFIG
 };

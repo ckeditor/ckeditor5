@@ -689,10 +689,10 @@ describe( 'transform', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/8870
 	it( 'object, p, p, p, remove, undo', () => {
-		john.setData( '<image></image><paragraph>A</paragraph><paragraph>B[]</paragraph>' );
+		john.setData( '<imageBlock></imageBlock><paragraph>A</paragraph><paragraph>B[]</paragraph>' );
 
 		// I couldn't use delete command because simply executing this command several times does not
-		// work correctly when selection reaches <image></image><p>[]</p>.
+		// work correctly when selection reaches <imageBlock></imageBlock><p>[]</p>.
 		// At this point we have custom control for firing delete event on view and I didn't want to
 		// simulate that.
 		//
@@ -708,7 +708,7 @@ describe( 'transform', () => {
 		john.undo();
 		john.undo();
 
-		expectClients( '<image></image><paragraph>A</paragraph><paragraph>B</paragraph>' );
+		expectClients( '<imageBlock></imageBlock><paragraph>A</paragraph><paragraph>B</paragraph>' );
 	} );
 
 	it( 'remove merged element then undo', () => {

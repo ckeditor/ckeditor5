@@ -1698,7 +1698,7 @@ describe( 'DowncastHelpers', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
-			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
+			downcastHelpers.elementToElement( { model: 'imageBlock', view: 'img' } );
 			downcastHelpers.elementToElement( {
 				model: 'paragraph',
 				view: ( modelItem, { writer } ) => writer.createContainerElement( 'p' )
@@ -1718,7 +1718,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src' } );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1735,7 +1735,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src', converterPriority: 'high' } );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1746,14 +1746,14 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToAttribute( {
 				model: {
-					name: 'image',
+					name: 'imageBlock',
 					key: 'source'
 				},
 				view: 'src'
 			} );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1892,7 +1892,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { styled: 'pull-out' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { styled: 'pull-out' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img class="styled-pull-out"></img>' );
@@ -3640,7 +3640,7 @@ describe( 'downcast selection converters', () => {
 		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
 		// Default selection converters.
-		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
+		dispatcher.on( 'selection', clearAttributes(), { priority: 'high' } );
 		dispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		dispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	} );
@@ -4030,6 +4030,50 @@ describe( 'downcast selection converters', () => {
 					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
 
+				expect( viewSelection.rangeCount ).to.equal( 1 );
+
+				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
+				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
+			} );
+
+			it( 'should merge attribute elements from previous selection with overridden selection conversion', () => {
+				testSelection(
+					[ 3, 3 ],
+					'foobar',
+					'foo<strong>[]</strong>bar',
+					{ bold: 'true' }
+				);
+
+				const spy = sinon.spy();
+
+				dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+					const selection = data.selection;
+
+					if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
+						return;
+					}
+
+					const viewRanges = [];
+
+					for ( const range of selection.getRanges() ) {
+						viewRanges.push( conversionApi.mapper.toViewRange( range ) );
+					}
+
+					conversionApi.writer.setSelection( viewRanges, { backward: selection.isBackward } );
+
+					spy();
+				} );
+
+				view.change( writer => {
+					const modelRange = model.createRange( model.createPositionAt( modelRoot, 1 ), model.createPositionAt( modelRoot, 1 ) );
+					model.change( writer => {
+						writer.setSelection( modelRange );
+					} );
+
+					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
 				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );

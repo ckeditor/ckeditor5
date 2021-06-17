@@ -297,7 +297,7 @@ describe( 'TableCaptionEditing', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">xyz</span>' +
+										'<span class="ck-table-bogus-paragraph">xyz</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +

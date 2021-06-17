@@ -63,6 +63,8 @@ import contentUnlock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/co
 
 import selectAll from '@ckeditor/ckeditor5-select-all/theme/icons/select-all.svg';
 
+import sourceEditing from '@ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg';
+
 import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
 import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
@@ -131,6 +133,9 @@ const icons = {
 
 	// select-all
 	selectAll,
+
+	// source-editing
+	sourceEditing,
 
 	// special-characters
 	specialCharacters,

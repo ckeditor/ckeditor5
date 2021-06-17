@@ -72,9 +72,9 @@ describe( 'Heading integration', () => {
 		it( 'should not destroy the image when a selection converted to a heading', () => {
 			setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<image src="/assets/sample.png">' +
+				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<paragraph>b]ar</paragraph>'
 			);
 
@@ -82,9 +82,9 @@ describe( 'Heading integration', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<heading1>fo[o</heading1>' +
-				'<image src="/assets/sample.png">' +
+				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<heading1>b]ar</heading1>'
 			);
 		} );

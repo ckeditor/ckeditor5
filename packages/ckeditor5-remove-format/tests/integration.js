@@ -9,6 +9,7 @@ import RemoveFormat from '../src/removeformat';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -29,7 +30,7 @@ describe( 'RemoveFormat', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Paragraph, Heading, Image, Bold, Underline, RemoveFormat, Image, ImageCaption, Link ]
+				plugins: [ Paragraph, Heading, Image, Bold, Underline, RemoveFormat, Image, ImageCaption, ImageResize, Link ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -41,6 +42,16 @@ describe( 'RemoveFormat', () => {
 		element.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'does not remove image width attribute', () => {
+		// (#9684)
+		setModelData( model, '[<imageBlock src="assets/sample.png" width="50%"><caption>caption</caption></imageBlock>]' );
+
+		editor.execute( 'removeFormat' );
+
+		expect( getModelData( model ) )
+			.to.equal( '[<imageBlock src="assets/sample.png" width="50%"><caption>caption</caption></imageBlock>]' );
 	} );
 
 	describe( 'works correctly with multiline ranges', () => {
@@ -55,25 +66,27 @@ describe( 'RemoveFormat', () => {
 		} );
 
 		it( 'does not touch non-formatting markup', () => {
-			setModelData( model, '<paragraph>[<$text linkHref="url">foo</$text></paragraph><image src="assets/sample.png">' +
-				'<caption>caption</caption></image><paragraph>bar]</paragraph>' );
+			setModelData( model, '<paragraph>[<$text linkHref="url">foo</$text></paragraph><imageBlock src="assets/sample.png">' +
+				'<caption>caption</caption></imageBlock><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>[<$text linkHref="url">foo</$text></paragraph>' +
-					'<image src="assets/sample.png"><caption>caption</caption></image><paragraph>bar]</paragraph>' );
+					'<imageBlock src="assets/sample.png"><caption>caption</caption></imageBlock><paragraph>bar]</paragraph>' );
 		} );
 
 		it( 'removes the content from within widget editable', () => {
 			setModelData( model, '<paragraph>[</paragraph>' +
-				'<image src="assets/sample.png"><caption><$text bold="true">foo</$text></caption></image><paragraph>bar]</paragraph>' );
+				'<imageBlock src="assets/sample.png"><caption><$text bold="true">foo</$text></caption></imageBlock>' +
+				'<paragraph>bar]</paragraph>'
+			);
 
 			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>' +
-					'[</paragraph><image src="assets/sample.png"><caption>foo</caption></image><paragraph>bar]</paragraph>' );
+					'[</paragraph><imageBlock src="assets/sample.png"><caption>foo</caption></imageBlock><paragraph>bar]</paragraph>' );
 		} );
 	} );
 

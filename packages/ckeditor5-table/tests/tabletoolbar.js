@@ -171,7 +171,7 @@ describe( 'TableToolbar', () => {
 				setData(
 					model,
 					'<paragraph>[foo]</paragraph>' +
-					'<table><tableRow><tableCell><paragraph>foo</paragraph><image src=""></image></tableCell></tableRow></table>'
+					'<table><tableRow><tableCell><paragraph>foo</paragraph><imageBlock src=""></imageBlock></tableCell></tableRow></table>'
 				);
 
 				expect( balloon.visibleView ).to.be.null;
@@ -179,7 +179,7 @@ describe( 'TableToolbar', () => {
 				const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
 
 				model.change( writer => {
-					// Select the <tableCell><paragraph></paragraph>[<image></image>]</tableCell>
+					// Select the <tableCell><paragraph></paragraph>[<imageBlock></imageBlock>]</tableCell>
 					const nodeByPath = doc.getRoot().getNodeByPath( [ 1, 0, 0, 1 ] );
 
 					writer.setSelection( nodeByPath, 'on' );
@@ -188,7 +188,7 @@ describe( 'TableToolbar', () => {
 				expect( balloon.visibleView ).to.equal( imageToolbar );
 
 				model.change( writer => {
-					// Select the <tableCell><paragraph>[]</paragraph><image></image></tableCell>
+					// Select the <tableCell><paragraph>[]</paragraph><imageBlock></imageBlock></tableCell>
 					writer.setSelection(
 						writer.createPositionAt( doc.getRoot().getNodeByPath( [ 1, 0, 0, 0 ] ), 0 )
 					);

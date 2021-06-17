@@ -62,6 +62,7 @@ class CustomMentionAttributeView extends Plugin {
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, Underline, Font, Mention, CustomMentionAttributeView ],
 		toolbar: [
 			'heading',

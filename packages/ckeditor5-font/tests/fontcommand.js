@@ -212,7 +212,7 @@ describe( 'FontCommand', () => {
 		} );
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
-			model.schema.register( 'image', { inheritAllFrom: '$block' } );
+			model.schema.register( 'imageBlock', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>ab[c<img></img><$text font="foo">foobar</$text>xy<img></img>]z</paragraph>' );
 
 			expect( command.isEnabled ).to.be.true;

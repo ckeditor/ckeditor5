@@ -10,6 +10,7 @@ import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 const config = {
+	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [ ArticlePluginSet ]
 };
 

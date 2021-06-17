@@ -19,6 +19,21 @@ import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
  */
 export default class CodeBlockCommand extends Command {
 	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * Contains the last used language.
+
+		 * @protected
+		 * @type {String|null}
+		 */
+		this._lastLanguage = null;
+	}
+
+	/**
 	 * Whether the selection starts in a code block.
 	 *
 	 * @observable
@@ -41,8 +56,11 @@ export default class CodeBlockCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Command options.
+	 * @param {String} [options.language] The code block language.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a code block,
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
+	 * @param {Boolean} [options.usePreviousLanguageChoice] If set on `true` and the `options.language` is not specified, the command
+	 * will apply the previous language (if the command was already executed) when inserting the `codeBlock` element.
 	 */
 	execute( options = {} ) {
 		const editor = this.editor;
@@ -53,7 +71,7 @@ export default class CodeBlockCommand extends Command {
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
-		const language = options.language || firstLanguageInConfig.language;
+		const language = getLanguage( options, this._lastLanguage, firstLanguageInConfig.language );
 
 		model.change( writer => {
 			if ( value ) {
@@ -108,6 +126,8 @@ export default class CodeBlockCommand extends Command {
 	 * @param {String} [language]
 	 */
 	_applyCodeBlock( writer, blocks, language ) {
+		this._lastLanguage = language;
+
 		const schema = this.editor.model.schema;
 		const allowedBlocks = blocks.filter( block => canBeCodeBlock( schema, block ) );
 
@@ -115,6 +135,11 @@ export default class CodeBlockCommand extends Command {
 			writer.rename( block, 'codeBlock' );
 			writer.setAttribute( 'language', language, block );
 			schema.removeDisallowedAttributes( [ block ], writer );
+
+			// Remove children of the  `codeBlock` element that are not allowed. See #9567.
+			Array.from( block.getChildren() )
+				.filter( child => !schema.checkChild( block, child ) )
+				.forEach( child => writer.remove( child ) );
 		}
 
 		allowedBlocks.reverse().forEach( ( currentBlock, i ) => {
@@ -160,4 +185,27 @@ function canBeCodeBlock( schema, element ) {
 	}
 
 	return schema.checkChild( element.parent, 'codeBlock' );
+}
+
+// Picks the language for the new code block. If any language is passed as an option,
+// it will be returned. Else, if option usePreviousLanguageChoice is true and some
+// code block was already created (lastLanguage is not null) then previously used
+// language will be returned. If not, it will return default language.
+//
+// @param {Object} options
+// @param {Boolean} [options.usePreviousLanguageChoice]
+// @param {String} [options.language]
+// @param {String|null} lastLanguage
+// @param {String} defaultLanguage
+// @return {String}
+function getLanguage( options, lastLanguage, defaultLanguage ) {
+	if ( options.language ) {
+		return options.language;
+	}
+
+	if ( options.usePreviousLanguageChoice && lastLanguage ) {
+		return lastLanguage;
+	}
+
+	return defaultLanguage;
 }

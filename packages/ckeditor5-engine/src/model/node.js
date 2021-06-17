@@ -406,9 +406,9 @@ export default class Node {
 	 *
 	 * By using this method it is also possible to check a name of an element:
 	 *
-	 *		imageElement.is( 'element', 'image' ); // -> true
-	 *		imageElement.is( 'element', 'image' ); // -> same as above
-	 *		imageElement.is( 'model:element', 'image' ); // -> same as above, but more precise
+	 *		imageElement.is( 'element', 'imageBlock' ); // -> true
+	 *		imageElement.is( 'element', 'imageBlock' ); // -> same as above
+	 *		imageElement.is( 'model:element', 'imageBlock' ); // -> same as above, but more precise
 	 *
 	 * The list of model objects which implement the `is()` method:
 	 *
