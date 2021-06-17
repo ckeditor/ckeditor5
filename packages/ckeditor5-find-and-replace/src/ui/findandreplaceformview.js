@@ -14,7 +14,8 @@ import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/findandreplaceform.css';
-import findArrowIcon from '../../theme/icons/find-arrow.svg';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import findArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
 
 /**
  * The find and replace form view controller class.
