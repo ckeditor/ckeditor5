@@ -21,7 +21,7 @@ import {
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageInlineEditing extends Plugin {
+export default class PictureEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -39,7 +39,7 @@ export default class ImageInlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	afterInit() {
 		const editor = this.editor;
 
 		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
@@ -59,7 +59,8 @@ export default class ImageInlineEditing extends Plugin {
 	}
 
 	/**
-	 * Configures conversion pipelines to support upcasting and downcasting images using `<picture>` (and model `sources` attribute).
+	 * Configures conversion pipelines to support upcasting and downcasting images using the `<picture>` view element
+	 * and the model `sources` attribute.
 	 *
 	 * @private
 	 */

@@ -227,7 +227,8 @@ export function sourcesAttributeConverter( imageUtils ) {
 		const imgElement = imageUtils.findViewImgElement( element );
 
 		if ( data.attributeNewValue && data.attributeNewValue.length ) {
-			const pictureElement = viewWriter.createContainerElement( 'picture' );
+			// Make sure <picture> does not break attribute elements, for instance <a> in linked images.
+			const pictureElement = viewWriter.createContainerElement( 'picture', {}, { isAllowedInsideAttributeElement: true } );
 
 			for ( const sourceAttributes of data.attributeNewValue ) {
 				const sourceElement = viewWriter.createEmptyElement( 'source', sourceAttributes );
