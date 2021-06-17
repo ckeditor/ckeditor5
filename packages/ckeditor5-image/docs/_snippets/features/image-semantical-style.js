@@ -19,7 +19,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editorStyle = editor;
+		window.editorStyleSemantical = editor;
 	} )
 	.catch( err => {
 		console.error( err );
