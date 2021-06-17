@@ -32,7 +32,7 @@ describe( 'FindAndReplaceFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-find-and-replace-form__wrapper' ) ).to.true;
+			// expect( view.element.classList.contains( 'ck-find-and-replace-form__wrapper' ) ).to.true;
 		} );
 
 		it( 'should create child views', () => {
@@ -63,28 +63,28 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 
 		describe( 'find input view', () => {
-			it( 'has info text', () => {
-				expect( view.findInputView.infoText ).to.match( /^Search for something you'd like to find/ );
+			it( 'has label', () => {
+				expect( view.findInputView.label ).to.match( /^Find in text/ );
 			} );
 
 			it( 'displays the tip upon #input when the field has a value', () => {
 				view.findInputView.fieldView.element.value = 'foo';
 				view.findInputView.fieldView.fire( 'input' );
 
-				expect( view.findInputView.infoText ).to.match( /^Search for something you'd like to find/ );
+				expect( view.findInputView.label ).to.match( /^Find in text/ );
 			} );
 		} );
 
 		describe( 'replace input view', () => {
-			it( 'has info text', () => {
-				expect( view.replaceInputView.infoText ).to.match( /^Replace what you've previously selected/ );
+			it( 'has label', () => {
+				expect( view.replaceInputView.label ).to.match( /^Replace with/ );
 			} );
 
 			it( 'displays the tip upon #input when the field has a value', () => {
 				view.replaceInputView.fieldView.element.value = 'foo';
 				view.replaceInputView.fieldView.fire( 'input' );
 
-				expect( view.replaceInputView.infoText ).to.match( /^Replace what you've previously selected/ );
+				expect( view.replaceInputView.label ).to.match( /^Replace with/ );
 			} );
 		} );
 
@@ -93,13 +93,6 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( view.template.children[ 0 ] ).to.equal( view.findView );
 				expect( view.template.children[ 1 ] ).to.equal( view.replaceView );
 			} );
-
-			// ?
-			// ? How to check if the general findView has children
-			// ?
-			// it( 'findView has button views', () => {
-			// 	expect( view.findView.template.children[ 0 ] ).to.equal( view.findNextButtonView );
-			// } );
 		} );
 	} );
 
@@ -118,14 +111,15 @@ describe( 'FindAndReplaceFormView', () => {
 	} );
 
 	describe( 'find and replace events', () => {
-		it( 'should trigger findNext', () => {
+		it( 'should trigger findNext twice', () => {
 			const spy = sinon.spy();
 
 			view.on( 'findNext', spy );
 
 			view.findNextButtonView.fire( 'execute' );
+			view.findButtonView.fire( 'execute' );
 
-			expect( spy.calledOnce ).to.true;
+			expect( spy.calledTwice ).to.true;
 		} );
 
 		it( 'should trigger findPrev', () => {
@@ -173,6 +167,9 @@ describe( 'FindAndReplaceFormView', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
 				view.findInputView,
+				view.matchCaseCheckbox,
+				view.matchWholeWordsCheckbox,
+				view.findButtonView,
 				view.findPrevButtonView,
 				view.findNextButtonView,
 				view.replaceInputView,
@@ -189,11 +186,14 @@ describe( 'FindAndReplaceFormView', () => {
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.findInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.findPrevButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.findNextButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.replaceInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.replaceButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.replaceAllButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.matchCaseCheckbox.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.matchWholeWordsCheckbox.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.findButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.findPrevButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.findNextButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 6 ), view.replaceInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 7 ), view.replaceAllButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 8 ), view.replaceButtonView.element );
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
