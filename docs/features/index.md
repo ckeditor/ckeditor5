@@ -61,7 +61,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 {@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
 
-Track your progress and changes done in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tools lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+Track your progress and changes done in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tool lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
@@ -73,13 +73,13 @@ The [users API](https://ckeditor.com/docs/ckeditor5/latest/features/collaboratio
 
 Where tracking changes is not enough, the [comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) come in, offering perfect collaboration communication platform for writing and editing as a team.
 
-Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected part of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the uses access the content, but not edit it.
+Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected part of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the user access the content, but not edit it.
 
 {@img assets/img/features-collaboration.png 800 CKEditor 5 collaboration features.}
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link examples/index several preconfigured build}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link builds/guides/development/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
+Work as you like it - choose user interface approach from {@link examples/index several preconfigured builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link builds/guides/development/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
 
 {@img assets/img/toolbar.png 800 CKEditor 5 customizable UI.}
 
@@ -93,7 +93,7 @@ Do not get stopped by technology differences - CKEditor 5 offers cross-platform 
 
 Writing and editing content is one thing, sharing it is another. The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text.
 
-If you need to share the document, use [export to PDF feature](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) instead - and keep your comment and changes in the resulting document, ready to be edited further.
+If you need to share the document, use [export to PDF feature](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) instead - and keep your comments and changes in the resulting document, ready to be edited further.
 
 {@img assets/img/features-output.png 800 CKEditor 5 output features.}
 
