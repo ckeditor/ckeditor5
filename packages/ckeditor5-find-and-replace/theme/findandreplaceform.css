@@ -26,6 +26,10 @@
 			cursor: pointer;
 		}
 	}
+	
+	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
+		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+	}
 
 	@mixin ck-media-phone {
 		flex-wrap: wrap;
@@ -105,7 +109,7 @@
 	&.ck-isEnabled {
 		& .ck-button.ck-button-prev,
 		& .ck-button.ck-button-next {
-			margin-left: calc(var(--ck-spacing-unit) * 0.2);
+			margin-left: 1px;
 		}
 
 		& .ck-button.ck-button-find {
