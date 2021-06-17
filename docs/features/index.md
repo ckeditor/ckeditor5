@@ -61,7 +61,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 {@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
 
-Track your progress and changes done in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tool lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+Track your progress and changes done in the content with the [revision history](https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html) feature. This modern and robust document versioning tool lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
