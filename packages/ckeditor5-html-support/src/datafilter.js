@@ -556,7 +556,10 @@ function iterableToObject( iterable, getValue ) {
 	const attributesObject = {};
 
 	for ( const prop of iterable ) {
-		attributesObject[ prop ] = getValue( prop );
+		const value = getValue( prop );
+		if ( value !== undefined ) {
+			attributesObject[ prop ] = getValue( prop );
+		}
 	}
 
 	return attributesObject;
