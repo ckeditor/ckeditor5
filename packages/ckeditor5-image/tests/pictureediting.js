@@ -5,10 +5,13 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
 import ImageInlineEditing from '../src/image/imageinlineediting';
 import ImageBlockEditing from '../src/image/imageblockediting';
@@ -17,6 +20,7 @@ import ImageEditing from '../src/image/imageediting';
 import ImageUtils from '../src/imageutils';
 import ImageResizeEditing from '../src/imageresize/imageresizeediting';
 import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
+import ImageUploadEditing from '../src/imageupload/imageuploadediting';
 
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
@@ -1211,7 +1215,110 @@ describe( 'PictureEditing', () => {
 	} );
 
 	describe( 'integration with ImageUploadEditing (uploadComplete event)', () => {
+		let editor, model, fileRepository, nativeReaderMock, adapterMock, loader;
 
+		beforeEach( async () => {
+			testUtils.sinon.stub( global.window, 'FileReader' ).callsFake( () => {
+				nativeReaderMock = new NativeFileReaderMock();
+
+				return nativeReaderMock;
+			} );
+
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					Paragraph,
+					PictureEditing,
+					ImageBlockEditing, ImageInlineEditing,
+					LinkImageEditing, ImageResizeEditing, ImageCaptionEditing, ImageUploadEditing,
+					UploadAdapterPluginMock
+				]
+			} );
+
+			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should use "sources" in the #uploadComplete event', async () => {
+			editor.setData( '<p>foo</p>' );
+			editor.execute( 'uploadImage', { file: () => {} } );
+
+			await new Promise( res => {
+				model.document.once( 'change', res );
+				loader.file.then( () => nativeReaderMock.mockSuccess( 'foo' ) );
+			} );
+
+			await new Promise( res => {
+				model.document.once( 'change', res, { priority: 'lowest' } );
+				loader.file.then( () => {
+					adapterMock.mockSuccess( {
+						default: 'image.png',
+						sources: [
+							{ srcset: 'bar.png', type: 'image/png', media: '(max-width: 800px)' },
+							{ srcset: 'baz.png', type: 'image/png', media: '(min-width: 800px)' }
+						]
+					} );
+				} );
+			} );
+
+			expect( getModelData( editor.model ) ).to.equal(
+				'<paragraph>' +
+					'[<imageInline sources="[object Object],[object Object]" src="image.png"></imageInline>]' +
+					'foo' +
+				'</paragraph>'
+			);
+
+			assertPictureSources( model, editor.plugins.get( 'ImageUtils' ), [
+				{
+					media: '(max-width: 800px)',
+					srcset: 'bar.png',
+					type: 'image/png'
+				},
+				{
+					media: '(min-width: 800px)',
+					srcset: 'baz.png',
+					type: 'image/png'
+				}
+			] );
+		} );
+
+		it( 'should not activate if "sources" in the #uploadComplete event is missing', async () => {
+			editor.setData( '<p>foo</p>' );
+			editor.execute( 'uploadImage', { file: () => {} } );
+
+			await new Promise( res => {
+				model.document.once( 'change', res );
+				loader.file.then( () => nativeReaderMock.mockSuccess( 'foo' ) );
+			} );
+
+			await new Promise( res => {
+				model.document.once( 'change', res, { priority: 'lowest' } );
+				loader.file.then( () => {
+					adapterMock.mockSuccess( { default: 'image.png' } );
+				} );
+			} );
+
+			expect( getModelData( editor.model ) ).to.equal(
+				'<paragraph>' +
+					'[<imageInline src="image.png"></imageInline>]' +
+					'foo' +
+				'</paragraph>'
+			);
+		} );
+
+		class UploadAdapterPluginMock extends Plugin {
+			init() {
+				fileRepository = this.editor.plugins.get( 'FileRepository' );
+				fileRepository.createUploadAdapter = newLoader => {
+					loader = newLoader;
+					adapterMock = new UploadAdapterMock( loader );
+
+					return adapterMock;
+				};
+			}
+		}
 	} );
 } );
 
