@@ -11,8 +11,6 @@ import { Plugin } from 'ckeditor5/src/core';
 import FindAndReplaceUI from './findandreplaceui';
 import FindAndReplaceEditing from './findandreplaceediting';
 
-import '../theme/findandreplace.css';
-
 /**
  * The find and replace plugin.
  *

@@ -13,6 +13,8 @@ import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
 
+import '../theme/findandreplace.css';
+
 const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
 // Reacts to document changes in order to update search list.
