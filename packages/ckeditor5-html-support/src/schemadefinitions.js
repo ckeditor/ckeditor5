@@ -414,16 +414,16 @@ export default {
 			}
 		},
 		{
-			model: 'htmlDl',
+			model: 'htmlDescriptionList',
 			view: 'dl',
 			modelSchema: {
 				allowIn: [ '$htmlBlock', '$root' ],
-				allowChildren: [ 'htmlDt', 'htmlDl' ],
+				allowChildren: [ 'htmlDescriptionTerm', 'htmlDescriptionDetails' ],
 				isBlock: true
 			}
 		},
 		{
-			model: 'htmlDt',
+			model: 'htmlDescriptionTerm',
 			view: 'dt',
 			modelSchema: {
 				allowChildren: '$block',
@@ -431,7 +431,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlDd',
+			model: 'htmlDescriptionDetails',
 			view: 'dd',
 			modelSchema: {
 				allowChildren: '$block',
