@@ -11,13 +11,13 @@ The number of features available for CKEditor 5 is constantly growing. You can f
 
 ## Using CKEditor 5 features
 
-Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (if fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. Many actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with {@link features/ui-language multitude of translations} and it supports RTL languages.
+Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (in fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. Many actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
 
 ## Feature availability
 
-Plenty of these features are included by default in {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like for example {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Plenty of these features are included by default in the preconfigured {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
 
-However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML, or easily and conveniently added to a custom build in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
 We also offer the flexibility of the {@link builds/guides/development/dll-builds DLL builds}, enabling the addition of new plugins into an existing build without the need to rebuild the installation.
 
@@ -26,7 +26,7 @@ We also offer the flexibility of the {@link builds/guides/development/dll-builds
 CKEditor 5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
 
 <info-box>
-	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through selected CKEditor 5 features.
+	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through a full selection of CKEditor 5 features.
 </info-box>
 
 ### Formatting features
