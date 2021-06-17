@@ -19,7 +19,7 @@ import TreeWalker from './treewalker';
 
 /**
  * The model's schema. It defines the allowed and disallowed structures of nodes as well as nodes' attributes.
- * The schema is usually defined by the features and based on them the editing framework and features
+ * The schema is usually defined by the features and based on them, the editing framework and features
  * make decisions on how to change and process the model.
  *
  * The instance of schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}.
