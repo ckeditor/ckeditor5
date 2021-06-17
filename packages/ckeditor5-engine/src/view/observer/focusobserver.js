@@ -38,8 +38,8 @@ export default class FocusObserver extends DomEventObserver {
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
 			// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
 			//
-			// Changing document.isFocused marks view as changed since last rendering, it would be best if view got rendered
-			// on the next selectionChange event, but as a fallback let's trigger rendering in 50ms.
+			// Using `view.change()` instead of `view.forceRender()` to prevent double rendering
+			// in a situation where `selectionchange` already caused selection change.
 			this._renderTimeoutId = setTimeout( () => view.change( () => {} ), 50 );
 		} );
 
