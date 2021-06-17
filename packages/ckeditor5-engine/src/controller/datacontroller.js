@@ -250,7 +250,7 @@ export default class DataController {
 		// Convert markers.
 		// For document fragment, simply take the markers assigned to this document fragment.
 		// For model root, all markers in that root will be taken.
-		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
+		// For model element, we need to check which markers are contained in this element and relatively modify the markers' ranges.
 		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
 			Array.from( modelElementOrFragment.markers ) :
 			_getMarkersRelativeToElement( modelElementOrFragment );
@@ -528,31 +528,32 @@ mix( DataController, ObservableMixin );
 
 // Helper function for downcast conversion.
 //
-// Takes a document element (element that is added to a model document) and checks which markers are inside it
-// and which markers are containing it. If the marker is intersecting with element, the intersection is returned.
+// Takes a document element (element that is added to a model document) and checks which markers are inside it.
+// If the marker is intersecting with element, the intersection is returned. If the marker is collapsed at element
+// boundary, it is considered as contained inside the element and marker range is returned.
 function _getMarkersRelativeToElement( element ) {
+	const result = [];
 	const doc = element.root.document;
 
 	if ( !doc ) {
 		return [];
 	}
 
-	const markers = [ ...doc.model.markers ];
-	const isRootElement = element.is( 'element', '$root' );
+	const elementRange = ModelRange._createIn( element );
 
-	if ( isRootElement ) {
-		// For $root element, take all markers unconditionally, because any marker is always contained in the $root element.
-		return markers.map( marker => [ marker.name, marker.getRange() ] );
+	for ( const marker of doc.model.markers ) {
+		const markerRange = marker.getRange();
+
+		const isMarkerCollapsedAtElementBoundary = markerRange.isCollapsed && ( markerRange.start.isAtStart || markerRange.start.isAtEnd );
+
+		const updatedMarkerRange = isMarkerCollapsedAtElementBoundary ?
+			markerRange :
+			elementRange.getIntersection( markerRange );
+
+		if ( updatedMarkerRange ) {
+			result.push( [ marker.name, updatedMarkerRange ] );
+		}
 	}
 
-	const range = ModelRange._createIn( element );
-
-	// For other element, return only markers that intersect with this element.
-	return markers
-		.filter( marker => range.isIntersecting( marker.getRange() ) )
-		.map( marker => {
-			const intersection = range.getIntersection( marker.getRange() );
-
-			return [ marker.name, intersection ];
-		} );
+	return result;
 }

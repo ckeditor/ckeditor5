@@ -672,17 +672,17 @@ describe( 'DataController', () => {
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/8485.
-		it( 'should fire an addMarker event for markers located at start or at end of the $root element', () => {
+		it( 'should fire an addMarker event for collapsed markers located at $root element boundary', () => {
 			const root = model.document.getRoot();
 			const spy = sinon.spy();
 
-			data.downcastDispatcher.on( 'addMarker:fooMarkerAtRootStart', spy );
-			data.downcastDispatcher.on( 'addMarker:fooMarkerAtRootEnd', spy );
+			data.downcastDispatcher.on( 'addMarker:fooMarkerAtElementStart', spy );
+			data.downcastDispatcher.on( 'addMarker:fooMarkerAtElementEnd', spy );
 
 			setData( model, '<paragraph>foobar</paragraph>' );
 
 			model.change( writer => {
-				writer.addMarker( 'fooMarkerAtRootStart', {
+				writer.addMarker( 'fooMarkerAtElementStart', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 0 ] ),
 						writer.createPositionFromPath( root, [ 0 ] )
@@ -690,7 +690,7 @@ describe( 'DataController', () => {
 					usingOperation: true
 				} );
 
-				writer.addMarker( 'fooMarkerAtRootEnd', {
+				writer.addMarker( 'fooMarkerAtElementEnd', {
 					range: writer.createRange(
 						writer.createPositionFromPath( root, [ 1 ] ),
 						writer.createPositionFromPath( root, [ 1 ] )
@@ -702,8 +702,45 @@ describe( 'DataController', () => {
 			data.toView( root );
 
 			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtRootStart' );
-			expect( spy.secondCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtRootEnd' );
+			expect( spy.firstCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtElementStart' );
+			expect( spy.secondCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtElementEnd' );
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/8485.
+		it( 'should fire an addMarker event for collapsed markers located at non-$root element boundary', () => {
+			const root = model.document.getRoot();
+			const spy = sinon.spy();
+
+			data.downcastDispatcher.on( 'addMarker:fooMarkerAtElementStart', spy );
+			data.downcastDispatcher.on( 'addMarker:fooMarkerAtElementEnd', spy );
+
+			setData( model, '<div><paragraph>foobar</paragraph></div>' );
+
+			const modelParagraph = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'fooMarkerAtElementStart', {
+					range: writer.createRange(
+						writer.createPositionFromPath( modelParagraph, [ 0 ] ),
+						writer.createPositionFromPath( modelParagraph, [ 0 ] )
+					),
+					usingOperation: true
+				} );
+
+				writer.addMarker( 'fooMarkerAtElementEnd', {
+					range: writer.createRange(
+						writer.createPositionFromPath( modelParagraph, [ 1 ] ),
+						writer.createPositionFromPath( modelParagraph, [ 1 ] )
+					),
+					usingOperation: true
+				} );
+			} );
+
+			data.toView( modelParagraph );
+
+			sinon.assert.calledTwice( spy );
+			expect( spy.firstCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtElementStart' );
+			expect( spy.secondCall.args[ 1 ].markerName ).to.equal( 'fooMarkerAtElementEnd' );
 		} );
 
 		it( 'should convert a document fragment and its markers', () => {
