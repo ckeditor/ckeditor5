@@ -3,7 +3,7 @@
 		{
 			"name": "HTML embed",
 			"className": "HtmlEmbed",
-			"description": "Allows embedding an arbitrary HTML snippet in the editor.",
+			"description": "Allows for embedding an arbitrary HTML snippet in the editor.",
 			"docs": "features/html-embed.html",
 			"path": "src/htmlembed.js",
 			"uiComponents": [
