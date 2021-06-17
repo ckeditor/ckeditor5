@@ -7,9 +7,11 @@ feedback-widget: false
 
 # Features
 
-The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left.
+The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left. CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. Newly added or meaningfully updated feature guides are marked with a 🆕&nbsp; icon for easy spotting.
 
-Most of them are easily accessible from a {@link features/toolbar highly configurable toolbar} (if fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. Many actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with {@link features/ui-language multitude of translations} and it supports RTL languages.
+## Using CKEditor 5 features
+
+Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (if fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. Many actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with {@link features/ui-language multitude of translations} and it supports RTL languages.
 
 ## Feature availability
 
@@ -59,7 +61,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 {@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
 
-That your progress and changes dane in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tools lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+Track your progress and changes done in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tools lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
@@ -109,7 +111,7 @@ Each rich-text editor feature is presented on a separate page, with one or more 
 
 ## Looking for more?
 
-The examples on the left do not present all features included in CKEditor 5. For example, some end-user features like undo and redo are quite self-explanatory.
+The examples mentioned above do not present all features included in CKEditor 5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory and therefore only mentioned in the keyboard shortcuts guide.
 
 CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍&nbsp; to show your support.
 
