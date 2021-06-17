@@ -528,9 +528,9 @@ mix( DataController, ObservableMixin );
 
 // Helper function for downcast conversion.
 //
-// Takes a document element (element that is added to a model document) and checks which markers are inside it.
-// If the marker is intersecting with element, the intersection is returned. If the marker is collapsed at element
-// boundary, it is considered as contained inside the element and marker range is returned.
+// Takes a document element (element that is added to a model document) and checks which markers are inside it. If the marker is collapsed
+// at element boundary, it is considered as contained inside the element and marker range is returned. Otherwise, if the marker is
+// intersecting with element, the intersection is returned.
 function _getMarkersRelativeToElement( element ) {
 	const result = [];
 	const doc = element.root.document;
