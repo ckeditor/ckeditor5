@@ -195,7 +195,8 @@ It is possible to add support for arbitrary styles, classes and other attributes
 
 Most of the existing CKEditor 5 features can already be extended this way, however, some cannot yet. This includes:
 
-* Some of the table and image features' markup.
+* Some of the table markup.
+* Some of the image features' markup.
 * The `<ul>` and `<ol>` elements of the list feature.
 
 <!-- TODO link the above points to specific tickets on GH -->
