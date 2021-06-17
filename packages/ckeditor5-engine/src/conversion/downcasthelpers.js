@@ -548,7 +548,7 @@ export function insertText() {
  */
 export function remove() {
 	return ( evt, data, conversionApi ) => {
-		// Find view range start position by mapping the model position at which the remove happened.
+		// Find the view range start position by mapping the model position at which the remove happened.
 		const viewStart = conversionApi.mapper.toViewPosition( data.position );
 
 		const modelEnd = data.position.getShiftedBy( data.length );
