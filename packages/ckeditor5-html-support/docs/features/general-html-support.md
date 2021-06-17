@@ -189,7 +189,7 @@ The general HTML support feature distinguishes several content types that it tre
 
 The enabled elements will not just be available "anywhere" in the content, as they still need to adhere to certain rules derived from the HTML schema and from common sense. Also, the behavior of specific types of elements in the editing area will be different. For instance, the object elements will only be selectable as a whole, and the inline elements will work the same as other formatting features supported by CKEditor 5 (e.g. bold, italic) do.
 
-## Extending specific editor features
+## Known issues
 
 It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.).
 
@@ -206,8 +206,6 @@ There are other HTML editing related CKEditor 5 features you may want to check:
 
 * {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
-
-<!-- TODO link to HTML comments features once it's ready. -->
 
 ## Contribute
 
