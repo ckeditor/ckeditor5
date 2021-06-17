@@ -652,7 +652,7 @@ function upcastDataToMarker( config ) {
 		// Attribute conversion needs to be performed *after* element conversion.
 		// This converter handles both element conversion and attribute conversion, which means that if a single
 		// `config.converterPriority` is used, it will lead to problems. For example, if `'high'` priority is used,
-		// then attribute conversion will be performed before a lot of element upcast converters.
+		// the attribute conversion will be performed before a lot of element upcast converters.
 		// On the other hand, we want to support `config.converterPriority` and converters overwriting.
 		//
 		// To make it work, we need to do some extra processing for priority for attribute converter.
