@@ -24,6 +24,19 @@
 // * wbr
 // Skipped elements due to complexity:
 // * datalist with option elements used as a data source for input[list] element
+// Skipped elements as they are handled as an object content:
+// TODO shouldn't we also filter attributes on these element and enable them separately?
+// * track
+// * source
+// * option
+// * param
+// * optgroup
+// Skipped full page HTML elements:
+// * body
+// * html
+// * title
+// * head
+// * etc...
 
 export default {
 	block: [
@@ -99,6 +112,22 @@ export default {
 		{
 			model: 'htmlTableHead',
 			view: 'thead',
+			modelSchema: {
+				allowIn: 'htmlTable',
+				isBlock: true
+			}
+		},
+		{
+			model: 'htmlTableFoot',
+			view: 'tfoot',
+			modelSchema: {
+				allowIn: 'htmlTable',
+				isBlock: true
+			}
+		},
+		{
+			model: 'htmlColumnGroup',
+			view: 'colgroup',
 			modelSchema: {
 				allowIn: 'htmlTable',
 				isBlock: true
@@ -206,6 +235,14 @@ export default {
 			view: 'fieldset',
 			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
+			}
+		},
+		// TODO can also include h1-h6.
+		{
+			model: 'htmlLegend',
+			view: 'legend',
+			modelSchema: {
+				inheritAllFrom: '$block'
 			}
 		},
 		// TODO can also include text.
@@ -355,6 +392,14 @@ export default {
 		{
 			model: 'htmlSection',
 			view: 'section',
+			modelSchema: {
+				inheritAllFrom: '$htmlBlock'
+			}
+		},
+		// TODO can also include text.
+		{
+			model: 'htmlNav',
+			view: 'nav',
 			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
 			}

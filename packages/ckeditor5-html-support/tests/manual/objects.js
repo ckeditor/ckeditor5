@@ -46,17 +46,14 @@ class ExtendHTMLSupport extends Plugin {
 
 		const definitions = [
 			{ name: 'object', attributes: [ 'classid', 'codebase' ] },
-			{ name: 'param', attributes: [ 'name', 'value' ] },
 			{ name: 'embed', attributes: [ 'allowfullscreen', 'pluginspage', 'quality', 'src', 'type' ] },
 			{ name: 'iframe', attributes: [ 'frameborder', 'scrolling', 'src' ] },
 			{ name: 'form', attributes: [ 'action', 'method', 'name' ] },
 			{ name: 'input', attributes: [ 'name', 'type', 'value', 'alt', 'src' ] },
 			{ name: 'textarea', attributes: [ 'name' ] },
 			{ name: 'select', attributes: [ 'name' ] },
-			{ name: 'option', attributes: [ 'value', 'selected' ] },
 			{ name: 'video', attributes: [ 'height', 'width', 'controls' ] },
 			{ name: 'audio', attributes: [ 'controls' ] },
-			{ name: 'source', attributes: [ 'src', 'type' ] },
 			{ name: 'button' },
 			{ name: 'label' },
 			{ name: 'xyz', attributes: [ 'data-foo' ] }
