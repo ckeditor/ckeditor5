@@ -35,7 +35,7 @@ CKEditor 5 features cover several functional areas of application and use. Liste
 
 Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature}.
 
-{@img assets/img/features-basic-formatting.png 800 CKEditor 5 features.}
+{@img assets/img/features-basic-formatting.png 800 CKEditor 5 formatting features.}
 
 ### Advanced content
 
@@ -47,7 +47,7 @@ Provide clear and accessible data using {@link features/table tables} (you can e
 
 Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that let you produce code listing with a syntax highlight, too!
 
-{@img assets/img/features-images.png 800 CKEditor 5 features.}
+{@img assets/img/features-images.png 800 CKEditor 5 image feature.}
 
 ### Productivity features
 
@@ -57,7 +57,11 @@ The {@link features/word-count words and characters counter} will help you track
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
-{@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 features.}
+{@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
+
+That your progress and changes dane in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tools lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+
+{@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
 ### Collaboration
 
@@ -69,19 +73,19 @@ Where tracking changes is not enough, the [comments](https://ckeditor.com/docs/c
 
 Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected part of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the uses access the content, but not edit it.
 
-{@img assets/img/features-collaboration.png 800 CKEditor 5 features.}
+{@img assets/img/features-collaboration.png 800 CKEditor 5 collaboration features.}
 
 ### Customizable user experience
 
 Work as you like it - choose user interface approach from {@link examples/index several preconfigured build}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link builds/guides/development/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
 
-{@img assets/img/toolbar.png 800 CKEditor 5 features.}
+{@img assets/img/toolbar.png 800 CKEditor 5 customizable UI.}
 
 ### Cross-platform interoperability
 
 Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-word from MS Word}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
 
-{@img assets/img/features-paste.png 800 CKEditor 5 features.}
+{@img assets/img/features-paste.png 800 CKEditor 5 paste features.}
 
 ### Output and exports
 
@@ -89,7 +93,7 @@ Writing and editing content is one thing, sharing it is another. The CKEditor 5 
 
 If you need to share the document, use [export to PDF feature](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) instead - and keep your comment and changes in the resulting document, ready to be edited further.
 
-{@img assets/img/features-output.png 800 CKEditor 5 features.}
+{@img assets/img/features-output.png 800 CKEditor 5 output features.}
 
 ## Backwards feature compatibility
 
