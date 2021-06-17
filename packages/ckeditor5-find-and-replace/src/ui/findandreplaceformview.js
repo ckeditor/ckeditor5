@@ -30,7 +30,7 @@ export default class FindAndReplaceFormView extends View {
 		const t = locale.t;
 
 		/**
-		 * The Find button view that's visible initially.
+		 * The find button view that's visible initially - pre-search.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -40,7 +40,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The FindPrevious button view.
+		 * The find previous button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -50,7 +50,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The findNext button view.
+		 * The find next button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -70,7 +70,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * The replaceAll button view.
+		 * The replace all button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -94,7 +94,7 @@ export default class FindAndReplaceFormView extends View {
 		this.matchWholeWordsCheckbox = this._createCheckbox( 'wholewords', 'Whole words only' );
 
 		/**
-		 * The Find input view.
+		 * The find input view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
@@ -112,7 +112,6 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		 */
-		// TODO
 		// eslint-disable-next-line max-len
 		this.findView = this._createFindView( this.findInputView, this.matchCaseCheckbox, this.matchWholeWordsCheckbox, this.findButtonView, this.findNextButtonView, this.findPrevButtonView );
 
@@ -121,7 +120,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		 */
-		this.replaceView = this._createReplaceView( this.replaceAllButtonView, this.replaceButtonView, this.replaceInputView );
+		this.replaceView = this._createReplaceView( this.replaceInputView, this.replaceButtonView, this.replaceAllButtonView );
 
 		this.setTemplate( {
 			tag: 'form',
@@ -246,9 +245,12 @@ export default class FindAndReplaceFormView extends View {
 	 * Collection of views for the 'find' functionality of the feature
 	 *
 	 * @private
-	 * @param {module:ui/view~View} NextInputView NextButtonInput view.
-	 * @param {module:ui/view~View} PrevInputView PrevButtonInput view.
-	 * @param {module:ui/view~View} InputView Input view.
+	 * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} InputView Find input view.
+	 * @param {module:ui/view~View} matchCaseCheckbox Match case checkbox view.
+	 * @param {module:ui/view~View} matchWholeWordsCheckbox Whole words only checkbox view.
+	 * @param {module:ui/button/buttonview~ButtonView} findButtonView Find button view that's visible initially - pre-search.
+	 * @param {module:ui/button/buttonview~ButtonView} findNextButtonView Find next button view.
+	 * @param {module:ui/button/buttonview~ButtonView} findPrevButtonView Find previous button view.
 	 * @return {module:ui/view~View} The find view instance.
 	 */
 
@@ -313,12 +315,12 @@ export default class FindAndReplaceFormView extends View {
 	 * Collection of views for the 'replace' functionality of the feature
 	 *
 	 * @private
-	 * @param {module:ui/view~View} NextInputView NextButtonInput view.
-	 * @param {module:ui/view~View} PrevInputView PrevButtonInput view.
-	 * @param {module:ui/view~View} InputView Input view.
+	 * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} InputView Replace input view.
+	 * @param {module:ui/button/buttonview~ButtonView} replaceButtonView Replace button view.
+	 * @param {module:ui/button/buttonview~ButtonView} replaceAllButtonView Replace all button view.
 	 * @returns {module:ui/view~View} The replace view instance.
 	 */
-	_createReplaceView( replaceAllButtonView, replaceButtonView, InputView ) {
+	_createReplaceView( InputView, replaceButtonView, replaceAllButtonView ) {
 		const replaceView = new View();
 
 		replaceView.setTemplate( {
@@ -383,7 +385,7 @@ export default class FindAndReplaceFormView extends View {
 	 * @private
 	 * @param {String} label The button label.
 	 * @param {String} className The individual button CSS class name.
-	 * @param {Svg} findArrowIcon SVG image for icon usage.
+	 * @param {Object} findArrowIcon SVG image for icon usage.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
 	_createButton( label, className, findArrowIcon ) {
@@ -447,28 +449,28 @@ export default class FindAndReplaceFormView extends View {
 }
 
 /**
- * Fired when the {@link #findNextButtonView} is triggered.
+ * Fired when the find next button ({@link #findNextButtonView}) is triggered .
  *
  * @event findNext
  * @param {String} searchText Search text.
  */
 
 /**
- * Fired when the {@link #findPrevButtonView} is triggered.
+ * Fired when the find previous button ({@link #findPrevButtonView}) is triggered.
  *
  * @event findPrev
  * @param {String} searchText Search text.
  */
 
 /**
- * Fired when the {@link #replaceButtonView} is triggered.
+ * Fired when the replace button ({@link #replaceButtonView}) is triggered.
  *
  * @event replace
  * @param {String} replaceText Replacement text.
  */
 
 /**
- * Fired when the {@link #replaceAllButtonView} is triggered.
+ * Fired when the replaceAll button ({@link #replaceAllButtonView}) is triggered.
  *
  * @event replaceAll
  * @param {String} replaceText Replacement text.

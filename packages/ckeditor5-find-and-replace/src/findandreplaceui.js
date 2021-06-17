@@ -88,3 +88,31 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 	}
 }
+
+/**
+ * Fired when the find next button is triggered.
+ *
+ * @event findNext
+ * @param {String} searchText Search text.
+ */
+
+/**
+ * Fired when the find previous button is triggered.
+ *
+ * @event findPrev
+ * @param {String} searchText Search text.
+ */
+
+/**
+ * Fired when the replace button is triggered.
+ *
+ * @event replace
+ * @param {String} replaceText Replacement text.
+ */
+
+/**
+ * Fired when the replaceAll button is triggered.
+ *
+ * @event replaceAll
+ * @param {String} replaceText Replacement text.
+ */
