@@ -330,25 +330,29 @@ export default class FindAndReplaceFormView extends View {
 }
 
 /**
- * Fired when the {@link #findNextButtonView} is clicked.
+ * Fired when the {@link #findNextButtonView} is triggered.
  *
  * @event findNext
+ * @param {String} searchText Search text.
  */
 
 /**
- * Fired when the {@link #findPrevButtonView} is clicked.
+ * Fired when the {@link #findPrevButtonView} is triggered.
  *
  * @event findPrev
+ * @param {String} searchText Search text.
  */
 
 /**
- * Fired when the {@link #replaceButtonView} is clicked.
+ * Fired when the {@link #replaceButtonView} is triggered.
  *
  * @event replace
+ * @param {String} replaceText Replacement text.
  */
 
 /**
- * Fired when the {@link #replaceAllButtonView} is clicked.
+ * Fired when the {@link #replaceAllButtonView} is triggered.
  *
  * @event replaceAll
+ * @param {String} replaceText Replacement text.
  */

@@ -88,28 +88,4 @@ export default class FindAndReplaceUI extends Plugin {
 			tooltip: true
 		} );
 	}
-
-	/**
-	 * Delegates find next command.
-	 *
-	 * @event findNext
-	 */
-
-	/**
-	 * Delegates find previous command.
-	 *
-	 * @event findPrev
-	 */
-
-	/**
-	 * Delegates replace command.
-	 *
-	 * @event replace
-	 */
-
-	/**
-	 * Delegates replaceAll command.
-	 *
-	 * @event replaceAll
-	 */
 }
