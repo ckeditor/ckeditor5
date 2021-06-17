@@ -3,7 +3,7 @@
 		{
 			"name": "List",
 			"className": "List",
-			"description": "This package implements bulleted and numbered list features. Add the to-do list plugin to bring support for inserting interactive checkboxes.",
+			"description": "Implements bulleted and numbered list features. Add the to-do list plugin to bring support for inserting interactive checkboxes.",
 			"docs": "features/lists/lists.html",
 			"path": "src/list.js",
 			"uiComponents": [

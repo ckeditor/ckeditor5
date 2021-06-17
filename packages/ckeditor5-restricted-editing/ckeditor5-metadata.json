@@ -3,7 +3,7 @@
 		{
 			"name": "Restricted editing mode",
 			"className": "RestrictedEditingMode",
-			"description": "This package enables defining which parts of a document can be editable for users with restricted editing rights. It allows you to edit only within the created editable areas.",
+			"description": "Enables defining which parts of a document can be editable for users with restricted editing rights. It allows you to edit only within the created editable areas.",
 			"docs": "features/restricted-editing.html",
 			"path": "src/restrictededitingmode.js",
 			"uiComponents": [

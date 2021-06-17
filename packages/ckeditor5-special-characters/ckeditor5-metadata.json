@@ -3,7 +3,7 @@
 		{
 			"name": "Special characters",
 			"className": "SpecialCharacters",
-			"description": "This package allows for inserting special characters via a dropdown. This is the core part of the feature. Add plugins like special characters essentials or special characters currency to fill it with some characters.",
+			"description": "Allows for inserting special characters via a dropdown. This is the core part of the feature. Add plugins like special characters essentials or special characters currency to fill it with some characters.",
 			"docs": "features/special-characters.html",
 			"path": "src/specialcharacters.js",
 			"uiComponents": [

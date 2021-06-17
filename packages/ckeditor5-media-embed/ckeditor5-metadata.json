@@ -3,7 +3,7 @@
 		{
 			"name": "Media embed",
 			"className": "MediaEmbed",
-			"description": "This package allows for inserting embeddable media such as YouTube or Vimeo videos, Instagram posts and tweets or Google Maps into your rich-text content.",
+			"description": "Allows for inserting embeddable media such as YouTube or Vimeo videos, Instagram posts and tweets or Google Maps into your rich-text content.",
 			"docs": "features/media-embed.html",
 			"path": "src/mediaembed.js",
 			"uiComponents": [
