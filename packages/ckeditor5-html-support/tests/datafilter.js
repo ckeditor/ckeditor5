@@ -1078,7 +1078,7 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p><a href="example.com" data-foo="foo">link</a></p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><$text htmlA="(1)" linkHref="example.com">link</$text></paragraph>',
+				data: '<paragraph><$text htmlLink="(1)" linkHref="example.com">link</$text></paragraph>',
 				attributes: {
 					1: {
 						attributes: {
