@@ -5,7 +5,7 @@
 
 .ck-content .table {
 	/* Give the table widget some air and center it horizontally */
-	margin: var(--ck-spacing-large) auto;
+	margin: 0.9em auto;
 	display: table;
 
 	& table {

@@ -6,7 +6,7 @@
 /* The feature container. */
 .ck-widget.raw-html-embed {
 	/* Give the embed some air. */
-	margin: var(--ck-spacing-large) auto;
+	margin: 0.9em auto;
 	position: relative;
 	display: flow-root;
 
