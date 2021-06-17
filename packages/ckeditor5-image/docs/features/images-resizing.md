@@ -2,6 +2,7 @@
 category: features-images
 menu-title: Resizing images
 order: 50
+modified_at: 2021-06-17
 ---
 {@snippet features/build-image-source}
 
