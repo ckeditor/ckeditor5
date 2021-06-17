@@ -13,6 +13,7 @@ import Font from '@ckeditor/ckeditor5-font/src/font';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, Underline, Font, Mention ],
 		toolbar: [
 			'heading',
