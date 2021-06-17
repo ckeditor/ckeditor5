@@ -2,6 +2,7 @@
 category: features-images
 menu-title: Resizing images
 order: 50
+modified_at: 2021-06-17
 ---
 {@snippet features/build-image-source}
 
@@ -77,14 +78,14 @@ const imageConfiguration = {
 			label: 'Original'
 		},
 		{
-			name: 'resizeImage:50',
-			value: '50',
-			label: '50%'
+			name: 'resizeImage:40',
+			value: '40',
+			label: '40%'
 		},
 		{
-			name: 'resizeImage:75',
-			value: '75',
-			label: '75%'
+			name: 'resizeImage:60',
+			value: '60',
+			label: '60%'
 		}
 	],
 	toolbar: [ ..., 'resizeImage' ]
@@ -94,6 +95,14 @@ const imageConfiguration = {
 Try out the live demo of the resize dropdown available in the image toolbar below.
 
 {@snippet features/image-resize-buttons-dropdown}
+
+<info-box hint>
+Images in the example below were prepared to match the exact aspect ratios, so they can be displayed together, with equal heights.
+
+If you want to define the possible aspect ratios of the inserted images, for example allow the user to insert 1:1 and 40% width, and 1:2 and 20% width images, you should use the {@link features/images-styles#configuring-the-styles image style feature}.
+
+The example of CSS fixing the image aspect ratio is in the [last example](#aspect-ratio-css) of this guide.
+</info-box>
 
 ### Using standalone resize buttons
 
@@ -240,7 +249,24 @@ However, there are cases where pixel values may be preferred. You can thus confi
 ClassicEditor
 	.create( editorElement, {
 		image: {
-			resizeUnit: 'px'
+			resizeUnit: 'px',
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					label: 'Original',
+					value: null
+				},
+				{
+					name: 'resizeImage:100',
+					label: '100px',
+					value: '100'
+				},
+				{
+					name: 'resizeImage:200',
+					label: '200px',
+					value: '200'
+				}
+			]
 		}
 	} )
 	.then( ... )
@@ -248,6 +274,28 @@ ClassicEditor
 ```
 
 Check out the difference in the live demo below:
+The demo below uses CSS to set up the fixed image aspect ratio, so a 200px wide image automatically gets the same height.
+
+<div id="aspect-ratio-css"></div>
+```css
+.ck.ck-content .image {
+	position: relative;
+}
+.ck.ck-content .image img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+}
+.ck.ck-content .image::before {
+	content: '';
+	padding-top: 100%;
+	display: block;
+}
+```
 
 {@snippet features/image-resize-px}
 
