@@ -6,6 +6,8 @@
 /* The feature container. */
 .ck-widget.raw-html-embed {
 	/* Give the embed some air. */
+	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
 	margin: 0.9em auto;
 	position: relative;
 	display: flow-root;

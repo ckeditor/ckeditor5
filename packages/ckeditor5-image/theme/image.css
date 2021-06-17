@@ -10,6 +10,8 @@
 		text-align: center;
 
 		/* Make sure there is some space between the content and the image. Center image by default. */
+		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	 	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
 		margin: 0.9em auto;
 
 		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
