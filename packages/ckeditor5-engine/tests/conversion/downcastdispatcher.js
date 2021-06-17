@@ -58,6 +58,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.convertInsert.calledOnce ).to.be.true;
 			expect( dispatcher.convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should call convertRemove for remove change', () => {
@@ -72,6 +75,9 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			expect( dispatcher.convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should call convertAttribute for attribute change', () => {
@@ -90,6 +96,9 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			expect( dispatcher.convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should handle multiple changes', () => {
@@ -115,6 +124,9 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.convertInsert.calledTwice ).to.be.true;
 			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
 			expect( dispatcher.convertAttribute.calledOnce ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should call convertMarkerAdd when markers are added', () => {
@@ -134,6 +146,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should call convertMarkerRemove when markers are removed', () => {
@@ -153,6 +168,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should re-render markers which view elements got unbound during conversion', () => {
@@ -176,6 +194,9 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
 			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
@@ -232,6 +253,9 @@ describe( 'DowncastDispatcher', () => {
 				'insert:$text:xx:7,0:7,2',
 				'attribute:italic:true:$text:xx:7,0:7,2'
 			] );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire events for already consumed parts of model', () => {
@@ -259,6 +283,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
@@ -274,6 +301,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertRemove( model.createPositionAt( root, 3 ), 3, '$text' );
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
@@ -299,6 +329,9 @@ describe( 'DowncastDispatcher', () => {
 				'selection',
 				{ selection: sinon.match.instanceOf( doc.selection.constructor ) }
 			) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should prepare correct list of consumable values', () => {
@@ -316,6 +349,9 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			dispatcher.convertSelection( doc.selection, model.markers, [] );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire attributes events for non-collapsed selection', () => {
@@ -332,6 +368,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'attribute:italic' ) ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire attributes events for collapsed selection', () => {
@@ -350,6 +389,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold:$text' ) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire attributes events if attribute has been consumed', () => {
@@ -375,6 +417,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire events for markers for collapsed selection', () => {
@@ -392,6 +437,38 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should fire events for all markers of the same group for collapsed selection', () => {
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRange( writer.createPositionFromPath( root, [ 1 ] ), writer.createPositionFromPath( root, [ 1 ] ) )
+				);
+				writer.addMarker( 'name:1', {
+					range: writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 2 ) ),
+					usingOperation: false
+				} );
+				writer.addMarker( 'name:2', {
+					range: writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 3 ) ),
+					usingOperation: false
+				} );
+			} );
+
+			dispatcher.on( 'addMarker', ( evt, data, { consumable } ) => consumable.consume( data.item, evt.name ) );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
+
+			expect( dispatcher.fire.calledWith( 'addMarker:name:1' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'addMarker:name:2' ) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire events for markers for non-collapsed selection', () => {
@@ -406,6 +483,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire event for marker if selection is in a element with custom highlight handling', () => {
@@ -448,6 +528,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire events if information about marker has been consumed', () => {
@@ -472,6 +555,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'addMarker:foo' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addMarker:bar' ) ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
@@ -499,6 +585,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertMarkerAdd( 'name', range );
 
 			expect( spy.calledOnce ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should convert marker in document fragment', () => {
@@ -510,6 +599,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertMarkerAdd( 'name', eleRange );
 
 			expect( dispatcher.fire.called ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not convert marker if it is in graveyard', () => {
@@ -519,6 +611,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertMarkerAdd( 'name', gyRange );
 
 			expect( dispatcher.fire.called ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire addMarker event for whole non-collapsed marker and for each item in the range', () => {
@@ -557,6 +652,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( items[ 0 ] ).to.equal( element );
 			expect( items[ 1 ].data ).to.equal( text.data );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire conversion for non-collapsed marker items if marker was consumed in earlier event', () => {
@@ -579,6 +677,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertMarkerAdd( 'name', range );
 
 			expect( spyItems.called ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should be possible to override #1', () => {
@@ -605,6 +706,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( addMarkerSpy.called ).to.be.false;
 			expect( highAddMarkerSpy.calledOnce ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should be possible to override #2', () => {
@@ -633,6 +737,9 @@ describe( 'DowncastDispatcher', () => {
 
 			// Called once for each item, twice total.
 			expect( highAddMarkerSpy.calledTwice ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
@@ -653,6 +760,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertMarkerRemove( 'name', range );
 
 			expect( dispatcher.fire.calledWith( 'removeMarker:name' ) ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not convert marker if it is in graveyard', () => {
@@ -662,6 +772,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertMarkerRemove( 'name', gyRange );
 
 			expect( dispatcher.fire.called ).to.be.false;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should convert marker in document fragment', () => {
@@ -673,6 +786,9 @@ describe( 'DowncastDispatcher', () => {
 			dispatcher.convertMarkerRemove( 'name', eleRange );
 
 			expect( dispatcher.fire.called ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire conversion for the range', () => {
@@ -684,6 +800,9 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			dispatcher.convertMarkerRemove( 'name', range );
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should be possible to override', () => {
@@ -704,6 +823,9 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( removeMarkerSpy.called ).to.be.false;
 			expect( highRemoveMarkerSpy.calledOnce ).to.be.true;
+
+			expect( dispatcher.conversionApi.writer ).to.be.undefined;
+			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 } );
