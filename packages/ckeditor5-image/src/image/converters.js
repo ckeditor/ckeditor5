@@ -239,8 +239,27 @@ export function sourcesAttributeConverter( imageUtils ) {
 				viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), sourceElement );
 			}
 
+			// Collect all wrapping attribute elements.
+			const attributeElements = [];
+			let viewElement = imgElement.parent;
+
+			while ( viewElement && viewElement.is( 'attributeElement' ) ) {
+				const parentElement = viewElement.parent;
+
+				viewWriter.unwrap( viewWriter.createRangeOn( imgElement ), viewElement );
+
+				attributeElements.unshift( viewElement );
+				viewElement = parentElement;
+			}
+
+			// Insert the picture and move img into it.
 			viewWriter.insert( viewWriter.createPositionBefore( imgElement ), pictureElement );
-			viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), imgElement );
+			viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionAt( pictureElement, 'end' ) );
+
+			// Apply collected attribute elements over the new picture element.
+			for ( const attributeElement of attributeElements ) {
+				viewWriter.wrap( viewWriter.createRangeOn( pictureElement ), attributeElement );
+			}
 		} else {
 			const pictureElement = imgElement.parent;
 
