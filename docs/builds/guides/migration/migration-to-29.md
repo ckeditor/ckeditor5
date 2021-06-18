@@ -9,11 +9,11 @@ order: 95
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
-For the entire list of the changes introduced in version 29.0.0 of the CKEditor 5 see the changelog (TODO:link).
+<!-- For the entire list of the changes introduced in version 29.0.0 of the CKEditor 5 see the changelog (TODO:link). -->
 
 To see the new editor UI for the images visit the {@link features/images-overview image feature guide}, especially:
-* Images in the structured content, (TODO:link)
-* Images in the document-like content (TODO:link)
+* {@link features/images-styles#semantical-styles Images in the structured content }
+* {@link features/images-styles#presentational-styles Images in the document-like content}
 
 ## Inline images
 
