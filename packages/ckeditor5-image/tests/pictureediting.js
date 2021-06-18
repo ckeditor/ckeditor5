@@ -1229,6 +1229,44 @@ describe( 'PictureEditing', () => {
 						expect( editor.getData() ).to.equal( data );
 					} );
 
+					it.only( 'should downcast a linked inline image ("sources" set after linking)', () => {
+						editor.setData(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">' +
+									'<img src="/assets/sample.png">' +
+								'</a>bar' +
+							'</p>'
+						);
+
+						console.log( editor.getData() );
+
+						model.change( writer => {
+							writer.setAttribute(
+								'sources',
+								[
+									{
+										srcset: '/assets/sample.png'
+									}
+								],
+								modelDocument.getRoot().getChild( 0 ).getChild( 1 )
+							);
+						} );
+
+						console.log( getViewData( view ) );
+						console.log( editor.getData() );
+
+						expect( editor.getData() ).to.equal(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">' +
+									'<picture>' +
+										'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
+										'<img src="/assets/sample.png">' +
+									'</picture>' +
+								'</a>bar' +
+							'</p>'
+						);
+					} );
+
 					it( 'should downcast a resized inline image', () => {
 						const data =
 							'<p>' +
