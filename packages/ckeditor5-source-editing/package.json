@@ -20,6 +20,8 @@
     "@ckeditor/ckeditor5-editor-classic": "^28.0.0",
     "@ckeditor/ckeditor5-engine": "^28.0.0",
     "@ckeditor/ckeditor5-essentials": "^28.0.0",
+    "@ckeditor/ckeditor5-heading": "^28.0.0",
+    "@ckeditor/ckeditor5-markdown-gfm": "^28.0.0",
     "@ckeditor/ckeditor5-paragraph": "^28.0.0",
     "@ckeditor/ckeditor5-table": "^28.0.0",
     "@ckeditor/ckeditor5-ui": "^28.0.0",

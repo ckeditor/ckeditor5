@@ -320,5 +320,10 @@ export default class ModelConsumable {
 function _normalizeConsumableType( type ) {
 	const parts = type.split( ':' );
 
+	// Markers are identified by the whole name (otherwise we would consume the whole markers group).
+	if ( parts[ 0 ] == 'addMarker' || parts[ 0 ] == 'removeMarker' ) {
+		return type;
+	}
+
 	return parts.length > 1 ? parts[ 0 ] + ':' + parts[ 1 ] : parts[ 0 ];
 }

@@ -25,7 +25,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.editorResize = editor;
+		window.editorLinks = editor;
 	} )
 	.catch( err => {
 		console.error( err );
