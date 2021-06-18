@@ -730,6 +730,27 @@ describe( 'ImageUtils plugin', () => {
 
 		// figure
 		//   div
+		//      div
+		//         div
+		//            div
+		//              img
+		it( 'finds the the img element deeply nested in a view tree', () => {
+			const divElement1 = writer.createContainerElement( 'div' );
+			const divElement2 = writer.createContainerElement( 'div' );
+			const divElement3 = writer.createContainerElement( 'div' );
+			const divElement4 = writer.createContainerElement( 'div' );
+
+			writer.insert( writer.createPositionAt( element, 0 ), divElement1 );
+			writer.insert( writer.createPositionAt( divElement1, 0 ), divElement2 );
+			writer.insert( writer.createPositionAt( divElement2, 0 ), divElement3 );
+			writer.insert( writer.createPositionAt( divElement3, 0 ), divElement4 );
+			writer.move( writer.createRangeOn( image ), writer.createPositionAt( divElement4, 0 ) );
+
+			expect( imageUtils.findViewImgElement( element ) ).to.equal( image );
+		} );
+
+		// figure
+		//   div
 		//     "Bar"
 		//     img
 		//   "Foo"
