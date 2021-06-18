@@ -273,8 +273,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Check out the difference in the live demo below:
-The demo below uses CSS to set up the fixed image aspect ratio, so a 200px wide image automatically gets the same height.
+The following demo uses CSS to set up the fixed image aspect ratio, so a 200px wide image automatically gets the same height.
 
 <div id="aspect-ratio-css"></div>
 
@@ -297,6 +296,7 @@ The demo below uses CSS to set up the fixed image aspect ratio, so a 200px wide 
 	display: block;
 }
 ```
+Check out the difference in the live demo below:
 
 {@snippet features/image-resize-px}
 
