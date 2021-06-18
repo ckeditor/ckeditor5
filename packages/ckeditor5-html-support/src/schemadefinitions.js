@@ -441,6 +441,13 @@ export default {
 				isBlock: true
 			}
 		},
+		{
+			model: 'htmlCenter',
+			view: 'center',
+			modelSchema: {
+				inheritAllFrom: '$htmlBlock'
+			}
+		},
 		// Objects
 		{
 			model: '$htmlObjectBlock',
@@ -453,13 +460,6 @@ export default {
 		}
 	],
 	inline: [
-		{
-			model: 'htmlCenter',
-			view: 'center',
-			attributeProperties: {
-				copyOnEnter: true
-			}
-		},
 		{
 			model: 'htmlAcronym',
 			view: 'acronym',
@@ -780,7 +780,7 @@ export default {
 				inheritAllFrom: '$htmlObjectInline'
 			}
 		},
-		// TODO it could be probably represented as non-object element, although it has grafical representation,
+		// TODO it could be probably represented as non-object element, although it has graphical representation,
 		// so probably makes more sense to keep it as an object.
 		{
 			model: 'htmlMeter',
