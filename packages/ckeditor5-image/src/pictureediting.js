@@ -63,6 +63,7 @@ import {
  * automatically render using `<picture>` if the {@glink features/images/image-upload/image-upload upload adapter}
  * supports image sources and provides neccessary data.
  *
+ * @private
  * @extends module:core/plugin~Plugin
  */
 export default class PictureEditing extends Plugin {
