@@ -153,6 +153,9 @@ export function viewPictureToModel( imageUtils ) {
 		if ( sources.size ) {
 			conversionApi.writer.setAttribute( 'sources', Array.from( sources.values() ), modelImage );
 		}
+
+		// Convert rest of the <picture> children as an image children. Other converters may want to consume them.
+		conversionApi.convertChildren( pictureViewElement, modelImage );
 	}
 }
 

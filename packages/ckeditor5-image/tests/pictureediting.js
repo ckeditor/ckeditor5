@@ -502,6 +502,103 @@ describe( 'PictureEditing', () => {
 					);
 				} );
 			} );
+
+			describe( 'integration with other converters and edge cases', () => {
+				it( 'should not upcast <picture> if already consumed by other converters', () => {
+					editor.data.upcastDispatcher.on( 'element:picture', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.viewItem, { name: true } );
+					}, { priority: 'highest' } );
+
+					editor.setData(
+						'<p>' +
+							'foo<picture>' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<img src="/assets/sample.png">' +
+							'</picture>bar' +
+						'</p>'
+					);
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]foobar</paragraph>' );
+				} );
+
+				it( 'should not upcast individual <source> attributes if already consumed by other converters', () => {
+					editor.data.upcastDispatcher.on( 'element:picture', ( evt, data, conversionApi ) => {
+						for ( const childSourceElement of data.viewItem.getChildren() ) {
+							conversionApi.consumable.consume( childSourceElement, { attributes: 'media' } );
+						}
+					}, { priority: 'highest' } );
+
+					editor.setData(
+						'<p>' +
+							'foo<picture>' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<img src="/assets/sample.png">' +
+							'</picture>bar' +
+						'</p>'
+					);
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>[]' +
+							'foo' +
+							'<imageInline sources="[object Object],[object Object]" src="/assets/sample.png"></imageInline>' +
+							'bar' +
+						'</paragraph>'
+					);
+
+					assertPictureSources( model, imageUtils, [
+						{
+							srcset: '/assets/sample.png',
+							type: 'image/png'
+						},
+						{
+							srcset: '/assets/sample.png?foo',
+							type: 'image/png'
+						}
+					] );
+				} );
+
+				it( 'should not upcast <picture> (and not throw) if there is no <img> inside because this is an invalid HTML', () => {
+					editor.data.upcastDispatcher.on( 'element:picture', ( evt, data, conversionApi ) => {
+						for ( const childSourceElement of data.viewItem.getChildren() ) {
+							conversionApi.consumable.consume( childSourceElement, { attributes: 'media' } );
+						}
+					}, { priority: 'highest' } );
+
+					editor.setData(
+						'<p>' +
+							'foo<picture>' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+							'</picture>bar' +
+						'</p>'
+					);
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]foobar</paragraph>' );
+				} );
+
+				it( 'should not upcast <picture> (and not throw) if the <img> inside was broken and could not be upcasted', () => {
+					editor.data.upcastDispatcher.on( 'element:picture', ( evt, data, conversionApi ) => {
+						for ( const childSourceElement of data.viewItem.getChildren() ) {
+							conversionApi.consumable.consume( childSourceElement, { attributes: 'media' } );
+						}
+					}, { priority: 'highest' } );
+
+					editor.setData(
+						'<p>' +
+							'foo<picture>' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								// Sourceless <img> does not make sense.
+								'<img>' +
+							'</picture>bar' +
+						'</p>'
+					);
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]foobar</paragraph>' );
+				} );
+			} );
 		} );
 
 		describe( 'downcast', () => {
@@ -1209,6 +1306,26 @@ describe( 'PictureEditing', () => {
 						editor.setData( data );
 						expect( editor.getData() ).to.equal( data );
 					} );
+				} );
+			} );
+
+			describe( 'integration with other converters and edge cases', () => {
+				it( 'should not downcast the "sources" attribute if already consumed by some other converter', () => {
+					editor.data.downcastDispatcher.on( 'attribute:sources:imageInline', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'high' } );
+
+					editor.setData(
+						'<p>' +
+							'foo<picture>' +
+								'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+								'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+								'<img src="/assets/sample.png">' +
+							'</picture>bar' +
+						'</p>'
+					);
+
+					expect( editor.getData() ).to.equal( '<p>foo<img src="/assets/sample.png">bar</p>' );
 				} );
 			} );
 		} );
