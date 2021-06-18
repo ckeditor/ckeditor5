@@ -23,6 +23,7 @@
 // * command
 // * map
 // * wbr
+// * colgroup -> col
 // Skipped elements due to complexity:
 // * datalist with option elements used as a data source for input[list] element
 //
@@ -135,14 +136,6 @@ export default {
 			}
 		},
 		{
-			model: 'htmlColgroup',
-			view: 'colgroup',
-			modelSchema: {
-				allowIn: 'htmlTable',
-				isBlock: true
-			}
-		},
-		{
 			model: 'htmlCaption',
 			view: 'caption',
 			modelSchema: {
@@ -155,7 +148,7 @@ export default {
 			model: 'htmlTr',
 			view: 'tr',
 			modelSchema: {
-				allowIn: [ 'htmlTable', 'htmlTableHead', 'htmlTableBody' ],
+				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody' ],
 				isBlock: true
 			}
 		},
@@ -164,7 +157,7 @@ export default {
 			model: 'htmlTd',
 			view: 'td',
 			modelSchema: {
-				allowIn: 'tr',
+				allowIn: 'htmlTr',
 				allowChildren: [ '$block', '$htmlBlock' ],
 				isBlock: true
 			}
@@ -174,7 +167,7 @@ export default {
 			model: 'htmlTh',
 			view: 'th',
 			modelSchema: {
-				allowIn: 'tr',
+				allowIn: 'htmlTr',
 				allowChildren: [ '$block', '$htmlBlock' ],
 				isBlock: true
 			}
@@ -198,12 +191,12 @@ export default {
 				isBlock: true
 			}
 		},
-		// TODO can also include other block elements.
+		// TODO can also include text.
 		{
 			model: 'htmlAddress',
 			view: 'address',
 			modelSchema: {
-				inheritAllFrom: '$block'
+				inheritAllFrom: '$htmlBlock'
 			}
 		},
 		// TODO can also include text.
@@ -230,6 +223,15 @@ export default {
 				inheritAllFrom: '$htmlBlock'
 			}
 		},
+		{
+			model: 'htmlSumary',
+			view: 'summary',
+			modelSchema: {
+				allowChildren: '$text',
+				allowIn: 'htmlDetails',
+				isBlock: true
+			}
+		},
 		// TODO can also include text.
 		{
 			model: 'htmlDiv',
@@ -251,7 +253,8 @@ export default {
 			model: 'htmlLegend',
 			view: 'legend',
 			modelSchema: {
-				inheritAllFrom: '$block'
+				allowIn: 'htmlFieldset',
+				allowChildren: '$text'
 			}
 		},
 		// TODO can also include text.
@@ -341,8 +344,8 @@ export default {
 		{
 			model: '$htmlList',
 			modelSchema: {
-				allowIn: [ '$htmlBlock', 'htmlLi' ],
-				allowChildren: 'htmlLi',
+				allowWhere: '$htmlBlock',
+				allowChildren: [ '$htmlList', 'htmlLi' ],
 				isBlock: true
 			}
 		},
@@ -379,8 +382,8 @@ export default {
 			model: 'htmlLi',
 			view: 'li',
 			modelSchema: {
-				allowChildren: '$text',
 				allowIn: '$htmlList',
+				allowChildren: '$text',
 				isBlock: true
 			}
 		},
@@ -411,15 +414,6 @@ export default {
 			view: 'nav',
 			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
-			}
-		},
-		{
-			model: 'htmlSumary',
-			view: 'summary',
-			modelSchema: {
-				allowChildren: '$text',
-				allowIn: 'htmlDetails',
-				isBlock: true
 			}
 		},
 		{
@@ -770,7 +764,6 @@ export default {
 				inheritAllFrom: '$htmlObjectInline'
 			}
 		},
-		// TODO Should image be an object?
 		{
 			model: 'htmlImg',
 			view: 'img',
@@ -779,7 +772,6 @@ export default {
 				inheritAllFrom: '$htmlObjectInline'
 			}
 		},
-		// TODO Should canvas be an object?
 		{
 			model: 'htmlCanvas',
 			view: 'canvas',
