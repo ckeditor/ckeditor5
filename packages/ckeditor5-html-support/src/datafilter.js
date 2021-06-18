@@ -345,18 +345,17 @@ export default class DataFilter extends Plugin {
 		} );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: modelName,
+			view: toObjectWidgetConverter( editor, definition )
+		} );
+
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: modelName,
 			view: ( modelElement, { writer } ) => {
 				return createObjectView( viewName, modelElement, writer );
 			}
 		} );
-
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: modelName,
-			view: toObjectWidgetConverter( editor, definition )
-		} );
-
 		conversion.for( 'dataDowncast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
 

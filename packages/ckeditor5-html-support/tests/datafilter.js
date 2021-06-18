@@ -13,6 +13,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getModelDataWithAttributes } from './_utils/utils';
+import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 
@@ -1274,6 +1275,17 @@ describe( 'DataFilter', () => {
 		expectToThrowCKEditorError( () => {
 			dataFilter.allowElement( 'xyz' );
 		}, /data-filter-invalid-definition/, null, definition );
+	} );
+
+	it( 'should handle expanded styles by matcher', () => {
+		editor.data.addStyleProcessorRules( addBackgroundRules );
+
+		dataFilter.allowElement( 'p' );
+		dataFilter.allowAttributes( { name: 'p', styles: true } );
+
+		editor.setData( '<p style="background:red;">foobar</p>' );
+
+		expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
 	} );
 
 	describe( 'loadAllowedConfig', () => {
