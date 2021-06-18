@@ -272,5 +272,59 @@ describe( 'InsertImageCommand', () => {
 				'</paragraph>'
 			);
 		} );
+
+		it( 'should allow to set all image attributes declaratively (single image)', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			editor.model.schema.extend( 'imageInline', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			command.execute( {
+				source: {
+					src: imgSrc,
+					foo: 'foo-value'
+				}
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f' +
+					`[<imageInline foo="foo-value" src="${ imgSrc }"></imageInline>]` +
+				'o</paragraph>'
+			);
+		} );
+
+		it( 'should allow to set all image attributes declaratively (multiple images)', () => {
+			const imgSrc1 = 'foo/bar.jpg';
+			const imgSrc2 = 'foo/baz.jpg';
+
+			editor.model.schema.extend( 'imageInline', {
+				allowAttributes: [ 'foo', 'bar' ]
+			} );
+
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			command.execute( {
+				source: [
+					{
+						src: imgSrc1,
+						foo: 'foo-value'
+					},
+					{
+						src: imgSrc2,
+						bar: 'bar-value'
+					}
+				]
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>f' +
+					`<imageInline foo="foo-value" src="${ imgSrc1 }"></imageInline>` +
+					`[<imageInline bar="bar-value" src="${ imgSrc2 }"></imageInline>]` +
+				'o</paragraph>'
+			);
+		} );
 	} );
 } );
