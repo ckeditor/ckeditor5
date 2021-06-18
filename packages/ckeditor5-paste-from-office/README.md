@@ -5,7 +5,7 @@ CKEditor 5 paste from Office feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-paste-from-office/status.svg)](https://david-dm.org/ckeditor/ckeditor5-paste-from-office)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-paste-from-office/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-paste-from-office?type=dev)
 
-This package implements the [Paste from Office](https://docs.ckeditor.com/ckeditor5/latest/features/paste-from-office.html) feature for CKEditor 5.
+This package implements the [paste from Office](https://docs.ckeditor.com/ckeditor5/latest/features/paste-from-office.html) feature for CKEditor 5.
 
 Paste from Office allows copying content from Microsoft Word without loosing any formatting.
 

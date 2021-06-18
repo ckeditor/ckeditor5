@@ -5,13 +5,13 @@ CKEditor 5 easy image feature with Cloud Services
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-easy-image/status.svg)](https://david-dm.org/ckeditor/ckeditor5-easy-image)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-easy-image/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-easy-image?type=dev)
 
-This package implements the [Easy Image](https://ckeditor.com/docs/ckeditor5/latest/features/easy-image.html) feature for CKEditor 5.
+This package implements the [easy image](https://ckeditor.com/docs/ckeditor5/latest/features/easy-image.html) feature for CKEditor 5.
 
-Easy Image lets you easily insert images which are automatically rescaled, optimized, responsive and delivered through a blazing-fast CDN. It integrates automatically with the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
+Easy image lets you easily insert images which are automatically rescaled, optimized, responsive and delivered through a blazing-fast CDN. It integrates automatically with the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
 
 ## Documentation
 
-See the ["Easy Image integration" guide](https://ckeditor.com/docs/ckeditor5/latest/features/easy-image.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/easy-image.html) to learn how to enable the integration.
+See the ["easy image integration" guide](https://ckeditor.com/docs/ckeditor5/latest/features/easy-image.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/easy-image.html) to learn how to enable the integration.
 
 Check out the [comprehensive "Image upload" guide](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html) to learn about other ways to upload images into CKEditor 5.
 

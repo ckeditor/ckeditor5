@@ -9,7 +9,7 @@ This package implements the restricted editing feature for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-restricted-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/restricted-editing.html) page as well as the [Restricted editing feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-restricted-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/restricted-editing.html) page as well as the [restricted editing feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

@@ -9,7 +9,7 @@ This package implements word count and character count support for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Word count and character count feature](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html) guide.
+Check out the demo in the [word count and character count feature](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html) guide.
 
 ## Documentation
 
