@@ -18,10 +18,6 @@ ClassicEditor
 			GeneralHtmlSupport,
 			Paragraph
 		],
-		toolbar: [
-		],
-		dataSchema: {
-		},
 		htmlSupport: {
 			allow: [
 				{
