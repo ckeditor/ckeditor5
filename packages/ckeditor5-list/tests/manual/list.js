@@ -95,9 +95,10 @@ function setData() {
 	const modelData =
 		// eslint-disable-next-line
 		'<paragraph>before</paragraph>' +
+		'<paragraph></paragraph>' +
 		'<paragraph listIndent="0" listItem="a0" listType="bulleted">Foo</paragraph>' +
 		'<paragraph listIndent="0" listItem="a1" listType="bulleted">Bar</paragraph>' +
-		'<paragraph listIndent="0" listItem="a2" listType="bulleted">zzz</paragraph>' +
+		// '<paragraph listIndent="0" listItem="a2" listType="bulleted">zzz</paragraph>' +
 		'<paragraph>plain</paragraph>' +
 
 		// '<heading1 listIndent="0" listItem="b" listType="bulleted">Aaa</heading1>' +
