@@ -351,11 +351,13 @@ export default class DataFilter extends Plugin {
 				return createObjectView( viewName, modelElement, writer );
 			}
 		} );
+
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: modelName,
 			view: toObjectWidgetConverter( editor, definition )
 		} );
-		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
+
+		conversion.for( 'dataDowncast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
 
 	/**
