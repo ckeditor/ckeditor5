@@ -15,6 +15,8 @@ import ReplaceAllCommand from './replaceallcommand';
 
 import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
 
+import '../theme/findandreplace.css';
+
 /**
  * Object storing find & replace plugin state in a given editor instance.
  *
@@ -36,7 +38,7 @@ class FindAndReplaceState {
 
 mix( FindAndReplaceState, ObservableMixin );
 
-const HIGHLIGHT_CLASS = 'find-result_selected';
+const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
 // Reacts to document changes in order to update search list.
 function onDocumentChange( results, model, searchCallback ) {
@@ -136,7 +138,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
-	 * Stops active results from updating.
+	 * Stops active results from updating, and clears out the results.
 	 */
 	stop() {
 		if ( !this.activeResults ) {
@@ -221,7 +223,7 @@ export default class FindAndReplaceEditing extends Plugin {
 				// A minimal option is to return a new object for each converted marker...
 				return {
 					name: 'span',
-					classes: [ 'find-result' ],
+					classes: [ 'ck-find-result' ],
 					attributes: {
 						// ...however, adding a unique attribute should be future-proof..
 						'data-find-result': id

@@ -6,7 +6,7 @@
 /* globals ClassicEditor, console, window, document */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-find-and-replace' ), {
+	.create( document.querySelector( '#snippet-findandreplace' ), {
 		toolbar: {
 			items: [
 				'heading',
@@ -29,8 +29,8 @@ ClassicEditor
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Select all' ),
-			text: 'Click to select everything.',
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Find and replace' ),
+			text: 'Click to find and replace anything you need.',
 			editor
 		} );
 	} )

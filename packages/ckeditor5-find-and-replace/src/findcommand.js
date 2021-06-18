@@ -4,14 +4,14 @@
  */
 
 /**
- * @module link/findcommand
+ * @module find-and-replace/findcommand
 */
 
 import { Command } from 'ckeditor5/src/core';
 import { updateFindResultFromRange, findByTextCallback } from './utils';
 
 /**
- * Find command. It is used by the {@link module:findandreplace/findandreplace~FindAndReplace link feature}.
+ * Find command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
  * @extends module:core/command~Command
  */

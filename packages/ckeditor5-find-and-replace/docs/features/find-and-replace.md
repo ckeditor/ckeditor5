@@ -3,7 +3,7 @@ title: Find and replace
 category: features
 ---
 
-{@snippet features/build-select-all-source}
+{@snippet features/build-find-and-replace-source}
 
 The {@link module:find-and-replace/findandreplace~FindAndReplace} feature allows for finding and replacing text in the editor easily.
 
@@ -13,19 +13,11 @@ Use the toolbar "Find and replace" button to find and replace parts of the text 
 
 {@snippet features/find-and-replace}
 
-<info-box>
-	When the selection is inside the {@link features/image#image-captions image caption}, it will only expand to the boundaries of the caption. Use the keystroke or the toolbar button again to include more content until the entire content of the editor is selected. The same rule applies, for instance, when the selection is inside a table cell or any self–contained (nested) editable region in the content.
-</info-box>
-
 ## Related features
 
 * No related features as of now.
 
 ## Installation
-
-<info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-replace`](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace) package:
 
@@ -33,7 +25,6 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-r
 npm install --save @ckeditor/ckeditor5-find-and-replace
 ```
 
-<!-- TODO: possibly this will needs to be updated -->
 Then add the `FindAndReplace` plugin to your plugin list:
 
 ```js
@@ -41,26 +32,27 @@ import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandrepl
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// Load the plugin.
 		plugins: [ FindAndReplace, ... ],
-
-		// Display the "Find and Replace" button in the toolbar.
 		toolbar: [ 'findAndReplace', ... ],
 	} )
 	.then( ... )
 	.catch( ... );
 ```
 
-<!-- TODO: Update this with proper description and values -->
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+<!-- TODO: Update this with proper description and values, and code snippet for replace / replaceAll-->
 ## Common API
 
-The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the `'findNext'`, `'findPrev'`, `'replace'`, `'replaceAll'` commands implemented by {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
+The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the `'find'`, `'replace'`, `'replaceAll'` commands implemented by {@link module:find-and-replace/findcommand~FindCommand}, {@link module:find-and-replace/replacecommand~ReplaceCommand}, {@link module:find-and-replace/replaceallcommand~ReplaceAllCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+The commands can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
-// Find next element
-editor.execute( 'findNext', { searchText: data.searchText } );
+// Find some element
+editor.execute( 'find', 'Cupcake' )
 ```
 
 <info-box>

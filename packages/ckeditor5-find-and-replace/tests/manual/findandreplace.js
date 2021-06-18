@@ -10,14 +10,13 @@ import FindAndReplace from '../../src/findandreplace';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
-// editor.plugins.get( 'FindAndReplace' ).find( 'ipsum' )
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, FindAndReplace ],
-		toolbar: [ 'undo', 'redo', 'findAndReplace' ]
+		plugins: [ Essentials, Paragraph, FindAndReplace, Highlight ],
+		toolbar: [ 'undo', 'redo', 'findAndReplace', 'highlight' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -19,7 +19,7 @@ import FindAndReplaceEditing from './findandreplaceediting';
  * This is a "glue" plugin which loads the following plugins:
  *
  * * The {@link module:find-and-replace/findandreplaceediting~FindAndReplaceEditing find and replace editing feature},
- * * The {@link module:find-and-replace/findandreplaceui~FindAndReplaceUI find and replace UI feature} and
+ * * The {@link module:find-and-replace/findandreplaceui~FindAndReplaceUI find and replace UI feature}
  *
  * @extends module:core/plugin~Plugin
  */

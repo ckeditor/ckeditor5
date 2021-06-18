@@ -15,6 +15,7 @@
     "@ckeditor/ckeditor5-core": "^27.1.0",
     "@ckeditor/ckeditor5-editor-balloon": "^27.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^27.1.0",
+    "@ckeditor/ckeditor5-find-and-replace": "0.0.1",
     "@ckeditor/ckeditor5-font": "^27.1.0",
     "@ckeditor/ckeditor5-heading": "^27.1.0",
     "@ckeditor/ckeditor5-highlight": "^27.1.0",

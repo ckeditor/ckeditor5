@@ -6,6 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import FindAndReplaceEditing from '../src/findandreplaceediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'FindCommand', () => {
 	let editor, model, command;
@@ -13,14 +14,12 @@ describe( 'FindCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ FindAndReplaceEditing ]
+				plugins: [ FindAndReplaceEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				command = editor.commands.get( 'find' );
-
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
@@ -35,7 +34,7 @@ describe( 'FindCommand', () => {
 		} );
 
 		it( 'should be enabled by default', () => {
-			setData( model, '<p>foo[]</p>' );
+			setData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 	} );
@@ -49,7 +48,7 @@ describe( 'FindCommand', () => {
 	describe( 'execute()', () => {
 		describe( 'with string passed', () => {
 			it( 'places markers correctly in the model', () => {
-				setData( model, '<p>[]Foo bar baz. Bam bar bom.</p>' );
+				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const markers = results.map( item => {
@@ -60,11 +59,12 @@ describe( 'FindCommand', () => {
 				} );
 
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
-					'<p>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</p>' );
+					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</paragraph>'
+				);
 			} );
 
 			it( 'returns no result if nothing matched', () => {
-				setData( model, '<p>[]Foo bar baz. Bam bar bom.</p>' );
+				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'missing' );
 
@@ -72,7 +72,7 @@ describe( 'FindCommand', () => {
 			} );
 
 			it( 'assigns proper labels to matches', () => {
-				setData( model, '<p>Foo bar b[]az. Bam bar bom.</p>' );
+				setData( model, '<paragraph>Foo bar b[]az. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const labels = results.map( result => result.label );
@@ -81,7 +81,7 @@ describe( 'FindCommand', () => {
 			} );
 
 			it( 'assigns non-empty ids for each match', () => {
-				setData( model, '<p>Foo bar b[]az. Bam bar bom.</p>' );
+				setData( model, '<paragraph>Foo bar b[]az. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const ids = results.map( result => result.id );
@@ -95,7 +95,7 @@ describe( 'FindCommand', () => {
 			} );
 
 			it( 'assigns an unique ids for each match', () => {
-				setData( model, '<p>Foo bar b[]az. Bam bar bom bar.</p>' );
+				setData( model, '<paragraph>Foo bar b[]az. Bam bar bom bar.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const ids = results.map( result => result.id );
