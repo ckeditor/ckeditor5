@@ -905,6 +905,24 @@ function insertStructure( elementCreator ) {
 
 		// TODO throw error if old view is still there?
 		if ( data.reconversion ) {
+			for ( const diffItem of data.related ) {
+				if ( diffItem.type == 'remove' ) {
+					let currentView = mapper.toViewElement( diffItem.element );
+
+					while ( mapper.toModelElement( currentView ) === diffItem.element ) {
+						const parentView = currentView.parent;
+
+						currentViewElements.add( currentView );
+
+						// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
+						writer.remove( currentView );
+
+						// But also go up the view tree and remove all elements that are mapped to the same model element.
+						currentView = parentView;
+					}
+				}
+			}
+
 			for ( const element of elements ) {
 				const positionBefore = ModelPosition._createBefore( element );
 				let currentView = mapper.toViewElement( element );
@@ -990,6 +1008,7 @@ function insertStructure( elementCreator ) {
 								writer.createRangeOn( viewChildNode ),
 								mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 							);
+							console.log( 'reused old view for', modelChildNode );
 						} else {
 							// TODO this should be exposed by conversionApi?
 							// Note that this is not creating another consumable, it's using the current one.
@@ -1014,6 +1033,7 @@ function insertStructure( elementCreator ) {
 							writer.createRangeOn( currentViewElement ),
 							mapper.toViewPosition( ModelPosition._createBefore( element ) )
 						);
+						console.log( 'reused old view for element at', ModelPosition._createBefore( element ).path, '->', currentViewElement );
 
 						// Rebind the original view element to the correct model element.
 						mapper.bindElements( element, currentViewElement );

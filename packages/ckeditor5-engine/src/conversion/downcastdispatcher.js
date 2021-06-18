@@ -140,6 +140,8 @@ export default class DowncastDispatcher {
 
 		const changes = this._mapChangesWithAutomaticReconversion( differ );
 
+		console.log( 'changes', changes );
+
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
 			if ( entry.type === 'insert' ) {

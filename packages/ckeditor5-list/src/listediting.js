@@ -139,6 +139,8 @@ export default class ListEditing extends Plugin {
 
 						element = diffItem.range.start.nodeAfter;
 
+						console.log( 'trigger - attribute change at', diffItem.range.start.path );
+
 						break;
 					}
 
@@ -148,6 +150,8 @@ export default class ListEditing extends Plugin {
 						if ( !element.hasAttribute( 'listItem' ) ) {
 							return;
 						}
+
+						console.log( 'trigger - insert at', diffItem.position.path );
 
 						break;
 					}
@@ -159,6 +163,8 @@ export default class ListEditing extends Plugin {
 
 						const nodeBefore = diffItem.position.nodeBefore;
 						const nodeAfter = diffItem.position.nodeAfter;
+
+						console.log( 'trigger - remove at', diffItem.position.path );
 
 						if ( nodeBefore && nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
 							element = nodeBefore;
@@ -225,6 +231,8 @@ export default class ListEditing extends Plugin {
 				if ( !modelElements.length ) {
 					return null;
 				}
+
+				console.log( 'creating view' );
 
 				const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
 				const viewList = writer.createContainerElement( listType );
