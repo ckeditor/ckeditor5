@@ -430,12 +430,12 @@ export default class Differ {
 			for ( const action of actions ) {
 				if ( action === 'i' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getInsertDiff( element, i, elementChildren[ i ].name, elementChildren[ i ].attributes ) );
+					diffSet.push( this._getInsertDiff( element, i, elementChildren[ i ] ) );
 
 					i++;
 				} else if ( action === 'r' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ].name, snapshotChildren[ j ].attributes, snapshotChildren[ j ].element ) );
+					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ] ) );
 
 					j++;
 				} else if ( action === 'a' ) {
@@ -897,16 +897,19 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the removed element or `'$text'` for a character.
-	 * @param {Map.<String,*>} attributes The node attributes.
+	 * @param {Object} elementSnapshot
+	 * @param {String} elementSnapshot.name The name of the inserted element or `'$text'` for a character.
+	 * @param {Map.<String,*>} elementSnapshot.attributes The node attributes.
+	 * @param {module:engine/model/element~Element} elementSnapshot.element The inserted element reference.
 	 * @returns {Object} The diff item.
 	 */
-	_getInsertDiff( parent, offset, name, attributes ) {
+	_getInsertDiff( parent, offset, elementSnapshot ) {
 		return {
 			type: 'insert',
 			position: Position._createAt( parent, offset ),
-			name,
-			attributes: new Map( attributes ),
+			name: elementSnapshot.name,
+			attributes: new Map( elementSnapshot.attributes ),
+			element: elementSnapshot.element,
 			length: 1,
 			changeCount: this._changeCount++
 		};
@@ -918,17 +921,19 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the removed element or `'$text'` for a character.
-	 * @param {Map.<String,*>} attributes The node attributes.
+	 * @param {Object} elementSnapshot
+	 * @param {String} elementSnapshot.name The name of the removed element or `'$text'` for a character.
+	 * @param {Map.<String,*>} elementSnapshot.attributes The node attributes.
+	 * @param {module:engine/model/element~Element} elementSnapshot.element The inserted element reference.
 	 * @returns {Object} The diff item.
 	 */
-	_getRemoveDiff( parent, offset, name, attributes, element ) {
+	_getRemoveDiff( parent, offset, elementSnapshot ) {
 		return {
 			type: 'remove',
 			position: Position._createAt( parent, offset ),
-			name,
-			attributes: new Map( attributes ),
-			element,
+			name: elementSnapshot.name,
+			attributes: new Map( elementSnapshot.attributes ),
+			element: elementSnapshot.element,
 			length: 1,
 			changeCount: this._changeCount++
 		};

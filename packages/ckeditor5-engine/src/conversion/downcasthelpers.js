@@ -564,13 +564,21 @@ export function insertText() {
  */
 export function remove() {
 	return ( evt, data, conversionApi ) => {
-		// Find view range start position by mapping model position at which the remove happened.
-		const viewStart = conversionApi.mapper.toViewPosition( data.position );
+		let viewRange = null;
 
-		const modelEnd = data.position.getShiftedBy( data.length );
-		const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
+		if ( data.element ) {
+			const viewElement = conversionApi.mapper.toViewElement( data.element );
 
-		const viewRange = conversionApi.writer.createRange( viewStart, viewEnd );
+			viewRange = conversionApi.writer.createRangeOn( viewElement );
+		} else {
+			// Find view range start position by mapping model position at which the remove happened.
+			const viewStart = conversionApi.mapper.toViewPosition( data.position );
+
+			const modelEnd = data.position.getShiftedBy( data.length );
+			const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
+
+			viewRange = conversionApi.writer.createRange( viewStart, viewEnd );
+		}
 
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
 		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
@@ -905,25 +913,12 @@ function insertStructure( elementCreator ) {
 
 		// TODO throw error if old view is still there?
 		if ( data.reconversion ) {
-			for ( const diffItem of data.related ) {
-				if ( diffItem.type == 'remove' ) {
-					let currentView = mapper.toViewElement( diffItem.element );
+			const affectedElements = [
+				...data.related.filter( item => item.type == 'remove' ).map( item => item.element ),
+				...elements
+			];
 
-					while ( mapper.toModelElement( currentView ) === diffItem.element ) {
-						const parentView = currentView.parent;
-
-						currentViewElements.add( currentView );
-
-						// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-						writer.remove( currentView );
-
-						// But also go up the view tree and remove all elements that are mapped to the same model element.
-						currentView = parentView;
-					}
-				}
-			}
-
-			for ( const element of elements ) {
+			for ( const element of affectedElements ) {
 				const positionBefore = ModelPosition._createBefore( element );
 				let currentView = mapper.toViewElement( element );
 
@@ -938,8 +933,10 @@ function insertStructure( elementCreator ) {
 					currentViewElements.add( currentView );
 
 					// The toViewPosition would provide invalid position because of multiple mappings.
-					if ( element == elements[ 0 ] ) {
-						viewPosition = writer.createPositionBefore( currentView );
+					const positionBeforeElement = writer.createPositionBefore( currentView );
+
+					if ( !viewPosition || positionBeforeElement.isBefore( viewPosition ) ) {
+						viewPosition = positionBeforeElement;
 					}
 
 					// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.

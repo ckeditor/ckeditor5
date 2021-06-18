@@ -147,7 +147,7 @@ export default class DowncastDispatcher {
 			if ( entry.type === 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type === 'remove' ) {
-				this.convertRemove( entry.position, entry.length, entry.name, writer );
+				this.convertRemove( entry.position, entry.length, entry.name, entry.element, writer );
 			} else if ( entry.type === 'reconvert' ) {
 				this.reconvertElement( entry.element, entry.related, writer );
 			} else if ( entry.type === 'range' ) {
@@ -197,12 +197,13 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/position~Position} position Position from which node was removed.
 	 * @param {Number} length Offset size of removed node.
 	 * @param {String} name Name of removed node.
+	 * @param {module:engine/model/element~Element} [element] The removed element.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
-	convertRemove( position, length, name, writer ) {
+	convertRemove( position, length, name, element, writer ) {
 		this.conversionApi.writer = writer;
 
-		this.fire( 'remove:' + name, { position, length }, this.conversionApi );
+		this.fire( 'remove:' + name, { position, length, element }, this.conversionApi );
 
 		this._clearConversionApi();
 	}
