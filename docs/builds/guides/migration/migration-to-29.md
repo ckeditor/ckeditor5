@@ -59,7 +59,7 @@ Editor.create( document.querySelector( '#editor' ), {
 	...
 	image: {
 		styles: {
-			options: [ 'inline', 'full', 'side' ]
+			options: [ 'inline', 'block', 'side' ]
 		}
 	}
 } );
@@ -117,7 +117,7 @@ Due to the changes mentioned above, the {@link module:image/image~ImageConfig#to
 		image: {
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:full',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
@@ -138,7 +138,7 @@ Due to the changes mentioned above, the {@link module:image/image~ImageConfig#to
 				'imageStyle:inline',
 				// A drop-down containing `alignLeft` and `alignRight` options
 				'imageStyle:wrapText',
-				// A drop-down containing `alignBlockLeft`, `full` (default) and  `alignBlockRight` options
+				// A drop-down containing `alignBlockLeft`, `block` (default) and  `alignBlockRight` options
 				'imageStyle:breakText'
 			]
 		}

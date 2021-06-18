@@ -38,7 +38,7 @@ ClassicEditor
 					modelElements: [ 'imageInline' ]
 				},
 				'inline',
-				'full'
+				'block'
 				]
 			},
 			toolbar: [
@@ -46,7 +46,7 @@ ClassicEditor
 				'imageStyle:side',
 				'imageStyle:margin-left',
 				'imageStyle:margin-right',
-				'imageStyle:full',
+				'imageStyle:block',
 				'toggleImageCaption'
 			]
 		}

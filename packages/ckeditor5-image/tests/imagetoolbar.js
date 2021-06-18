@@ -36,8 +36,8 @@ describe( 'ImageToolbar', () => {
 						'fake_button',
 						{
 							name: 'imageStyle:fake_dropdown',
-							items: [ 'imageStyle:full' ],
-							defaultItem: 'imageStyle:full',
+							items: [ 'imageStyle:block' ],
+							defaultItem: 'imageStyle:block',
 							title: 'Fake dropdown'
 						}
 					]
@@ -88,7 +88,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should convert the declarative dropdown definition to the component factory item name', () => {
-			expect( toolbar.items.get( 1 ).buttonView.label ).to.equal( 'Fake dropdown: Full size image' );
+			expect( toolbar.items.get( 1 ).buttonView.label ).to.equal( 'Fake dropdown: Centered image' );
 		} );
 
 		it( 'should set proper CSS classes', () => {

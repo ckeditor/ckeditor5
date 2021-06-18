@@ -56,7 +56,7 @@ ClassicEditor
 			'blockQuote', 'uploadImage', 'mediaEmbed', 'insertTable', '|', 'undo', 'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		mediaEmbed: {
 			previewsInData: true,

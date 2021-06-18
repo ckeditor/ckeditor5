@@ -65,7 +65,7 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
 			insert: {
 				integrations: [
 					'insertImageViaUrl',

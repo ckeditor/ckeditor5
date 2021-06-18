@@ -70,7 +70,7 @@ export default class Editor {
 		 * Stores all configurations specific to this editor instance.
 		 *
 		 *		editor.config.get( 'image.toolbar' );
-		 *		// -> [ 'imageStyle:full', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+		 *		// -> [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		 *
 		 * @readonly
 		 * @member {module:utils/config~Config}

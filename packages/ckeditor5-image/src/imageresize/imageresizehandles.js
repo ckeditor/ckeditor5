@@ -106,7 +106,7 @@ export default class ImageResizeHandles extends Plugin {
 					isCentered() {
 						const imageStyle = imageModel.getAttribute( 'imageStyle' );
 
-						return !imageStyle || imageStyle == 'full' || imageStyle == 'alignCenter';
+						return !imageStyle || imageStyle == 'block' || imageStyle == 'alignCenter';
 					},
 
 					onCommit( newValue ) {

@@ -61,7 +61,7 @@ The `ImageStyle` plugin provides a set of the default styles depending on the lo
 		</thead>
 		<tbody>
 			<tr>
-				<th>"full"</th>
+				<th>"block"</th>
 				<td><code>ImageBlock</code></td>
 				<td>block</td>
 				<td>removes all classes (default style)</td>
@@ -137,7 +137,7 @@ A semantical style lets the user choose from predefined appearances of the image
 #### Default styles
 As the most of the default editor builds support editing a structured content, which requires passing the control over the possible image appearances to the developer, they introduces a UI containing a set of buttons applying a semantical styles (taken from the [default styles](#styles-table) listed above).
 
-The example below presents an editor with this basic configuration. The top image is full-width, while the bottom image is a side image. You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
+The example below presents an editor with this basic configuration. The top image is in its original state (centered), while the bottom image is a side image. You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
 {@snippet features/image-semantical-style-default}
 
@@ -218,8 +218,8 @@ TODO: links to API.
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A button for each defined style, for example: `'imageStyle:full'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
-* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'full'` and `'side'`):
+* A button for each defined style, for example: `'imageStyle:block'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
+* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'block'` and `'side'`):
 
 	```js
 	editor.execute( 'imageStyle', { value: 'side' } );
