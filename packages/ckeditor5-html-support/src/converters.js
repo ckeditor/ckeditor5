@@ -70,6 +70,11 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 		const viewElement = createObjectView( viewName, modelElement, writer );
 		writer.addClass( 'html-object-embed__content', viewElement );
 
+		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
+		if ( viewAttributes ) {
+			setViewAttributes( writer, viewAttributes, viewElement );
+		}
+
 		writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
 
 		return toWidget( viewContainer, writer, { widgetLabel } );
