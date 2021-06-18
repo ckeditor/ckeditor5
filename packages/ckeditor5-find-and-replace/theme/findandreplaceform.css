@@ -135,6 +135,11 @@
 			display: flex;
 			align-items: center;
 
+			&:first-child {
+				margin-top: var(--ck-spacing-unit);
+				line-height: 0px;
+			}
+
 			& label {
 				margin-left: 5px;
 			}
