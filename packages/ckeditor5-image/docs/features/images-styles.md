@@ -117,7 +117,7 @@ Presentational styles do not relate to any special meaning of the content. They 
 	If you do not want to enable image resizing, you can use [semantical styles](#semantical-styles) to set the image dimensions.
 </info-box>
 
-The code sample above uses predefined presentational image styles represented by buttons grouped in the drop-downs by the way the image is displayed in the document:
+The sample editor below uses predefined presentational image styles represented by buttons grouped in the drop-downs by the way the image is displayed in the document:
 * <img class="inline-icon" src="../../assets/img/icons/object-inline.svg">**Inline images** - displayed inside a line of text. It is a default style for the inline images and it does not apply any CSS class to the image.
 * <img class="inline-icon" src="../../assets/img/icons/object-inline-left.svg">**Images wrapped with text** - these are the images with the CSS `float` property. They can be either in the inline or block mode, but to keep the valid HTML output, the block images (wrapped with the `<figure>` tags) can only be placed before or after paragraphs, not in the middle of one. It contains the following image styles:
   * `'align-left'`,
