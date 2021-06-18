@@ -15,6 +15,7 @@
 // * applet (support is limited mostly to old IE)
 // * basefont (this one is also empty)
 // * isindex (basically no support for modern browsers at all)
+//
 // Skipped elements due to lack empty element support:
 // * hr
 // * area
@@ -24,6 +25,7 @@
 // * wbr
 // Skipped elements due to complexity:
 // * datalist with option elements used as a data source for input[list] element
+//
 // Skipped elements as they are handled as an object content:
 // TODO shouldn't we also filter attributes on these element and enable them separately?
 // * track
@@ -31,12 +33,19 @@
 // * option
 // * param
 // * optgroup
+//
 // Skipped full page HTML elements:
 // * body
 // * html
 // * title
 // * head
+// * meta
+// * link
 // * etc...
+//
+// Skipped hidden elements:
+// noscript
+// script
 
 export default {
 	block: [
@@ -80,14 +89,14 @@ export default {
 			}
 		},
 		{
-			model: 'htmlParagraph',
+			model: 'htmlP',
 			view: 'p',
 			modelSchema: {
 				inheritAllFrom: '$block'
 			}
 		},
 		{
-			model: 'htmlBlockQuote',
+			model: 'htmlBlockquote',
 			view: 'blockquote',
 			modelSchema: {
 				inheritAllFrom: '$htmlBlock'
@@ -102,7 +111,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlTableBody',
+			model: 'htmlTbody',
 			view: 'tbody',
 			modelSchema: {
 				allowIn: 'htmlTable',
@@ -110,7 +119,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlTableHead',
+			model: 'htmlThead',
 			view: 'thead',
 			modelSchema: {
 				allowIn: 'htmlTable',
@@ -118,7 +127,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlTableFoot',
+			model: 'htmlTfoot',
 			view: 'tfoot',
 			modelSchema: {
 				allowIn: 'htmlTable',
@@ -126,7 +135,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlColumnGroup',
+			model: 'htmlColgroup',
 			view: 'colgroup',
 			modelSchema: {
 				allowIn: 'htmlTable',
@@ -143,7 +152,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlTableRow',
+			model: 'htmlTr',
 			view: 'tr',
 			modelSchema: {
 				allowIn: [ 'htmlTable', 'htmlTableHead', 'htmlTableBody' ],
@@ -152,7 +161,7 @@ export default {
 		},
 		// TODO can also include text.
 		{
-			model: 'htmlTableData',
+			model: 'htmlTd',
 			view: 'td',
 			modelSchema: {
 				allowIn: 'tr',
@@ -162,7 +171,7 @@ export default {
 		},
 		// TODO can also include text.
 		{
-			model: 'htmlTableHeader',
+			model: 'htmlTh',
 			view: 'th',
 			modelSchema: {
 				allowIn: 'tr',
@@ -270,7 +279,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlHeadingGroup',
+			model: 'htmlHgroup',
 			view: 'hgroup',
 			modelSchema: {
 				allowChildren: [
@@ -288,42 +297,42 @@ export default {
 			}
 		},
 		{
-			model: 'htmlHeading1',
+			model: 'htmlH1',
 			view: 'h1',
 			modelSchema: {
 				inheritAllFrom: '$block'
 			}
 		},
 		{
-			model: 'htmlHeading2',
+			model: 'htmlH2',
 			view: 'h2',
 			modelSchema: {
 				inheritAllFrom: '$block'
 			}
 		},
 		{
-			model: 'htmlHeading3',
+			model: 'htmlH3',
 			view: 'h3',
 			modelSchema: {
 				inheritAllFrom: '$block'
 			}
 		},
 		{
-			model: 'htmlHeading4',
+			model: 'htmlH4',
 			view: 'h4',
 			modelSchema: {
 				inheritAllFrom: '$block'
 			}
 		},
 		{
-			model: 'htmlHeading5',
+			model: 'htmlH5',
 			view: 'h5',
 			modelSchema: {
 				inheritAllFrom: '$block'
 			}
 		},
 		{
-			model: 'htmlHeading6',
+			model: 'htmlH6',
 			view: 'h6',
 			modelSchema: {
 				inheritAllFrom: '$block'
@@ -332,13 +341,13 @@ export default {
 		{
 			model: '$htmlList',
 			modelSchema: {
-				allowIn: [ '$htmlBlock', 'htmlListItem' ],
-				allowChildren: 'htmlListItem',
+				allowIn: [ '$htmlBlock', 'htmlLi' ],
+				allowChildren: 'htmlLi',
 				isBlock: true
 			}
 		},
 		{
-			model: 'htmlDirectory',
+			model: 'htmlDir',
 			view: 'dir',
 			modelSchema: {
 				inheritAllFrom: '$htmlList'
@@ -352,14 +361,14 @@ export default {
 			}
 		},
 		{
-			model: 'htmlUnorderedList',
+			model: 'htmlUl',
 			view: 'ul',
 			modelSchema: {
 				inheritAllFrom: '$htmlList'
 			}
 		},
 		{
-			model: 'htmlOrderedList',
+			model: 'htmlOl',
 			view: 'ol',
 			modelSchema: {
 				inheritAllFrom: '$htmlList'
@@ -367,7 +376,7 @@ export default {
 		},
 		// TODO can also include other block elements.
 		{
-			model: 'htmlListItem',
+			model: 'htmlLi',
 			view: 'li',
 			modelSchema: {
 				allowChildren: '$text',
@@ -414,16 +423,16 @@ export default {
 			}
 		},
 		{
-			model: 'htmlDescriptionList',
+			model: 'htmlDl',
 			view: 'dl',
 			modelSchema: {
 				allowIn: [ '$htmlBlock', '$root' ],
-				allowChildren: [ 'htmlDescriptionTerm', 'htmlDescriptionDetails' ],
+				allowChildren: [ 'htmlDt', 'htmlDd' ],
 				isBlock: true
 			}
 		},
 		{
-			model: 'htmlDescriptionTerm',
+			model: 'htmlDt',
 			view: 'dt',
 			modelSchema: {
 				allowChildren: '$block',
@@ -431,7 +440,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlDescriptionDetails',
+			model: 'htmlDd',
 			view: 'dd',
 			modelSchema: {
 				allowChildren: '$block',
@@ -465,7 +474,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlTeletypeText',
+			model: 'htmlTt',
 			view: 'tt',
 			attributeProperties: {
 				copyOnEnter: true
@@ -507,14 +516,14 @@ export default {
 			}
 		},
 		{
-			model: 'htmlSample',
+			model: 'htmlSamp',
 			view: 'samp',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlQuote',
+			model: 'htmlQ',
 			view: 'q',
 			attributeProperties: {
 				copyOnEnter: true
@@ -528,7 +537,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlKeyboardInput',
+			model: 'htmlKbd',
 			view: 'kbd',
 			attributeProperties: {
 				copyOnEnter: true
@@ -549,14 +558,14 @@ export default {
 			}
 		},
 		{
-			model: 'htmlAbbreviation',
+			model: 'htmlAbbr',
 			view: 'abbr',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlLink',
+			model: 'htmlA',
 			view: 'a',
 			priority: 5,
 			attributeProperties: {
@@ -571,28 +580,28 @@ export default {
 			}
 		},
 		{
-			model: 'htmlBold',
+			model: 'htmlB',
 			view: 'b',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlItalic',
+			model: 'htmlI',
 			view: 'i',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlEmphasis',
+			model: 'htmlEm',
 			view: 'em',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlStrike',
+			model: 'htmlS',
 			view: 's',
 			attributeProperties: {
 				copyOnEnter: true
@@ -600,7 +609,7 @@ export default {
 		},
 		// TODO According to HTML-spec can behave as div-like element, althouth CKE4 only handles it as an inline element.
 		{
-			model: 'htmlDeleted',
+			model: 'htmlDel',
 			view: 'del',
 			attributeProperties: {
 				copyOnEnter: true
@@ -608,28 +617,28 @@ export default {
 		},
 		// TODO According to HTML-spec can behave as div-like element, althouth CKE4 only handles it as an inline element.
 		{
-			model: 'htmlInserted',
+			model: 'htmlIns',
 			view: 'ins',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlUnderline',
+			model: 'htmlU',
 			view: 'u',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlSubscript',
+			model: 'htmlSub',
 			view: 'sub',
 			attributeProperties: {
 				copyOnEnter: true
 			}
 		},
 		{
-			model: 'htmlSuperscript',
+			model: 'htmlSup',
 			view: 'sup',
 			attributeProperties: {
 				copyOnEnter: true
@@ -671,7 +680,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlDefinition',
+			model: 'htmlDfn',
 			view: 'dfn',
 			attributeProperties: {
 				copyOnEnter: true
@@ -763,7 +772,7 @@ export default {
 		},
 		// TODO Should image be an object?
 		{
-			model: 'htmlImage',
+			model: 'htmlImg',
 			view: 'img',
 			isObject: true,
 			modelSchema: {
