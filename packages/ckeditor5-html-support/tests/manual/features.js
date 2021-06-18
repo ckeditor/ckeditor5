@@ -67,8 +67,6 @@ ClassicEditor
 			'|',
 			'undo', 'redo'
 		],
-		dataSchema: {
-		},
 		htmlSupport: {
 			allow: [
 				{ name: /^.*$/, styles: true },
