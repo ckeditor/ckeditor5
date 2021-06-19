@@ -19,23 +19,17 @@ ClassicEditor
 					value: null
 				},
 				{
-					name: 'resizeImage:250',
-					label: '250px',
-					value: '250'
+					name: 'resizeImage:100',
+					label: '100px',
+					value: '100'
 				},
 				{
-					name: 'resizeImage:400',
-					label: '400px',
-					value: '400'
+					name: 'resizeImage:200',
+					label: '200px',
+					value: '200'
 				}
 			],
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:wrapText',
-				'imageStyle:breakText',
-				'|',
-				'resizeImage'
-			]
+			toolbar: [ 'resizeImage' ]
 		},
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
