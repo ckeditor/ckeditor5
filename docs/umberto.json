@@ -18,6 +18,7 @@
 		"builds/guides/migration/migration-to-27.0.0.html": "builds/guides/migration/migration-to-27.html",
 		"builds/guides/migration/migration-to-27.1.0.html": "guides/migration/migration-to-27.html#migration-to-ckeditor-5-v2710",
 		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html",
+		"builds/guides/whats-new.html": "features/index.html",
 		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
 		"features/ckfinder.html": "features/images/image-upload/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
