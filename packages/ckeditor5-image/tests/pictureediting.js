@@ -5,6 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -34,6 +35,7 @@ describe( 'PictureEditing', () => {
 			plugins: [
 				Paragraph,
 				PictureEditing,
+				ItalicEditing,
 				ImageBlockEditing, ImageInlineEditing,
 				LinkImageEditing, ImageResizeEditing, ImageCaptionEditing
 			]
@@ -1262,12 +1264,115 @@ describe( 'PictureEditing', () => {
 						);
 					} );
 
-					it( 'TODO link and italic', () => {
+					it( 'should downcast an inline image wrapped in multiple attirbute elements ("sources" set after linking)', () => {
+						editor.model.schema.extend( 'imageInline', {
+							allowAttributes: [ 'italic' ]
+						} );
 
+						editor.setData(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">' +
+									'<i>' +
+										'<img src="/assets/sample.png">' +
+									'</i>' +
+								'</a>bar' +
+							'</p>'
+						);
+
+						model.change( writer => {
+							writer.setAttribute(
+								'sources',
+								[
+									{
+										srcset: '/assets/sample.png'
+									}
+								],
+								modelDocument.getRoot().getChild( 0 ).getChild( 1 )
+							);
+						} );
+
+						expect( editor.getData() ).to.equal(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">' +
+										'<i>' +
+											'<picture>' +
+												'<source srcset="/assets/sample.png">' +
+												'<img src="/assets/sample.png">' +
+											'</picture>' +
+										'</i>' +
+								'</a>bar' +
+							'</p>'
+						);
 					} );
 
-					it( 'TODO <a>text<img>text</a>', () => {
+					it( 'should downcast an inline image wrapped in multiple attirbute elements ' +
+						'("sources" set after linking + text around the image)', () => {
+						editor.model.schema.extend( 'imageInline', {
+							allowAttributes: [ 'italic' ]
+						} );
 
+						editor.setData(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">ab' +
+									'<i>c' +
+										'<img src="/assets/sample.png">' +
+									'd</i>' +
+								'ef</a>bar' +
+							'</p>'
+						);
+
+						model.change( writer => {
+							writer.setAttribute(
+								'sources',
+								[
+									{
+										srcset: '/assets/sample.png'
+									}
+								],
+								modelDocument.getRoot().getChild( 0 ).getChild( 3 )
+							);
+						} );
+
+						expect( editor.getData() ).to.equal(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">ab' +
+										'<i>c' +
+											'<picture>' +
+												'<source srcset="/assets/sample.png">' +
+												'<img src="/assets/sample.png">' +
+											'</picture>' +
+										'd</i>' +
+								'ef</a>bar' +
+							'</p>'
+						);
+					} );
+
+					it( 'should downcast a linked inline image ("sources" removed after linking)', () => {
+						editor.setData(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">' +
+									'<picture>' +
+										'<source srcset="/assets/sample.png">' +
+										'<img src="/assets/sample.png">' +
+									'</picture>' +
+								'</a>bar' +
+							'</p>'
+						);
+
+						model.change( writer => {
+							writer.removeAttribute(
+								'sources',
+								modelDocument.getRoot().getChild( 0 ).getChild( 1 )
+							);
+						} );
+
+						expect( editor.getData() ).to.equal(
+							'<p>' +
+								'foo<a href="http://ckeditor.com">' +
+									'<img src="/assets/sample.png">' +
+								'</a>bar' +
+							'</p>'
+						);
 					} );
 
 					it( 'should downcast a resized inline image', () => {
@@ -1329,6 +1434,41 @@ describe( 'PictureEditing', () => {
 
 						editor.setData( data );
 						expect( editor.getData() ).to.equal( data );
+					} );
+
+					it( 'should downcast a linked block image ("sources" added after linking)', () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<a href="https://ckeditor.com">' +
+									'<img src="/assets/sample.png">' +
+								'</a>' +
+								'<figcaption>Caption</figcaption>' +
+							'</figure>'
+						);
+
+						model.change( writer => {
+							writer.setAttribute(
+								'sources',
+								[
+									{
+										srcset: '/assets/sample.png'
+									}
+								],
+								modelDocument.getRoot().getChild( 0 )
+							);
+						} );
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								'<a href="https://ckeditor.com">' +
+									'<picture>' +
+										'<source srcset="/assets/sample.png">' +
+										'<img src="/assets/sample.png">' +
+									'</picture>' +
+								'</a>' +
+								'<figcaption>Caption</figcaption>' +
+							'</figure>'
+						);
 					} );
 
 					it( 'should downcast a resized block image', () => {
