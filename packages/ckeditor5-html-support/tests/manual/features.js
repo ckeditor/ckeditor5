@@ -69,9 +69,12 @@ ClassicEditor
 		],
 		htmlSupport: {
 			allow: [
-				{ name: /^.*$/, styles: true },
-				{ name: 'a', attributes: [ 'name', 'id' ] },
-				{ name: 'span', classes: [ 'text-italic' ] }
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
 			]
 		}
 	} )
