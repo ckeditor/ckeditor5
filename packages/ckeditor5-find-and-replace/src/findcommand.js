@@ -63,11 +63,9 @@ export default class FindCommand extends Command {
 			findCallback
 		};
 
-		if ( ret.results.length ) {
-			for ( const item of ret.results ) {
-				this.state.results.add( item );
-			}
-		}
+		this.state.clear( model );
+		this.state.results.addMany( Array.from( ret.results ) );
+		this.state.highlightedResult = ret.results.get( 0 );
 
 		return ret;
 	}

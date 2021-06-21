@@ -34,6 +34,29 @@ class FindAndReplaceState {
 		this.set( 'matchCase', false );
 		this.set( 'matchWholeWords', false );
 	}
+
+	clear( model ) {
+		// @todo: actually this handling might be moved to editing part.
+		// This could be a results#change listener that would ensure that related markers are ALWAYS removed without
+		// having to call state.clear() explicitly.
+
+		model.change( writer => {
+			if ( this.highlightedResult ) {
+				const oldMatchId = this.highlightedResult.marker.name.split( ':' )[ 1 ];
+				const oldMarker = model.markers.get( `findResultHighlighted:${ oldMatchId }` );
+
+				if ( oldMarker ) {
+					writer.removeMarker( oldMarker );
+				}
+			}
+
+			[ ...this.results ].forEach( ( { marker } ) => {
+				writer.removeMarker( marker );
+			} );
+		} );
+
+		this.results.clear();
+	}
 }
 
 mix( FindAndReplaceState, ObservableMixin );
@@ -115,6 +138,43 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		this._defineConverters();
 		this._defineCommands();
+
+		// window.nextMatch = () => {
+		// 	const results = this.state.results;
+		// 	const currentIndex = results.getIndex( this.state.highlightedResult );
+		// 	const nextIndex = currentIndex + 1 >= results.length ? 0 : currentIndex + 1;
+		// 	console.log( 'current index', currentIndex, 'changing to', nextIndex );
+
+		// 	this.state.highlightedResult = this.state.results.get( nextIndex );
+		// };
+
+		this.listenTo( this.state, 'change:highlightedResult', ( eventInfo, name, newValue, oldValue ) => {
+			// console.log( 'highlighted result changed', newValue );
+			const { model } = this.editor;
+
+			model.change( writer => {
+				const { model } = this.editor;
+				if ( oldValue ) {
+					const oldMatchId = oldValue.marker.name.split( ':' )[ 1 ];
+					const oldMarker = model.markers.get( `findResultHighlighted:${ oldMatchId }` );
+
+					// console.log( 'removing ' + `findResult:${ oldMatchId }` );
+
+					if ( oldMarker ) {
+						// console.log( writer.removeMarker( oldMarker ) );
+					}
+				}
+
+				if ( newValue ) {
+					const newMatchId = newValue.marker.name.split( ':' )[ 1 ];
+					writer.addMarker( `findResultHighlighted:${ newMatchId }`, {
+						usingOperation: false,
+						affectsData: false,
+						range: newValue.marker.getRange()
+					} );
+				}
+			} );
+		} );
 	}
 
 	/**
@@ -147,12 +207,7 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		this.stopListening( this.editor.model.document );
 
-		// Remove all markers from the editor.
-		this.editor.model.change( writer => {
-			[ ...this.activeResults ].forEach( ( { marker } ) => {
-				writer.removeMarker( marker );
-			} );
-		} );
+		this.state.clear( this.editor.model );
 
 		this.activeResults = null;
 	}
@@ -224,6 +279,24 @@ export default class FindAndReplaceEditing extends Plugin {
 				return {
 					name: 'span',
 					classes: [ 'ck-find-result' ],
+					attributes: {
+						// ...however, adding a unique attribute should be future-proof..
+						'data-find-result': id
+					}
+				};
+			}
+		} );
+
+		this.editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+			model: 'findResultHighlighted',
+			view: ( { markerName } ) => {
+				const [ , id ] = markerName.split( ':' );
+
+				// Marker removal from the view has a bug: https://github.com/ckeditor/ckeditor5/issues/7499
+				// A minimal option is to return a new object for each converted marker...
+				return {
+					name: 'span',
+					classes: [ HIGHLIGHT_CLASS ],
 					attributes: {
 						// ...however, adding a unique attribute should be future-proof..
 						'data-find-result': id
