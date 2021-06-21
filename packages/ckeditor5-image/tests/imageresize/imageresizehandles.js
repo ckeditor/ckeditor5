@@ -493,6 +493,34 @@ describe( 'ImageResizeHandles', () => {
 				attachToSpy.restore();
 			} );
 		} );
+
+		describe( 'PictureEditing integration', () => {
+			it( 'should add resize handles to a block image using <picture>', async () => {
+				const editor = await createEditor( {
+					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, PictureEditing, Paragraph ]
+				} );
+
+				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+
+				setData( editor.model,
+					`[<imageBlock linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageBlock>]`
+				);
+
+				editor.model.change( writer => {
+					writer.setAttribute( 'sources', [
+						{ srcset: IMAGE_SRC_FIXTURE }
+					], editor.model.document.getRoot().getChild( 0 ) );
+				} );
+
+				await waitForAllImagesLoaded( editor );
+
+				expect( attachToSpy ).calledOnce;
+
+				attachToSpy.restore();
+
+				await editor.destroy();
+			} );
+		} );
 	} );
 
 	describe( 'for inline image', () => {
@@ -945,19 +973,11 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		describe( 'PictureEditing integration', () => {
-			let editor;
-
-			beforeEach( async () => {
-				editor = await createEditor( {
+			it( 'should add resize handles to an inline image using <picture>', async () => {
+				const editor = await createEditor( {
 					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, PictureEditing, Paragraph ]
 				} );
-			} );
 
-			afterEach( async () => {
-				await editor.destroy();
-			} );
-
-			it( 'should add resize handles to an inline image using <picture>', async () => {
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
 				setData( editor.model,
@@ -977,32 +997,8 @@ describe( 'ImageResizeHandles', () => {
 				expect( attachToSpy ).calledOnce;
 
 				attachToSpy.restore();
-			} );
 
-			it( 'should add resize handles to a block image using <picture>', async () => {
-				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
-
-				setData( editor.model,
-					'<figure class="image">' +
-						'<picture>' +
-							'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
-							'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
-							'<img src="/assets/sample.png">' +
-						'</picture>' +
-					'</figure>'
-				);
-
-				editor.model.change( writer => {
-					writer.setAttribute( 'sources', [
-						{ srcset: IMAGE_SRC_FIXTURE }
-					], editor.model.document.getRoot().getChild( 0 ).getChild( 0 ) );
-				} );
-
-				await waitForAllImagesLoaded( editor );
-
-				expect( attachToSpy ).calledOnce;
-
-				attachToSpy.restore();
+				await editor.destroy();
 			} );
 		} );
 

@@ -1229,7 +1229,7 @@ describe( 'PictureEditing', () => {
 						expect( editor.getData() ).to.equal( data );
 					} );
 
-					it.only( 'should downcast a linked inline image ("sources" set after linking)', () => {
+					it( 'should downcast a linked inline image ("sources" set after linking)', () => {
 						editor.setData(
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
@@ -1237,8 +1237,6 @@ describe( 'PictureEditing', () => {
 								'</a>bar' +
 							'</p>'
 						);
-
-						console.log( editor.getData() );
 
 						model.change( writer => {
 							writer.setAttribute(
@@ -1252,19 +1250,24 @@ describe( 'PictureEditing', () => {
 							);
 						} );
 
-						console.log( getViewData( view ) );
-						console.log( editor.getData() );
-
 						expect( editor.getData() ).to.equal(
 							'<p>' +
 								'foo<a href="http://ckeditor.com">' +
 									'<picture>' +
-										'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png">' +
+										'<source srcset="/assets/sample.png">' +
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 								'</a>bar' +
 							'</p>'
 						);
+					} );
+
+					it( 'TODO link and italic', () => {
+
+					} );
+
+					it( 'TODO <a>text<img>text</a>', () => {
+
 					} );
 
 					it( 'should downcast a resized inline image', () => {
