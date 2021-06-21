@@ -267,6 +267,11 @@ export default class DataSchema extends Plugin {
 		} );
 
 		this.registerInlineElement( {
+			view: 'abbr',
+			model: 'htmlAbbr'
+		} );
+
+		this.registerInlineElement( {
 			view: 'a',
 			model: 'htmlA',
 			priority: 5
