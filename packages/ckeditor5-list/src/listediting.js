@@ -102,7 +102,7 @@ export default class ListEditing extends Plugin {
 
 			const modelItem = data.modelPosition.nodeAfter;
 
-			if ( !modelItem || !modelItem.is( 'element' ) || !modelItem.hasAttribute( 'listItem' ) ) {
+			if ( !isListItem( modelItem ) ) {
 				return;
 			}
 
@@ -129,7 +129,8 @@ export default class ListEditing extends Plugin {
 				}
 
 				const consumables = [];
-				let element = null;
+				let startElement = null;
+				let endElement = null;
 
 				switch ( diffItem.type ) {
 					case 'attribute': {
@@ -137,7 +138,26 @@ export default class ListEditing extends Plugin {
 							return;
 						}
 
-						element = diffItem.range.start.nodeAfter;
+						const nodeBefore = diffItem.range.start.nodeBefore;
+						const nodeAfter = diffItem.range.start.nodeAfter;
+
+						// The attribute was set.
+						if ( diffItem.attributeNewValue ) {
+							startElement = nodeAfter;
+						}
+						// The attribute was removed but the previous item has the attribute.
+						else if ( isListItem( nodeBefore ) ) {
+							startElement = nodeBefore;
+							endElement = nodeAfter;
+						}
+						// The attribute was removed but the element after that has it.
+						else if ( isListItem( nodeAfter.nextSibling ) ) {
+							startElement = nodeAfter;
+							endElement = nodeAfter.nextSibling;
+						} else {
+							// TODO what if the whole range of elements got listItem attribute removed
+							//  this should trigger reconversion but we need to know the range to reconvert
+						}
 
 						console.log( 'trigger - attribute change at', diffItem.range.start.path );
 
@@ -145,9 +165,9 @@ export default class ListEditing extends Plugin {
 					}
 
 					case 'insert': {
-						element = diffItem.position.nodeAfter;
+						startElement = diffItem.position.nodeAfter;
 
-						if ( !element.hasAttribute( 'listItem' ) ) {
+						if ( !startElement.hasAttribute( 'listItem' ) ) {
 							return;
 						}
 
@@ -166,10 +186,10 @@ export default class ListEditing extends Plugin {
 
 						console.log( 'trigger - remove at', diffItem.position.path );
 
-						if ( nodeBefore && nodeBefore.is( 'element' ) && nodeBefore.hasAttribute( 'listItem' ) ) {
-							element = nodeBefore;
-						} else if ( nodeAfter && nodeAfter.is( 'element' ) && nodeAfter.hasAttribute( 'listItem' ) ) {
-							element = nodeAfter;
+						if ( isListItem( nodeBefore ) ) {
+							startElement = nodeBefore;
+						} else if ( isListItem( nodeAfter ) ) {
+							startElement = nodeAfter;
 						} else {
 							// Collapsed range to indicate the deletion of the whole structure that starts at that position.
 							return {
@@ -182,29 +202,26 @@ export default class ListEditing extends Plugin {
 					}
 				}
 
-				if ( !element ) {
+				if ( !startElement ) {
 					return;
 				}
 
-				let startElement = element;
-				let endElement = element;
+				addConsumable( startElement );
 
-				addConsumable( element );
+				if ( endElement ) {
+					addConsumable( endElement );
+				} else {
+					endElement = startElement;
+				}
 
 				let node;
 
-				while (
-					( node = startElement.previousSibling ) &&
-					node.is( 'element' ) && node.hasAttribute( 'listItem' )
-				) {
+				while ( ( node = startElement.previousSibling ) && isListItem( node ) ) {
 					startElement = node;
 					addConsumable( node );
 				}
 
-				while (
-					( node = endElement.nextSibling ) &&
-					node.is( 'element' ) && node.hasAttribute( 'listItem' )
-				) {
+				while ( ( node = endElement.nextSibling ) && isListItem( node ) ) {
 					endElement = node;
 					addConsumable( node );
 				}
@@ -220,9 +237,11 @@ export default class ListEditing extends Plugin {
 				};
 
 				function addConsumable( node ) {
-					consumables.push( [ node, 'attribute:listItem' ] );
-					consumables.push( [ node, 'attribute:listType' ] );
-					consumables.push( [ node, 'attribute:listIndent' ] );
+					for ( const attribute of [ 'listItem', 'listType', 'listIndent' ] ) {
+						if ( node.hasAttribute( attribute ) ) {
+							consumables.push( [ node, `attribute:${ attribute }` ] );
+						}
+					}
 				}
 			},
 			view: ( range, { writer, slotFor } ) => {
@@ -234,16 +253,29 @@ export default class ListEditing extends Plugin {
 
 				console.log( 'creating view' );
 
+				const viewLists = [];
 				const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-				const viewList = writer.createContainerElement( listType );
+
+				let viewList = writer.createContainerElement( listType );
+
+				viewLists.push( viewList );
 
 				// let previousItem = null;
 
 				for ( const modelItem of modelElements ) {
-					const viewItem = createViewListItemElement( writer );
+					if ( isListItem( modelItem ) ) {
+						const viewItem = createViewListItemElement( writer );
 
-					writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-					writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+						writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+						writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+					} else {
+						// Some other element that lost it's list item properties.
+						viewList = writer.createContainerElement( listType );
+
+						viewLists.push( viewList );
+
+						writer.insert( writer.createPositionAt( viewList, 'end' ), slotFor( modelItem, 'self' ) );
+					}
 
 					// const itemModelPosition = editor.model.createPositionBefore( modelItem );
 					//
@@ -305,7 +337,10 @@ export default class ListEditing extends Plugin {
 					// previousItem = modelItem;
 				}
 
+				// TODO should this return a fragment that would consist multiple lists (with slots for elements between lists)?
+				//  but how should the mapping be handled then?
 				return viewList;
+				// return writer.createDocumentFragment( viewLists );
 			}
 		} );
 
@@ -544,4 +579,8 @@ function findFirstSameListItemEntry( modelItem ) {
 	}
 
 	return node;
+}
+
+function isListItem( node ) {
+	return !!node && node.is( 'element' ) && node.hasAttribute( 'listItem' );
 }

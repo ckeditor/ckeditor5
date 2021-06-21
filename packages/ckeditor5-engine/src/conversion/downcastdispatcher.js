@@ -648,12 +648,13 @@ export default class DowncastDispatcher {
 					// TODO make sure those are not intersecting.
 					const otherChange = updated.find( entry => (
 						entry.type == data.type &&
-						entry.range.isEqual( data.range ) &&
-						entry.magicUid == data.magicUid
+						entry.magicUid == data.magicUid &&
+						( entry.range.isEqual( data.range ) || entry.range.isIntersecting( data.range ) )
 					) );
 
 					// Range is already marked for reconversion, so skip this change.
 					if ( otherChange ) {
+						otherChange.range = otherChange.range.getJoined( data.range );
 						otherChange.related.push( entry );
 					} else {
 						// Add special "range" change.
