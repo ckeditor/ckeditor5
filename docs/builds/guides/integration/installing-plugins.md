@@ -24,6 +24,14 @@ In order to start developing CKEditor 5 you will require:
 * [Node.js](https://nodejs.org/en/) 12.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
+<info-box warning>
+	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. If you use the latest version of, for example, `@ckeditor/ckeditor5-editor-classic` with an outdated version of `@ckeditor/ckeditor5-image`, npm or yarn will need to install two different versions of `@ckeditor/ckeditor5-core` because `@ckeditor/ckeditor5-editor-classic` and `@ckeditor/ckeditor5-image` may require different versions of the core package. This will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/error-codes.html#error-ckeditor-duplicated-modules).
+
+	The simplest way to avoid such situations is to always use the latest versions of the official packages. If you already stumbled upon this error, you can use [npm-check-updates](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
+
+	**NOTE:** the above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
+</info-box>
+
 ## Adding a plugin to a build
 
 Adding plugins to existing builds is done through their customization. Editor builds are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic) you need to:
