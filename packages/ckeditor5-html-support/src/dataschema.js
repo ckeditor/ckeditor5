@@ -136,6 +136,21 @@ export default class DataSchema extends Plugin {
 		} );
 
 		this.registerBlockElement( {
+			model: 'heading1',
+			view: 'h2'
+		} );
+
+		this.registerBlockElement( {
+			model: 'heading2',
+			view: 'h3'
+		} );
+
+		this.registerBlockElement( {
+			model: 'heading3',
+			view: 'h4'
+		} );
+
+		this.registerBlockElement( {
 			model: 'listItem',
 			view: 'li'
 		} );
