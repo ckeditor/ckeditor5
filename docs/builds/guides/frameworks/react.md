@@ -404,7 +404,7 @@ yarn add \
 	@ckeditor/ckeditor5-basic-styles
 ```
 
-Please note that all packages ( excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react` ) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
+Please note that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
 
 #### Modifying the webpack configuration
 
