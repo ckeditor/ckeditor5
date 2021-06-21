@@ -99,6 +99,7 @@ export default class FindAndReplace extends Plugin {
 		} );
 
 		ui.on( 'dropdown:closed', () => {
+			findAndReplaceEditing.state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
 	}
