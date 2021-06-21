@@ -13,6 +13,7 @@ import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
 import FindNextCommand from './findnextcommand';
+import FindPreviousCommand from './findpreviouscommand';
 
 import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
 
@@ -211,6 +212,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	_defineCommands() {
 		this.editor.commands.add( 'find', new FindCommand( this.editor, this.state ) );
 		this.editor.commands.add( 'findNext', new FindNextCommand( this.editor, this.state ) );
+		this.editor.commands.add( 'findPrevious', new FindPreviousCommand( this.editor, this.state ) );
 		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor, this.state ) );
 		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor, this.state ) );
 	}

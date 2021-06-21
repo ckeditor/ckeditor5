@@ -67,7 +67,7 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.replaceButtonView = this._createButton( t( 'REPLACE' ), 'ck-button-replace' );
 		this.replaceButtonView.on( 'execute', () => {
-			this.fire( 'replace', { replaceText: this.replaceText } );
+			this.fire( 'replace', { searchText: this.searchText, replaceText: this.replaceText } );
 		} );
 
 		/**
@@ -77,7 +77,7 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.replaceAllButtonView = this._createButton( t( 'REPLACE ALL' ), 'ck-button-replaceall' );
 		this.replaceAllButtonView.on( 'execute', () => {
-			this.fire( 'replaceAll', { replaceText: this.replaceText } );
+			this.fire( 'replaceAll', { searchText: this.searchText, replaceText: this.replaceText } );
 		} );
 
 		/**
