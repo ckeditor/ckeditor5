@@ -9,8 +9,6 @@ describe( 'FindAndReplaceUI', () => {
 	let editorElement;
 	let editor;
 	let dropdown;
-	// let button;
-	// let form;
 
 	testUtils.createSinonSandbox();
 
@@ -25,8 +23,6 @@ describe( 'FindAndReplaceUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'findAndReplace' );
-				// button = dropdown.buttonView;
-				// form = dropdown.panelView.children.get( 0 );
 			} );
 	} );
 

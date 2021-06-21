@@ -25,7 +25,7 @@ export default class FindNextCommand extends Command {
 	constructor( editor, state ) {
 		super( editor );
 
-		// Find command is always enabled.
+		// The command is always enabled.
 		this.isEnabled = true;
 
 		this.state = state;

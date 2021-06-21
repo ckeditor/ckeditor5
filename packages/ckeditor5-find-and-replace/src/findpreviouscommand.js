@@ -9,8 +9,6 @@
 
 import { Command } from 'ckeditor5/src/core';
 
-// @todo: extend findnextcommand instead of copy and paste.
-
 /**
  * Find next command. Moves the highlight to the next search result.
  *
@@ -27,7 +25,7 @@ export default class FindPreviousCommand extends Command {
 	constructor( editor, state ) {
 		super( editor );
 
-		// Find command is always enabled.
+		// The command is always enabled.
 		this.isEnabled = true;
 
 		this.state = state;
