@@ -254,9 +254,19 @@ export default class FindAndReplaceFormView extends View {
 	 * @param {module:ui/button/buttonview~ButtonView} findPrevButtonView Find previous button view.
 	 * @return {module:ui/view~View} The find view instance.
 	 */
-
 	_createFindView( InputView, matchCaseCheckbox, matchWholeWordsCheckbox, findButtonView, findNextButtonView, findPrevButtonView ) {
 		const findView = new View();
+
+		const bind = this.bindTemplate;
+
+		this.set( 'matchCount', null );
+		this.set( 'highlightOffset', null );
+		this.set( 'isCounterHidden', true );
+
+		this.bind( 'isCounterHidden' ).to( this, 'matchCount', this, 'highlightOffset', ( matchCount, highlightOffset ) => {
+			return matchCount === null || matchCount === 0 ||
+				highlightOffset === null || highlightOffset === 0;
+		} );
 
 		findView.setTemplate( {
 			tag: 'div',
@@ -275,11 +285,18 @@ export default class FindAndReplaceFormView extends View {
 				{ tag: 'span',
 					attributes: {
 						class: [
-							'ck-results-found-counter'
+							'ck-results-found-counter',
+							bind.if( 'isCounterHidden', 'ck-hidden' )
 						]
 					},
 					children: [
-						'1 of 3'
+						{
+							text: bind.to( 'highlightOffset' )
+						},
+						this.locale.t( ' of ' ),
+						{
+							text: bind.to( 'matchCount' )
+						}
 					]
 				},
 				{
