@@ -4,9 +4,9 @@ modified_at: 2021-06-13
 updated_at: 2021-06-14
 ---
 
-# General HTML support
+# General HTML Support
 
-The general HTML support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins.
+The General HTML Support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins.
 
 Some examples of HTML features that can be easily enabled using General HTML Support include:
 
@@ -20,9 +20,9 @@ Some examples of HTML features that can be easily enabled using General HTML Sup
 The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, output (e.g. via `editor.getData()`), and are visible in the editing area. Such content can also be edited in the editor, although, to a limited extend. Read more about it in the [Level of support](#level-of-support) section.
 
 <info-box>
-	The General HTML support feature is **experimental and not yet production-ready**.
+	The General HTML Support feature is **experimental and not yet production-ready**.
 
-	Follow the ["Stabilize and release a production-ready General HTML support feature"](https://github.com/ckeditor/ckeditor5/issues/9856) issue for more updates and related issues.
+	Follow the ["Stabilize and release a production-ready General HTML Support feature"](https://github.com/ckeditor/ckeditor5/issues/9856) issue for more updates and related issues.
 </info-box>
 
 ## Demo
