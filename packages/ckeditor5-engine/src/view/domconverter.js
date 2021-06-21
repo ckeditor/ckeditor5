@@ -1304,7 +1304,7 @@ export default class DomConverter {
 // Used to check if given native `Element` or `Text` node has parent with tag name from `types` array.
 //
 // @param {Node} node
-// @param {Iterable.<String>} types
+// @param {Array.<String>} types
 // @param {Boolean} [boundaryParent] Can be given if parents should be checked up to a given element (excluding that element).
 // @returns {Boolean} `true` if such parent exists or `false` if it does not.
 function _hasDomParentOfType( node, types, boundaryParent ) {
