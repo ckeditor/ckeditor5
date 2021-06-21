@@ -11,7 +11,7 @@ modified_at: 2021-06-17
 The {@link features/images-styles image styles} feature is meant to give the user a choice between a set of styling options provided by the system (i.e. by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes into play. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
 
 ## Enabling image resizing
-
+<!-- This only makes sense here, as moving it down over installation section and keeping thse together makes no; this may also be turned into an info-box -->
 The image resize feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-resizing#installation installation} section.
 
 ## Methods to resize images
