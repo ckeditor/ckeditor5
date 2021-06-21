@@ -6,10 +6,9 @@
 /* globals window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-// import FindAndReplace from '/Users/mzagorski/Desktop/CKEDITOR5/ckeditor5/packages/ckeditor5-find-and-replace/src/findandreplace';
-// import FindAndReplace from '../../../src/findandreplace';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 
-ClassicEditor.builtinPlugins.push( FindAndReplace );
+ClassicEditor.builtinPlugins.push( FindAndReplace, Underline );
 
 window.ClassicEditor = ClassicEditor;

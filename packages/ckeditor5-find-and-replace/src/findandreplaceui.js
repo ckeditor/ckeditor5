@@ -84,7 +84,7 @@ export default class FindAndReplaceUI extends Plugin {
 		dropdown.buttonView.set( {
 			icon,
 			withText: true,
-			tooltip: true
+			tooltip: this.editor.locale.t( 'Find and replace' )
 		} );
 	}
 }
