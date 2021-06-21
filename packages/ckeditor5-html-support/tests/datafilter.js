@@ -612,7 +612,7 @@ describe( 'DataFilter', () => {
 				model: 'htmlXyz',
 				allowChildren: 'not-exists',
 				schema: {
-					inheritAllFrom: '$htmlBlock'
+					inheritAllFrom: '$htmlSection'
 				}
 			} );
 

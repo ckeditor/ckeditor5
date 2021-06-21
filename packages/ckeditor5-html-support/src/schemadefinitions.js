@@ -82,10 +82,10 @@ export default {
 
 		// Compatibility features
 		{
-			model: '$htmlBlock',
+			model: '$htmlSection',
 			modelSchema: {
 				allowChildren: '$block',
-				allowIn: [ '$root', '$htmlBlock' ],
+				allowIn: [ '$root', '$htmlSection' ],
 				isBlock: true
 			}
 		},
@@ -100,14 +100,14 @@ export default {
 			model: 'htmlBlockquote',
 			view: 'blockquote',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		{
 			model: 'htmlTable',
 			view: 'table',
 			modelSchema: {
-				allowIn: [ '$htmlBlock', '$root' ],
+				allowIn: [ '$htmlSection', '$root' ],
 				isBlock: true
 			}
 		},
@@ -158,7 +158,7 @@ export default {
 			view: 'td',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowChildren: [ '$block', '$htmlBlock' ],
+				allowChildren: [ '$block', '$htmlSection' ],
 				isBlock: true
 			}
 		},
@@ -168,7 +168,7 @@ export default {
 			view: 'th',
 			modelSchema: {
 				allowIn: 'htmlTr',
-				allowChildren: [ '$block', '$htmlBlock' ],
+				allowChildren: [ '$block', '$htmlSection' ],
 				isBlock: true
 			}
 		},
@@ -177,7 +177,7 @@ export default {
 			model: 'htmlFigure',
 			view: 'figure',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock',
+				inheritAllFrom: '$htmlSection',
 				isBlock: true
 			}
 		},
@@ -196,7 +196,7 @@ export default {
 			model: 'htmlAddress',
 			view: 'address',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include text.
@@ -204,7 +204,7 @@ export default {
 			model: 'htmlAside',
 			view: 'aside',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include text.
@@ -212,7 +212,7 @@ export default {
 			model: 'htmlMain',
 			view: 'main',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include text.
@@ -220,7 +220,7 @@ export default {
 			model: 'htmlDetails',
 			view: 'details',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		{
@@ -237,7 +237,7 @@ export default {
 			model: 'htmlDiv',
 			view: 'div',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include text.
@@ -245,7 +245,7 @@ export default {
 			model: 'htmlFieldset',
 			view: 'fieldset',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include h1-h6.
@@ -262,7 +262,7 @@ export default {
 			model: 'htmlHeader',
 			view: 'header',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include text.
@@ -270,7 +270,7 @@ export default {
 			model: 'htmlFooter',
 			view: 'footer',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include text.
@@ -278,7 +278,7 @@ export default {
 			model: 'htmlForm',
 			view: 'form',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		{
@@ -344,7 +344,7 @@ export default {
 		{
 			model: '$htmlList',
 			modelSchema: {
-				allowWhere: '$htmlBlock',
+				allowWhere: '$htmlSection',
 				allowChildren: [ '$htmlList', 'htmlLi' ],
 				isBlock: true
 			}
@@ -398,14 +398,14 @@ export default {
 			model: 'htmlArticle',
 			view: 'article',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		{
 			model: 'htmlSection',
 			view: 'section',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// TODO can also include text.
@@ -413,14 +413,14 @@ export default {
 			model: 'htmlNav',
 			view: 'nav',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		{
 			model: 'htmlDl',
 			view: 'dl',
 			modelSchema: {
-				allowIn: [ '$htmlBlock', '$root' ],
+				allowIn: [ '$htmlSection', '$root' ],
 				allowChildren: [ 'htmlDt', 'htmlDd' ],
 				isBlock: true
 			}
@@ -445,7 +445,7 @@ export default {
 			model: 'htmlCenter',
 			view: 'center',
 			modelSchema: {
-				inheritAllFrom: '$htmlBlock'
+				inheritAllFrom: '$htmlSection'
 			}
 		},
 		// Objects
