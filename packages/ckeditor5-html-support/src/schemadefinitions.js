@@ -41,8 +41,7 @@
 // * title
 // * head
 // * meta
-// * link
-// * etc...
+// * link * etc...
 //
 // Skipped hidden elements:
 // noscript
@@ -78,6 +77,14 @@ export default {
 		{
 			model: 'listItem',
 			view: 'li'
+		},
+		{
+			model: 'pageBreak',
+			view: 'div'
+		},
+		{
+			model: 'rawHtml',
+			view: 'div'
 		},
 
 		// Compatibility features
