@@ -264,9 +264,8 @@ export default class FindAndReplaceFormView extends View {
 				class: [
 					'ck',
 					'ck-find-form__wrapper',
-					'ck-responsive-form',
-					'ck-isEnabled'
-					// 'isDisabled'
+					'ck-responsive-form'
+					// 'ck-is-searching' class will be added here after search has been triggered.
 				],
 				tabindex: '-1'
 			},
@@ -330,8 +329,8 @@ export default class FindAndReplaceFormView extends View {
 				class: [
 					'ck',
 					'ck-replace-form__wrapper',
-					'ck-responsive-form',
-					'ck-isEnabled'
+					'ck-responsive-form'
+					// 'ck-is-searching' class will be added here after search has been triggered.
 				],
 				tabindex: '-1'
 			},

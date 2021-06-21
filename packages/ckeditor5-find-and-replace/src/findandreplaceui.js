@@ -13,7 +13,7 @@ import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/respons
 import '../theme/findandreplaceform.css';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
-import loupeIcon from '../theme/icons/find-replace.svg';
+import loupeIcon from '../theme/icons/findreplace.svg';
 
 /**
  * Default find and replace UI. It introduces:

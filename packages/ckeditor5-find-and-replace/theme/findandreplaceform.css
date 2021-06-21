@@ -51,17 +51,23 @@
 	& .ck-button {
 		border-radius: 5px;
 		font-size: calc(var(--ck-font-size-normal) * 0.9);
+		background-color: var(--ck-color-switch-button-off-background);
+
+		&:hover {
+			background-color: var(--ck-color-switch-button-off-background);
+			cursor: default;
+		}
 
 		&:last-child {
 			margin-left: var(--ck-spacing-unit)
 		}
 	}
 
-	&.ck-isDisabled .ck-button {
-		background-color: var(--ck-color-switch-button-off-background);
+	&.ck-is-searching .ck-button {
+		background-color: var(--ck-color-base-active);
 
 		&:hover {
-			background-color: var(--ck-color-switch-button-off-background);
+			background-color: var(--ck-color-base-focus);
 			cursor: default;
 		}
 	}
@@ -106,25 +112,25 @@
 			}
 		}
 	}
-	&.ck-isEnabled {
+
+	& .ck-button.ck-button-prev,
+	& .ck-button.ck-button-next {
+		display: none;
+	}
+
+	& .ck-button.ck-button-find {
+		display: flex;
+	}
+	
+	&.ck-is-searching {
 		& .ck-button.ck-button-prev,
 		& .ck-button.ck-button-next {
 			margin-left: 1px;
-		}
-
-		& .ck-button.ck-button-find {
-			display: none;
-		}
-	}
-
-	&.ck-isDisabled {
-		& .ck-button.ck-button-prev,
-		& .ck-button.ck-button-next {
-			display: none;
-		}
-
-		& .ck-button.ck-button-find {
 			display: flex;
+		}
+
+		& .ck-button.ck-button-find {
+			display: none;
 		}
 	}
 
