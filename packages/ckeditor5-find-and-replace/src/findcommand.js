@@ -67,6 +67,11 @@ export default class FindCommand extends Command {
 		this.state.results.addMany( Array.from( ret.results ) );
 		this.state.highlightedResult = ret.results.get( 0 );
 
+		if ( typeof callbackOrText === 'string' ) {
+			// @todo: eliminate this code repetition. Done to fix unit tests.
+			this.state.searchText = callbackOrText;
+		}
+
 		return ret;
 	}
 }

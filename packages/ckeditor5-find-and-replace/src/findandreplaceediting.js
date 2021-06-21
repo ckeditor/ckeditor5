@@ -42,6 +42,9 @@ class FindAndReplaceState {
 		// This could be a results#change listener that would ensure that related markers are ALWAYS removed without
 		// having to call state.clear() explicitly.
 
+		this.searchText = '';
+		// this.replaceText = '';
+
 		model.change( writer => {
 			if ( this.highlightedResult ) {
 				const oldMatchId = this.highlightedResult.marker.name.split( ':' )[ 1 ];

@@ -214,6 +214,19 @@ describe( 'FindAndReplace', () => {
 				);
 			} );
 		} );
+
+		it( 'doesn\'t break when searching, closing dropdown, opening again and replacing', () => {
+			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+			findAndReplaceUI.fire( 'findNext', { searchText: 'bar' } );
+
+			findAndReplaceUI.fire( 'dropdown:closed' );
+
+			findAndReplaceUI.fire( 'replace', {
+				searchText: 'bar',
+				replaceText: 'new'
+			} );
+		} );
 	} );
 
 	describe( 'find()', () => {
