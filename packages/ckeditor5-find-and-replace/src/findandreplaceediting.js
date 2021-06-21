@@ -12,6 +12,7 @@ import { updateFindResultFromRange } from './utils';
 import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
+import FindNextCommand from './findnextcommand';
 
 import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
 
@@ -101,8 +102,13 @@ function onDocumentChange( results, model, searchCallback ) {
 	model.change( writer => {
 		removedMarkers.forEach( markerName => {
 			// Remove result first - in order to prevent rendering removed marker.
-			results.remove( markerName );
-			writer.removeMarker( markerName );
+			if ( results.has( markerName ) ) {
+				results.remove( markerName );
+			}
+
+			if ( model.markers.has( markerName ) ) {
+				writer.removeMarker( markerName );
+			}
 		} );
 	} );
 
@@ -139,29 +145,16 @@ export default class FindAndReplaceEditing extends Plugin {
 		this._defineConverters();
 		this._defineCommands();
 
-		// window.nextMatch = () => {
-		// 	const results = this.state.results;
-		// 	const currentIndex = results.getIndex( this.state.highlightedResult );
-		// 	const nextIndex = currentIndex + 1 >= results.length ? 0 : currentIndex + 1;
-		// 	console.log( 'current index', currentIndex, 'changing to', nextIndex );
-
-		// 	this.state.highlightedResult = this.state.results.get( nextIndex );
-		// };
-
 		this.listenTo( this.state, 'change:highlightedResult', ( eventInfo, name, newValue, oldValue ) => {
-			// console.log( 'highlighted result changed', newValue );
 			const { model } = this.editor;
 
 			model.change( writer => {
-				const { model } = this.editor;
 				if ( oldValue ) {
 					const oldMatchId = oldValue.marker.name.split( ':' )[ 1 ];
 					const oldMarker = model.markers.get( `findResultHighlighted:${ oldMatchId }` );
 
-					// console.log( 'removing ' + `findResult:${ oldMatchId }` );
-
 					if ( oldMarker ) {
-						// console.log( writer.removeMarker( oldMarker ) );
+						writer.removeMarker( oldMarker );
 					}
 				}
 
@@ -217,6 +210,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	 */
 	_defineCommands() {
 		this.editor.commands.add( 'find', new FindCommand( this.editor, this.state ) );
+		this.editor.commands.add( 'findNext', new FindNextCommand( this.editor, this.state ) );
 		this.editor.commands.add( 'replace', new ReplaceCommand( this.editor, this.state ) );
 		this.editor.commands.add( 'replaceAll', new ReplaceAllCommand( this.editor, this.state ) );
 	}
