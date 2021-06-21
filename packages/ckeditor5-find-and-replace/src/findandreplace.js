@@ -46,42 +46,60 @@ export default class FindAndReplace extends Plugin {
 		 * Delegate find next request.
 		 */
 		ui.on( 'findNext', ( event, data ) => {
-			if ( data.searchText.length !== 0 ) {
-				findAndReplaceEditing.stop();
+			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+				findAndReplaceEditing.state.searchText = data.searchText;
+				this.editor.execute( 'find', data.searchText );
+			} else {
+				// Subsequent calls.
+				this.editor.execute( 'findNext' );
 			}
-
-			findAndReplaceEditing.find( data.searchText );
 		} );
 
 		/**
-		 * Delegate find previous request.
+		 * Delegate find previous request.i
 		 */
 		ui.on( 'findPrev', ( event, data ) => {
-			if ( data.searchText.length !== 0 ) {
-				findAndReplaceEditing.stop();
+			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+				this.editor.execute( 'find', data.searchText );
+			} else {
+				// Subsequent calls.
+				this.editor.execute( 'findPrevious' );
 			}
-			findAndReplaceEditing.find( data.searchText );
 		} );
 
 		/**
 		 * Delegate replace action.
 		 */
 		ui.on( 'replace', ( event, data ) => {
-			this.editor.execute( 'replace', data.replaceText, findAndReplaceEditing.activeResults.get( 0 ) );
-			// @todo: it should be possible to make replacement without prior find call.
+			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+				this.editor.execute( 'find', data.searchText );
+			}
+
+			const highlightedResult = findAndReplaceEditing.state.highlightedResult;
+
+			if ( highlightedResult ) {
+				this.editor.execute( 'replace', data.replaceText, highlightedResult );
+
+				// @todo: we might need to move this to the command? Or better implement a watcher for case like that in
+				// editing plugin. (so that removing marked highlight moves it to a next possible one)
+				this.editor.execute( 'findNext' );
+			}
 		} );
 
 		/**
 		 * Delegate replace all action.
 		 */
 		ui.on( 'replaceAll', ( event, data ) => {
-			// this.editor.execute( 'replaceAll', data.replaceText, data.searchText );
-			// Without referencing findAndReplaceEditing.activeResults the on `onDocumentChange` method throws if you attempt
-			// to perform replace all on editor that has already some find results matched.
-			this.editor.execute( 'replaceAll', data.replaceText, findAndReplaceEditing.activeResults );
+			// The state hadn't been yet built for this search text.
+			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+				this.editor.execute( 'find', data.searchText );
+			}
+
+			this.editor.execute( 'replaceAll', data.replaceText, findAndReplaceEditing.state.results );
 		} );
 
 		ui.on( 'dropdown:closed', () => {
+			findAndReplaceEditing.state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
 	}

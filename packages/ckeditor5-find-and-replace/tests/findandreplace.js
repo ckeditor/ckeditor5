@@ -67,12 +67,12 @@ describe( 'FindAndReplace', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		it( 'should trigger replace event', () => {
+		it( 'should trigger replace command', () => {
 			const replaceCommandSpy = sinon.spy( editor.commands.get( 'replace' ), 'execute' );
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
 
-			findAndReplaceUI.fire( 'replace', { marker: firstResult, replaceText: 'test' } );
+			findAndReplaceUI.fire( 'replace', { marker: firstResult, searchText: 'bar', replaceText: 'test' } );
 
 			replaceCommandSpy.restore();
 
@@ -97,6 +97,135 @@ describe( 'FindAndReplace', () => {
 			spy.restore();
 
 			expect( spy.calledOnce ).to.true;
+		} );
+	} );
+
+	describe( 'integration', () => {
+		describe( 'subsequent findNext events', () => {
+			it( 'causes just a findNext command call', () => {
+				// The first call, it will call different logic.
+				findAndReplaceUI.fire( 'findNext', { searchText: 'test' } );
+
+				const findSpy = getCommandExecutionSpy( 'find' );
+				const findNextSpy = getCommandExecutionSpy( 'findNext' );
+
+				// Second call (only if the search text remains the same) should just move the highlight.
+				findAndReplaceUI.fire( 'findNext', { searchText: 'test' } );
+
+				sinon.assert.callCount( findSpy, 0 );
+				sinon.assert.callCount( findNextSpy, 1 );
+			} );
+		} );
+
+		describe( 'subsequent findPrev events', () => {
+			it( 'causes just a findPrev command call', () => {
+				// The first call, it will call different logic.
+				findAndReplaceUI.fire( 'findPrev', { searchText: 'test' } );
+
+				const findSpy = getCommandExecutionSpy( 'find' );
+				const findPrevSpy = getCommandExecutionSpy( 'findPrevious' );
+
+				// Second call (only if the search text remains the same) should just move the highlight.
+				findAndReplaceUI.fire( 'findPrev', { searchText: 'test' } );
+
+				sinon.assert.callCount( findSpy, 0 );
+				sinon.assert.callCount( findPrevSpy, 1 );
+			} );
+		} );
+
+		describe( 'replace', () => {
+			it( 'works with in with the typical use case', () => {
+				editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+				findAndReplaceUI.fire( 'replace', {
+					searchText: 'bar',
+					replaceText: 'new'
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>Foo new baz</p>' +
+					'<p>Foo bar baz</p>'
+				);
+			} );
+
+			it( 'doesn\'t crash when nothing was matched', () => {
+				editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+				findAndReplaceUI.fire( 'replace', {
+					searchText: 'baaar',
+					replaceText: 'new'
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>Foo bar baz</p>' +
+					'<p>Foo bar baz</p>'
+				);
+			} );
+
+			it( 'skips extra search if same search has already been performed', () => {
+				editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+				findAndReplaceUI.fire( 'findNext', {
+					searchText: 'baz'
+				} );
+
+				findAndReplaceUI.fire( 'replace', {
+					searchText: 'baz',
+					replaceText: 'new'
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>Foo bar new</p>' +
+					'<p>Foo bar baz</p>'
+				);
+			} );
+		} );
+
+		describe( 'replace all', () => {
+			it( 'is performed based on event from UI', () => {
+				editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+				findAndReplaceUI.fire( 'replaceAll', {
+					searchText: 'bar',
+					replaceText: 'new'
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>Foo new baz</p>' +
+					'<p>Foo new baz</p>'
+				);
+			} );
+
+			it( 'skips extra search if same search has already been performed', () => {
+				editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+				findAndReplaceUI.fire( 'findNext', {
+					searchText: 'baz'
+				} );
+
+				findAndReplaceUI.fire( 'replaceAll', {
+					searchText: 'baz',
+					replaceText: 'new'
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>Foo bar new</p>' +
+					'<p>Foo bar new</p>'
+				);
+			} );
+		} );
+
+		it( 'doesn\'t break when searching, closing dropdown, opening again and replacing', () => {
+			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
+
+			findAndReplaceUI.fire( 'findNext', { searchText: 'bar' } );
+
+			findAndReplaceUI.fire( 'dropdown:closed' );
+
+			findAndReplaceUI.fire( 'replace', {
+				searchText: 'bar',
+				replaceText: 'new'
+			} );
 		} );
 	} );
 
@@ -336,4 +465,10 @@ describe( 'FindAndReplace', () => {
 			expect( callbackSpy.callCount ).to.equal( 0 );
 		} );
 	} );
+
+	function getCommandExecutionSpy( commandName ) {
+		const spy = sinon.spy();
+		editor.commands.get( commandName ).on( 'execute', spy );
+		return spy;
+	}
 } );

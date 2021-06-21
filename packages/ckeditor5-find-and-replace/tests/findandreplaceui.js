@@ -9,8 +9,6 @@ describe( 'FindAndReplaceUI', () => {
 	let editorElement;
 	let editor;
 	let dropdown;
-	// let button;
-	// let form;
 
 	testUtils.createSinonSandbox();
 
@@ -25,8 +23,6 @@ describe( 'FindAndReplaceUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'findAndReplace' );
-				// button = dropdown.buttonView;
-				// form = dropdown.panelView.children.get( 0 );
 			} );
 	} );
 
@@ -62,5 +58,16 @@ describe( 'FindAndReplaceUI', () => {
 		dropdown.fire( 'change:isOpen', 'isClosed', false );
 
 		expect( spy.calledOnce ).to.be.true;
+	} );
+
+	it( 'should not delegate dropdown:closed event when the UI is opened', () => {
+		const plugin = editor.plugins.get( 'FindAndReplaceUI' );
+		const spy = sinon.spy();
+
+		plugin.on( 'dropdown:closed', spy );
+
+		dropdown.fire( 'change:isOpen', 'isClosed', true );
+
+		expect( spy.calledOnce ).to.be.false;
 	} );
 } );

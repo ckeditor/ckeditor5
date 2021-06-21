@@ -6,7 +6,6 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import FindAndReplaceEditing from '../src/findandreplaceediting';
-import ReplaceCommand from '../src/replacecommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 
@@ -21,7 +20,7 @@ describe( 'ReplaceCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = new ReplaceCommand( editor );
+				command = editor.commands.get( 'replace' );
 			} );
 	} );
 
@@ -36,8 +35,18 @@ describe( 'ReplaceCommand', () => {
 		} );
 
 		it( 'should be enabled by default', () => {
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be enabled at the end of paragraph', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
+		} );
+	} );
+
+	describe( 'state', () => {
+		it( 'is set to plugin\'s state', () => {
+			expect( command.state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
