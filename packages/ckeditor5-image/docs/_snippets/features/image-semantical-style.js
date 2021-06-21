@@ -15,7 +15,7 @@ ClassicEditor
 		},
 		cloudServices: CS_CONFIG,
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:full', 'imageStyle:side' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side' ]
 		}
 	} )
 	.then( editor => {

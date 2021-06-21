@@ -83,7 +83,7 @@ A semantical style lets the user choose from predefined appearances of the image
 As the most of the predefined editor builds support editing a structured content which requires passing the control over the possible image appearances to the developer, they introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below presents an editor with such a basic configuration. There are three types of the images:
-* a full-width image - a representation of a block image with no style-related CSS class,
+* a block image - a representation of a block image with no style-related CSS class,
 * an inline image - a representation of an inline image with no style-related CSS class,
 * a side image - a semantical style applying the `image-style-side` CSS class to it.
 
@@ -125,7 +125,7 @@ The sample editor below uses predefined presentational image styles represented 
 * <img class="inline-icon" src="../../assets/img/icons/object-center.svg">**Images placed between the paragraphs** - block images without the CSS `float` property. It contains following image styles:
   * `'align-block-left'`,
   * `'align-block-right'`,
-  * `'full'` - this style is the default one for block images and it does not apply any CSS class to the image.
+  * `'block'` - this style is the default one for block images and it does not apply any CSS class to the image.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
@@ -205,7 +205,7 @@ ClassicEditor
 					name: 'inline',
 					icon: inlineIcon
 				}, {
-					name: 'full',
+					name: 'block',
 					title: 'Centered image',
 					icon: centerIcon
 				} ]
@@ -224,8 +224,8 @@ ClassicEditor
 				// Grouping the buttons for the regular
 				// picture-like image styling into one drop-down.
 				name: 'imageStyle:pictures',
-				items: [ 'imageStyle:full', 'imageStyle:side' ],
-				defaultItem: 'imageStyle:full'
+				items: [ 'imageStyle:block', 'imageStyle:side' ],
+				defaultItem: 'imageStyle:block'
 			}, '|', 'toggleImageCaption', 'linkImage'
 			]
 		}
@@ -356,7 +356,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 		</thead>
 		<tbody>
 			<tr>
-				<th>"full"</th>
+				<th>"block"</th>
 				<td><code>ImageBlock</code></td>
 				<td>block</td>
 				<td>removes all classes (default style)</td>
@@ -423,8 +423,8 @@ This feature is available in all {@link builds/guides/overview ready-to-use edit
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A button for each defined style, for example: `'imageStyle:full'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
-* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'full'` and `'side'`):
+* A button for each defined style, for example: `'imageStyle:block'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
+* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'block'` and `'side'`):
 
 	```js
 	editor.execute( 'imageStyle', { value: 'side' } );

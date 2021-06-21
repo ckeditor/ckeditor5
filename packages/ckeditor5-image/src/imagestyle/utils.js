@@ -32,7 +32,7 @@ const {
  * and 3 semantic styles:
  *
  * * **`'inline'`** is an inline image without any CSS class,
- * * **`'full'`** is a block image without any CSS class,
+ * * **`'block'`** is a block image without any CSS class,
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
  *
  * @readonly
@@ -94,9 +94,9 @@ const DEFAULT_OPTIONS = {
 	},
 
 	// This option is equal to the situation when no style is applied.
-	full: {
-		name: 'full',
-		title: 'Full size image',
+	block: {
+		name: 'block',
+		title: 'Centered image',
 		icon: objectCenter,
 		modelElements: [ 'imageBlock' ],
 		isDefault: true
@@ -155,8 +155,8 @@ const DEFAULT_DROPDOWN_DEFINITIONS = [ {
 }, {
 	name: 'imageStyle:breakText',
 	title: 'Break text',
-	defaultItem: 'imageStyle:full',
-	items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
+	defaultItem: 'imageStyle:block',
+	items: [ 'imageStyle:alignBlockLeft', 'imageStyle:block', 'imageStyle:alignBlockRight' ]
 } ];
 
 /**
@@ -205,12 +205,12 @@ function getDefaultStylesConfiguration( isBlockPluginLoaded, isInlinePluginLoade
 			options: [
 				'inline', 'alignLeft', 'alignRight',
 				'alignCenter', 'alignBlockLeft', 'alignBlockRight',
-				'full', 'side'
+				'block', 'side'
 			]
 		};
 	} else if ( isBlockPluginLoaded ) {
 		return {
-			options: [ 'full', 'side' ]
+			options: [ 'block', 'side' ]
 		};
 	} else if ( isInlinePluginLoaded ) {
 		return {

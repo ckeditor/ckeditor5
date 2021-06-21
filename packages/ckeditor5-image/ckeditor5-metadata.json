@@ -89,11 +89,11 @@
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "imageStyle:full",
+					"name": "imageStyle:block",
 					"toolbars": [
 						"image.toolbar"
 					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg"
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-center.svg"
 				},
 				{
 					"type": "Button",

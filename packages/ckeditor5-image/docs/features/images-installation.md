@@ -30,7 +30,7 @@ ClassicEditor
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
 		image: {
 			toolbar: [
-				'imageStyle:full',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
 				'toggleImageCaption',

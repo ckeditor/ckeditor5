@@ -36,18 +36,18 @@
 ### The "semantic–oriented" editor
 
 * Click on image - toolbar with icons should appear.
-	- "Full size image" icon should be selected for the first image.
+	- "Centered image" icon should be selected for the first image.
 	- "In line" icon should be selected for the second image.
 * Resize the browser window so the scrollbar is visible. Click on image and scroll editor contents - check if toolbar is placed in proper position.
 
 ### The "formatting–oriented" editor
 
 * Click on image - toolbar with icons should appear.
-	- "Break text: Full size image" icon should be selected for the first image.
+	- "Break text: Centered image" icon should be selected for the first image.
 	- "Wrap text: Left aligned image" icon should be selected for the second image.
 
 ### The "declarative drop-downs" editor
 
 * Click on image - toolbar with drop-downs should appear.
 	- The first drop-down should have the "Inline image: Left aligned image" label and should be selected for the second image. It should contain "In line", "Left aligned image", and "Right aligned image" buttons.
-	- The second drop-down should have the "Block image: full size image" label and should be selected for the first image. It should contain "Left aligned image", "Full size image", and "Right aligned image" buttons.
+	- The second drop-down should have the "Block image: Centered image" label and should be selected for the first image. It should contain "Left aligned image", "Centered image", and "Right aligned image" buttons.

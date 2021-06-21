@@ -21,7 +21,7 @@ ClassicEditor
 			'undo', 'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

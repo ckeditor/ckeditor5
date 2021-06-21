@@ -44,7 +44,7 @@ ClassicEditor
 					name: 'inline',
 					icon: inlineIcon
 				}, {
-					name: 'full',
+					name: 'block',
 					title: 'Centered image',
 					icon: centerIcon
 				} ]
@@ -55,8 +55,8 @@ ClassicEditor
 				defaultItem: 'imageStyle:margin-left'
 			}, {
 				name: 'imageStyle:pictures',
-				items: [ 'imageStyle:full', 'imageStyle:side' ],
-				defaultItem: 'imageStyle:full'
+				items: [ 'imageStyle:block', 'imageStyle:side' ],
+				defaultItem: 'imageStyle:block'
 			}, '|', 'toggleImageCaption', 'linkImage'
 			]
 		}
