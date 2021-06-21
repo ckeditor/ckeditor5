@@ -85,14 +85,14 @@ export default class DomConverter {
 		 * You can extend this array if you introduce support for block elements which are not yet recognized here.
 		 *
 		 * @readonly
-		 * @member {Set.<String>} module:engine/view/domconverter~DomConverter#blockElements
+		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
-		this.blockElements = new Set( [
+		this.blockElements = [
 			'address', 'article', 'aside', 'blockquote', 'caption', 'center', 'dd', 'details', 'dir', 'div',
 			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
 			'hgroup', 'legend', 'li', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'summary', 'table', 'tbody',
 			'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
-		] );
+		];
 
 		/**
 		 * The DOM-to-view mapping.
@@ -1310,8 +1310,6 @@ export default class DomConverter {
 function _hasDomParentOfType( node, types, boundaryParent ) {
 	let parents = getAncestors( node );
 
-	types = Array.from( types );
-
 	if ( boundaryParent ) {
 		parents = parents.slice( parents.indexOf( boundaryParent ) + 1 );
 	}
@@ -1336,7 +1334,7 @@ function forEachDomNodeAncestor( node, callback ) {
 // A &nbsp; is a block filler only if it is a single child of a block element.
 //
 // @param {Node} domNode DOM node.
-// @param {Iterable.<String>} blockElements
+// @param {Array.<String>} blockElements
 // @returns {Boolean}
 function isNbspBlockFiller( domNode, blockElements ) {
 	const isNBSP = domNode.isEqualNode( NBSP_FILLER_REF );
@@ -1347,12 +1345,10 @@ function isNbspBlockFiller( domNode, blockElements ) {
 // Checks if domNode has block parent.
 //
 // @param {Node} domNode DOM node.
-// @param {Iterable.<String>} blockElements
+// @param {Array.<String>} blockElements
 // @returns {Boolean}
 function hasBlockParent( domNode, blockElements ) {
 	const parent = domNode.parentNode;
-
-	blockElements = Array.from( blockElements );
 
 	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
 }
