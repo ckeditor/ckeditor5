@@ -10,6 +10,10 @@ modified_at: 2021-06-17
 
 The {@link features/images-styles image styles} feature is meant to give the user a choice between a set of styling options provided by the system (i.e. by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes into play. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
 
+## Enabling image resizing
+
+The image resize feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-resizing#installation installation} section.
+
 ## Methods to resize images
 
 The editor offers different ways to resize images either by using "resize handles" or by using dedicated UI components &mdash; either a dropdown or standalone buttons.
@@ -20,7 +24,7 @@ The plugin also gives you an ability to change the size of the image through the
 
 ### Using resize handles
 
-In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once [image resizing is enabled](#enabling-image-resizing), this option does not require any additional configuration.
+In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once image resizing is enabled, this option does not require any additional configuration.
 
 Use the corner handles to resize the image and adjust it to the text as needed. Yu can also use the alignment options from the image toolbar to achieve the desired effect.
 
@@ -30,20 +34,7 @@ Images can also be pre-resized using styling, as observed below (the bottom imag
 
 You can configure resizing images by handles in two different ways in the CKEditor 5 WYSIWYG editor:
 
-* Either by installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
-
-```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResize, ... ],
-		...
-	} )
-	.then( ... )
-	.catch( ... );
-```
+* Either by installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`) as described in the {@link features/images-resizing#installation installation} of this guide.
 
 * Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins:
 
@@ -188,10 +179,6 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Enabling image resizing
-
-The image resize feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-installation installation} section.
-
 ## Markup and styling
 
 When you resize an image, the inline `width` style is used and the `<figure>` element is assigned the `image_resized` class:
@@ -302,7 +289,20 @@ Check out the difference in the live demo below:
 
 ## Installation
 
-The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. Please refer to the {@link features/images-installation installation} guide to learn how to enable it in other editor builds.
+The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResize, ... ],
+		...
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Common API
 
