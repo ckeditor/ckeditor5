@@ -110,9 +110,7 @@ function onDocumentChange( results, model, searchCallback ) {
 				results.remove( markerName );
 			}
 
-			if ( model.markers.has( markerName ) ) {
-				writer.removeMarker( markerName );
-			}
+			writer.removeMarker( markerName );
 		} );
 	} );
 
