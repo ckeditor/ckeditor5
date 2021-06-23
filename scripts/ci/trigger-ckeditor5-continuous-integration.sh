@@ -1,3 +1,8 @@
+#!/bin/bash
+
+# @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+
 # This script triggers Travis that verifies whether projects that depend on CKEditor 5 build correctly.
 #
 # In order to integrate the action in a new repository, you need add a few secrets in the new repository.

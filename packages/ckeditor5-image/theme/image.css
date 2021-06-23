@@ -10,7 +10,9 @@
 		text-align: center;
 
 		/* Make sure there is some space between the content and the image. Center image by default. */
-		margin: 1em auto;
+		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	 	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+		margin: 0.9em auto;
 
 		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
 		min-width: 50px;
@@ -74,10 +76,15 @@
 		text-overflow: ellipsis;
 	}
 
+
 	/*
 	 * Make sure the selected inline image always stays on top of its siblings.
 	 * See https://github.com/ckeditor/ckeditor5/issues/9108.
 	 */
+	& .image.ck-widget_selected {
+		z-index: 1;
+	}
+
 	& .image-inline.ck-widget_selected {
 		z-index: 1;
 

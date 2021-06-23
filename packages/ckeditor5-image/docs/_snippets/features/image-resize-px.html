@@ -1,14 +1,65 @@
+<style>
+	#snippet-image-resize-px + .ck .ck-content {
+		text-align: center
+	}
+	#snippet-image-resize-px + .ck .ck-content .image,
+	#snippet-image-resize-px + .ck .ck-content .image-inline {
+		position: relative;
+	}
+	#snippet-image-resize-px + .ck .ck-content .image img,
+	#snippet-image-resize-px + .ck .ck-content .image-inline img {
+		border-radius: 50%;
+	}
+	#snippet-image-resize-px + .ck .ck-content .image.image_resized img,
+	#snippet-image-resize-px + .ck .ck-content .image-inline.image_resized img {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	#snippet-image-resize-px + .ck .ck-content .image.image_resized::before,
+	#snippet-image-resize-px + .ck .ck-content .image-inline.image_resized::before {
+		content: '';
+		padding-top: 100%;
+		display: block;
+	}
+</style>
+
 <div id="snippet-image-resize-px">
-	<p>Resize me using pixel values!</p>
+	<h3><strong>Poppies on the Wheat</strong></h3>
+	<p>Helen Hunt Jackson</p>
+	<p></p>
 
-	<figure class="image">
-		<img src="%BASE_PATH%/assets/img/fields.jpg" srcset="%BASE_PATH%/assets/img/fields.jpg, %BASE_PATH%/assets/img/fields_2x.jpg 2x" alt="Autumn fields">
-		<figcaption>Autumn fields by Aleksander Nowodziński</figcaption>
+	<figure class="image image-resized" style="width: 200px;">
+		<img src="%BASE_PATH%/assets/img/birds/bird-drawing_2.jpg" srcset="%BASE_PATH%/assets/img/birds/bird-drawing_2.jpg, %BASE_PATH%/assets/img/birds/bird-drawing_2_2x.jpg 2x">
 	</figure>
 
-	<p>Resized image (width: 400px):</p>
+	<p></p>
+	<p><i>
+		Along Ancona&#39;s hills the shimmering heat,<br />
+		A tropic tide of air with ebb and flow<br />
+		Bathes all the fields of wheat until they glow<br />
+		Like flashing seas of green, which toss and beat<br />
+		Around the vines. The poppies lithe and fleet<br />
+		Seem running, fiery torchmen, to and fro<br />
+		To mark the shore.
+	</i></p>
+	<p><i>
+		The farmer does not know<br />
+		That they are there. He walks with heavy feet,<br />
+		Counting the bread and wine by autumn&#39;s gain,<br />
+		But I,&mdash;I smile to think that days remain<br />
+		Perhaps to me in which, though bread be sweet<br />
+		No more, and red wine warm my blood in vain,<br />
+		I shall be glad remembering how the fleet,<br />
+		Lithe poppies ran like torchmen with the wheat.
+	</i></p>
+	<p></p>
 
-	<figure class="image image_resized" style="width:400px;">
-		<img src="%BASE_PATH%/assets/img/fields.jpg" srcset="%BASE_PATH%/assets/img/fields.jpg, %BASE_PATH%/assets/img/fields_2x.jpg 2x" alt="Autumn fields">
+	<figure class="image image-resized" style="width: 100px;">
+		<img src="%BASE_PATH%/assets/img/birds/bird-drawing.jpg" srcset="%BASE_PATH%/assets/img/birds/bird-drawing.jpg, %BASE_PATH%/assets/img/birds/bird-drawing_2x.jpg 2x">
 	</figure>
+	<p></p>
 </div>

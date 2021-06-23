@@ -2,10 +2,10 @@
 category: features-images
 menu-title: Installation
 order: 100
-modified_at: 2021-05-30
+modified_at: 2021-06-17
 ---
 
-The vast majority of image-related features {@link features/images-overview#image-features isavailable} out-of-the-box in all {@link builds/guides/overview ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link builds/guides/development/custom-builds custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
+The vast majority of image-related features {@link features/images-overview#image-features is available} out-of-the-box in all {@link builds/guides/overview ready-to-use editor builds} and does not require additional installation steps. If the default configuration does not match your needs or you want to create a {@link builds/guides/development/custom-builds custom editor build} you can add image features to your rich-text editor by installing the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
 ```plaintext
 npm install --save @ckeditor/ckeditor5-image
@@ -30,7 +30,7 @@ ClassicEditor
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
 		image: {
 			toolbar: [
-				'imageStyle:full',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
@@ -89,7 +89,7 @@ By default, the {@link module:image/image~Image} plugin available in all {@link 
 <info-box info>
 	Up to CKEditor 5 v[27.1.0], only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
 
-	If your integrations depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link builds/guides/migration/migration-to-29 official migration guide} that will help you configure the editor.
+	If your integration depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link builds/guides/migration/migration-to-29 official migration guide} that will help you configure the editor.
 </info-box>
 
 ## Contribute

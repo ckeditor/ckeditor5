@@ -17,7 +17,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, ImageUpload, CKFinderUploadAdapter, CKFinder ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'ckfinder' ],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		ckfinder: {
 			// eslint-disable-next-line max-len

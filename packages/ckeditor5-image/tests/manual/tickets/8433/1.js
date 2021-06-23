@@ -15,6 +15,7 @@ import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, HtmlEmbed, ImageInsert, ImageResize ],
 		toolbar: [ 'insertImage', '|', 'htmlEmbed' ],
 		htmlEmbed: {

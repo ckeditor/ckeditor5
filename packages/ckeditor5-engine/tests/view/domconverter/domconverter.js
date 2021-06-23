@@ -295,40 +295,66 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'isBlockFiller()', () => {
+		const blockElements = new Set( [
+			'address', 'article', 'aside', 'blockquote', 'caption', 'center', 'dd', 'details', 'dir', 'div',
+			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
+			'hgroup', 'legend', 'li', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'summary', 'table', 'tbody',
+			'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
+		] );
+
 		for ( const mode of [ 'nbsp', 'markedNbsp' ] ) {
 			describe( 'mode "' + mode + '"', () => {
 				beforeEach( () => {
 					converter = new DomConverter( viewDocument, { blockFillerMode: mode } );
 				} );
 
-				it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
-					const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+				for ( const elementName of blockElements ) {
+					describe( `<${ elementName }> context`, () => {
+						it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
+							const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
-					const context = document.createElement( 'div' );
-					context.appendChild( nbspFillerInstance );
+							const context = document.createElement( elementName );
+							context.appendChild( nbspFillerInstance );
 
-					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
-				} );
+							expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
+						} );
 
-				it( 'should return false if the node is an nbsp filler and is not a single child of a block level element', () => {
-					const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+						it( 'should return false if the node is an nbsp filler and is not a single child of a block level element', () => {
+							const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
-					const context = document.createElement( 'div' );
-					context.appendChild( nbspFillerInstance );
-					context.appendChild( document.createTextNode( 'a' ) );
+							const context = document.createElement( elementName );
+							context.appendChild( nbspFillerInstance );
+							context.appendChild( document.createTextNode( 'a' ) );
 
-					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
-				} );
+							expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+						} );
 
-				it( 'should return false if there are two nbsp fillers in a block element', () => {
-					const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+						it( 'should return false if there are two nbsp fillers in a block element', () => {
+							const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
-					const context = document.createElement( 'div' );
-					context.appendChild( nbspFillerInstance );
-					context.appendChild( NBSP_FILLER( document ) ); // eslint-disable-line new-cap
+							const context = document.createElement( elementName );
+							context.appendChild( nbspFillerInstance );
+							context.appendChild( NBSP_FILLER( document ) ); // eslint-disable-line new-cap
 
-					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
-				} );
+							expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+						} );
+
+						it( 'should return false for a normal <br> element', () => {
+							const context = document.createElement( elementName );
+							context.innerHTML = 'x<br>x';
+
+							expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
+						} );
+
+						// SPECIAL CASE (see ckeditor5#5564).
+						it( 'should return true for a <br> element which is the only child of its block parent', () => {
+							const context = document.createElement( elementName );
+							context.innerHTML = '<br>';
+
+							expect( converter.isBlockFiller( context.firstChild ) ).to.be.true;
+						} );
+					} );
+				}
 
 				it( 'should return false filler is placed in a non-block element', () => {
 					const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
@@ -347,21 +373,6 @@ describe( 'DomConverter', () => {
 
 				it( 'should return false for inline filler', () => {
 					expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
-				} );
-
-				it( 'should return false for a normal <br> element', () => {
-					const context = document.createElement( 'div' );
-					context.innerHTML = 'x<br>x';
-
-					expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
-				} );
-
-				// SPECIAL CASE (see ckeditor5#5564).
-				it( 'should return true for a <br> element which is the only child of its block parent', () => {
-					const context = document.createElement( 'div' );
-					context.innerHTML = '<br>';
-
-					expect( converter.isBlockFiller( context.firstChild ) ).to.be.true;
 				} );
 
 				it( 'should return false for a <br> element which is the only child of its non-block parent', () => {

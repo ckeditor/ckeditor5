@@ -12,7 +12,7 @@ import utils from '../../src/imagestyle/utils';
 describe( 'ImageStyleCommand', () => {
 	const {
 		inline: defaultInline,
-		full: defaultBlock,
+		block: defaultBlock,
 		alignLeft: anyImage,
 		inline: onlyInline,
 		alignCenter: onlyBlock
@@ -28,8 +28,8 @@ describe( 'ImageStyleCommand', () => {
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ ArticlePluginSet ],
 			image: {
-				styles: { options: [ 'full', 'inline', 'alignLeft', 'alignCenter' ] },
-				toolbar: [ 'imageStyle:full' ]
+				styles: { options: [ 'block', 'inline', 'alignLeft', 'alignCenter' ] },
+				toolbar: [ 'imageStyle:block' ]
 			}
 		} );
 
@@ -84,8 +84,8 @@ describe( 'ImageStyleCommand', () => {
 			const customEditor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ ArticlePluginSet ],
 				image: {
-					styles: { options: [ 'full', 'alignLeft', 'alignCenter' ] },
-					toolbar: [ 'imageStyle:full' ]
+					styles: { options: [ 'block', 'alignLeft', 'alignCenter' ] },
+					toolbar: [ 'imageStyle:block' ]
 				}
 			} );
 
@@ -151,8 +151,8 @@ describe( 'ImageStyleCommand', () => {
 				const customEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet ],
 					image: {
-						styles: { options: [ 'full', 'alignLeft', 'alignCenter' ] },
-						toolbar: [ 'imageStyle:full' ]
+						styles: { options: [ 'block', 'alignLeft', 'alignCenter' ] },
+						toolbar: [ 'imageStyle:block' ]
 					}
 				} );
 
@@ -187,8 +187,8 @@ describe( 'ImageStyleCommand', () => {
 				const customEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet ],
 					image: {
-						styles: { options: [ 'full', 'alignLeft', 'alignCenter' ] },
-						toolbar: [ 'imageStyle:full' ]
+						styles: { options: [ 'block', 'alignLeft', 'alignCenter' ] },
+						toolbar: [ 'imageStyle:block' ]
 					}
 				} );
 
