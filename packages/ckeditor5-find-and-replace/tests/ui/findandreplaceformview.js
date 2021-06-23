@@ -179,7 +179,7 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			view = new FindAndReplaceFormView( { t: () => {} } );
+			view = new FindAndReplaceFormView( { t: val => val } );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
@@ -197,7 +197,7 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new FindAndReplaceFormView( { t: () => {} } );
+			view = new FindAndReplaceFormView( { t: val => val } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 

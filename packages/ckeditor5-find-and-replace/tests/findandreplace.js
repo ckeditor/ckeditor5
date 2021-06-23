@@ -72,7 +72,7 @@ describe( 'FindAndReplace', () => {
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
 
-			findAndReplaceUI.fire( 'replace', { marker: firstResult, searchText: 'bar', replaceText: 'test' } );
+			findAndReplaceUI.fire( 'replace', { searchText: 'bar', replaceText: 'test' } );
 
 			replaceCommandSpy.restore();
 
