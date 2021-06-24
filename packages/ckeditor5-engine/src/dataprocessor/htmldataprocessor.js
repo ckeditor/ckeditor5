@@ -122,14 +122,14 @@ export default class HtmlDataProcessor {
 
 		// The rules for parsing an HTML string can be read on https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inhtml.
 		//
-		// In short, parsing tokens in an HTML string starts with the so-called "initial" insertion mode. When a DOM parser is in this state
-		// and encounters a comment node, it inserts this comment node as the last child of the newly-created Document object. The parser
-		// then proceeds to successive insertion modes during parsing subsequent tokens and appends in the Document object other nodes (like
-		// <html>, <head>, <body>). This causes that the first leading comments from HTML string become the first nodes in the Document
-		// object, but not in the <body> collection, because they are ultimately located before the <html> element.
+		// In short, parsing tokens in an HTML string starts with the so-called "initial" insertion mode. When a DOM parser is in this
+		// state and encounters a comment node, it inserts this comment node as the last child of the newly-created `HTMLDocument` object.
+		// The parser then proceeds to successive insertion modes during parsing subsequent tokens and appends in the `HTMLDocument` object
+		// other nodes (like <html>, <head>, <body>). This causes that the first leading comments from HTML string become the first nodes
+		// in the `HTMLDocument` object, but not in the <body> collection, because they are ultimately located before the <html> element.
 		//
-		// Therefore, so that such leading comments do not disappear, they all are moved from the Document object to the document fragment,
-		// until the <html> element is encountered.
+		// Therefore, so that such leading comments do not disappear, they all are moved from the `HTMLDocument` object to the document
+		// fragment, until the <html> element is encountered.
 		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/9861.
 		let documentChildNode = document.firstChild;
@@ -138,6 +138,9 @@ export default class HtmlDataProcessor {
 			const node = documentChildNode;
 
 			documentChildNode = documentChildNode.nextSibling;
+
+			// It seems that `DOMParser#parseFromString()` adds only comment nodes directly to the `HTMLDocument` object, before the <html>
+			// node. The condition below is just to be sure we are moving only comment nodes.
 
 			/* istanbul ignore else */
 			if ( node.nodeType == Node.COMMENT_NODE ) {
