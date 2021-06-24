@@ -63,6 +63,7 @@ class InsertSmartField extends Plugin {
 			'Customer Address',
 			'Customer Name',
 			'Discount',
+			'Expiration Date',
 			'Line Items',
 			'Ordered By',
 			'Ordered By Email',
