@@ -24,7 +24,7 @@ import '../theme/findandreplace.css';
  *
  */
 class FindAndReplaceState {
-	constructor() {
+	constructor( model ) {
 		this.set( 'results', new Collection() );
 
 		this.set( 'highlightedResult', null );
@@ -35,6 +35,31 @@ class FindAndReplaceState {
 
 		this.set( 'matchCase', false );
 		this.set( 'matchWholeWords', false );
+
+		this.results.on( 'change', ( eventInfo, { removed, index } ) => {
+			removed = Array.from( removed );
+
+			if ( removed.length ) {
+				let highlightedResultRemoved = false;
+
+				model.change( writer => {
+					for ( const removedResult of removed ) {
+						if ( this.highlightedResult === removedResult ) {
+							highlightedResultRemoved = true;
+						}
+
+						if ( model.markers.has( removedResult.marker ) ) {
+							writer.removeMarker( removedResult.marker );
+						}
+					}
+				} );
+
+				if ( highlightedResultRemoved ) {
+					const nextHighlightedIndex = index > this.results.length ? index : 0;
+					this.highlightedResult = this.results.get( nextHighlightedIndex );
+				}
+			}
+		} );
 	}
 
 	clear( model ) {
@@ -142,7 +167,7 @@ export default class FindAndReplaceEditing extends Plugin {
 	 */
 	init() {
 		this.activeResults = null;
-		this.state = new FindAndReplaceState();
+		this.state = new FindAndReplaceState( this.editor.model );
 
 		this._defineConverters();
 		this._defineCommands();

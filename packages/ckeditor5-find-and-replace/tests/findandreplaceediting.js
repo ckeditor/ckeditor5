@@ -8,7 +8,6 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import FindAndReplace from '../src/findandreplace';
-import FindAndReplaceUI from '../src/findandreplaceui';
 
 import FindCommand from '../src/findcommand';
 import ReplaceCommand from '../src/replacecommand';
@@ -22,7 +21,7 @@ describe( 'FindAndReplaceEditing', () => {
 
 	beforeEach( async () => {
 		editor = await DecoupledEditor.create( '', {
-			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI ]
+			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace ]
 		} );
 
 		model = editor.model;
@@ -268,6 +267,64 @@ describe( 'FindAndReplaceEditing', () => {
 
 		it( 'should register replace all command', () => {
 			expect( editor.commands.get( 'replaceAll' ) ).to.be.instanceOf( ReplaceAllCommand );
+		} );
+	} );
+
+	describe( 'state', () => {
+		it( 'should automatically remove unused marker', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( '<p>foo foo foo</p>' );
+
+			editor.execute( 'find', 'foo' );
+
+			state.results.remove( 1 );
+
+			const markers = Array.from( editor.model.markers ).filter( markers => markers.name.startsWith( 'findResult:' ) );
+
+			expect( markers ).to.have.length( 2 );
+		} );
+
+		describe( 'changing highlighted result', () => {
+			it( 'should automatically change highlighted result', () => {
+				const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+				editor.setData( '<p>foo foo foo</p>' );
+				editor.execute( 'find', 'foo' );
+
+				const expectedHighlightedResult = state.results.get( 1 );
+
+				state.results.remove( 0 );
+
+				expect( state.highlightedResult ).to.eql( expectedHighlightedResult );
+			} );
+
+			it( 'should automatically change last highlighted result', () => {
+				const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+				editor.setData( '<p>foo foo foo</p>' );
+				editor.execute( 'find', 'foo' );
+				editor.execute( 'findNext' );
+				editor.execute( 'findNext' );
+
+				const expectedHighlightedResult = state.results.get( 0 );
+
+				state.results.remove( 2 );
+
+				expect( state.highlightedResult ).to.eql( expectedHighlightedResult );
+			} );
+
+			it( 'should remove highlighted result if there is nothing more to highlight', () => {
+				const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+				editor.setData( '<p>foo </p>' );
+
+				editor.execute( 'find', 'foo' );
+
+				state.results.remove( 0 );
+
+				expect( state.highlightedResult ).to.be.null;
+			} );
 		} );
 	} );
 
