@@ -25,10 +25,6 @@ describe( 'CheckboxView', () => {
 			expect( view.children ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'sets CSS class', () => {
-			expect( view.element.classList.contains( 'ck-find-checkboxes__box' ) ).to.be.true;
-		} );
-
 		it( 'creates #labelView', () => {
 			expect( view.labelView ).to.be.instanceOf( View );
 		} );
@@ -39,53 +35,54 @@ describe( 'CheckboxView', () => {
 	} );
 
 	describe( 'checkbox bindings', () => {
-		describe( 'class', () => {
-			it( 'class is set initially', () => {
-				expect( view.element.classList ).to.have.length( 1 );
-				expect( view.element.classList.contains( 'ck-find-checkboxes__box' ) ).to.true;
+		describe( 'attributes', () => {
+			describe( 'class', () => {
+				it( 'class is set initially', () => {
+					expect( view.element.classList ).to.have.length( 1 );
+					expect( view.element.classList.contains( 'ck-find-checkboxes__box' ) ).to.true;
+				} );
+
+				it( 'reacts on view#class', () => {
+					view.set( 'class', 'foo' );
+					expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				} );
+
+				it( 'reacts on view#isEnabled', () => {
+					view.isEnabled = true;
+					expect( view.element.classList.contains( 'ck-disabled' ) ).to.false;
+
+					view.isEnabled = false;
+					expect( view.element.classList.contains( 'ck-disabled' ) ).to.true;
+				} );
+
+				it( 'reacts on view#isVisible', () => {
+					view.isVisible = true;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+					view.isVisible = false;
+					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				} );
 			} );
 
-			it( 'reacts on view#class', () => {
-				view.set( 'class', 'foo' );
+			describe( 'tabindex', () => {
+				it( 'is initially set ', () => {
+					expect( view.element.attributes.tabindex.value ).to.equal( '-1' );
+				} );
 
-				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
-			} );
-
-			it( 'reacts on view#isEnabled', () => {
-				view.isEnabled = true;
-				expect( view.element.classList.contains( 'ck-disabled' ) ).to.false;
-
-				view.isEnabled = false;
-				expect( view.element.classList.contains( 'ck-disabled' ) ).to.true;
-			} );
-
-			it( 'reacts on view#isVisible', () => {
-				view.isVisible = true;
-				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
-
-				view.isVisible = false;
-				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
-			} );
-		} );
-
-		describe( 'tabindex', () => {
-			it( 'is initially set ', () => {
-				expect( view.element.attributes.tabindex.value ).to.equal( '-1' );
-			} );
-
-			it( 'reacts on view#tabindex', () => {
-				view.tabindex = 3;
-
-				expect( view.element.attributes.tabindex.value ).to.equal( '3' );
+				it( 'reacts on view#tabindex', () => {
+					view.tabindex = 3;
+					expect( view.element.attributes.tabindex.value ).to.equal( '3' );
+				} );
 			} );
 		} );
 	} );
 
-	describe( 'checkbox input bindings', () => {
-		describe( 'checkbox type', () => {
-			it( 'is initially set ', () => {
-				expect( view.checkboxInputView.element.getAttribute( 'type' ) ).to.equal( 'checkbox' );
-			} );
+	describe( '_createCheckboxInputView', () => {
+		it( 'checkbox type is initially set ', () => {
+			expect( view.checkboxInputView.element.getAttribute( 'type' ) ).to.equal( 'checkbox' );
+		} );
+
+		describe( 'checkbox attributes', () => {
 			it( 'reacts on view#id', () => {
 				expect( view.checkboxInputView.element.getAttribute( 'id' ) ).to.be.null;
 
@@ -107,7 +104,7 @@ describe( 'CheckboxView', () => {
 				expect( view.checkboxInputView.element.getAttribute( 'value' ) ).to.equal( 'foo' );
 			} );
 
-			it( 'reacts on view#disabled', () => {
+			it( 'disabled reacts on view#isEnabled', () => {
 				expect( view.checkboxInputView.element.getAttribute( 'disabled' ) ).to.be.null;
 
 				view.isEnabled = false;
@@ -117,7 +114,7 @@ describe( 'CheckboxView', () => {
 				expect( view.checkboxInputView.element.getAttribute( 'disabled' ) ).to.be.null;
 			} );
 
-			it( 'reacts on view#aria-disabled', () => {
+			it( 'aria-disabled reacts on view#isEnabled', () => {
 				expect( view.checkboxInputView.element.getAttribute( 'aria-disabled' ) ).to.be.null;
 
 				view.isEnabled = false;
@@ -127,10 +124,36 @@ describe( 'CheckboxView', () => {
 				expect( view.checkboxInputView.element.getAttribute( 'aria-disabled' ) ).to.be.null;
 			} );
 		} );
+	} );
 
-		// describe( 'attributes', () => {
+	describe( '_createLabelView', () => {
+		describe( 'for attribute', () => {
+			it( 'for is not set initially', () => {
+				expect( view.labelView.element.getAttribute( 'for' ) ).to.be.null;
+			} );
 
-		// } );
+			it( 'reacts on view#checkboxId', () => {
+				view.checkboxId = 'foo';
+				expect( view.labelView.element.getAttribute( 'for' ) ).to.equal( 'foo' );
+
+				view.checkboxId = null;
+				expect( view.labelView.element.getAttribute( 'for' ) ).to.be.null;
+			} );
+		} );
+
+		describe( 'text content', () => {
+			it( 'children array is undefined by default', () => {
+				expect( view.labelView.children ).to.be.undefined;
+			} );
+
+			it( 'reacts on view#label', () => {
+				view.label = 'foo';
+				expect( view.labelView.template.children[ 0 ].text[ 0 ].observable.label ).to.equal( 'foo' );
+
+				view.label = '';
+				expect( view.labelView.children ).to.be.undefined;
+			} );
+		} );
 	} );
 
 	describe( 'focus()', () => {
@@ -142,12 +165,4 @@ describe( 'CheckboxView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
-
-	// describe( 'checking label', () => {
-	// 	describe( 'label tag', () => {
-	// 		it( 'is initially set ', () => {
-	// 			expect( view.children._items[0].template.tag ).to.equal( 'label' );
-	// 		} );
-	// 	} );
-	// })
 } );

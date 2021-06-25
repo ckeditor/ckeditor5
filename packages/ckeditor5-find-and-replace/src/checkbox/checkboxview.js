@@ -4,7 +4,7 @@
  */
 
 /**
- * @module find-and-replace/ui/checkbox/checkboxview
+ * @module find-and-replace/checkbox/checkboxview
  */
 
 import { View } from 'ckeditor5/src/ui';
