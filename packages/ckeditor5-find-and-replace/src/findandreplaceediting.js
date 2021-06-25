@@ -115,7 +115,7 @@ function onDocumentChange( results, model, searchCallback ) {
 
 	// Get markers from removed nodes also.
 	model.document.differ.getChangedMarkers().forEach( ( { name, data: { newRange } } ) => {
-		if ( newRange.start.root.rootName === '$graveyard' ) {
+		if ( newRange && newRange.start.root.rootName === '$graveyard' ) {
 			removedMarkers.add( name );
 		}
 	} );
