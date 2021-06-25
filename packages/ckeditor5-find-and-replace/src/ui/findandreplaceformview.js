@@ -85,28 +85,28 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		*/
-		this.matchCaseCheckbox = this._createCheckbox( 'matchcase', 'Match case' );
+		this.matchCaseCheckbox = this._createCheckbox( 'matchcase', t( 'Match case' ) );
 
 		/**
 		 * Whole words only checkbox view
 		 *
 		 * @member {module:ui/view~View}
 		*/
-		this.matchWholeWordsCheckbox = this._createCheckbox( 'wholewords', 'Whole words only' );
+		this.matchWholeWordsCheckbox = this._createCheckbox( 'wholewords', t( 'Whole words only' ) );
 
 		/**
 		 * The find input view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.findInputView = this._createInputField( 'Find', 'Find in text' );
+		this.findInputView = this._createInputField( 'Find', t( 'Find in text' ) );
 
 		/**
 		 * The replace input view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.replaceInputView = this._createInputField( 'Replace', 'Replace with' );
+		this.replaceInputView = this._createInputField( 'Replace', t( 'Replace with' ) );
 
 		/**
 		 * Stores gathered views related to find functionality of the feature
@@ -258,6 +258,18 @@ export default class FindAndReplaceFormView extends View {
 	_createFindView( InputView, matchCaseCheckbox, matchWholeWordsCheckbox, findButtonView, findNextButtonView, findPrevButtonView ) {
 		const findView = new View();
 
+		const bind = this.bindTemplate;
+		const t = this.locale.t;
+
+		this.set( 'matchCount', null );
+		this.set( 'highlightOffset', null );
+		this.set( 'isCounterHidden', true );
+
+		this.bind( 'isCounterHidden' ).to( this, 'matchCount', this, 'highlightOffset', ( matchCount, highlightOffset ) => {
+			return matchCount === null || matchCount === 0 ||
+				highlightOffset === null || highlightOffset === 0;
+		} );
+
 		findView.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -275,11 +287,18 @@ export default class FindAndReplaceFormView extends View {
 				{ tag: 'span',
 					attributes: {
 						class: [
-							'ck-results-found-counter'
+							'ck-results-found-counter',
+							bind.if( 'isCounterHidden', 'ck-hidden' )
 						]
 					},
 					children: [
-						'1 of 3'
+						{
+							text: bind.to( 'highlightOffset' )
+						},
+						t( ' of ' ),
+						{
+							text: bind.to( 'matchCount' )
+						}
 					]
 				},
 				{

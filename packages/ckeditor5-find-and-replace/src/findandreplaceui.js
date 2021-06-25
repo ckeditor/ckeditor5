@@ -40,6 +40,9 @@ export default class FindAndReplaceUI extends Plugin {
 
 		this.set( 'searchText' );
 		this.set( 'replaceText' );
+
+		this.set( 'matchCount', null );
+		this.set( 'highlightOffset', null );
 	}
 
 	/**
@@ -61,6 +64,9 @@ export default class FindAndReplaceUI extends Plugin {
 			formView.delegate( 'replace' ).to( this );
 			formView.delegate( 'replaceAll' ).to( this );
 
+			formView.bind( 'matchCount' ).to( this );
+			formView.bind( 'highlightOffset' ).to( this );
+
 			this._createToolbarDropdown( dropdown, loupeIcon );
 
 			dropdown.panelView.children.add( formView );
@@ -75,16 +81,45 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 	}
 
+	setState( state ) {
+		this.listenTo( state.results, 'change', () => {
+			this.set( 'matchCount', state.results.length );
+		} );
+
+		this.bind( 'highlightOffset' ).to( state, 'highlightedResult', highlightedResult => {
+			if ( !highlightedResult ) {
+				return null;
+			}
+
+			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {
+				const mapping = {
+					before: -1,
+					same: 0,
+					after: 1
+				};
+
+				return mapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ];
+			} );
+
+			const index = sortedResults.indexOf( highlightedResult );
+
+			return index === -1 ?
+				null : index + 1;
+		} );
+	}
+
 	/**
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
 	 */
 	_createToolbarDropdown( dropdown, icon ) {
+		const t = this.editor.locale.t;
+
 		// Configure dropdown's button properties:
 		dropdown.buttonView.set( {
 			icon,
 			withText: true,
-			tooltip: this.editor.locale.t( 'Find and replace' )
+			tooltip: t( 'Find and replace' )
 		} );
 	}
 }

@@ -98,5 +98,7 @@ export default class FindAndReplace extends Plugin {
 			findAndReplaceEditing.state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
+
+		ui.setState( findAndReplaceEditing.state );
 	}
 }
