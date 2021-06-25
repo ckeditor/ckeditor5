@@ -271,7 +271,7 @@ describe( 'FindAndReplaceEditing', () => {
 	} );
 
 	describe( 'state', () => {
-		it( 'should automatically remove unused marker', () => {
+		it.skip( 'should automatically remove unused marker', () => {
 			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
 
 			editor.setData( '<p>foo foo foo</p>' );
