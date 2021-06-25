@@ -179,62 +179,6 @@
 						"image.toolbar"
 					],
 					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-right.svg"
-				},
-				{
-					"type": "Button",
-					"name": "imageStyle:alignLeft",
-					"toolbars": [
-						"image.toolbar"
-					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg"
-				},
-				{
-					"type": "Button",
-					"name": "imageStyle:alignRight",
-					"toolbars": [
-						"image.toolbar"
-					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg"
-				},
-				{
-					"type": "Button",
-					"name": "imageStyle:alignCenter",
-					"toolbars": [
-						"image.toolbar"
-					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-center.svg"
-				},
-				{
-					"type": "Button",
-					"name": "imageStyle:alignBlockLeft",
-					"toolbars": [
-						"image.toolbar"
-					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-left.svg"
-				},
-				{
-					"type": "Button",
-					"name": "imageStyle:alignBlockRight",
-					"toolbars": [
-						"image.toolbar"
-					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-right.svg"
-				},
-				{
-					"type": "SplitButton",
-					"name": "imageStyle:wrapText",
-					"toolbars": [
-						"image.toolbar"
-					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg"
-				},
-				{
-					"type": "SplitButton",
-					"name": "imageStyle:breakText",
-					"toolbars": [
-						"image.toolbar"
-					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-center.svg"
 				}
 			],
 			"htmlOutput": [
