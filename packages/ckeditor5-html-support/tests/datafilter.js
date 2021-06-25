@@ -332,17 +332,18 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should consume htmlAttributes attribute (editing downcast)', () => {
+			const spy = sinon.spy();
+
 			editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-				dispatcher.on( 'attribute:htmlAttributes:htmlInput', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, evt.name );
-					expect( conversionApi.consumable.test( data.item, evt.name ) ).to.be.true;
-				} );
+				dispatcher.on( 'attribute:htmlAttributes:htmlInput', spy );
 			} );
 
 			dataFilter.allowElement( 'input' );
 			dataFilter.allowAttributes( { name: 'input', attributes: 'type' } );
 
 			editor.setData( '<p><input type="number"/></p>' );
+
+			expect( spy.called ).to.be.false;
 		} );
 
 		function getObjectModelDataWithAttributes( model, options ) {
