@@ -9,6 +9,11 @@
 
 import { View } from 'ckeditor5/src/ui';
 
+/**
+ * The checkbox view class.
+ *
+ * @extends module:ui/view~View
+ */
 export default class CheckboxView extends View {
 	/**
 	 * @inheritDoc
