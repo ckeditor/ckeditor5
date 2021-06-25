@@ -53,8 +53,6 @@ export default class DataSchema extends Plugin {
 		 * @member {Map.<String, module:html-support/dataschema~DataSchemaDefinition>} #_definitions
 		 */
 		this._definitions = new Map();
-
-		editor.config.define( 'dataSchema', defaultConfig );
 	}
 
 	/**
