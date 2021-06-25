@@ -19,8 +19,8 @@ To get to know the new editor UI for the image features, visit the {@link featur
 ## Inline images
 
 Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins - {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
-* The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting an inline `<img>` tag nested in any {@link framework/guides/deep-dive/schema#defining-advanced-rules-in-checkchild-callbacks `$block` element} in the editor. In the model, it is represented by an `imageInline` element.
-* The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin. In the model, the previous `image` element is now renamed to `imageBlock`.
+* The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting an inline <img> tag nested in text (e.g. inside a paragraph).
+* The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it ues the `imageBlock` element (known as `image` before v29.0.0).
 
 <info-box>
 **Note:** It is possible to load only one of these plugins, but only when {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source building the editor from source}.
@@ -31,7 +31,7 @@ Starting from v29.0.0, the existing {@link module:image/image~Image} plugin load
 An image caption is no longer automatically showed up when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `toggleImageCaption` button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link builds/guides/overview#available-builds predefined editor builds}.
 
 <info-box>
-To provide a valid HTML data output, an image caption is supported for the block images only. Adding a caption to an inline image results in its conversion into a block image.
+To provide a valid HTML data output, an image caption is supported for the block images only. Adding a caption to an inline image will automatically convert it to the block image (which can be undone by the user).
 </info-box>
 
 ## Image styles
@@ -44,12 +44,12 @@ Since the appearance of the image in the document depends on the image type (blo
 	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} are provided.
 	* In the editor configuration {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition a custom drop-down} can be declared.
 
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link builds/guides/integration/content-styles content styles} for this kind of images remains the same. The button label has also changed and now reads `Centered image`, so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/image~ImageConfig#styles modifying an existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link builds/guides/integration/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image`, so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/image~ImageConfig#styles modifying an existing image style}.
 
 * The format of the `config.image.styles` has changed. The list of the styles must be wrapped with the `options` array. Read more about the {@link module:image/image~ImageConfig#styles `image.styles` configuration}.
 
 ```js
-// Old code
+// Before v29.0.0
 Editor.create( document.querySelector( '#editor' ), {
 	...
 	image: {
@@ -57,7 +57,7 @@ Editor.create( document.querySelector( '#editor' ), {
 	}
 } );
 
-// New code
+// Since v29.0.0
 Editor.create( document.querySelector( '#editor' ), {
 	...
 	image: {
@@ -71,7 +71,7 @@ Editor.create( document.querySelector( '#editor' ), {
 * The format of the `imageStyle` has changed. It must now provide an information about the image types supporting a particular style. Read more about the {@link module:image/imagestyle~ImageStyleOptionDefinition}.
 
 ```js
-// Old code
+// Before v29.0.0
 Editor.create( document.querySelector( '#editor' ), {
 	...
 	image: {
@@ -84,7 +84,7 @@ Editor.create( document.querySelector( '#editor' ), {
 	}
 } );
 
-// New code
+// Since v29.0.0
 Editor.create( document.querySelector( '#editor' ), {
 	...
 	image: {
@@ -152,16 +152,16 @@ To view the above configurations, see the {@link features/images-overview image 
 
 ## Inserting images
 
-When loaded, the {@link module:image/imageinline~ImageInline} plugin changes the default behavior of inserting/pasting/dropping images into a non-empty `$block` elements - it is now upcasted to the `imageInline` model element. The image inserted into an empty paragraph is still upcasted to a `imageBlock` model element. This behavior can be overridden in the {@link module:image/imageinsert~ImageInsertConfig `ImageInsert` plugin configuration} to force an insertion block or inline images only.
+Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text will no longer split it if the {@link module:image/imageinline~ImageInline} plugin is loaded (default). If you prefer the old behavior in your integration, this can be specified in the {@link module:image/imageinsert~ImageInsertConfig `ImageInsert` plugin configuration}.
 
 Read more about the [logic controlling the image type while inserting/pasting/dropping](TODO: link).
 
 ## Image utils
 
-The image utils are now wrapped by a {@link module:image/imageutils~ImageUtils} plugin.
+The image utils are now wrapped by the {@link module:image/imageutils~ImageUtils} plugin.
 
 ```js
-// Old code
+// Before v29.0.0
 import { isImage } from './utils';
 
 const selectedElement = editor.model.document.selection.getSelectedElement();
@@ -170,7 +170,7 @@ if ( isImage( selectedElement ) ) {
 	// ...
 }
 
-// New code
+// Since v29.0.0
 // ...
 const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 const selectedElement = editor.model.document.selection.getSelectedElement();
@@ -181,11 +181,11 @@ if ( imageUtils.isImage( selectedElement ) ) {
 ```
 * The {@link module:image/imageutils~ImageUtils#insertImage} function
 	* does not require a `model` parameter any longer,
-	* as the second parameter {@link module:engine/model/selection~Selectable} can also be passed, not only {@link module:engine/model/position~Position},
+	* as the second parameter also {@link module:engine/model/selection~Selectable} can be passed (previously only {@link module:engine/model/position~Position}),
 	* a new parameter `imageType` is now supported to force a type of the image to be inserted.
 
 ```js
-// Old code
+// Before v29.0.0
 import { insertImage } from './utils';
 
 const src = 'path/to/image.jpg';
@@ -195,7 +195,7 @@ const position = model.createPositionAt( selection.getSelectedElement() );
 
 insertImage( model, { src }, position );
 
-// New code
+// Since v29.0.0
 const src = 'path/to/image.jpg';
 const selection = this.editor.model.document.selection;
 const imageUtils = this.editor.plugins.get( 'ImageUtils' );
@@ -204,13 +204,13 @@ const imageType = 'imageBlock';
 imageUtils.insertImage( { src }, selection, imageType );
 ```
 
-* The {@link module:image/imageutils~ImageUtils#isImage} function returns now an `Element` for both inline and block images.
-* There are two new helpers: {@link module:image/imageutils~ImageUtils#isBlockImageView} and {@link module:image/imageutils~ImageUtils#isInlineImageView} functions.
-* The `getSelectedImageWidget` function is now protected and is renamed to `getClosestSelectedImageElement`.
-* The `getViewImgFromWidget` function is now protected and is renamed to `getViewImageFromWidget`.
-* The `isImageAllowed` function is now protected.
-* The `isImageWidget` function is now protected.
-* The `toImageWidget` function is now protected.
+* The {@link module:image/imageutils~ImageUtils#isImage} function works for both inline and block images.
+* There are two new helpers: {@link module:image/imageutils~ImageUtils#isBlockImageView} and {@link module:image/imageutils~ImageUtils#isInlineImageView}.
+* The `getSelectedImageWidget()` function is now protected and is renamed to `getClosestSelectedImageElement()`.
+* The `getViewImgFromWidget()` function is now protected and is renamed to `getViewImageFromWidget()`.
+* The `isImageAllowed()` function is now protected.
+* The `isImageWidget()` function is now protected.
+* The `toImageWidget()` function is now protected.
 
 ## `EasyImage` plugin
 
