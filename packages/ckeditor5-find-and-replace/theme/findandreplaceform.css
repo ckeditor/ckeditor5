@@ -10,7 +10,7 @@
 
 .ck .ck-find-and-replace-form .ck-find-form__wrapper,
 .ck .ck-find-and-replace-form .ck-replace-form__wrapper {
-	display: flex; 
+	display: flex;
 	align-items: flex-start;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -26,7 +26,7 @@
 			cursor: pointer;
 		}
 	}
-	
+
 	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
 		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	}
@@ -80,11 +80,11 @@
 	& .ck-find-buttons {
 		display: flex;
 		align-items: center;
-	
+
 		& .ck-button {
 			border-radius: 5px;
 			padding: 5px;
-			
+
 			& svg.ck-button__icon {
 				margin: 0;
 			}
@@ -137,11 +137,11 @@
 
 			&:first-child {
 				margin-top: var(--ck-spacing-unit);
-				line-height: 0px;
 			}
 
 			& label {
 				margin-left: 5px;
+				line-height: calc(var(--ck-spacing-unit) * 2.2);
 			}
 		}
 	}
