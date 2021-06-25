@@ -24,11 +24,11 @@
 // * map
 // * wbr
 // * colgroup -> col
+//
 // Skipped elements due to complexity:
 // * datalist with option elements used as a data source for input[list] element
 //
 // Skipped elements as they are handled as an object content:
-// TODO shouldn't we also filter attributes on these element and enable them separately?
 // * track
 // * source
 // * option
@@ -41,7 +41,8 @@
 // * title
 // * head
 // * meta
-// * link * etc...
+// * link
+// * etc...
 //
 // Skipped hidden elements:
 // noscript
