@@ -36,7 +36,7 @@ You can configure resizing images by handles in two different ways in the CKEdit
 
 * Either by installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`) as described in the {@link features/images-resizing#installation installation} of this guide.
 
-* Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins:
+* Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins, that won't load the unnecessary `ImageResizeButtons` plugin:
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';
