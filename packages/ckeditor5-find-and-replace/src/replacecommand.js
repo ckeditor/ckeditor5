@@ -35,13 +35,17 @@ export default class ReplaceCommand extends Command {
 	 * @param {String} replacementText
 	 * @param {Object} result A single result from the find command.
 	 */
-	execute( replacementText, { marker } ) {
+	execute( replacementText, result ) {
 		const { model } = this.editor;
 
 		model.change( writer => {
-			const range = marker.getRange();
+			const range = result.marker.getRange();
 
 			model.insertContent( writer.createText( replacementText ), range );
+
+			if ( this.state.results.has( result ) ) {
+				this.state.results.remove( result );
+			}
 		} );
 	}
 }
