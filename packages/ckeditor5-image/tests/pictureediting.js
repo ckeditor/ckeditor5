@@ -955,6 +955,62 @@ describe( 'PictureEditing', () => {
 						);
 					} );
 
+					it( 'should downcast a linked block image ("linkHref" added after "sources" were added)', () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+									'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+									'<img src="/assets/sample.png">' +
+								'</picture>' +
+							'</figure>'
+						);
+
+						model.change( writer => {
+							writer.setAttribute( 'linkHref', 'https://ckeditor.com', modelDocument.getRoot().getChild( 0 ) );
+						} );
+
+						expect( getViewData( view ) ).to.equal(
+							'[<figure class="ck-widget image" contenteditable="false">' +
+								'<a href="https://ckeditor.com">' +
+									'<picture>' +
+										'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
+										'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+										'<img src="/assets/sample.png"></img>' +
+									'</picture>' +
+								'</a>' +
+							'</figure>]'
+						);
+					} );
+
+					it( 'should downcast a block image ("linkHref" removed after "sources" were added)', () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<a href="https://ckeditor.com">' +
+									'<picture>' +
+										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<img src="/assets/sample.png">' +
+									'</picture>' +
+								'</a>' +
+							'</figure>'
+						);
+
+						model.change( writer => {
+							writer.removeAttribute( 'linkHref', modelDocument.getRoot().getChild( 0 ) );
+						} );
+
+						expect( getViewData( view ) ).to.equal(
+							'[<figure class="ck-widget image" contenteditable="false">' +
+								'<picture>' +
+									'<source media="(min-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
+									'<source media="(max-width: 800px)" srcset="/assets/sample.png?foo" type="image/png"></source>' +
+									'<img src="/assets/sample.png"></img>' +
+								'</picture>' +
+							'</figure>]'
+						);
+					} );
+
 					it( 'should downcast a resized block image', () => {
 						editor.setData(
 							'<figure class="image" style="width:123px">' +
@@ -1466,6 +1522,62 @@ describe( 'PictureEditing', () => {
 										'<img src="/assets/sample.png">' +
 									'</picture>' +
 								'</a>' +
+								'<figcaption>Caption</figcaption>' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should downcast a linked block image ("linkHref" added after "sources")', () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png">' +
+									'<img src="/assets/sample.png">' +
+								'</picture>' +
+								'<figcaption>Caption</figcaption>' +
+							'</figure>'
+						);
+
+						model.change( writer => {
+							writer.setAttribute( 'linkHref', 'https://ckeditor.com', modelDocument.getRoot().getChild( 0 ) );
+						} );
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								'<a href="https://ckeditor.com">' +
+									'<picture>' +
+										'<source srcset="/assets/sample.png">' +
+										'<img src="/assets/sample.png">' +
+									'</picture>' +
+								'</a>' +
+								'<figcaption>Caption</figcaption>' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should downcast a linked block image ("linkHref" removed after adding "sources")', () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<a href="https://ckeditor.com">' +
+									'<picture>' +
+										'<source srcset="/assets/sample.png">' +
+										'<img src="/assets/sample.png">' +
+									'</picture>' +
+								'</a>' +
+								'<figcaption>Caption</figcaption>' +
+							'</figure>'
+						);
+
+						model.change( writer => {
+							writer.removeAttribute( 'linkHref', modelDocument.getRoot().getChild( 0 ) );
+						} );
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png">' +
+									'<img src="/assets/sample.png">' +
+								'</picture>' +
 								'<figcaption>Caption</figcaption>' +
 							'</figure>'
 						);
