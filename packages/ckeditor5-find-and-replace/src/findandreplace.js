@@ -79,10 +79,6 @@ export default class FindAndReplace extends Plugin {
 
 			if ( highlightedResult ) {
 				this.editor.execute( 'replace', data.replaceText, highlightedResult );
-
-				// @todo: we might need to move this to the command? Or better implement a watcher for case like that in
-				// editing plugin. (so that removing marked highlight moves it to a next possible one)
-				this.editor.execute( 'findNext' );
 			}
 		} );
 
