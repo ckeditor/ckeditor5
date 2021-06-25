@@ -106,7 +106,7 @@ Since the appearance of the image in the document depends on the image type (blo
 	* In the {@link module:image/imagestyle/utils image style utils} module:
 		* the `defaultIcons` were renamed to {@link module:image/imagestyle/utils~DEFAULT_ICONS},
 		* the `defaultStyles` were renamed to {@link module:image/imagestyle/utils~DEFAULT_OPTIONS},
-		* the `normalizeImageStyles` function was removed from the public API.
+		* the `normalizeImageStyles()` function was removed from the public API.
 	* The `ImageStyleCommand#defaultStyle` and `ImageStyleCommand#styles` were removed from the public API.
 
 ## Image toolbar
@@ -179,7 +179,7 @@ Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text
 	}
 	```
 
-* The {@link module:image/imageutils~ImageUtils#insertImage} function
+* The {@link module:image/imageutils~ImageUtils#insertImage `insertImage()`} function
 	* no longer requires the `model` model instance to run,
 	* allows {@link module:engine/model/selection~Selectable} as a second argument (previously only {@link module:engine/model/position~Position} was accepted),
 	* supports the optional `imageType` argument to force a type of the image to be inserted.
@@ -204,8 +204,8 @@ Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text
 	imageUtils.insertImage( { src }, selection, imageType );
 	```
 
-* The {@link module:image/imageutils~ImageUtils#isImage} function recognizes both inline and block images (previously only block images).
-* There are two new helpers: {@link module:image/imageutils~ImageUtils#isBlockImageView} and {@link module:image/imageutils~ImageUtils#isInlineImageView}.
+* The {@link module:image/imageutils~ImageUtils#isImage `isImage()`} function recognizes both inline and block images (previously only block images).
+* There are two new helpers: {@link module:image/imageutils~ImageUtils#isBlockImageView `isBlockImageView()`} and {@link module:image/imageutils~ImageUtils#isInlineImageView `isInlineImageView()`}.
 
 The following helpers were removed from the public API:
 
