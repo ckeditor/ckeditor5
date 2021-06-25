@@ -18,6 +18,16 @@
 			"className": "ImageBlock",
 			"description": "Enables support for inserting images between the blocks of text, like paragraphs or block quotes. This functionality is also provided by the main Image plugin. Note: The image feature is introduced in a granular form, implemented by separate plugins responsible for such aspects as image caption, toolbar, resize, upload or styles.",
 			"path": "src/imageblock.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "imageTextAlternative",
+					"iconPath": "",
+					"toolbars": [
+						"image.toolbar"
+					]
+				}
+			],
 			"htmlOutput": [
 				{
 					"elements": "figure",
@@ -40,6 +50,16 @@
 			"className": "ImageInline",
 			"description": "Enables support for inserting images inside the blocks of text, like paragraphs, header or block quotes. This functionality is also provided by the main Image plugin. Note: The image feature is introduced in a granular form, implemented by separate plugins responsible for such aspects as image toolbar, resize, upload or styles.",
 			"path": "src/imageinline.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "imageTextAlternative",
+					"iconPath": "",
+					"toolbars": [
+						"image.toolbar"
+					]
+				}
+			],
 			"htmlOutput": [
 				{
 					"elements": "img",
@@ -220,44 +240,19 @@
 			"htmlOutput": [
 				{
 					"elements": "figure",
-					"classes": "*",
-					"_comment": "The plugin can be configured to set any class names on the `<figure>` element."
-				},
-				{
-					"elements": "figure",
 					"classes": [
-						"image-style-side"
-					]
-				},
-				{
-					"elements": "figure",
-					"classes": [
-						"image-style-align-left"
-					]
-				},
-				{
-					"elements": "figure",
-					"classes": [
-						"image-style-align-right"
-					]
-				},
-				{
-					"elements": "figure",
-					"classes": [
-						"image-style-block-align-center"
-					]
-				},
-				{
-					"elements": "figure",
-					"classes": [
-						"image-style-block-align-left"
-					]
-				},
-				{
-					"elements": "figure",
-					"classes": [
+						"image-style-side",
+						"image-style-align-left",
+						"image-style-align-right",
+						"image-style-block-align-center",
+						"image-style-block-align-left",
 						"image-style-block-align-right"
 					]
+				},
+				{
+					"elements": "figure",
+					"classes": "*",
+					"_comment": "The plugin can be configured to set any class names on the `<figure>` element."
 				}
 			]
 		},
