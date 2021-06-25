@@ -87,7 +87,7 @@ InlineEditor.defaultConfig = {
 	image: {
 		toolbar: [
 			'imageStyle:inline',
-			'imageStyle:full',
+			'imageStyle:block',
 			'imageStyle:side',
 			'|',
 			'toggleImageCaption',

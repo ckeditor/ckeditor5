@@ -1135,10 +1135,8 @@ describe( 'CodeBlockEditing', () => {
 			editor.setData( `<pre><code>foo</code></pre>
 				<pre><code>bar</code></pre>` );
 
-			// Note: The empty <paragraph> in between should not be here. It's a conversion/auto–paragraphing bug.
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]foo</codeBlock>' +
-				'<paragraph> </paragraph>' +
 				'<codeBlock language="plaintext">bar</codeBlock>' );
 		} );
 

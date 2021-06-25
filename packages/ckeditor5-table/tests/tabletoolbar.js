@@ -34,7 +34,7 @@ describe( 'TableToolbar', () => {
 				.create( editorElement, {
 					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 					},
 					table: {
 						contentToolbar: [ 'fake_button' ]

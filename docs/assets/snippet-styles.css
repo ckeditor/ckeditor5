@@ -29,10 +29,17 @@
 }
 
 /*
-.ck.ck-content > :not(.ck-fake-selection-container):last-of-type {
-	margin-bottom: 0;
+ * Override Umberto styles to avoid content jumping when the fake selection container shows up.
+ * To work properly, this must match 1:1 the styles brought by Umberto.
+ * https://github.com/ckeditor/ckeditor5/issues/9825
+ */
+.ck.ck-content > p,
+.ck.ck-content > ul,
+.ck.ck-content > ol,
+.ck.ck-content > blockquote,
+.ck.ck-content > pre {
+	margin-bottom: var(--ck-spacing-large);
 }
-*/
 
 /* Override default Umberto's styles because they apply margins to media embed widgets with iframe
 previews breaking their structure. */
@@ -107,6 +114,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin: 0;
 }
 
+/* stylelint-disable-next-line */
 .demo-row p {
 	margin-bottom: 0;
 }
@@ -140,6 +148,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin-top: 10px;
 }
 
+/* stylelint-disable-next-line */
 .main__notification-body p {
 	margin-bottom: 0.3em;
 }

@@ -2,12 +2,17 @@
 category: features-images
 menu-title: Resizing images
 order: 50
+modified_at: 2021-06-17
 ---
 {@snippet features/build-image-source}
 
 # Resizing images
 
 The {@link features/images-styles image styles} feature is meant to give the user a choice between a set of styling options provided by the system (i.e. by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes into play. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
+
+## Enabling image resizing
+
+The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. In order to enable it in other builds, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-resizing#installation installation} section.
 
 ## Methods to resize images
 
@@ -19,7 +24,7 @@ The plugin also gives you an ability to change the size of the image through the
 
 ### Using resize handles
 
-In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once [image resizing is enabled](#enabling-image-resizing), this option does not require any additional configuration.
+In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once image resizing is enabled, this option does not require any additional configuration.
 
 Use the corner handles to resize the image and adjust it to the text as needed. Yu can also use the alignment options from the image toolbar to achieve the desired effect.
 
@@ -29,22 +34,9 @@ Images can also be pre-resized using styling, as observed below (the bottom imag
 
 You can configure resizing images by handles in two different ways in the CKEditor 5 WYSIWYG editor:
 
-* Either by installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
+* Either by installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`) as described in the {@link features/images-resizing#installation installation} of this guide.
 
-```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResize, ... ],
-		...
-	} )
-	.then( ... )
-	.catch( ... );
-```
-
-* Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins:
+* Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins, that won't load the unnecessary `ImageResizeButtons` plugin:
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -77,14 +69,14 @@ const imageConfiguration = {
 			label: 'Original'
 		},
 		{
-			name: 'resizeImage:50',
-			value: '50',
-			label: '50%'
+			name: 'resizeImage:40',
+			value: '40',
+			label: '40%'
 		},
 		{
-			name: 'resizeImage:75',
-			value: '75',
-			label: '75%'
+			name: 'resizeImage:60',
+			value: '60',
+			label: '60%'
 		}
 	],
 	toolbar: [ ..., 'resizeImage' ]
@@ -94,6 +86,14 @@ const imageConfiguration = {
 Try out the live demo of the resize dropdown available in the image toolbar below.
 
 {@snippet features/image-resize-buttons-dropdown}
+
+<info-box hint>
+Images in the example below were prepared to match the exact aspect ratios, so they can be displayed together, with equal heights.
+
+If you want to define the possible aspect ratios of the inserted images, for example allow the user to insert 1:1 and 40% width, and 1:2 and 20% width images, you should use the {@link features/images-styles#configuring-the-styles image style feature}.
+
+The example of CSS fixing the image aspect ratio is in the [last example](#aspect-ratio-css) of this guide.
+</info-box>
 
 ### Using standalone resize buttons
 
@@ -179,10 +179,6 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Enabling image resizing
-
-The image resize feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the {@link features/images-installation installation} section.
-
 ## Markup and styling
 
 When you resize an image, the inline `width` style is used and the `<figure>` element is assigned the `image_resized` class:
@@ -240,20 +236,73 @@ However, there are cases where pixel values may be preferred. You can thus confi
 ClassicEditor
 	.create( editorElement, {
 		image: {
-			resizeUnit: 'px'
+			resizeUnit: 'px',
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					label: 'Original',
+					value: null
+				},
+				{
+					name: 'resizeImage:100',
+					label: '100px',
+					value: '100'
+				},
+				{
+					name: 'resizeImage:200',
+					label: '200px',
+					value: '200'
+				}
+			]
 		}
 	} )
 	.then( ... )
 	.catch( ... );
 ```
 
+The following demo uses CSS to set up the fixed image aspect ratio, so a 200px wide image automatically gets the same height.
+
+<div id="aspect-ratio-css"></div>
+
+```css
+.ck.ck-content .image {
+	position: relative;
+}
+.ck.ck-content .image img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+}
+.ck.ck-content .image::before {
+	content: '';
+	padding-top: 100%;
+	display: block;
+}
+```
 Check out the difference in the live demo below:
 
 {@snippet features/image-resize-px}
 
 ## Installation
 
-The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. Please refer to the {@link features/images-installation installation} guide to learn how to enable it in other editor builds.
+The image resize feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResize, ... ],
+		...
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Common API
 

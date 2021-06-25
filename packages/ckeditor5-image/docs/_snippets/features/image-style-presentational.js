@@ -8,9 +8,10 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-image-style-custom' ), {
-		removePlugins: [ 'LinkImage', 'AutoImage' ],
+	.create( document.querySelector( '#snippet-presentational-image-style-default' ), {
+		removePlugins: [ 'LinkImage', 'AutoImage', 'imageCaption' ],
 		image: {
+			resizeUnit: '%',
 			resizeOptions: [
 				{
 					name: 'resizeImage:original',
@@ -18,12 +19,12 @@ ClassicEditor
 					value: null
 				},
 				{
-					name: 'resizeImage:50',
+					name: 'resizeImage:40',
 					label: '50%',
 					value: '50'
 				},
 				{
-					name: 'resizeImage:75',
+					name: 'resizeImage:60',
 					label: '75%',
 					value: '75'
 				}
@@ -32,11 +33,7 @@ ClassicEditor
 				'imageStyle:inline',
 				'imageStyle:wrapText',
 				'imageStyle:breakText',
-				'|',
-				'resizeImage',
-				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
+				'resizeImage'
 			]
 		},
 		toolbar: {
@@ -45,7 +42,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.editorStyleCustom = editor;
+		window.editorStylePresentational = editor;
 	} )
 	.catch( err => {
 		console.error( err );

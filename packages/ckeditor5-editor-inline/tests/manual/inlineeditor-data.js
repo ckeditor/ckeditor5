@@ -15,6 +15,7 @@ let counter = 1;
 function initEditor() {
 	InlineEditor
 		.create( `<h2>Editor ${ counter }</h2><p>This is an editor instance.</p>`, {
+			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 			plugins: [ ArticlePluginSet ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 		} )

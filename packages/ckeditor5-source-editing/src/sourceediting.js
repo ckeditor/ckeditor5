@@ -12,6 +12,7 @@
 import { Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
+import { formatHtml } from './utils/formathtml';
 
 import '../theme/sourceediting.css';
 
@@ -73,6 +74,14 @@ export default class SourceEditing extends Plugin {
 		 * @member {Map.<String,HTMLElement>}
 		 */
 		this._replacedRoots = new Map();
+
+		/**
+		 * Maps all root names to their document data.
+		 *
+		 * @private
+		 * @member {Map.<String,String>}
+		 */
+		this._dataFromRoots = new Map();
 	}
 
 	/**
@@ -198,7 +207,7 @@ export default class SourceEditing extends Plugin {
 		// It is not needed to iterate through all editing roots, as currently the plugin supports only the Classic Editor with a single
 		// main root, but this code may help understand and use this feature in external integrations.
 		for ( const [ rootName, domRootElement ] of editingView.domRoots ) {
-			const data = editor.data.get( { rootName } );
+			const data = formatSource( editor.data.get( { rootName } ) );
 
 			const domSourceEditingElementTextarea = createElement( domRootElement.ownerDocument, 'textarea', { rows: '1' } );
 
@@ -224,6 +233,8 @@ export default class SourceEditing extends Plugin {
 			this._replacedRoots.set( rootName, domSourceEditingElementWrapper );
 
 			this._elementReplacer.replace( domRootElement, domSourceEditingElementWrapper );
+
+			this._dataFromRoots.set( rootName, data );
 		}
 
 		this._focusSourceEditing();
@@ -241,7 +252,7 @@ export default class SourceEditing extends Plugin {
 		const data = {};
 
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
-			const oldData = editor.data.get( { rootName } );
+			const oldData = this._dataFromRoots.get( rootName );
 			const newData = domSourceEditingElementWrapper.dataset.value;
 
 			// Do not set the data unless some changes have been made in the meantime.
@@ -261,6 +272,8 @@ export default class SourceEditing extends Plugin {
 
 		this._replacedRoots.clear();
 
+		this._dataFromRoots.clear();
+
 		if ( Object.keys( data ).length ) {
 			editor.data.set( data, { batchType: 'default' } );
 		}
@@ -276,7 +289,9 @@ export default class SourceEditing extends Plugin {
 	_focusSourceEditing() {
 		const [ domSourceEditingElementWrapper ] = this._replacedRoots.values();
 
-		domSourceEditingElementWrapper.querySelector( 'textarea' ).focus();
+		const textarea = domSourceEditingElementWrapper.querySelector( 'textarea' );
+
+		textarea.focus();
 	}
 
 	/**
@@ -334,4 +349,26 @@ export default class SourceEditing extends Plugin {
 		// Checks, if the editor's editable belongs to the editor's DOM tree.
 		return editable && !editable._hasExternalElement;
 	}
+}
+
+// Formats the content for a better readability.
+//
+// For a non-HTML source the unchanged input string is returned.
+//
+// @param {String} input Input string to check.
+// @returns {Boolean}
+function formatSource( input ) {
+	if ( !isHtml( input ) ) {
+		return input;
+	}
+
+	return formatHtml( input );
+}
+
+// Checks, if the document source is HTML. It is sufficient to just check the first character from the document data.
+//
+// @param {String} input Input string to check.
+// @returns {Boolean}
+function isHtml( input ) {
+	return input.startsWith( '<' );
 }
