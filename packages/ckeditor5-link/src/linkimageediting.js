@@ -190,13 +190,15 @@ function downcastImageLink( editor ) {
 			// But we need to check whether the link element exists.
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 			const viewImage = imageUtils.findViewImgElement( viewFigure );
+			// <picture>...<img/></picture> or <img/>
+			const viewImgOrPicture = viewImage.parent.is( 'element', 'picture' ) ? viewImage.parent : viewImage;
 
 			// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.
 			if ( linkInImage ) {
 				if ( data.attributeNewValue ) {
 					writer.setAttribute( 'href', data.attributeNewValue, linkInImage );
 				} else {
-					writer.move( writer.createRangeOn( viewImage ), writer.createPositionAt( viewFigure, 0 ) );
+					writer.move( writer.createRangeOn( viewImgOrPicture ), writer.createPositionAt( viewFigure, 0 ) );
 					writer.remove( linkInImage );
 				}
 			} else {
@@ -208,7 +210,7 @@ function downcastImageLink( editor ) {
 				writer.insert( writer.createPositionAt( viewFigure, 0 ), linkElement );
 
 				// 3. Move the image to the link.
-				writer.move( writer.createRangeOn( viewImage ), writer.createPositionAt( linkElement, 0 ) );
+				writer.move( writer.createRangeOn( viewImgOrPicture ), writer.createPositionAt( linkElement, 0 ) );
 			}
 		} );
 	};
