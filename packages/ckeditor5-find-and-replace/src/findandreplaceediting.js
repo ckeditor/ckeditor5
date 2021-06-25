@@ -55,7 +55,7 @@ class FindAndReplaceState {
 				} );
 
 				if ( highlightedResultRemoved ) {
-					const nextHighlightedIndex = index > this.results.length ? index : 0;
+					const nextHighlightedIndex = index >= this.results.length ? 0 : index;
 					this.highlightedResult = this.results.get( nextHighlightedIndex );
 				}
 			}
