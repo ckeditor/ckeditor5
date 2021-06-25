@@ -55,7 +55,7 @@ export function viewToModelObjectConverter( { model: modelName } ) {
 export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) {
 	const t = editor.t;
 
-	return ( modelElement, { writer } ) => {
+	return ( modelElement, { writer, consumable } ) => {
 		const widgetLabel = t( 'HTML object' );
 
 		// Widget cannot be a raw element because the widget system would not be able
@@ -71,7 +71,7 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 		writer.addClass( 'html-object-embed__content', viewElement );
 
 		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
-		if ( viewAttributes ) {
+		if ( viewAttributes && consumable.consume( modelElement, `attribute:htmlAttributes:${ modelElement.name }` ) ) {
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
 

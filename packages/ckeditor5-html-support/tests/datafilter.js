@@ -317,6 +317,34 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p><input><input></p>' );
 		} );
 
+		it( 'should apply attributes to correct editing element', () => {
+			dataFilter.allowElement( 'input' );
+			dataFilter.allowAttributes( { name: 'input', attributes: 'type' } );
+
+			editor.setData( '<p><input type="number"/></p>' );
+
+			const input = editor.editing.view.document.getRoot()
+				.getChild( 0 ) // <p>
+				.getChild( 0 ) // <span>
+				.getChild( 0 ); // <input>
+
+			expect( input.getAttribute( 'type' ) ).to.equal( 'number' );
+		} );
+
+		it( 'should consume htmlAttributes attribute (editing downcast)', () => {
+			editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+				dispatcher.on( 'attribute:htmlAttributes:htmlInput', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, evt.name );
+					expect( conversionApi.consumable.test( data.item, evt.name ) ).to.be.true;
+				} );
+			} );
+
+			dataFilter.allowElement( 'input' );
+			dataFilter.allowAttributes( { name: 'input', attributes: 'type' } );
+
+			editor.setData( '<p><input type="number"/></p>' );
+		} );
+
 		function getObjectModelDataWithAttributes( model, options ) {
 			options.excludeAttributes = [ 'htmlContent' ];
 			return getModelDataWithAttributes( model, options );
