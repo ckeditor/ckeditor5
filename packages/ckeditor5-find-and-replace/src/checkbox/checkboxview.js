@@ -43,6 +43,14 @@ export default class CheckboxView extends View {
 		 */
 		this.labelView = this._createLabelView( );
 
+		/**
+		 * Input of the checkbox view.
+		 *
+		 * @readonly
+		 * @member {module:ui/view~View} #checkboxInputView
+		 */
+		this.checkboxInputView = this._createCheckboxInputView();
+
 		this.setTemplate( {
 			tag: 'div',
 
@@ -53,23 +61,10 @@ export default class CheckboxView extends View {
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				],
-				type: bind.to( 'type', value => value ? value : 'checkbox' ),
-				tabindex: bind.to( 'tabindex' ),
-				'aria-disabled': bind.if( 'isEnabled', true, value => !value )
+				tabindex: bind.to( 'tabindex' )
 			},
 
-			children: [
-				{
-					tag: 'input',
-					attributes: {
-						type: 'checkbox',
-						id: bind.to( 'checkboxId' ),
-						name: bind.to( 'label' ),
-						value: bind.to( 'label' )
-					}
-				},
-				this.labelView
-			]
+			children: this.children
 		} );
 	}
 
@@ -79,6 +74,7 @@ export default class CheckboxView extends View {
 	render() {
 		super.render();
 
+		this.children.add( this.checkboxInputView );
 		this.children.add( this.labelView );
 	}
 
@@ -87,6 +83,31 @@ export default class CheckboxView extends View {
 	 */
 	focus() {
 		this.element.focus();
+	}
+
+	/**
+	 * Creates a checkbox input view instance and binds it with checkbox attributes.
+	 *
+	 * @private
+	 * @returns {module:ui/view~View}
+	 */
+	_createCheckboxInputView() {
+		const checkboxInputView = new View();
+		const bind = this.bindTemplate;
+
+		checkboxInputView.setTemplate( {
+			tag: 'input',
+			attributes: {
+				type: 'checkbox',
+				id: bind.to( 'checkboxId' ),
+				name: bind.to( 'label' ),
+				value: bind.to( 'label' ),
+				'disabled': bind.if( 'isEnabled', true, value => !value ),
+				'aria-disabled': bind.if( 'isEnabled', true, value => !value )
+			}
+		} );
+
+		return checkboxInputView;
 	}
 
 	/**
