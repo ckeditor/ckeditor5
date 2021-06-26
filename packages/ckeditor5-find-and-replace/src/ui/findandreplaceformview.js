@@ -30,6 +30,17 @@ export default class FindAndReplaceFormView extends View {
 
 		const t = locale.t;
 
+		this.set( 'isSearching' );
+		this.set( 'searchText', '' );
+		this.set( 'replaceText', '' );
+
+		/**
+		 * The find input view.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
+		this.findInputView = this._createInputField( t( 'Find in text' ) );
+
 		/**
 		 * The find button view that's visible initially - pre-search.
 		 *
@@ -40,6 +51,8 @@ export default class FindAndReplaceFormView extends View {
 			this.fire( 'findNext', { searchText: this.searchText } );
 		} );
 
+		this.findButtonView.bind( 'isEnabled' ).to( this.findInputView.fieldView, 'isEmpty', value => !value );
+
 		/**
 		 * The find previous button view.
 		 *
@@ -47,7 +60,7 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.findPrevButtonView = this._createButton( '', 'ck-button-prev', findArrowIcon );
 		this.findPrevButtonView.on( 'execute', () => {
-			this.fire( 'findPrev', { searchText: this.searchText } );
+			this.fire( 'findPrev' );
 		} );
 
 		/**
@@ -57,7 +70,7 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.findNextButtonView = this._createButton( '', 'ck-button-next', findArrowIcon );
 		this.findNextButtonView.on( 'execute', () => {
-			this.fire( 'findNext', { searchText: this.searchText } );
+			this.fire( 'findNext' );
 		} );
 
 		/**
@@ -70,6 +83,8 @@ export default class FindAndReplaceFormView extends View {
 			this.fire( 'replace', { searchText: this.searchText, replaceText: this.replaceText } );
 		} );
 
+		this.replaceButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
+
 		/**
 		 * The replace all button view.
 		 *
@@ -79,6 +94,8 @@ export default class FindAndReplaceFormView extends View {
 		this.replaceAllButtonView.on( 'execute', () => {
 			this.fire( 'replaceAll', { searchText: this.searchText, replaceText: this.replaceText } );
 		} );
+
+		this.replaceAllButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
 
 		/**
 		 * Match case checkbox view
@@ -95,18 +112,11 @@ export default class FindAndReplaceFormView extends View {
 		this.matchWholeWordsCheckbox = this._createCheckbox( 'wholewords', t( 'Whole words only' ) );
 
 		/**
-		 * The find input view.
-		 *
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-		 */
-		this.findInputView = this._createInputField( 'Find', t( 'Find in text' ) );
-
-		/**
 		 * The replace input view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.replaceInputView = this._createInputField( 'Replace', t( 'Replace with' ) );
+		this.replaceInputView = this._createInputField( t( 'Replace with' ) );
 
 		/**
 		 * Stores gathered views related to find functionality of the feature
@@ -122,6 +132,9 @@ export default class FindAndReplaceFormView extends View {
 		 * @member {module:ui/view~View}
 		 */
 		this.replaceView = this._createReplaceView( this.replaceInputView, this.replaceButtonView, this.replaceAllButtonView );
+
+		this.bind( 'searchText' ).to( this.findInputView.fieldView, 'value' );
+		this.bind( 'replaceText' ).to( this.replaceInputView.fieldView, 'value' );
 
 		this.setTemplate( {
 			tag: 'form',
@@ -277,7 +290,7 @@ export default class FindAndReplaceFormView extends View {
 					'ck',
 					'ck-find-form__wrapper',
 					'ck-responsive-form',
-					'ck-isEnabled'
+					bind.if( 'isSearching', 'ck-is-searching' )
 					// 'isDisabled'
 				],
 				tabindex: '-1'
@@ -342,6 +355,7 @@ export default class FindAndReplaceFormView extends View {
 	 */
 	_createReplaceView( InputView, replaceButtonView, replaceAllButtonView ) {
 		const replaceView = new View();
+		const bind = this.bindTemplate;
 
 		replaceView.setTemplate( {
 			tag: 'div',
@@ -350,7 +364,7 @@ export default class FindAndReplaceFormView extends View {
 					'ck',
 					'ck-replace-form__wrapper',
 					'ck-responsive-form',
-					'ck-isEnabled'
+					bind.if( 'isSearching', 'ck-is-searching' )
 				],
 				tabindex: '-1'
 			},
@@ -377,20 +391,16 @@ export default class FindAndReplaceFormView extends View {
 	 * Creates a labeled input view.
 	 *
 	 * @private
-	 * @param {String} label The input label.
-	 * @param {String} infoText The additional information text.
+	 * @param {String} infoText The input label.
 	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled input view instance.
 	 */
-	_createInputField( label, infoText ) {
+	_createInputField( infoText ) {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputField = labeledInput.fieldView;
 
+		// @todo: this looks like an upstream UI bug (the fact that InputTextView#value does not get updated).
 		inputField.on( 'input', () => {
-			if ( label === 'Find' ) {
-				this.searchText = inputField.element.value;
-			} else {
-				this.replaceText = inputField.element.value;
-			}
+			inputField.value = inputField.element.value;
 		} );
 
 		labeledInput.label = infoText;
@@ -414,8 +424,7 @@ export default class FindAndReplaceFormView extends View {
 		button.set( {
 			label,
 			icon: findArrowIcon,
-			withText: true,
-			tooltip: true
+			withText: true
 		} );
 
 		button.extendTemplate( {

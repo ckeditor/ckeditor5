@@ -41,8 +41,12 @@ export default class FindAndReplaceUI extends Plugin {
 		this.set( 'searchText' );
 		this.set( 'replaceText' );
 
+		this.set( 'isSearching', false );
+
 		this.set( 'matchCount', null );
 		this.set( 'highlightOffset', null );
+
+		this.bind( 'isSearching' ).to( this, 'matchCount', count => count > 0 );
 	}
 
 	/**
@@ -66,6 +70,8 @@ export default class FindAndReplaceUI extends Plugin {
 
 			formView.bind( 'matchCount' ).to( this );
 			formView.bind( 'highlightOffset' ).to( this );
+
+			formView.bind( 'isSearching' ).to( this );
 
 			this._createToolbarDropdown( dropdown, loupeIcon );
 
