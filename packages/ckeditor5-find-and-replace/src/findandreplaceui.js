@@ -9,9 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import FindAndReplaceFormView from './ui/findandreplaceformview';
 import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../theme/findandreplaceform.css';
-import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
 
@@ -53,7 +53,6 @@ export default class FindAndReplaceUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this.activeSearch = null;
 		this.findAndReplacePlugin = this.editor.plugins.get( 'FindAndReplace' );
 
 		const editor = this.editor;
@@ -87,7 +86,13 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 	}
 
-	setState( state ) {
+	/**
+	 * Sets the observed state object. It is used to display searching result count etc.
+	 *
+	 * @protected
+	 * @param {Object} state State object to be tracked.
+	 */
+	_setState( state ) {
 		this.listenTo( state.results, 'change', () => {
 			this.set( 'matchCount', state.results.length );
 		} );
@@ -117,6 +122,7 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
+	 * @param {Object} icon Icon to be assigned to the button.
 	 */
 	_createToolbarDropdown( dropdown, icon ) {
 		const t = this.editor.locale.t;
@@ -156,4 +162,10 @@ export default class FindAndReplaceUI extends Plugin {
  *
  * @event replaceAll
  * @param {String} replaceText Replacement text.
+ */
+
+/**
+ * Fired when the toolbar dropdown gets closed.
+ *
+ * @event dropdown:closed
  */
