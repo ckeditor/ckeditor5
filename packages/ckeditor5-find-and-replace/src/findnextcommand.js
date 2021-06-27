@@ -25,6 +25,12 @@ export default class FindNextCommand extends Command {
 	constructor( editor, state ) {
 		super( editor );
 
+		/**
+		 * Find and replace state object used for command operations.
+		 *
+		 * @private
+		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #_state
+		 */
 		this._state = state;
 
 		this.isEnabled = false;

@@ -51,7 +51,7 @@ export default class FindAndReplaceUI extends Plugin {
 		/**
 		 * The form view will only be assigned if the find and replace toolbar button was added.
 		 *
-		 * @member {Object|null} #formView
+		 * @member {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView|null} #formView
 		 */
 		this.formView = null;
 	}
@@ -99,7 +99,7 @@ export default class FindAndReplaceUI extends Plugin {
 	 * Sets the observed state object. It is used to display searching result count etc.
 	 *
 	 * @protected
-	 * @param {Object} state State object to be tracked.
+	 * @param {module:find-and-replace/findandreplaceediting~FindAndReplaceState} state State object to be tracked.
 	 */
 	_setState( state ) {
 		this.listenTo( state.results, 'change', () => {

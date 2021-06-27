@@ -167,6 +167,12 @@ export default class FindAndReplaceEditing extends Plugin {
 	 */
 	init() {
 		this.activeResults = null;
+
+		/**
+		 * An object storing find and replace state within a given editor instance.
+		 *
+		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #state
+		 */
 		this.state = new FindAndReplaceState( this.editor.model );
 
 		this._defineConverters();
