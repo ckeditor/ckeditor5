@@ -46,7 +46,7 @@ describe( 'ReplaceCommand', () => {
 
 	describe( 'state', () => {
 		it( 'is set to plugin\'s state', () => {
-			expect( command.state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
+			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 

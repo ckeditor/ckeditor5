@@ -26,7 +26,13 @@ export default class ReplaceCommand extends Command {
 		// Replace command is always enabled.
 		this.isEnabled = true;
 
-		this.state = state;
+		/**
+		 * Find and replace state object used for command operations.
+		 *
+		 * @private
+		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #_state
+		 */
+		this._state = state;
 	}
 
 	/**
@@ -43,8 +49,8 @@ export default class ReplaceCommand extends Command {
 
 			model.insertContent( writer.createText( replacementText ), range );
 
-			if ( this.state.results.has( result ) ) {
-				this.state.results.remove( result );
+			if ( this._state.results.has( result ) ) {
+				this._state.results.remove( result );
 			}
 		} );
 	}
