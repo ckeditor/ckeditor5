@@ -148,13 +148,17 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	_createToolbarDropdown( dropdown, icon ) {
 		const t = this.editor.locale.t;
+		const buttonView = dropdown.buttonView;
 
 		// Configure dropdown's button properties:
-		dropdown.buttonView.set( {
+		buttonView.set( {
 			icon,
 			withText: true,
 			tooltip: t( 'Find and replace' )
 		} );
+
+		// Clicking the main button has the same effect as clicking the dropdown arrow.
+		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
 	}
 }
 
