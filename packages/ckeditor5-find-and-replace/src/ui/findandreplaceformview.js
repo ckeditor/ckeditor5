@@ -8,7 +8,7 @@
  */
 
 import { ButtonView, FocusCycler, LabeledFieldView, createLabeledInputText, View, submitHandler, ViewCollection } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+import { FocusTracker, KeystrokeHandler, uid } from 'ckeditor5/src/utils';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -63,7 +63,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.findPrevButtonView = this._createButton( '', 'ck-button-prev', findArrowIcon );
+		this.findPrevButtonView = this._createButton( t( 'Previous result' ), 'ck-button-prev', findArrowIcon, false );
 		this.findPrevButtonView.on( 'execute', () => {
 			this.fire( 'findPrevious' );
 		} );
@@ -73,7 +73,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.findNextButtonView = this._createButton( '', 'ck-button-next', findArrowIcon );
+		this.findNextButtonView = this._createButton( t( 'Next result' ), 'ck-button-next', findArrowIcon, false );
 		this.findNextButtonView.on( 'execute', () => {
 			this.fire( 'findNext' );
 		} );
@@ -107,14 +107,14 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		*/
-		this.matchCaseCheckbox = this._createCheckbox( 'matchcase', t( 'Match case' ) );
+		this.matchCaseCheckbox = this._createCheckbox( t( 'Match case' ) );
 
 		/**
 		 * Whole words only checkbox view
 		 *
 		 * @member {module:ui/view~View}
 		*/
-		this.matchWholeWordsCheckbox = this._createCheckbox( 'wholewords', t( 'Whole words only' ) );
+		this.matchWholeWordsCheckbox = this._createCheckbox( t( 'Whole words only' ) );
 
 		/**
 		 * The replace input view.
@@ -426,15 +426,16 @@ export default class FindAndReplaceFormView extends View {
 	 * @param {String} label The button label.
 	 * @param {String} className The individual button CSS class name.
 	 * @param {Object} findArrowIcon SVG image for icon usage.
+	 * @param {Boolean} withText Whether the text should be shown.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, className, findArrowIcon ) {
+	_createButton( label, className, findArrowIcon, withText = true ) {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
 			label,
 			icon: findArrowIcon,
-			withText: true
+			withText
 		} );
 
 		button.extendTemplate( {
@@ -450,12 +451,12 @@ export default class FindAndReplaceFormView extends View {
 	 * Creates a view for checkboxes.
 	 *
 	 * @private
-	 * @param {String} checkboxId Checkbox id.
 	 * @param {String} label The checkbox label.
 	 * @returns {module:ui/view~View} The checkbox view instance.
 	 */
-	_createCheckbox( checkboxId, label ) {
+	_createCheckbox( label ) {
 		const checkboxView = new View();
+		const checkboxId = uid();
 
 		checkboxView.setTemplate( {
 			tag: 'div',

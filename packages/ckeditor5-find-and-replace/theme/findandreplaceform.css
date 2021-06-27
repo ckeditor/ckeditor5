@@ -93,11 +93,11 @@
 				margin: 0;
 			}
 
-			&:first-child {
+			&.ck-button-find {
 				padding: 4px 16px;
 			}
 
-			&:nth-child(2) {
+			&.ck-button-prev {
 				border-radius: 5px 0 0 5px;
 
 				& svg {
@@ -105,7 +105,7 @@
 				}
 			}
 
-			&:last-child {
+			&.ck-button-next {
 				border-radius: 0 5px 5px 0;
 			}
 		}
