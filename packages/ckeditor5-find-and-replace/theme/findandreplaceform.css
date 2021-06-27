@@ -74,7 +74,7 @@
 		margin-left: 1px;
 	}
 
-	& span.ck-results-found-counter {
+	& span.ck-results-counter {
 		position: absolute;
 		top: calc(var(--ck-spacing-unit) * 2);
 		right: calc(var(--ck-spacing-unit) * 3);
