@@ -167,8 +167,8 @@ describe( 'FindAndReplaceFormView', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
 				view.findInputView,
-				view.matchCaseCheckbox,
-				view.matchWholeWordsCheckbox,
+				view.matchCaseView,
+				view.matchWholeWordsView,
 				view.findButtonView,
 				view.findPrevButtonView,
 				view.findNextButtonView,
@@ -186,8 +186,8 @@ describe( 'FindAndReplaceFormView', () => {
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.findInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.matchCaseCheckbox.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.matchWholeWordsCheckbox.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.matchCaseView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.matchWholeWordsView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.findButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 4 ), view.findPrevButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 5 ), view.findNextButtonView.element );

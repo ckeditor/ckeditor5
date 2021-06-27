@@ -131,14 +131,14 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		*/
-		this.matchCaseCheckbox = this._createCheckbox( t( 'Match case' ) );
+		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
 
 		/**
 		 * Whole words only checkbox view
 		 *
 		 * @member {module:ui/view~View}
 		*/
-		this.matchWholeWordsCheckbox = this._createCheckbox( t( 'Whole words only' ) );
+		this.matchWholeWordsView = this._createCheckbox( t( 'Whole words only' ) );
 
 		/**
 		 * The replace input view.
@@ -243,8 +243,8 @@ export default class FindAndReplaceFormView extends View {
 
 		const childViews = [
 			this.findInputView,
-			this.matchCaseCheckbox,
-			this.matchWholeWordsCheckbox,
+			this.matchCaseView,
+			this.matchWholeWordsView,
 			this.findButtonView,
 			this.findPrevButtonView,
 			this.findNextButtonView,
@@ -340,8 +340,8 @@ export default class FindAndReplaceFormView extends View {
 						class: [ 'ck-find-checkboxes' ]
 					},
 					children: [
-						this.matchCaseCheckbox,
-						this.matchWholeWordsCheckbox
+						this.matchCaseView,
+						this.matchWholeWordsView
 					]
 				},
 				{
