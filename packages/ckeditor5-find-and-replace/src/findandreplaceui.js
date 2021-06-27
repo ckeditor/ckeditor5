@@ -91,6 +91,17 @@ export default class FindAndReplaceUI extends Plugin {
 
 			this.formView = formView;
 
+			if ( this._state ) {
+				this.unbind( 'isSearching' );
+
+				const findTextInputView = formView.findInputView.fieldView;
+
+				this.bind( 'isSearching' ).to( this, 'matchCount', findTextInputView, 'value', this._state, 'searchText',
+					( count, viewSearchText, modelSearchText ) => {
+						return count > 0 && viewSearchText == modelSearchText;
+					} );
+			}
+
 			return dropdown;
 		} );
 	}
@@ -102,6 +113,8 @@ export default class FindAndReplaceUI extends Plugin {
 	 * @param {module:find-and-replace/findandreplaceediting~FindAndReplaceState} state State object to be tracked.
 	 */
 	_setState( state ) {
+		this._state = state;
+
 		this.listenTo( state.results, 'change', () => {
 			this.set( 'matchCount', state.results.length );
 		} );
