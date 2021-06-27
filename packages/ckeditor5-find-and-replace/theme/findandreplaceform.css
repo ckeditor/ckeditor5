@@ -19,6 +19,7 @@
 		margin-top: var(--ck-spacing-unit);
 		background-color: var(--ck-color-base-active);
 		padding: 5px 10px;
+		text-transform: uppercase;
 
 		&.ck-disabled {
 			background-color: var(--ck-color-switch-button-off-background);

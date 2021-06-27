@@ -30,12 +30,19 @@ export default class FindAndReplaceFormView extends View {
 
 		const t = locale.t;
 
+		/**
+		 * Indicates that the form is in active searching state.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isSearching
+		 */
 		this.set( 'isSearching' );
 		this.set( 'searchText', '' );
 		this.set( 'replaceText', '' );
 
 		/**
-		 * The find input view.
+		 * The find input text view.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
@@ -46,7 +53,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.findButtonView = this._createButton( t( 'FIND' ), 'ck-button-find' );
+		this.findButtonView = this._createButton( t( 'Find' ), 'ck-button-find' );
 		this.findButtonView.on( 'execute', () => {
 			this.fire( 'findNext', { searchText: this.searchText } );
 		} );
@@ -78,7 +85,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.replaceButtonView = this._createButton( t( 'REPLACE' ), 'ck-button-replace' );
+		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-replace' );
 		this.replaceButtonView.on( 'execute', () => {
 			this.fire( 'replace', { searchText: this.searchText, replaceText: this.replaceText } );
 		} );
@@ -90,7 +97,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.replaceAllButtonView = this._createButton( t( 'REPLACE ALL' ), 'ck-button-replaceall' );
+		this.replaceAllButtonView = this._createButton( t( 'Replace all' ), 'ck-button-replaceall' );
 		this.replaceAllButtonView.on( 'execute', () => {
 			this.fire( 'replaceAll', { searchText: this.searchText, replaceText: this.replaceText } );
 		} );
@@ -123,8 +130,12 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		 */
-		// eslint-disable-next-line max-len
-		this.findView = this._createFindView( this.findInputView, this.matchCaseCheckbox, this.matchWholeWordsCheckbox, this.findButtonView, this.findNextButtonView, this.findPrevButtonView );
+		this.findView = this._createFindView( this.findInputView,
+			this.matchCaseCheckbox,
+			this.matchWholeWordsCheckbox,
+			this.findButtonView,
+			this.findNextButtonView,
+			this.findPrevButtonView );
 
 		/**
 		 * Stores gathered views related to replace functionality of the feature
