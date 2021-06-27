@@ -32,7 +32,8 @@ describe( 'FindAndReplace', () => {
 
 	beforeEach( async () => {
 		editor = await DecoupledEditor.create( '', {
-			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing ]
+			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing ],
+			toolbar: [ 'findAndReplace' ]
 		} );
 
 		model = editor.model;
@@ -52,7 +53,7 @@ describe( 'FindAndReplace', () => {
 
 			findAndReplaceUI.on( 'findNext', spy );
 
-			findAndReplaceUI.fire( 'findNext', { searchText: 'test' } );
+			findAndReplaceUI.fire( 'findNext', { searchText: 'bar' } );
 
 			expect( spy.calledOnce ).to.true;
 		} );
@@ -103,14 +104,16 @@ describe( 'FindAndReplace', () => {
 	describe( 'integration', () => {
 		describe( 'subsequent findNext events', () => {
 			it( 'causes just a findNext command call', () => {
+				editor.setData( LONG_TEXT );
+
 				// The first call, it will call different logic.
-				findAndReplaceUI.fire( 'findNext', { searchText: 'test' } );
+				findAndReplaceUI.fire( 'findNext', { searchText: 'cake' } );
 
 				const findSpy = getCommandExecutionSpy( 'find' );
 				const findNextSpy = getCommandExecutionSpy( 'findNext' );
 
 				// Second call (only if the search text remains the same) should just move the highlight.
-				findAndReplaceUI.fire( 'findNext', { searchText: 'test' } );
+				findAndReplaceUI.fire( 'findNext', { searchText: 'cake' } );
 
 				sinon.assert.callCount( findSpy, 0 );
 				sinon.assert.callCount( findNextSpy, 1 );
@@ -119,14 +122,16 @@ describe( 'FindAndReplace', () => {
 
 		describe( 'subsequent findPrevious events', () => {
 			it( 'causes just a findPrevious command call', () => {
+				editor.setData( LONG_TEXT );
+
 				// The first call, it will call different logic.
-				findAndReplaceUI.fire( 'findPrevious', { searchText: 'test' } );
+				findAndReplaceUI.fire( 'findPrevious', { searchText: 'cake' } );
 
 				const findSpy = getCommandExecutionSpy( 'find' );
 				const findPrevSpy = getCommandExecutionSpy( 'findPrevious' );
 
 				// Second call (only if the search text remains the same) should just move the highlight.
-				findAndReplaceUI.fire( 'findPrevious', { searchText: 'test' } );
+				findAndReplaceUI.fire( 'findPrevious', { searchText: 'cake' } );
 
 				sinon.assert.callCount( findSpy, 0 );
 				sinon.assert.callCount( findPrevSpy, 1 );

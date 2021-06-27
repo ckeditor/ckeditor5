@@ -47,6 +47,13 @@ export default class FindAndReplaceUI extends Plugin {
 		this.set( 'highlightOffset', null );
 
 		this.bind( 'isSearching' ).to( this, 'matchCount', count => count > 0 );
+
+		/**
+		 * The form view will only be assigned if the find and replace toolbar button was added.
+		 *
+		 * @member {Object|null} #formView
+		 */
+		this.formView = null;
 	}
 
 	/**
@@ -81,6 +88,8 @@ export default class FindAndReplaceUI extends Plugin {
 					this.fire( 'dropdown:closed' );
 				}
 			} );
+
+			this.formView = formView;
 
 			return dropdown;
 		} );

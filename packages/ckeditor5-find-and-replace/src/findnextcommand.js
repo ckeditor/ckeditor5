@@ -25,18 +25,25 @@ export default class FindNextCommand extends Command {
 	constructor( editor, state ) {
 		super( editor );
 
-		// The command is always enabled.
-		this.isEnabled = true;
+		this._state = state;
 
-		this.state = state;
+		this.isEnabled = false;
+
+		this.listenTo( this._state.results, 'change', () => {
+			this.isEnabled = this._state.results.length > 1;
+		} );
+	}
+
+	refresh() {
+		// Override the default implementation that sets isEnabled on.
 	}
 
 	execute() {
-		const results = this.state.results;
-		const currentIndex = results.getIndex( this.state.highlightedResult );
+		const results = this._state.results;
+		const currentIndex = results.getIndex( this._state.highlightedResult );
 		const nextIndex = currentIndex + 1 >= results.length ?
 			0 : currentIndex + 1;
 
-		this.state.highlightedResult = this.state.results.get( nextIndex );
+		this._state.highlightedResult = this._state.results.get( nextIndex );
 	}
 }
