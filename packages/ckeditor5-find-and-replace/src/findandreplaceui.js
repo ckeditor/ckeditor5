@@ -47,6 +47,13 @@ export default class FindAndReplaceUI extends Plugin {
 		this.set( 'highlightOffset', null );
 
 		this.bind( 'isSearching' ).to( this, 'matchCount', count => count > 0 );
+
+		/**
+		 * The form view will only be assigned if the find and replace toolbar button was added.
+		 *
+		 * @member {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView|null} #formView
+		 */
+		this.formView = null;
 	}
 
 	/**
@@ -82,6 +89,19 @@ export default class FindAndReplaceUI extends Plugin {
 				}
 			} );
 
+			this.formView = formView;
+
+			if ( this._state ) {
+				this.unbind( 'isSearching' );
+
+				const findTextInputView = formView.findInputView.fieldView;
+
+				this.bind( 'isSearching' ).to( this, 'matchCount', findTextInputView, 'value', this._state, 'searchText',
+					( count, viewSearchText, modelSearchText ) => {
+						return count > 0 && viewSearchText == modelSearchText;
+					} );
+			}
+
 			return dropdown;
 		} );
 	}
@@ -90,9 +110,11 @@ export default class FindAndReplaceUI extends Plugin {
 	 * Sets the observed state object. It is used to display searching result count etc.
 	 *
 	 * @protected
-	 * @param {Object} state State object to be tracked.
+	 * @param {module:find-and-replace/findandreplaceediting~FindAndReplaceState} state State object to be tracked.
 	 */
 	_setState( state ) {
+		this._state = state;
+
 		this.listenTo( state.results, 'change', () => {
 			this.set( 'matchCount', state.results.length );
 		} );
@@ -126,13 +148,17 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	_createToolbarDropdown( dropdown, icon ) {
 		const t = this.editor.locale.t;
+		const buttonView = dropdown.buttonView;
 
 		// Configure dropdown's button properties:
-		dropdown.buttonView.set( {
+		buttonView.set( {
 			icon,
 			withText: true,
 			tooltip: t( 'Find and replace' )
 		} );
+
+		// Clicking the main button has the same effect as clicking the dropdown arrow.
+		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
 	}
 }
 

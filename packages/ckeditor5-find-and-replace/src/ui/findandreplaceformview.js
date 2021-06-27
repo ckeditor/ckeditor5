@@ -74,7 +74,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.findInputView = this._createInputField( t( 'Find in text' ) );
+		this.findInputView = this._createInputField( t( 'Find in text…' ) );
 
 		/**
 		 * The find button view that initializes the search process.
@@ -145,7 +145,7 @@ export default class FindAndReplaceFormView extends View {
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.replaceInputView = this._createInputField( t( 'Replace with' ) );
+		this.replaceInputView = this._createInputField( t( 'Replace with…' ) );
 
 		/**
 		 * Stores gathered views related to find functionality of the feature

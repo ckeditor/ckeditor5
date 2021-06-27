@@ -8,7 +8,7 @@ import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/mod
 import FindAndReplaceEditing from '../src/findandreplaceediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-describe( 'FindNextCommand', () => {
+describe( 'FindPreviousCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
@@ -18,7 +18,7 @@ describe( 'FindNextCommand', () => {
 			} ).then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = editor.commands.get( 'findNext' );
+				command = editor.commands.get( 'findPrevious' );
 			} );
 	} );
 
@@ -27,9 +27,8 @@ describe( 'FindNextCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		it( 'should be disabled in empty document', () => {
+		it( 'should be enabled in empty document', () => {
 			setData( model, '[]' );
-
 			expect( command.isEnabled ).to.be.false;
 		} );
 
@@ -55,15 +54,15 @@ describe( 'FindNextCommand', () => {
 		} );
 	} );
 
-	describe( '_state', () => {
+	describe( 'state', () => {
 		it( 'is set to plugin\'s state', () => {
 			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
 	describe( 'execute()', () => {
-		it( 'moves forward from the first match', () => {
-			setData( model, '<paragraph>[]Foo bar baz. Bam bar bom. bar bar</paragraph>' );
+		it( 'moves backward from the first match', () => {
+			setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 			editor.execute( 'find', 'bar' );
 
@@ -82,13 +81,13 @@ describe( 'FindNextCommand', () => {
 					'<findResultHighlighted:foo:start></findResultHighlighted:foo:start>' +
 						'bar' +
 					'<findResultHighlighted:foo:end></findResultHighlighted:foo:end>' +
-					' bom. bar bar' +
+					' bom.' +
 				'</paragraph>'
 			);
 		} );
 
 		it( 'handles subsequent calls properly', () => {
-			setData( model, '<paragraph>Foo bar baz. Bam[] bar bom. bar bar</paragraph>' );
+			setData( model, '<paragraph>Foo bar baz. Bam[] bar bom.</paragraph>' );
 
 			editor.execute( 'find', 'bar' );
 
@@ -104,11 +103,11 @@ describe( 'FindNextCommand', () => {
 
 			expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 				'<paragraph>' +
-					'Foo bar baz. Bam bar bom. ' +
+					'Foo ' +
 					'<findResultHighlighted:foo:start></findResultHighlighted:foo:start>' +
 						'bar' +
 					'<findResultHighlighted:foo:end></findResultHighlighted:foo:end>' +
-					' bar' +
+					' baz. Bam bar bom.' +
 				'</paragraph>'
 			);
 		} );
