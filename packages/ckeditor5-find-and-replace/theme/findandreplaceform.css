@@ -10,7 +10,7 @@
 
 .ck .ck-find-and-replace-form .ck-find-form__wrapper,
 .ck .ck-find-and-replace-form .ck-replace-form__wrapper {
-	display: flex; 
+	display: flex;
 	align-items: flex-start;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -18,15 +18,22 @@
 	& .ck-button {
 		margin-top: var(--ck-spacing-unit);
 		background-color: var(--ck-color-base-active);
-		color: var(--ck-color-base-background);
 		padding: 5px 10px;
 
-		&:hover {
-			background-color: var(--ck-color-base-focus);
-			cursor: pointer;
+		&.ck-disabled {
+			background-color: var(--ck-color-switch-button-off-background);
+		}
+
+		&:not(.ck-disabled) {
+			color: var(--ck-color-base-background);
+
+			&:hover {
+				background-color: var(--ck-color-base-focus);
+				cursor: pointer;
+			}
 		}
 	}
-	
+
 	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
 		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	}
@@ -56,19 +63,15 @@
 			margin-left: var(--ck-spacing-unit)
 		}
 	}
-
-	&.ck-isDisabled .ck-button {
-		background-color: var(--ck-color-switch-button-off-background);
-
-		&:hover {
-			background-color: var(--ck-color-switch-button-off-background);
-			cursor: default;
-		}
-	}
 }
 
 .ck .ck-find-and-replace-form .ck-find-form__wrapper {
 	justify-content: space-between;
+
+	& .ck-button.ck-button-prev,
+	& .ck-button.ck-button-next {
+		margin-left: 1px;
+	}
 
 	& span.ck-results-found-counter {
 		position: absolute;
@@ -80,11 +83,11 @@
 	& .ck-find-buttons {
 		display: flex;
 		align-items: center;
-	
+
 		& .ck-button {
 			border-radius: 5px;
 			padding: 5px;
-			
+
 			& svg.ck-button__icon {
 				margin: 0;
 			}
@@ -106,18 +109,14 @@
 			}
 		}
 	}
-	&.ck-isEnabled {
-		& .ck-button.ck-button-prev,
-		& .ck-button.ck-button-next {
-			margin-left: 1px;
-		}
 
+	&.ck-is-searching {
 		& .ck-button.ck-button-find {
 			display: none;
 		}
 	}
 
-	&.ck-isDisabled {
+	&:not(.ck-is-searching) {
 		& .ck-button.ck-button-prev,
 		& .ck-button.ck-button-next {
 			display: none;
