@@ -426,16 +426,16 @@ export default class FindAndReplaceFormView extends View {
 	 * @private
 	 * @param {String} label The button label.
 	 * @param {String} className The individual button CSS class name.
-	 * @param {Object} findArrowIcon SVG image for icon usage.
+	 * @param {String} icon An SVG image of icon to be used in button.
 	 * @param {Boolean} withText Whether the text should be shown.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, className, findArrowIcon, withText = true ) {
+	_createButton( label, className, icon, withText = true ) {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
 			label,
-			icon: findArrowIcon,
+			icon,
 			withText
 		} );
 

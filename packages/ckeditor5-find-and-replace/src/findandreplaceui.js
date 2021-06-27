@@ -122,7 +122,7 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
-	 * @param {Object} icon Icon to be assigned to the button.
+	 * @param {String} icon Icon to be assigned to the button.
 	 */
 	_createToolbarDropdown( dropdown, icon ) {
 		const t = this.editor.locale.t;
