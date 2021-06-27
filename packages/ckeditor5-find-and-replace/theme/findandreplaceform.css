@@ -19,6 +19,7 @@
 		margin-top: var(--ck-spacing-unit);
 		background-color: var(--ck-color-base-active);
 		padding: 5px 10px;
+		text-transform: uppercase;
 
 		&.ck-disabled {
 			background-color: var(--ck-color-switch-button-off-background);
@@ -73,7 +74,7 @@
 		margin-left: 1px;
 	}
 
-	& span.ck-results-found-counter {
+	& span.ck-results-counter {
 		position: absolute;
 		top: calc(var(--ck-spacing-unit) * 2);
 		right: calc(var(--ck-spacing-unit) * 3);
@@ -92,11 +93,11 @@
 				margin: 0;
 			}
 
-			&:first-child {
+			&.ck-button-find {
 				padding: 4px 16px;
 			}
 
-			&:nth-child(2) {
+			&.ck-button-prev {
 				border-radius: 5px 0 0 5px;
 
 				& svg {
@@ -104,7 +105,7 @@
 				}
 			}
 
-			&:last-child {
+			&.ck-button-next {
 				border-radius: 0 5px 5px 0;
 			}
 		}

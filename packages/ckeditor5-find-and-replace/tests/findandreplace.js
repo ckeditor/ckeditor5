@@ -57,12 +57,12 @@ describe( 'FindAndReplace', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		it( 'should trigger findPrev event', () => {
+		it( 'should trigger findPrevious event', () => {
 			const spy = sinon.spy();
 
-			findAndReplaceUI.on( 'findPrev', spy );
+			findAndReplaceUI.on( 'findPrevious', spy );
 
-			findAndReplaceUI.fire( 'findPrev', { searchText: 'test' } );
+			findAndReplaceUI.fire( 'findPrevious', { searchText: 'test' } );
 
 			expect( spy.calledOnce ).to.true;
 		} );
@@ -117,16 +117,16 @@ describe( 'FindAndReplace', () => {
 			} );
 		} );
 
-		describe( 'subsequent findPrev events', () => {
-			it( 'causes just a findPrev command call', () => {
+		describe( 'subsequent findPrevious events', () => {
+			it( 'causes just a findPrevious command call', () => {
 				// The first call, it will call different logic.
-				findAndReplaceUI.fire( 'findPrev', { searchText: 'test' } );
+				findAndReplaceUI.fire( 'findPrevious', { searchText: 'test' } );
 
 				const findSpy = getCommandExecutionSpy( 'find' );
 				const findPrevSpy = getCommandExecutionSpy( 'findPrevious' );
 
 				// Second call (only if the search text remains the same) should just move the highlight.
-				findAndReplaceUI.fire( 'findPrev', { searchText: 'test' } );
+				findAndReplaceUI.fire( 'findPrevious', { searchText: 'test' } );
 
 				sinon.assert.callCount( findSpy, 0 );
 				sinon.assert.callCount( findPrevSpy, 1 );
