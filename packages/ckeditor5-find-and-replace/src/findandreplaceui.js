@@ -64,7 +64,7 @@ export default class FindAndReplaceUI extends Plugin {
 			const formView = new FindAndReplaceFormView( editor.locale );
 
 			formView.delegate( 'findNext' ).to( this );
-			formView.delegate( 'findPrev' ).to( this );
+			formView.delegate( 'findPrevious' ).to( this );
 			formView.delegate( 'replace' ).to( this );
 			formView.delegate( 'replaceAll' ).to( this );
 
@@ -140,7 +140,7 @@ export default class FindAndReplaceUI extends Plugin {
 /**
  * Fired when the find previous button is triggered.
  *
- * @event findPrev
+ * @event findPrevious
  * @param {String} searchText Search text.
  */
 

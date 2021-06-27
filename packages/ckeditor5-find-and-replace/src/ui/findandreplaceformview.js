@@ -42,14 +42,14 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'replaceText', '' );
 
 		/**
-		 * The find input text view.
+		 * The find in text input view that stores searched string.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
 		this.findInputView = this._createInputField( t( 'Find in text' ) );
 
 		/**
-		 * The find button view that's visible initially - pre-search.
+		 * The find button view that initializes the search process.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -58,8 +58,6 @@ export default class FindAndReplaceFormView extends View {
 			this.fire( 'findNext', { searchText: this.searchText } );
 		} );
 
-		this.findButtonView.bind( 'isEnabled' ).to( this.findInputView.fieldView, 'isEmpty', value => !value );
-
 		/**
 		 * The find previous button view.
 		 *
@@ -67,7 +65,7 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.findPrevButtonView = this._createButton( '', 'ck-button-prev', findArrowIcon );
 		this.findPrevButtonView.on( 'execute', () => {
-			this.fire( 'findPrev' );
+			this.fire( 'findPrevious' );
 		} );
 
 		/**
@@ -146,6 +144,7 @@ export default class FindAndReplaceFormView extends View {
 
 		this.bind( 'searchText' ).to( this.findInputView.fieldView, 'value' );
 		this.bind( 'replaceText' ).to( this.replaceInputView.fieldView, 'value' );
+		this.findButtonView.bind( 'isEnabled' ).to( this.findInputView.fieldView, 'isEmpty', value => !value );
 
 		this.setTemplate( {
 			tag: 'form',
@@ -498,7 +497,7 @@ export default class FindAndReplaceFormView extends View {
 /**
  * Fired when the find previous button ({@link #findPrevButtonView}) is triggered.
  *
- * @event findPrev
+ * @event findPrevious
  * @param {String} searchText Search text.
  */
 

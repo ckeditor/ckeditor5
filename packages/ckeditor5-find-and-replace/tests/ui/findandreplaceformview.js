@@ -122,10 +122,10 @@ describe( 'FindAndReplaceFormView', () => {
 			expect( spy.calledTwice ).to.true;
 		} );
 
-		it( 'should trigger findPrev', () => {
+		it( 'should trigger findPrevious', () => {
 			const spy = sinon.spy();
 
-			view.on( 'findPrev', spy );
+			view.on( 'findPrevious', spy );
 
 			view.findPrevButtonView.fire( 'execute' );
 
