@@ -75,7 +75,6 @@ export default class CheckboxView extends View {
 
 			attributes: {
 				class: [
-					'ck-find-checkboxes__box',
 					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )

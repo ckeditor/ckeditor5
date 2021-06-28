@@ -500,6 +500,7 @@ export default class FindAndReplaceFormView extends View {
 		checkboxView.set( {
 			isVisible: true,
 			tooltip: true,
+			class: 'ck-find-checkboxes__box',
 			label,
 			checkboxId
 		} );

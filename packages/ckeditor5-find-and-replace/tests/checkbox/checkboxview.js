@@ -38,8 +38,7 @@ describe( 'CheckboxView', () => {
 		describe( 'attributes', () => {
 			describe( 'class', () => {
 				it( 'class is set initially', () => {
-					expect( view.element.classList ).to.have.length( 1 );
-					expect( view.element.classList.contains( 'ck-find-checkboxes__box' ) ).to.true;
+					expect( view.element.classList ).to.have.length( 0 );
 				} );
 
 				it( 'reacts on view#class', () => {
