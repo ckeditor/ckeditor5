@@ -139,7 +139,7 @@ describe( 'HeadingCommand', () => {
 		} );
 
 		it( 'should not rename blocks which cannot become headings (block is an object)', () => {
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				isBlock: true,
 				isObject: true,
 				allowIn: '$root'
@@ -148,7 +148,7 @@ describe( 'HeadingCommand', () => {
 			setData(
 				model,
 				'<paragraph>a[bc</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<paragraph>de]f</paragraph>'
 			);
 
@@ -156,7 +156,7 @@ describe( 'HeadingCommand', () => {
 
 			expect( getData( model ) ).to.equal(
 				'<heading1>a[bc</heading1>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<heading1>de]f</heading1>'
 			);
 		} );

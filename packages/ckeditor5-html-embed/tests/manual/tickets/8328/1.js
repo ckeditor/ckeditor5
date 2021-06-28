@@ -11,6 +11,7 @@ import HtmlEmbed from '../../../../src/htmlembed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, HtmlEmbed ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',

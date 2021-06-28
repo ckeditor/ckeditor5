@@ -30,7 +30,7 @@ In order to convert a model element to its view representation, you often write 
 * An `elementToElement()` converter. This converter reacts to the insertion of a model element specified in the `model` field.
 * If the model element has attributes and these attributes may change with time, you need to add the `attributeToAttribute()` converters for each attribute. These converters react to changes in the model element attributes and update the view accordingly.
 
-This granular approach to conversion is used by many editor features as it ensures extensibility of the base features and provides a separation of concerns. For example, the {@link features/image#base-image-support base image feature} provides conversion for a simple `<image src="...">` model element, while the {@link features/image#resizing-images image resize feature} adds support for the `width` and `height` attributes, the {@link features/image#image-captions image caption feature} for the `<figcaption>` HTML element, and so on.
+This granular approach to conversion is used by many editor features as it ensures extensibility of the base features and provides a separation of concerns. For example, the {@link features/images-overview base image feature} provides conversion for a simple `<imageBlock src="...">` model element, while the {@link features/images-resizing image resize feature} adds support for the `width` and `height` attributes, the {@link features/images-captions image caption feature} for the `<figcaption>` HTML element, and so on.
 
 Apart from the extensibility aspect, the above approach ensures that a change of a model attribute or structure requires minimal changes in the view.
 
@@ -303,7 +303,7 @@ You can see the details of the upcast converter function (`upcastCard()`) in the
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { toWidget, toWidgetEditable, findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget, toWidgetEditable, findOptimalInsertionRange } from '@ckeditor/ckeditor5-widget/src/utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
@@ -482,7 +482,7 @@ class InsertCardCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const validParent = findOptimalInsertionPosition( model.document.selection, model );
+		const range = findOptimalInsertionRange( model.document.selection, model );
 
 		this.isEnabled = model.schema.checkChild( validParent, 'sideCard' );
 	}
@@ -494,7 +494,7 @@ class InsertCardCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const insertPosition = findOptimalInsertionPosition( selection, model );
+		const insertionRange = findOptimalInsertionRange( selection, model );
 
 		model.change( writer => {
 			const sideCard = writer.createElement( 'sideCard', { cardType: 'default' } );
@@ -506,7 +506,7 @@ class InsertCardCommand extends Command {
 			writer.insert( section, sideCard, 1 );
 			writer.insert( paragraph, section, 0 );
 
-			model.insertContent( sideCard, insertPosition );
+			model.insertContent( sideCard, insertionRange );
 
 			writer.setSelection( writer.createPositionAt( title, 0 ) );
 		} );

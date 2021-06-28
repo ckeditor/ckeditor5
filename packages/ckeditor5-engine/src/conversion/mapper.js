@@ -35,6 +35,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * and {@link module:engine/conversion/mapper~Mapper#toModelPosition toModelPosition} methods. `Mapper` adds it's own default callbacks
  * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
  * stop the event.
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Mapper {
 	/**

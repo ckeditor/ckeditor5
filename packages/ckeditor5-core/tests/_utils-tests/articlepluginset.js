@@ -36,7 +36,7 @@ describe( 'ArticlePluginSet', () => {
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ ArticlePluginSet ],
 			image: {
-				toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 			}
 		} );
 	} );

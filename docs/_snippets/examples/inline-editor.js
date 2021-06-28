@@ -6,7 +6,6 @@
 /* globals console, window, document */
 
 import InlineEditor from '@ckeditor/ckeditor5-build-inline/src/ckeditor';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
@@ -34,33 +33,13 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		];
 		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
 	} else {
-		config.extraPlugins = [ ImageResize ];
 		config.image = {
-			resizeOptions: [
-				{
-					name: 'resizeImage:original',
-					label: 'Original',
-					value: null
-				},
-				{
-					name: 'resizeImage:50',
-					label: '50%',
-					value: '50'
-				},
-				{
-					name: 'resizeImage:75',
-					label: '75%',
-					value: '75'
-				}
-			],
-			styles: [ 'full', 'alignLeft', 'alignRight' ],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:full',
-				'imageStyle:alignRight',
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
 				'|',
-				'resizeImage',
-				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		};

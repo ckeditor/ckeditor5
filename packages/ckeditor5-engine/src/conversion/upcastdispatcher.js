@@ -635,11 +635,11 @@ function createContextTree( contextDefinition, writer ) {
  *
  * Otherwise, ancestors are split.
  *
- * For instance, if `<image>` is not allowed in `<paragraph>` but is allowed in `$root`:
+ * For instance, if `<imageBlock>` is not allowed in `<paragraph>` but is allowed in `$root`:
  *
  *		<paragraph>foo[]bar</paragraph>
  *
- *		-> safe insert for `<image>` will split ->
+ *		-> safe insert for `<imageBlock>` will split ->
  *
  *		<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>
  *
@@ -696,11 +696,11 @@ function createContextTree( contextDefinition, writer ) {
  *
  * Otherwise, ancestors are split and an object with a position and the copy of the split element is returned.
  *
- * For instance, if `<image>` is not allowed in `<paragraph>` but is allowed in `$root`:
+ * For instance, if `<imageBlock>` is not allowed in `<paragraph>` but is allowed in `$root`:
  *
  *		<paragraph>foo[]bar</paragraph>
  *
- *		-> split for `<image>` ->
+ *		-> split for `<imageBlock>` ->
  *
  *		<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>
  *
@@ -722,8 +722,8 @@ function createContextTree( contextDefinition, writer ) {
  * Returns all the split parts of the given `element` that were created during upcasting through using {@link #splitToAllowedParent}.
  * It enables you to easily track these elements and continue processing them after they are split during the conversion of their children.
  *
- *		<paragraph>Foo<image />bar<image />baz</paragraph> ->
- *		<paragraph>Foo</paragraph><image /><paragraph>bar</paragraph><image /><paragraph>baz</paragraph>
+ *		<paragraph>Foo<imageBlock />bar<imageBlock />baz</paragraph> ->
+ *		<paragraph>Foo</paragraph><imageBlock /><paragraph>bar</paragraph><imageBlock /><paragraph>baz</paragraph>
  *
  * For a reference to any of above paragraphs, the function will return all three paragraphs (the original element included),
  * sorted in the order of their creation (the original element is the first one).

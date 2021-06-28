@@ -11,6 +11,7 @@ import Alignment from '../../src/alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, Alignment ],
 		toolbar: [
 			'heading', '|', 'alignment', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', '|',

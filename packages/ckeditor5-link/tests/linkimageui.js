@@ -49,8 +49,8 @@ describe( 'LinkImageUI', () => {
 		expect( LinkImageUI.pluginName ).to.equal( 'LinkImageUI' );
 	} );
 
-	it( 'should require Image by name', () => {
-		expect( LinkImageUI.requires ).to.include( 'Image' );
+	it( 'should require ImageBlockEditing by name', () => {
+		expect( LinkImageUI.requires ).to.include( 'ImageBlockEditing' );
 	} );
 
 	describe( 'init()', () => {
@@ -101,52 +101,157 @@ describe( 'LinkImageUI', () => {
 	} );
 
 	describe( 'click', () => {
-		it( 'should prevent default behavior if image is wrapped with a link', () => {
+		it( 'should prevent default behavior to prevent navigation if a block image has a link', () => {
 			editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
-			editor.editing.view.change( writer => {
-				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot(), 'in' );
 			} );
 
-			const img = viewDocument.selection.getSelectedElement();
+			const imageWidget = viewDocument.selection.getSelectedElement();
 			const data = fakeEventData();
-			const eventInfo = new EventInfo( img, 'click' );
+			const eventInfo = new EventInfo( imageWidget, 'click' );
 			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
 
 			viewDocument.fire( 'click', domEventDataMock );
 
-			expect( img.getChild( 0 ).name ).to.equal( 'a' );
+			expect( imageWidget.getChild( 0 ).name ).to.equal( 'a' );
 			expect( data.preventDefault.called ).to.be.true;
+		} );
+
+		it( 'should prevent default behavior to prevent navigation if an inline image is wrapped in a link', () => {
+			editor.setData( '<p><a href="https://example.com"><img src="" /></a></p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'in' );
+			} );
+
+			const imageWidget = viewDocument.selection.getSelectedElement();
+			const data = fakeEventData();
+			const eventInfo = new EventInfo( imageWidget, 'click' );
+			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+			viewDocument.fire( 'click', domEventDataMock );
+
+			expect( imageWidget.getChild( 0 ).name ).to.equal( 'img' );
+			expect( data.preventDefault.called ).to.be.true;
+		} );
+
+		// See: #9607.
+		describe( 'blocking the LinkUI plugin', () => {
+			let linkUI;
+
+			beforeEach( () => {
+				linkUI = editor.plugins.get( 'LinkUI' );
+			} );
+
+			it( 'should not show the LinkUI when clicked the linked image', () => {
+				const spy = sinon.stub( linkUI, '_showUI' ).returns( {} );
+
+				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'in' );
+				} );
+
+				const imageWidget = viewDocument.selection.getSelectedElement();
+				const data = fakeEventData();
+				const eventInfo = new EventInfo( imageWidget, 'click' );
+				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+				viewDocument.fire( 'click', domEventDataMock );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).is( 'element', 'imageBlock' ) ).to.be.true;
+				expect( spy.notCalled ).to.be.true;
+			} );
+
+			it( 'should not show the LinkUI when clicked the linked inline image', () => {
+				const spy = sinon.stub( linkUI, '_showUI' ).returns( {} );
+
+				editor.setData( '<p><a href="https://example.com"><img src="" /></a></p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'in' );
+				} );
+
+				const imageWidget = viewDocument.selection.getSelectedElement();
+				const data = fakeEventData();
+				const eventInfo = new EventInfo( imageWidget, 'click' );
+				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+				viewDocument.fire( 'click', domEventDataMock );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).is( 'element', 'imageInline' ) ).to.be.true;
+				expect( spy.notCalled ).to.be.true;
+			} );
 		} );
 	} );
 
 	describe( 'event handling', () => {
-		it( 'should show plugin#actionsView after "execute" if image is already linked', () => {
-			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+		let root;
 
-			editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
-
-			editor.editing.view.change( writer => {
-				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
-			} );
-
-			linkButton.fire( 'execute' );
-
-			expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
+		beforeEach( () => {
+			root = editor.model.document.getRoot();
 		} );
 
-		it( 'should show plugin#formView after "execute" if image is not linked', () => {
-			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+		describe( 'when a block image is selected', () => {
+			it( 'should show plugin#actionsView after "execute" if an image is already linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			editor.setData( '<figure class="image"><img src="" /></a>' );
+				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
-			editor.editing.view.change( writer => {
-				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'on' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
 			} );
 
-			linkButton.fire( 'execute' );
+			it( 'should show plugin#formView after "execute" if image is not linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.formView );
+				editor.setData( '<figure class="image"><img src="" /></a>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'on' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.formView );
+			} );
+		} );
+
+		describe( 'when an inline image is selected', () => {
+			it( 'should show plugin#actionsView after "execute" if an image is already linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+
+				editor.setData( '<p><a href="https://example.com"><img src="/assets/sample.png" /></a></p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'in' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
+			} );
+
+			it( 'should show plugin#formView after "execute" if image is not linked', () => {
+				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+
+				editor.setData( '<p><img src="" /></p>' );
+
+				editor.model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'in' );
+				} );
+
+				linkButton.fire( 'execute' );
+
+				expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.formView );
+			} );
 		} );
 	} );
 } );
