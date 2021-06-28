@@ -199,7 +199,7 @@ export default class DataFilter extends Plugin {
 	 */
 	_loadConfig( config, handleAttributes ) {
 		for ( const pattern of config ) {
-			// MatcherPattern allows omitting `name` to not narrow searches to specific elements.
+			// MatcherPattern allows omitting `name` to widen the search of elements.
 			// Let's keep it consistent and match every element if a `name` has not been provided.
 			const elementName = pattern.name || /[\s\S]+/;
 
@@ -566,7 +566,7 @@ function iterableToObject( iterable, getValue ) {
 	return attributesObject;
 }
 
-// Matcher by default has to match **all** patterns to count it as an actual match. By splitting the pattern
+// Matcher by default has to match **all** patterns to count it as an actual match. Splitting the pattern
 // into separate patterns means that any matched pattern will be count as a match.
 //
 // @private

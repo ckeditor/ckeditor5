@@ -17,7 +17,7 @@ Some examples of HTML features that can be easily enabled using General HTML Sup
 	* `data-*` and `id` attributes on e.g. `<p>` and `<h1-h6>`,
 	* `style` and `classes` on e.g. `<strong>` and `<a>`.
 
-The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, output (e.g. via `editor.getData()`), and are visible in the editing area. Such content can also be edited in the editor, although, to a limited extend. Read more about it in the [Level of support](#level-of-support) section.
+The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, output (e.g. via `editor.getData()`), and are visible in the editing area. Such content can also be edited in the editor, although, to a limited extent. Read more about it in the [Level of support](#level-of-support) section.
 
 <info-box>
 	The General HTML Support feature is **experimental and not yet production-ready**.
