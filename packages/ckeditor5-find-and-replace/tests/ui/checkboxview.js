@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global Event */
+
 import CheckboxView from '../../src/ui/checkboxview';
 import { View, ViewCollection } from 'ckeditor5/src/ui';
 
@@ -76,6 +78,15 @@ describe( 'CheckboxView', () => {
 
 					view.isChecked = false;
 					expect( view.checkboxInputView.element.getAttributeNames() ).not.to.include( 'checked' );
+				} );
+
+				it( 'picks externally changed checked state', () => {
+					expect( view.isChecked ).to.be.false;
+
+					view.checkboxInputView.element.checked = true;
+					view.checkboxInputView.element.dispatchEvent( new Event( 'change' ) );
+
+					expect( view.isChecked ).to.be.true;
 				} );
 			} );
 

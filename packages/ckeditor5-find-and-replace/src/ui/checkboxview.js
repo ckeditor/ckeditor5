@@ -161,6 +161,12 @@ export default class CheckboxView extends View {
 				'checked': bind.if( 'isChecked' ),
 				'disabled': bind.if( 'isEnabled', true, value => !value ),
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value )
+			},
+
+			on: {
+				change: bind.to( evt => {
+					this.isChecked = evt.target.checked;
+				} )
 			}
 		} );
 
