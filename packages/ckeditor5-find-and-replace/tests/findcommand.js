@@ -142,6 +142,44 @@ describe( 'FindCommand', () => {
 					'<paragraph>foo <X:start></X:start>🐛<X:end></X:end> bar</paragraph>'
 				);
 			} );
+
+			describe( 'options.matchCase', () => {
+				it( 'set to true doesn\'t match differently cased string', () => {
+					editor.setData( '<p>foo bAr</p>' );
+
+					const { results } = command.execute( 'bar', { matchCase: true } );
+
+					expect( results.length ).to.equal( 0 );
+				} );
+
+				it( 'set to true matches identically cased string', () => {
+					editor.setData( '<p>foo bAr</p>' );
+
+					const { results } = command.execute( 'bAr', { matchCase: true } );
+
+					expect( results.length ).to.equal( 1 );
+
+					const markers = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+						'<paragraph>foo <X:start></X:start>bAr<X:end></X:end></paragraph>'
+					);
+				} );
+
+				it( 'is disabled by default', () => {
+					editor.setData( '<p>foo bAr</p>' );
+
+					const { results } = command.execute( 'bar' );
+
+					expect( results.length ).to.equal( 1 );
+
+					const markers = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+						'<paragraph>foo <X:start></X:start>bAr<X:end></X:end></paragraph>'
+					);
+				} );
+			} );
 		} );
 
 		/**

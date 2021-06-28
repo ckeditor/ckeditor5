@@ -111,8 +111,22 @@ function regexpMatchToFindResult( matchResult ) {
 	};
 }
 
-export function findByTextCallback( searchTerm ) {
-	const regExp = new RegExp( `${ escapeRegExp( searchTerm ) }`, 'igu' );
+/**
+ *
+ * @param {String} searchTerm
+ * @param {Object} [options]
+ * @param {Boolean} [options.matchCase=false] If set to `true` letter casing will be ignored.
+ * @param {Boolean} [options.wholeWords=false] If set to `true` only whole words that match `callbackOrText` will be matched.
+ * @returns
+ */
+export function findByTextCallback( searchTerm, options ) {
+	let flags = 'gu';
+
+	if ( !options.matchCase ) {
+		flags += 'i';
+	}
+
+	const regExp = new RegExp( escapeRegExp( searchTerm ), flags );
 
 	function findCallback( { text } ) {
 		const matches = [ ...text.matchAll( regExp ) ];
