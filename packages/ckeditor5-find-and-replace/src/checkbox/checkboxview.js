@@ -28,6 +28,13 @@ export default class CheckboxView extends View {
 		this.set( 'isEnabled', true );
 		this.set( 'isVisible', true );
 		this.set( 'isChecked', false );
+
+		/**
+		 * The text of label associated with the checkbox view.
+		 *
+		 * @observable
+		 * @member {String} #label
+		 */
 		this.set( 'label' );
 		this.set( 'checkboxId' );
 		this.set( 'tabindex', -1 );

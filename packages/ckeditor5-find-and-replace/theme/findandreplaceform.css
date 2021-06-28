@@ -18,12 +18,20 @@
 	& .ck-button {
 		margin-top: var(--ck-spacing-unit);
 		background-color: var(--ck-color-base-active);
-		color: var(--ck-color-base-background);
 		padding: 5px 10px;
+		text-transform: uppercase;
 
-		&:hover {
-			background-color: var(--ck-color-base-focus);
-			cursor: pointer;
+		&.ck-disabled {
+			background-color: var(--ck-color-switch-button-off-background);
+		}
+
+		&:not(.ck-disabled) {
+			color: var(--ck-color-base-background);
+
+			&:hover {
+				background-color: var(--ck-color-base-focus);
+				cursor: pointer;
+			}
 		}
 	}
 
@@ -56,21 +64,17 @@
 			margin-left: var(--ck-spacing-unit)
 		}
 	}
-
-	&.ck-isDisabled .ck-button {
-		background-color: var(--ck-color-switch-button-off-background);
-
-		&:hover {
-			background-color: var(--ck-color-switch-button-off-background);
-			cursor: default;
-		}
-	}
 }
 
 .ck .ck-find-and-replace-form .ck-find-form__wrapper {
 	justify-content: space-between;
 
-	& span.ck-results-found-counter {
+	& .ck-button.ck-button-prev,
+	& .ck-button.ck-button-next {
+		margin-left: 1px;
+	}
+
+	& span.ck-results-counter {
 		position: absolute;
 		top: calc(var(--ck-spacing-unit) * 2);
 		right: calc(var(--ck-spacing-unit) * 3);
@@ -89,11 +93,11 @@
 				margin: 0;
 			}
 
-			&:first-child {
+			&.ck-button-find {
 				padding: 4px 16px;
 			}
 
-			&:nth-child(2) {
+			&.ck-button-prev {
 				border-radius: 5px 0 0 5px;
 
 				& svg {
@@ -101,23 +105,19 @@
 				}
 			}
 
-			&:last-child {
+			&.ck-button-next {
 				border-radius: 0 5px 5px 0;
 			}
 		}
 	}
-	&.ck-isEnabled {
-		& .ck-button.ck-button-prev,
-		& .ck-button.ck-button-next {
-			margin-left: 1px;
-		}
 
+	&.ck-is-searching {
 		& .ck-button.ck-button-find {
 			display: none;
 		}
 	}
 
-	&.ck-isDisabled {
+	&:not(.ck-is-searching) {
 		& .ck-button.ck-button-prev,
 		& .ck-button.ck-button-next {
 			display: none;

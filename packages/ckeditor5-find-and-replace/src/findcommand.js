@@ -21,11 +21,13 @@ export default class FindCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 */
-	constructor( editor ) {
+	constructor( editor, state ) {
 		super( editor );
 
 		// Find command is always enabled.
 		this.isEnabled = true;
+
+		this.state = state;
 	}
 
 	/**
@@ -43,7 +45,10 @@ export default class FindCommand extends Command {
 		// Allow to execute `find()` on a plugin with a keyword only.
 		if ( typeof callbackOrText === 'string' ) {
 			findCallback = findByTextCallback( callbackOrText );
+
+			this.state.searchText = callbackOrText;
 		} else {
+			// @todo: disable callback version
 			findCallback = callbackOrText;
 		}
 
@@ -53,9 +58,20 @@ export default class FindCommand extends Command {
 		// @todo: fix me
 		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
 
-		return {
+		const ret = {
 			results: updateFindResultFromRange( range, model, findCallback ),
 			findCallback
 		};
+
+		this.state.clear( model );
+		this.state.results.addMany( Array.from( ret.results ) );
+		this.state.highlightedResult = ret.results.get( 0 );
+
+		if ( typeof callbackOrText === 'string' ) {
+			// @todo: eliminate this code repetition. Done to fix unit tests.
+			this.state.searchText = callbackOrText;
+		}
+
+		return ret;
 	}
 }

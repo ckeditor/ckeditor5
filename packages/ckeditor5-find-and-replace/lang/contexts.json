@@ -1,0 +1,13 @@
+{
+	"Find and replace": "The tooltip of a find and replace button's in the toolbar.",
+	"Find in text…": "The label for the searched text in the find and replace dropdown.",
+	"Find": "The label for the find action button in the find and replace dropdown.",
+	"Previous result": "The label for the previous result button in the find and replace dropdown.",
+	"Next result": "The label for the previous result button in the find and replace dropdown.",
+	"Replace": "The label for the (single) replace action button in the find and replace dropdown.",
+	"Replace all": "The label for the replace all action button in the find and replace dropdown.",
+	"Match case": "The label for the match case checkbox in the find and replace dropdown.",
+	"Whole words only": "The label for the whole words only checkbox in the find and replace dropdown.",
+	"Replace with…": "The label for the text replacement in the find and replace dropdown.",
+	" of ": "The text between currently highlighted text offset and the count of all matches in the find and replace dropdown."
+}

@@ -29,7 +29,9 @@ ClassicEditor
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Find and replace' ),
+			target: window.findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.tooltip && item.buttonView.tooltip === 'Find and replace' ),
 			text: 'Click to find and replace anything you need.',
 			editor
 		} );

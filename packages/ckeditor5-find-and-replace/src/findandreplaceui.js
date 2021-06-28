@@ -9,9 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import FindAndReplaceFormView from './ui/findandreplaceformview';
 import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../theme/findandreplaceform.css';
-import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
 
@@ -40,13 +40,26 @@ export default class FindAndReplaceUI extends Plugin {
 
 		this.set( 'searchText' );
 		this.set( 'replaceText' );
+
+		this.set( 'isSearching', false );
+
+		this.set( 'matchCount', null );
+		this.set( 'highlightOffset', null );
+
+		this.bind( 'isSearching' ).to( this, 'matchCount', count => count > 0 );
+
+		/**
+		 * The form view will only be assigned if the find and replace toolbar button was added.
+		 *
+		 * @member {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView|null} #formView
+		 */
+		this.formView = null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		this.activeSearch = null;
 		this.findAndReplacePlugin = this.editor.plugins.get( 'FindAndReplace' );
 
 		const editor = this.editor;
@@ -57,11 +70,16 @@ export default class FindAndReplaceUI extends Plugin {
 			const formView = new FindAndReplaceFormView( editor.locale );
 
 			formView.delegate( 'findNext' ).to( this );
-			formView.delegate( 'findPrev' ).to( this );
+			formView.delegate( 'findPrevious' ).to( this );
 			formView.delegate( 'replace' ).to( this );
 			formView.delegate( 'replaceAll' ).to( this );
 
-			this._createToolbarDropdown( dropdown, loupeIcon );
+			formView.bind( 'matchCount' ).to( this );
+			formView.bind( 'highlightOffset' ).to( this );
+
+			formView.bind( 'isSearching' ).to( this );
+
+			this._createToolbarDropdown( dropdown, loupeIcon, formView );
 
 			dropdown.panelView.children.add( formView );
 
@@ -71,21 +89,89 @@ export default class FindAndReplaceUI extends Plugin {
 				}
 			} );
 
+			this.formView = formView;
+
+			if ( this._state ) {
+				this.unbind( 'isSearching' );
+
+				const findTextInputView = formView.findInputView.fieldView;
+
+				this.bind( 'isSearching' ).to( this, 'matchCount', findTextInputView, 'value', this._state, 'searchText',
+					( count, viewSearchText, modelSearchText ) => {
+						return count > 0 && viewSearchText == modelSearchText;
+					} );
+			}
+
+			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
+				dropdown.buttonView.actionView.fire( 'execute' );
+
+				cancelEvent();
+			} );
+
 			return dropdown;
+		} );
+	}
+
+	/**
+	 * Sets the observed state object. It is used to display searching result count etc.
+	 *
+	 * @protected
+	 * @param {module:find-and-replace/findandreplaceediting~FindAndReplaceState} state State object to be tracked.
+	 */
+	_setState( state ) {
+		this._state = state;
+
+		this.listenTo( state.results, 'change', () => {
+			this.set( 'matchCount', state.results.length );
+		} );
+
+		this.bind( 'highlightOffset' ).to( state, 'highlightedResult', highlightedResult => {
+			if ( !highlightedResult ) {
+				return null;
+			}
+
+			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {
+				const mapping = {
+					before: -1,
+					same: 0,
+					after: 1
+				};
+
+				return mapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ];
+			} );
+
+			const index = sortedResults.indexOf( highlightedResult );
+
+			return index === -1 ?
+				null : index + 1;
 		} );
 	}
 
 	/**
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
+	 * @param {String} icon Icon to be assigned to the button.
+	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView Related form view.
 	 */
-	_createToolbarDropdown( dropdown, icon ) {
+	_createToolbarDropdown( dropdown, icon, formView ) {
+		const t = this.editor.locale.t;
+		const buttonView = dropdown.buttonView;
+
 		// Configure dropdown's button properties:
-		dropdown.buttonView.set( {
+		buttonView.set( {
 			icon,
 			withText: true,
-			tooltip: true
+			tooltip: t( 'Find and replace' )
 		} );
+
+		// Clicking the main button has the same effect as clicking the dropdown arrow.
+		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
+
+		// Each time dropdown is open the search text field should get focused.
+		buttonView.on( 'open', () => {
+			formView.findInputView.fieldView.select();
+			formView.focus();
+		}, { priority: 'low' } );
 	}
 }
 
@@ -99,7 +185,7 @@ export default class FindAndReplaceUI extends Plugin {
 /**
  * Fired when the find previous button is triggered.
  *
- * @event findPrev
+ * @event findPrevious
  * @param {String} searchText Search text.
  */
 
@@ -115,4 +201,10 @@ export default class FindAndReplaceUI extends Plugin {
  *
  * @event replaceAll
  * @param {String} replaceText Replacement text.
+ */
+
+/**
+ * Fired when the toolbar dropdown gets closed.
+ *
+ * @event dropdown:closed
  */

@@ -46,43 +46,71 @@ export default class FindAndReplace extends Plugin {
 		 * Delegate find next request.
 		 */
 		ui.on( 'findNext', ( event, data ) => {
-			if ( data.searchText.length !== 0 ) {
-				findAndReplaceEditing.stop();
+			if ( data && findAndReplaceEditing.state.searchText !== data.searchText ) {
+				findAndReplaceEditing.state.searchText = data.searchText;
+				this.editor.execute( 'find', data.searchText );
+			} else {
+				// Subsequent calls.
+				this.editor.execute( 'findNext' );
 			}
-
-			findAndReplaceEditing.find( data.searchText );
 		} );
 
 		/**
-		 * Delegate find previous request.
+		 * Delegate find previous request.i
 		 */
-		ui.on( 'findPrev', ( event, data ) => {
-			if ( data.searchText.length !== 0 ) {
-				findAndReplaceEditing.stop();
+		ui.on( 'findPrevious', ( event, data ) => {
+			if ( data && findAndReplaceEditing.state.searchText !== data.searchText ) {
+				this.editor.execute( 'find', data.searchText );
+			} else {
+				// Subsequent calls.
+				this.editor.execute( 'findPrevious' );
 			}
-			findAndReplaceEditing.find( data.searchText );
 		} );
 
 		/**
 		 * Delegate replace action.
 		 */
 		ui.on( 'replace', ( event, data ) => {
-			this.editor.execute( 'replace', data.replaceText, findAndReplaceEditing.activeResults.get( 0 ) );
-			// @todo: it should be possible to make replacement without prior find call.
+			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+				this.editor.execute( 'find', data.searchText );
+			}
+
+			const highlightedResult = findAndReplaceEditing.state.highlightedResult;
+
+			if ( highlightedResult ) {
+				this.editor.execute( 'replace', data.replaceText, highlightedResult );
+			}
 		} );
 
 		/**
 		 * Delegate replace all action.
 		 */
 		ui.on( 'replaceAll', ( event, data ) => {
-			// this.editor.execute( 'replaceAll', data.replaceText, data.searchText );
-			// Without referencing findAndReplaceEditing.activeResults the on `onDocumentChange` method throws if you attempt
-			// to perform replace all on editor that has already some find results matched.
-			this.editor.execute( 'replaceAll', data.replaceText, findAndReplaceEditing.activeResults );
+			// The state hadn't been yet built for this search text.
+			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+				this.editor.execute( 'find', data.searchText );
+			}
+
+			this.editor.execute( 'replaceAll', data.replaceText, findAndReplaceEditing.state.results );
 		} );
 
 		ui.on( 'dropdown:closed', () => {
+			findAndReplaceEditing.state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
+
+		if ( this.editor.ui ) {
+			// We need to wait for UI ready to have the toolbar dropdown available. Otherwise findAndReplace component
+			// is registered but not yet constructed.
+			this.listenTo( this.editor.ui, 'ready', () => {
+				// If editor doesn't contain findAndReplace button then there's no ui#formView property.
+				if ( ui.formView ) {
+					ui.formView.findNextButtonView.bind( 'isEnabled' ).to( this.editor.commands.get( 'findNext' ), 'isEnabled' );
+					ui.formView.findPrevButtonView.bind( 'isEnabled' ).to( this.editor.commands.get( 'findPrevious' ), 'isEnabled' );
+				}
+			} );
+		}
+
+		ui._setState( findAndReplaceEditing.state );
 	}
 }

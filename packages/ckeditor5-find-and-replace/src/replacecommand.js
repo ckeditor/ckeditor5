@@ -20,11 +20,19 @@ export default class ReplaceCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 */
-	constructor( editor ) {
+	constructor( editor, state ) {
 		super( editor );
 
 		// Replace command is always enabled.
 		this.isEnabled = true;
+
+		/**
+		 * Find and replace state object used for command operations.
+		 *
+		 * @private
+		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #_state
+		 */
+		this._state = state;
 	}
 
 	/**
@@ -33,13 +41,17 @@ export default class ReplaceCommand extends Command {
 	 * @param {String} replacementText
 	 * @param {Object} result A single result from the find command.
 	 */
-	execute( replacementText, { marker } ) {
+	execute( replacementText, result ) {
 		const { model } = this.editor;
 
 		model.change( writer => {
-			const range = marker.getRange();
+			const range = result.marker.getRange();
 
 			model.insertContent( writer.createText( replacementText ), range );
+
+			if ( this._state.results.has( result ) ) {
+				this._state.results.remove( result );
+			}
 		} );
 	}
 }
