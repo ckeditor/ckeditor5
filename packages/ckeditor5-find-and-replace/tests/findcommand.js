@@ -103,6 +103,46 @@ describe( 'FindCommand', () => {
 				expect( ids[ 0 ] ).not.to.equal( ids[ 1 ] );
 				expect( ids[ 1 ] ).not.to.equal( ids[ 2 ] );
 			} );
+
+			it( 'properly searches for regexp special characters simple', () => {
+				editor.setData( '<p>-[\\]{}()*+?.,^$|#\\s</p>' );
+
+				const { results } = command.execute( ']{' );
+
+				expect( results.length ).to.equal( 1 );
+
+				const markers = results.map( item => {
+					// Replace markers id to a predefined value, as originally these are unique random ids.
+					item.marker.name = 'X';
+
+					return item.marker;
+				} );
+
+				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					'<paragraph>-[\\<X:start></X:start>]{<X:end></X:end>}()*+?.,^$|#\\s</paragraph>'
+				);
+			} );
+
+			it( 'properly searches for regexp special characters', () => {
+				editor.setData( '<p>-[\\]{}()*+?.,^$|#\\s</p>' );
+
+				const { results } = command.execute( '-[\\]{}()*+?.,^$|#\\s' );
+
+				expect( results.length ).to.equal( 1 );
+
+				const markers = results.map( item => {
+					// Replace markers id to a predefined value, as originally these are unique random ids.
+					item.marker.name = 'X';
+
+					return item.marker;
+				} );
+
+				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					'<paragraph><X:start></X:start>' +
+						'-[\\]{}()*+?.,^$|#\\s' +
+					'<X:end></X:end></paragraph>'
+				);
+			} );
 		} );
 	} );
 } );
