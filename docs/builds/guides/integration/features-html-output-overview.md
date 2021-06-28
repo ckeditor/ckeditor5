@@ -893,7 +893,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-pasting-url-into-editor">Auto image</a>
+					<a href="../../../features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor">Auto image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_autoimage-AutoImage.html"><code>AutoImage</code></a>
@@ -908,7 +908,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image.html">Image</a>
+					<a href="../../../features/images/images-overview.html">Image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_image-Image.html"><code>Image</code></a>
@@ -926,7 +926,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-captions">Image caption</a>
+					<a href="../../../features/images/images-captions.html">Image caption</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagecaption-ImageCaption.html"><code>ImageCaption</code></a>
@@ -939,7 +939,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#resizing-images">Image resize</a>
+					<a href="../../../features/images/images-resizing.html">Image resize</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageresize-ImageResize.html"><code>ImageResize</code></a>
@@ -952,7 +952,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image.html#image-styles">Image style</a>
+					<a href="../../../features/images/images-styles.html">Image style</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagestyle-ImageStyle.html"><code>ImageStyle</code></a>
@@ -973,7 +973,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-contextual-toolbar">Image toolbar</a>
+					<a href="../../../features/images/images-overview.html#image-contextual-toolbar">Image toolbar</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagetoolbar-ImageToolbar.html"><code>ImageToolbar</code></a>
@@ -988,7 +988,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-upload">Image upload</a>
+					<a href="../../../features/images/image-upload/image-upload.html">Image upload</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageupload-ImageUpload.html"><code>ImageUpload</code></a>
@@ -1003,7 +1003,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-source-url">Image insert</a>
+					<a href="../../../features/images/image-upload/images-inserting.html#inserting-images-via-source-url">Image insert</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageinsert-ImageInsert.html"><code>ImageInsert</code></a>
@@ -1168,7 +1168,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#linking-images">Link image</a>
+					<a href="../../../features/images/images-linking.html">Link image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_link_linkimage-LinkImage.html"><code>LinkImage</code></a>
