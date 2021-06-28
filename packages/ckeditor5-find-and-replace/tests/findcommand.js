@@ -180,6 +180,64 @@ describe( 'FindCommand', () => {
 					);
 				} );
 			} );
+
+			describe( 'options.wholeWords', () => {
+				it( 'set to true matches a boundary words', () => {
+					editor.setData( '<p>bar foo bar</p><p>bar</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 3 );
+				} );
+
+				it( 'set to true matches a word followed by a dot', () => {
+					editor.setData( '<p>foo bar.</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a word followed by an underscore', () => {
+					editor.setData( '<p>foo .bar_</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a word separated by an emoji', () => {
+					editor.setData( '<p>foo 🦄bar🦄baz</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true doesn\'t match a word including diacritic characters', () => {
+					editor.setData( '<p>foo łbarę</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 0 );
+				} );
+
+				it( 'set to true doesn\'t match similar words with superfluous characters', () => {
+					editor.setData( '<p>foo barr baz</p><p>aaabar</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 0 );
+				} );
+
+				it( 'is disabled by default', () => {
+					editor.setData( '<p>foo aabaraa</p>' );
+
+					const { results } = command.execute( 'bar' );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+			} );
 		} );
 
 		/**

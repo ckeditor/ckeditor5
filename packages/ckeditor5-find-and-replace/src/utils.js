@@ -126,7 +126,13 @@ export function findByTextCallback( searchTerm, options ) {
 		flags += 'i';
 	}
 
-	const regExp = new RegExp( escapeRegExp( searchTerm ), flags );
+	let regExpQuery = escapeRegExp( searchTerm );
+
+	if ( options.wholeWords ) {
+		regExpQuery = '(?:^|\\W|_)' + regExpQuery + '(?:_|\\W|$)';
+	}
+
+	const regExp = new RegExp( regExpQuery, flags );
 
 	function findCallback( { text } ) {
 		const matches = [ ...text.matchAll( regExp ) ];
