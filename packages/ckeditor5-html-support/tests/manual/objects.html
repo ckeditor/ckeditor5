@@ -1,0 +1,74 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<div id="editor">
+	<p>
+	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">
+		<param name="allowFullScreen" value="true" />
+		<param name="quality" value="high" />
+		<param name="movie" value="https://example.com" />
+		<embed allowfullscreen="true" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" src="https://example.com" type="application/x-shockwave-flash"></embed>
+	</object>
+	</p>
+	<p><iframe frameborder="0" scrolling="no" src="https://example.com"></iframe></p>
+	<form action="controller/register" method="post" name="foobar">
+		<p><input name="checkbox" type="checkbox" value="10" /></p>
+
+		<p><input name="radio" type="radio" value="10" /></p>
+
+		<p><input name="text field" type="text" value="10" /></p>
+
+		<p><textarea name="textarea">10</textarea></p>
+
+		<p><select name="selection field"><option value="1">a1</option><option selected="selected" value="2">a2</option><option value="3">a3</option></select></p>
+
+		<p><input name="button" type="button" value="click me" /></p>
+
+		<p><button>Click me!</button></p>
+
+		<p><input alt="" src="https://via.placeholder.com/100" type="image" /></p>
+
+		<p>some custom text</p>
+
+		<table border="1" cellpadding="1" cellspacing="1" style="width:500px;">
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p>looks like form can include anything</p>
+	</form>
+	<p><input name="checkbox" type="checkbox" value="10" /></p>
+
+	<p><input name="radio" type="radio" value="10" /></p>
+
+	<p><input name="text field" type="text" value="10" /></p>
+
+	<p><input name="button" type="button" value="click me" /></p>
+
+	<p><input alt="" src="https://via.placeholder.com/100" type="image" /></p>
+
+	<p><textarea name="textarea">some text in textarea</textarea></p>
+
+	<p><select name="selection field"><option value="1">a1</option><option selected="selected" value="2">a2</option><option value="3">a3</option></select></p>
+
+	<p><video controls="" height="240" width="320"><source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" /> Your browser does not support the video tag.</video></p>
+
+	<p><audio controls=""><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" /> Your browser does not support the audio element.</audio></p>
+
+	<p><label><input> text</label></p>
+
+	<p><xyz data-foo="foo">Hello, world!</xyz></p>
+</div>
