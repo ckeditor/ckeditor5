@@ -1,5 +1,4 @@
 node_modules/
-build/
 coverage/
 packages/*/node_modules/
 docs/api/output.json
@@ -13,3 +12,6 @@ yarn.lock
 
 # Ignore `mrgit.json` this file contains info about external repositories.
 mrgit.json
+
+build/
+!packages/ckeditor5-build-*/build
