@@ -23,15 +23,38 @@ export default class CheckboxView extends View {
 
 		const bind = this.bindTemplate;
 
-		// Implement the Checkbox interface.
+		/**
+		 * (Optional) The additional CSS class set on the button.
+		 *
+		 * @observable
+		 * @member {String} #class
+		 */
 		this.set( 'class' );
+
+		/**
+		 * Controls whether the checkbox view is enabled, i.e. it can be clicked and execute an action.
+		 *
+		 * @observable
+		 * @default true
+		 * @member {Boolean} #isEnabled
+		 */
 		this.set( 'isEnabled', true );
+
+		/**
+		 * Controls whether the checkbox view is visible. Visible by default, checkboxes are hidden
+		 * using a CSS class.
+		 *
+		 * @observable
+		 * @default true
+		 * @member {Boolean} #isVisible
+		 */
 		this.set( 'isVisible', true );
 
 		/**
 		 * Indicates whether related checkbox is checked.
 		 *
 		 * @observable
+		 * @default false
 		 * @member {Boolean} #isChecked
 		 */
 		this.set( 'isChecked', false );
@@ -45,12 +68,22 @@ export default class CheckboxView extends View {
 		this.set( 'label' );
 
 		/**
-		 * HTML id attribute to be assigned to the checkbox.
+		 * HTML `id` attribute to be assigned to the checkbox.
 		 *
 		 * @observable
-		 * @member {String/null} #id
+		 * @default null
+		 * @member {String|null} #id
 		 */
 		this.set( 'id', null );
+
+		/**
+		 * (Optional) Controls the `tabindex` HTML attribute of the checkbox. By default, the checkbox is focusable
+		 * but is not included in the <kbd>Tab</kbd> order.
+		 *
+		 * @observable
+		 * @default -1
+		 * @member {String} #tabindex
+		 */
 		this.set( 'tabindex', -1 );
 
 		/**

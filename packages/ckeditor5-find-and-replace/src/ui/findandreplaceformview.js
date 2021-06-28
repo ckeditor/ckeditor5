@@ -130,14 +130,14 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * Match case checkbox view
 		 *
-		 * @member {@module find-and-replace/ui/checkbox/checkboxview}
+		 * @member {module:find-and-replace/checkbox/checkboxview~CheckboxView}
 		*/
 		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
 
 		/**
 		 * Whole words only checkbox view
 		 *
-		 * @member {@module find-and-replace/ui/checkbox/checkboxview}
+		 * @member {module:find-and-replace/checkbox/checkboxview~CheckboxView}
 		*/
 		this.matchWholeWordsView = this._createCheckbox( t( 'Whole words only' ) );
 
