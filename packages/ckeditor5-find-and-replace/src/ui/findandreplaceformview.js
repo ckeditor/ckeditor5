@@ -265,6 +265,37 @@ export default class FindAndReplaceFormView extends View {
 		this.keystrokes.listenTo( this.element );
 
 		const stopPropagation = data => data.stopPropagation();
+		const stopPropagationAndPreventDefault = data => {
+			data.stopPropagation();
+			data.preventDefault();
+		};
+
+		this.keystrokes.set( 'f3', event => {
+			stopPropagationAndPreventDefault( event );
+
+			this.findNextButtonView.fire( 'execute' );
+		} );
+
+		this.keystrokes.set( 'shift+f3', event => {
+			stopPropagationAndPreventDefault( event );
+
+			this.findPrevButtonView.fire( 'execute' );
+		} );
+
+		this.keystrokes.set( 'enter', event => {
+			// @todo: this is a bit workaroundish way to handle enter, we should work on views rather raw DOM elements.
+			const target = event.target;
+
+			if ( target.classList.contains( 'ck-input-text' ) ) {
+				if ( target.parentElement.parentElement.parentElement.classList.contains( 'ck-find-form__wrapper' ) ) {
+					this.findButtonView.fire( 'execute' );
+					stopPropagationAndPreventDefault( event );
+				} else if ( target.parentElement.parentElement.parentElement.classList.contains( 'ck-replace-form__wrapper' ) ) {
+					this.replaceButtonView.fire( 'execute' );
+					stopPropagationAndPreventDefault( event );
+				}
+			}
+		} );
 
 		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
 		// keystroke handler would take over the key management in the URL input. We need to prevent
