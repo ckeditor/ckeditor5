@@ -181,7 +181,7 @@ htmlSupport: {
 }
 ```
 
-The General HTML Support feature distinguishes several content types that it treats a bit differently:
+The General HTML Support feature distinguishes several content types, each treated a bit differently:
 
 * Container elements (e.g. `<section>`, `<div>`).
 * Inline elements (e.g. `<span>`, `<a>`).
