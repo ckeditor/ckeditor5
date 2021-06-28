@@ -153,6 +153,22 @@
 				"table.contentToolbar",
 				"table.tableToolbar"
 			]
+		},
+		{
+			"name": "Table caption",
+			"className": "TableCaption",
+			"description": "Adds support for table captions, which inform the reader about the content of the table. Using captions is also beneficial from the accessibility point of view.",
+			"docs": "features/table.html#table-caption",
+			"path": "src/tablecaption.js",
+			"requires": [
+				"Table"
+			],
+			"htmlOutput": [
+				{
+					"elements": "figcaption",
+					"attributes": "data-placeholder"
+				}
+			]
 		}
 	]
 }

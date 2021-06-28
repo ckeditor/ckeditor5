@@ -33,7 +33,7 @@ function createEditor( selector, language, uiLanguageCode ) {
 				'redo'
 			],
 			image: {
-				toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+				toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 			},
 			table: {
 				contentToolbar: [

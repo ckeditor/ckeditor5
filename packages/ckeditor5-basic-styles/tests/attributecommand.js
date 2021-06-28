@@ -271,7 +271,7 @@ describe( 'AttributeCommand', () => {
 		} );
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
-			model.schema.register( 'image', { inheritAllFrom: '$block' } );
+			model.schema.register( 'imageBlock', { inheritAllFrom: '$block' } );
 			setData( model, '<p>ab[c<img></img><$text bold="true">foobar</$text>xy<img></img>]z</p>' );
 
 			expect( command.isEnabled ).to.be.true;

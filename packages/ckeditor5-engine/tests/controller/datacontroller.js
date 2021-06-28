@@ -288,7 +288,25 @@ describe( 'DataController', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
-			expect( count( modelDocument.history.getOperations() ) ).to.equal( 1 );
+			expect( modelDocument.history.getOperations().length ).to.equal( 1 );
+		} );
+
+		it( 'should create a `default` batch by default', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.set( 'foo' );
+
+			const operation = modelDocument.history.getOperations()[ 0 ];
+
+			expect( operation.batch.type ).to.equal( 'default' );
+		} );
+
+		it( 'should create a batch specified by the `options.batch` option when provided', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.set( 'foo', { batchType: 'transparent' } );
+
+			const operation = modelDocument.history.getOperations()[ 0 ];
+
+			expect( operation.batch.type ).to.equal( 'transparent' );
 		} );
 
 		it( 'should cause firing change event', () => {

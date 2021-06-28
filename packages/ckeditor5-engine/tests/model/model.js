@@ -542,14 +542,14 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( '$block', { allowIn: 'div' } );
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				isObject: true
 			} );
 			schema.register( 'content', {
 				inheritAllFrom: '$block',
 				isContent: true
 			} );
-			schema.extend( 'image', { allowIn: 'div' } );
+			schema.extend( 'imageBlock', { allowIn: 'div' } );
 			schema.register( 'listItem', {
 				inheritAllFrom: '$block'
 			} );
@@ -562,7 +562,7 @@ describe( 'Model', () => {
 				'</div>' +
 				'<paragraph>foo</paragraph>' +
 				'<div>' +
-					'<image></image>' +
+					'<imageBlock></imageBlock>' +
 				'</div>' +
 				'<listItem></listItem>' +
 				'<listItem></listItem>' +

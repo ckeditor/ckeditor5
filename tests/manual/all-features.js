@@ -28,6 +28,7 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
@@ -57,7 +58,7 @@ ClassicEditor
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			ImageUpload, CloudServices, TextPartLanguage
+			ImageUpload, CloudServices, TextPartLanguage, SourceEditing
 		],
 		toolbar: [
 			'heading',
@@ -77,6 +78,8 @@ ClassicEditor
 			'pageBreak', 'horizontalLine', 'specialCharacters',
 			'|',
 			'textPartLanguage',
+			'|',
+			'sourceEditing',
 			'|',
 			'undo', 'redo'
 		],
@@ -110,8 +113,8 @@ ClassicEditor
 				}
 			],
 			toolbar: [
-				'imageTextAlternative', '|',
-				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
 				'resizeImage'
 			],
 			insert: {

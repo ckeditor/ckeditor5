@@ -157,14 +157,14 @@ export default class FileRepository extends Plugin {
 			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
 			 *
-			 * See the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload
+			 * See the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload
 			 * adapters are available in the builds and how to configure them.
 			 *
 			 * **If you see this warning when using a custom build** there is a chance that you enabled
 			 * a feature like {@link module:image/imageupload~ImageUpload},
 			 * or {@link module:image/imageupload/imageuploadui~ImageUploadUI} but you did not enable any upload adapter.
 			 * You can choose one of the existing upload adapters listed in the
-			 * {@glink features/image-upload/image-upload "Image upload overview"}.
+			 * {@glink features/images/image-upload/image-upload "Image upload overview"}.
 			 *
 			 * You can also implement your {@glink framework/guides/deep-dive/upload-adapter own image upload adapter}.
 			 *

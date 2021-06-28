@@ -1,8 +1,34 @@
-<div id="snippet-image-resize-buttons-dropdown">
-	<p>Click me and resize using the contextual toolbar!</p>
+<style>
+	#snippet-image-resize-buttons-dropdown + .ck .ck-content .image {
+		margin: none !important;
+		display: inline-block;
+	}
+	#snippet-image-resize-buttons-dropdown + .ck .ck-content h2 {
+		border-bottom: 4px solid black;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+	#snippet-image-resize-buttons-dropdown + .ck .ck-content hr {
+		background-color: black;
+	}
+	#snippet-image-resize-buttons-dropdown + .ck .ck-content .horizontal-line {
+		margin-top: -12px;
+	}
+</style>
 
-	<figure class="image">
-		<img src="%BASE_PATH%/assets/img/fields.jpg" alt="Autumn fields">
-		<figcaption>Autumn fields by Aleksander Nowodziński</figcaption>
+<div id="snippet-image-resize-buttons-dropdown">
+	<h2>Toco toucans' big beaks</h2>
+
+	<figure class="image image_resized" style="width: 40%">
+		<img src="%BASE_PATH%/assets/img/birds/toucan.jpg" srcset="%BASE_PATH%/assets/img/birds/toucan.jpg, %BASE_PATH%/assets/img/birds/toucan_2x.jpg 2x">
 	</figure>
+
+	<figure class="image image_resized" style="width: 60%">
+		<img src="%BASE_PATH%/assets/img/birds/toucan_2.jpg" srcset="%BASE_PATH%/assets/img/birds/toucan_2.jpg, %BASE_PATH%/assets/img/birds/toucan_2_2x.jpg 2x">
+	</figure>
+
+	<hr/>
+
+	<p>Toucans take their name from the Tupi natives word <i>tukana</i>. They are most recognized for their prominent, colorful beaks and can be found in the tropical rainforest of South America. The toco toucans with their brightly orange beaks are probably one of the most recognizable birds in the world.</p>
+	<p>They nest in trees and not being the best fliers, they would rather hop from tree to tree instead. They can grow to 25 inches while their beaks can achieve an amazing length of 7 inches, although they are small when the birds hatch and grow later. Large as they are, their beaks are very light and are used to attract mates and to fence off rivals.</p>
 </div>

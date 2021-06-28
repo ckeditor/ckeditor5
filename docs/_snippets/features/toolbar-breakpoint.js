@@ -27,7 +27,7 @@ ClassicEditor
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		codeBlock: {
 			languages: [

@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import ImageUtils from '../imageutils';
 import ResizeImageCommand from './resizeimagecommand';
 
 /**
@@ -19,6 +20,13 @@ import ResizeImageCommand from './resizeimagecommand';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageResizeEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageUtils ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -65,7 +73,8 @@ export default class ImageResizeEditing extends Plugin {
 		const resizeImageCommand = new ResizeImageCommand( editor );
 
 		this._registerSchema();
-		this._registerConverters();
+		this._registerConverters( 'imageBlock' );
+		this._registerConverters( 'imageInline' );
 
 		// Register `resizeImage` command and add `imageResize` command as an alias for backward compatibility.
 		editor.commands.add( 'resizeImage', resizeImageCommand );
@@ -76,23 +85,27 @@ export default class ImageResizeEditing extends Plugin {
 	 * @private
 	 */
 	_registerSchema() {
-		this.editor.model.schema.extend( 'image', { allowAttributes: 'width' } );
-		this.editor.model.schema.setAttributeProperties( 'width', {
-			isFormatting: true
-		} );
+		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
+			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: 'width' } );
+		}
+
+		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
+			this.editor.model.schema.extend( 'imageInline', { allowAttributes: 'width' } );
+		}
 	}
 
 	/**
 	 * Registers image resize converters.
 	 *
 	 * @private
+	 * @param {'imageBlock'|'imageInline'} imageType The type of the image.
 	 */
-	_registerConverters() {
+	_registerConverters( imageType ) {
 		const editor = this.editor;
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:width:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
@@ -113,7 +126,7 @@ export default class ImageResizeEditing extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
-					name: 'figure',
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
 					styles: {
 						width: /.+/
 					}

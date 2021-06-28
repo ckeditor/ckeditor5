@@ -40,7 +40,7 @@ describe( 'WidgetResize - integration', () => {
 	it( 'should not fire viewDocument#mousedown events after starting resizing', async () => {
 		const eventSpy = sinon.spy().named( 'ViewDocument#mousedown' );
 
-		setModelData( model, '[<image src="/assets/sample.png"></image>]' );
+		setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
 
 		await waitForAllImagesLoaded( editor );
 

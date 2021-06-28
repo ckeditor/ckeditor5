@@ -8,6 +8,7 @@
  */
 
 import { uid, Collection } from 'ckeditor5/src/utils';
+import { escapeRegExp } from 'lodash-es';
 
 /**
  * Executes findCallback and updates search results list.
@@ -111,7 +112,7 @@ function regexpMatchToFindResult( matchResult ) {
 }
 
 export function findByTextCallback( searchTerm ) {
-	const regExp = new RegExp( `${ searchTerm }`, 'igu' );
+	const regExp = new RegExp( `${ escapeRegExp( searchTerm ) }`, 'igu' );
 
 	function findCallback( { text } ) {
 		const matches = [ ...text.matchAll( regExp ) ];
