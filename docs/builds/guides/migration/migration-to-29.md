@@ -111,9 +111,19 @@ Since the appearance of the image in the document depends on the image type (blo
 
 ## Image toolbar
 
-Due to the changes mentioned above, the {@link module:image/image~ImageConfig#toolbar image toolbar} became crucial in terms of providing tools for proper interaction with images in terms of managing the image type and caption. Thus, it is recommended to use one of the following configurations as the minimum set-up for the image toolbar:
+Until v29.0.0, custom editor builds without {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins were possible because only block images were supported and captions were added by the user upon selecting the image.
 
-* For the purposes of the structured content editing (implemented by default in the classic, balloon, balloon-block, and inline editor builds):
+Since v29.0.0, {@link features/images-styles image styles} and {@link features/images-overview#image-contextual-toolbar toolbar} allow users to choose kind of image (inline or block) and give them a way to add or remove captions from block images via configurable buttons.
+
+The user experience will degrade if either of these features is missing and this makes the {@link module:image/image~ImageConfig#toolbar image toolbar} configuration essential.
+
+<info-box>
+	{@link builds/guides/overview Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link builds/guides/integration/advanced-setup custom editor builds} in their integrations.
+</info-box>
+
+We recommended one of the following configurations as the minimum set-up for the image toolbar:
+
+* For the purposes of the structured content editing (implemented by default in the classic, balloon, balloon-block, and inline {@link builds/guides/overview editor builds}):
 
 	```js
 	Editor.create( document.querySelector( '#editor' ), {
@@ -131,7 +141,7 @@ Due to the changes mentioned above, the {@link module:image/image~ImageConfig#to
 	} );
 	```
 
-* For the purposes of the document-like editing (implemented by default in the decoupled document build).
+* For the purposes of the document-like editing (implemented by default in the {@link builds/guides/overview#document-editor decoupled document build}).
 
 	```js
 	Editor.create( document.querySelector( '#editor' ), {
@@ -149,7 +159,7 @@ Due to the changes mentioned above, the {@link module:image/image~ImageConfig#to
 	} );
 	```
 
-To view the above configurations, see the {@link features/images-overview image feature guide}.
+See the {@link features/images-overview#image-contextual-toolbar image feature guide} to learn more about the configuration of the image toolbar.
 
 ## Inserting images
 
