@@ -5,6 +5,7 @@
 
 .ck-find-result {
 	background: hsl(58, 100%, 50%);
+	color: var(--ck-color-text);
 }
 
 .ck-find-result_selected {
