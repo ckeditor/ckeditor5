@@ -69,6 +69,14 @@ describe( 'CheckboxView', () => {
 					view.id = null;
 					expect( view.checkboxInputView.element.hasAttribute( 'id' ) ).to.be.false;
 				} );
+
+				it( 'reacts on view#isChecked', () => {
+					view.isChecked = true;
+					expect( view.checkboxInputView.element.getAttributeNames() ).to.include( 'checked' );
+
+					view.isChecked = false;
+					expect( view.checkboxInputView.element.getAttributeNames() ).not.to.include( 'checked' );
+				} );
 			} );
 
 			describe( 'tabindex', () => {

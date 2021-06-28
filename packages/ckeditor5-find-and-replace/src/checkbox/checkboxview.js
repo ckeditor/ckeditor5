@@ -27,6 +27,13 @@ export default class CheckboxView extends View {
 		this.set( 'class' );
 		this.set( 'isEnabled', true );
 		this.set( 'isVisible', true );
+
+		/**
+		 * Indicates whether related checkbox is checked.
+		 *
+		 * @observable
+		 * @member {Boolean} #isChecked
+		 */
 		this.set( 'isChecked', false );
 
 		/**
@@ -120,6 +127,7 @@ export default class CheckboxView extends View {
 				id: bind.to( 'id' ),
 				name: bind.to( 'label' ),
 				value: bind.to( 'label' ),
+				'checked': bind.if( 'isChecked' ),
 				'disabled': bind.if( 'isEnabled', true, value => !value ),
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value )
 			}
