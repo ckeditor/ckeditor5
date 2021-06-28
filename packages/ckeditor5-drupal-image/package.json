@@ -1,0 +1,57 @@
+{
+  "name": "@ckeditor/ckeditor5-drupal-image",
+  "version": "0.0.1",
+  "description": "Demonstration of a custom content conversion.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "lodash-es": "^4.17.15",
+    "ckeditor5": "^28.0.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^28.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^28.0.0",
+    "@ckeditor/ckeditor5-core": "^28.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^25.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^28.0.0",
+    "@ckeditor/ckeditor5-engine": "^28.0.0",
+    "@ckeditor/ckeditor5-enter": "^28.0.0",
+    "@ckeditor/ckeditor5-image": "^28.0.0",
+    "@ckeditor/ckeditor5-link": "^28.0.0",
+    "@ckeditor/ckeditor5-list": "^28.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^28.0.0",
+    "@ckeditor/ckeditor5-table": "^28.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^28.0.0",
+    "@ckeditor/ckeditor5-utils": "^28.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-drupal-image"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme",
+    "build"
+  ],
+  "scripts": {
+    "dll:build": "webpack"
+  }
+}
