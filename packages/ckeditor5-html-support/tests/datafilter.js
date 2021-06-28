@@ -308,13 +308,17 @@ describe( 'DataFilter', () => {
 
 			expect( getObjectModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph>' +
-				'<htmlInput htmlContent=""></htmlInput>' +
+				'<htmlInput htmlAttributes="(1)" htmlContent=""></htmlInput>' +
 				'<htmlInput htmlContent=""></htmlInput>' +
 				'</paragraph>',
-				attributes: {}
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					}
+				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><input><input></p>' );
+			expect( editor.getData() ).to.equal( '<p><input class="foo"><input></p>' );
 		} );
 
 		it( 'should apply attributes to correct editing element', () => {
@@ -624,13 +628,17 @@ describe( 'DataFilter', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<htmlSection><paragraph>foo</paragraph></htmlSection>' +
+				data: '<htmlSection htmlAttributes="(1)"><paragraph>foo</paragraph></htmlSection>' +
 					'<htmlSection><paragraph>bar</paragraph></htmlSection>',
-				attributes: {}
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					}
+				}
 			} );
 
 			expect( editor.getData() ).to.equal(
-				'<section><p>foo</p></section>' +
+				'<section class="foo"><p>foo</p></section>' +
 				'<section><p>bar</p></section>'
 			);
 		} );
@@ -962,14 +970,16 @@ describe( 'DataFilter', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph><$text htmlCite="(1)">foobar</$text></paragraph>',
+				data: '<paragraph><$text htmlCite="(1)">foo</$text><$text htmlCite="(2)">bar</$text></paragraph>',
 				attributes: {
-					1: {},
+					1: {
+						classes: [ 'foo' ]
+					},
 					2: {}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><cite>foobar</cite></p>' );
+			expect( editor.getData() ).to.equal( '<p><cite class="foo">foo</cite><cite>bar</cite></p>' );
 		} );
 
 		it( 'should not consume attribute already consumed (upcast)', () => {
@@ -1265,11 +1275,41 @@ describe( 'DataFilter', () => {
 			editor.setData( '<p class="foo bar">foo</p><p class="bar">bar</p>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<paragraph>foo</paragraph><paragraph>bar</paragraph>',
-				attributes: {}
+				data: '<paragraph htmlAttributes="(1)">foo</paragraph><paragraph>bar</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					}
+				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p class="foo">foo</p><p>bar</p>' );
+		} );
+
+		it( 'should preserve partially consumed attributes by other features', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { attributes: [ 'data-foo' ] } );
+				} );
+			} );
+
+			dataFilter.allowElement( 'span' );
+			dataFilter.allowAttributes( { name: 'span', attributes: true } );
+
+			editor.setData( '<p><span data-foo data-bar>foobar</span></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlSpan="(1)">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-bar': ''
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><span data-bar="">foobar</span></p>' );
 		} );
 	} );
 
@@ -1886,7 +1926,7 @@ describe( 'DataFilter', () => {
 			const allowedConfig = [
 				{
 					name: 'span',
-					attributes: true,
+					attributes: /^data-.*$/,
 					// Allow it to really verify that the disallowing works.
 					classes: [ 'foo', 'bar', 'test' ]
 				}
