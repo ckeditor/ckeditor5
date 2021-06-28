@@ -35,22 +35,22 @@ export function setViewAttributes( writer, viewAttributes, viewElement ) {
 /**
 * Merges view element attribute objects.
 *
-* @param {Object} oldValue
-* @param {Object} newValue
+* @param {Object} target
+* @param {Object} source
 * @returns {Object}
 */
-export function mergeViewElementAttributes( oldValue, newValue ) {
-	const result = cloneDeep( oldValue );
+export function mergeViewElementAttributes( target, source ) {
+	const result = cloneDeep( target );
 
-	for ( const key in newValue ) {
+	for ( const key in source ) {
 		// Merge classes.
-		if ( Array.isArray( newValue[ key ] ) ) {
-			result[ key ] = Array.from( new Set( [ ...oldValue[ key ], ...newValue[ key ] ] ) );
+		if ( Array.isArray( source[ key ] ) ) {
+			result[ key ] = Array.from( new Set( [ ...target[ key ], ...source[ key ] ] ) );
 		}
 
 		// Merge attributes or styles.
 		else {
-			result[ key ] = { ...oldValue[ key ], ...newValue[ key ] };
+			result[ key ] = { ...target[ key ], ...source[ key ] };
 		}
 	}
 
