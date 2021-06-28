@@ -83,7 +83,7 @@ The difference between specific CKEditor 5 features such as {@link features/basi
 
 For instance, the dedicated {@link features/basic-styles#available-text-styles bold} feature offers a toolbar button used to make the selected text bold. Together with the {@link features/autoformat autoformatting feature}, it also allows for applying bold style to content by typing a Markdown shortcode (`**foo**`) in the editor. The {@link features/headings headings} feature offers a dropdown from which the user can choose a heading level and ensures that pressing <kbd>Enter</kbd> at the end of a heading creates a new paragraph (and not another heading).
 
-The General HTML Support does not offer any UI for the enabled features and takes only the basic semantics of a given feature into account. If you enable support for `<div>`s via GHS, the user will not be able to create `<div>`s from the editor UI. The GHS will know that a `<div>` is a container element, so it can wrap other blocks (like paragraphs) but cannot be used inline (next to e.g. a `<strong>` element). There is no more, however.
+The General HTML Support does not offer any UI for the enabled features and takes only the basic semantics of a given feature into account. If you enable support for `<div>`s via GHS, the user will not be able to create `<div>`s from the editor UI. The GHS will know that a `<div>` is a container element, so it can wrap other blocks (like paragraphs) but cannot be used inline (next to e.g. a `<strong>` element).
 
 Therefore, GHS's main use cases would be:
 
@@ -92,6 +92,31 @@ Therefore, GHS's main use cases would be:
 
 <info-box>
 	Taken the nature of GHS, you may consider installing the {@link features/source-editing source editing} feature alongside with it.
+</info-box>
+
+## Installation
+
+To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:
+
+```plaintext
+npm install --save @ckeditor/ckeditor5-html-support
+```
+
+And add it to your plugin list configuration:
+
+```js
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ GeneralHtmlSupport, ... ],
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
 ## Configuration
@@ -199,6 +224,8 @@ Most of the existing CKEditor 5 features can already be extended this way, howev
 * Some of the image features' markup [#9916](https://github.com/ckeditor/ckeditor5/issues/9916).
 * Some of the media embed features' markup [#9918](https://github.com/ckeditor/ckeditor5/issues/9918).
 * The `<ul>` and `<ol>` elements of the list feature [#9917](https://github.com/ckeditor/ckeditor5/issues/9917).
+
+We're open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 
 ## Related features
 
