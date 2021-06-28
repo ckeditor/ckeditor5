@@ -16,7 +16,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '../../theme/findandreplaceform.css';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import findArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
-import CheckboxView from '../checkbox/checkboxview';
+import CheckboxView from '../ui/checkboxview';
 
 /**
  * The find and replace form view controller class.
@@ -130,14 +130,14 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * Match case checkbox view
 		 *
-		 * @member {module:find-and-replace/checkbox/checkboxview~CheckboxView}
+		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
 		*/
 		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
 
 		/**
 		 * Whole words only checkbox view
 		 *
-		 * @member {module:find-and-replace/checkbox/checkboxview~CheckboxView}
+		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
 		*/
 		this.matchWholeWordsView = this._createCheckbox( t( 'Whole words only' ) );
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import CheckboxView from '../../src/checkbox/checkboxview';
+import CheckboxView from '../../src/ui/checkboxview';
 import { View, ViewCollection } from 'ckeditor5/src/ui';
 
 describe( 'CheckboxView', () => {
