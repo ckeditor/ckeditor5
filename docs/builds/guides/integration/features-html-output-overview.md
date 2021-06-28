@@ -1737,7 +1737,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/collaboration/revision-history" data-skip-validation>Revision History</a>
+					<a href="../../../features/revision-history/revision-history" data-skip-validation>Revision History</a>
 				</p>
 				<p>
 					<a href="../../../api/module_revision-history_revisionhistory-RevisionHistory.html" data-skip-validation><code>RevisionHistory</code></a>
