@@ -137,11 +137,15 @@
 
 			&:first-child {
 				margin-top: var(--ck-spacing-unit);
-				line-height: 0px;
 			}
 
 			& label {
 				margin-left: 5px;
+				line-height: calc(var(--ck-spacing-unit) * 2.2);
+			}
+
+			& input[type=checkbox]:disabled+label {
+				color: var(--ck-color-switch-button-off-background);
 			}
 		}
 	}

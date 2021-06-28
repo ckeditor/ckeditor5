@@ -16,6 +16,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '../../theme/findandreplaceform.css';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import findArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
+import CheckboxView from '../ui/checkboxview';
 
 /**
  * The find and replace form view controller class.
@@ -129,14 +130,14 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * Match case checkbox view
 		 *
-		 * @member {module:ui/view~View}
+		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
 		*/
 		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
 
 		/**
 		 * Whole words only checkbox view
 		 *
-		 * @member {module:ui/view~View}
+		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
 		*/
 		this.matchWholeWordsView = this._createCheckbox( t( 'Whole words only' ) );
 
@@ -493,35 +494,17 @@ export default class FindAndReplaceFormView extends View {
 	 * @returns {module:ui/view~View} The checkbox view instance.
 	 */
 	_createCheckbox( label ) {
-		const checkboxView = new View();
+		const checkboxView = new CheckboxView( this.locale );
 		const checkboxId = uid();
 
-		checkboxView.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: 'ck-find-checkboxes__box'
-			},
-			children: [
-				{
-					tag: 'input',
-					attributes: {
-						type: 'checkbox',
-						id: checkboxId,
-						name: label,
-						value: label
-					}
-				},
-				{
-					tag: 'label',
-					attributes: {
-						for: checkboxId
-					}
-				},
-				{
-					text: label
-				}
-			]
+		checkboxView.set( {
+			isVisible: true,
+			tooltip: true,
+			class: 'ck-find-checkboxes__box',
+			label,
+			checkboxId
 		} );
+
 		return checkboxView;
 	}
 }
