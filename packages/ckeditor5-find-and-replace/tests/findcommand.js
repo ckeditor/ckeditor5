@@ -51,12 +51,7 @@ describe( 'FindCommand', () => {
 				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
-				const markers = results.map( item => {
-					// Replace markers id to a predefined value, as originally these are unique random ids.
-					item.marker.name = 'X';
-
-					return item.marker;
-				} );
+				const markers = getSimplifiedMarkersFromResults( results );
 
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</paragraph>'
@@ -111,12 +106,7 @@ describe( 'FindCommand', () => {
 
 				expect( results.length ).to.equal( 1 );
 
-				const markers = results.map( item => {
-					// Replace markers id to a predefined value, as originally these are unique random ids.
-					item.marker.name = 'X';
-
-					return item.marker;
-				} );
+				const markers = getSimplifiedMarkersFromResults( results );
 
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph>-[\\<X:start></X:start>]{<X:end></X:end>}()*+?.,^$|#\\s</paragraph>'
@@ -130,12 +120,7 @@ describe( 'FindCommand', () => {
 
 				expect( results.length ).to.equal( 1 );
 
-				const markers = results.map( item => {
-					// Replace markers id to a predefined value, as originally these are unique random ids.
-					item.marker.name = 'X';
-
-					return item.marker;
-				} );
+				const markers = getSimplifiedMarkersFromResults( results );
 
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph><X:start></X:start>' +
@@ -143,6 +128,33 @@ describe( 'FindCommand', () => {
 					'<X:end></X:end></paragraph>'
 				);
 			} );
+
+			it( 'matches emoji', () => {
+				editor.setData( '<p>foo 🐛 bar</p>' );
+
+				const { results } = command.execute( '🐛' );
+
+				expect( results.length ).to.equal( 1 );
+
+				const markers = getSimplifiedMarkersFromResults( results );
+
+				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					'<paragraph>foo <X:start></X:start>🐛<X:end></X:end> bar</paragraph>'
+				);
+			} );
 		} );
+
+		/**
+		 * Returns markers array from array. All markers have their name simplified to "X" as otherwise they're
+		 * random and unique.
+		 */
+		function getSimplifiedMarkersFromResults( results ) {
+			return results.map( item => {
+				// Replace markers id to a predefined value, as originally these are unique random ids.
+				item.marker.name = 'X';
+
+				return item.marker;
+			} );
+		}
 	} );
 } );
