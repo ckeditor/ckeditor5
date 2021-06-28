@@ -84,7 +84,11 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.findButtonView = this._createButton( t( 'Find' ), 'ck-button-find' );
 		this.findButtonView.on( 'execute', () => {
-			this.fire( 'findNext', { searchText: this.searchText } );
+			this.fire( 'findNext', {
+				searchText: this.searchText,
+				matchCase: this.matchCaseView.isChecked,
+				wholeWords: this.matchWholeWordsView.isChecked
+			} );
 		} );
 
 		/**
@@ -495,14 +499,13 @@ export default class FindAndReplaceFormView extends View {
 	 */
 	_createCheckbox( label ) {
 		const checkboxView = new CheckboxView( this.locale );
-		const checkboxId = uid();
 
 		checkboxView.set( {
 			isVisible: true,
 			tooltip: true,
 			class: 'ck-find-checkboxes__box',
-			label,
-			checkboxId
+			id: uid(),
+			label
 		} );
 
 		return checkboxView;

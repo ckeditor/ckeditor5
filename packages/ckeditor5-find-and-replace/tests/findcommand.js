@@ -198,6 +198,18 @@ describe( 'FindCommand', () => {
 					expect( results.length ).to.equal( 1 );
 				} );
 
+				it( 'set to true makes a proper selection', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					const markers = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+						'<paragraph>foo <X:start></X:start>bar<X:end></X:end> baz</paragraph>'
+					);
+				} );
+
 				it( 'set to true matches a word followed by an underscore', () => {
 					editor.setData( '<p>foo .bar_</p>' );
 

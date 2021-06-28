@@ -104,11 +104,21 @@ function findInsertIndex( resultsList, markerToInsert ) {
 }
 
 function regexpMatchToFindResult( matchResult ) {
-	return {
-		label: matchResult[ 0 ],
-		start: matchResult.index,
-		end: matchResult.index + matchResult[ 0 ].length
-	};
+	// In case of match words option the matching results contain indices so that we work on
+	// offset where a subject match group was (as opposed to working on entire matched string).
+	if ( matchResult.indices ) {
+		return {
+			label: matchResult[ 1 ],
+			start: matchResult.indices[ 1 ][ 0 ],
+			end: matchResult.indices[ 1 ][ 1 ]
+		};
+	} else {
+		return {
+			label: matchResult[ 1 ],
+			start: matchResult.index,
+			end: matchResult.index + matchResult[ 1 ].length
+		};
+	}
 }
 
 /**
@@ -126,9 +136,11 @@ export function findByTextCallback( searchTerm, options ) {
 		flags += 'i';
 	}
 
-	let regExpQuery = escapeRegExp( searchTerm );
+	let regExpQuery = `(${ escapeRegExp( searchTerm ) })`;
 
 	if ( options.wholeWords ) {
+		flags += 'd'; // Special groups so that regexp indices are available.
+
 		const nonLetterGroup = '[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]';
 
 		regExpQuery = `(?:^|${ nonLetterGroup }|_)` + regExpQuery + `(?:_|${ nonLetterGroup }|$)`;

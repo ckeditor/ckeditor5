@@ -48,7 +48,7 @@ export default class FindAndReplace extends Plugin {
 		ui.on( 'findNext', ( event, data ) => {
 			if ( data && findAndReplaceEditing.state.searchText !== data.searchText ) {
 				findAndReplaceEditing.state.searchText = data.searchText;
-				this.editor.execute( 'find', data.searchText );
+				this.editor.execute( 'find', data.searchText, data );
 			} else {
 				// Subsequent calls.
 				this.editor.execute( 'findNext' );
