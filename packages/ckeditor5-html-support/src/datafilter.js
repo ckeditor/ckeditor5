@@ -26,7 +26,7 @@ import {
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter
 } from './converters';
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
 import '../theme/datafilter.css';
 
@@ -510,6 +510,8 @@ function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
 	const consumedMatches = [];
 
 	for ( const match of matches ) {
+		removeConsumedAttributes( consumable, viewElement, match );
+
 		// We only want to consume attributes, so element can be still processed by other converters.
 		delete match.match.name;
 
@@ -519,6 +521,28 @@ function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
 	}
 
 	return consumedMatches;
+}
+
+// Removes attributes from the given match that where already consumed by other converters.
+//
+// @private
+// @param {module:engine/view/element~Element} viewElement
+// @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable
+// @param {Object} match
+function removeConsumedAttributes( consumable, viewElement, match ) {
+	for ( const key of [ 'attributes', 'classes', 'styles' ] ) {
+		const attributes = match.match[ key ];
+
+		if ( !attributes ) {
+			continue;
+		}
+
+		for ( const value of attributes ) {
+			if ( !consumable.test( viewElement, ( { [ key ]: [ value ] } ) ) ) {
+				removeItemFromArray( attributes, value );
+			}
+		}
+	}
 }
 
 // Merges the result of {@link module:engine/view/matcher~Matcher#matchAll} method.
