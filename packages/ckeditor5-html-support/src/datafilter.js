@@ -523,7 +523,7 @@ function consumeAttributeMatches( viewElement, { consumable }, matcher ) {
 	return consumedMatches;
 }
 
-// Removes attributes from the given match that where already consumed by other converters.
+// Removes attributes from the given match that were already consumed by other converters.
 //
 // @private
 // @param {module:engine/view/element~Element} viewElement
