@@ -41,6 +41,8 @@ The data used to generate the following tables comes from the package metadata. 
 	}
 </style>
 
+<!-- Do not edit anything below this comment, as it will be overwritten. Edit the ckeditor5-metadata.json files for respective images instead. -->
+
 <!-- Do not delete the comment below as it indicates the place where the features HTML output will be stored. -->
 
 <!-- features-html-output-marker -->
