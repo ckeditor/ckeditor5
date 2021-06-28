@@ -287,10 +287,16 @@ export default class FindAndReplaceFormView extends View {
 			const target = event.target;
 
 			if ( target.classList.contains( 'ck-input-text' ) ) {
-				if ( target.parentElement.parentElement.parentElement.classList.contains( 'ck-find-form__wrapper' ) ) {
+				if (
+					target.parentElement.parentElement.parentElement.classList.contains( 'ck-find-form__wrapper' ) &&
+					this.findButtonView.isEnabled
+				) {
 					this.findButtonView.fire( 'execute' );
 					stopPropagationAndPreventDefault( event );
-				} else if ( target.parentElement.parentElement.parentElement.classList.contains( 'ck-replace-form__wrapper' ) ) {
+				} else if (
+					target.parentElement.parentElement.parentElement.classList.contains( 'ck-replace-form__wrapper' ) &&
+					this.replaceButtonView.isEnabled
+				) {
 					this.replaceButtonView.fire( 'execute' );
 					stopPropagationAndPreventDefault( event );
 				}
