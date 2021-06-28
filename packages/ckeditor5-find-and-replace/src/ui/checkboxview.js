@@ -158,8 +158,6 @@ export default class CheckboxView extends View {
 			attributes: {
 				type: 'checkbox',
 				id: bind.to( 'id' ),
-				name: bind.to( 'label' ),
-				value: bind.to( 'label' ),
 				'checked': bind.if( 'isChecked' ),
 				'disabled': bind.if( 'isEnabled', true, value => !value ),
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value )
