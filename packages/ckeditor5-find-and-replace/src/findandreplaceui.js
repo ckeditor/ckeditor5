@@ -79,7 +79,7 @@ export default class FindAndReplaceUI extends Plugin {
 
 			formView.bind( 'isSearching' ).to( this );
 
-			this._createToolbarDropdown( dropdown, loupeIcon );
+			this._createToolbarDropdown( dropdown, loupeIcon, formView );
 
 			dropdown.panelView.children.add( formView );
 
@@ -101,6 +101,12 @@ export default class FindAndReplaceUI extends Plugin {
 						return count > 0 && viewSearchText == modelSearchText;
 					} );
 			}
+
+			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
+				dropdown.buttonView.actionView.fire( 'execute' );
+
+				cancelEvent();
+			} );
 
 			return dropdown;
 		} );
@@ -145,8 +151,9 @@ export default class FindAndReplaceUI extends Plugin {
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
 	 * @param {String} icon Icon to be assigned to the button.
+	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView Related form view.
 	 */
-	_createToolbarDropdown( dropdown, icon ) {
+	_createToolbarDropdown( dropdown, icon, formView ) {
 		const t = this.editor.locale.t;
 		const buttonView = dropdown.buttonView;
 
@@ -159,6 +166,12 @@ export default class FindAndReplaceUI extends Plugin {
 
 		// Clicking the main button has the same effect as clicking the dropdown arrow.
 		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
+
+		// Each time dropdown is open the search text field should get focused.
+		buttonView.on( 'open', () => {
+			formView.findInputView.fieldView.select();
+			formView.focus();
+		}, { priority: 'low' } );
 	}
 }
 
