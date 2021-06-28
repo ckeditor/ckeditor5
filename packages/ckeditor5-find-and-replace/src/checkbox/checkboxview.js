@@ -36,7 +36,14 @@ export default class CheckboxView extends View {
 		 * @member {String} #label
 		 */
 		this.set( 'label' );
-		this.set( 'checkboxId' );
+
+		/**
+		 * HTML id attribute to be assigned to the checkbox.
+		 *
+		 * @observable
+		 * @member {String/null} #id
+		 */
+		this.set( 'id', null );
 		this.set( 'tabindex', -1 );
 
 		/**
@@ -111,7 +118,7 @@ export default class CheckboxView extends View {
 			tag: 'input',
 			attributes: {
 				type: 'checkbox',
-				id: bind.to( 'checkboxId' ),
+				id: bind.to( 'id' ),
 				name: bind.to( 'label' ),
 				value: bind.to( 'label' ),
 				'disabled': bind.if( 'isEnabled', true, value => !value ),
@@ -135,7 +142,7 @@ export default class CheckboxView extends View {
 			tag: 'label',
 
 			attributes: {
-				for: this.bindTemplate.to( 'checkboxId' )
+				for: this.bindTemplate.to( 'id' )
 			},
 
 			children: [

@@ -62,6 +62,14 @@ describe( 'CheckboxView', () => {
 					view.isVisible = false;
 					expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
 				} );
+
+				it( 'reacts on view#id', () => {
+					view.id = 'testId';
+					expect( view.checkboxInputView.element.id ).to.equal( 'testId' );
+
+					view.id = null;
+					expect( view.checkboxInputView.element.hasAttribute( 'id' ) ).to.be.false;
+				} );
 			} );
 
 			describe( 'tabindex', () => {
@@ -132,11 +140,11 @@ describe( 'CheckboxView', () => {
 				expect( view.labelView.element.getAttribute( 'for' ) ).to.be.null;
 			} );
 
-			it( 'reacts on view#checkboxId', () => {
-				view.checkboxId = 'foo';
+			it( 'reacts on view#id', () => {
+				view.id = 'foo';
 				expect( view.labelView.element.getAttribute( 'for' ) ).to.equal( 'foo' );
 
-				view.checkboxId = null;
+				view.id = null;
 				expect( view.labelView.element.getAttribute( 'for' ) ).to.be.null;
 			} );
 		} );
