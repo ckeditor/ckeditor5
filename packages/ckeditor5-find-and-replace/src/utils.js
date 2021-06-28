@@ -129,7 +129,9 @@ export function findByTextCallback( searchTerm, options ) {
 	let regExpQuery = escapeRegExp( searchTerm );
 
 	if ( options.wholeWords ) {
-		regExpQuery = '(?:^|\\W|_)' + regExpQuery + '(?:_|\\W|$)';
+		const nonLetterGroup = '[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]';
+
+		regExpQuery = `(?:^|${ nonLetterGroup }|_)` + regExpQuery + `(?:_|${ nonLetterGroup }|$)`;
 	}
 
 	const regExp = new RegExp( regExpQuery, flags );

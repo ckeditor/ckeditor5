@@ -215,7 +215,7 @@ describe( 'FindCommand', () => {
 				} );
 
 				it( 'set to true doesn\'t match a word including diacritic characters', () => {
-					editor.setData( '<p>foo łbarę</p>' );
+					editor.setData( '<p>foo łbarę and Äbarè</p>' );
 
 					const { results } = command.execute( 'bar', { wholeWords: true } );
 
