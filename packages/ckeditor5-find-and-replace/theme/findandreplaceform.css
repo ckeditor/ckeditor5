@@ -105,16 +105,12 @@
 				border-radius: 5px 0 0 5px;
 
 				& svg {
-					transform: rotate(90deg);
+					transform: rotate(180deg);
 				}
 			}
 
 			&.ck-button-next {
 				border-radius: 0 5px 5px 0;
-
-				& svg {
-					transform: rotate(270deg);
-				}
 			}
 		}
 	}
