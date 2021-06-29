@@ -34,9 +34,12 @@ export default class FindCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param {Function|String} callbackOrText
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.matchCase=false] If set to `true` letter casing will be ignored.
+	 * @param {Boolean} [options.wholeWords=false] If set to `true` only whole words that match `callbackOrText` will be matched.
 	 * @fires execute
 	 */
-	execute( callbackOrText ) {
+	execute( callbackOrText, { matchCase, wholeWords } = {} ) {
 		const { editor } = this;
 		const { model } = editor;
 
@@ -44,7 +47,7 @@ export default class FindCommand extends Command {
 
 		// Allow to execute `find()` on a plugin with a keyword only.
 		if ( typeof callbackOrText === 'string' ) {
-			findCallback = findByTextCallback( callbackOrText );
+			findCallback = findByTextCallback( callbackOrText, { matchCase, wholeWords } );
 
 			this.state.searchText = callbackOrText;
 		} else {
@@ -71,6 +74,9 @@ export default class FindCommand extends Command {
 			// @todo: eliminate this code repetition. Done to fix unit tests.
 			this.state.searchText = callbackOrText;
 		}
+
+		this.state.matchCase = !!matchCase;
+		this.state.matchWholeWords = !!wholeWords;
 
 		return ret;
 	}

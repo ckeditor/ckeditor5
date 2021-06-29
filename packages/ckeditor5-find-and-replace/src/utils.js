@@ -104,15 +104,49 @@ function findInsertIndex( resultsList, markerToInsert ) {
 }
 
 function regexpMatchToFindResult( matchResult ) {
-	return {
-		label: matchResult[ 0 ],
-		start: matchResult.index,
-		end: matchResult.index + matchResult[ 0 ].length
-	};
+	// In case of match words option the matching results contain indices so that we work on
+	// offset where a subject match group was (as opposed to working on entire matched string).
+	if ( matchResult.indices ) {
+		return {
+			label: matchResult[ 1 ],
+			start: matchResult.indices[ 1 ][ 0 ],
+			end: matchResult.indices[ 1 ][ 1 ]
+		};
+	} else {
+		return {
+			label: matchResult[ 1 ],
+			start: matchResult.index,
+			end: matchResult.index + matchResult[ 1 ].length
+		};
+	}
 }
 
-export function findByTextCallback( searchTerm ) {
-	const regExp = new RegExp( `${ escapeRegExp( searchTerm ) }`, 'igu' );
+/**
+ *
+ * @param {String} searchTerm
+ * @param {Object} [options]
+ * @param {Boolean} [options.matchCase=false] If set to `true` letter casing will be ignored.
+ * @param {Boolean} [options.wholeWords=false] If set to `true` only whole words that match `callbackOrText` will be matched.
+ * @returns
+ */
+export function findByTextCallback( searchTerm, options ) {
+	let flags = 'gu';
+
+	if ( !options.matchCase ) {
+		flags += 'i';
+	}
+
+	let regExpQuery = `(${ escapeRegExp( searchTerm ) })`;
+
+	if ( options.wholeWords ) {
+		flags += 'd'; // Special groups so that regexp indices are available.
+
+		const nonLetterGroup = '[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]';
+
+		regExpQuery = `(?:^|${ nonLetterGroup }|_)` + regExpQuery + `(?:_|${ nonLetterGroup }|$)`;
+	}
+
+	const regExp = new RegExp( regExpQuery, flags );
 
 	function findCallback( { text } ) {
 		const matches = [ ...text.matchAll( regExp ) ];

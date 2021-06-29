@@ -142,6 +142,114 @@ describe( 'FindCommand', () => {
 					'<paragraph>foo <X:start></X:start>🐛<X:end></X:end> bar</paragraph>'
 				);
 			} );
+
+			describe( 'options.matchCase', () => {
+				it( 'set to true doesn\'t match differently cased string', () => {
+					editor.setData( '<p>foo bAr</p>' );
+
+					const { results } = command.execute( 'bar', { matchCase: true } );
+
+					expect( results.length ).to.equal( 0 );
+				} );
+
+				it( 'set to true matches identically cased string', () => {
+					editor.setData( '<p>foo bAr</p>' );
+
+					const { results } = command.execute( 'bAr', { matchCase: true } );
+
+					expect( results.length ).to.equal( 1 );
+
+					const markers = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+						'<paragraph>foo <X:start></X:start>bAr<X:end></X:end></paragraph>'
+					);
+				} );
+
+				it( 'is disabled by default', () => {
+					editor.setData( '<p>foo bAr</p>' );
+
+					const { results } = command.execute( 'bar' );
+
+					expect( results.length ).to.equal( 1 );
+
+					const markers = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+						'<paragraph>foo <X:start></X:start>bAr<X:end></X:end></paragraph>'
+					);
+				} );
+			} );
+
+			describe( 'options.wholeWords', () => {
+				it( 'set to true matches a boundary words', () => {
+					editor.setData( '<p>bar foo bar</p><p>bar</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 3 );
+				} );
+
+				it( 'set to true matches a word followed by a dot', () => {
+					editor.setData( '<p>foo bar.</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true makes a proper selection', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					const markers = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+						'<paragraph>foo <X:start></X:start>bar<X:end></X:end> baz</paragraph>'
+					);
+				} );
+
+				it( 'set to true matches a word followed by an underscore', () => {
+					editor.setData( '<p>foo .bar_</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a word separated by an emoji', () => {
+					editor.setData( '<p>foo 🦄bar🦄baz</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true doesn\'t match a word including diacritic characters', () => {
+					editor.setData( '<p>foo łbarę and Äbarè</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 0 );
+				} );
+
+				it( 'set to true doesn\'t match similar words with superfluous characters', () => {
+					editor.setData( '<p>foo barr baz</p><p>aaabar</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 0 );
+				} );
+
+				it( 'is disabled by default', () => {
+					editor.setData( '<p>foo aabaraa</p>' );
+
+					const { results } = command.execute( 'bar' );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+			} );
 		} );
 
 		/**
