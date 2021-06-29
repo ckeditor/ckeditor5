@@ -37,6 +37,13 @@ describe( 'FindCommand', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
+
+		it( 'should be enabled in readonly mode editor', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+			editor.isReadOnly = true;
+
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( 'state', () => {

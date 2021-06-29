@@ -53,6 +53,18 @@ describe( 'FindNextCommand', () => {
 
 			expect( command.isEnabled ).to.be.true;
 		} );
+
+		it( 'should be enabled in readonly mode editor', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			command._state.results.clear();
+			command._state.results.add( {} );
+			command._state.results.add( {} );
+
+			editor.isReadOnly = true;
+
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( '_state', () => {
