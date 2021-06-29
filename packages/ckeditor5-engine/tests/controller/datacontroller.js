@@ -599,12 +599,13 @@ describe( 'DataController', () => {
 	describe( 'toView()', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			schema.register( 'div' );
+			schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			schema.extend( '$block', { allowIn: 'div' } );
-			schema.extend( 'div', { allowIn: '$root' } );
+			schema.extend( 'div', { allowIn: 'div' } );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
 		} );
 
 		it( 'should use #viewDocument as a parent for returned document fragments', () => {
@@ -689,6 +690,97 @@ describe( 'DataController', () => {
 			expect( stringifyView( viewDocumentFragment ) ).to.equal(
 				'<p>f<foo-start name="bar"></foo-start>oo</p><p>ba<foo-end name="bar"></foo-end>r</p>'
 			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/8485.
+		it( 'should convert collapsed markers at element boundary', () => {
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const modelRoot = model.document.getRoot();
+
+			downcastHelpers.markerToData( { model: 'marker:a' } );
+			downcastHelpers.markerToData( { model: 'marker:b' } );
+
+			const modelParagraph = modelElement.getChild( 0 );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRoot, 0 );
+
+				const rangeAtStart = writer.createRange( writer.createPositionFromPath( modelParagraph, [ 0 ] ) );
+				const rangeAtEnd = writer.createRange( writer.createPositionFromPath( modelParagraph, [ 3 ] ) );
+
+				writer.addMarker( 'marker:a', { range: rangeAtStart, usingOperation: true } );
+				writer.addMarker( 'marker:b', { range: rangeAtEnd, usingOperation: true } );
+			} );
+
+			const viewElement = data.toView( modelParagraph );
+
+			expect( stringifyView( viewElement ) ).to.equal(
+				'<marker:a-start></marker:a-start><marker:a-end></marker:a-end>' +
+				'foo' +
+				'<marker:b-start></marker:b-start><marker:b-end></marker:b-end>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/8485.
+		it( 'should convert collapsed markers at element boundary in a deeply nested element', () => {
+			const modelElement = parseModel( '<div><div><div><div><paragraph>foo</paragraph></div></div></div></div>', schema );
+			const modelRoot = model.document.getRoot();
+
+			downcastHelpers.markerToData( { model: 'marker:a' } );
+			downcastHelpers.markerToData( { model: 'marker:b' } );
+
+			const modelParagraph = modelElement.getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRoot, 0 );
+
+				const rangeAtStart = writer.createRange( writer.createPositionFromPath( modelParagraph, [ 0 ] ) );
+				const rangeAtEnd = writer.createRange( writer.createPositionFromPath( modelParagraph, [ 3 ] ) );
+
+				writer.addMarker( 'marker:a', { range: rangeAtStart, usingOperation: true } );
+				writer.addMarker( 'marker:b', { range: rangeAtEnd, usingOperation: true } );
+			} );
+
+			const viewElement = data.toView( modelElement );
+
+			expect( stringifyView( viewElement ) ).to.equal(
+				'<div><div><div><p>' +
+				'<marker:a-start></marker:a-start><marker:a-end></marker:a-end>' +
+				'foo' +
+				'<marker:b-start></marker:b-start><marker:b-end></marker:b-end>' +
+				'</p></div></div></div>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/8485.
+		it( 'should skip collapsed markers at other element\'s boundaries', () => {
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
+			const modelRoot = model.document.getRoot();
+
+			downcastHelpers.markerToData( { model: 'marker:a' } );
+			downcastHelpers.markerToData( { model: 'marker:b' } );
+
+			const modelP1 = modelElement.getChild( 0 );
+			const modelP2 = modelElement.getChild( 1 );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRoot, 0 );
+
+				const rangeA = writer.createRange( writer.createPositionFromPath( modelP1, [ 0 ] ) );
+				const rangeB = writer.createRange( writer.createPositionFromPath( modelP2, [ 0 ] ) );
+
+				writer.addMarker( 'marker:a', { range: rangeA, usingOperation: true } );
+				writer.addMarker( 'marker:b', { range: rangeB, usingOperation: true } );
+			} );
+
+			const viewElementP1 = data.toView( modelP1 );
+			const viewElementP2 = data.toView( modelP2 );
+
+			// The `marker:b` should not be present as it belongs to other element.
+			expect( stringifyView( viewElementP1 ) ).to.equal( '<marker:a-start></marker:a-start><marker:a-end></marker:a-end>foo' );
+
+			// The `marker:a` should not be present as it belongs to other element.
+			expect( stringifyView( viewElementP2 ) ).to.equal( '<marker:b-start></marker:b-start><marker:b-end></marker:b-end>bar' );
 		} );
 
 		it( 'should keep view-model mapping', () => {
