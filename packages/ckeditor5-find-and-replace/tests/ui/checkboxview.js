@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
+/* global Event, KeyboardEvent */
 
 import CheckboxView from '../../src/ui/checkboxview';
 import { View, ViewCollection } from 'ckeditor5/src/ui';
+import { getCode } from 'ckeditor5/src/utils';
 
 describe( 'CheckboxView', () => {
 	let locale, view;
@@ -99,6 +100,41 @@ describe( 'CheckboxView', () => {
 					view.tabindex = 3;
 					expect( view.element.attributes.tabindex.value ).to.equal( '3' );
 				} );
+			} );
+		} );
+	} );
+
+	describe( 'listeners', () => {
+		describe( 'space keydown listener', () => {
+			it( 'works when space is pressed on main element', () => {
+				const event = new KeyboardEvent( 'keydown', {
+					keyCode: getCode( 'space' )
+				} );
+
+				view.element.dispatchEvent( event );
+
+				expect( view.isChecked ).to.be.true;
+			} );
+
+			it( 'ignores when a different key is pressed on main element', () => {
+				const event = new KeyboardEvent( 'keydown', {
+					keyCode: getCode( 'delete' )
+				} );
+
+				view.element.dispatchEvent( event );
+
+				expect( view.isChecked ).to.be.false;
+			} );
+
+			it( 'ignores space key event originating from contained checkbox', () => {
+				const event = new KeyboardEvent( 'keydown', {
+					keyCode: getCode( 'space' ),
+					bubbles: true
+				} );
+
+				view.checkboxInputView.element.dispatchEvent( event );
+
+				expect( view.isChecked ).to.be.false;
 			} );
 		} );
 	} );

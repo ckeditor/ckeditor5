@@ -8,6 +8,7 @@
  */
 
 import { View } from 'ckeditor5/src/ui';
+import { getCode } from 'ckeditor5/src/utils';
 
 /**
  * The checkbox view class.
@@ -120,6 +121,16 @@ export default class CheckboxView extends View {
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				],
 				tabindex: bind.to( 'tabindex' )
+			},
+
+			on: {
+				keydown: bind.to( evt => {
+					// Need to check target. Otherwise we'd handle space press on input[type=text] and it would change
+					// checked property twice due to default browser handling kicking in too.
+					if ( evt.target === this.element && evt.keyCode == getCode( 'space' ) ) {
+						this.isChecked = !this.isChecked;
+					}
+				} )
 			},
 
 			children: this.children
