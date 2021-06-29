@@ -19,6 +19,8 @@ import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 
+import { debounce } from 'lodash-es';
+
 import '../theme/findandreplace.css';
 
 /**
@@ -204,8 +206,11 @@ export default class FindAndReplaceEditing extends Plugin {
 			} );
 		} );
 
-		this.listenTo( this.state, 'change:highlightedResult', ( eventInfo, name, newValue ) => {
-			// @todo: This event might be called very frequently. We should either throttle or debounce it.
+		// Debounce scroll as highlight might be changed very frequently, e.g. when there's a replace all command.
+		this.listenTo( this.state, 'change:highlightedResult', debounce( scrollToHighlightedResult.bind( this ), 32 ),
+			{ priority: 'low' } );
+
+		function scrollToHighlightedResult( eventInfo, name, newValue ) {
 			if ( newValue ) {
 				const domConverter = this.editor.editing.view.domConverter;
 				const viewRange = this.editor.editing.mapper.toViewRange( newValue.marker.getRange() );
@@ -215,7 +220,7 @@ export default class FindAndReplaceEditing extends Plugin {
 					viewportOffset: 40
 				} );
 			}
-		}, { priority: 'low' } );
+		}
 	}
 
 	/**
