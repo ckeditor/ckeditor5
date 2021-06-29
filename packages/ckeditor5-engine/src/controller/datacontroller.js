@@ -546,15 +546,16 @@ function _getMarkersRelativeToElement( element ) {
 		const markerRange = marker.getRange();
 
 		const isMarkerCollapsed = markerRange.isCollapsed;
-		const isMarkerAtElementBoundary = markerRange.start.isEqual( elementRange.start ) || markerRange.start.isEqual( elementRange.end );
-		const isMarkerCollapsedAtElementBoundary = isMarkerCollapsed && isMarkerAtElementBoundary;
+		const isMarkerAtElementBoundary = markerRange.start.isEqual( elementRange.start ) || markerRange.end.isEqual( elementRange.end );
 
-		const updatedMarkerRange = isMarkerCollapsedAtElementBoundary ?
-			markerRange :
-			elementRange.getIntersection( markerRange );
+		if ( isMarkerCollapsed && isMarkerAtElementBoundary ) {
+			result.push( [ marker.name, markerRange ] );
+		} else {
+			const updatedMarkerRange = elementRange.getIntersection( markerRange );
 
-		if ( updatedMarkerRange ) {
-			result.push( [ marker.name, updatedMarkerRange ] );
+			if ( updatedMarkerRange ) {
+				result.push( [ marker.name, updatedMarkerRange ] );
+			}
 		}
 	}
 
