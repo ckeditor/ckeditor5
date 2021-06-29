@@ -47,7 +47,16 @@ export default class ReplaceCommand extends Command {
 		model.change( writer => {
 			const range = result.marker.getRange();
 
-			model.insertContent( writer.createText( replacementText ), range );
+			let textAttributes = {};
+
+			for ( const item of range.getItems() ) {
+				if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
+					textAttributes = item.getAttributes();
+					break;
+				}
+			}
+
+			model.insertContent( writer.createText( replacementText, textAttributes ), range );
 
 			if ( this._state.results.has( result ) ) {
 				this._state.results.remove( result );

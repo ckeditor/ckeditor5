@@ -8,6 +8,7 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import FindAndReplaceEditing from '../src/findandreplaceediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 
 describe( 'ReplaceCommand', () => {
 	let editor, model, command;
@@ -15,7 +16,7 @@ describe( 'ReplaceCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing ]
+				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, ItalicEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -96,6 +97,50 @@ describe( 'ReplaceCommand', () => {
 						'</findResult:2:start>foo<findResult:2:end></findResult:2:end> ' +
 						'<findResult:3:start></findResult:3:start>foo<findResult:3:end></findResult:3:end> ' +
 				'</paragraph>'
+			);
+		} );
+
+		it( 'replacement should retain text attribute', () => {
+			setData( model, '<paragraph><$text italic="true">foo bar foo</$text></paragraph>' );
+
+			const { results } = editor.execute( 'find', 'bar' );
+			editor.execute( 'replace', 'bom', results.get( 0 ) );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text italic="true">foo bom foo</$text></paragraph>'
+			);
+		} );
+
+		it( 'replacement should retain text multiple attributes', () => {
+			setData( model, '<paragraph><$text bold="true" italic="true">foo bar foo</$text></paragraph>' );
+
+			const { results } = editor.execute( 'find', 'bar' );
+			editor.execute( 'replace', 'bom', results.get( 0 ) );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text bold="true" italic="true">foo bom foo</$text></paragraph>'
+			);
+		} );
+
+		it( 'replacement should retain replaced text formatting', () => {
+			setData( model, '<paragraph>foo <$text bold="true">bar</$text> foo</paragraph>' );
+
+			const { results } = editor.execute( 'find', 'bar' );
+			editor.execute( 'replace', 'bom', results.get( 0 ) );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo <$text bold="true">bom</$text> foo</paragraph>'
+			);
+		} );
+
+		it( 'doesn\'t pick attributes from sibling nodes', () => {
+			setData( model, '<paragraph><$text italic="true">foo </$text>bar<$text italic="true"> foo</$text></paragraph>' );
+
+			const { results } = editor.execute( 'find', 'bar' );
+			editor.execute( 'replace', 'bom', results.get( 0 ) );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
 		} );
 	} );
