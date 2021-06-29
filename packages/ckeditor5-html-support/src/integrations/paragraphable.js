@@ -8,13 +8,12 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { priorities } from 'ckeditor5/src/utils';
 import {
 	disallowedAttributesConverter,
 	modelToViewBlockAttributeConverter,
 	viewToModelBlockAttributeConverter
 } from '../converters';
-
-import { priorities } from 'ckeditor5/src/utils';
 
 import DataFilter from '../datafilter';
 
