@@ -13,7 +13,7 @@ ClassicEditor
 		},
 		image: {
 			toolbar: [
-				'imageStyle:full',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
 				'imageTextAlternative'

@@ -46,7 +46,7 @@ async function startEditors() {
 		image: {
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:full',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
@@ -85,8 +85,8 @@ async function startEditors() {
 				}, {
 					name: 'imageStyle:blockImages',
 					title: 'Block image',
-					defaultItem: 'imageStyle:full',
-					items: [ 'imageStyle:alignBlockLeft', 'imageStyle:full', 'imageStyle:alignBlockRight' ]
+					defaultItem: 'imageStyle:block',
+					items: [ 'imageStyle:alignBlockLeft', 'imageStyle:block', 'imageStyle:alignBlockRight' ]
 				},
 				'|',
 				'toggleImageCaption'

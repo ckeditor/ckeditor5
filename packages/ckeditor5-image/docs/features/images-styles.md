@@ -50,7 +50,7 @@ When a new image is inserted, the editor will, by default, choose the optimal im
 </info-box>
 
 ## UI
-Application of a style can be executed by using one of the toolbar buttons created by the `ImageStyle` plugin. Each of the defined styles (both, [default](#ready-to-use-styles) and [custom](#configuring-the-styles) will be registered under the name `imageStyle:image-style-name` in the {@link module:ui/componentfactory~ComponentFactory} and can be added to the image or main toolbar by referencing to this name.
+Application of a style can be executed by using one of the toolbar buttons created by the `ImageStyle` plugin. Each of the defined styles (both [default](#ready-to-use-styles) and [custom](#configuring-the-styles)) will be registered under the name `imageStyle:image-style-name` in the {@link module:ui/componentfactory~ComponentFactory} and can be added to the image or main toolbar by referencing to this name.
 
 The default image toolbar has its standard configuration already set in the predefined builds.
 * The default UI of the classic, inline, balloon and balloon block builds consists of a set of buttons to apply only the [semantical styles](#semantical-styles) to support creating a structured content. [**See a live example**](#semantical-example).
@@ -68,7 +68,7 @@ The distinction made above is purely theoretical. Setting up both semantical and
 </info-box>
 
 ### Semantical styles
-A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [tble](#ready-to-use-styles) below. Semantical styles give the integrator an ability to put a wide range of predefined image appearances at the user's disposal. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
+A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [table](#ready-to-use-styles) below. Semantical styles give the integrator an ability to put a wide range of predefined image appearances at the user's disposal. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
 
 <info-box hint>
 	Try to understand what use cases you system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. The "side image" in the example below is displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
@@ -83,7 +83,7 @@ A semantical style lets the user choose from predefined appearances of the image
 As the most of the predefined editor builds support editing a structured content which requires passing the control over the possible image appearances to the developer, they introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below presents an editor with such a basic configuration. There are three types of the images:
-* a full-width image - a representation of a block image with no style-related CSS class,
+* a block image - a representation of a block image with no style-related CSS class,
 * an inline image - a representation of an inline image with no style-related CSS class,
 * a side image - a semantical style applying the `image-style-side` CSS class to it.
 
@@ -107,7 +107,7 @@ ClassicEditor
 ```
 
 ### Presentational styles
-Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determine the image alignment behavior. Check the list of the available semantical styles in the [tble](#ready-to-use-styles) below.
+Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determine the image alignment behavior. Check the list of the available semantical styles in the [table](#ready-to-use-styles) below.
 
 <info-box hint>
 	Presentational image styles should be combined with the optional {@link features/images-resizing image resizing feature} as these features were designed to be used together. The image width is then controlled by the image resize feature, while the alignment is controlled by the image style feature.
@@ -117,7 +117,7 @@ Presentational styles do not relate to any special meaning of the content. They 
 	If you do not want to enable image resizing, you can use [semantical styles](#semantical-styles) to set the image dimensions.
 </info-box>
 
-The code sample above uses predefined presentational image styles represented by buttons grouped in the drop-downs by the way the image is displayed in the document:
+The sample editor below uses predefined presentational image styles represented by buttons grouped in the drop-downs by the way the image is displayed in the document:
 * <img class="inline-icon" src="../../assets/img/icons/object-inline.svg">**Inline images** - displayed inside a line of text. It is a default style for the inline images and it does not apply any CSS class to the image.
 * <img class="inline-icon" src="../../assets/img/icons/object-inline-left.svg">**Images wrapped with text** - these are the images with the CSS `float` property. They can be either in the inline or block mode, but to keep the valid HTML output, the block images (wrapped with the `<figure>` tags) can only be placed before or after paragraphs, not in the middle of one. It contains the following image styles:
   * `'align-left'`,
@@ -125,7 +125,7 @@ The code sample above uses predefined presentational image styles represented by
 * <img class="inline-icon" src="../../assets/img/icons/object-center.svg">**Images placed between the paragraphs** - block images without the CSS `float` property. It contains following image styles:
   * `'align-block-left'`,
   * `'align-block-right'`,
-  * `'full'` - this style is the default one for block images and it does not apply any CSS class to the image.
+  * `'block'` - this style is the default one for block images and it does not apply any CSS class to the image.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
@@ -205,7 +205,7 @@ ClassicEditor
 					name: 'inline',
 					icon: inlineIcon
 				}, {
-					name: 'full',
+					name: 'block',
 					title: 'Centered image',
 					icon: centerIcon
 				} ]
@@ -224,8 +224,8 @@ ClassicEditor
 				// Grouping the buttons for the regular
 				// picture-like image styling into one drop-down.
 				name: 'imageStyle:pictures',
-				items: [ 'imageStyle:full', 'imageStyle:side' ],
-				defaultItem: 'imageStyle:full'
+				items: [ 'imageStyle:block', 'imageStyle:side' ],
+				defaultItem: 'imageStyle:block'
 			}, '|', 'toggleImageCaption', 'linkImage'
 			]
 		}
@@ -356,7 +356,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 		</thead>
 		<tbody>
 			<tr>
-				<th>"full"</th>
+				<th>"block"</th>
 				<td><code>ImageBlock</code></td>
 				<td>block</td>
 				<td>removes all classes (default style)</td>
@@ -423,8 +423,8 @@ This feature is available in all {@link builds/guides/overview ready-to-use edit
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A button for each defined style, for example: `'imageStyle:full'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
-* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'full'` and `'side'`):
+* A button for each defined style, for example: `'imageStyle:block'` and `'imageStyle:side'` (to use in the {@link features/images-overview#image-contextual-toolbar image toolbar}).
+* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} that accepts a value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (for example, `'block'` and `'side'`):
 
 	```js
 	editor.execute( 'imageStyle', { value: 'side' } );

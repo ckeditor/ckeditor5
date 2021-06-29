@@ -31,8 +31,8 @@ describe( 'ImageStyleUI', () => {
 		items: [ 'imageStyle:inline', 'imageStyle:alignLeft' ]
 	}, {
 		name: 'imageStyle:custom2',
-		defaultItem: 'imageStyle:full',
-		items: [ 'imageStyle:full', 'imageStyle:side' ]
+		defaultItem: 'imageStyle:block',
+		items: [ 'imageStyle:block', 'imageStyle:side' ]
 	} ];
 
 	beforeEach( async () => {

@@ -11,10 +11,29 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-presentational-image-style-default' ), {
 		removePlugins: [ 'LinkImage', 'AutoImage', 'imageCaption' ],
 		image: {
+			resizeUnit: '%',
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					label: 'Original',
+					value: null
+				},
+				{
+					name: 'resizeImage:40',
+					label: '50%',
+					value: '50'
+				},
+				{
+					name: 'resizeImage:60',
+					label: '75%',
+					value: '75'
+				}
+			],
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:wrapText',
-				'imageStyle:breakText'
+				'imageStyle:breakText',
+				'resizeImage'
 			]
 		},
 		toolbar: {

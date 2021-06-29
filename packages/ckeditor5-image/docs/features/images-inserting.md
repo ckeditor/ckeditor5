@@ -43,7 +43,7 @@ You can paste the image URL directly into the editor content, and it will be aut
 
 {@snippet features/image-insert-via-pasting-url-into-editor}
 
-# Common API
+## Common API
 
 The {@link module:image/image~Image} plugin registers:
 

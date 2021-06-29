@@ -16,7 +16,7 @@ describe( 'ImageStyle utils', () => {
 		describe( 'styles', () => {
 			it( 'should have the #DEFAULT_OPTIONS properly defined', () => {
 				expect( DEFAULT_OPTIONS ).to.be.an( 'object' ).that.has.all.keys( [
-					'inline', 'alignLeft', 'alignRight', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'full', 'side'
+					'inline', 'alignLeft', 'alignRight', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'block', 'side'
 				] );
 			} );
 
@@ -71,7 +71,7 @@ describe( 'ImageStyle utils', () => {
 				options: [
 					'inline', 'alignLeft', 'alignRight',
 					'alignCenter', 'alignBlockLeft', 'alignBlockRight',
-					'full', 'side'
+					'block', 'side'
 				]
 			} );
 		} );
@@ -88,7 +88,7 @@ describe( 'ImageStyle utils', () => {
 			const config = getDefaultStylesConfiguration( true, false );
 
 			expect( config ).to.deep.equal( {
-				options: [ 'full', 'side' ]
+				options: [ 'block', 'side' ]
 			} );
 		} );
 

@@ -53,10 +53,10 @@ describe( 'ImageStyleEditing', () => {
 			it( 'should not alter the image.styles configuration', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
-					image: { styles: { options: [ 'full' ] } }
+					image: { styles: { options: [ 'block' ] } }
 				} );
 
-				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( { options: [ 'full' ] } );
+				expect( editor.config.get( 'image.styles' ) ).to.deep.equal( { options: [ 'block' ] } );
 
 				await editor.destroy();
 			} );
@@ -64,11 +64,11 @@ describe( 'ImageStyleEditing', () => {
 			it( 'should not alter the object definitions in the image.styles configuration', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing ],
-					image: { styles: { options: [ { name: 'full', modelElements: [ 'imageBlock' ] } ] } }
+					image: { styles: { options: [ { name: 'block', modelElements: [ 'imageBlock' ] } ] } }
 				} );
 
 				expect( editor.config.get( 'image.styles' ) )
-					.to.deep.equal( { options: [ { name: 'full', modelElements: [ 'imageBlock' ] } ] } );
+					.to.deep.equal( { options: [ { name: 'block', modelElements: [ 'imageBlock' ] } ] } );
 
 				await editor.destroy();
 			} );
@@ -83,7 +83,7 @@ describe( 'ImageStyleEditing', () => {
 						options: [
 							'inline', 'alignLeft', 'alignRight',
 							'alignCenter', 'alignBlockLeft', 'alignBlockRight',
-							'full', 'side'
+							'block', 'side'
 						]
 					} );
 
@@ -118,7 +118,7 @@ describe( 'ImageStyleEditing', () => {
 					} );
 
 					expect( editor.config.get( 'image.styles' ) ).to.deep.equal( {
-						options: [ 'full', 'side' ]
+						options: [ 'block', 'side' ]
 					} );
 
 					await editor.destroy();
@@ -250,7 +250,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should remove imageStyle attribute with invalid value (after changing image type)', () => {
-			setModelData( model, '[<imageBlock src="/assets/sample.png" imageStyle="full"></imageBlock>]' );
+			setModelData( model, '[<imageBlock src="/assets/sample.png" imageStyle="block"></imageBlock>]' );
 
 			editor.execute( 'imageTypeInline' );
 

@@ -94,7 +94,7 @@ export default class ImageStyle extends Plugin {
  *				options: [
  *					'inline', 'alignLeft', 'alignRight',
  *					'alignCenter', 'alignBlockLeft', 'alignBlockRight',
- *					'full', 'side'
+ *					'block', 'side'
  *				]
  *			}
  *		};
@@ -105,7 +105,7 @@ export default class ImageStyle extends Plugin {
  *
  *		const imageDefaultConfig = {
  *			styles: {
- *				options: [ 'full', 'side' ]
+ *				options: [ 'block', 'side' ]
  *			}
  *		};
  *
@@ -148,10 +148,10 @@ export default class ImageStyle extends Plugin {
  *		ClassicEditor.create( editorElement, { image:
  *			styles: {
  *				options: {
- *					// This will only customize the icon of the "full" style.
+ *					// This will only customize the icon of the "block" style.
  *					// Note: 'right' is one of default icons provided by the feature.
  *					{
- *						name: 'full',
+ *						name: 'block',
  *						icon: 'right'
  *					},
  *

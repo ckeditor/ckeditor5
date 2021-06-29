@@ -26,7 +26,7 @@ import { debounce } from 'lodash-es';
  *				plugins: [ ArticlePluginSet, Autosave ],
  *				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
  *				image: {
- *					toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+ *					toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
  *				},
  *				autosave: {
  *					save( editor ) {
