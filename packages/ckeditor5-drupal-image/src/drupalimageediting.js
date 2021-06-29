@@ -37,19 +37,53 @@ function viewImageToImageBlock( editor ) {
 
 	function converter( evt, data, conversionApi ) {
 		const { viewItem } = data;
-		const { writer, consumable, safeInsert, updateConversionResult } = conversionApi;
+		const { writer, consumable, safeInsert, updateConversionResult, schema } = conversionApi;
 		const attributesToConsume = [];
+
+		let image;
 
 		// Not only check if a given `img` view element has been consumed, but also verify it has `src` attribute present.
 		if ( !consumable.test( viewItem, { name: true, attributes: 'src' } ) ) {
 			return;
 		}
 
-		// Place the `src` attribute in a new `imageBlock` model element.
-		const image = writer.createElement( 'imageBlock', { src: viewItem.getAttribute( 'src' ) } );
+		// Create image that's allowed in the given context.
+		if ( schema.checkChild( data.modelCursor, 'imageInline' ) ) {
+			image = writer.createElement( 'imageInline', { src: viewItem.getAttribute( 'src' ) } );
+		} else {
+			image = writer.createElement( 'imageBlock', { src: viewItem.getAttribute( 'src' ) } );
+		}
+
+		if ( editor.plugins.has( 'ImageStyleEditing' ) &&
+			consumable.test( viewItem, { name: true, attributes: 'data-align' } )
+		) {
+			// https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-defaultStyles
+			const dataToPresentationMapBlock = {
+				left: 'alignBlockLeft',
+				center: 'alignCenter',
+				right: 'alignBlockRight'
+			};
+			const dataToPresentationMapInline = {
+				left: 'alignLeft',
+				right: 'alignRight'
+			};
+
+			const dataAlign = viewItem.getAttribute( 'data-align' );
+			const alignment = image.is( 'element', 'imageBlock' ) ?
+				dataToPresentationMapBlock[ dataAlign ] :
+				dataToPresentationMapInline[ dataAlign ];
+
+			writer.setAttribute( 'imageStyle', alignment, image );
+
+			// Make sure the attribute can be consumed after successful `safeInsert` operation.
+			attributesToConsume.push( 'data-align' );
+		}
 
 		// Check if the view element has still unconsumed `data-caption` attribute.
-		if ( consumable.test( viewItem, { name: true, attributes: 'data-caption' } ) ) {
+		// Also, we can add caption only to block image.
+		if ( image.is( 'element', 'imageBlock' ) &&
+			consumable.test( viewItem, { name: true, attributes: 'data-caption' } )
+		) {
 			// Create `caption` model element. Thanks to that element the rest of the `ckeditor5-plugin` converters can
 			// recognize this image as a block image with a caption.
 			const caption = writer.createElement( 'caption' );
@@ -63,30 +97,15 @@ function viewImageToImageBlock( editor ) {
 			attributesToConsume.push( 'data-caption' );
 		}
 
-		if ( editor.plugins.has( 'ImageStyleEditing' ) &&
-			consumable.test( viewItem, { name: true, attributes: 'data-align' } )
-		) {
-			// The integrator needs to adjust styles for the alignment to match their system.
-			// Depending on the needs you can either pick the right style from the default config:
-			// https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-defaultStyles
-			// or specify your own.
-			const dataToPresentationMap = {
-				left: 'alignBlockLeft',
-				center: 'alignBlockCenter', // it's more like 'full'
-				right: 'alignBlockRight'
-			};
-
-			// todo: check in schema the context of the image - it can be either inline or block.
-
-			const dataAlign = viewItem.getAttribute( 'data-align' );
-
-			writer.setAttribute( 'imageStyle', dataToPresentationMap[ dataAlign ], image );
-
-			// Make sure the attribute can be consumed after successful `safeInsert` operation.
-			attributesToConsume.push( 'data-align' );
+		if ( consumable.test( viewItem, { name: true, attributes: 'data-entity-uuid' } ) ) {
+			writer.setAttribute( 'dataEntityUuid', viewItem.getAttribute( 'data-entity-uuid' ), image );
+			attributesToConsume.push( 'data-entity-uuid' );
 		}
 
-		// todo: upcast `uuid` and `entity-file`
+		if ( consumable.test( viewItem, { name: true, attributes: 'data-entity-file' } ) ) {
+			writer.setAttribute( 'dataEntityFile', viewItem.getAttribute( 'data-entity-file' ), image );
+			attributesToConsume.push( 'data-entity-file' );
+		}
 
 		// Try to place the image in the allowed position.
 		if ( !safeInsert( image, data.modelCursor ) ) {
