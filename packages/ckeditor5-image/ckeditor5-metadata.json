@@ -80,33 +80,7 @@
 			"className": "Image",
 			"description": "Enables support for image handling. Note: The image feature is introduced in a granular form, implemented by separate plugins responsible for such aspects as image caption, toolbar, resize, upload or styles.",
 			"docs": "features/images/images-overview.html",
-			"path": "src/image.js",
-			"uiComponents": [
-				{
-					"type": "Button",
-					"name": "imageTextAlternative",
-					"iconPath": "",
-					"toolbars": [
-						"image.toolbar"
-					]
-				}
-			],
-			"htmlOutput": [
-				{
-					"elements": "figure",
-					"classes": "image"
-				},
-				{
-					"elements": "img",
-					"attributes": [
-						"alt",
-						"sizes",
-						"src",
-						"srcset",
-						"width"
-					]
-				}
-			]
+			"path": "src/image.js"
 		},
 		{
 			"name": "Image caption",
