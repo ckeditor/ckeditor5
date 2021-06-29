@@ -26,11 +26,14 @@ export default class DrupalImageEditing extends Plugin {
 
 		// Conversion.
 		conversion.for( 'upcast' )
-			.add( viewImageToImageBlock( editor ) );
+			.add( viewImageToModelImage( editor ) );
+		conversion.for( 'downcast' )
+			.add( modelEntityUuidToDataAttribute() )
+			.add( modelEntityFileToDataAttribute() );
 	}
 }
 
-function viewImageToImageBlock( editor ) {
+function viewImageToModelImage( editor ) {
 	return dispatcher => {
 		dispatcher.on( 'element:img', converter, { priority: 'highest' } );
 	};
@@ -117,5 +120,45 @@ function viewImageToImageBlock( editor ) {
 
 		// Make sure `modelRange` and `modelCursor` is up to date after inserting new nodes into the model.
 		updateConversionResult( image, data );
+	}
+}
+
+function modelEntityUuidToDataAttribute() {
+	return dispatcher => {
+		dispatcher.on( 'attribute:dataEntityUuid', converter );
+	};
+
+	function converter( evt, data, conversionApi ) {
+		const { item } = data;
+		const { consumable, writer } = conversionApi;
+
+		if ( !consumable.consume( item, evt.name ) ) {
+			return;
+		}
+
+		const viewElement = conversionApi.mapper.toViewElement( item );
+		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
+
+		writer.setAttribute( 'data-entity-uuid', data.attributeNewValue, imageInFigure );
+	}
+}
+
+function modelEntityFileToDataAttribute() {
+	return dispatcher => {
+		dispatcher.on( 'attribute:dataEntityFile', converter );
+	};
+
+	function converter( evt, data, conversionApi ) {
+		const { item } = data;
+		const { consumable, writer } = conversionApi;
+
+		if ( !consumable.consume( item, evt.name ) ) {
+			return;
+		}
+
+		const viewElement = conversionApi.mapper.toViewElement( item );
+		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
+
+		writer.setAttribute( 'data-entity-file', data.attributeNewValue, imageInFigure );
 	}
 }
