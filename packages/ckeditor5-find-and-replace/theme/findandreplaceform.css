@@ -56,6 +56,10 @@
 	justify-content: flex-end;
 	border-top: 1px solid var(--ck-color-base-border);
 
+	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
+		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+	}
+
 	& .ck-button {
 		border-radius: 5px;
 		font-size: calc(var(--ck-font-size-normal) * 0.9);
