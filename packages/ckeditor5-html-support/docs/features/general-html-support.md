@@ -231,7 +231,7 @@ htmlSupport: {
 }
 ```
 
-The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disallowedContent) option from CKEditor 4.
+The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
 
 ## Known issues
 
