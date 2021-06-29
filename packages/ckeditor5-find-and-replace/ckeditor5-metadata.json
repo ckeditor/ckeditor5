@@ -8,7 +8,7 @@
 			"docs": "features/find-and-replace.html",
 			"uiComponents": [
 				{
-					"type": "Dropdown",
+					"type": "SplitButton",
 					"name": "findAndReplace",
 					"iconPath": "theme/icons/find-replace.svg"
 				}
