@@ -206,9 +206,13 @@ export default class FindAndReplaceEditing extends Plugin {
 			} );
 		} );
 
+		const debouncedScrollListener = debounce( scrollToHighlightedResult.bind( this ), 32 );
 		// Debounce scroll as highlight might be changed very frequently, e.g. when there's a replace all command.
-		this.listenTo( this.state, 'change:highlightedResult', debounce( scrollToHighlightedResult.bind( this ), 32 ),
-			{ priority: 'low' } );
+		this.listenTo( this.state, 'change:highlightedResult', debouncedScrollListener, { priority: 'low' } );
+
+		// It's possible that editor will get destroyed before debounced call kicks in. This would result with accessing
+		// view three that is no longer in DOM.
+		this.listenTo( this.editor, 'destroy', debouncedScrollListener.cancel );
 
 		function scrollToHighlightedResult( eventInfo, name, newValue ) {
 			if ( newValue ) {
