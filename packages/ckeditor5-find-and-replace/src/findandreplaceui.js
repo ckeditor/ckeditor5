@@ -172,7 +172,6 @@ export default class FindAndReplaceUI extends Plugin {
 		// Configure dropdown's button properties:
 		buttonView.set( {
 			icon,
-			withText: true,
 			tooltip: t( 'Find and replace' )
 		} );
 
