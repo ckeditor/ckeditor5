@@ -97,7 +97,8 @@ module.exports = {
 
 ## Creating an editor
 
-You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple rich-text editor. You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
+You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
+You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
 ```bash
 npm install --save \
