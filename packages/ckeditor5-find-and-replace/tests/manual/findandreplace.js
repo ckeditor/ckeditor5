@@ -22,6 +22,10 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
+			editor.isReadOnly = !editor.isReadOnly;
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

@@ -43,6 +43,12 @@ describe( 'ReplaceCommand', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
+
+		it( 'should be disabled in readonly editor', () => {
+			editor.isReadOnly = true;
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'state', () => {
