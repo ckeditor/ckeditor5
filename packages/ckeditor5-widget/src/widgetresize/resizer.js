@@ -123,7 +123,9 @@ export default class Resizer {
 				that._appendHandles( domElement );
 				that._appendSizeUI( domElement );
 
-				that._domResizerWrapper = domElement;
+				if ( editingView.domConverter.viewToDom( viewResizerWrapper.root ).ownerDocument === domDocument ) {
+					that._domResizerWrapper = domElement;
+				}
 
 				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
 					domElement.style.display = newValue ? '' : 'none';
