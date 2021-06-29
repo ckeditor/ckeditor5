@@ -29,7 +29,7 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 		const range = model.createRangeIn( model.document.getRoot() );
 
 		const results = activeResults instanceof Collection ?
-			activeResults : updateFindResultFromRange( range, model, findByTextCallback( activeResults ) );
+			activeResults : updateFindResultFromRange( range, model, findByTextCallback( activeResults, this._state ) );
 
 		if ( results.length ) {
 			this.editor.model.change( () => {
