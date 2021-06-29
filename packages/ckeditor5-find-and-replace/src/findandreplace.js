@@ -104,10 +104,25 @@ export default class FindAndReplace extends Plugin {
 			// We need to wait for UI ready to have the toolbar dropdown available. Otherwise findAndReplace component
 			// is registered but not yet constructed.
 			this.listenTo( this.editor.ui, 'ready', () => {
+				const formView = ui.formView;
 				// If editor doesn't contain findAndReplace button then there's no ui#formView property.
-				if ( ui.formView ) {
-					ui.formView.findNextButtonView.bind( 'isEnabled' ).to( this.editor.commands.get( 'findNext' ), 'isEnabled' );
-					ui.formView.findPrevButtonView.bind( 'isEnabled' ).to( this.editor.commands.get( 'findPrevious' ), 'isEnabled' );
+				if ( formView ) {
+					const commands = this.editor.commands;
+
+					formView.findNextButtonView.bind( 'isEnabled' ).to( commands.get( 'findNext' ), 'isEnabled' );
+					formView.findPrevButtonView.bind( 'isEnabled' ).to( commands.get( 'findPrevious' ), 'isEnabled' );
+
+					formView.replaceButtonView.unbind( 'isEnabled' );
+					formView.replaceButtonView.bind( 'isEnabled' ).to(
+						commands.get( 'replace' ), 'isEnabled', formView, 'isSearching', ( commandEnabled, isSearching ) => {
+							return commandEnabled && isSearching;
+						} );
+
+					formView.replaceAllButtonView.unbind( 'isEnabled' );
+					formView.replaceAllButtonView.bind( 'isEnabled' ).to(
+						commands.get( 'replaceAll' ), 'isEnabled', formView, 'isSearching', ( commandEnabled, isSearching ) => {
+							return commandEnabled && isSearching;
+						} );
 				}
 			} );
 		}
