@@ -105,12 +105,16 @@
 				border-radius: 5px 0 0 5px;
 
 				& svg {
-					transform: rotate(180deg);
+					transform: rotate(180deg) translateY(-2px);
 				}
 			}
 
 			&.ck-button-next {
 				border-radius: 0 5px 5px 0;
+
+				& svg {
+					transform: translateY(-1px);
+				}
 			}
 		}
 	}
@@ -138,13 +142,14 @@
 		& .ck-find-checkboxes__box {
 			display: flex;
 			align-items: center;
-			max-width: 140px;
+			max-width: 150px;
 			overflow: hidden;
 
 			& label {
 				margin-left: 5px;
 				line-height: calc(var(--ck-spacing-standard) * 2.2);
-				white-space: normal;
+				overflow: hidden;
+    			text-overflow: ellipsis;
 			}
 
 			& label:hover,
