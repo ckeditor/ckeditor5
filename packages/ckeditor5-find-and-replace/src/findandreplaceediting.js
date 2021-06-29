@@ -16,6 +16,8 @@ import FindNextCommand from './findnextcommand';
 import FindPreviousCommand from './findpreviouscommand';
 
 import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 
 import '../theme/findandreplace.css';
 
@@ -201,6 +203,19 @@ export default class FindAndReplaceEditing extends Plugin {
 				}
 			} );
 		} );
+
+		this.listenTo( this.state, 'change:highlightedResult', ( eventInfo, name, newValue ) => {
+			// @todo: This event might be called very frequently. We should either throttle or debounce it.
+			if ( newValue ) {
+				const domConverter = this.editor.editing.view.domConverter;
+				const viewRange = this.editor.editing.mapper.toViewRange( newValue.marker.getRange() );
+
+				scrollViewportToShowTarget( {
+					target: domConverter.viewRangeToDom( viewRange ),
+					viewportOffset: 40
+				} );
+			}
+		}, { priority: 'low' } );
 	}
 
 	/**
