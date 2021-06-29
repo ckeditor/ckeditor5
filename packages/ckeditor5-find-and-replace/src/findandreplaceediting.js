@@ -16,6 +16,10 @@ import FindNextCommand from './findnextcommand';
 import FindPreviousCommand from './findpreviouscommand';
 
 import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+
+import { debounce } from 'lodash-es';
 
 import '../theme/findandreplace.css';
 
@@ -201,6 +205,26 @@ export default class FindAndReplaceEditing extends Plugin {
 				}
 			} );
 		} );
+
+		const debouncedScrollListener = debounce( scrollToHighlightedResult.bind( this ), 32 );
+		// Debounce scroll as highlight might be changed very frequently, e.g. when there's a replace all command.
+		this.listenTo( this.state, 'change:highlightedResult', debouncedScrollListener, { priority: 'low' } );
+
+		// It's possible that editor will get destroyed before debounced call kicks in. This would result with accessing
+		// view three that is no longer in DOM.
+		this.listenTo( this.editor, 'destroy', debouncedScrollListener.cancel );
+
+		function scrollToHighlightedResult( eventInfo, name, newValue ) {
+			if ( newValue ) {
+				const domConverter = this.editor.editing.view.domConverter;
+				const viewRange = this.editor.editing.mapper.toViewRange( newValue.marker.getRange() );
+
+				scrollViewportToShowTarget( {
+					target: domConverter.viewRangeToDom( viewRange ),
+					viewportOffset: 40
+				} );
+			}
+		}
 	}
 
 	/**
