@@ -127,7 +127,7 @@ function regexpMatchToFindResult( matchResult ) {
  * @param {Object} [options]
  * @param {Boolean} [options.matchCase=false] If set to `true` letter casing will be ignored.
  * @param {Boolean} [options.wholeWords=false] If set to `true` only whole words that match `callbackOrText` will be matched.
- * @returns
+ * @returns {Function}
  */
 export function findByTextCallback( searchTerm, options ) {
 	let flags = 'gu';
