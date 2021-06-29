@@ -10,13 +10,13 @@ The {@link module:find-and-replace/findandreplace~FindAndReplace} feature allows
 
 ## Demo
 
-Use the toolbar "Find and replace" button to find and replace parts of the text you'd wish to find, and/or replace. Or use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut to invoke the search and replace panel. For a starter, try replacing "steam" with "diesel" to make the demo content more up to date. Be careful to match the case, for there are different instances of the word present in the document!
+Use the toolbar "Find and replace" button to find and replace parts of the text you would like to find, and/or replace. Or use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut to invoke the search and replace panel. For a starter, try replacing "steam" with "diesel" to make the demo content more up to date. Be careful to match the case, for there are different instances of the word present in the document!
 
 {@snippet features/find-and-replace}
 
 ## Related features
 
-* No related features as of now.
+* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 
 ## Installation
 
@@ -44,7 +44,7 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-<!-- TODO: Update this with proper description and values, and code snippet for replace / replaceAll-->
+<!-- TODO: Update this with proper description and values, and code snippet for replace / replaceAll -->
 ## Common API
 
 The {@link module:find-and-replace/findandreplace~FindAndReplace} plugin registers the `'findAndReplace'` UI button component and the `'find'`, `'replace'`, `'replaceAll'` commands implemented by {@link module:find-and-replace/findcommand~FindCommand}, {@link module:find-and-replace/replacecommand~ReplaceCommand}, {@link module:find-and-replace/replaceallcommand~ReplaceAllCommand}.

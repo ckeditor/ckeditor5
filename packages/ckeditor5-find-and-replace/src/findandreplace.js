@@ -57,7 +57,7 @@ export default class FindAndReplace extends Plugin {
 		} );
 
 		/**
-		 * Delegate find previous request.i
+		 * Delegate find previous request
 		 */
 		ui.on( 'findPrevious', ( event, data ) => {
 			if ( data && findAndReplaceEditing.state.searchText !== data.searchText ) {
