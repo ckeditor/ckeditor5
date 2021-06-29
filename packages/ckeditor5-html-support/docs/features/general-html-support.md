@@ -214,6 +214,25 @@ The General HTML Support feature distinguishes several content types, each treat
 
 The enabled elements will not just be available "anywhere" in the content, as they still need to adhere to certain rules derived from the HTML schema and from common sense. Also, the behavior of specific types of elements in the editing area will be different. For instance, the object elements will only be selectable as a whole, and the inline elements will work the same as other formatting features supported by CKEditor 5 (e.g. bold, italic) do.
 
+### Enabling all HTML features
+
+It might be desired to enable all HTML features in some cases, so all elements and attributes will be allowed by the editor. It could be done with a special configuration:
+
+```js
+htmlSupport: {
+	allow: [
+		{
+			name: /.*/,
+			attributes: true,
+			classes: true,
+			styles: true
+		}
+	]
+}
+```
+
+The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
+
 ## Known issues
 
 It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.).
