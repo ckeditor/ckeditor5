@@ -96,9 +96,21 @@ export default class FindAndReplaceUI extends Plugin {
 
 				const findTextInputView = formView.findInputView.fieldView;
 
-				this.bind( 'isSearching' ).to( this, 'matchCount', findTextInputView, 'value', this._state, 'searchText',
-					( count, viewSearchText, modelSearchText ) => {
-						return count > 0 && viewSearchText == modelSearchText;
+				// Searching should only be active if there's more than 1 result matched and
+				// user had not changed any search criteria.
+				this.bind( 'isSearching' ).to( this, 'matchCount',
+					findTextInputView, 'value', this._state, 'searchText',
+					formView.matchCaseView, 'isChecked', this._state, 'matchCase',
+					formView.matchWholeWordsView, 'isChecked', this._state, 'matchWholeWords',
+					( count,
+						viewSearchText, modelSearchText,
+						viewMatchCase, modelMatchCase,
+						viewWholeWords, modelWholeWords
+					) => {
+						return count > 0 &&
+							viewSearchText == modelSearchText &&
+							viewMatchCase == modelMatchCase &&
+							viewWholeWords == modelWholeWords;
 					} );
 			}
 

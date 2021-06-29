@@ -46,11 +46,12 @@ export default class FindAndReplace extends Plugin {
 		 * Delegate find next request.
 		 */
 		ui.on( 'findNext', ( event, data ) => {
-			if ( data && findAndReplaceEditing.state.searchText !== data.searchText ) {
+			// Data is contained only for the "find" button.
+			if ( data ) {
 				findAndReplaceEditing.state.searchText = data.searchText;
 				this.editor.execute( 'find', data.searchText, data );
 			} else {
-				// Subsequent calls.
+				// Arrow button press.
 				this.editor.execute( 'findNext' );
 			}
 		} );

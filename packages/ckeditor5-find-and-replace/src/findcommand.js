@@ -75,6 +75,9 @@ export default class FindCommand extends Command {
 			this.state.searchText = callbackOrText;
 		}
 
+		this.state.matchCase = !!matchCase;
+		this.state.matchWholeWords = !!wholeWords;
+
 		return ret;
 	}
 }
