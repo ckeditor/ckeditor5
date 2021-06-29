@@ -14,6 +14,8 @@ import {
 	viewToModelBlockAttributeConverter
 } from '../converters';
 
+import { priorities } from 'ckeditor5/src/utils';
+
 import DataFilter from '../datafilter';
 
 /**
@@ -53,16 +55,48 @@ export default class ParagraphableHtmlSupport extends Plugin {
 				inheritAllFrom: '$block'
 			} );
 
-			conversion.for( 'upcast' ).add( viewToModelParagraphableElementConverter( definition ) );
+			conversion.for( 'upcast' ).elementToElement( {
+				view: definition.view,
+				model: ( viewElement, { writer } ) => {
+					if ( this._hasBlockContent( viewElement ) ) {
+						return writer.createElement( definition.model );
+					}
 
-			conversion.for( 'downcast' ).elementToElement( definition );
+					return writer.createElement( definition.asParagraph );
+				},
+				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
+				// this listener is called before it. If not, some elements will be transformed into a paragraph.
+				converterPriority: priorities.get( 'low' ) + 1
+			} );
+
+			conversion.for( 'downcast' ).elementToElement( {
+				view: definition.view,
+				model: definition.model
+			} );
 			this._addAttributeConversion( definition );
 
-			conversion.for( 'downcast' ).elementToElement( paragraphableDefinition );
+			conversion.for( 'downcast' ).elementToElement( {
+				view: paragraphableDefinition.view,
+				model: paragraphableDefinition.model
+			} );
 			this._addAttributeConversion( paragraphableDefinition );
 
 			evt.stop();
 		} );
+	}
+
+	/**
+	 * Checks whethever the given view element includes any other block element.
+	 *
+	 * @private
+	 * @param {module:engine/view/element~Element} viewElement
+	 * @returns {Boolean}
+	 */
+	_hasBlockContent( viewElement ) {
+		const blockElements = this.editor.editing.view.domConverter.blockElements;
+
+		return Array.from( viewElement.getChildren() )
+			.some( node => blockElements.includes( node.name ) );
 	}
 
 	/**
@@ -84,80 +118,6 @@ export default class ParagraphableHtmlSupport extends Plugin {
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, dataFilter ) );
 		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
-}
-
-// View-to-model conversion helper for elements which can behave as a paragraph or block element
-// depending on the element content.
-//
-// If an element includes any block element like paragraph, it should be upcasted using block element model.
-//
-// 		<div><p>foobar</p></div>
-// 		<!-- Should be upcasted to: -->
-// 		<htmlDiv><p>foobar</p></htmlDiv>
-//
-// If an element includes only text nodes or soft breaks, it should be upcasted using paragraph-like element model.
-//
-// 		<div>foobar</div>
-// 		<!-- Should be upcasted to: -->
-// 		<htmlDivParagraph>foobar</htmlDivParagraph>
-//
-// @private
-// @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition
-function viewToModelParagraphableElementConverter( definition ) {
-	return dispatcher => {
-		dispatcher.on( `element:${ definition.view }`, ( evt, data, conversionApi ) => {
-			const { writer, schema } = conversionApi;
-
-			// We are using document fragment to convert children, as we need them
-			// to decide which model element to create.
-			const documentFragment = writer.createDocumentFragment();
-
-			conversionApi.convertChildren( data.viewItem, documentFragment );
-
-			// Nodes are moved later on, so we can't use iterable directly.
-			const conversionChildren = Array.from( documentFragment.getChildren() );
-			const treatAsParagraph = conversionChildren.every( node => schema.isInline( node ) );
-
-			const modelElement = writer.createElement( treatAsParagraph ? definition.asParagraph : definition.model );
-
-			if ( conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
-				safeInsertNodes( conversionChildren, writer.createPositionAt( modelElement, 0 ), conversionApi );
-
-				conversionApi.consumable.consume( data.viewItem, { name: true } );
-				conversionApi.updateConversionResult( modelElement, data );
-			} else {
-				const { modelRange, modelCursor } = safeInsertNodes( conversionChildren, data.modelCursor, conversionApi );
-
-				data.modelRange = modelRange;
-				data.modelCursor = modelCursor;
-			}
-		} );
-	};
-}
-
-// TODO docs
-function safeInsertNodes( nodes, modelCursor, conversionApi ) {
-	const modelRange = conversionApi.writer.createRange( modelCursor );
-
-	for ( const node of nodes ) {
-		const data = { modelRange: null, modelCursor };
-
-		// Insert at the modelCursor position so in the proper split part if container was split
-		// (in cases when inserted element is not allowed inside current parent and requires splitting).
-		if ( !conversionApi.safeInsert( node, data.modelCursor ) ) {
-			// Note: That was already consumed but is not inserted.
-			continue;
-		}
-
-		// Advance the modelCursor with the knowledge of possible split elements
-		// (so the cursor should be inside the new part of the split element).
-		conversionApi.updateConversionResult( node, data );
-
-		modelRange.end = data.modelRange.end;
-		modelCursor = data.modelCursor;
-	}
-
-	return { modelRange, modelCursor };
 }
 
 /**
