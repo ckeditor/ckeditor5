@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* disabled buttons bg color: #C3C3C3 */
-/* button color #4E8AE4 */
-
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck .ck-find-and-replace-form > .ck-responsive-form {
@@ -53,7 +50,7 @@
 	}
 
 	& .ck.ck-input-text{
-		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 9) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	}
 
 	& span.ck-results-counter {
