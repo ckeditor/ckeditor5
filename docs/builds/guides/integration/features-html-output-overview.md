@@ -604,6 +604,39 @@ The data used to generate the following tables comes from the package metadata. 
 		</tr>
 	</tbody>
 </table>
+<h3 id="ckeditor5-find-and-replace"><code>ckeditor5-find-and-replace</code></h3>
+<p>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-find-and-replace/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-find-and-replace/ckeditor5-metadata.json</code></a>
+</p>
+<table class="features-html-output">
+	<thead>
+		<tr>
+			<th class="plugin">
+				Plugin
+			</th>
+			<th class="html-output">
+				HTML output
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/find-and-replace.html">Find and replace</a>
+				</p>
+				<p>
+					<a href="../../../api/module_find-and-replace_findandreplace-FindAndReplace.html"><code>FindAndReplace</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
 <h3 id="ckeditor5-font"><code>ckeditor5-font</code></h3>
 <p>
 	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-font/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-font/ckeditor5-metadata.json</code></a>
