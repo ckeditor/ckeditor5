@@ -430,6 +430,11 @@ export default class FindAndReplaceFormView extends View {
 				this.replaceInputView,
 				{
 					tag: 'div',
+					attributes: {
+						class: [
+							'ck-replace-buttons'
+						]
+					},
 					children: [
 						this.replaceAllButtonView,
 						this.replaceButtonView

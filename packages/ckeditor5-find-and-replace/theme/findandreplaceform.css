@@ -172,3 +172,51 @@
 		}
 	}
 }
+
+.ck[dir='rtl'] {
+	& .ck .ck-find-and-replace-form .ck-find-form__wrapper .ck-labeled-field-view__input-wrapper .ck.ck-input-text {
+		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8);
+	}
+
+	& .ck .ck-find-and-replace-form .ck-replace-form__wrapper {
+		& .ck-replace-buttons {
+			display: flex;
+			flex-flow: row-reverse;
+
+			& .ck-button:last-child {
+				margin-left: var(--ck-spacing-standard);
+			}
+		}
+		& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
+			padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+		}
+	}
+
+	& .ck.ck-responsive-form > :not(:last-child) {
+		margin-left: 0;
+	}
+
+	& .ck .ck-find-and-replace-form .ck-find-form__wrapper {
+		& .ck-button.ck-button-prev,
+		& .ck-button.ck-button-next {
+			margin-right: 1px;
+			margin-left: 0;
+		}
+
+		& span.ck-results-counter {
+			left: calc(var(--ck-spacing-standard) * 3);
+		}
+
+		& .ck-find-buttons {
+			flex-flow: row-reverse;
+		}
+
+		&.ck-responsive-form .ck-find-checkboxes {
+			margin: 0;
+
+			& .ck-find-checkboxes__box label {
+				margin-right: 5px;
+			}
+		}
+	}
+}
