@@ -16,10 +16,6 @@ msgstr ""
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt "Label for the Save button."
-msgid "Save"
-msgstr "저장"
-
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "취소"
@@ -31,3 +27,11 @@ msgstr "색깔 제거"
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
 msgstr ""
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "저장"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "더보기"
