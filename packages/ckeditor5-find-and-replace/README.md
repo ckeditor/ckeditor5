@@ -1,7 +1,7 @@
 CKEditor 5 find and replace feature
 ===========================
 
-This is an initial package for development purposes. It does not contain code yet.
+This package implements the find and replace feature for CKEditor 5.
 
 ## License
 
