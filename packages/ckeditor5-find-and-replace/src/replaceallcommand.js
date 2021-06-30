@@ -18,18 +18,29 @@ import ReplaceCommand from './replacecommand';
  */
 export default class ReplaceAllCommand extends ReplaceCommand {
 	/**
-	 * Replaces all find results by a string or a callback.
+	 * Replaces all the occurrences of `textToReplace` with a given `newText` string.
 	 *
-	 * @param {String} newText
-	 * @param {Collection} activeResults
+	 * ```js
+	 *	replaceAllCommand.execute( 'replaceAll', 'new text replacement', 'text to replace' );
+	 * ```
+	 *
+	 * Alternatively you can call it from editor instance:
+	 *
+	 * ```js
+	 *	editor.execute( 'replaceAll', 'new text', 'old text' );
+	 * ```
+	 *
+	 * @param {String} newText Text that will be inserted to the editor for each match.
+	 * @param {String|module:utils/collection~Collection} textToReplace Text to be replaced or a collection of matches
+	 * as returned by the find command.
 	 */
-	execute( newText, activeResults ) {
+	execute( newText, textToReplace ) {
 		const { editor } = this;
 		const { model } = editor;
 		const range = model.createRangeIn( model.document.getRoot() );
 
-		const results = activeResults instanceof Collection ?
-			activeResults : updateFindResultFromRange( range, model, findByTextCallback( activeResults, this._state ) );
+		const results = textToReplace instanceof Collection ?
+			textToReplace : updateFindResultFromRange( range, model, findByTextCallback( textToReplace, this._state ) );
 
 		if ( results.length ) {
 			this.editor.model.change( () => {
