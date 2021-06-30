@@ -7,6 +7,7 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import FindAndReplace from '../src/findandreplace';
 import FindAndReplaceUI from '../src/findandreplaceui';
@@ -339,6 +340,33 @@ describe( 'FindAndReplace', () => {
 			findAndReplaceUI.fire( 'replace', {
 				searchText: 'bar',
 				replaceText: 'new'
+			} );
+		} );
+
+		describe( 'undo', () => {
+			it( 'doesn\'t bring back highlighted content', () => {
+				editor.setData( FOO_BAR_PARAGRAPH );
+
+				const { results } = editor.execute( 'find', 'bar' );
+
+				editor.execute( 'replace', 'new', results.get( 0 ) );
+
+				editor.execute( 'undo' );
+
+				const markers = Array.from( editor.model.markers ).map( marker => {
+					// Replace markers id to a predefined value, as originally these are unique random ids.
+					if ( marker.name.startsWith( 'findResult:' ) ) {
+						marker.name = 'X';
+					} else if ( marker.name.startsWith( 'findResultHighlighted:' ) ) {
+						marker.name = 'Y';
+					}
+
+					return marker;
+				} );
+
+				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					'<paragraph>Foo bar baz</paragraph>'
+				);
 			} );
 		} );
 	} );
