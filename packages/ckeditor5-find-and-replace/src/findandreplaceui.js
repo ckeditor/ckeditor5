@@ -10,7 +10,9 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
-import 'ckeditor5/packages/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// See: #8833.
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../theme/findandreplaceform.css';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
