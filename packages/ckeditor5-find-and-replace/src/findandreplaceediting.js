@@ -52,7 +52,7 @@ class FindAndReplaceState {
 							highlightedResultRemoved = true;
 						}
 
-						if ( model.markers.has( removedResult.marker ) ) {
+						if ( model.markers.has( removedResult.marker.name ) ) {
 							writer.removeMarker( removedResult.marker );
 						}
 					}
