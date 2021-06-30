@@ -156,17 +156,17 @@
 		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8);
 	}
 
-	& .ck .ck-find-and-replace-form  .ck-replace-form__wrapper {
+	& .ck .ck-find-and-replace-form .ck-replace-form__wrapper {
 		& .ck-replace-buttons {
 			display: flex;
 			flex-flow: row-reverse;
 
 			& .ck-button:last-child {
-				margin-left: var(--ck-spacing-standard)
+				margin-left: var(--ck-spacing-standard);
 			}
 		}
 		& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
-			padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium)
+			padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 		}
 	}
 
@@ -187,39 +187,13 @@
 
 		& .ck-find-buttons {
 			flex-flow: row-reverse;
-
-			& .ck-button svg.ck-button__icon {
-				margin: 0;
-			}
-		}
-
-		&.ck-is-searching .ck-button.ck-button-find {
-			display: none;
-		}
-
-		&:not(.ck-is-searching) {
-			& .ck-button.ck-button-prev,
-			& .ck-button.ck-button-next {
-				display: none;
-			}
-
-			& .ck-button.ck-button-find {
-				display: flex;
-			}
 		}
 
 		&.ck-responsive-form .ck-find-checkboxes {
 			margin: 0;
 
-			& .ck-find-checkboxes__box {
-				& label {
-					margin-right: 5px;
-					line-height: calc(var(--ck-spacing-standard) * 2.2);
-				}
-
-				&:first-child {
-					margin-top: var(--ck-spacing-medium);
-				}
+			& .ck-find-checkboxes__box label {
+				margin-right: 5px;
 			}
 		}
 	}
