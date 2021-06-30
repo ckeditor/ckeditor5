@@ -8,8 +8,7 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck .ck-find-and-replace-form .ck-find-form__wrapper,
-.ck .ck-find-and-replace-form .ck-replace-form__wrapper {
+.ck .ck-find-and-replace-form > .ck-responsive-form {
 	display: flex;
 	align-items: flex-start;
 	flex-direction: row;
@@ -20,23 +19,16 @@
 		background-color: var(--ck-color-base-active);
 		padding: 5px 10px;
 		text-transform: uppercase;
+		color: var(--ck-color-base-background);
+
+		&:hover {
+			background-color: var(--ck-color-base-focus);
+			cursor: pointer;
+		}
 
 		&.ck-disabled {
 			background-color: var(--ck-color-switch-button-off-background);
 		}
-
-		&:not(.ck-disabled) {
-			color: var(--ck-color-base-background);
-
-			&:hover {
-				background-color: var(--ck-color-base-focus);
-				cursor: pointer;
-			}
-		}
-	}
-
-	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
-		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	}
 
 	@mixin ck-media-phone {
@@ -52,34 +44,16 @@
 	}
 }
 
-.ck .ck-find-and-replace-form  .ck-replace-form__wrapper {
-	justify-content: flex-end;
-	border-top: 1px solid var(--ck-color-base-border);
-
-	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
-		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
-	}
-
-	& .ck-button {
-		border-radius: 5px;
-		font-size: calc(var(--ck-font-size-normal) * 0.9);
-
-		&:last-child {
-			margin-left: var(--ck-spacing-standard)
-		}
-
-		& .ck.ck-button__label {
-			line-height: 20px;
-		}
-	}
-}
-
-.ck .ck-find-and-replace-form .ck-find-form__wrapper {
+.ck .ck-find-form__wrapper.ck-responsive-form  {
 	justify-content: space-between;
 
 	& .ck-button.ck-button-prev,
 	& .ck-button.ck-button-next {
 		margin-left: 1px;
+	}
+
+	& .ck.ck-input-text{
+		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	}
 
 	& span.ck-results-counter {
@@ -153,7 +127,7 @@
 				margin-left: 5px;
 				line-height: calc(var(--ck-spacing-standard) * 2.2);
 				overflow: hidden;
-    			text-overflow: ellipsis;
+				text-overflow: ellipsis;
 			}
 
 			& label:hover,
@@ -173,12 +147,30 @@
 	}
 }
 
-.ck[dir='rtl'] {
-	& .ck .ck-find-and-replace-form .ck-find-form__wrapper .ck-labeled-field-view__input-wrapper .ck.ck-input-text {
-		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8);
+.ck .ck-replace-form__wrapper.ck-responsive-form {
+	justify-content: flex-end;
+	border-top: 1px solid var(--ck-color-base-border);
+
+	& .ck.ck-input-text{
+		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	}
 
-	& .ck .ck-find-and-replace-form .ck-replace-form__wrapper {
+	& .ck-replace-buttons .ck-button {
+		border-radius: 5px;
+		font-size: calc(var(--ck-font-size-normal) * 0.9);
+
+		&:last-child {
+			margin-left: var(--ck-spacing-standard)
+		}
+
+		& .ck.ck-button__label {
+			line-height: 20px;
+		}
+	}
+}
+
+.ck[dir='rtl'] {
+	& .ck.ck-replace-form__wrapper {
 		& .ck-replace-buttons {
 			display: flex;
 			flex-flow: row-reverse;
@@ -187,7 +179,7 @@
 				margin-left: var(--ck-spacing-standard);
 			}
 		}
-		& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
+		& .ck.ck-input-text {
 			padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 		}
 	}
@@ -196,7 +188,7 @@
 		margin-left: 0;
 	}
 
-	& .ck .ck-find-and-replace-form .ck-find-form__wrapper {
+	& .ck .ck-find-form__wrapper {
 		& .ck-button.ck-button-prev,
 		& .ck-button.ck-button-next {
 			margin-right: 1px;
@@ -211,10 +203,14 @@
 			flex-flow: row-reverse;
 		}
 
+		& .ck.ck-input-text {
+			padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8);
+		}
+
 		&.ck-responsive-form .ck-find-checkboxes {
 			margin: 0;
 
-			& .ck-find-checkboxes__box label {
+			& .ck-find-checkboxes__box input[type=checkbox]+label {
 				margin-right: 5px;
 			}
 		}
