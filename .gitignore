@@ -1,5 +1,4 @@
 node_modules/
-build/
 coverage/
 packages/*/node_modules/
 docs/api/output.json
