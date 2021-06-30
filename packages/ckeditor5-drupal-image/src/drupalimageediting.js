@@ -28,6 +28,7 @@ export default class DrupalImageEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
 		conversion.for( 'downcast' )
+			.add( modelImageToImage() )
 			.add( modelEntityUuidToDataAttribute() )
 			.add( modelEntityFileToDataAttribute() );
 	}
@@ -123,6 +124,26 @@ function viewImageToModelImage( editor ) {
 	}
 }
 
+function modelImageToImage() {
+	return dispatcher => {
+		// Use high priority to overwrite built-in conversion of images to be placed inside `<figure class="image">`.
+		dispatcher.on( 'insert:imageBlock', converter, { priority: 'high' } );
+	};
+
+	function converter( evt, data, conversionApi ) {
+		const { item } = data;
+		const { consumable, writer } = conversionApi;
+
+		if ( !consumable.consume( item, evt.name ) ) {
+			return;
+		}
+
+		const viewElement = conversionApi.mapper.toViewElement( item );
+
+		writer.insert( viewElement );
+	}
+}
+
 function modelEntityUuidToDataAttribute() {
 	return dispatcher => {
 		dispatcher.on( 'attribute:dataEntityUuid', converter );
@@ -139,7 +160,7 @@ function modelEntityUuidToDataAttribute() {
 		const viewElement = conversionApi.mapper.toViewElement( item );
 		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 
-		writer.setAttribute( 'data-entity-uuid', data.attributeNewValue, imageInFigure );
+		writer.setAttribute( 'data-entity-uuid', data.attributeNewValue, imageInFigure || viewElement );
 	}
 }
 
@@ -159,6 +180,6 @@ function modelEntityFileToDataAttribute() {
 		const viewElement = conversionApi.mapper.toViewElement( item );
 		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 
-		writer.setAttribute( 'data-entity-file', data.attributeNewValue, imageInFigure );
+		writer.setAttribute( 'data-entity-file', data.attributeNewValue, imageInFigure || viewElement );
 	}
 }
