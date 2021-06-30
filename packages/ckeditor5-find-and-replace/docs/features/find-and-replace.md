@@ -56,10 +56,10 @@ The commands can be executed using the {@link module:core/editor/editor~Editor#e
 editor.execute( 'find', 'steam' );
 ```
 
-You can also move highlight through all matched results with {@link module:find-and-replace/findnextcommand~FindNextCommand `'findNext'`} and {@link module:find-and-replace/findpreviouscommand~FindPreviousCommand `'findPrevious'`} commands:
+You can also move the highlight through all matched results with the {@link module:find-and-replace/findnextcommand~FindNextCommand `'findNext'`} and {@link module:find-and-replace/findpreviouscommand~FindPreviousCommand `'findPrevious'`} commands:
 
 ```js
-// Move search highlight to the next match.
+// Move the search highlight to the next match.
 editor.execute( 'findNext' );
 ```
 
