@@ -354,18 +354,7 @@ describe( 'FindAndReplace', () => {
 
 				editor.execute( 'undo' );
 
-				const markers = Array.from( editor.model.markers ).map( marker => {
-					// Replace markers id to a predefined value, as originally these are unique random ids.
-					if ( marker.name.startsWith( 'findResult:' ) ) {
-						marker.name = 'X';
-					} else if ( marker.name.startsWith( 'findResultHighlighted:' ) ) {
-						marker.name = 'Y';
-					}
-
-					return marker;
-				} );
-
-				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+				expect( stringify( model.document.getRoot(), null, editor.model.markers ) ).to.equal(
 					'<paragraph>Foo bar baz</paragraph>'
 				);
 			} );
