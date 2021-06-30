@@ -17,6 +17,8 @@ import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon';
 import '@ckeditor/ckeditor5-image/build/image';
 import '@ckeditor/ckeditor5-link/build/link';
 import '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
+// import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import '@ckeditor/ckeditor5-find-and-replace/build/find-and-replace';
 import '@ckeditor/ckeditor5-font/build/font';
 import '@ckeditor/ckeditor5-indent/build/indent';
 import '@ckeditor/ckeditor5-list/build/list';
@@ -52,6 +54,7 @@ const { BalloonEditor } = window.CKEditor5.editorBalloon;
 const { AutoImage, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } = window.CKEditor5.image;
 const { AutoLink, Link, LinkImage } = window.CKEditor5.link;
 const { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } = window.CKEditor5.basicStyles;
+const { FindAndReplace } = window.CKEditor5.findAndReplace;
 const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor5.font;
 const { Indent, IndentBlock } = window.CKEditor5.indent;
 const { List, ListStyle, TodoList } = window.CKEditor5.list;
@@ -116,6 +119,7 @@ const config = {
 		CodeBlock,
 		EasyImage,
 		Essentials,
+		FindAndReplace,
 		FontColor, FontFamily, FontSize, FontBackgroundColor,
 		Heading,
 		Highlight,
@@ -157,7 +161,7 @@ const config = {
 		'|',
 		'sourceEditing',
 		'|',
-		'undo', 'redo'
+		'undo', 'redo', 'findAndReplace'
 	],
 	cloudServices: CS_CONFIG,
 	table: {
