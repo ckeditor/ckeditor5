@@ -16,7 +16,7 @@
 	flex-wrap: wrap;
 
 	& .ck-button {
-		margin-top: var(--ck-spacing-unit);
+		margin-top: var(--ck-spacing-standard);
 		background-color: var(--ck-color-base-active);
 		padding: 5px 10px;
 		text-transform: uppercase;
@@ -65,7 +65,11 @@
 		font-size: calc(var(--ck-font-size-normal) * 0.9);
 
 		&:last-child {
-			margin-left: var(--ck-spacing-unit)
+			margin-left: var(--ck-spacing-standard)
+		}
+
+		& .ck.ck-button__label {
+			line-height: 20px;
 		}
 	}
 }
@@ -80,8 +84,8 @@
 
 	& span.ck-results-counter {
 		position: absolute;
-		top: calc(var(--ck-spacing-unit) * 2);
-		right: calc(var(--ck-spacing-unit) * 3);
+		top: calc(var(--ck-spacing-standard) * 2);
+		right: calc(var(--ck-spacing-standard) * 3);
 		color: var(--ck-color-base-border)
 	}
 
@@ -105,12 +109,16 @@
 				border-radius: 5px 0 0 5px;
 
 				& svg {
-					transform: rotate(180deg);
+					transform: rotate(180deg) translateY(-2px);
 				}
 			}
 
 			&.ck-button-next {
 				border-radius: 0 5px 5px 0;
+
+				& svg {
+					transform: translateY(-1px);
+				}
 			}
 		}
 	}
@@ -138,14 +146,24 @@
 		& .ck-find-checkboxes__box {
 			display: flex;
 			align-items: center;
-
-			&:first-child {
-				margin-top: var(--ck-spacing-unit);
-			}
+			max-width: 150px;
+			overflow: hidden;
 
 			& label {
 				margin-left: 5px;
-				line-height: calc(var(--ck-spacing-unit) * 2.2);
+				line-height: calc(var(--ck-spacing-standard) * 2.2);
+				overflow: hidden;
+    			text-overflow: ellipsis;
+			}
+
+			& label:hover,
+			& input[type=checkbox]:hover
+			 {
+				cursor: pointer;
+			}
+
+			&:first-child {
+				margin-top: var(--ck-spacing-medium);
 			}
 
 			& input[type=checkbox]:disabled+label {
