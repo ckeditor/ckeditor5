@@ -345,6 +345,7 @@ describe( 'FindAndReplace', () => {
 
 		describe( 'undo', () => {
 			it( 'doesn\'t bring back highlighted content', () => {
+				// (#9974)
 				editor.setData( FOO_BAR_PARAGRAPH );
 
 				const { results } = editor.execute( 'find', 'bar' );

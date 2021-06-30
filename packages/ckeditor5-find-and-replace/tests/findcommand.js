@@ -259,6 +259,14 @@ describe( 'FindCommand', () => {
 			} );
 		} );
 
+		it( 'adds marker synchronously', () => {
+			editor.setData( '<p>foo bar baz</p>' );
+
+			const { results } = command.execute( 'bar' );
+
+			expect( editor.model.markers.has( results.get( 0 ).marker.name ) ).to.be.true;
+		} );
+
 		/**
 		 * Returns markers array from array. All markers have their name simplified to "X" as otherwise they're
 		 * random and unique.
