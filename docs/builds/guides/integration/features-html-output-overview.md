@@ -910,10 +910,10 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/images/images-overview.html">Image</a>
+					<a href="../../../features/images/images-installation.html#inline-and-block-images">Block image</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_image-Image.html"><code>Image</code></a>
+					<a href="../../../api/module_image_imageblock-ImageBlock.html"><code>ImageBlock</code></a>
 				</p>
 			</td>
 			<td class="html-output">
@@ -923,6 +923,34 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="html-output">
 				<code>&lt;<strong>img</strong><br>    <strong>alt</strong>="*"<br>    <strong>sizes</strong>="*"<br>    <strong>src</strong>="*"<br>    <strong>srcset</strong>="*"<br>    <strong>width</strong>="*"<br>&gt;</code>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/images/images-installation.html#inline-and-block-images">Inline image</a>
+				</p>
+				<p>
+					<a href="../../../api/module_image_imageinline-ImageInline.html"><code>ImageInline</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>img</strong><br>    <strong>alt</strong>="*"<br>    <strong>sizes</strong>="*"<br>    <strong>src</strong>="*"<br>    <strong>srcset</strong>="*"<br>    <strong>width</strong>="*"<br>&gt;</code>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/images/images-overview.html">Image</a>
+				</p>
+				<p>
+					<a href="../../../api/module_image_image-Image.html"><code>Image</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
 			</td>
 		</tr>
 		<tr>
@@ -961,7 +989,7 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 			<td class="html-output">
-				<code>&lt;<strong>figure</strong> <strong>class</strong>="image-style-side image-style-align-left image-style-align-center image-style-align-right"&gt;</code>
+				<code>&lt;<strong>figure</strong> <strong>class</strong>="image-style-side image-style-align-left image-style-align-right image-style-block-align-center image-style-block-align-left image-style-block-align-right"&gt;</code>
 			</td>
 		</tr>
 		<tr>

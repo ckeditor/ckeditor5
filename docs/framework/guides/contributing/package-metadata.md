@@ -25,7 +25,7 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 * `docs` &ndash; An absolute or relative URL to the plugin documentation. If this URL is relative, it leads to the CKEditor 5 documentation in [https://ckeditor.com/docs/ckeditor5/latest/](https://ckeditor.com/docs/ckeditor5/latest/).
 * `path` &ndash; A path to the file, relative to the metadata file that exports the plugin.
 * `className` &ndash; The name of the class used to create the plugin. This class should be exported from the file using the `export default` syntax.
-* `requires` &ndash; An array of the plugin's soft requirements and other non-explicit requirements. It should contain class names of plugins that should be included if this plugin is added.
+* `requires` &ndash; An array of the plugin's soft requirements and other non-explicit requirements. It should contain class names of plugins that should be included if this plugin is added. If the element of this array is another (nested) array containing plugins' class names, it means that at least one plugin listed from this nested array is required, but not all of them.
 * `registeredToolbars` &ndash; An array of all toolbar names registered by the plugin. These names need to represent the configuration path (for example, `table.contentToolbar` for `editorConfig.table.contentToolbar` and `table.tableToolbar` for the `editorConfig.table.tableToolbar`, which are registered by the `Table` plugin).
 * `uiComponents` &ndash; An array of objects that describes UI components exported by the plugin. Each object in this array may contain:
 	* `name` &ndash; The name of the component the plugin exports. It should match the actual UI name registered by the plugin.
