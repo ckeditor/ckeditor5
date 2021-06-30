@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* stylelint-disable no-descending-specificity */
+
 /* disabled buttons bg color: #C3C3C3 */
 /* button color #4E8AE4 */
 
@@ -153,7 +155,7 @@
 				margin-left: 5px;
 				line-height: calc(var(--ck-spacing-standard) * 2.2);
 				overflow: hidden;
-    			text-overflow: ellipsis;
+				text-overflow: ellipsis;
 			}
 
 			& label:hover,
@@ -220,3 +222,5 @@
 		}
 	}
 }
+
+/* stylelint-enable no-descending-specificity */
