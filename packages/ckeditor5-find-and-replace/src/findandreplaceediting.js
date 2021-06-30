@@ -278,50 +278,50 @@ export default class FindAndReplaceEditing extends Plugin {
 	 */
 	_defineConverters() {
 		const { editor } = this;
-		const { view } = editor.editing;
-		const { model } = editor;
-		const highlightedMarkers = new Set();
+		// const { view } = editor.editing;
+		// const { model } = editor;
+		// const highlightedMarkers = new Set();
 
-		const getMarkerAtPosition = position =>
-			[ ...editor.model.markers ].find( marker => {
-				return isPositionInRangeBoundaries( marker.getRange(), position ) && marker.name.startsWith( 'findResult:' );
-			} );
+		// const getMarkerAtPosition = position =>
+		// 	[ ...editor.model.markers ].find( marker => {
+		// 		return isPositionInRangeBoundaries( marker.getRange(), position ) && marker.name.startsWith( 'findResult:' );
+		// 	} );
 
-		view.document.registerPostFixer( writer => {
-			const modelSelection = model.document.selection;
+		// view.document.registerPostFixer( writer => {
+		// 	const modelSelection = model.document.selection;
 
-			const marker = getMarkerAtPosition( modelSelection.focus );
+		// 	const marker = getMarkerAtPosition( modelSelection.focus );
 
-			if ( !marker ) {
-				return;
-			}
+		// 	if ( !marker ) {
+		// 		return;
+		// 	}
 
-			[ ...editor.editing.mapper.markerNameToElements( marker.name ) ].forEach( viewElement => {
-				writer.addClass( HIGHLIGHT_CLASS, viewElement );
-				highlightedMarkers.add( viewElement );
-			} );
-		} );
+		// 	[ ...editor.editing.mapper.markerNameToElements( marker.name ) ].forEach( viewElement => {
+		// 		writer.addClass( HIGHLIGHT_CLASS, viewElement );
+		// 		highlightedMarkers.add( viewElement );
+		// 	} );
+		// } );
 
-		function removeHighlight() {
-			view.change( writer => {
-				[ ...highlightedMarkers.values() ].forEach( item => {
-					writer.removeClass( HIGHLIGHT_CLASS, item );
-					highlightedMarkers.delete( item );
-				} );
-			} );
-		}
+		// function removeHighlight() {
+		// 	view.change( writer => {
+		// 		[ ...highlightedMarkers.values() ].forEach( item => {
+		// 			writer.removeClass( HIGHLIGHT_CLASS, item );
+		// 			highlightedMarkers.delete( item );
+		// 		} );
+		// 	} );
+		// }
 
 		// Removing the class.
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			// Make sure the highlight is removed on every possible event, before the conversion is started.
-			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
-		} );
+		// editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+		// 	// Make sure the highlight is removed on every possible event, before the conversion is started.
+		// 	dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
+		// 	dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
+		// 	dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
+		// 	dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
+		// } );
 
 		// Setup the marker highlighting conversion.
-		this.editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: 'findResult',
 			view: ( { markerName } ) => {
 				const [ , id ] = markerName.split( ':' );
@@ -339,7 +339,7 @@ export default class FindAndReplaceEditing extends Plugin {
 			}
 		} );
 
-		this.editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: 'findResultHighlighted',
 			view: ( { markerName } ) => {
 				const [ , id ] = markerName.split( ':' );
