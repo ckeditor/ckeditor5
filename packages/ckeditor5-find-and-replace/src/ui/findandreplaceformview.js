@@ -71,7 +71,7 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'isCounterHidden', true );
 
 		/**
-		 * The find in text input view that stores searched string.
+		 * The find in text input view that stores the searched string.
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
@@ -132,14 +132,14 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * Match case checkbox view
+		 * The match case checkbox view.
 		 *
 		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
 		*/
 		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
 
 		/**
-		 * Whole words only checkbox view
+		 * The whole words only checkbox view.
 		 *
 		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
 		*/
@@ -153,14 +153,14 @@ export default class FindAndReplaceFormView extends View {
 		this.replaceInputView = this._createInputField( t( 'Replace with…' ) );
 
 		/**
-		 * Stores gathered views related to find functionality of the feature
+		 * Stores gathered views related to find functionality of the feature.
 		 *
 		 * @member {module:ui/view~View}
 		 */
 		this.findView = this._createFindView();
 
 		/**
-		 * Stores gathered views related to replace functionality of the feature
+		 * Stores gathered views related to replace functionality of the feature.
 		 *
 		 * @member {module:ui/view~View}
 		 */
@@ -288,7 +288,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		this.keystrokes.set( 'enter', event => {
-			// @todo: this is a bit workaroundish way to handle enter, we should work on views rather raw DOM elements.
+			// @todo: this is a bit workaroundish way to handle enter, we should work on views rather than raw DOM elements.
 			const target = event.target;
 
 			if ( target.classList.contains( 'ck-input-text' ) ) {
@@ -309,8 +309,8 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
-		// keystroke handler would take over the key management in the URL input. We need to prevent
-		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
+		// keystroke handler would take over the key management in the URL input.
+		// We need to prevent this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
 		this.keystrokes.set( 'arrowright', stopPropagation );
 		this.keystrokes.set( 'arrowleft', stopPropagation );
 		this.keystrokes.set( 'arrowup', stopPropagation );
@@ -334,7 +334,7 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Collection of views for the 'find' functionality of the feature
+	 * A collection of views for the 'find' functionality of the feature
 	 *
 	 * @private
 	 * @return {module:ui/view~View} The find view instance.
@@ -406,7 +406,7 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Collection of views for the 'replace' functionality of the feature
+	 * A collection of views for the 'replace' functionality of the feature
 	 *
 	 * @private
 	 * @returns {module:ui/view~View} The replace view instance.
@@ -450,7 +450,7 @@ export default class FindAndReplaceFormView extends View {
 	 *
 	 * @private
 	 * @param {String} infoText The input label.
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled input view instance.
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} The labeled input view instance.
 	 */
 	_createInputField( infoText ) {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
@@ -496,7 +496,7 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Creates a view for checkboxes.
+	 * Creates a view for the checkboxes.
 	 *
 	 * @private
 	 * @param {String} label The checkbox label.

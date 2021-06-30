@@ -12,7 +12,7 @@ import { Collection } from 'ckeditor5/src/utils';
 import ReplaceCommand from './replacecommand';
 
 /**
- * Replace all command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
+ * The replace all command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
  * @extends module:core/command~Command
  */
@@ -34,7 +34,7 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 		if ( results.length ) {
 			this.editor.model.change( () => {
 				[ ...results ].forEach( searchResult => {
-					// Just reuse logic from replace command to replace a single match.
+					// Just reuse logic from the replace command to replace a single match.
 					super.execute( newText, searchResult );
 				} );
 			} );

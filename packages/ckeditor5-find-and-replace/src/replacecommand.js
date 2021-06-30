@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 
 /**
- * Replace command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
+ * The replace command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
  * @extends module:core/command~Command
  */
@@ -23,11 +23,11 @@ export default class ReplaceCommand extends Command {
 	constructor( editor, state ) {
 		super( editor );
 
-		// Replace command is always enabled.
+		// The replace command is always enabled.
 		this.isEnabled = true;
 
 		/**
-		 * Find and replace state object used for command operations.
+		 * The find and replace state object used for command operations.
 		 *
 		 * @private
 		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #_state
@@ -36,7 +36,7 @@ export default class ReplaceCommand extends Command {
 	}
 
 	/**
-	 * Replace given find result by a string or a callback.
+	 * Replace a given find result by a string or a callback.
 	 *
 	 * @param {String} replacementText
 	 * @param {Object} result A single result from the find command.

@@ -24,7 +24,7 @@ import { debounce } from 'lodash-es';
 import '../theme/findandreplace.css';
 
 /**
- * Object storing find & replace plugin state in a given editor instance.
+ * The object storing find & replace plugin state in a given editor instance.
  *
  */
 class FindAndReplaceState {
@@ -124,17 +124,17 @@ function onDocumentChange( results, model, searchCallback ) {
 		}
 	} );
 
-	// Get markers from updated nodes and remove all (search will be re-run on those nodes).
+	// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
 	changedNodes.forEach( node => {
 		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node ) ) ];
 
 		markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
 	} );
 
-	// Remove results & markers from changed part of content.
+	// Remove results & markers from the changed part of content.
 	model.change( writer => {
 		removedMarkers.forEach( markerName => {
-			// Remove result first - in order to prevent rendering removed marker.
+			// Remove the result first - in order to prevent rendering a removed marker.
 			if ( results.has( markerName ) ) {
 				results.remove( markerName );
 			}
@@ -154,7 +154,7 @@ function isPositionInRangeBoundaries( range, position ) {
 }
 
 /**
- * Implements editing part for find and replace plugin. For example conversion, commands etc.
+ * Implements the editing part for find and replace plugin. For example conversion, commands etc.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -173,7 +173,7 @@ export default class FindAndReplaceEditing extends Plugin {
 		this.activeResults = null;
 
 		/**
-		 * An object storing find and replace state within a given editor instance.
+		 * An object storing the find and replace state within a given editor instance.
 		 *
 		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #state
 		 */
@@ -210,8 +210,8 @@ export default class FindAndReplaceEditing extends Plugin {
 		// Debounce scroll as highlight might be changed very frequently, e.g. when there's a replace all command.
 		this.listenTo( this.state, 'change:highlightedResult', debouncedScrollListener, { priority: 'low' } );
 
-		// It's possible that editor will get destroyed before debounced call kicks in. This would result with accessing
-		// view three that is no longer in DOM.
+		// It's possible that the editor will get destroyed before debounced call kicks in.
+		// This would result with accessing a view three that is no longer in DOM.
 		this.listenTo( this.editor, 'destroy', debouncedScrollListener.cancel );
 
 		function scrollToHighlightedResult( eventInfo, name, newValue ) {
@@ -313,14 +313,14 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		// Removing the class.
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			// Make sure the highlight is removed on every possible event, before conversion is started.
+			// Make sure the highlight is removed on every possible event, before the conversion is started.
 			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
 			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
 			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
 			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
 		} );
 
-		// Setup marker highlighting conversion.
+		// Setup the marker highlighting conversion.
 		this.editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: 'findResult',
 			view: ( { markerName } ) => {

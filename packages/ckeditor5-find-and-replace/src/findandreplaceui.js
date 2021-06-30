@@ -16,14 +16,14 @@ import '../theme/findandreplaceform.css';
 import loupeIcon from '../theme/icons/find-replace.svg';
 
 /**
- * Default find and replace UI. It introduces:
+ * The default find and replace UI. It introduces:
  *
  * * The `'Find and replace'` dropdown button.
  *
  * It registers the `'findAndReplace'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}.
- * that uses {@link module:find-and-replace/findandreplace~FindAndReplace FindAndReplace} plugin API.
+ * that uses the {@link module:find-and-replace/findandreplace~FindAndReplace FindAndReplace} plugin API.
  *
- * It emits events regarding of user search/replace intents.
+ * It emits events depending on user search/replace intents.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -97,7 +97,7 @@ export default class FindAndReplaceUI extends Plugin {
 				const findTextInputView = formView.findInputView.fieldView;
 
 				// Searching should only be active if there's more than 1 result matched and
-				// user had not changed any search criteria.
+				// the user has not changed any search criteria.
 				this.bind( 'isSearching' ).to( this, 'matchCount',
 					findTextInputView, 'value', this._state, 'searchText',
 					formView.matchCaseView, 'isChecked', this._state, 'matchCase',
@@ -125,7 +125,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * Sets the observed state object. It is used to display searching result count etc.
+	 * Sets the observed state object. It is used to display search result count etc.
 	 *
 	 * @protected
 	 * @param {module:find-and-replace/findandreplaceediting~FindAndReplaceState} state State object to be tracked.
@@ -162,14 +162,14 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
-	 * @param {String} icon Icon to be assigned to the button.
-	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView Related form view.
+	 * @param {String} icon An icon to be assigned to the button.
+	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView A related form view.
 	 */
 	_createToolbarDropdown( dropdown, icon, formView ) {
 		const t = this.editor.locale.t;
 		const buttonView = dropdown.buttonView;
 
-		// Configure dropdown's button properties:
+		// Configure the dropdown's button properties:
 		buttonView.set( {
 			icon,
 			tooltip: t( 'Find and replace' )
@@ -178,7 +178,7 @@ export default class FindAndReplaceUI extends Plugin {
 		// Clicking the main button has the same effect as clicking the dropdown arrow.
 		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
 
-		// Each time dropdown is open the search text field should get focused.
+		// Each time a dropdown is opened, the search text field should get focused.
 		buttonView.on( 'open', () => {
 			formView.findInputView.fieldView.select();
 			formView.focus();

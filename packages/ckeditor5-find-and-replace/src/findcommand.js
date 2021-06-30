@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core';
 import { updateFindResultFromRange, findByTextCallback } from './utils';
 
 /**
- * Find command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
+ * The find command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
  * @extends module:core/command~Command
  */
@@ -19,12 +19,12 @@ export default class FindCommand extends Command {
 	/**
 	 * Creates a new `FindCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
 	 */
 	constructor( editor, state ) {
 		super( editor );
 
-		// Find command is always enabled.
+		// The find command is always enabled.
 		this.isEnabled = true;
 
 		this.state = state;
@@ -42,8 +42,8 @@ export default class FindCommand extends Command {
 	 *
 	 * @param {Function|String} callbackOrText
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.matchCase=false] If set to `true` letter casing will be ignored.
-	 * @param {Boolean} [options.wholeWords=false] If set to `true` only whole words that match `callbackOrText` will be matched.
+	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be ignored.
+	 * @param {Boolean} [options.wholeWords=false] If set to `true`, only whole words that match `callbackOrText` will be matched.
 	 * @fires execute
 	 */
 	execute( callbackOrText, { matchCase, wholeWords } = {} ) {
@@ -62,7 +62,7 @@ export default class FindCommand extends Command {
 			findCallback = callbackOrText;
 		}
 
-		// Initial search is done on all nodes inside content.
+		// Initial search is done on all nodes inside the content.
 		const range = model.createRangeIn( model.document.getRoot() );
 
 		// @todo: fix me

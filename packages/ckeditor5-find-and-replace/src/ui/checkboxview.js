@@ -33,7 +33,7 @@ export default class CheckboxView extends View {
 		this.set( 'class' );
 
 		/**
-		 * Controls whether the checkbox view is enabled, i.e. it can be clicked and execute an action.
+		 * Controls whether the checkbox view is enabled, i.e. it can be clicked and can execute an action.
 		 *
 		 * @observable
 		 * @default true
@@ -42,7 +42,7 @@ export default class CheckboxView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
-		 * Controls whether the checkbox view is visible. Visible by default, checkboxes are hidden
+		 * Controls whether the checkbox view is visible. Visible by default, the checkboxes are hidden
 		 * using a CSS class.
 		 *
 		 * @observable
@@ -52,7 +52,7 @@ export default class CheckboxView extends View {
 		this.set( 'isVisible', true );
 
 		/**
-		 * Indicates whether related checkbox is checked.
+		 * Indicates whether a related checkbox is checked.
 		 *
 		 * @observable
 		 * @default false
@@ -61,7 +61,7 @@ export default class CheckboxView extends View {
 		this.set( 'isChecked', false );
 
 		/**
-		 * The text of label associated with the checkbox view.
+		 * The text of the label associated with the checkbox view.
 		 *
 		 * @observable
 		 * @member {String} #label
@@ -69,7 +69,7 @@ export default class CheckboxView extends View {
 		this.set( 'label' );
 
 		/**
-		 * HTML `id` attribute to be assigned to the checkbox.
+		 * The HTML `id` attribute to be assigned to the checkbox.
 		 *
 		 * @observable
 		 * @default null
@@ -88,7 +88,7 @@ export default class CheckboxView extends View {
 		this.set( 'tabindex', -1 );
 
 		/**
-		 * Collection of the child views inside of the checkbox {@link #element}.
+		 * The collection of the child views inside of the checkbox {@link #element}.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -96,7 +96,7 @@ export default class CheckboxView extends View {
 		this.children = this.createCollection();
 
 		/**
-		 * Label of the checkbox view. It is configurable using the {@link #label label attribute}.
+		 * The label of the checkbox view. It is configurable using the {@link #label label attribute}.
 		 *
 		 * @readonly
 		 * @member {module:ui/view~View} #labelView
@@ -104,7 +104,7 @@ export default class CheckboxView extends View {
 		this.labelView = this._createLabelView( );
 
 		/**
-		 * Input of the checkbox view.
+		 * The input of the checkbox view.
 		 *
 		 * @readonly
 		 * @member {module:ui/view~View} #checkboxInputView
@@ -125,7 +125,7 @@ export default class CheckboxView extends View {
 
 			on: {
 				keydown: bind.to( evt => {
-					// Need to check target. Otherwise we'd handle space press on input[type=text] and it would change
+					// Need to check target. Otherwise we would handle space press on input[type=text] and it would change
 					// checked property twice due to default browser handling kicking in too.
 					if ( evt.target === this.element && evt.keyCode == getCode( 'space' ) ) {
 						this.isChecked = !this.isChecked;

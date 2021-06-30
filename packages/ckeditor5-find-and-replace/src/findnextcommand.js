@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 
 /**
- * Find next command. Moves the highlight to the next search result.
+ * The find next command. Moves the highlight to the next search result.
  *
  * It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
@@ -20,13 +20,13 @@ export default class FindNextCommand extends Command {
 	/**
 	 * Creates a new `FindNextCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
 	 */
 	constructor( editor, state ) {
 		super( editor );
 
 		/**
-		 * Find and replace state object used for command operations.
+		 * The find and replace state object used for command operations.
 		 *
 		 * @private
 		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #_state

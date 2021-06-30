@@ -101,11 +101,11 @@ export default class FindAndReplace extends Plugin {
 		} );
 
 		if ( this.editor.ui ) {
-			// We need to wait for UI ready to have the toolbar dropdown available. Otherwise findAndReplace component
-			// is registered but not yet constructed.
+			// We need to wait for the UI to be ready to have the toolbar dropdown available.
+			// Otherwise the findAndReplace component is registered but not yet constructed.
 			this.listenTo( this.editor.ui, 'ready', () => {
 				const formView = ui.formView;
-				// If editor doesn't contain findAndReplace button then there's no ui#formView property.
+				// If the editor doesn't contain the findAndReplace button then there's no ui#formView property.
 				if ( formView ) {
 					const commands = this.editor.commands;
 
