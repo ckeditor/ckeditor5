@@ -12,34 +12,34 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Hungarian (https://www.transifex.com/ckeditor/teams/11143/hu/)\n"
-"Language: hu\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Indonesian (https://www.transifex.com/ckeditor/teams/11143/id/)\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the HTML embed feature."
 msgid "Insert HTML"
-msgstr "HTML beillesztése"
+msgstr "Sisipkan HTML"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr "HTML kódrészlet"
+msgstr "Potongan HTML"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
-msgstr "Másolja ide a HTML forrás szövegét..."
+msgstr "Tempelkan HTML apa adanya di sini..."
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"
-msgstr "Forrás szerkesztése"
+msgstr "Sunting sumber"
 
 msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
 msgid "Save changes"
-msgstr "Módosítások mentése"
+msgstr "Simpan perubahan"
 
 msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
 msgid "No preview available"
-msgstr "Nincs elérhető előnézet"
+msgstr "Pratinjau tidak tersedia"
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr "Üres kódrészleti tartalom"
+msgstr "Konten potongan kosong"

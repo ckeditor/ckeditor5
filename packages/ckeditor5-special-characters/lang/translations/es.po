@@ -12,45 +12,45 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Hungarian (https://www.transifex.com/ckeditor/teams/11143/hu/)\n"
-"Language: hu\n"
+"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Name of the special characters plugins, visible in a dropdown and as a button tooltip."
 msgid "Special characters"
-msgstr "Speciális karakterek"
+msgstr "Caracteres especiales"
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"
-msgstr "dupla nyíl balra"
+msgstr ""
 
 msgctxt "A label for the \"rightwards double arrow\" symbol."
 msgid "rightwards double arrow"
-msgstr "dupla nyíl jobbra"
+msgstr ""
 
 msgctxt "A label for the \"upwards double arrow\" symbol."
 msgid "upwards double arrow"
-msgstr "dupla nyíl felfelé"
+msgstr ""
 
 msgctxt "A label for the \"downwards double arrow\" symbol."
 msgid "downwards double arrow"
-msgstr "dupla nyíl lefelé"
+msgstr ""
 
 msgctxt "A label for the \"leftwards dashed arrow\" symbol."
 msgid "leftwards dashed arrow"
-msgstr "szaggatott nyíl balra"
+msgstr ""
 
 msgctxt "A label for the \"rightwards dashed arrow\" symbol."
 msgid "rightwards dashed arrow"
-msgstr "szaggatott nyíl jobbra"
+msgstr ""
 
 msgctxt "A label for the \"upwards dashed arrow\" symbol."
 msgid "upwards dashed arrow"
-msgstr "szaggatott nyíl felfelé"
+msgstr ""
 
 msgctxt "A label for the \"downwards dashed arrow\" symbol."
 msgid "downwards dashed arrow"
-msgstr "szaggatott nyíl lefelé"
+msgstr ""
 
 msgctxt "A label for the \"leftwards arrow to bar\" symbol."
 msgid "leftwards arrow to bar"
@@ -94,51 +94,51 @@ msgstr ""
 
 msgctxt "A label for the \"dollar sign\" symbol."
 msgid "Dollar sign"
-msgstr "Dollár jel"
+msgstr "Signo del dólar"
 
 msgctxt "A label for the \"euro sign\" symbol."
 msgid "Euro sign"
-msgstr "Euró jel"
+msgstr "Signo del euro"
 
 msgctxt "A label for the \"yen sign\" symbol."
 msgid "Yen sign"
-msgstr "Yen jel"
+msgstr "Signo del yen"
 
 msgctxt "A label for the \"pound sign\" symbol."
 msgid "Pound sign"
-msgstr "Font jel"
+msgstr "Signo de la libra"
 
 msgctxt "A label for the \"cent sign\" symbol."
 msgid "Cent sign"
-msgstr "Cent jel"
+msgstr "Signo del centavo"
 
 msgctxt "A label for the \"euro-currency sign\" symbol."
 msgid "Euro-currency sign"
-msgstr "Euró pénznem jel"
+msgstr "Signo de la moneda euro"
 
 msgctxt "A label for the \"colon sign\" symbol."
 msgid "Colon sign"
-msgstr "Kettőspont"
+msgstr "Signo del colón"
 
 msgctxt "A label for the \"cruzeiro sign\" symbol."
 msgid "Cruzeiro sign"
-msgstr ""
+msgstr "Signo del cruceiro"
 
 msgctxt "A label for the \"french franc sign\" symbol."
 msgid "French franc sign"
-msgstr "Francia frank jel"
+msgstr "Signo del franco francés"
 
 msgctxt "A label for the \"lira sign\" symbol."
 msgid "Lira sign"
-msgstr "Líra jel"
+msgstr "Signo de la lira"
 
 msgctxt "A label for the \"currency sign\" symbol."
 msgid "Currency sign"
-msgstr "Pénznem jel"
+msgstr "Signo monetario"
 
 msgctxt "A label for the \"bitcoin sign\" symbol."
 msgid "Bitcoin sign"
-msgstr "Bitcoin jel"
+msgstr "Signo del bitcóin"
 
 msgctxt "A label for the \"mill sign\" symbol."
 msgid "Mill sign"
@@ -150,19 +150,19 @@ msgstr ""
 
 msgctxt "A label for the \"peseta sign\" symbol."
 msgid "Peseta sign"
-msgstr ""
+msgstr "Signo de la peseta"
 
 msgctxt "A label for the \"rupee sign\" symbol."
 msgid "Rupee sign"
-msgstr ""
+msgstr "Signo de la rupia"
 
 msgctxt "A label for the \"won sign\" symbol."
 msgid "Won sign"
-msgstr ""
+msgstr "Signo del won"
 
 msgctxt "A label for the \"new sheqel sign\" symbol."
 msgid "New sheqel sign"
-msgstr ""
+msgstr "Signo del nuevo séquel"
 
 msgctxt "A label for the \"dong sign\" symbol."
 msgid "Dong sign"
@@ -186,11 +186,11 @@ msgstr ""
 
 msgctxt "A label for the \"peso sign\" symbol."
 msgid "Peso sign"
-msgstr ""
+msgstr "Signo del peso"
 
 msgctxt "A label for the \"guarani sign\" symbol."
 msgid "Guarani sign"
-msgstr ""
+msgstr "Signo del guaraní"
 
 msgctxt "A label for the \"austral sign\" symbol."
 msgid "Austral sign"
@@ -234,7 +234,7 @@ msgstr ""
 
 msgctxt "A label for the \"ruble sign\" symbol."
 msgid "Ruble sign"
-msgstr ""
+msgstr "Signo del rublo"
 
 msgctxt "A label for the \"latin capital letter a with macron\" symbol."
 msgid "Latin capital letter a with macron"
@@ -766,11 +766,11 @@ msgstr ""
 
 msgctxt "A label for the \"en dash\" symbol."
 msgid "En dash"
-msgstr ""
+msgstr "Semirraya"
 
 msgctxt "A label for the \"em dash\" symbol."
 msgid "Em dash"
-msgstr ""
+msgstr "Raya"
 
 msgctxt "A label for the \"macron\" symbol."
 msgid "Macron"
@@ -782,11 +782,11 @@ msgstr ""
 
 msgctxt "A label for the \"degree sign\" symbol."
 msgid "Degree sign"
-msgstr ""
+msgstr "Signo de grado"
 
 msgctxt "A label for the \"minus sign\" symbol."
 msgid "Minus sign"
-msgstr ""
+msgstr "Signo de resta"
 
 msgctxt "A label for the \"plus-minus sign\" symbol."
 msgid "Plus-minus sign"
@@ -794,15 +794,15 @@ msgstr ""
 
 msgctxt "A label for the \"division sign\" symbol."
 msgid "Division sign"
-msgstr ""
+msgstr "Signo de división"
 
 msgctxt "A label for the \"fraction slash\" symbol."
 msgid "Fraction slash"
-msgstr ""
+msgstr "Barra fraccionaria"
 
 msgctxt "A label for the \"multiplication sign\" symbol."
 msgid "Multiplication sign"
-msgstr ""
+msgstr "Signo de multiplicación"
 
 msgctxt "A label for the \"latin small letter f with hook\" symbol."
 msgid "Latin small letter f with hook"
@@ -966,11 +966,11 @@ msgstr ""
 
 msgctxt "A label for the \"inverted exclamation mark\" symbol."
 msgid "Inverted exclamation mark"
-msgstr ""
+msgstr "Signo de exclamación de apertura"
 
 msgctxt "A label for the \"inverted question mark\" symbol."
 msgid "Inverted question mark"
-msgstr "Fordított kérdőjel"
+msgstr "Signo de interrogación de apertura"
 
 msgctxt "A label for the \"two dot leader\" symbol."
 msgid "Two dot leader"
@@ -978,7 +978,7 @@ msgstr ""
 
 msgctxt "A label for the \"horizontal ellipsis\" symbol."
 msgid "Horizontal ellipsis"
-msgstr ""
+msgstr "Puntos suspensivos horizontales"
 
 msgctxt "A label for the \"double dagger\" symbol."
 msgid "Double dagger"
@@ -1010,23 +1010,23 @@ msgstr ""
 
 msgctxt "A label for the \"copyright sign\" symbol."
 msgid "Copyright sign"
-msgstr "Copyright jele"
+msgstr "Signo de derechos de autor"
 
 msgctxt "A label for the \"registered sign\" symbol."
 msgid "Registered sign"
-msgstr ""
+msgstr "Signo de marca registrada"
 
 msgctxt "A label for the \"trade mark sign\" symbol."
 msgid "Trade mark sign"
-msgstr ""
+msgstr "Signo de marca comercial"
 
 msgctxt "A label for the \"section sign\" symbol."
 msgid "Section sign"
-msgstr ""
+msgstr "Signo de sección"
 
 msgctxt "A label for the \"paragraph sign\" symbol."
 msgid "Paragraph sign"
-msgstr ""
+msgstr "Signo de párrafo"
 
 msgctxt "A label for the \"reversed paragraph sign\" symbol."
 msgid "Reversed paragraph sign"

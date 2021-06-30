@@ -50,7 +50,7 @@ msgstr "Bară listă opțiuni"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr ""
+msgstr "Arată mai multe elemente"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

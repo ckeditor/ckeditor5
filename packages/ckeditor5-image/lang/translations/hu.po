@@ -82,7 +82,7 @@ msgstr "Eredeti"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "Kép átméretezési lista"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
