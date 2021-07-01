@@ -74,6 +74,7 @@ export function formatHtml( input ) {
 	// It is not the fastest way to format the HTML markup but the performance should be good enough.
 	const lines = input
 		// Add new line before and after `<tag>` and `</tag>`.
+		// It may separate individual elements with two new lines, but this will be fixed below.
 		.replace( new RegExp( `</?(${ elementNamesToFormat })( .*?)?>`, 'g' ), '\n$&\n' )
 		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
 		.split( '\n' );
