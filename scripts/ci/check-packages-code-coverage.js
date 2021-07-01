@@ -74,6 +74,15 @@ const packages = childProcess.execSync( 'ls -1 packages', {
 	encoding: 'utf8'
 } ).toString().trim().split( '\n' );
 
+packages.unshift( 'ckeditor5' );
+
+// Temporary: Do not check the `ckeditor5-find-and-replace` package.
+const findReplaceIndex = packages.indexOf( 'ckeditor5-find-and-replace' );
+
+if ( findReplaceIndex !== -1 ) {
+	packages.splice( findReplaceIndex, 1 );
+}
+
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
