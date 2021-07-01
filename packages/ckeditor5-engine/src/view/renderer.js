@@ -261,8 +261,8 @@ export default class Renderer {
 
 		// Removing nodes from the DOM as we iterate can cause `actualDomChildren`
 		// (which is a live-updating `NodeList`) to get out of sync with the
-		// indices that we compute as we iterate over `actions`, producing
-		// incorrect element mappings.
+		// indices that we compute as we iterate over `actions`.
+		// This would produce incorrect element mappings.
 		//
 		// Converting live list to an array to make the list static.
 		const actualDomChildren = Array.from(

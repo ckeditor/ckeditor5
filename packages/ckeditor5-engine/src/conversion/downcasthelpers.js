@@ -406,32 +406,32 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * This conversion creates a representation for model marker boundaries in the view:
 	 *
 	 * * If the marker boundary is before or after a model element, a view attribute is set on a corresponding view element.
-	 * * In other cases, a view element with the specified tag name is inserted at corresponding view position.
+	 * * In other cases, a view element with the specified tag name is inserted at the corresponding view position.
 	 *
-	 * Typically, marker names use the `group:uniqueId:otherData` convention. For example: `comment:e34zfk9k2n459df53sjl34:zx32c`.
+	 * Typically, the marker names use the `group:uniqueId:otherData` convention. For example: `comment:e34zfk9k2n459df53sjl34:zx32c`.
 	 * The default configuration for this conversion is that the first part is the `group` part and the rest of
 	 * the marker name becomes the `name` part.
 	 *
 	 * Tag and attribute names and values are generated from the marker name:
 	 *
-	 * * Templates for attributes are `data-[group]-start-before="[name]"`, `data-[group]-start-after="[name]"`,
+	 * * The templates for attributes are `data-[group]-start-before="[name]"`, `data-[group]-start-after="[name]"`,
 	 * `data-[group]-end-before="[name]"` and `data-[group]-end-after="[name]"`.
-	 * * Templates for view elements are `<[group]-start name="[name]">` and `<[group]-end name="[name]">`.
+	 * * The templates for view elements are `<[group]-start name="[name]">` and `<[group]-end name="[name]">`.
 	 *
 	 * Attributes mark whether the given marker's start or end boundary is before or after the given element.
-	 * Attributes `data-[group]-start-before` and `data-[group]-end-after` are favored.
+	 * The `data-[group]-start-before` and `data-[group]-end-after` attributes are favored.
 	 * The other two are used when the former two cannot be used.
 	 *
 	 * The conversion configuration can take a function that will generate different group and name parts.
-	 * If such function is set as the `config.view` parameter, it is passed a marker name and it is expected to return an object with two
+	 * If such a function is set as the `config.view` parameter, it is passed a marker name and it is expected to return an object with two
 	 * properties: `group` and `name`. If the function returns a falsy value, the conversion will not take place.
 	 *
 	 * Basic usage:
 	 *
 	 *		// Using the default conversion.
-	 *		// In this case, all markers whose name starts with 'comment:' will be converted.
+	 *		// In this case, all markers with names starting with 'comment:' will be converted.
 	 *		// The `group` parameter will be set to `comment`.
-	 *		// The `name` parameter will be the rest of the marker name (without `:`).
+	 *		// The `name` parameter will be the rest of the marker name (without the `:`).
 	 *		editor.conversion.for( 'dataDowncast' ).markerToData( {
 	 *			model: 'comment'
 	 *		} );
@@ -454,7 +454,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		<p>Foo <myMarker-start></myMarker-start>bar</p>
 	 *		<figure data-myMarker-end-after="" class="image"><img src="abc.jpg" /></figure>
 	 *
-	 * **Note:** A situation where some markers have the `name` part and some do not have it is incorrect and should be avoided.
+	 * **Note:** A situation where some markers have the `name` part and some do not, is incorrect and should be avoided.
 	 *
 	 * Examples where `data-group-start-after` and `data-group-end-before` are used:
 	 *
@@ -498,14 +498,14 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * This kind of conversion is useful for saving data into the database, so it should be used in the data conversion pipeline.
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
-	 * to the conversion process.
+	 * See the {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} API guide to learn how to
+	 * add a converter to the conversion process.
 	 *
 	 * @method #markerToData
 	 * @param {Object} config Conversion configuration.
-	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
+	 * @param {String} config.model The name of the model marker (or the model marker group) to convert.
 	 * @param {Function} [config.view] A function that takes the model marker name and
-	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as a parameters
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as the parameters
 	 * and returns an object with the `group` and `name` properties.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
@@ -548,7 +548,7 @@ export function insertText() {
  */
 export function remove() {
 	return ( evt, data, conversionApi ) => {
-		// Find view range start position by mapping model position at which the remove happened.
+		// Find the view range start position by mapping the model position at which the remove happened.
 		const viewStart = conversionApi.mapper.toViewPosition( data.position );
 
 		const modelEnd = data.position.getShiftedBy( data.length );
@@ -569,7 +569,7 @@ export function remove() {
 
 /**
  * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
- * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If a priority
+ * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If the priority
  * is not provided in the descriptor, the default priority will be used.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -966,7 +966,7 @@ function handleMarkerBoundary( range, isStart, conversionApi, data, viewMarkerDa
 
 		const viewElement = conversionApi.mapper.toViewElement( modelElement );
 
-		// On rare circumstances, the model element could be not mapped to any view element and that would cause an error.
+		// In rare circumstances, the model element may be not mapped to any view element and that would cause an error.
 		// One of those situations is a soft break inside code block.
 		if ( viewElement ) {
 			insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );

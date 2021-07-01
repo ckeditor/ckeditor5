@@ -1353,7 +1353,7 @@ function hasBlockParent( domNode, blockElements ) {
  *
  * * `br` &ndash; For the `<br data-cke-filler="true">` block filler used in the editing view.
  * * `nbsp` &ndash; For the `&nbsp;` block fillers used in the data.
- * * `markedNbsp` &ndash; For the `&nbsp;` block fillers wrapped in a `<span>` element: `<span data-cke-filler="true">&nbsp;</span>`
+ * * `markedNbsp` &ndash; For the `&nbsp;` block fillers wrapped in `<span>` elements: `<span data-cke-filler="true">&nbsp;</span>`
  * used in the data.
  *
  * @typedef {String} module:engine/view/filler~BlockFillerMode
