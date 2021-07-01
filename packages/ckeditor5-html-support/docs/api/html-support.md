@@ -11,7 +11,7 @@ This package implements the General HTML Support feature for CKEditor 5.
 <info-box>
 	The General HTML Support feature is **experimental and not yet production-ready**.
 
-	The API of the "GHS" feature is may change without further notice.
+	The API of the "GHS" feature may change without further notice.
 
 	Follow the ["Stabilize and release a production-ready General HTML Support feature"](https://github.com/ckeditor/ckeditor5/issues/9856) issue for more updates and related issues.
 </info-box>
