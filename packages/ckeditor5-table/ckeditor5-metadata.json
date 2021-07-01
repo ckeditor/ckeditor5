@@ -3,7 +3,7 @@
 		{
 			"name": "Table",
 			"className": "Table",
-			"description": "This package adds table creation and editing tools that help content authors bring tabular data into their documents.",
+			"description": "Adds table creation and editing tools that help content authors bring tabular data into their documents.",
 			"docs": "features/table.html",
 			"path": "src/table.js",
 			"uiComponents": [
