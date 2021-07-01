@@ -80,6 +80,8 @@ import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
 
+import loupe from '@ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg';
+
 import '../../theme/ckeditor5-ui/components/editorui/editorui.css';
 
 const icons = {
@@ -148,7 +150,10 @@ const icons = {
 	nextArrow, previousArrow,
 
 	// undo
-	undo, redo
+	undo, redo,
+
+	// find and replace
+	loupe
 };
 
 const toolbar = new ToolbarView( new Locale() );

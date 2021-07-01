@@ -62,7 +62,9 @@ export default class ImageUtils extends Plugin {
 	 * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionRange}
 	 * method.
 	 *
-	 *		insertImage( model, { src: 'path/to/image.jpg' } );
+	 *		const imageUtils = editor.plugins.get( 'ImageUtils' );
+	 *
+	 *		imageUtils.insertImage( { src: 'path/to/image.jpg' } );
 	 *
 	 * @param {Object} [attributes={}] Attributes of the inserted image.
 	 * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~Schema}.

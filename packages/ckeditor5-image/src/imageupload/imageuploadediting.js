@@ -25,7 +25,7 @@ import { createImageTypeRegExp } from './utils';
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
  * and the `imageUpload` command as an aliased name.
  *
- * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete` event}
+ * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete`} event
  * that allows adding custom attributes to the {@link module:engine/model/element~Element image element}.
  *
  * @extends module:core/plugin~Plugin

@@ -70,7 +70,7 @@
 		{
 			"name": "Media embed toolbar",
 			"className": "MediaEmbedToolbar",
-			"description": "Implements an optional toolbar for media embed that shows up when the media element is selected.",
+			"description": "Implements an optional toolbar for media embed that shows when the media element is selected.",
 			"docs": "features/media-embed.html",
 			"path": "src/mediaembedtoolbar.js",
 			"requires": [

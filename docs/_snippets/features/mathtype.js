@@ -64,6 +64,8 @@ ClassicEditor
 	} )
 
 	.then( editor => {
+		window.editor = editor;
+
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Insert a math equation - MathType' ),

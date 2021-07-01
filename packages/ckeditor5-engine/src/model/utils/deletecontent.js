@@ -53,7 +53,7 @@ import DocumentSelection from '../documentselection';
  * If you use this option you need to make sure to handle invalid selections yourself or leave
  * them to the selection post-fixer (may not always work).
  *
- * **Note:** if there is no valid position for the selection, the paragraph will always be created:
+ * **Note:** If there is no valid position for the selection, the paragraph will always be created:
  *
  * `[<imageBlock src="foo.jpg"></imageBlock>]` -> `<paragraph>[]</paragraph>`.
  */

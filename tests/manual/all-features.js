@@ -13,6 +13,7 @@ import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
@@ -51,7 +52,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
-			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
+			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
 			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties, TableCaption,
 			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed,
 			AutoLink, Mention, TextTransformation,
@@ -81,7 +82,7 @@ ClassicEditor
 			'|',
 			'sourceEditing',
 			'|',
-			'undo', 'redo'
+			'undo', 'redo', 'findAndReplace'
 		],
 		cloudServices: CS_CONFIG,
 		table: {
