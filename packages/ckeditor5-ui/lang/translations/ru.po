@@ -48,10 +48,6 @@ msgctxt "Label used by assistive technologies describing a toolbar displayed ins
 msgid "Dropdown toolbar"
 msgstr "Выпадающая панель инструментов"
 
-msgctxt "Label of a toolbar button which reveals more toolbar items."
-msgid "Show more items"
-msgstr "Другие инструменты"
-
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
 msgstr "Чёрный"

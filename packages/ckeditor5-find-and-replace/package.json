@@ -1,0 +1,56 @@
+{
+  "name": "@ckeditor/ckeditor5-find-and-replace",
+  "version": "28.0.1",
+  "description": "Find and replace feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "@ckeditor/ckeditor5-ui": "^28.0.0",
+    "@ckeditor/ckeditor5-utils": "^28.0.0",
+    "ckeditor5": "^28.0.0",
+    "lodash-es": "^4.17.15"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-utils": "^25.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^28.0.0",
+    "@ckeditor/ckeditor5-core": "^28.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^28.0.0",
+    "@ckeditor/ckeditor5-editor-decoupled": "^28.0.0",
+    "@ckeditor/ckeditor5-engine": "^28.0.0",
+    "@ckeditor/ckeditor5-essentials": "^28.0.0",
+    "@ckeditor/ckeditor5-font": "^28.0.0",
+    "@ckeditor/ckeditor5-highlight": "^28.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^28.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^28.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-find-and-replace"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme",
+    "build"
+  ],
+  "scripts": {
+    "dll:build": "webpack"
+  }
+}

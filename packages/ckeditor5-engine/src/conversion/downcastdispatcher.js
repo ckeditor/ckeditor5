@@ -88,7 +88,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *		// You will convert inserting a "paragraph" model element into the model.
  *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
  *			// Remember to check whether the change has not been consumed yet and consume it.
- *			if ( conversionApi.consumable.consume( data.item, 'insert' ) ) {
+ *			if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
  *				return;
  *			}
  *

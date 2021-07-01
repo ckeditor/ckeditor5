@@ -3,7 +3,7 @@
 		{
 			"name": "Essentials",
 			"className": "Essentials",
-			"description": "Includes all essential editing features like clipboard, <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd>, typing and undo support.",
+			"description": "Includes all essential editing features like the clipboard, <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd> keystrokes, typing and the undo support.",
 			"path": "src/essentials.js",
 			"uiComponents": [
 				{

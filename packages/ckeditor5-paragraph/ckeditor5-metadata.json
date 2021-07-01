@@ -8,7 +8,8 @@
 			"htmlOutput": [
 				{
 					"elements": "p",
-					"implements": "$block"
+					"implements": "$block",
+					"_comment": "The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the <code>`$block`</code> element."
 				}
 			]
 		}

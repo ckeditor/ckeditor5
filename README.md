@@ -461,6 +461,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-find-and-replace"><code>@ckeditor/ckeditor5-find-and-replace</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-find-and-replace.svg" alt="@ckeditor/ckeditor5-find-and-replace npm package badge"></a>
+	</td>
+	<td>
+		The find and replace feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font"><code>@ckeditor/ckeditor5-font</code></a>
 	</td>
 	<td>
