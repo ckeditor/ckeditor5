@@ -10,7 +10,7 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and and provide relief from large body texts. CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
 
-You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/features/table.html) blog post after reading this guide.
+You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
 
 ## Demos
 
