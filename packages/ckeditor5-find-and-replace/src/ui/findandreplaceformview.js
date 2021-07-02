@@ -218,8 +218,7 @@ export default class FindAndReplaceFormView extends View {
 		this.replaceAllButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
 
 		this.bind( 'isCounterHidden' ).to( this, 'matchCount', this, 'highlightOffset', ( matchCount, highlightOffset ) => {
-			return matchCount === null || matchCount === 0 ||
-				highlightOffset === null || highlightOffset === 0;
+			return matchCount === null || highlightOffset === null;
 		} );
 
 		this.setTemplate( {
