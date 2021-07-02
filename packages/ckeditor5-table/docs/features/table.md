@@ -8,9 +8,9 @@ modified_at: 2021-06-07
 
 The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents. Tables help organize the content in a distinct, visual way that stands out from the text and is more easily readable for certain types of information. They are perfect for listing, grouping, and otherwise organizing data sets or for providing information in a clear, efficient way.
 
-Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and and provide relief from large body texts.
+Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and and provide relief from large body texts. CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
 
-CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
+You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/features/table.html) blog post after reading this guide.
 
 ## Demos
 
