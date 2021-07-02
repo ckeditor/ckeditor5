@@ -12,7 +12,7 @@ The block quote feature provides an attractive way to draw the readers' attentio
 
 ## Demo
 
-Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg} in the editor below to see the feature in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
+Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg Insert block quote} in the editor below to see the feature in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
 
