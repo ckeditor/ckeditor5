@@ -18,9 +18,9 @@ You may look for more interesting details in the [Tables in CKEditor 5](https://
 
 The editor bellow shows the basic set of table features focusing on the **structure and semantics**. Click anywhere inside the table to invoke the table toolbar. The features available in there allow users to insert new tables into the content, add or remove columns and rows, define headers, add caption, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
 
-{@snippet features/table}
+Use the **"Insert table"** toolbar button {@icon @ckeditor/ckeditor5-table/theme/icons/table.svg} in the toolbar to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
 
-Use the **"Insert table"** button in the toolbar to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
+{@snippet features/table}
 
 ### Table and cell styling tools
 

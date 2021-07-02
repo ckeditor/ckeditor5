@@ -12,10 +12,10 @@ The {@link api/basic-styles basic styles} feature allows you to apply the most f
 </info-box>
 
 Basic formatting options may be applied with the toolbar buttons (pictured below) or thanks to the {@link features/autoformat autoformatting feature} with Markdown code as you type. Use one these to format the text:
-* Bold &ndash; Use {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg} toolbar item or type `**text**` or `__text__`
-* Italic &ndash; Use {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg} toolbar item or type `*text*` or `_text_`
-* Code &ndash; Use {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg} toolbar item or type ``` `text` ```
-* Strikethrough &ndash; Use {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg} or type `~~text~~`.
+* Bold &ndash; Use the {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg} toolbar button or type `**text**` or `__text__`
+* Italic &ndash; Use the {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg} toolbar button or type `*text*` or `_text_`
+* Code &ndash; Use the {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg} toolbar button or type ``` `text` ```
+* Strikethrough &ndash; Use the {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg} toolbar button or type `~~text~~`.
 
 ## Demo
 
