@@ -135,6 +135,65 @@ class MentionCommandSwitcher extends Plugin {
 	}
 }
 
+// @todo fetch dynamically
+const hardcodedCommandsList = [
+	'/fontColor',
+	'/fontBackgroundColor',
+	// '/enter',
+	// '/deleteForward',
+	// '/forwardDelete',
+	// '/delete',
+	'/selectAll',
+	'/shiftEnter',
+	// '/input',
+	'/undo',
+	'/redo',
+	'/blockQuote',
+	'/bold',
+	// '/paragraph',
+	// '/insertParagraph',
+	'/heading',
+	'/insertImage',
+	// '/imageInsert',
+	// '/imageTypeBlock',
+	// '/imageTextAlternative',
+	// '/imageTypeInline',
+	// '/toggleImageCaption',
+	// '/imageStyle',
+	'/indent',
+	'/outdent',
+	'/italic',
+	'/link',
+	'/unlink',
+	'/numberedList',
+	'/bulletedList',
+	'/indentList',
+	'/outdentList',
+	'/mediaEmbed',
+	'/insertTable',
+	// '/insertTableRowAbove',
+	// '/insertTableRowBelow',
+	// '/insertTableColumnLeft',
+	// '/insertTableColumnRight',
+	// '/removeTableRow',
+	// '/removeTableColumn',
+	// '/splitTableCellVertically',
+	// '/splitTableCellHorizontally',
+	// '/mergeTableCells',
+	// '/mergeTableCellRight',
+	// '/mergeTableCellLeft',
+	// '/mergeTableCellDown',
+	// '/mergeTableCellUp',
+	// '/setTableColumnHeader',
+	// '/setTableRowHeader',
+	// '/selectTableRow',
+	// '/selectTableColumn',
+	'/underline',
+	'/fontFamily',
+	'/fontSize'/* ,
+	'/mention' */
+];
+
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Underline, Font, Mention, InlineWidget, MentionCommandSwitcher ],
@@ -171,12 +230,37 @@ ClassicEditor
 					feed: [
 						':+1:', ':-1:', ':@(at-sign):', ':$(dollar-sign):', ':#(hash-sign):'
 					]
+				},
+				{
+					marker: '/',
+					feed: hardcodedCommandsList
 				}
 			]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		editor.commands.get( 'mention' ).on( 'execute', ( event, data ) => {
+			const eventData = data[ 0 ];
+			const model = editor.model;
+
+			if ( eventData.marker == '/' && hardcodedCommandsList.includes( eventData.mention.id ) ) {
+				const commandName = eventData.mention.id.substr( 1 );
+
+				model.change( writer => {
+					const selection = model.document.selection;
+					const range = eventData.range || selection.getFirstRange();
+
+					writer.remove( range );
+
+					editor.execute( commandName );
+
+					// Default mentions handler should not be triggered.
+					event.stop();
+				} );
+			}
+		}, { priority: 'high' } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
