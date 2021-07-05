@@ -12,7 +12,7 @@ Note that block-level formatting ({@link features/headings headings}, {@link fea
 
 ## Demo
 
-Select the content you want to clean up and press the "Remove Format" button in the toolbar:
+Select the content you want to clean up and press the remove format button {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg remove format} in the toolbar:
 
 {@snippet features/remove-format}
 
