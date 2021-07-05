@@ -1457,9 +1457,13 @@ describe( 'DataFilter', () => {
 					'</paragraph>',
 				attributes: {
 					1: {
-						attributes: {
-							class: 'foo bar',
-							style: 'font-weight:400;line-height:1em;'
+						classes: [
+							'foo',
+							'bar'
+						],
+						styles: {
+							'font-weight': '400',
+							'line-height': '1em'
 						}
 					},
 					2: {
