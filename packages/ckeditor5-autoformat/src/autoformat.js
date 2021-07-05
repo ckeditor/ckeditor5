@@ -178,7 +178,11 @@ export default class Autoformat extends Plugin {
 	 */
 	_addCodeBlockAutoformats() {
 		if ( this.editor.commands.get( 'codeBlock' ) ) {
-			blockAutoformatEditing( this.editor, this, /^```$/, 'codeBlock' );
+			blockAutoformatEditing( this.editor, this, /^```$/, () => {
+				this.editor.execute( 'codeBlock', {
+					usePreviousLanguageChoice: true
+				} );
+			} );
 		}
 	}
 
