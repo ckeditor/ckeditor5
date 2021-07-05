@@ -5,41 +5,62 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v29.0.0.
+
+This release introduces several new features:
+
+## **New features / enhancements**
+
+* [Inline images](https://github.com/ckeditor/ckeditor5/issues/2052) - support multiple images in a single block
+* The [Find and replace](https://github.com/ckeditor/ckeditor5/issues/1430) feature
+* The [Source editing](https://github.com/ckeditor/ckeditor5/issues/9647) feature for classic editor
+* [Remembering the language when creating a new code block](https://github.com/ckeditor/ckeditor5/issues/8722)
+* The [General HTML Support](https://github.com/ckeditor/ckeditor5/issues/9970) feature
+
+## **Bug fixes**
+
+* The remove format feature will not [reset the image size anymore](https://github.com/ckeditor/ckeditor5/issues/9684)
+* Nested marker highlight will not [break the mouse text selection](https://github.com/ckeditor/ckeditor5/issues/9513)
+
 <!-- TODO: Add a link to the blog post. -->
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)**: The official [decoupled document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document) build now ships with the [`ImageResize`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageresize-ImageResize.html) plugin enabled by default. [Learn more](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html).
-* **[ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)**: The [`CKFinder`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ckfinder_ckfinder-CKFinder.html) plugin is no longer automatically importing the [`Image`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image-Image.html) plugin as a dependency. [Learn more](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html).
-* **[easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image)**: The [`EasyImage`](https://ckeditor.com/docs/ckeditor5/latest/api/module_easy-image_easyimage-EasyImage.html) plugin is no longer automatically importing the [`Image`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image-Image.html) plugin as a dependency. [Learn more](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html#easyimage-plugin).
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `Image` plugin works as a glue for both `ImageBlock` and `ImageInline` features now (previously only block images). If you do not want inline images to be allowed, consider replacing the `Image` plugin with `ImageBlock` in your editor configuration. Otherwise, all images without the `<figure>` wrapper will be loaded into the editor content as inline images, which in some cases may affect content semantics and styling.
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageEditing` plugin is no longer standalone as the majority of its logic was extracted to `ImageBlockEditing` and `ImageInlineEditing` plugins. The logic remaining in the `ImageEditing` is common for both `ImageBlockEditing` and `ImageInlineEditing` plugins.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The image caption is no longer displayed automatically the user selects a block image. Instead, its presence is controlled using the `'toggleImageCaption'` toolbar button and a [`ToggleImageCaptionCommand`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_toggleimagecaptioncommand-ToggleImageCaptionCommand.html) for better integration with [revamped image styles system](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html#image-styles). [Learn more](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html#image-caption).
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Some helpers from the image utils module (`@ckeditor/ckeditor5-image/src/image/utils.js`) have moved to the [`ImageUtils` plugin](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageutils-ImageUtils.html). The helpers are still accessible via `editor.plugins.get( 'ImageUtils' )` namespace, for instance, `editor.plugins.get( 'ImageUtils' ).insertImage( ... )`.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The API of the [`insertImage()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageutils-ImageUtils.html#function-insertImage) helper has changed, please make sure to update your integrations.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `getSelectedImageWidget()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `getViewImgFromWidget()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `isImageAllowed()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `isImage()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `isImageWidget()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `toImageWidget()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `captionElementCreator()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `isCaption()` helper is no longer part of the public API.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `getCaptionFromImage()` helper is now available as [`getCaptionFromImageModelElement()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_utils.html#function-getCaptionFromImageModelElement).
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `matchImageCaption()` helper is now available as [`matchImageCaptionViewElement()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_utils.html#function-matchImageCaptionViewElement).
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `defaultIcons` are now available as [`DEFAULT_ICONS`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-DEFAULT_ICONS).
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `defaultStyles` are now available as [`DEFAULT_OPTIONS`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-DEFAULT_OPTIONS).
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The image caption is no longer displayed automatically the user selects a block image. Instead, its presence is controlled using the `'toggleImageCaption'` toolbar button and a [`ToggleImageCaptionCommand`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_toggleimagecaptioncommand-ToggleImageCaptionCommand.html) for better integration with [revamped image styles system](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html#image-styles).
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The API of has changed, please make sure to update your integrations.
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The linked image indicator (icon) rendered as a `<span>` with the `.ck-link-image_icon` CSS class has been removed. To alter the look of the indicator (including the icon), please use `figure.image > a::after` (for linked block images) and `a span.image-inline::after` (for linked inline images) CSS selectors instead.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `isImageWidget()` helper is no longer exposed by the [`Image`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image-Image.html) plugin.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The API of common [image converters](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image_converters.html) has changed. Please refer to the documentation to learn more.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The API of various [image caption utils](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_utils.html) has changed. Please refer to the documentation to learn more.
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The conversion helpers [`srcsetAttributeConverter()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image_converters.html#function-srcsetAttributeConverter) and [`modelToViewAttributeConverter()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image_converters.html#function-modelToViewAttributeConverter) now require the `imageType` parameter.
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The `isImageAllowed()` helper is now available as [`isLinkableElement()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_link_utils.html#function-isLinkableElement).
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: The API of the [`insertMedia()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_media-embed_utils.html#function-insertMedia) helper has changed. See the documentation to learn more.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The in-cell pseudo-paragraph used for data tables is no longer styled using the inline `style` attribute but a `.ck-table-bogus-paragraph` CSS class instead.
-* **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The `findOptimalInsertionPosition()` helper is now `findOptimalInsertionRange()` and returns a [model range](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_range-Range.html). Also, instead of searching for a position next to the currently selected block, it will now attempt to replace that block (see [#9102](https://github.com/ckeditor/ckeditor5/issues/9102)).
-* **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The `checkSelectionOnObject()` helper is no longer part of the public API.
-* Default user permissions have been changed. Now, by default, it is possible to remove other users' comment threads. This applies to non-real-time editing integrations and to real-time editing integrations using the writer role. This behavior can be changed using Permissions plugin API (for non-real-time editing integrations) or by setting permissions for a given user in the user token (for integrations using Cloud Services).
+* Several plugins are not loaded automatically as dependencies of other plugins anymore. From now on, they need to be provided by the editor creator manually (via `config.plugins`). [Learn more](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html). This list includes:
+  - The [`CKFinder`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ckfinder_ckfinder-CKFinder.html) plugin is no longer automatically importing the [`Image`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image-Image.html) plugin as a dependency.
+  - The [`EasyImage`](https://ckeditor.com/docs/ckeditor5/latest/api/module_easy-image_easyimage-EasyImage.html) plugin is no longer automatically importing the [`Image`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image-Image.html) plugin as a dependency.
+* Several functions are no longer a part of the public API. This list includes:
+  - `getSelectedImageWidget()`
+  - `getViewImgFromWidget()`
+  - `isImageAllowed()`
+  - `isImage()`
+  - `isImageWidget()`
+  - `toImageWidget()`
+  - `captionElementCreator()`
+  - `isCaption()`
+  - `checkSelectionOnObject()`
+* Several functions or constants have been renamed. This list includes:
+  - The `getCaptionFromImage()` helper is now available as [`getCaptionFromImageModelElement()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_utils.html#function-getCaptionFromImageModelElement)
+  - The `matchImageCaption()` helper is now available as [`matchImageCaptionViewElement()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_utils.html#function-matchImageCaptionViewElement)
+  - The `defaultIcons` are now available as [`DEFAULT_ICONS`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-DEFAULT_ICONS)
+  - The `defaultStyles` are now available as [`DEFAULT_OPTIONS`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-DEFAULT_OPTIONS)
+  - The `findOptimalInsertionPosition()` helper is now `findOptimalInsertionRange()` and returns a [model range](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_range-Range.html). Also, instead of searching for a position next to the currently selected block, it will now attempt to replace that block (see [#9102](https://github.com/ckeditor/ckeditor5/issues/9102))
+  - The `isImageAllowed()` helper is now available as [`isLinkableElement()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_link_utils.html#function-isLinkableElement)
+  - Some helpers from the image utils module (`@ckeditor/ckeditor5-image/src/image/utils.js`) have moved to the [`ImageUtils` plugin](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageutils-ImageUtils.html). The helpers are still accessible via `editor.plugins.get( 'ImageUtils' )` namespace, for instance, `editor.plugins.get( 'ImageUtils' ).insertImage( ... )`
+* The API of several function or modules have been changed. See the documentation to learn more. This list includes:
+  - common [image converters](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_image_converters.html)
+  - various [image caption utils](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagecaption_utils.html)
+  - the [`insertImage()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageutils-ImageUtils.html#function-insertImage) helper
+  - the [`insertMedia()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_media-embed_utils.html#function-insertMedia) helper
+* The default user permissions have been changed. Now, by default, it is possible to remove other users' comment threads. This applies to non-real-time editing integrations and to real-time editing integrations using the writer role. This behavior can be changed using the `Permissions` plugin API (for non-real-time editing integrations) or by setting permissions for a given user in the user token (for integrations using Cloud Services).
 
 ### Features
 
@@ -48,21 +69,21 @@ Changelog
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced the `CommentsRepository#isReadOnly()` method.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced the `CommentThread#isRemovable` property which is related to current permissions. By default, comment threads can now be removed by any user.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Improved engine view matcher with new pattern syntax allowing to match attribute keys using regular expressions. Unified pattern syntax between attributes, styles, and classes. Closes [#9872](https://github.com/ckeditor/ckeditor5/issues/9872). ([commit](https://github.com/ckeditor/ckeditor5/commit/22fad3daaa7386da6a451e0dc60f4facf191bcaa))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added special `expand` option to `StylesMap.getStyleNames()` and view `Element.getStyleNames()` methods allowing to expand shorthand style properties. ([commit](https://github.com/ckeditor/ckeditor5/commit/22fad3daaa7386da6a451e0dc60f4facf191bcaa))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added the special `expand` option to `StylesMap.getStyleNames()` and view `Element.getStyleNames()` methods allowing to expand shorthand style properties. ([commit](https://github.com/ckeditor/ckeditor5/commit/22fad3daaa7386da6a451e0dc60f4facf191bcaa))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `batchType` option in `editor.data.set()` which can be used to preserve the undo/redo steps and to add an additional item to the undo stack. Note that it will still replace the whole content and should not be used with real-time collaboration. ([commit](https://github.com/ckeditor/ckeditor5/commit/2b9ef7e7355d4fb18303aa857a4d6dbff5ff075f))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Introduced General HTML Support feature. Closes [#9970](https://github.com/ckeditor/ckeditor5/issues/9970). ([commit](https://github.com/ckeditor/ckeditor5/commit/a35db8593d099c609c7ce77450901016ea4aab38))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced support for inline images in editor content. Available out–of–the–box in all ready–to–use editor builds inline images can be uploaded, styled, resized, and linked and complement the already supported block images. See the [image feature overview guide](https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html) to see inline images in action. For more information about breaking changes, migration path, and tips, check out the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-28.html). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Introduced the General HTML Support feature. Closes [#9970](https://github.com/ckeditor/ckeditor5/issues/9970). ([commit](https://github.com/ckeditor/ckeditor5/commit/a35db8593d099c609c7ce77450901016ea4aab38))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced support for inline images in editor content. Available out–of–the–box in all ready–to–use editor builds inline images can be uploaded, styled, resized, and linked and complement the already supported block images. See the [image feature overview guide](https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html) to see inline images in action. For more information about breaking changes, migration path, and tips, check out the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/migration/migration-to-29.html). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: It should be possible to define the dropdown menu as an object in the `config.image.toolbar` configuration. Closes [#9340](https://github.com/ckeditor/ckeditor5/issues/9340). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Integrated the link feature with inline images. Closes [#8871](https://github.com/ckeditor/ckeditor5/issues/8871), [#9017](https://github.com/ckeditor/ckeditor5/issues/9017), [#9167](https://github.com/ckeditor/ckeditor5/issues/9167). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
-* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Enabled multi-root editors.
-* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Source editing feature for the classic editor. Closes [#9647](https://github.com/ckeditor/ckeditor5/issues/9647). ([commit](https://github.com/ckeditor/ckeditor5/commit/2b9ef7e7355d4fb18303aa857a4d6dbff5ff075f))
+* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Enabled the Revision History feature in multi-root editors.
+* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Introduced the Source editing feature for the classic editor. Closes [#9647](https://github.com/ckeditor/ckeditor5/issues/9647). ([commit](https://github.com/ckeditor/ckeditor5/commit/2b9ef7e7355d4fb18303aa857a4d6dbff5ff075f))
 
 ### Bug fixes
 
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Hide all toolbars when the user starts dragging the widget and show them when the drag ends. Closes [#9566](https://github.com/ckeditor/ckeditor5/issues/9566). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**:  All toolbars will be hidden when they drag the widget and show them when the drag ends. Closes [#9566](https://github.com/ckeditor/ckeditor5/issues/9566). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)**: The code block feature should not allow for inserting inline widgets as its content. Closes [#9567](https://github.com/ckeditor/ckeditor5/issues/9567). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed downcast conversion of collapsed markers at the conversion range boundary. Closes [#8485](https://github.com/ckeditor/ckeditor5/issues/8485). ([commit](https://github.com/ckeditor/ckeditor5/commit/91d61dd0cfd85416883218039f8c2480b36711b7))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: DomConverter.blockElements is missing some of the HTML block element names. Closes [#9801](https://github.com/ckeditor/ckeditor5/issues/9801), [#7863](https://github.com/ckeditor/ckeditor5/issues/7863). ([commit](https://github.com/ckeditor/ckeditor5/commit/67b4c7d1f3724ae94fc15d1647ff793815fe1d1e))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added missing HTML block element names to the `DomConverter.blockElements` array. Closes [#9801](https://github.com/ckeditor/ckeditor5/issues/9801), [#7863](https://github.com/ckeditor/ckeditor5/issues/7863). ([commit](https://github.com/ckeditor/ckeditor5/commit/67b4c7d1f3724ae94fc15d1647ff793815fe1d1e))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Markers should not be split in view on the caret position. Closes [#9513](https://github.com/ckeditor/ckeditor5/issues/9513). ([commit](https://github.com/ckeditor/ckeditor5/commit/be066b41aeb598588d281ffb6448f9df87477f61))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `FocusObserver` should not force the view to render in random moments. See [#9513](https://github.com/ckeditor/ckeditor5/issues/9513). ([commit](https://github.com/ckeditor/ckeditor5/commit/be066b41aeb598588d281ffb6448f9df87477f61))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Disallowed inline images in `caption` elements. Closes [#9794](https://github.com/ckeditor/ckeditor5/issues/9794). ([commit](https://github.com/ckeditor/ckeditor5/commit/d4afc64b03b1ce23bd391fe299b8d9ad4315e3fc))
@@ -71,7 +92,7 @@ Changelog
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The floating block images, except the `side` image, should be displayed side by side by default. Closes [#9183](https://github.com/ckeditor/ckeditor5/issues/9183). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: An image should never overflow the widget boundaries while changing its size. Closes [#9166](https://github.com/ckeditor/ckeditor5/issues/9166). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The size label should be displayed above the image if it doesn't fit inside. See [#9166](https://github.com/ckeditor/ckeditor5/issues/9166). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: An Image caption placeholder text should not wrap or overflow. Closes [#9162](https://github.com/ckeditor/ckeditor5/issues/9162). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: An image caption placeholder text should not wrap or overflow. Closes [#9162](https://github.com/ckeditor/ckeditor5/issues/9162). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The link UI should be shown when clicking a linked inline widget. Closes [#9607](https://github.com/ckeditor/ckeditor5/issues/9607). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)**: Editor will not crash when a restricted area marker is removed. Closes [#9650](https://github.com/ckeditor/ckeditor5/issues/9650). ([commit](https://github.com/ckeditor/ckeditor5/commit/f358e6d6faa66dce48d576cbd5fa4dfd15758bdb))
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Highlights for suggestions created in earlier revisions are now properly shown.
@@ -81,7 +102,7 @@ Changelog
 ### Other changes
 
 * **[build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)**: The editor document build should include the `ImageResize` plugin. Closes [#9507](https://github.com/ckeditor/ckeditor5/issues/9507). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `Comment#isRemovable` property now is bound to `CommentThread#isRemovable`. `Comment#isRemovable` is set to `true` if the local user is the author, or if the comment thread is removable and the comment is the first comment in the thread.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The `Comment#isRemovable` property now is bound to `CommentThread#isRemovable`. `Comment#isRemovable` is set to `true` if the local user is the author, or if the comment thread is removable and the comment is the first comment in the thread.
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Added several icons for new image styles (see [#8909](https://github.com/ckeditor/ckeditor5/issues/8909)). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image)**: Removed the `Image` plugin dependency from the `EasyImage` plugin. Closes [#9399](https://github.com/ckeditor/ckeditor5/issues/9399). ([commit](https://github.com/ckeditor/ckeditor5/commit/4c228fb0549507f01d1f1ba4f9862817ac589279))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed parsing leading HTML comments by `HtmlDataProcessor.toView()`. Closes [#9861](https://github.com/ckeditor/ckeditor5/issues/9861). ([commit](https://github.com/ckeditor/ckeditor5/commit/12dc7ba19490f155d494209f1987814d24f80048))
@@ -209,7 +230,7 @@ There were also a few bug fixes:
 * [Toolbar navigation with the keyboard works in the right direction in a Right-to-Left text](https://github.com/ckeditor/ckeditor5/issues/5585).
 * [The media embed feature now supports more URL schemes for Google Maps](https://github.com/ckeditor/ckeditor5/issues/2762).
 
-<!-- TODO: Add a link to the blog post. -->
+Read more in the blog post: https://ckeditor.com/blog/revision-history-is-officially-live-ckeditor-5-v28.0.0-released/.
 
 ### MAJOR BREAKING CHANGES
 
