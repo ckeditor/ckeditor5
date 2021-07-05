@@ -21,9 +21,19 @@ export default class MinimapIframeView extends IframeView {
 
 		const bind = this.bindTemplate;
 
+		/**
+		 * TODO
+		 */
 		this.set( 'top', 0 );
+
+		/**
+		 * TODO
+		 */
 		this.set( 'height', 0 );
 
+		/**
+		 * TODO
+		 */
 		this._options = options;
 
 		this.extendTemplate( {
@@ -39,12 +49,20 @@ export default class MinimapIframeView extends IframeView {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	render() {
 		return super.render().then( () => {
 			this._prepareDocument();
 		} );
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
 	_prepareDocument() {
 		const iframeDocument = this.element.contentWindow.document;
 		const domRootClone = iframeDocument.adoptNode( this._options.domRootClone );

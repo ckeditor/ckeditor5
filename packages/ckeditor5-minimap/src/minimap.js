@@ -56,11 +56,19 @@ export default class Minimap extends Plugin {
 		this.listenTo( editor.ui, 'ready', this._onUiReady.bind( this ) );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		this._minimapView.destroy();
 		this._minimapView.element.remove();
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
 	_onUiReady() {
 		const editor = this.editor;
 		const editingRootElement = this._editingRootElement = editor.ui.getEditableElement();
@@ -81,6 +89,11 @@ export default class Minimap extends Plugin {
 		this._syncMinimapToEditingRootScrollPosition();
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
 	_initializeMinimap() {
 		const editor = this.editor;
 		const locale = editor.locale;
@@ -150,6 +163,11 @@ export default class Minimap extends Plugin {
 		minimapContainerElement.appendChild( minimapView.element );
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
 	_syncMinimapToEditingRootScrollPosition() {
 		const editingRootElement = this._editingRootElement;
 

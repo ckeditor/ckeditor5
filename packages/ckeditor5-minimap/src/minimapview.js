@@ -21,10 +21,20 @@ export default class MinimapView extends View {
 
 		const bind = this.bindTemplate;
 
+		/**
+		 * TODO
+		 */
 		this._positionTrackerView = new MinimapPositionTrackerView( locale );
 		this._positionTrackerView.delegate( 'drag' ).to( this );
+
+		/**
+		 * TODO
+		 */
 		this._scaleRatio = scaleRatio;
 
+		/**
+		 * TODO
+		 */
 		this._minimapIframeView = new MinimapIframeView( locale, {
 			useSimplePreview,
 			pageStyles,
@@ -51,20 +61,32 @@ export default class MinimapView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		this._minimapIframeView.destroy();
 
 		super.destroy();
 	}
 
+	/**
+	 * TODO
+	 */
 	get height() {
 		return new Rect( this.element ).height;
 	}
 
+	/**
+	 * TODO
+	 */
 	get scrollHeight() {
 		return Math.max( 0, Math.min( this.height, this._minimapIframeView.height ) - this._positionTrackerView.height );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	render() {
 		super.render();
 
@@ -73,10 +95,20 @@ export default class MinimapView extends View {
 		this.element.appendChild( this._minimapIframeView.element );
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param {*} newHeight
+	 */
 	setContentHeight( newHeight ) {
 		this._minimapIframeView.height = newHeight * this._scaleRatio;
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param {*} newScrollProgress
+	 */
 	setScrollProgress( newScrollProgress ) {
 		// The scrolling should end when the bottom edge of the iframe touches the bottom edge of the minimap.
 		if ( this._minimapIframeView.height < this.height ) {
@@ -94,10 +126,22 @@ export default class MinimapView extends View {
 		this._positionTrackerView.setScrollProgress( Math.round( newScrollProgress * 100 ) );
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param {*} trackerHeight
+	 */
 	setPositionTrackerHeight( trackerHeight ) {
 		this._positionTrackerView.setHeight( trackerHeight * this._scaleRatio );
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {*} data
+	 * @returns
+	 */
 	_handleMinimapClick( data ) {
 		if ( data.target === this._positionTrackerView.element ) {
 			return;
@@ -110,6 +154,12 @@ export default class MinimapView extends View {
 		this.fire( 'click', percentage );
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {*} data
+	 */
 	_handleMinimapMouseWheel( data ) {
 		this.fire( 'drag', data.deltaY * this._scaleRatio );
 	}

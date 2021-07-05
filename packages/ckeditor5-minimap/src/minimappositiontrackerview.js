@@ -23,10 +23,26 @@ export default class MinimapPositionTrackerView extends View {
 
 		const bind = this.bindTemplate;
 
+		/**
+		 * TODO
+		 */
 		this.set( 'height', 0 );
+
+		/**
+		 * TODO
+		 */
 		this.set( 'top', 0 );
+
+		/**
+		 * TODO
+		 */
 		this.set( 'scrollProgress', 0 );
 
+		/**
+		 * TODO
+		 *
+		 * @private
+		 */
 		this.set( '_isDragging', false );
 
 		this.setTemplate( {
@@ -51,6 +67,9 @@ export default class MinimapPositionTrackerView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	render() {
 		super.render();
 
@@ -67,14 +86,29 @@ export default class MinimapPositionTrackerView extends View {
 		}, { useCapture: true } );
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param {*} newHeight
+	 */
 	setHeight( newHeight ) {
 		this.height = newHeight;
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param {*} newOffset
+	 */
 	setTopOffset( newOffset ) {
 		this.top = newOffset;
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param {*} newProgress
+	 */
 	setScrollProgress( newProgress ) {
 		this.scrollProgress = newProgress;
 	}

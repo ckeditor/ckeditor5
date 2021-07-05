@@ -129,6 +129,8 @@ export function findClosestScrollableAncestor( domNode ) {
 /**
  * TODO
  *
+ * TODO: Move to shared utils.
+ *
  * @private
  */
 export class RectDrawer {
