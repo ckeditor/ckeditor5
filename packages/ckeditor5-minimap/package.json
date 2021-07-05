@@ -1,0 +1,47 @@
+{
+  "name": "@ckeditor/ckeditor5-minimap",
+  "version": "0.0.1",
+  "description": "Minimap feature for CKEditor 5.",
+  "private": true,
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "ckeditor5": ">=25.0.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": ">=25.0.0",
+    "@ckeditor/ckeditor5-basic-styles": ">=25.0.0",
+    "@ckeditor/ckeditor5-cloud-services": ">=25.0.0",
+    "@ckeditor/ckeditor5-code-block": ">=25.0.0",
+    "@ckeditor/ckeditor5-core": ">=25.0.0",
+    "@ckeditor/ckeditor5-easy-image": ">=25.0.0",
+    "@ckeditor/ckeditor5-editor-decoupled": ">=25.0.0",
+    "@ckeditor/ckeditor5-font": ">=25.0.0",
+    "@ckeditor/ckeditor5-image": ">=25.0.0",
+    "@ckeditor/ckeditor5-indent": ">=25.0.0",
+    "@ckeditor/ckeditor5-page-break": ">=25.0.0",
+    "@ckeditor/ckeditor5-table": ">=25.0.0"
+  },
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=5.7.1"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ],
+  "scripts": {
+    "dll:build": "webpack"
+  }
+}
