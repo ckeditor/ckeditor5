@@ -497,6 +497,20 @@ describe( 'Autoformat', () => {
 	} );
 
 	describe( 'Code block', () => {
+		it( 'should remember the last used language', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+			editor.execute( 'codeBlock', { language: 'cpp' } );
+			editor.execute( 'codeBlock' );
+			model.change( writer => {
+				writer.insertText( '``', doc.selection.getFirstPosition() );
+			} );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="cpp">[]</codeBlock>' );
+		} );
+
 		it( 'should replace triple grave accents with a code block', () => {
 			setData( model, '<paragraph>``[]</paragraph>' );
 			model.change( writer => {
