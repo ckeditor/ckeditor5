@@ -4,7 +4,7 @@
  */
 
 /**
- * @module html-support/integrations/dualcontentmodelelementsupport
+ * @module html-support/integrations/dualcontent
  */
 
 import { Plugin } from 'ckeditor5/src/core';
