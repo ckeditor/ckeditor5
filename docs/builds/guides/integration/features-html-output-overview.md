@@ -941,6 +941,37 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					Data Filter
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_datafilter-DataFilter.html"><code>DataFilter</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
+				<p>
+					The plugin can output any arbitrary HTML depending on its configuration.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					Data Schema
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_dataschema-DataSchema.html"><code>DataSchema</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
 	</tbody>
 </table>
 <h3 id="ckeditor5-image"><code>ckeditor5-image</code></h3>
