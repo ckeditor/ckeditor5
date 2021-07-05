@@ -23,12 +23,31 @@ export default class DrupalImageEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const conversion = editor.conversion;
+		const { schema } = editor.model;
+
+		if ( schema.isRegistered( 'imageInline' ) ) {
+			schema.extend( 'imageInline', {
+				allowAttributes: [
+					'dataEntityUuid',
+					'dataEntityFile'
+				]
+			} );
+		}
+
+		if ( schema.isRegistered( 'imageBlock' ) ) {
+			schema.extend( 'imageBlock', {
+				allowAttributes: [
+					'dataEntityUuid',
+					'dataEntityFile'
+				]
+			} );
+		}
 
 		// Conversion.
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
 		conversion.for( 'downcast' )
-			.add( modelImageToImage() )
+			// .add( modelImageToImage() )
 			.add( modelEntityUuidToDataAttribute() )
 			.add( modelEntityFileToDataAttribute() );
 	}
@@ -36,7 +55,7 @@ export default class DrupalImageEditing extends Plugin {
 
 function viewImageToModelImage( editor ) {
 	return dispatcher => {
-		dispatcher.on( 'element:img', converter, { priority: 'highest' } );
+		dispatcher.on( 'element:img', converter, { priority: 'high' } );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -124,25 +143,37 @@ function viewImageToModelImage( editor ) {
 	}
 }
 
-function modelImageToImage() {
-	return dispatcher => {
-		// Use high priority to overwrite built-in conversion of images to be placed inside `<figure class="image">`.
-		dispatcher.on( 'insert:imageBlock', converter, { priority: 'high' } );
-	};
+// function modelImageToImage() {
+// 	return dispatcher => {
+// 		// Use high priority to overwrite built-in conversion of images to be placed inside `<figure class="image">`.
+// 		dispatcher.on( 'insert:imageBlock', converter, { priority: 'high' } );
+// 	};
 
-	function converter( evt, data, conversionApi ) {
-		const { item } = data;
-		const { consumable, writer } = conversionApi;
+// 	function converter( evt, data, conversionApi ) {
+// 		const { item } = data;
+// 		const { consumable, writer } = conversionApi;
 
-		if ( !consumable.consume( item, evt.name ) ) {
-			return;
-		}
+// 		if ( !consumable.consume( item, evt.name ) ) {
+// 			return;
+// 		}
 
-		const viewElement = conversionApi.mapper.toViewElement( item );
+// 		function createImageViewElement( writer, imageType ) {
+// 			const emptyElement = writer.createEmptyElement( 'img' );
 
-		writer.insert( viewElement );
-	}
-}
+// 			const container = imageType === 'imageBlock' ?
+// 				writer.createContainerElement( 'figure', { class: 'image' } ) :
+// 				writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
+
+// 			writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
+
+// 			return container;
+// 		}
+
+// 		const viewElement = conversionApi.mapper.toViewElement( item );
+
+// 		writer.insert( viewElement );
+// 	}
+// }
 
 function modelEntityUuidToDataAttribute() {
 	return dispatcher => {
