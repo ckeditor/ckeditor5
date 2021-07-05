@@ -191,6 +191,10 @@ function testViewName( pattern, viewName ) {
  * @typedef {Object} module:html-support/dataschema~DataSchemaBlockElementDefinition
  * @property {Boolean} isBlock Indicates that the definition describes block element.
  * Set by {@link module:html-support/dataschema~DataSchema#registerBlockElement} method.
+ * @property {String} [textModel] Should be used when an element can behave both as a sectioning element (e.g. article) and
+ * element accepting only inline content (e.g. paragraph).
+ * If an element contains only inline content, this option will be used as a model
+ * name.
  * @extends module:html-support/dataschema~DataSchemaDefinition
  */
 

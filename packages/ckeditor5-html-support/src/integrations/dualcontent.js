@@ -29,8 +29,8 @@ import DataFilter from '../datafilter';
  * * model element HTML is semantically correct and easier to work with
  *
  * If element contains any block element, it will be treated as a sectioning element and registered using
- * {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#model} and
- * {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#modelSchema} in editor schema.
+ * {@link module:html-support/dataschema~DataSchemaDefinition#model} and
+ * {@link module:html-support/dataschema~DataSchemaDefinition#modelSchema} in editor schema.
  * Otherwise, it will be registered under {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#textModel} model
  * name with model schema accepting only inline content (inheriting from `$block`).
  *
@@ -132,13 +132,3 @@ export default class DualContentModelElementSupport extends Plugin {
 		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
 }
-
-/**
- * Should be used when an element can behave both as a sectioning element (e.g. article) and
- * element accepting only inline content (e.g. paragraph).
- *
- * If an element contains only inline content, this option will be used as a model
- * name.
- *
- * @member {String} module:html-support/dataschema~DataSchemaBlockElementDefinition#textModel
- */
