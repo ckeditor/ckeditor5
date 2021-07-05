@@ -91,6 +91,30 @@ describe( 'DualContentModelElementSupport', () => {
 		expect( editor.getData() ).to.equal( '<div><p>foobar</p></div>' );
 	} );
 
+	it( 'should autoparagraph mixed content', () => {
+		dataFilter.allowElement( 'div' );
+
+		editor.setData( '<div>foo<p>bar</p>baz</div>' );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			'<htmlDiv><paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>baz</paragraph></htmlDiv>'
+		);
+
+		expect( editor.getData() ).to.equal( '<div><p>foo</p><p>bar</p><p>baz</p></div>' );
+	} );
+
+	it( 'should detect nested dual content', () => {
+		dataFilter.allowElement( 'div' );
+
+		editor.setData( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			'<htmlDiv><htmlDivInline>inline</htmlDivInline><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>'
+		);
+
+		expect( editor.getData() ).to.equal( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
+	} );
+
 	it( 'should preserve allowed attributes', () => {
 		dataFilter.allowElement( 'div' );
 		dataFilter.allowAttributes( { name: 'div', attributes: { 'data-foo': true } } );
