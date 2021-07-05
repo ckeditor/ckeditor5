@@ -14,7 +14,7 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 /* global document */
 
-describe( 'ParagraphableHtmlSupport', () => {
+describe( 'DualContentModelElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 
 	beforeEach( () => {
@@ -59,9 +59,9 @@ describe( 'ParagraphableHtmlSupport', () => {
 		editor.setData( '<div><i>foo</i>bar<b>baz</b></div>' );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<htmlDivParagraph>' +
+			'<htmlDivInline>' +
 			'<$text italic="true">foo</$text>bar<$text bold="true">baz</$text>' +
-			'</htmlDivParagraph>'
+			'</htmlDivInline>'
 		);
 
 		expect( editor.getData() ).to.equal( '<div><i>foo</i>bar<strong>baz</strong></div>' );
@@ -73,7 +73,7 @@ describe( 'ParagraphableHtmlSupport', () => {
 		editor.setData( '<div>foo<br>bar</div>' );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<htmlDivParagraph>foo<softBreak></softBreak>bar</htmlDivParagraph>'
+			'<htmlDivInline>foo<softBreak></softBreak>bar</htmlDivInline>'
 		);
 
 		expect( editor.getData() ).to.equal( '<div>foo<br>bar</div>' );
@@ -99,7 +99,7 @@ describe( 'ParagraphableHtmlSupport', () => {
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: '<htmlDiv htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
-			'<htmlDivParagraph htmlAttributes="(2)">foobar</htmlDivParagraph>',
+			'<htmlDivInline htmlAttributes="(2)">foobar</htmlDivInline>',
 			attributes: {
 				1: {
 					attributes: { 'data-foo': '' }
@@ -122,7 +122,7 @@ describe( 'ParagraphableHtmlSupport', () => {
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: '<htmlDiv><paragraph>foobar</paragraph></htmlDiv>' +
-			'<htmlDivParagraph>foobar</htmlDivParagraph>',
+			'<htmlDivInline>foobar</htmlDivInline>',
 			attributes: {}
 		} );
 

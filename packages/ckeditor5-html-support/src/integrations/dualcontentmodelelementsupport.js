@@ -4,7 +4,7 @@
  */
 
 /**
- * @module html-support/integrations/paragraphable
+ * @module html-support/integrations/dualcontentmodelelementsupport
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -18,11 +18,25 @@ import {
 import DataFilter from '../datafilter';
 
 /**
- * Provides the General HTML Support integration with paragraphable elements.
+ * Provides the General HTML Support integration for elements which can behave like sectioning element (e.g. article) or
+ * element accepting only inline content (e.g. paragraph).
+ *
+ * The distinction between this two content models is important for choosing correct schema model and proper content conversion.
+ * As an example, it ensures that:
+ *
+ * * children elements paragraphing is enabled for sectioning elements only
+ * * element and its content can be correctly handed by editing view (spliting and merging elements)
+ * * model element HTML is semantically correct and easier to work with
+ *
+ * If element contains any block element, it will be treated as a sectioning element and registered using
+ * {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#model} and
+ * {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#modelSchema} in editor schema.
+ * Otherwise, it will be registered under {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#textModel} model
+ * name with model schema accepting only inline content (inherit from `$block`).
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ParagraphableHtmlSupport extends Plugin {
+export default class DualContentModelElementSupport extends Plugin {
 	static get requires() {
 		return [ DataFilter ];
 	}
@@ -35,22 +49,22 @@ export default class ParagraphableHtmlSupport extends Plugin {
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
 
-			if ( !definition.asParagraph ) {
+			if ( !definition.textModel ) {
 				return;
 			}
 
 			// Can only apply to newly registered features.
-			if ( schema.isRegistered( definition.model ) || schema.isRegistered( definition.asParagraph ) ) {
+			if ( schema.isRegistered( definition.model ) || schema.isRegistered( definition.textModel ) ) {
 				return;
 			}
 
-			const paragraphableDefinition = {
-				model: definition.asParagraph,
+			const textModelDefinition = {
+				model: definition.textModel,
 				view: definition.view
 			};
 
 			schema.register( definition.model, definition.modelSchema );
-			schema.register( paragraphableDefinition.model, {
+			schema.register( textModelDefinition.model, {
 				inheritAllFrom: '$block'
 			} );
 
@@ -61,7 +75,7 @@ export default class ParagraphableHtmlSupport extends Plugin {
 						return writer.createElement( definition.model );
 					}
 
-					return writer.createElement( definition.asParagraph );
+					return writer.createElement( textModelDefinition.model );
 				},
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
@@ -75,10 +89,10 @@ export default class ParagraphableHtmlSupport extends Plugin {
 			this._addAttributeConversion( definition );
 
 			conversion.for( 'downcast' ).elementToElement( {
-				view: paragraphableDefinition.view,
-				model: paragraphableDefinition.model
+				view: textModelDefinition.view,
+				model: textModelDefinition.model
 			} );
-			this._addAttributeConversion( paragraphableDefinition );
+			this._addAttributeConversion( textModelDefinition );
 
 			evt.stop();
 		} );
@@ -120,8 +134,11 @@ export default class ParagraphableHtmlSupport extends Plugin {
 }
 
 /**
- * Uses the given model name if an element behaves like a paragraph i.e. only contains specific paragraph
- * elements.
+ * Should be used when an element can behave both as a sectioning element (e.g. article) and
+ * element accepting only inline content (e.g. paragraph).
  *
- * @member {String} module:html-support/dataschema~DataSchemaBlockElementDefinition#asParagraph
+ * If an element contains only inline content, this option will be used as a model
+ * name.
+ *
+ * @member {String} module:html-support/dataschema~DataSchemaBlockElementDefinition#textModel
  */
