@@ -187,19 +187,6 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Returns ancestors array of this node. Added for compatibility reasons.
-	 *
-	 * @param {Object} options Options object.
-	 * @param {Boolean} [options.includeSelf=false] When set to `true` this node will be also included in parent's array.
-	 * @returns {Array} Array with ancestors.
-	 */
-	getAncestors( options = { includeSelf: false } ) {
-		const parent = options.includeSelf ? this : this.parent;
-
-		return [ parent ];
-	}
-
-	/**
 	 * Returns a descendant node by its path relative to this element.
 	 *
 	 *		// <this>a<b>c</b></this>
