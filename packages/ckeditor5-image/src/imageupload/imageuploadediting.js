@@ -204,7 +204,7 @@ export default class ImageUploadEditing extends Plugin {
 							}
 						} else {
 							// Remember the upload id of the inserted image. If it acted as a replacement for another
-							// image (which landed in thr $graveyard), the related loader will not be aborted because
+							// image (which landed in the $graveyard), the related loader will not be aborted because
 							// this is still the same image upload.
 							insertedImagesIds.add( uploadId );
 
