@@ -122,6 +122,9 @@ export default class FindAndReplaceUI extends Plugin {
 				cancelEvent();
 			} );
 
+			// Dropdown won't be enabled when find command is disabled.
+			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
+
 			return dropdown;
 		} );
 	}
