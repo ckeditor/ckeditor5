@@ -661,6 +661,82 @@ describe( 'ImageUploadEditing', () => {
 		expect( loadSpy.called ).to.be.false;
 	} );
 
+	it( 'should not abort if an image changed type (but with the same uploadId value)', async () => {
+		const file = createNativeFileMock();
+
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+		const abortSpy = sinon.spy( loader, 'abort' );
+		const id = fileRepository.getLoader( file ).id;
+		const uploadCompleteSpy = sinon.spy();
+
+		imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		expect( getModelData( model ) ).to.equal(
+			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="uploading"></imageInline>]foo bar</paragraph>`
+		);
+
+		editor.execute( 'imageTypeBlock' );
+
+		expect( getModelData( model ) ).to.equal(
+			`[<imageBlock uploadId="${ id }" uploadStatus="uploading"></imageBlock>]<paragraph>foo bar</paragraph>`
+		);
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
+		} );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<imageBlock src="image.png"></imageBlock>]<paragraph>foo bar</paragraph>'
+		);
+
+		sinon.assert.notCalled( abortSpy );
+		sinon.assert.calledOnce( uploadCompleteSpy );
+	} );
+
+	it( 'should abort if an image changed type and then was removed', async () => {
+		const file = createNativeFileMock();
+
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+		const abortSpy = sinon.spy( loader, 'abort' );
+		const id = fileRepository.getLoader( file ).id;
+		const uploadCompleteSpy = sinon.spy();
+
+		imageUploadEditing.on( 'uploadComplete', uploadCompleteSpy );
+
+		await loader.file;
+
+		nativeReaderMock.mockSuccess( base64Sample );
+
+		editor.execute( 'imageTypeBlock' );
+
+		expect( getModelData( model ) ).to.equal(
+			`[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]<paragraph>foo bar</paragraph>`
+		);
+
+		sinon.assert.notCalled( abortSpy );
+
+		model.change( writer => {
+			writer.remove( model.document.selection.getSelectedElement() );
+		} );
+
+		sinon.assert.calledOnce( abortSpy );
+		sinon.assert.notCalled( uploadCompleteSpy );
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+	} );
+
 	it( 'image should be permanently removed if it is removed by user during upload', done => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
