@@ -18,18 +18,6 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
-function Foo( editor ) {
-	const dataSchemaPlugin = editor.plugins.get( 'DataSchema' );
-
-	dataSchemaPlugin.registerBlockElement( {
-		view: 'v-evil',
-		model: 'm-evil',
-		modelSchema: {
-			allowIn: '$root'
-		}
-	} );
-}
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
@@ -42,8 +30,7 @@ ClassicEditor
 			Underline,
 			GeneralHtmlSupport,
 			Image,
-			ImageCaption,
-			Foo
+			ImageCaption
 		],
 		toolbar: [
 			'bold',
@@ -55,9 +42,6 @@ ClassicEditor
 			allow: [
 				{
 					name: 'div'
-				},
-				{
-					name: 'v-evil'
 				}
 			]
 		}
