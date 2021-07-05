@@ -32,7 +32,7 @@ import DataFilter from '../datafilter';
  * {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#model} and
  * {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#modelSchema} in editor schema.
  * Otherwise, it will be registered under {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#textModel} model
- * name with model schema accepting only inline content (inherit from `$block`).
+ * name with model schema accepting only inline content (inheriting from `$block`).
  *
  * @extends module:core/plugin~Plugin
  */
