@@ -179,6 +179,7 @@ export default class Autoformat extends Plugin {
 	_addCodeBlockAutoformats() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
+
 		if ( editor.commands.get( 'codeBlock' ) ) {
 			blockAutoformatEditing( editor, this, /^```$/, () => {
 				if ( selection.getFirstPosition().parent.is( 'element', 'listItem' ) ) {
