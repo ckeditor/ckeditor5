@@ -122,6 +122,9 @@ export default class FindAndReplaceUI extends Plugin {
 				cancelEvent();
 			} );
 
+			// Dropdown should be disabled when in source editing mode. See #10001.
+			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
+
 			return dropdown;
 		} );
 	}
