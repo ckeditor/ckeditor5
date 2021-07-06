@@ -47,27 +47,23 @@ export default class DrupalImageEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
 		conversion.for( 'downcast' )
-			// .add( dispatcher => {
-			// 	dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
-			// 		conversionApi.consumable.consume( data.item, 'insert' );
-			// 		// evt.stop();
-			// 	},
-			// 	{ priority: 'highest' }
-			// 	);
-			// } )
 			.add( modelEntityUuidToDataAttribute() )
 			.add( modelEntityFileToDataAttribute() );
 
 		conversion.for( 'dataDowncast' )
 			.add( dispatcher => {
-				// TODO check if not table caption
 				dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'insert' ); // TODO verify if not consumed
-					// TODO walker on model children to get text from caption and set attribute on img (instead of insert$text below)
+					if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+						return;
+					}
+
 					let captionText = '';
 
 					for ( const { item } of editor.model.createRangeIn( data.item ) ) {
-						conversionApi.consumable.consume( item, 'insert' ); // TODO verify if not consumed
+						if ( !conversionApi.consumable.consume( item, 'insert' ) ) {
+							continue;
+						}
+
 						if ( item.is( '$textProxy' ) ) {
 							captionText += item.data;
 						}
@@ -83,12 +79,18 @@ export default class DrupalImageEditing extends Plugin {
 				);
 			} )
 			.add( dispatcher => {
-				// TODO check if not table caption
 				dispatcher.on( 'insert:$text', ( evt, data ) => {
-					if ( data.item.parent.is( 'element', 'caption' ) ) {
+					const { parent } = data.item;
+					const isInImageCaption = parent.is( 'element', 'caption' ) && parent.parent.is( 'element', 'imageBlock' );
+
+					if ( isInImageCaption ) {
+						// Prevent `modelViewSplitOnInsert()` function inside ckeditor5-list package from interfering when downcasting
+						// a text inside caption. Normally aforementioned function tries to mitigate side effects of inserting content in
+						// the middle of the lists, but in this case we want to stop the conversion from proceeding.
 						evt.stop();
 					}
 				},
+				// Make sure we are overriding the `modelViewSplitOnInsert() converter from ckeditor5-list.
 				{ priority: 'highest' }
 				);
 			} )
