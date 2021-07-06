@@ -47,9 +47,35 @@ export default class DrupalImageEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
 		conversion.for( 'downcast' )
-			// .add( modelImageToImage() )
+			// .add( dispatcher => {
+			// 	dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+			// 		conversionApi.consumable.consume( data.item, 'insert' );
+			// 		// evt.stop();
+			// 	},
+			// 	{ priority: 'highest' }
+			// 	);
+			// } )
 			.add( modelEntityUuidToDataAttribute() )
 			.add( modelEntityFileToDataAttribute() );
+
+		conversion.for( 'dataDowncast' )
+			.add( dispatcher => {
+				dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'insert' );
+				},
+				{ priority: 'highest' }
+				);
+			} )
+			.elementToElement( {
+				model: 'imageBlock',
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageBlock' ),
+				converterPriority: 'high'
+			} )
+			.elementToElement( {
+				model: 'imageInline',
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageInline' ),
+				converterPriority: 'high'
+			} );
 	}
 }
 
@@ -143,37 +169,9 @@ function viewImageToModelImage( editor ) {
 	}
 }
 
-// function modelImageToImage() {
-// 	return dispatcher => {
-// 		// Use high priority to overwrite built-in conversion of images to be placed inside `<figure class="image">`.
-// 		dispatcher.on( 'insert:imageBlock', converter, { priority: 'high' } );
-// 	};
-
-// 	function converter( evt, data, conversionApi ) {
-// 		const { item } = data;
-// 		const { consumable, writer } = conversionApi;
-
-// 		if ( !consumable.consume( item, evt.name ) ) {
-// 			return;
-// 		}
-
-// 		function createImageViewElement( writer, imageType ) {
-// 			const emptyElement = writer.createEmptyElement( 'img' );
-
-// 			const container = imageType === 'imageBlock' ?
-// 				writer.createContainerElement( 'figure', { class: 'image' } ) :
-// 				writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
-
-// 			writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
-
-// 			return container;
-// 		}
-
-// 		const viewElement = conversionApi.mapper.toViewElement( item );
-
-// 		writer.insert( viewElement );
-// 	}
-// }
+function createImageViewElement( writer ) {
+	return writer.createEmptyElement( 'img' );
+}
 
 function modelEntityUuidToDataAttribute() {
 	return dispatcher => {
