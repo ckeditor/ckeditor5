@@ -9,7 +9,7 @@ describe( 'FindAndReplaceUI', () => {
 	let editorElement;
 	let editor;
 	let dropdown;
-	let command;
+	let findCommand;
 
 	testUtils.createSinonSandbox();
 
@@ -24,7 +24,7 @@ describe( 'FindAndReplaceUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'findAndReplace' );
-				command = editor.commands.get( 'find' );
+				findCommand = editor.commands.get( 'find' );
 			} );
 	} );
 
@@ -74,10 +74,10 @@ describe( 'FindAndReplaceUI', () => {
 	} );
 
 	it( 'should not enable dropdown when find command is disabled', () => {
-		command.isEnabled = true;
+		findCommand.isEnabled = true;
 		expect( dropdown ).to.have.property( 'isEnabled', true );
 
-		command.isEnabled = false;
+		findCommand.isEnabled = false;
 		expect( dropdown ).to.have.property( 'isEnabled', false );
 	} );
 } );
