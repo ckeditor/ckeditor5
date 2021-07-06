@@ -12,7 +12,7 @@ The {@link module:minimap/minimap~Minimap} feature renders a content minimap whi
 You can try the minimap feature it in the demo below.
 
 <info-box warning>
-	This is a **feature preview**, and as such it is not recommended for production use. For more information, comments and feature requests, please refer to the [issue on GitHub](#TODO).
+	This is a **feature preview**, and as such it is not recommended for production use. For more information, comments and feature requests, please refer to the [issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/10089).
 </info-box>
 
 ## Demo
