@@ -50,7 +50,6 @@ const config = {
 		EasyImage
 	],
 	toolbar: [
-		'pageBreak', '|',
 		'heading', '|',
 		'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|',
 		'bold', 'italic', 'blockQuote', '|',
@@ -58,7 +57,7 @@ const config = {
 		'alignment', '|',
 		'indent', 'outdent', '|',
 		'subscript', 'superscript', '|',
-		'insertTable', 'imageUpload', '|',
+		'insertTable', 'imageUpload', 'pageBreak', '|',
 		'undo', 'redo'
 	],
 	image: {

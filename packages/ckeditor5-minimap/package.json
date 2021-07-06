@@ -1,14 +1,15 @@
 {
   "name": "@ckeditor/ckeditor5-minimap",
   "version": "0.0.1",
-  "description": "Minimap feature for CKEditor 5.",
+  "description": "Content minimap feature for CKEditor 5.",
   "private": true,
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin"
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
   ],
   "main": "src/index.js",
   "dependencies": {
@@ -32,16 +33,18 @@
     "node": ">=12.0.0",
     "npm": ">=5.7.1"
   },
-  "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
-  "homepage": "https://ckeditor.com",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-select-all"
+  },
   "files": [
     "lang",
     "src",
     "theme"
-  ],
-  "scripts": {
-    "dll:build": "webpack"
-  }
+  ]
 }

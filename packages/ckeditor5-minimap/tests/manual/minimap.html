@@ -25,9 +25,7 @@
 	<div id="toolbar-container" class="toolbar-container"></div>
 	<div class="minimap-wrapper">
 		<div class="editor-container">
-			<div class="editor-with-sidebar">
-				<div id="editor-content"></div>
-			</div>
+			<div id="editor-content"></div>
 		</div>
 		<div class="minimap-container"></div>
 	</div>
@@ -81,7 +79,7 @@
 		overflow: auto;
 	}
 
-	.ck.ck-editor__editable_inline {
+	#editor-content {
 		/* A4 size */
 		width: calc( 210mm + 2px ); /* Those 2px are from border (box-sizing: border-box) */
 		min-height: calc( 297mm + 2px );
@@ -93,15 +91,5 @@
 		box-shadow: 0 2px 8px hsla( 0, 0%, 0%, .08 );
 		margin: 40px auto;
 		overflow: hidden;
-	}
-
-	.editor-with-sidebar {
-		display: flex;
-		position: relative;
-		margin: 25px;
-	}
-
-	.editor-with-sidebar > div {
-		flex-shrink: 0;
 	}
 </style>
