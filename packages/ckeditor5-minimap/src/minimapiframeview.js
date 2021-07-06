@@ -16,7 +16,7 @@ const toPx = toUnit( 'px' );
  * The internal `<iframe>` view that hosts the minimap content.
  *
  * @private
- * @extends module:ui/iframeview~IframeView
+ * @extends module:ui/iframe/iframeview~IframeView
  */
 export default class MinimapIframeView extends IframeView {
 	/**

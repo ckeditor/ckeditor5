@@ -2,7 +2,6 @@
   "name": "@ckeditor/ckeditor5-minimap",
   "version": "0.0.1",
   "description": "Content minimap feature for CKEditor 5.",
-  "private": true,
   "keywords": [
     "ckeditor",
     "ckeditor5",

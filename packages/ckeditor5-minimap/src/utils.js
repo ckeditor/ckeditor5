@@ -163,11 +163,11 @@ export class RectDrawer {
 	 *		// With custom styles and a name.
 	 *		RectDrawer.draw( rect, { outlineWidth: '3px', opacity: '.8' }, 'Main element' );
 	 *
-	 * **Note**: In most cases, drawing a rect should be preceded by {@link #clear}.
+	 * **Note**: In most cases, drawing a rect should be preceded by {@link module:minimap/utils~RectDrawer.clear}.
 	 *
 	 * @static
 	 * @param {module:utils/dom/rect~Rect} rect The rect to be drawn.
-	 * @param {CSSStyleDeclaration} [userStyles] An optional object with custom styles for the rect.
+	 * @param {Object} [userStyles] An optional object with custom styles for the rect.
 	 * @param {String} [name] The optional name of the rect.
 	 */
 	static draw( rect, userStyles = {}, name ) {
@@ -198,7 +198,7 @@ export class RectDrawer {
 	}
 
 	/**
-	 * Clears all previously {@link #draw drawn} rects.
+	 * Clears all previously {@link module:minimap/utils~RectDrawer.draw drawn} rects.
 	 *
 	 * @static
 	 */
@@ -237,7 +237,7 @@ export class RectDrawer {
 
 /**
  * @private
- * @member {CSSStyleDeclaration} module:minimap/utils~RectDrawer._defaultStyles
+ * @member {Object} module:minimap/utils~RectDrawer._defaultStyles
  */
 RectDrawer._defaultStyles = {
 	position: 'fixed',
