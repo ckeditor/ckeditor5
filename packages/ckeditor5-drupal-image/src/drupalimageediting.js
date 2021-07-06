@@ -60,8 +60,34 @@ export default class DrupalImageEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' )
 			.add( dispatcher => {
+				// TODO check if not table caption
 				dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'insert' );
+					conversionApi.consumable.consume( data.item, 'insert' ); // TODO verify if not consumed
+					// TODO walker on model children to get text from caption and set attribute on img (instead of insert$text below)
+					let captionText = '';
+
+					for ( const { item } of editor.model.createRangeIn( data.item ) ) {
+						conversionApi.consumable.consume( item, 'insert' ); // TODO verify if not consumed
+						if ( item.is( '$textProxy' ) ) {
+							captionText += item.data;
+						}
+					}
+
+					if ( captionText ) {
+						const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
+
+						conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
+					}
+				},
+				{ priority: 'high' }
+				);
+			} )
+			.add( dispatcher => {
+				// TODO check if not table caption
+				dispatcher.on( 'insert:$text', ( evt, data ) => {
+					if ( data.item.parent.is( 'element', 'caption' ) ) {
+						evt.stop();
+					}
 				},
 				{ priority: 'highest' }
 				);
