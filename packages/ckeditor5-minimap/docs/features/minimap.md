@@ -49,7 +49,7 @@ DecoupledEditor
 ## Configuration
 
 <info-box>
-	For more technical details, please check the {@link TODO plugin configuration API}.
+	For more technical details, please check the {@link module:minimap/minimap~MinimapConfig plugin configuration API}.
 </info-box>
 
 ### Example configuration

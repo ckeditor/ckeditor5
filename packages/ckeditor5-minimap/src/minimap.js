@@ -1,29 +1,30 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
- * @module TODO
+ * @module minimap/minimap
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { global } from 'ckeditor5/src/utils';
 import MinimapView from './minimapview';
 import {
-	cloneDomRoot,
+	cloneEditingViewDomRoot,
 	getClientHeight,
 	getDomElementRect,
 	getPageStyles,
 	getScrollable,
 	findClosestScrollableAncestor
 } from './utils';
+
 // import { RectDrawer } from './utils';
 
 import '../theme/minimap.css';
 
 /**
- * TODO
+ * The content minimap feature.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -35,23 +36,28 @@ export default class Minimap extends Plugin {
 		return 'Minimap';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
 		/**
-		 * TODO
+		 * The reference to the view of the minimap.
+		 *
+		 * @private
+		 * @member {module:minimap/minimapview~MinimapView}
 		 */
 		this._minimapView = null;
 
 		/**
-		 * TODO
+		 * The DOM element closest to the editable element of the editor as returned
+		 * by {@link module:core/editor/editorui~EditorUI#getEditableElement}.
+		 *
+		 * @private
+		 * @member {HTMLElement}
 		 */
 		this._scrollableRootAncestor = null;
-
-		/**
-		 * TODO
-		 */
-		this._minimapContainerElement = editor.config.get( 'minimap.container' );
 
 		this.listenTo( editor.ui, 'ready', this._onUiReady.bind( this ) );
 	}
@@ -65,13 +71,18 @@ export default class Minimap extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Initialized the minimap view element and starts the layout synchronization
+	 * on the editing view `render` event.
 	 *
 	 * @private
 	 */
 	_onUiReady() {
 		const editor = this.editor;
+
+		// TODO: This will not work with the multi-root editor.
 		const editingRootElement = this._editingRootElement = editor.ui.getEditableElement();
+
+		this._scrollableRootAncestor = findClosestScrollableAncestor( editingRootElement );
 
 		// DOM root element is not yet attached to the document.
 		if ( !editingRootElement.ownerDocument.body.contains( editingRootElement ) ) {
@@ -80,7 +91,7 @@ export default class Minimap extends Plugin {
 			return;
 		}
 
-		this._initializeMinimap();
+		this._initializeMinimapView();
 
 		this.listenTo( editor.editing.view, 'render', () => {
 			this._syncMinimapToEditingRootScrollPosition();
@@ -90,19 +101,22 @@ export default class Minimap extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Initializes the minimap view and attaches listeners that make it responsive to the environment (document)
+	 * but also allow the minimap to control the document (scroll position).
 	 *
 	 * @private
 	 */
-	_initializeMinimap() {
+	_initializeMinimapView() {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const useSimplePreview = editor.config.get( 'minimap.useSimplePreview' );
-		const minimapContainerElement = this._minimapContainerElement;
+		const minimapContainerElement = editor.config.get( 'minimap.container' );
+		const scrollableRootAncestor = this._scrollableRootAncestor;
+
+		// TODO: This should be dynamic, the root width could change as the viewport scales if not fixed unit.
 		const editingRootElementWidth = getDomElementRect( this._editingRootElement ).width;
 		const minimapContainerWidth = getDomElementRect( minimapContainerElement ).width;
 		const minimapScaleRatio = minimapContainerWidth / editingRootElementWidth;
-		const scrollableRootAncestor = this._scrollableRootAncestor = findClosestScrollableAncestor( this._editingRootElement );
 
 		const minimapView = this._minimapView = new MinimapView( {
 			locale,
@@ -110,11 +124,12 @@ export default class Minimap extends Plugin {
 			pageStyles: getPageStyles(),
 			extraClasses: editor.config.get( 'minimap.extraClasses' ),
 			useSimplePreview,
-			domRootClone: cloneDomRoot( editor )
+			domRootClone: cloneEditingViewDomRoot( editor )
 		} );
 
 		minimapView.render();
 
+		// Scrollable ancestor scroll -> minimap position update.
 		minimapView.listenTo( global.document, 'scroll', ( evt, data ) => {
 			if ( scrollableRootAncestor === global.document.body ) {
 				if ( data.target !== global.document ) {
@@ -127,10 +142,12 @@ export default class Minimap extends Plugin {
 			this._syncMinimapToEditingRootScrollPosition();
 		}, { useCapture: true, usePassive: true } );
 
+		// Viewport resize -> minimap position update.
 		minimapView.listenTo( global.window, 'resize', () => {
 			this._syncMinimapToEditingRootScrollPosition();
 		} );
 
+		// Dragging the visible content area -> document (scrollable) position update.
 		minimapView.on( 'drag', ( evt, movementY ) => {
 			let movementYPercentage;
 
@@ -144,15 +161,10 @@ export default class Minimap extends Plugin {
 				( scrollableRootAncestor.scrollHeight - getClientHeight( scrollableRootAncestor ) );
 			const scrollable = getScrollable( scrollableRootAncestor );
 
-			if ( absoluteScrollProgress < -1000 ) {
-				// debugger;
-			}
-
-			// console.log( 'absoluteScrollProgress', absoluteScrollProgress, movementYPercentage, minimapView.scrollHeight );
 			scrollable.scrollBy( 0, Math.round( absoluteScrollProgress ) );
 		} );
 
-		// Clicking the minimap centers the editing root in the position corresponding to the place where the click event was fired.
+		// Clicking the minimap -> center the document (scrollable) to the corresponding position.
 		minimapView.on( 'click', ( evt, percentage ) => {
 			const absoluteScrollProgress = percentage * scrollableRootAncestor.scrollHeight;
 			const scrollable = getScrollable( scrollableRootAncestor );
@@ -164,14 +176,13 @@ export default class Minimap extends Plugin {
 	}
 
 	/**
-	 * TODO
-	 *
 	 * @private
 	 */
 	_syncMinimapToEditingRootScrollPosition() {
 		const editingRootElement = this._editingRootElement;
+		const minimapView = this._minimapView;
 
-		this._minimapView.setContentHeight( editingRootElement.offsetHeight );
+		minimapView.setContentHeight( editingRootElement.offsetHeight );
 
 		const editingRootRect = getDomElementRect( editingRootElement );
 		const scrollableRootAncestorRect = getDomElementRect( this._scrollableRootAncestor );
@@ -195,11 +206,94 @@ export default class Minimap extends Plugin {
 			}
 		}
 
-		// console.log( '[Scroll progress] =', scrollProgress );
-
 		// The intersection helps to change the tracker height when there's a lot of padding around the root.
-		// Note: It is essential that the height is set first beucase the progress depends on the correct tracker height.
-		this._minimapView.setPositionTrackerHeight( scrollableRootAncestorRect.getIntersection( editingRootRect ).height );
-		this._minimapView.setScrollProgress( scrollProgress );
+		// Note: It is **essential** that the height is set first because the progress depends on the correct tracker height.
+		minimapView.setPositionTrackerHeight( scrollableRootAncestorRect.getIntersection( editingRootRect ).height );
+		minimapView.setScrollProgress( scrollProgress );
 	}
 }
+
+/**
+ * The configuration of the minimap feature. Introduced by the {@link module:minimap/minimap~Minimap} feature.
+ *
+ * Read more in {@link module:minimap/minimap~MinimapConfig}.
+ *
+ * @member {module:minimap/minimap~MinimapConfig} module:core/editor/editorconfig~EditorConfig#minimap
+ */
+
+/**
+ * The configuration of the {@link module:minimap/minimap~Minimap} feature.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				minimap: ... // Minimap feature config.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface MinimapConfig
+ */
+
+/**
+ * The DOM element container for the minimap.
+ *
+ * **Note**: The container must have a fixed `width` and `overflow: hidden` for the minimap to work correctly.
+ *
+ * @member {HTMLElement} module:minimap/minimap~MinimapConfig#container
+ */
+
+/**
+ * When set to `true`, the minimap will render content as simple boxes instead of replicating the look of the content (default).
+ *
+ * @member {HTMLElement} module:minimap/minimap~MinimapConfig#useSimplePreview
+ */
+
+/**
+ * Extra CSS class (or classes) that will be set internally on the `<body>` element of the `<iframe>` enclosing the minimap.
+ *
+ * By default, the minimap feature will attempt to clone all website styles and re-apply them in the `<iframe>` for the best accuracy.
+ * However, this may not work if the content of your editor inherits styles from parent containers, resulting in inconsistent
+ * look and imprecise scrolling of the minimap.
+ *
+ * This optional configuration can address these issues by ensuring the same CSS rules apply to the content of the minimap
+ * and the original content of the editor.
+ *
+ * For instance, consider the following DOM structure:
+ *
+ *		<div class="website">
+ *			<!-- ... -->
+ *			<div class="styled-container">
+ *				 <!-- ... -->
+ *				<div id="editor">
+ *					<!-- content of the editor -->
+ *				</div>
+ *			</div>
+ *			<!-- ... -->
+ *		</div>
+ *
+ * and the following CSS styles:
+ *
+ *		.website p {
+ *			font-size: 13px;
+ *		}
+ *
+ *		.styled-container p {
+ *			color: #ccc;
+ *		}
+ *
+ * To maintain the consistency of styling (`font-size` and `color` of paragraphs), you will need to pass the CSS class names
+ * of these containers:
+ *
+ *		ClassicEditor
+ *			.create( document.getElementById( 'editor' ), {
+ *				minimap: {
+ *					extraClasses: 'website styled-container'
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {String} module:minimap/minimap~MinimapConfig#extraClasses
+ */

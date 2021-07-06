@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
- * @module TODO
+ * @module minimap/minimapiframeview
  */
 
 import { IframeView } from 'ckeditor5/src/ui';
@@ -13,26 +13,49 @@ import { toUnit } from 'ckeditor5/src/utils';
 const toPx = toUnit( 'px' );
 
 /**
- * TODO
+ * The internal `<iframe>` view that hosts the minimap content.
+ *
+ * @private
+ * @extends module:ui/iframeview~IframeView
  */
 export default class MinimapIframeView extends IframeView {
+	/**
+	 * Creates an instance of the internal minimap iframe.
+	 *
+	 * @param {module:utils/locale~Locale} locale
+	 * @param {Object} options
+	 * @param {HTMLElement} options.domRootClone
+	 * @param {Array} options.pageStyles
+	 * @param {Number} options.scaleRatio
+	 * @param {Boolean} [options.useSimplePreview]
+	 * @param {String} [options.extraClasses]
+	 */
 	constructor( locale, options ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
 		/**
-		 * TODO
+		 * The CSS `top` used to scroll the minimap.
+		 *
+		 * @readonly
+		 * @member {Number} #top
 		 */
 		this.set( 'top', 0 );
 
 		/**
-		 * TODO
+		 * The CSS `height` if the iframe.
+		 *
+		 * @readonly
+		 * @member {Number} #height
 		 */
 		this.set( 'height', 0 );
 
 		/**
-		 * TODO
+		 * Cached view constructor options for re-use in other methods.
+		 *
+		 * @readonly
+		 * @member {Object} #options
 		 */
 		this._options = options;
 
@@ -59,7 +82,26 @@ export default class MinimapIframeView extends IframeView {
 	}
 
 	/**
-	 * TODO
+	 * Sets the new height of the iframe.
+	 *
+	 * @param {Number} newHeight
+	 */
+	setHeight( newHeight ) {
+		this.height = newHeight;
+	}
+
+	/**
+	 * Sets the top offset of the iframe to move it around vertically.
+	 *
+	 * @param {Number} newOffset
+	 */
+	setTopOffset( newOffset ) {
+		this.top = newOffset;
+	}
+
+	/**
+	 * Sets the internal structure of the `<iframe>` readying it to display the
+	 * minimap element.
 	 *
 	 * @private
 	 */
@@ -83,11 +125,19 @@ export default class MinimapIframeView extends IframeView {
 			}
 		` : '';
 
+		const pageStyles = this._options.pageStyles.map( definition => {
+			if ( typeof definition === 'string' ) {
+				return `<style>${ definition }</style>`;
+			} else {
+				return `<link rel="stylesheet" type="text/css" href="${ definition.href }">`;
+			}
+		} ).join( '\n' );
+
 		const html = `<!DOCTYPE html><html lang="en">
 			<head>
 				<meta charset="utf-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1">
-				<style>${ this._options.pageStyles }</style>
+				${ pageStyles }
 				<style>
 					html, body {
 						margin: 0 !important;
