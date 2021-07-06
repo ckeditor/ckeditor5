@@ -2,6 +2,11 @@ dist: xenial
 addons:
   chrome: stable
 language: node_js
+branches:
+  only:
+  - master
+  - stable
+  - release
 services:
 - xvfb
 node_js:
