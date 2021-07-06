@@ -17,6 +17,7 @@ import nested from './nested/input.word2016.html';
 import nestedMixed from './nested-mixed/input.word2016.html';
 import nestedMultiple from './nested-multiple/input.word2016.html';
 import nestedMixedId from './nested-mixed-id/input.word2016.html';
+import styledAnchor from './styled-anchor/input.word2016.html';
 
 import simpleNormalized from './simple/normalized.word2016.html';
 import styledNormalized from './styled/normalized.word2016.html';
@@ -31,6 +32,7 @@ import nestedNormalized from './nested/normalized.word2016.html';
 import nestedMixedNormalized from './nested-mixed/normalized.word2016.html';
 import nestedMultipleNormalized from './nested-multiple/normalized.word2016.html';
 import nestedMixedIdNormalized from './nested-mixed-id/normalized.word2016.html';
+import styledAnchorNormalized from './styled-anchor/normalized.word2016.html';
 
 import simpleModel from './simple/model.word2016.html';
 import styledModel from './styled/model.word2016.html';
@@ -45,6 +47,7 @@ import nestedModel from './nested/model.word2016.html';
 import nestedMixedModel from './nested-mixed/model.word2016.html';
 import nestedMultipleModel from './nested-multiple/model.word2016.html';
 import nestedMixedIdModel from './nested-mixed-id/model.word2016.html';
+import styledAnchorModel from './styled-anchor/model.word2016.html';
 
 export const fixtures = {
 	input: {
@@ -60,7 +63,8 @@ export const fixtures = {
 		nested,
 		nestedMixed,
 		nestedMultiple,
-		nestedMixedId
+		nestedMixedId,
+		styledAnchor
 	},
 	normalized: {
 		simple: simpleNormalized,
@@ -75,7 +79,8 @@ export const fixtures = {
 		nested: nestedNormalized,
 		nestedMixed: nestedMixedNormalized,
 		nestedMultiple: nestedMultipleNormalized,
-		nestedMixedId: nestedMixedIdNormalized
+		nestedMixedId: nestedMixedIdNormalized,
+		styledAnchor: styledAnchorNormalized
 	},
 	model: {
 		simple: simpleModel,
@@ -90,7 +95,8 @@ export const fixtures = {
 		nested: nestedModel,
 		nestedMixed: nestedMixedModel,
 		nestedMultiple: nestedMultipleModel,
-		nestedMixedId: nestedMixedIdModel
+		nestedMixedId: nestedMixedIdModel,
+		styledAnchor: styledAnchorModel
 	}
 };
 
@@ -108,6 +114,7 @@ import nestedSafari from './nested/input.safari.word2016.html';
 import nestedMixedSafari from './nested-mixed/input.safari.word2016.html';
 import nestedMultipleSafari from './nested-multiple/input.safari.word2016.html';
 import nestedMixedIdSafari from './nested-mixed-id/input.safari.word2016.html';
+import styledAnchorSafari from './styled-anchor/input.safari.word2016.html';
 
 import simpleNormalizedSafari from './simple/normalized.safari.word2016.html';
 import styledNormalizedSafari from './styled/normalized.safari.word2016.html';
@@ -120,6 +127,7 @@ import heading7NormalizedSafari from './heading7/normalized.safari.word2016.html
 import resumeTemplateNormalizedSafari from './resume-template/normalized.safari.word2016.html';
 import nestedMultipleNormalizedSafari from './nested-multiple/normalized.safari.word2016.html';
 import nestedMixedIdNormalizedSafari from './nested-mixed-id/normalized.safari.word2016.html';
+import styledAnchorNormalizedSafari from './styled-anchor/normalized.safari.word2016.html';
 
 import styledSafariModel from './styled/model.safari.word2016.html';
 import resumeTemplateSafariModel from './resume-template/model.safari.word2016.html';
@@ -139,7 +147,8 @@ export const browserFixtures = {
 			nested: nestedSafari,
 			nestedMixed: nestedMixedSafari,
 			nestedMultiple: nestedMultipleSafari,
-			nestedMixedId: nestedMixedIdSafari
+			nestedMixedId: nestedMixedIdSafari,
+			styledAnchor: styledAnchorSafari
 		},
 		normalized: {
 			simple: simpleNormalizedSafari,
@@ -154,7 +163,8 @@ export const browserFixtures = {
 			nested: nestedNormalized,
 			nestedMixed: nestedMixedNormalized,
 			nestedMultiple: nestedMultipleNormalizedSafari,
-			nestedMixedId: nestedMixedIdNormalizedSafari
+			nestedMixedId: nestedMixedIdNormalizedSafari,
+			styledAnchor: styledAnchorNormalizedSafari
 		},
 		model: {
 			simple: simpleModel,
@@ -169,7 +179,8 @@ export const browserFixtures = {
 			nested: nestedModel,
 			nestedMixed: nestedMixedModel,
 			nestedMultiple: nestedMultipleModel,
-			nestedMixedId: nestedMixedIdModel
+			nestedMixedId: nestedMixedIdModel,
+			styledAnchor: styledAnchorModel
 		}
 	}
 };
