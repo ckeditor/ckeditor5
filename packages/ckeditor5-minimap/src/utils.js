@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global CSSMediaRule */
+
 /**
  * @module minimap/utils
  */
@@ -76,6 +78,7 @@ export function getPageStyles() {
 			}
 
 			return Array.from( styleSheet.cssRules )
+				.filter( rule => !( rule instanceof CSSMediaRule ) )
 				.map( rule => rule.cssText )
 				.join( ' \n' );
 		} );
