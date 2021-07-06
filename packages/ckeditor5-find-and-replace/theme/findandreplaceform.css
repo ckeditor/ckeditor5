@@ -176,6 +176,7 @@
 				margin-left: var(--ck-spacing-standard);
 			}
 		}
+
 		& .ck.ck-input-text {
 			padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 		}
